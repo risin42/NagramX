@@ -150,8 +150,6 @@ Build:
    ./gradlew assembleMini<Debug/Release/ReleaseNoGcm>
    ```
 
-8. Generate `TMessagesProj/jni/integrity/genuine.h` - https://github.com/brevent/genuine
-
 ----
 
 ## Compilation with GitHub Action
@@ -183,8 +181,6 @@ Then, use base64 to encode the above.
 - HELPER_BOT_TARGET: from telegram chat id, such as `777000`
 
 4. Run Release Build
-
-5. Generate `TMessagesProj/jni/integrity/genuine.h` - https://github.com/brevent/genuine
 
 ## FAQ
 
