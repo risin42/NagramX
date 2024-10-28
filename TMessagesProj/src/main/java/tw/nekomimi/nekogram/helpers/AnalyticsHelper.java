@@ -13,7 +13,7 @@ import io.sentry.SentryLevel;
 import io.sentry.android.core.SentryAndroid;
 
 public class AnalyticsHelper {
-    public static String DSN = "https://58f21343622b885cb7ad43fee0943f77@o416616.ingest.us.sentry.io/4507212454428672";
+    public static String DSN = "https://d7a0b3b3c3757cda2045a2fe047764ba@o4508200553873408.ingest.us.sentry.io/4508200555315200";
     public static boolean loaded = false;
 
     public static void start(Application application) {
