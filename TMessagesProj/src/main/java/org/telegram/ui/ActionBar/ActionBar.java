@@ -206,7 +206,7 @@ public class ActionBar extends FrameLayout {
                 actionBarMenuOnItemClick.onItemClick(-1);
             }
         });
-        backButtonImageView.setContentDescription(LocaleController.getString("AccDescrGoBack", R.string.AccDescrGoBack));
+        backButtonImageView.setContentDescription(LocaleController.getString(R.string.AccDescrGoBack));
     }
 
     public Drawable getBackButtonDrawable() {
@@ -668,20 +668,6 @@ public class ActionBar extends FrameLayout {
 //        }
 
         return actionMode;
-    }
-
-    public void onDrawCrossfadeBackground(Canvas canvas) {
-        if (blurredBackground && actionBarColor != Color.TRANSPARENT) {
-            rectTmp.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
-            blurScrimPaint.setColor(actionBarColor);
-            contentView.drawBlurRect(canvas, getY(), rectTmp, blurScrimPaint, true);
-        } else {
-            Drawable drawable = getBackground();
-            if (drawable != null) {
-                drawable.setBounds(0, 0, getWidth(), getHeight());
-                drawable.draw(canvas);
-            }
-        }
     }
 
     public void onDrawCrossfadeContent(Canvas canvas, boolean front, boolean hideBackDrawable, float progress) {
@@ -1670,6 +1656,10 @@ public class ActionBar extends FrameLayout {
     }
 
     public void setCastShadows(boolean value) {
+        if (castShadows != value && getParent() instanceof View) {
+            ((View) getParent()).invalidate();
+            invalidate();
+        }
         castShadows = value;
     }
 

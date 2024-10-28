@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -82,6 +83,7 @@ import org.telegram.ui.Components.Reactions.ReactionsLayoutInBubble;
 import org.telegram.ui.Components.Reactions.ReactionsUtils;
 import org.telegram.ui.PremiumPreviewFragment;
 import org.telegram.ui.SelectAnimatedEmojiDialog;
+import org.telegram.ui.Stars.StarsReactionsSheet;
 import org.telegram.ui.Stories.recorder.HintView2;
 
 import java.util.ArrayList;
@@ -179,8 +181,9 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
     private Adapter listAdapter;
     RectF rectF = new RectF();
 
-    HashSet<ReactionsLayoutInBubble.VisibleReaction> selectedReactions = new HashSet<>();
-    HashSet<ReactionsLayoutInBubble.VisibleReaction> alwaysSelectedReactions = new HashSet<>();
+    private boolean hasStar = false;
+    final HashSet<ReactionsLayoutInBubble.VisibleReaction> selectedReactions = new HashSet<>();
+    final HashSet<ReactionsLayoutInBubble.VisibleReaction> alwaysSelectedReactions = new HashSet<>();
 
     private int[] location = new int[2];
 
@@ -209,6 +212,8 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
 
     public ReactionHolderView nextRecentReaction;
 
+    public boolean channelReactions;
+
     float pullingLeftOffset;
 
     HashSet<View> lastVisibleViews = new HashSet<>();
@@ -216,7 +221,8 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
     private boolean allReactionsAvailable;
     private boolean showExpandableReactions;
     private boolean allReactionsIsDefault;
-    private Paint selectedPaint;
+    private final Paint selectedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint starSelectedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     ChatScrimPopupContainerLayout parentLayout;
     private boolean animatePopup;
     public final AnimationNotificationsLocker notificationsLocker = new AnimationNotificationsLocker();
@@ -234,8 +240,8 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
         super(context);
         this.type = type;
         durationScale = Settings.Global.getFloat(context.getContentResolver(), Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f);
-        selectedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         selectedPaint.setColor(Theme.getColor(Theme.key_listSelector, resourcesProvider));
+        starSelectedPaint.setColor(Theme.getColor(Theme.key_reactionStarSelector, resourcesProvider));
         this.resourcesProvider = resourcesProvider;
         this.currentAccount = currentAccount;
         this.fragment = fragment;
@@ -632,7 +638,7 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
 
         if (pressedReaction != null && type != TYPE_MESSAGE_EFFECTS) {
             if (pressedProgress != 1f) {
-                pressedProgress += 16f / 1500f;
+                pressedProgress += 16f / (pressedReaction.isStar ? ViewConfiguration.getLongPressTimeout() : 1500f);
                 if (pressedProgress >= 1f) {
                     pressedProgress = 1f;
                 }
@@ -641,8 +647,13 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
         }
 
 
-        pressedViewScale = 1 + 2 * pressedProgress;
-        otherViewsScale = 1 - 0.15f * pressedProgress;
+        if (pressedReaction != null && pressedReaction.isStar) {
+            pressedViewScale = 1f;
+            otherViewsScale = 1f;
+        } else {
+            pressedViewScale = 1 + 2 * pressedProgress;
+            otherViewsScale = 1 - 0.15f * pressedProgress;
+        }
 
         int s = canvas.save();
         float pivotX = LocaleController.isRTL || mirrorX ? getWidth() * 0.125f : getWidth() * 0.875f;
@@ -686,6 +697,19 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
                 delegate.drawRoundRect(canvas, rect, radius, getX(), getY(), 255, false);
             } else {
                 canvas.drawRoundRect(rect, radius, radius, bgPaint);
+            }
+
+            if (hasStar) {
+                boolean isStarSelected = false;
+                for (ReactionsLayoutInBubble.VisibleReaction r : selectedReactions) {
+                    if (r.isStar) {
+                        isStarSelected = true;
+                        break;
+                    }
+                }
+                if (!isStarSelected) {
+                    canvas.drawRoundRect(rect, radius, radius, getStarGradientPaint(rect, Utilities.clamp01(1f - getPullingLeftProgress())));
+                }
             }
 
             canvas.restoreToCount(s);
@@ -1019,7 +1043,16 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
 
     public void setMessage(MessageObject message, TLRPC.ChatFull chatFull, boolean animated) {
         this.messageObject = message;
-        hitLimit = type == TYPE_DEFAULT && messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.reactions != null && messageObject.messageOwner.reactions.results.size() >= MessagesController.getInstance(currentAccount).getChatMaxUniqReactions(messageObject.getDialogId());
+        int chosenCount = 0;
+        if (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.reactions != null) {
+            for (TLRPC.ReactionCount reactionCount : messageObject.messageOwner.reactions.results) {
+                if (!(reactionCount.reaction instanceof TLRPC.TL_reactionPaid)) {
+                    chosenCount++;
+                }
+            }
+        }
+        hitLimit = type == TYPE_DEFAULT && messageObject != null && chosenCount >= MessagesController.getInstance(currentAccount).getChatMaxUniqReactions(messageObject.getDialogId());
+        channelReactions = type == TYPE_DEFAULT && messageObject != null && ChatObject.isChannelAndNotMegaGroup(MessagesController.getInstance(currentAccount).getChat(-messageObject.getDialogId()));
         TLRPC.ChatFull reactionsChat = chatFull;
         List<ReactionsLayoutInBubble.VisibleReaction> visibleReactions = new ArrayList<>();
         if (message != null && message.isForwardedChannelPost()) {
@@ -1031,6 +1064,7 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
                 return;
             }
         }
+        hasStar = false;
         if (type == TYPE_TAGS) {
             allReactionsAvailable = UserConfig.getInstance(currentAccount).isPremium();
             fillRecentReactionsList(visibleReactions);
@@ -1039,10 +1073,18 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
             fillRecentReactionsList(visibleReactions);
         } else if (hitLimit) {
             allReactionsAvailable = false;
+            if (reactionsChat != null && reactionsChat.paid_reactions_available) {
+                hasStar = true;
+                visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.asStar());
+            }
             for (TLRPC.ReactionCount result : messageObject.messageOwner.reactions.results) {
                 visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.fromTL(result.reaction));
             }
         } else if (reactionsChat != null) {
+            if (reactionsChat != null && reactionsChat.paid_reactions_available) {
+                hasStar = true;
+                visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.asStar());
+            }
             if (reactionsChat.available_reactions instanceof TLRPC.TL_chatReactionsAll) {
                 TLRPC.Chat chat = MessagesController.getInstance(currentAccount).getChat(reactionsChat.id);
                 if (chat != null && !ChatObject.isChannelAndNotMegaGroup(chat)) {
@@ -1063,10 +1105,6 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
                             break;
                         }
                     }
-                }
-            } else {
-                if (BuildVars.DEBUG_PRIVATE_VERSION) {
-                    throw new RuntimeException("Unknown chat reactions type: " + reactionsChat.available_reactions);
                 }
             }
         } else {
@@ -1716,6 +1754,7 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
         public boolean drawSelected = true;
         public int position;
         public boolean waitingAnimation;
+        public StarsReactionsSheet.Particles particles;
 
         Runnable playRunnable = new Runnable() {
             @Override
@@ -1931,11 +1970,11 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
 
             resetAnimation();
             currentReaction = react;
-            hasEnterAnimation = currentReaction.emojicon != null && (showCustomEmojiReaction() || allReactionsIsDefault) && LiteMode.isEnabled(LiteMode.FLAG_ANIMATED_EMOJI_REACTIONS);
+            hasEnterAnimation = currentReaction.isStar || (currentReaction.emojicon != null && (showCustomEmojiReaction() || allReactionsIsDefault)) && LiteMode.isEnabled(LiteMode.FLAG_ANIMATED_EMOJI_REACTIONS);
             if (type == TYPE_STICKER_SET_EMOJI || currentReaction.isEffect) {
                 hasEnterAnimation = false;
             }
-            if (currentReaction.emojicon != null) {
+            if (currentReaction.isStar || currentReaction.emojicon != null) {
                 updateImage(react);
 
                 pressedBackupImageView.setAnimatedEmojiDrawable(null);
@@ -1984,7 +2023,13 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
         }
 
         private void updateImage(ReactionsLayoutInBubble.VisibleReaction react) {
-            if (type == TYPE_STICKER_SET_EMOJI && react != null && react.emojicon != null) {
+            if (react != null && react.isStar) {
+                enterImageView.getImageReceiver().setImageBitmap(new RLottieDrawable(R.raw.star_reaction, "star_reaction", dp(30), dp(30)));
+                loopImageView.getImageReceiver().setImageBitmap(getContext().getResources().getDrawable(R.drawable.star_reaction));
+                if (particles == null) {
+                    particles = new StarsReactionsSheet.Particles(StarsReactionsSheet.Particles.TYPE_RADIAL, SharedConfig.getDevicePerformanceClass() == SharedConfig.PERFORMANCE_CLASS_HIGH ? 45 : 18);
+                }
+            } else if (type == TYPE_STICKER_SET_EMOJI && react != null && react.emojicon != null) {
                 enterImageView.getImageReceiver().setImageBitmap(Emoji.getEmojiDrawable(react.emojicon));
                 loopImageView.getImageReceiver().setImageBitmap(Emoji.getEmojiDrawable(react.emojicon));
             } else if (currentReaction.isEffect) {
@@ -2173,7 +2218,7 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
         @Override
         protected void dispatchDraw(Canvas canvas) {
             if (selected && drawSelected) {
-                canvas.drawCircle(getMeasuredWidth() >> 1, getMeasuredHeight() >> 1, (getMeasuredWidth() >> 1) - dp(1), selectedPaint);
+                canvas.drawCircle(getMeasuredWidth() >> 1, getMeasuredHeight() >> 1, (getMeasuredWidth() >> 1) - dp(1), currentReaction != null && currentReaction.isStar ? starSelectedPaint : selectedPaint);
             }
             if (loopImageView.animatedEmojiDrawable != null && loopImageView.animatedEmojiDrawable.getImageReceiver() != null) {
                 if (position == 0) {
@@ -2181,6 +2226,17 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
                 } else {
                     loopImageView.animatedEmojiDrawable.getImageReceiver().setRoundRadius(selected ? dp(6) : 0);
                 }
+            }
+            if (currentReaction != null && currentReaction.isStar && particles != null && LiteMode.isEnabled(LiteMode.FLAG_ANIMATED_EMOJI_REACTIONS)) {
+                final int sz = (int) (getHeight() * .7f);
+                AndroidUtilities.rectTmp.set(getWidth() / 2f - sz / 2f, getHeight() / 2f - sz / 2f, getWidth() / 2f + sz / 2f, getHeight() / 2f + sz / 2f);
+                RLottieDrawable lottieDrawable = enterImageView.getImageReceiver().getLottieAnimation();
+                final int startframe = 30, dur = 30;
+                particles.setVisible(lottieDrawable != null && lottieDrawable.getCurrentFrame() > startframe ? Utilities.clamp01((float) (lottieDrawable.getCurrentFrame() - startframe) / dur) : 0f);
+                particles.setBounds(AndroidUtilities.rectTmp);
+                particles.process();
+                particles.draw(canvas, 0xFFF5B90E);
+                invalidate();
             }
             super.dispatchDraw(canvas);
         }
@@ -2534,6 +2590,25 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
         if (reactionsWindow != null && reactionsWindow.getSelectAnimatedEmojiDialog() != null) {
             reactionsWindow.getSelectAnimatedEmojiDialog().setPaused(this.paused, this.pausedExceptSelected);
         }
+    }
+
+
+    private Paint starSelectedGradientPaint;
+    private Matrix starSelectedGradientMatrix;
+    private LinearGradient starSelectedGradient;
+    private Paint getStarGradientPaint(RectF bounds, float alpha) {
+        if (starSelectedGradientPaint == null) starSelectedGradientPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        if (starSelectedGradientMatrix == null) starSelectedGradientMatrix = new Matrix();
+        if (starSelectedGradient == null) {
+            final int color = Theme.getColor(Theme.key_reactionStarSelector, resourcesProvider);
+            starSelectedGradient = new LinearGradient(0, 0, dp(64), 0, new int[] { color, Theme.multAlpha(color, 0) }, new float[] { 0, 1 }, Shader.TileMode.CLAMP);
+            starSelectedGradientPaint.setShader(starSelectedGradient);
+        }
+        starSelectedGradientMatrix.reset();
+        starSelectedGradientMatrix.postTranslate(bounds.left, bounds.top);
+        starSelectedGradient.setLocalMatrix(starSelectedGradientMatrix);
+        starSelectedGradientPaint.setAlpha((int) (0xFF * alpha));
+        return starSelectedGradientPaint;
     }
 
 }

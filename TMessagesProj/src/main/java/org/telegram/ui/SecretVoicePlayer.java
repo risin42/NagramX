@@ -196,7 +196,7 @@ public class SecretVoicePlayer extends Dialog {
                         Insets r = insets.getInsets(WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.systemBars());
                         SecretVoicePlayer.this.insets.set(r.left, r.top, r.right, r.bottom);
                     } else {
-                        SecretVoicePlayer.this.insets.set(insets.getStableInsetLeft(), insets.getStableInsetTop(), insets.getStableInsetRight(), insets.getStableInsetBottom());
+                        SecretVoicePlayer.this.insets.set(insets.getSystemWindowInsetLeft(), insets.getSystemWindowInsetTop(), insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom());
                     }
                     containerView.setPadding(SecretVoicePlayer.this.insets.left, SecretVoicePlayer.this.insets.top, SecretVoicePlayer.this.insets.right, SecretVoicePlayer.this.insets.bottom);
                     windowView.requestLayout();
@@ -838,7 +838,7 @@ public class SecretVoicePlayer extends Dialog {
             AndroidUtilities.runOnUIThread(this.closeAction);
             this.closeAction = null;
 
-            myCell.setInvalidateCallback(() -> {});
+//            myCell.setOverrideInvalidate(() -> {});
             thanosEffect = new ThanosEffect(context, null);
             windowView.addView(thanosEffect, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.FILL));
             thanosEffect.animate(myCell, 1.5f, super::dismiss);

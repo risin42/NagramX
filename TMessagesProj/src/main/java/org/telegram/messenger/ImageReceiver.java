@@ -228,8 +228,8 @@ public class ImageReceiver implements NotificationCenter.NotificationCenterDeleg
     private int param;
     private Object currentParentObject;
     private boolean canceledLoading;
-    private static PorterDuffColorFilter selectedColorFilter = new PorterDuffColorFilter(0xffdddddd, PorterDuff.Mode.SRC_IN);
-    private static PorterDuffColorFilter selectedGroupColorFilter = new PorterDuffColorFilter(0xffbbbbbb, PorterDuff.Mode.SRC_IN);
+    private static PorterDuffColorFilter selectedColorFilter = new PorterDuffColorFilter(0xffdddddd, PorterDuff.Mode.MULTIPLY);
+    private static PorterDuffColorFilter selectedGroupColorFilter = new PorterDuffColorFilter(0xffbbbbbb, PorterDuff.Mode.MULTIPLY);
     private boolean forceLoding;
     private long currentTime;
     private int fileLoadingPriority = FileLoader.PRIORITY_NORMAL;
@@ -2053,12 +2053,10 @@ public class ImageReceiver implements NotificationCenter.NotificationCenterDeleg
         manualAlphaAnimator = value;
     }
 
-    @Keep
     public float getCurrentAlpha() {
         return currentAlpha;
     }
 
-    @Keep
     public void setCurrentAlpha(float value) {
         currentAlpha = value;
     }
@@ -2612,6 +2610,10 @@ public class ImageReceiver implements NotificationCenter.NotificationCenterDeleg
         }
     }
 
+    public int getAutoRepeat() {
+        return autoRepeat;
+    }
+
     public void setAutoRepeatCount(int count) {
         autoRepeatCount = count;
         if (getLottieAnimation() != null) {
@@ -2669,8 +2671,8 @@ public class ImageReceiver implements NotificationCenter.NotificationCenterDeleg
     public void setEmojiPaused(boolean paused) {
         if (emojiPaused == paused) return;
         emojiPaused = paused;
-        RLottieDrawable rLottieDrawable = getLottieAnimation();
         allowStartLottieAnimation = !paused;
+        RLottieDrawable rLottieDrawable = getLottieAnimation();
         if (rLottieDrawable != null) {
             if (paused) {
                 rLottieDrawable.stop();

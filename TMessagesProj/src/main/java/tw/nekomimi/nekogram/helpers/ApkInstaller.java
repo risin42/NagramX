@@ -81,7 +81,7 @@ public final class ApkInstaller {
                 dialog = null;
             }
             AlertsCreator.createSimpleAlert(context, LocaleController.getString(R.string.ErrorOccurred) + "\n" + e.getLocalizedMessage()).show();
-            AndroidUtilities.openForView(apk, "install.apk", "application/vnd.android.package-archive", context, null);
+            AndroidUtilities.openForView(apk, "install.apk", "application/vnd.android.package-archive", context, null, false);
         }
     }
 
@@ -159,10 +159,7 @@ public final class ApkInstaller {
 
     private static InstallReceiver register(Context context, Runnable onSuccess) {
         var receiver = new InstallReceiver(context, ApplicationLoader.getApplicationId(), onSuccess);
-        var filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
-        filter.addDataScheme("package");
-        context.registerReceiver(receiver, filter);
-        context.registerReceiver(receiver, new IntentFilter(ApkInstaller.class.getName()));
+        ApplicationLoader.registerReceiverNotExported(context, receiver, new IntentFilter(ApkInstaller.class.getName()));
         return receiver;
     }
 

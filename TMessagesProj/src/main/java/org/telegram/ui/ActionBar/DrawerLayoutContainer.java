@@ -47,6 +47,7 @@ import org.telegram.messenger.FileLog;
 import org.telegram.messenger.R;
 import org.telegram.messenger.Utilities;
 import org.telegram.ui.Components.PasscodeView;
+import org.telegram.ui.Stars.SuperRipple;
 
 public class DrawerLayoutContainer extends FrameLayout {
 
@@ -88,7 +89,7 @@ public class DrawerLayoutContainer extends FrameLayout {
 
     private float drawerPosition;
     private boolean drawerOpened;
-    private boolean allowDrawContent = true;
+    public boolean allowDrawContent = true;
 
     private boolean firstLayout = true;
 
@@ -449,7 +450,7 @@ public class DrawerLayoutContainer extends FrameLayout {
                 return true;
             }
 
-            if ((allowOpenDrawerBySwipe || drawerOpened) && allowOpenDrawer && parentActionBarLayout.getFragmentStack().size() == 1 && (parentActionBarLayout.getLastFragment().getLastStoryViewer() == null || !parentActionBarLayout.getLastFragment().getLastStoryViewer().attachedToParent())) {
+            if ((allowOpenDrawerBySwipe || drawerOpened) && allowOpenDrawer && parentActionBarLayout.getFragmentStack().size() == 1 && parentActionBarLayout.allowSwipe() && (parentActionBarLayout.getLastFragment().getLastSheet() == null || !parentActionBarLayout.getLastFragment().getLastSheet().attachedToParent())) {
                 if (ev != null && (ev.getAction() == MotionEvent.ACTION_DOWN || ev.getAction() == MotionEvent.ACTION_MOVE) && !startedTracking && !maybeStartTracking) {
                    View scrollingChild = findScrollingChild(this, ev.getX(),ev.getY());
                    if (scrollingChild != null) {

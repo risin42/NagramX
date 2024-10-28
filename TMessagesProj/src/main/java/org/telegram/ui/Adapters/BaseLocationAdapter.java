@@ -27,6 +27,8 @@ import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tgnet.tl.TL_stories;
+import org.telegram.ui.Components.ListView.AdapterWithDiffUtils;
 import org.telegram.ui.Components.RecyclerListView;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
-public abstract class BaseLocationAdapter extends RecyclerListView.SelectionAdapter {
+public abstract class BaseLocationAdapter extends AdapterWithDiffUtils {
 
     public final boolean stories;
     public final boolean biz;
@@ -81,7 +83,7 @@ public abstract class BaseLocationAdapter extends RecyclerListView.SelectionAdap
             places.clear();
             locations.clear();
             searchInProgress = false;
-            notifyDataSetChanged();
+            update(true);
         } else {
             if (searchRunnable != null) {
                 Utilities.searchQueue.cancelRunnable(searchRunnable);
@@ -203,6 +205,7 @@ public abstract class BaseLocationAdapter extends RecyclerListView.SelectionAdap
         if (!TextUtils.isEmpty(query) && (stories || biz)) {
             searchingLocations = true;
             final Locale locale = LocaleController.getInstance().getCurrentLocale();
+            final Locale englishLocale = stories ?  locale.getLanguage().contains("en") ? locale : Locale.US : null;
             final String finalQuery = query;
             Utilities.globalQueue.postRunnable(() -> {
                 final ArrayList<TLRPC.TL_messageMediaVenue> locations = new ArrayList<>();
@@ -210,11 +213,17 @@ public abstract class BaseLocationAdapter extends RecyclerListView.SelectionAdap
                     final int maxCount = biz ? 10 : 5;
                     Geocoder geocoder = new Geocoder(ApplicationLoader.applicationContext, locale);
                     List<Address> addresses = geocoder.getFromLocationName(finalQuery, 5);
+                    List<Address> engAddresses = null;
+                    if (stories) {
+                        geocoder = new Geocoder(ApplicationLoader.applicationContext, englishLocale);
+                        engAddresses = geocoder.getFromLocationName(finalQuery, 5);
+                    }
                     HashSet<String> countries = new HashSet<>();
                     HashSet<String> cities = new HashSet<>();
                     String arg, lc;
                     for (int i = 0; i < addresses.size(); ++i) {
                         Address address = addresses.get(i);
+                        Address engAddress = engAddresses != null && i < engAddresses.size() ? engAddresses.get(i) : null;
                         if (!address.hasLatitude() || !address.hasLongitude())
                             continue;
                         double lat = address.getLatitude();
@@ -229,6 +238,13 @@ public abstract class BaseLocationAdapter extends RecyclerListView.SelectionAdap
                         String locality = address.getLocality();
                         if (TextUtils.isEmpty(locality)) {
                             locality = address.getAdminArea();
+                        }
+                        String engLocality = null;
+                        if (engAddress != null) {
+                            engLocality = engAddress.getLocality();
+                            if (TextUtils.isEmpty(engLocality)) {
+                                engLocality = engAddress.getAdminArea();
+                            }
                         }
                         arg = address.getThoroughfare();
                         if (!TextUtils.isEmpty(arg) && !TextUtils.equals(arg, address.getAdminArea())) {
@@ -321,10 +337,74 @@ public abstract class BaseLocationAdapter extends RecyclerListView.SelectionAdap
                                 streetLocation.query_id = -1;
                                 streetLocation.title = streetBuilder.toString();
                                 streetLocation.icon = "pin";
-                                streetLocation.address = onlyCity ? LocaleController.getString("PassportCity", R.string.PassportCity) : LocaleController.getString("PassportStreet1", R.string.PassportStreet1);
-                                locations.add(streetLocation);
-                                if (locations.size() >= maxCount) {
-                                    break;
+                                streetLocation.address = onlyCity ? LocaleController.getString(R.string.PassportCity) : LocaleController.getString(R.string.PassportStreet1);
+                                boolean isUnnamed = false;
+                                if (engAddress != null) {
+                                    streetLocation.geoAddress = new TL_stories.TL_geoPointAddress();
+                                    streetLocation.geoAddress.country_iso2 = engAddress.getCountryCode();
+
+                                    String engCity = null, engState = null;
+                                    if (TextUtils.isEmpty(engCity)) {
+                                        engCity = engAddress.getLocality();
+                                    }
+                                    if (TextUtils.isEmpty(engCity)) {
+                                        engCity = engAddress.getAdminArea();
+                                    }
+                                    if (TextUtils.isEmpty(engCity)) {
+                                        engCity = engAddress.getSubAdminArea();
+                                    }
+                                    engState = engAddress.getAdminArea();
+                                    StringBuilder engStreet = new StringBuilder();
+
+                                    if (!TextUtils.isEmpty(engState)) {
+                                        streetLocation.geoAddress.state = engState;
+                                        streetLocation.geoAddress.flags |= 1;
+                                    }
+                                    if (!TextUtils.isEmpty(engCity)) {
+                                        streetLocation.geoAddress.city = engCity;
+                                        streetLocation.geoAddress.flags |= 2;
+                                    }
+
+                                    if (!onlyCity) {
+                                        String engFeature = null;
+                                        if (TextUtils.isEmpty(engFeature) && !TextUtils.equals(engAddress.getThoroughfare(), locality) && !TextUtils.equals(engAddress.getThoroughfare(), engAddress.getCountryName())) {
+                                            engFeature = engAddress.getThoroughfare();
+                                        }
+                                        if (TextUtils.isEmpty(engFeature) && !TextUtils.equals(engAddress.getSubLocality(), locality) && !TextUtils.equals(engAddress.getSubLocality(), engAddress.getCountryName())) {
+                                            engFeature = engAddress.getSubLocality();
+                                        }
+                                        if (TextUtils.isEmpty(engFeature) && !TextUtils.equals(engAddress.getLocality(), locality) && !TextUtils.equals(engAddress.getLocality(), engAddress.getCountryName())) {
+                                            engFeature = engAddress.getLocality();
+                                        }
+                                        if (!TextUtils.isEmpty(engFeature) && !TextUtils.equals(engFeature, engState) && !TextUtils.equals(engFeature, engAddress.getCountryName())) {
+                                            if (engStreet.length() > 0) {
+                                                engStreet.append(", ");
+                                            }
+                                            engStreet.append(engFeature);
+                                        } else {
+                                            engStreet = null;
+                                        }
+
+                                        if (!TextUtils.isEmpty(engStreet)) {
+                                            for (int j = 0; j < LocationController.unnamedRoads.length; ++j) {
+                                                if (LocationController.unnamedRoads[j].equalsIgnoreCase(engStreet.toString())) {
+                                                    isUnnamed = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if (!TextUtils.isEmpty(engStreet)) {
+                                            streetLocation.geoAddress.flags |= 4;
+                                            streetLocation.geoAddress.street = engStreet.toString();
+                                        }
+                                    }
+                                }
+                                if (!isUnnamed) {
+                                    locations.add(streetLocation);
+                                    if (locations.size() >= maxCount) {
+                                        break;
+                                    }
                                 }
                             }
 
@@ -338,7 +418,32 @@ public abstract class BaseLocationAdapter extends RecyclerListView.SelectionAdap
                                 cityLocation.icon = "https://ss3.4sqi.net/img/categories_v2/travel/hotel_64.png";
                                 cityLocation.emoji = LocationController.countryCodeToEmoji(address.getCountryCode());
                                 cities.add(cityLocation.title);
-                                cityLocation.address = LocaleController.getString("PassportCity", R.string.PassportCity);
+                                cityLocation.address = LocaleController.getString(R.string.PassportCity);
+                                if (engAddress != null) {
+                                    cityLocation.geoAddress = new TL_stories.TL_geoPointAddress();
+                                    cityLocation.geoAddress.country_iso2 = engAddress.getCountryCode();
+
+                                    String engCity = null, engState = null;
+                                    if (TextUtils.isEmpty(engCity)) {
+                                        engCity = engAddress.getLocality();
+                                    }
+                                    if (TextUtils.isEmpty(engCity)) {
+                                        engCity = engAddress.getAdminArea();
+                                    }
+                                    if (TextUtils.isEmpty(engCity)) {
+                                        engCity = engAddress.getSubAdminArea();
+                                    }
+                                    engState = engAddress.getAdminArea();
+
+                                    if (!TextUtils.isEmpty(engState)) {
+                                        cityLocation.geoAddress.state = engState;
+                                        cityLocation.geoAddress.flags |= 1;
+                                    }
+                                    if (!TextUtils.isEmpty(engCity)) {
+                                        cityLocation.geoAddress.city = engCity;
+                                        cityLocation.geoAddress.flags |= 2;
+                                    }
+                                }
                                 locations.add(cityLocation);
                                 if (locations.size() >= maxCount) {
                                     break;
@@ -355,7 +460,11 @@ public abstract class BaseLocationAdapter extends RecyclerListView.SelectionAdap
                                 countryLocation.icon = "https://ss3.4sqi.net/img/categories_v2/building/government_capitolbuilding_64.png";
                                 countryLocation.emoji = LocationController.countryCodeToEmoji(address.getCountryCode());
                                 countries.add(countryLocation.title);
-                                countryLocation.address = LocaleController.getString("Country", R.string.Country);
+                                countryLocation.address = LocaleController.getString(R.string.Country);
+                                if (engAddress != null) {
+                                    countryLocation.geoAddress = new TL_stories.TL_geoPointAddress();
+                                    countryLocation.geoAddress.country_iso2 = engAddress.getCountryCode();
+                                }
                                 locations.add(countryLocation);
                                 if (locations.size() >= maxCount) {
                                     break;
@@ -375,7 +484,7 @@ public abstract class BaseLocationAdapter extends RecyclerListView.SelectionAdap
                     }
                     BaseLocationAdapter.this.locations.clear();
                     BaseLocationAdapter.this.locations.addAll(locations);
-                    notifyDataSetChanged();
+                    update(true);
                 });
             });
         } else {
@@ -417,10 +526,13 @@ public abstract class BaseLocationAdapter extends RecyclerListView.SelectionAdap
             if (delegate != null) {
                 delegate.didLoadSearchResult(places);
             }
-            notifyDataSetChanged();
+            update(true);
         }));
 
+        update(true);
+    }
+
+    protected void update(boolean animated) {
         notifyDataSetChanged();
-//        notifyStartSearch(wasSearched, wasSearching, oldItemCount, animated);
     }
 }

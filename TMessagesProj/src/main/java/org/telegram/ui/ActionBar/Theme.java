@@ -10,6 +10,7 @@ package org.telegram.ui.ActionBar;
 
 import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.AndroidUtilities.dpf2;
+import static org.telegram.messenger.LocaleController.getString;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -2376,15 +2377,15 @@ public class Theme {
 
         public String getName() {
             if ("Blue".equals(name)) {
-                return LocaleController.getString("ThemeClassic", R.string.ThemeClassic);
+                return getString(R.string.ThemeClassic);
             } else if ("Dark Blue".equals(name)) {
-                return LocaleController.getString("ThemeDark", R.string.ThemeDark);
+                return getString(R.string.ThemeDark);
             } else if ("Arctic Blue".equals(name)) {
-                return LocaleController.getString("ThemeArcticBlue", R.string.ThemeArcticBlue);
+                return getString(R.string.ThemeArcticBlue);
             } else if ("Day".equals(name)) {
-                return LocaleController.getString("ThemeDay", R.string.ThemeDay);
+                return getString(R.string.ThemeDay);
             } else if ("Night".equals(name)) {
-                return LocaleController.getString("ThemeNight", R.string.ThemeNight);
+                return getString(R.string.ThemeNight);
             }
             return info != null ? info.title : name;
         }
@@ -3118,7 +3119,7 @@ public class Theme {
     public static Paint avatar_backgroundPaint;
 
     public static Drawable listSelector;
-    public static Drawable[] avatarDrawables = new Drawable[22];
+    public static Drawable[] avatarDrawables = new Drawable[24];
 
     public static Drawable moveUpDrawable;
 
@@ -3422,6 +3423,9 @@ public class Theme {
     public static final int key_dialogEmptyText = colorsCount++;
     public static final int key_dialogSwipeRemove = colorsCount++;
     public static final int key_dialogReactionMentionBackground = colorsCount++;
+    public static final int key_dialogCardShadow = colorsCount++;
+    public static final int key_dialogGiftsBackground = colorsCount++;
+    public static final int key_dialogGiftsTabText = colorsCount++;
 
     public static final int key_windowBackgroundWhite = colorsCount++;
     public static final int key_windowBackgroundUnchecked = colorsCount++;
@@ -3970,6 +3974,7 @@ public class Theme {
     public static final int key_voipgroup_unmuteButton = colorsCount++;
     public static final int key_voipgroup_unmuteButton2 = colorsCount++;
     public static final int key_voipgroup_disabledButton = colorsCount++;
+    public static final int key_voipgroup_rtmpButton = colorsCount++;
     public static final int key_voipgroup_disabledButtonActive = colorsCount++;
     public static final int key_voipgroup_disabledButtonActiveScrolled = colorsCount++;
     public static final int key_voipgroup_connectingProgress = colorsCount++;
@@ -4139,6 +4144,7 @@ public class Theme {
     public static final int key_chat_inReactionButtonText = colorsCount++;
     public static final int key_chat_inReactionButtonTextSelected = colorsCount++;
     public static final int key_chat_outReactionButtonTextSelected = colorsCount++;
+    public static final int key_reactionStarSelector = colorsCount++;
 
     public static final int key_premiumGradient0 = colorsCount++;
     public static final int key_premiumGradient1 = colorsCount++;
@@ -4180,6 +4186,11 @@ public class Theme {
     public static final int key_code_number = colorsCount++;
     public static final int key_code_comment = colorsCount++;
     public static final int key_code_function = colorsCount++;
+
+    public static final int key_iv_background = colorsCount++;
+    public static final int key_iv_backgroundGray = colorsCount++;
+    public static final int key_iv_ab_progress = colorsCount++;
+    public static final int key_iv_navigationBackground = colorsCount++;
 
     public static final String key_drawable_botInline = "drawableBotInline";
     public static final String key_drawable_botLink = "drawableBotLink";
@@ -4269,6 +4280,12 @@ public class Theme {
     static {
         defaultColors = ThemeColors.createDefaultColors();
 
+        fallbackKeys.put(key_iv_background, key_windowBackgroundWhite);
+        fallbackKeys.put(key_iv_backgroundGray, key_windowBackgroundGray);
+        fallbackKeys.put(key_iv_navigationBackground, key_windowBackgroundGray);
+        fallbackKeys.put(key_iv_ab_progress, key_featuredStickers_addButton);
+        fallbackKeys.put(key_dialogGiftsBackground, key_windowBackgroundGray);
+        fallbackKeys.put(key_dialogGiftsTabText, key_windowBackgroundWhiteGrayText2);
         fallbackKeys.put(key_chat_inQuote, key_featuredStickers_addButtonPressed);
         fallbackKeys.put(key_chat_outQuote, key_chat_outReplyLine);
         fallbackKeys.put(key_chat_outReplyLine2, key_chat_outReplyLine);
@@ -4483,6 +4500,7 @@ public class Theme {
         themeAccentExclusionKeys.add(key_voipgroup_leaveButtonScrolled);
         themeAccentExclusionKeys.add(key_voipgroup_connectingProgress);
         themeAccentExclusionKeys.add(key_voipgroup_disabledButton);
+        themeAccentExclusionKeys.add(key_voipgroup_rtmpButton);
         themeAccentExclusionKeys.add(key_voipgroup_disabledButtonActive);
         themeAccentExclusionKeys.add(key_voipgroup_disabledButtonActiveScrolled);
         themeAccentExclusionKeys.add(key_voipgroup_unmuteButton);
@@ -5345,6 +5363,21 @@ public class Theme {
         return defaultDrawable;
     }
 
+    public static ShapeDrawable createCircleDrawable(int size, int colorTop, int colorBottom) {
+        OvalShape ovalShape = new OvalShape();
+        ovalShape.resize(size, size);
+        ShapeDrawable defaultDrawable = new ShapeDrawable(ovalShape);
+        defaultDrawable.setIntrinsicWidth(size);
+        defaultDrawable.setIntrinsicHeight(size);
+        LinearGradient gradient = new LinearGradient(
+            0, 0, 0, size,
+            colorTop, colorBottom,
+            Shader.TileMode.CLAMP
+        );
+        defaultDrawable.getPaint().setShader(gradient);
+        return defaultDrawable;
+    }
+
     public static CombinedDrawable createCircleDrawableWithIcon(int size, int iconRes) {
         return createCircleDrawableWithIcon(size, iconRes, 0);
     }
@@ -5437,13 +5470,13 @@ public class Theme {
         }
     }
 
-    public static Drawable createRoundRectDrawable(int rad, int defaultColor) {
+    public static ShapeDrawable createRoundRectDrawable(int rad, int defaultColor) {
         ShapeDrawable defaultDrawable = new ShapeDrawable(new RoundRectShape(new float[]{rad, rad, rad, rad, rad, rad, rad, rad}, null, null));
         defaultDrawable.getPaint().setColor(defaultColor);
         return defaultDrawable;
     }
 
-    public static Drawable createRoundRectDrawable(int topRad, int bottomRad, int defaultColor) {
+    public static ShapeDrawable createRoundRectDrawable(int topRad, int bottomRad, int defaultColor) {
         ShapeDrawable defaultDrawable = new ShapeDrawable(new RoundRectShape(new float[]{topRad, topRad, topRad, topRad, bottomRad, bottomRad, bottomRad, bottomRad}, null, null));
         defaultDrawable.getPaint().setColor(defaultColor);
         return defaultDrawable;
@@ -8326,6 +8359,8 @@ public class Theme {
             avatarDrawables[19] = resources.getDrawable(R.drawable.large_notes);
             avatarDrawables[20] = resources.getDrawable(R.drawable.filled_folder_new);
             avatarDrawables[21] = resources.getDrawable(R.drawable.filled_folder_existing);
+            avatarDrawables[22] = resources.getDrawable(R.drawable.filled_giveaway_premium);
+            avatarDrawables[23] = resources.getDrawable(R.drawable.filled_giveaway_stars);
 
             if (dialogs_archiveAvatarDrawable != null) {
                 dialogs_archiveAvatarDrawable.setCallback(null);
@@ -10645,9 +10680,9 @@ public class Theme {
                     BulletinFactory.of(fragment).createSimpleBulletin(
                         R.raw.auto_night_off,
                         selectedAutoNightType == AUTO_NIGHT_TYPE_SYSTEM ?
-                                LocaleController.getString("AutoNightSystemModeOff", R.string.AutoNightSystemModeOff) :
-                                LocaleController.getString("AutoNightModeOff", R.string.AutoNightModeOff),
-                        LocaleController.getString("Settings", R.string.Settings),
+                                getString("AutoNightSystemModeOff", R.string.AutoNightSystemModeOff) :
+                                getString("AutoNightModeOff", R.string.AutoNightModeOff),
+                        getString("Settings", R.string.Settings),
                         Bulletin.DURATION_PROLONG,
                         () -> fragment.presentFragment(new ThemeActivity(ThemeActivity.THEME_TYPE_NIGHT))
                     ).show();
@@ -10668,9 +10703,9 @@ public class Theme {
                     BulletinFactory.of(container, null).createSimpleBulletin(
                         R.raw.auto_night_off,
                         selectedAutoNightType == AUTO_NIGHT_TYPE_SYSTEM ?
-                            LocaleController.getString("AutoNightSystemModeOff", R.string.AutoNightSystemModeOff) :
-                            LocaleController.getString("AutoNightModeOff", R.string.AutoNightModeOff),
-                        LocaleController.getString("Settings", R.string.Settings),
+                            getString("AutoNightSystemModeOff", R.string.AutoNightSystemModeOff) :
+                            getString("AutoNightModeOff", R.string.AutoNightModeOff),
+                        getString("Settings", R.string.Settings),
                         Bulletin.DURATION_PROLONG,
                         openSettings
                     ).show();
@@ -10682,6 +10717,10 @@ public class Theme {
             saveAutoNightThemeConfig();
             cancelAutoNightThemeCallbacks();
         }
+    }
+
+    public interface Colorable {
+        public void updateColors();
     }
 
     public static Paint DEBUG_RED = new Paint(); static { DEBUG_RED.setColor(0xffff0000); }

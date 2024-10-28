@@ -1,23 +1,27 @@
 package org.telegram.ui.Cells;
 
-import static org.telegram.messenger.AndroidUtilities.decelerateInterpolator;
 import static org.telegram.messenger.AndroidUtilities.dp;
+import static org.telegram.messenger.LocaleController.getString;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.InputType;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.TypedValue;
+import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,22 +30,22 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.Theme;
-import org.telegram.ui.Business.QuickRepliesController;
 import org.telegram.ui.Components.AnimatedColor;
 import org.telegram.ui.Components.AnimatedTextView;
 import org.telegram.ui.Components.CubicBezierInterpolator;
-import org.telegram.ui.Components.EditTextBoldCursor;
+import org.telegram.ui.Components.EditTextCaption;
 import org.telegram.ui.Components.LayoutHelper;
-
-import java.util.ArrayList;
+import org.telegram.ui.Components.TextStyleSpan;
+import org.telegram.ui.Components.TypefaceSpan;
 
 public class EditTextCell extends FrameLayout {
 
     private boolean ignoreEditText;
-    public final EditTextBoldCursor editText;
+    public final EditTextCaption editText;
     private int maxLength;
 
     private boolean showLimitWhenEmpty;
+    private int showLimitWhenNear = -1;
     private boolean showLimitWhenFocused;
 
     public boolean autofocused;
@@ -62,10 +66,15 @@ public class EditTextCell extends FrameLayout {
         }
     }
 
+    public void setShowLimitWhenNear(int near) {
+        showLimitWhenNear = near;
+        updateLimitText();
+    }
+
     private void updateLimitText() {
         if (editText == null) return;
         limitCount = maxLength - getText().length();
-        limit.setText(TextUtils.isEmpty(getText()) && !showLimitWhenEmpty || showLimitWhenFocused && (!focused || autofocused) ? "" : "" + limitCount);
+        limit.setText(TextUtils.isEmpty(getText()) && !showLimitWhenEmpty || showLimitWhenFocused && (!focused || autofocused) || (showLimitWhenNear != -1 && limitCount > showLimitWhenNear) ? "" : "" + limitCount);
     }
 
     public void whenHitEnter(Runnable whenEnter) {
@@ -92,19 +101,20 @@ public class EditTextCell extends FrameLayout {
     }
 
     public EditTextCell(Context context, String hint, boolean multiline) {
-        this(context, hint, multiline, -1);
+        this(context, hint, multiline, false, -1, null);
     }
 
     public EditTextCell(
         Context context,
         String hint,
         boolean multiline,
-        int maxLength
+        boolean allowEntities, int maxLength,
+        Theme.ResourcesProvider resourceProvider
     ) {
         super(context);
         this.maxLength = maxLength;
 
-        editText = new EditTextBoldCursor(context) {
+        editText = new EditTextCaption(context, resourceProvider) {
             @Override
             protected boolean verifyDrawable(@NonNull Drawable who) {
                 return who == limit || super.verifyDrawable(who);
@@ -122,7 +132,7 @@ public class EditTextCell extends FrameLayout {
             @Override
             protected void dispatchDraw(Canvas canvas) {
                 super.dispatchDraw(canvas);
-                limit.setTextColor(limitColor.set(Theme.getColor(limitCount <= 0 ? Theme.key_text_RedRegular : Theme.key_dialogSearchHint, getResourcesProvider())));
+                limit.setTextColor(limitColor.set(Theme.getColor(limitCount <= 0 ? Theme.key_text_RedRegular : Theme.key_dialogSearchHint, resourceProvider)));
                 limit.setBounds(getScrollX(), 0, getScrollX() + getWidth() - getPaddingRight() + dp(42), getHeight());
                 limit.draw(canvas);
             }
@@ -134,11 +144,36 @@ public class EditTextCell extends FrameLayout {
                 super.onDraw(canvas);
                 canvas.restore();
             }
+
+            @Override
+            protected void extendActionMode(ActionMode actionMode, Menu menu) {
+                if (!allowEntities) return;
+                if (menu.findItem(R.id.menu_bold) != null) {
+                    return;
+                }
+                if (Build.VERSION.SDK_INT >= 23) {
+                    menu.removeItem(android.R.id.shareText);
+                }
+                int order = 6;
+                SpannableStringBuilder stringBuilder = new SpannableStringBuilder(getString(R.string.Bold));
+                stringBuilder.setSpan(new TypefaceSpan(AndroidUtilities.bold()), 0, stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                menu.add(R.id.menu_groupbolditalic, R.id.menu_bold, order++, stringBuilder);
+                stringBuilder = new SpannableStringBuilder(getString(R.string.Italic));
+                stringBuilder.setSpan(new TypefaceSpan(AndroidUtilities.getTypeface(AndroidUtilities.TYPEFACE_ROBOTO_MEDIUM_ITALIC)), 0, stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                menu.add(R.id.menu_groupbolditalic, R.id.menu_italic, order++, stringBuilder);
+//                menu.add(R.id.menu_groupbolditalic, R.id.menu_link, order++, getString(R.string.CreateLink));
+                stringBuilder = new SpannableStringBuilder(LocaleController.getString(R.string.Strike));
+                TextStyleSpan.TextStyleRun run = new TextStyleSpan.TextStyleRun();
+                run.flags |= TextStyleSpan.FLAG_STYLE_STRIKE;
+                stringBuilder.setSpan(new TextStyleSpan(run), 0, stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                menu.add(R.id.menu_groupbolditalic, R.id.menu_strike, order++, stringBuilder);
+                menu.add(R.id.menu_groupbolditalic, R.id.menu_regular, order++, getString(R.string.Regular));
+            }
         };
         limit.setCallback(editText);
         editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
-        editText.setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteHintText));
-        editText.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        editText.setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteHintText, resourceProvider));
+        editText.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText, resourceProvider));
         editText.setBackground(null);
         if (multiline) {
             editText.setMaxLines(5);
@@ -152,7 +187,7 @@ public class EditTextCell extends FrameLayout {
         editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_CLASS_TEXT | (multiline ? InputType.TYPE_TEXT_FLAG_MULTI_LINE : 0) | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         editText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         editText.setHint(hint);
-        editText.setCursorColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        editText.setCursorColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText, resourceProvider));
         editText.setCursorSize(dp(19));
         editText.setCursorWidth(1.5f);
         editText.addTextChangedListener(new TextWatcher() {
@@ -197,6 +232,19 @@ public class EditTextCell extends FrameLayout {
         addView(editText, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP));
 
         updateLimitText();
+    }
+
+    public ImageView setLeftDrawable(Drawable drawable) {
+        ImageView imageView = new ImageView(getContext());
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setImageDrawable(drawable);
+        addView(imageView, LayoutHelper.createFrame(24, 24, Gravity.LEFT | Gravity.CENTER_VERTICAL, 18, 0, 0, 0));
+
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) editText.getLayoutParams();
+        lp.leftMargin = dp(24);
+        editText.setLayoutParams(lp);
+
+        return imageView;
     }
 
     public void setText(CharSequence text) {

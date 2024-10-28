@@ -251,9 +251,9 @@ public class PollVotesAlert extends BottomSheet {
                     righTextView.setText(LocaleController.formatPluralString("Vote", votesCount), animated);
                 }
             } else if (collapsed == 1) {
-                righTextView.setText(LocaleController.getString("PollExpand", R.string.PollExpand), animated);
+                righTextView.setText(LocaleController.getString(R.string.PollExpand), animated);
             } else {
-                righTextView.setText(LocaleController.getString("PollCollapse", R.string.PollCollapse), animated);
+                righTextView.setText(LocaleController.getString(R.string.PollCollapse), animated);
             }
         }
     }
@@ -514,7 +514,7 @@ public class PollVotesAlert extends BottomSheet {
         TLRPC.TL_messageMediaPoll mediaPoll = (TLRPC.TL_messageMediaPoll) messageObject.messageOwner.media;
         poll = mediaPoll.poll;
         Context context = parentFragment.getParentActivity();
-        peer = parentFragment.getMessagesController().getInputPeer((int) message.getDialogId());
+        peer = parentFragment.getMessagesController().getInputPeer(message.getDialogId());
 
         ArrayList<VotesList> loadedVoters = new ArrayList<>();
         int count = mediaPoll.results.results.size();
@@ -946,7 +946,7 @@ public class PollVotesAlert extends BottomSheet {
         actionBar.setSubtitleColor(Theme.getColor(Theme.key_player_actionBarSubtitle));
         actionBar.setOccupyStatusBar(false);
         actionBar.setAlpha(0.0f);
-        actionBar.setTitle(LocaleController.getString("PollResults", R.string.PollResults));
+        actionBar.setTitle(LocaleController.getString(R.string.PollResults));
         if (poll.quiz) {
             actionBar.setSubtitle(LocaleController.formatPluralString("Answer", mediaPoll.results.total_voters));
         } else {

@@ -122,10 +122,10 @@ public class AnimatedFileDrawable extends BitmapDrawable implements Animatable, 
 
     private RectF actualDrawRect = new RectF();
 
-    private BitmapShader[] renderingShader = new BitmapShader[1 + DrawingInBackgroundThreadDrawable.THREAD_COUNT];
-    private BitmapShader[] nextRenderingShader = new BitmapShader[1 + DrawingInBackgroundThreadDrawable.THREAD_COUNT];
-    private BitmapShader[] nextRenderingShader2 = new BitmapShader[1 + DrawingInBackgroundThreadDrawable.THREAD_COUNT];
-    private BitmapShader[] backgroundShader = new BitmapShader[1 + DrawingInBackgroundThreadDrawable.THREAD_COUNT];
+    private final BitmapShader[] renderingShader = new BitmapShader[1 + DrawingInBackgroundThreadDrawable.THREAD_COUNT];
+    private final BitmapShader[] nextRenderingShader = new BitmapShader[1 + DrawingInBackgroundThreadDrawable.THREAD_COUNT];
+    private final BitmapShader[] nextRenderingShader2 = new BitmapShader[1 + DrawingInBackgroundThreadDrawable.THREAD_COUNT];
+    private final BitmapShader[] backgroundShader = new BitmapShader[1 + DrawingInBackgroundThreadDrawable.THREAD_COUNT];
     ArrayList<Bitmap> unusedBitmaps = new ArrayList<>();
 
     private BitmapShader renderingShaderBackgroundDraw;
@@ -155,15 +155,15 @@ public class AnimatedFileDrawable extends BitmapDrawable implements Animatable, 
     private float scaleFactor = 1f;
     public boolean isWebmSticker;
     private final TLRPC.Document document;
-    private RectF[] dstRectBackground = new RectF[DrawingInBackgroundThreadDrawable.THREAD_COUNT];
-    private Paint[] backgroundPaint = new Paint[DrawingInBackgroundThreadDrawable.THREAD_COUNT];
-    private Matrix[] shaderMatrixBackground = new Matrix[DrawingInBackgroundThreadDrawable.THREAD_COUNT];
-    private Path[] roundPathBackground = new Path[DrawingInBackgroundThreadDrawable.THREAD_COUNT];
+    private final RectF[] dstRectBackground = new RectF[DrawingInBackgroundThreadDrawable.THREAD_COUNT];
+    private final Paint[] backgroundPaint = new Paint[DrawingInBackgroundThreadDrawable.THREAD_COUNT];
+    private final Matrix[] shaderMatrixBackground = new Matrix[DrawingInBackgroundThreadDrawable.THREAD_COUNT];
+    private final Path[] roundPathBackground = new Path[DrawingInBackgroundThreadDrawable.THREAD_COUNT];
 
     private View parentView;
-    private ArrayList<View> secondParentViews = new ArrayList<>();
+    private final ArrayList<View> secondParentViews = new ArrayList<>();
 
-    private ArrayList<ImageReceiver> parents = new ArrayList<>();
+    private final ArrayList<ImageReceiver> parents = new ArrayList<>();
 
     private AnimatedFileDrawableStream stream;
 
@@ -662,6 +662,29 @@ public class AnimatedFileDrawable extends BitmapDrawable implements Animatable, 
             }
         }
     }
+
+//    public void seekToSync(long ms) {
+//        if (nativePtr != 0) {
+//            if (renderingBitmap == null) {
+//                if (!unusedBitmaps.isEmpty()) {
+//                    renderingBitmap = unusedBitmaps.remove(0);
+//                } else {
+//                    renderingBitmap = Bitmap.createBitmap((int) (metaData[0] * scaleFactor), (int) (metaData[1] * scaleFactor), Bitmap.Config.ARGB_8888);
+//                }
+//            }
+//            if (decodeQueue == null) {
+//                decodeQueue = new DispatchQueue("decodeQueue" + this);
+//            }
+//            decodeQueue.postRunnable(() -> {
+//                prepareToSeek(nativePtr);
+//                seekToMs(nativePtr, ms, false);
+//                getVideoFrame(nativePtr, renderingBitmap, metaData, renderingBitmap.getRowBytes(), false, startTime, endTime, true);
+//                AndroidUtilities.runOnUIThread(() -> {
+//                    invalidateInternal();
+//                });
+//            });
+//        }
+//    }
 
     public void recycle() {
         if (!secondParentViews.isEmpty()) {
@@ -1184,13 +1207,13 @@ public class AnimatedFileDrawable extends BitmapDrawable implements Animatable, 
             bitmap = Bitmap.createBitmap(renderingWidth, renderingHeight, Bitmap.Config.ARGB_8888);
         }
         Canvas canvas = new Canvas(bitmap);
-        if (generatingCacheBitmap == null) {
-            generatingCacheBitmap = Bitmap.createBitmap(metaData[0], metaData[1], Bitmap.Config.ARGB_8888);
-        }
 
         long nativePtr = createDecoder(path.getAbsolutePath(), metaData, currentAccount, streamFileSize, stream, false);
         if (nativePtr == 0) {
             return bitmap;
+        }
+        if (generatingCacheBitmap == null) {
+            generatingCacheBitmap = Bitmap.createBitmap(Math.max(1, metaData[0]), Math.max(1, metaData[1]), Bitmap.Config.ARGB_8888);
         }
         getVideoFrame(nativePtr, generatingCacheBitmap, metaData, generatingCacheBitmap.getRowBytes(), false, startTime, endTime, true);
         destroyDecoder(nativePtr);

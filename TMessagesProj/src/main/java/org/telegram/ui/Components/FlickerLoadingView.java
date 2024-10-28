@@ -21,7 +21,7 @@ import org.telegram.ui.ActionBar.Theme;
 
 import java.util.Random;
 
-public class FlickerLoadingView extends View {
+public class FlickerLoadingView extends View implements Theme.Colorable {
 
     public final static int DIALOG_TYPE = 1;
     public final static int PHOTOS_TYPE = 2;
@@ -53,6 +53,9 @@ public class FlickerLoadingView extends View {
     public static final int PROFILE_SEARCH_CELL = 29;
     public static final int GRAY_SECTION = 30;
     public static final int STAR_TIER = 31;
+    public static final int BROWSER_BOOKMARK = 32;
+    public static final int STAR_SUBSCRIPTION = 33;
+    public static final int STAR_GIFT = 34;
 
     private int gradientWidth;
     private LinearGradient gradient;
@@ -158,6 +161,10 @@ public class FlickerLoadingView extends View {
                 globalGradientView.setParentSize(parent.getMeasuredWidth(), parent.getMeasuredHeight(), -getX());
             }
             paint = globalGradientView.paint;
+        }
+
+        if (getViewType() == STAR_GIFT) {
+            parentXOffset = -getX();
         }
 
         updateColors();
@@ -456,6 +463,26 @@ public class FlickerLoadingView extends View {
                 canvas.drawRoundRect(rectF, dp(4), dp(4), paint);
 
                 rectF.set(paddingLeft + dp(68), h + dp(39), paddingLeft + dp(140), h + dp(47));
+                checkRtl(rectF);
+                canvas.drawRoundRect(rectF, dp(4), dp(4), paint);
+
+                h += getCellHeight(getMeasuredWidth());
+                k++;
+                if (isSingleCell && k >= itemsCount) {
+                    break;
+                }
+            }
+        } else if (getViewType() == STAR_SUBSCRIPTION) {
+            int k = 0;
+            while (h <= getMeasuredHeight()) {
+                int r = dp(23);
+                canvas.drawCircle(checkRtl(paddingLeft + dp(13) + r), h + (dp(58) >> 1), r, paint);
+
+                rectF.set(paddingLeft + dp(13+46+13), h + dp(17), paddingLeft + dp(260), h + dp(25));
+                checkRtl(rectF);
+                canvas.drawRoundRect(rectF, dp(4), dp(4), paint);
+
+                rectF.set(paddingLeft + dp(13+46+13), h + dp(39), paddingLeft + dp(140), h + dp(47));
                 checkRtl(rectF);
                 canvas.drawRoundRect(rectF, dp(4), dp(4), paint);
 
@@ -805,6 +832,33 @@ public class FlickerLoadingView extends View {
                     break;
                 }
             }
+        } else if (getViewType() == BROWSER_BOOKMARK) {
+            int k = 0;
+            while (h <= getMeasuredHeight()) {
+                int cellHeight = getCellHeight(getMeasuredWidth());
+
+                rectF.set(paddingLeft + dp(10), h + (cellHeight - dp(32)) / 2f, paddingLeft + dp(10 + 32), h + (cellHeight + dp(32)) / 2f);
+                checkRtl(rectF);
+                canvas.drawRoundRect(rectF, dp(6), dp(6), paint);
+
+                rectF.set(paddingLeft + dp(64), h + (cellHeight - dp(14) - dp(10)) / 2f, Math.min(paddingLeft + dp(64 + 54), getMeasuredWidth() - dp(19)), h + (cellHeight - dp(14) + dp(10)) / 2f);
+                checkRtl(rectF);
+                canvas.drawRoundRect(rectF, dp(4), dp(4), paint);
+
+                rectF.set(paddingLeft + dp(64), h + (cellHeight + dp(14) - dp(8)) / 2f, Math.min(paddingLeft + dp(64 + 80), getMeasuredWidth() - dp(19)), h + (cellHeight + dp(14) + dp(8)) / 2f);
+                checkRtl(rectF);
+                canvas.drawRoundRect(rectF, dp(4), dp(4), paint);
+
+                h += cellHeight;
+                k++;
+                if (isSingleCell && k >= itemsCount) {
+                    break;
+                }
+            }
+        } else if (getViewType() == STAR_GIFT) {
+            rectF.set(paddingLeft, paddingTop, getMeasuredWidth() - paddingLeft, getMeasuredHeight() - paddingTop);
+            rectF.inset(dp(3.33f), dp(4));
+            canvas.drawRoundRect(rectF, dp(11), dp(11), paint);
         }
         invalidate();
     }
@@ -825,6 +879,9 @@ public class FlickerLoadingView extends View {
         int width = parentWidth;
         if (width == 0) {
             width = getMeasuredWidth();
+        }
+        if (viewType == STAR_GIFT) {
+            width = Math.max(width, AndroidUtilities.displaySize.x);
         }
         int height = parentHeight;
         if (height == 0) {
@@ -849,6 +906,7 @@ public class FlickerLoadingView extends View {
         }
     }
 
+    @Override
     public void updateColors() {
         if (globalGradientView != null) {
             globalGradientView.updateColors();
@@ -859,10 +917,17 @@ public class FlickerLoadingView extends View {
         if (this.color1 != color1 || this.color0 != color0) {
             this.color0 = color0;
             this.color1 = color1;
-            if (isSingleCell || viewType == MESSAGE_SEEN_TYPE || viewType == CHAT_THEMES_TYPE || viewType == QR_TYPE) {
-                gradient = new LinearGradient(0, 0, gradientWidth = dp(200), 0, new int[]{color1, color0, color0, color1}, new float[]{0.0f, 0.4f, 0.6f, 1f}, Shader.TileMode.CLAMP);
+            if (viewType == STAR_GIFT) {
+                gradientWidth = AndroidUtilities.displaySize.x;
+            } else if (isSingleCell || viewType == MESSAGE_SEEN_TYPE || viewType == CHAT_THEMES_TYPE || viewType == QR_TYPE) {
+                gradientWidth = dp(200);
             } else {
-                gradient = new LinearGradient(0, 0, 0, gradientWidth = dp(600), new int[]{color1, color0, color0, color1}, new float[]{0.0f, 0.4f, 0.6f, 1f}, Shader.TileMode.CLAMP);
+                gradientWidth = dp(600);
+            }
+            if (isSingleCell || viewType == MESSAGE_SEEN_TYPE || viewType == CHAT_THEMES_TYPE || viewType == QR_TYPE) {
+                gradient = new LinearGradient(0, 0, gradientWidth, 0, new int[]{color1, color0, color0, color1}, new float[]{0.0f, 0.4f, 0.6f, 1f}, Shader.TileMode.CLAMP);
+            } else {
+                gradient = new LinearGradient(0, 0, 0, gradientWidth, new int[]{color1, color0, color0, color1}, new float[]{0.0f, 0.4f, 0.6f, 1f}, Shader.TileMode.CLAMP);
             }
             paint.setShader(gradient);
         }
@@ -930,10 +995,16 @@ public class FlickerLoadingView extends View {
                 return dp(58);
             case PROFILE_SEARCH_CELL:
                 return dp(60) + 1;
+            case STAR_SUBSCRIPTION:
+                return dp(58);
             case GRAY_SECTION:
                 return dp(32);
             case STAR_TIER:
                 return dp(48) + 1;
+            case BROWSER_BOOKMARK:
+                return dp(56) + 1;
+            case STAR_GIFT:
+                return dp(140);
         }
         return 0;
     }
@@ -991,6 +1062,6 @@ public class FlickerLoadingView extends View {
         TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         paint.setTypeface(AndroidUtilities.bold());
         paint.setTextSize(dp(14));
-        memberRequestButtonWidth = dp(17 + 17) + paint.measureText(isChannel ? LocaleController.getString("AddToChannel", R.string.AddToChannel) : LocaleController.getString("AddToGroup", R.string.AddToGroup));
+        memberRequestButtonWidth = dp(17 + 17) + paint.measureText(isChannel ? LocaleController.getString(R.string.AddToChannel) : LocaleController.getString(R.string.AddToGroup));
     }
 }

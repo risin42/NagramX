@@ -8,6 +8,8 @@
 
 package org.telegram.messenger;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -27,7 +29,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -36,7 +37,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -44,9 +44,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.fonts.Font;
-import android.graphics.fonts.FontFamily;
-import android.graphics.fonts.SystemFonts;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -78,7 +75,6 @@ import android.text.style.DynamicDrawableSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.Pair;
 import android.util.StateSet;
 import android.util.TypedValue;
@@ -101,6 +97,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
@@ -119,9 +116,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.ColorUtils;
-import androidx.core.graphics.TypefaceCompatUtil;
 import androidx.core.math.MathUtils;
-import androidx.core.provider.FontRequest;
 import androidx.core.widget.NestedScrollView;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
@@ -232,6 +227,7 @@ public class AndroidUtilities {
     public final static int REPLACING_TAG_TYPE_BOLD = 1;
     public final static int REPLACING_TAG_TYPE_LINKBOLD = 2;
     public final static int REPLACING_TAG_TYPE_LINK_NBSP = 3;
+    public final static int REPLACING_TAG_TYPE_UNDERLINE = 4;
 
     public final static String TYPEFACE_ROBOTO_MEDIUM = "fonts/rmedium.ttf";
     public final static String TYPEFACE_ROBOTO_MEDIUM_ITALIC = "fonts/rmediumitalic.ttf";
@@ -240,6 +236,9 @@ public class AndroidUtilities {
     public final static String TYPEFACE_COURIER_NEW_BOLD = "fonts/courier_new_bold.ttf";
 
     private static Typeface mediumTypeface;
+    public static ThreadLocal<byte[]> readBufferLocal = new ThreadLocal<>();
+    public static ThreadLocal<byte[]> bufferLocal = new ThreadLocal<>();
+
     public static Typeface bold() {
         if (mediumTypeface == null) {
             // so system Roboto with 500 weight doesn't support Hebrew (but 700 Roboto does)
@@ -277,6 +276,7 @@ public class AndroidUtilities {
     public static float density = 1;
     public static Point displaySize = new Point();
     public static float screenRefreshRate = 60;
+    public static float screenMaxRefreshRate = 60;
     public static float screenRefreshTime = 1000 / screenRefreshRate;
     public static int roundMessageSize;
     public static int roundPlayingMessageSize;
@@ -308,15 +308,25 @@ public class AndroidUtilities {
     public static Pattern LONG_BAD_CHARS_PATTERN = null;
     public static Pattern BAD_CHARS_MESSAGE_PATTERN = null;
     public static Pattern BAD_CHARS_MESSAGE_LONG_PATTERN = null;
+    public static Pattern REMOVE_MULTIPLE_DIACRITICS = null;
     private static Pattern singleTagPatter = null;
+
+    public static String removeDiacritics(String str) {
+        if (str == null) return null;
+        if (REMOVE_MULTIPLE_DIACRITICS == null) return str;
+        Matcher matcher = REMOVE_MULTIPLE_DIACRITICS.matcher(str);
+        if (matcher == null) return str;
+        return matcher.replaceAll("$1");
+    }
 
     static {
         try {
             final String GOOD_IRI_CHAR = "a-zA-Z0-9\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF";
             BAD_CHARS_PATTERN = Pattern.compile("[\u2500-\u25ff]");
             LONG_BAD_CHARS_PATTERN = Pattern.compile("[\u4e00-\u9fff]");
-            BAD_CHARS_MESSAGE_LONG_PATTERN = Pattern.compile("[\u0300-\u036f\u2066-\u2067]+");
+            BAD_CHARS_MESSAGE_LONG_PATTERN = Pattern.compile("[\u0300-\u036f\u2066-\u2067]");
             BAD_CHARS_MESSAGE_PATTERN = Pattern.compile("[\u2066-\u2067]+");
+            REMOVE_MULTIPLE_DIACRITICS = Pattern.compile("([\\u0300-\\u036f]{1,2})[\\u0300-\\u036f]+");
             final Pattern IP_ADDRESS = Pattern.compile(
                     "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(25[0-5]|2[0-4]"
                             + "[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1]"
@@ -328,7 +338,7 @@ public class AndroidUtilities {
             final String HOST_NAME = "(" + IRI + "\\.)+" + GTLD;
             final Pattern DOMAIN_NAME = Pattern.compile("(" + HOST_NAME + "|" + IP_ADDRESS + ")");
             WEB_URL = Pattern.compile(
-                    "((?:(http|https|Http|Https|ton|tg):\\/\\/(?:(?:[a-zA-Z0-9\\$\\-\\_\\.\\+\\!\\*\\'\\(\\)"
+                    "((?:(http|https|Http|Https|ton|tg|tonsite):\\/\\/(?:(?:[a-zA-Z0-9\\$\\-\\_\\.\\+\\!\\*\\'\\(\\)"
                             + "\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-zA-Z0-9\\$\\-\\_"
                             + "\\.\\+\\!\\*\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?"
                             + "(?:" + DOMAIN_NAME + ")"
@@ -494,6 +504,17 @@ public class AndroidUtilities {
         return spannableStringBuilder;
     }
 
+    public static Activity getActivity() {
+        return getActivity(null);
+    }
+
+    public static Activity getActivity(Context context) {
+        Activity activity = findActivity(context);
+        if (activity == null || activity.isFinishing()) activity = LaunchActivity.instance;
+        if (activity == null || activity.isFinishing()) activity = findActivity(ApplicationLoader.applicationContext);
+        return activity;
+    }
+
     public static Activity findActivity(Context context) {
         if (context instanceof Activity) {
             return (Activity) context;
@@ -527,17 +548,17 @@ public class AndroidUtilities {
             index = startIndex;
         }
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(str);
-        if (index >= 0) {
+        if (runnable != null && index >= 0) {
             if (type == REPLACING_TAG_TYPE_LINK_NBSP) {
                 spannableStringBuilder.replace(index, index + len, AndroidUtilities.replaceMultipleCharSequence(" ", spannableStringBuilder.subSequence(index, index + len), " "));
             }
-            if (type == REPLACING_TAG_TYPE_LINK || type == REPLACING_TAG_TYPE_LINK_NBSP || type == REPLACING_TAG_TYPE_LINKBOLD) {
+            if (type == REPLACING_TAG_TYPE_LINK || type == REPLACING_TAG_TYPE_LINK_NBSP || type == REPLACING_TAG_TYPE_LINKBOLD || type == REPLACING_TAG_TYPE_UNDERLINE) {
                 spannableStringBuilder.setSpan(new ClickableSpan() {
 
                     @Override
                     public void updateDrawState(@NonNull TextPaint ds) {
                         super.updateDrawState(ds);
-                        ds.setUnderlineText(false);
+                        ds.setUnderlineText(type == REPLACING_TAG_TYPE_UNDERLINE);
                         if (colorKey >= 0) {
                             ds.setColor(Theme.getColor(colorKey, resourcesProvider));
                         }
@@ -564,6 +585,71 @@ public class AndroidUtilities {
                     }
                 }, index, index + len, 0);
             }
+        }
+        return spannableStringBuilder;
+    }
+
+    public static SpannableStringBuilder makeClickable(String str, int type, Runnable runnable, Theme.ResourcesProvider resourcesProvider) {
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(str);
+        if (type == REPLACING_TAG_TYPE_LINK || type == REPLACING_TAG_TYPE_LINK_NBSP || type == REPLACING_TAG_TYPE_LINKBOLD || type == REPLACING_TAG_TYPE_UNDERLINE) {
+            spannableStringBuilder.setSpan(new ClickableSpan() {
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(type == REPLACING_TAG_TYPE_UNDERLINE);
+                    if (type == REPLACING_TAG_TYPE_LINKBOLD) {
+                        ds.setTypeface(AndroidUtilities.bold());
+                    }
+                }
+                @Override
+                public void onClick(@NonNull View view) {
+                    if (runnable != null) {
+                        runnable.run();
+                    }
+                }
+            }, 0, spannableStringBuilder.length(), 0);
+        } else {
+            spannableStringBuilder.setSpan(new CharacterStyle() {
+                @Override
+                public void updateDrawState(TextPaint textPaint) {
+                    textPaint.setTypeface(AndroidUtilities.bold());
+                    int wasAlpha = textPaint.getAlpha();
+                    textPaint.setColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlueText, resourcesProvider));
+                    textPaint.setAlpha(wasAlpha);
+                }
+            }, 0, spannableStringBuilder.length(), 0);
+        }
+        return spannableStringBuilder;
+    }
+
+    public static SpannableStringBuilder makeClickable(String str, Runnable runnable) {
+        return makeClickable(str, 0, runnable, null);
+    }
+
+
+    public static SpannableStringBuilder replaceMultipleTags(String str, Runnable ...runnables) {
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(str);
+        for (int i = 0; i < runnables.length; ++i) {
+            Runnable runnable = runnables[i];
+
+            int start = charSequenceIndexOf(spannableStringBuilder, "**");
+            int end = charSequenceIndexOf(spannableStringBuilder, "**", start + 2);
+            if (start < 0 || end < 0) break;
+
+            spannableStringBuilder.delete(start, start + 2);
+            end = end - 2;
+            spannableStringBuilder.delete(end, end + 2);
+            spannableStringBuilder.setSpan(new ClickableSpan() {
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
+                @Override
+                public void onClick(@NonNull View widget) {
+                    if (runnable != null) runnable.run();
+                }
+            }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return spannableStringBuilder;
     }
@@ -679,7 +765,7 @@ public class AndroidUtilities {
         }
     }
 
-    public static boolean isMapsInstalled(BaseFragment baseFragment) {
+    public static boolean isMapsInstalled(BaseFragment fragment) {
         return true;
     }
 
@@ -939,6 +1025,61 @@ public class AndroidUtilities {
         });
     }
 
+    public static String readRes(int rawRes) {
+        return readRes(null, rawRes);
+    }
+
+    public static String readRes(File path) {
+        return readRes(path, 0);
+    }
+
+    public static String readRes(File path, int rawRes) {
+        int totalRead = 0;
+        byte[] readBuffer = readBufferLocal.get();
+        if (readBuffer == null) {
+            readBuffer = new byte[64 * 1024];
+            readBufferLocal.set(readBuffer);
+        }
+        InputStream inputStream = null;
+        try {
+            if (path != null) {
+                inputStream = new FileInputStream(path);
+            } else {
+                inputStream = ApplicationLoader.applicationContext.getResources().openRawResource(rawRes);
+            }
+            int readLen;
+            byte[] buffer = bufferLocal.get();
+            if (buffer == null) {
+                buffer = new byte[4096];
+                bufferLocal.set(buffer);
+            }
+            while ((readLen = inputStream.read(buffer, 0, buffer.length)) >= 0) {
+                if (readBuffer.length < totalRead + readLen) {
+                    byte[] newBuffer = new byte[readBuffer.length * 2];
+                    System.arraycopy(readBuffer, 0, newBuffer, 0, totalRead);
+                    readBuffer = newBuffer;
+                    readBufferLocal.set(readBuffer);
+                }
+                if (readLen > 0) {
+                    System.arraycopy(buffer, 0, readBuffer, totalRead, readLen);
+                    totalRead += readLen;
+                }
+            }
+        } catch (Throwable e) {
+            return null;
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (Throwable ignore) {
+
+            }
+        }
+
+        return new String(readBuffer, 0, totalRead);
+    }
+
     private static class LinkSpec {
         String url;
         int start;
@@ -1094,7 +1235,7 @@ public class AndroidUtilities {
             Linkify.addLinks(text, Linkify.PHONE_NUMBERS);
         }
         if ((mask & Linkify.WEB_URLS) != 0) {
-            gatherLinks(links, text, LinkifyPort.WEB_URL, new String[]{"http://", "https://", "tg://"}, sUrlMatchFilter, internalOnly);
+            gatherLinks(links, text, LinkifyPort.WEB_URL, new String[]{"http://", "https://", "tg://", "tonsite://"}, sUrlMatchFilter, internalOnly);
         }
         pruneOverlaps(links);
         if (links.size() == 0) {
@@ -1117,6 +1258,7 @@ public class AndroidUtilities {
             if (url != null) {
                 url = url.replaceAll("∕|⁄|%E2%81%84|%E2%88%95", "/");
             }
+            if (Browser.isTonsitePunycode(url)) continue;
             text.setSpan(new URLSpan(url), link.start, link.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return true;
@@ -1521,10 +1663,6 @@ public class AndroidUtilities {
         }
     }
 
-    public static boolean isGoogleMapsInstalled(final BaseFragment fragment) {
-        return true;
-    }
-
     public static int[] toIntArray(List<Integer> integers) {
         int[] ret = new int[integers.size()];
         for (int i = 0; i < ret.length; i++) {
@@ -1809,7 +1947,7 @@ public class AndroidUtilities {
                             calendar.set(Calendar.YEAR, Utilities.parseInt(date[0]));
                             calendar.set(Calendar.MONTH, Utilities.parseInt(date[1]) - 1);
                             calendar.set(Calendar.DAY_OF_MONTH, Utilities.parseInt(date[2]));
-                            return LocaleController.getInstance().formatterYearMax.format(calendar.getTime());
+                            return LocaleController.getInstance().getFormatterYearMax().format(calendar.getTime());
                         }
                     }
                 }
@@ -1847,13 +1985,17 @@ public class AndroidUtilities {
         }
 
         public String getType() {
-            if (type == 5) {
-                return LocaleController.getString("ContactBirthday", R.string.ContactBirthday);
+            if (type == 4) {
+                return getString(R.string.ContactNote);
+            } else if (type == 3) {
+                return getString(R.string.ContactUrl);
+            } else if (type == 5) {
+                return getString(R.string.ContactBirthday);
             } else if (type == 6) {
                 if ("ORG".equalsIgnoreCase(getRawType(true))) {
-                    return LocaleController.getString("ContactJob", R.string.ContactJob);
+                    return getString(R.string.ContactJob);
                 } else {
-                    return LocaleController.getString("ContactJobTitle", R.string.ContactJobTitle);
+                    return getString(R.string.ContactJobTitle);
                 }
             }
             int idx = fullData.indexOf(':');
@@ -1878,20 +2020,20 @@ public class AndroidUtilities {
                 }
                 switch (value) {
                     case "PREF":
-                        value = LocaleController.getString("PhoneMain", R.string.PhoneMain);
+                        value = getString(R.string.PhoneMain);
                         break;
                     case "HOME":
-                        value = LocaleController.getString("PhoneHome", R.string.PhoneHome);
+                        value = getString(R.string.PhoneHome);
                         break;
                     case "MOBILE":
                     case "CELL":
-                        value = LocaleController.getString("PhoneMobile", R.string.PhoneMobile);
+                        value = getString(R.string.PhoneMobile);
                         break;
                     case "OTHER":
-                        value = LocaleController.getString("PhoneOther", R.string.PhoneOther);
+                        value = getString(R.string.PhoneOther);
                         break;
                     case "WORK":
-                        value = LocaleController.getString("PhoneWork", R.string.PhoneWork);
+                        value = getString(R.string.PhoneWork);
                         break;
                 }
             }
@@ -2077,7 +2219,7 @@ public class AndroidUtilities {
                     user.first_name = vcardData.name;
                     user.last_name = "";
                     user.id = 0;
-                    TLRPC.TL_restrictionReason reason = new TLRPC.TL_restrictionReason();
+                    TLRPC.RestrictionReason reason = new TLRPC.RestrictionReason();
                     reason.text = vcardData.vcard.toString();
                     reason.platform = "";
                     reason.reason = "";
@@ -2175,7 +2317,11 @@ public class AndroidUtilities {
                 if (value) {
                     if (callReceiver == null) {
                         final IntentFilter filter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-                        ApplicationLoader.applicationContext.registerReceiver(callReceiver = new CallReceiver(), filter);
+                        if (Build.VERSION.SDK_INT >= 33) {
+                            ApplicationLoader.applicationContext.registerReceiver(callReceiver = new CallReceiver(), filter, Context.RECEIVER_NOT_EXPORTED);
+                        } else {
+                            ApplicationLoader.applicationContext.registerReceiver(callReceiver = new CallReceiver(), filter);
+                        }
                     }
                 } else {
                     if (callReceiver != null) {
@@ -2417,6 +2563,17 @@ public class AndroidUtilities {
                     display.getMetrics(displayMetrics);
                     display.getSize(displaySize);
                     screenRefreshRate = display.getRefreshRate();
+                    screenMaxRefreshRate = screenRefreshRate;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        float[] rates = display.getSupportedRefreshRates();
+                        if (rates != null) {
+                            for (int i = 0; i < rates.length; ++i) {
+                                if (rates[i] > screenMaxRefreshRate) {
+                                    screenMaxRefreshRate = rates[i];
+                                }
+                            }
+                        }
+                    }
                     screenRefreshTime = 1000 / screenRefreshRate;
                 }
             }
@@ -2450,6 +2607,35 @@ public class AndroidUtilities {
             touchSlop = vc.getScaledTouchSlop();
         } catch (Exception e) {
             FileLog.e(e);
+        }
+    }
+
+    public static void setPreferredMaxRefreshRate(Window window) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+        if (window == null) return;
+        final WindowManager wm = window.getWindowManager();
+        if (wm == null) return;
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.preferredRefreshRate = screenMaxRefreshRate;
+        try {
+            wm.updateViewLayout(window.getDecorView(), params);
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+    }
+
+    public static void setPreferredMaxRefreshRate(WindowManager wm, View windowView, WindowManager.LayoutParams params) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+        if (wm == null) return;
+        if (Math.abs(params.preferredRefreshRate - screenMaxRefreshRate) > 0.2) {
+            params.preferredRefreshRate = screenMaxRefreshRate;
+            if (windowView.isAttachedToWindow()) {
+                try {
+                    wm.updateViewLayout(windowView, params);
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+            }
         }
     }
 
@@ -3377,6 +3563,9 @@ public class AndroidUtilities {
         } else if (name2 != null && name2.length() != 0) {
             wholeString += " " + name2;
         }
+        if (wholeString == null) {
+            return "";
+        }
         wholeString = wholeString.trim();
         String lower = " " + wholeString.toLowerCase();
 
@@ -3741,9 +3930,8 @@ public class AndroidUtilities {
                     colorsReplacement.put("info2.**", parentFragment.getThemedColor(Theme.key_dialogTopBackground));
                     builder.setTopAnimation(R.raw.not_available, AlertsCreator.NEW_DENY_DIALOG_TOP_ICON_SIZE, false, parentFragment.getThemedColor(Theme.key_dialogTopBackground), colorsReplacement);
                     builder.setTopAnimationIsNew(true);
-//                    builder.setTitle(LocaleController.getString("NekoX", R.string.NekoX));
-                    builder.setMessage(LocaleController.getString("IncorrectTheme", R.string.IncorrectTheme));
-                    builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), null);
+                    builder.setMessage(getString(R.string.IncorrectTheme));
+                    builder.setPositiveButton(getString(R.string.OK), null);
                     parentFragment.showDialog(builder.create());
                 }
             } else {
@@ -3792,8 +3980,7 @@ public class AndroidUtilities {
                     colorsReplacement.put("info2.**", parentFragment.getThemedColor(Theme.key_dialogTopBackground));
                     builder.setTopAnimation(R.raw.not_available, AlertsCreator.NEW_DENY_DIALOG_TOP_ICON_SIZE, false, parentFragment.getThemedColor(Theme.key_dialogTopBackground), colorsReplacement);
                     builder.setTopAnimationIsNew(true);
-//                    builder.setTitle(LocaleController.getString("NekoX", R.string.NekoX));
-                    builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), null);
+                    builder.setPositiveButton(getString(R.string.OK), null);
                     builder.setMessage(LocaleController.formatString("NoHandleAppInstalled", R.string.NoHandleAppInstalled, message.getDocument().mime_type));
                     if (parentFragment != null) {
                         parentFragment.showDialog(builder.create());
@@ -3805,7 +3992,7 @@ public class AndroidUtilities {
         }
     }
 
-    public static boolean openForView(File f, String fileName, String mimeType, final Activity activity, Theme.ResourcesProvider resourcesProvider) {
+    public static boolean openForView(File f, String fileName, String mimeType, final Activity activity, Theme.ResourcesProvider resourcesProvider, boolean restrict) {
         if (f != null && f.exists()) {
             String realMimeType = null;
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -3814,6 +4001,10 @@ public class AndroidUtilities {
             int idx = fileName.lastIndexOf('.');
             if (idx != -1) {
                 String ext = fileName.substring(idx + 1);
+                int h = ext.toLowerCase().hashCode();
+                if (restrict && (h == 0x17a1c || h == 0x3107ab || h == 0x19a1b || h == 0xe55 || h == 0x18417)) {
+                    return true;
+                }
                 realMimeType = myMime.getMimeTypeFromExtension(ext.toLowerCase());
                 if (realMimeType == null) {
                     realMimeType = mimeType;
@@ -3822,9 +4013,12 @@ public class AndroidUtilities {
                     }
                 }
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && realMimeType != null && realMimeType.equals("application/vnd.android.package-archive") && !ApplicationLoader.applicationContext.getPackageManager().canRequestPackageInstalls()) {
-                AlertsCreator.createApkRestrictedDialog(activity, resourcesProvider).show();
-                return true;
+            if (realMimeType != null && realMimeType.equals("application/vnd.android.package-archive")) {
+                if (restrict) return true;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !ApplicationLoader.applicationContext.getPackageManager().canRequestPackageInstalls()) {
+                    AlertsCreator.createApkRestrictedDialog(activity, resourcesProvider).show();
+                    return true;
+                }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 intent.setDataAndType(FileProvider.getUriForFile(activity, ApplicationLoader.getApplicationId() + ".provider", f), realMimeType != null ? realMimeType : "text/plain");
@@ -3851,10 +4045,10 @@ public class AndroidUtilities {
     }
 
     public static boolean openForView(MessageObject message, Activity activity) {
-        return openForView(message, activity, null);
+        return openForView(message, activity, null, false);
     }
 
-    public static boolean openForView(MessageObject message, Activity activity, Theme.ResourcesProvider resourcesProvider) {
+    public static boolean openForView(MessageObject message, Activity activity, Theme.ResourcesProvider resourcesProvider, boolean restrict) {
         File f = null;
         if (message.messageOwner.attachPath != null && message.messageOwner.attachPath.length() != 0) {
             f = new File(message.messageOwner.attachPath);
@@ -3863,13 +4057,13 @@ public class AndroidUtilities {
             f = FileLoader.getInstance(message.currentAccount).getPathToMessage(message.messageOwner);
         }
         String mimeType = message.type == MessageObject.TYPE_FILE || message.type == MessageObject.TYPE_TEXT ? message.getMimeType() : null;
-        return openForView(f, message.getFileName(), mimeType, activity, resourcesProvider);
+        return openForView(f, message.getFileName(), mimeType, activity, resourcesProvider, restrict);
     }
 
     public static boolean openForView(TLRPC.Document document, boolean forceCache, Activity activity) {
         String fileName = FileLoader.getAttachFileName(document);
         File f = FileLoader.getInstance(UserConfig.selectedAccount).getPathToAttach(document, true);
-        return openForView(f, fileName, document.mime_type, activity, null);
+        return openForView(f, fileName, document.mime_type, activity, null, false);
     }
 
     public static SpannableStringBuilder formatSpannableSimple(CharSequence format, CharSequence... cs) {
@@ -3940,7 +4134,16 @@ public class AndroidUtilities {
                     stringBuilder.replace(a, a + 1, " ");
                 }
             }
-            return original;
+            return stringBuilder;
+        } else if (original instanceof SpannableString) {
+            if (TextUtils.indexOf(original, '\n') < 0) return original;
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder(original);
+            for (int a = 0, N = original.length(); a < N; a++) {
+                if (original.charAt(a) == '\n') {
+                    stringBuilder.replace(a, a + 1, " ");
+                }
+            }
+            return stringBuilder;
         }
         return original.toString().replace('\n', ' ');
     }
@@ -4181,7 +4384,7 @@ public class AndroidUtilities {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         if (!TextUtils.isEmpty(secret)) {
             TextView titleTextView = new TextView(activity);
-            titleTextView.setText(LocaleController.getString("UseProxyTelegramInfo2", R.string.UseProxyTelegramInfo2));
+            titleTextView.setText(getString(R.string.UseProxyTelegramInfo2));
             titleTextView.setTextColor(Theme.getColor(Theme.key_dialogTextGray4));
             titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             titleTextView.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
@@ -4196,22 +4399,22 @@ public class AndroidUtilities {
             String detail = null;
             if (a == 0) {
                 text = address;
-                detail = LocaleController.getString("UseProxyAddress", R.string.UseProxyAddress);
+                detail = getString("UseProxyAddress", R.string.UseProxyAddress);
             } else if (a == 1) {
                 text = "" + port;
-                detail = LocaleController.getString("UseProxyPort", R.string.UseProxyPort);
+                detail = getString("UseProxyPort", R.string.UseProxyPort);
             } else if (a == 2) {
                 text = secret;
-                detail = LocaleController.getString("UseProxySecret", R.string.UseProxySecret);
+                detail = getString("UseProxySecret", R.string.UseProxySecret);
             } else if (a == 3) {
                 text = user;
-                detail = LocaleController.getString("UseProxyUsername", R.string.UseProxyUsername);
+                detail = getString("UseProxyUsername", R.string.UseProxyUsername);
             } else if (a == 4) {
                 text = password;
-                detail = LocaleController.getString("UseProxyPassword", R.string.UseProxyPassword);
+                detail = getString("UseProxyPassword", R.string.UseProxyPassword);
             } else if (a == 5) {
-                text = LocaleController.getString(R.string.ProxyBottomSheetChecking);
-                detail = LocaleController.getString(R.string.ProxyStatus);
+                text = getString(R.string.ProxyBottomSheetChecking);
+                detail = getString(R.string.ProxyStatus);
             }
             if (TextUtils.isEmpty(text)) {
                 continue;
@@ -4255,15 +4458,15 @@ public class AndroidUtilities {
                 try {
                     ConnectionsManager.getInstance(UserConfig.selectedAccount).checkProxy(address, Integer.parseInt(port), user, password, secret, time -> AndroidUtilities.runOnUIThread(() -> {
                         if (time == -1) {
-                            cell.getTextView().setText(LocaleController.getString(R.string.Unavailable));
+                            cell.getTextView().setText(getString(R.string.Unavailable));
                             cell.getTextView().setTextColor(Theme.getColor(Theme.key_text_RedRegular));
                         } else {
-                            cell.getTextView().setText(LocaleController.getString(R.string.Available) + ", " + LocaleController.formatString(R.string.Ping, time));
+                            cell.getTextView().setText(getString(R.string.Available) + ", " + LocaleController.formatString(R.string.Ping, time));
                             cell.getTextView().setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGreenText));
                         }
                     }));
                 } catch (NumberFormatException ignored) {
-                    cell.getTextView().setText(LocaleController.getString(R.string.Unavailable));
+                    cell.getTextView().setText(getString(R.string.Unavailable));
                     cell.getTextView().setTextColor(Theme.getColor(Theme.key_text_RedRegular));
                 }
             }
@@ -4274,12 +4477,12 @@ public class AndroidUtilities {
         linearLayout.addView(pickerBottomLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.LEFT | Gravity.BOTTOM));
         pickerBottomLayout.cancelButton.setPadding(AndroidUtilities.dp(18), 0, AndroidUtilities.dp(18), 0);
         pickerBottomLayout.cancelButton.setTextColor(Theme.getColor(Theme.key_dialogTextBlue2));
-        pickerBottomLayout.cancelButton.setText(LocaleController.getString("Cancel", R.string.Cancel).toUpperCase());
+        pickerBottomLayout.cancelButton.setText(getString(R.string.Cancel).toUpperCase());
         pickerBottomLayout.cancelButton.setOnClickListener(view -> dismissRunnable.run());
         pickerBottomLayout.doneButtonTextView.setTextColor(Theme.getColor(Theme.key_dialogTextBlue2));
         pickerBottomLayout.doneButton.setPadding(AndroidUtilities.dp(18), 0, AndroidUtilities.dp(18), 0);
         pickerBottomLayout.doneButtonBadgeTextView.setVisibility(View.GONE);
-        pickerBottomLayout.doneButtonTextView.setText(LocaleController.getString("ConnectingConnectProxy", R.string.ConnectingConnectProxy).toUpperCase());
+        pickerBottomLayout.doneButtonTextView.setText(getString(R.string.ConnectingConnectProxy).toUpperCase());
         pickerBottomLayout.doneButton.setOnClickListener(v -> {
             SharedPreferences.Editor editor = MessagesController.getGlobalMainSettings().edit();
             editor.putBoolean("proxy_enabled", true);
@@ -4325,13 +4528,29 @@ public class AndroidUtilities {
                     }
                 }
                 if (!bulletinSent) {
-                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_SUCCESS, LocaleController.getString(R.string.ProxyAddedSuccess));
+                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_SUCCESS, getString(R.string.ProxyAddedSuccess));
                 }
             } else {
-                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_SUCCESS, LocaleController.getString(R.string.ProxyAddedSuccess));
+                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_SUCCESS, getString(R.string.ProxyAddedSuccess));
             }
             dismissRunnable.run();
         });
+
+        pickerBottomLayout.middleButtonTextView.setText(LocaleController.getString("Save", R.string.Save).toUpperCase());
+        pickerBottomLayout.middleButton.setVisibility(View.VISIBLE);
+        pickerBottomLayout.middleButton.setOnClickListener((it) -> {
+            int p = Utilities.parseInt(port);
+            SharedConfig.ProxyInfo info;
+            if (TextUtils.isEmpty(secret)) {
+                info = new SharedConfig.ProxyInfo(address, p, user, password, "");
+            } else {
+                info = new SharedConfig.ProxyInfo(address, p, "", "", secret);
+            }
+            SharedConfig.addProxy(info);
+            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.proxySettingsChanged);
+            dismissRunnable.run();
+        });
+
         builder.show();
     }
 
@@ -4653,6 +4872,15 @@ public class AndroidUtilities {
         }
     }
 
+    public static void lerpCentered(RectF a, RectF b, float f, RectF to) {
+        if (to == null) return;
+        final float cx = lerp(a.centerX(), b.centerX(), f);
+        final float cy = lerp(a.centerY(), b.centerY(), f);
+        final float hw = lerp(a.width(), b.width(), Math.min(1, f)) / 2f;
+        final float hh = lerp(a.height(), b.height(), Math.min(1, f)) / 2f;
+        to.set(cx - hw, cy - hh, cx + hw, cy + hh);
+    }
+
     public static void lerp(int[] a, int[] b, float f, int[] to) {
         if (to == null) return;
         for (int i = 0; i < to.length; ++i) {
@@ -4660,6 +4888,21 @@ public class AndroidUtilities {
             int bv = b == null || i >= b.length ? 0 : b[i];
             to[i] = lerp(av, bv, f);
         }
+    }
+
+    public static void scaleRect(RectF rect, float scale) {
+        scaleRect(rect, scale, rect.centerX(), rect.centerY());
+    }
+
+    public static void scaleRect(RectF rect, float scale, float px, float py) {
+        final float wl = px - rect.left, wr = rect.right - px;
+        final float ht = py - rect.top, hb = rect.bottom - py;
+        rect.set(
+            px - wl * scale,
+            py - ht * scale,
+            px + wr * scale,
+            py + hb * scale
+        );
     }
 
     public static float cascade(float fullAnimationT, float position, float count, float waveLength) {
@@ -4703,6 +4946,23 @@ public class AndroidUtilities {
             CertificateFactory cf = CertificateFactory.getInstance("X509");
             X509Certificate c = (X509Certificate) cf.generateCertificate(input);
             return Utilities.bytesToHex(Utilities.computeSHA256(c.getEncoded()));
+        } catch (Throwable ignore) {
+
+        }
+        return "";
+    }
+
+    public static String getCertificateSHA1Fingerprint() {
+        PackageManager pm = ApplicationLoader.applicationContext.getPackageManager();
+        String packageName = ApplicationLoader.applicationContext.getPackageName();
+        try {
+            PackageInfo packageInfo = pm.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
+            Signature[] signatures = packageInfo.signatures;
+            byte[] cert = signatures[0].toByteArray();
+            InputStream input = new ByteArrayInputStream(cert);
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+            X509Certificate c = (X509Certificate) cf.generateCertificate(input);
+            return Utilities.bytesToHex(Utilities.computeSHA1(c.getEncoded()));
         } catch (Throwable ignore) {
 
         }
@@ -5338,11 +5598,25 @@ public class AndroidUtilities {
 
     public static boolean hasDialogOnTop(BaseFragment fragment) {
         if (fragment == null) return false;
-        if (fragment.visibleDialog != null) return true;
+        if (fragment.visibleDialog != null && !(fragment.visibleDialog instanceof AlertDialog) && !(
+            fragment.visibleDialog instanceof BottomSheet && ((BottomSheet) fragment.visibleDialog).attachedFragment != null
+        )) return true;
         if (fragment.getParentLayout() == null) return false;
         List<View> globalViews = allGlobalViews();
         if (globalViews == null || globalViews.isEmpty()) return false;
-        View lastGlobalView = globalViews.get(globalViews.size() - 1);
+        View lastGlobalView = null;
+        for (int i = globalViews.size() - 1; i >= 0; --i) {
+            lastGlobalView = globalViews.get(i);
+            if (fragment.visibleDialog instanceof AlertDialog) {
+                if (lastGlobalView == getRootView((((AlertDialog) fragment.visibleDialog).getContainerView()))) {
+                    continue;
+                }
+            }
+            if (!(
+                lastGlobalView instanceof AlertDialog.AlertDialogView ||
+                lastGlobalView instanceof PipRoundVideoView.PipFrameLayout
+            )) break;
+        }
         return lastGlobalView != getRootView(fragment.getParentLayout().getView());
     }
 
@@ -5395,7 +5669,7 @@ public class AndroidUtilities {
             canvas.drawColor(Theme.getColor(Theme.key_windowBackgroundWhite));
             for (int i = 0; i < finalViews.size(); ++i) {
                 View view = finalViews.get(i);
-                if (view instanceof PipRoundVideoView.PipFrameLayout || view instanceof PipRoundVideoView.PipFrameLayout || (exclude != null && exclude.contains(view))) {
+                if (view instanceof PipRoundVideoView.PipFrameLayout || (exclude != null && exclude.contains(view))) {
                     continue;
                 }
 
@@ -5413,7 +5687,7 @@ public class AndroidUtilities {
                 try {
                     view.draw(canvas);
                 } catch (Exception e) {
-
+                    FileLog.e(e);
                 }
                 canvas.restore();
             }
@@ -5490,7 +5764,7 @@ public class AndroidUtilities {
 
     private static Pattern uriParse;
 
-    private static Pattern getURIParsePattern() {
+    public static Pattern getURIParsePattern() {
         if (uriParse == null) {
             uriParse = Pattern.compile("^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?"); // RFC 3986 B
         }
@@ -5498,6 +5772,10 @@ public class AndroidUtilities {
     }
 
     public static String getHostAuthority(String uri) {
+        return getHostAuthority(uri, false);
+    }
+
+    public static String getHostAuthority(String uri, boolean removeWWW) {
         if (uri == null) {
             return null;
         }
@@ -5507,6 +5785,9 @@ public class AndroidUtilities {
             String authority = matcher.group(4);
             if (authority != null) {
                 authority = authority.toLowerCase();
+            }
+            if (removeWWW && authority != null && authority.startsWith("www.")) {
+                authority = authority.substring(4);
             }
             return authority;
         }
@@ -5518,6 +5799,13 @@ public class AndroidUtilities {
             return null;
         }
         return getHostAuthority(uri.toString());
+    }
+
+    public static String getHostAuthority(Uri uri, boolean removeWWW) {
+        if (uri == null) {
+            return null;
+        }
+        return getHostAuthority(uri.toString(), removeWWW);
     }
 
     public static boolean intersect1d(int x1, int x2, int y1, int y2) {
@@ -5759,7 +6047,7 @@ public class AndroidUtilities {
     }
 
     public static CharSequence withLearnMore(CharSequence text, Runnable onClick) {
-        SpannableString link = new SpannableString(LocaleController.getString(R.string.LearnMoreArrow));
+        SpannableString link = new SpannableString(getString(R.string.LearnMoreArrow));
         link.setSpan(new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
@@ -5822,6 +6110,153 @@ public class AndroidUtilities {
             if (NekoConfig.disableVibration.Bool()) return;
             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         } catch (Exception ignore) {}
+    }
+
+    public static void applySpring(Animator anim, double stiffness, double damping) {
+        applySpring(anim, stiffness, damping, 1, 0);
+    }
+
+    public static void applySpring(Animator anim, double stiffness, double damping, double mass) {
+        applySpring(anim, stiffness, damping, mass, 0);
+    }
+
+    public static void applySpring(Animator anim, double stiffness, double damping, double mass, double initialVelocity) {
+        final double w0 = Math.sqrt(stiffness / mass);
+        final double zeta = damping / (2.0 * Math.sqrt(stiffness * mass));
+        final double wd, A, B;
+        if (zeta < 1) {
+            wd = w0 * Math.sqrt(1.0 - zeta * zeta);
+            A = 1.0;
+            B = (zeta * w0 + -initialVelocity) / wd;
+        } else {
+            wd = 0.0;
+            A = 1.0;
+            B = -initialVelocity + w0;
+        }
+        final double threshold = 0.0025;
+        final double duration = Math.log(threshold) / (-zeta * w0);
+        anim.setDuration((long) (duration * 1000L));
+        anim.setInterpolator(new Interpolator() {
+            @Override
+            public float getInterpolation(float t) {
+                if (zeta < 1) {
+                    return (float) (1.0 - Math.exp(-t * zeta * w0) * (A * Math.cos(wd * t) + B * Math.sin(wd * t)));
+                } else {
+                    return (float) (1.0 - (A + B * t) * Math.exp(-t * w0));
+                }
+            }
+        });
+    }
+
+    public static void applySpring(Animator anim, float stiffness, float damping, float mass, long overrideDuration) {
+        final double zeta = damping / (2 * Math.sqrt(stiffness * mass));
+        final double omega = Math.sqrt(stiffness / mass);
+        final double threshold = 0.0025;
+        anim.setDuration(overrideDuration);
+        anim.setInterpolator(new Interpolator() {
+            @Override
+            public float getInterpolation(float t) {
+                if (zeta < 1) {
+                    final double dampedFrequency = omega * Math.sqrt(1 - zeta * zeta);
+                    return (float) (1 - Math.exp(-zeta * omega * t) *
+                            (Math.cos(dampedFrequency * t) + (zeta * omega / dampedFrequency) * Math.sin(dampedFrequency * t)));
+                } else {
+                    final double a = -zeta * omega * t;
+                    return (float) (1 - (1 + a) * Math.exp(a));
+                }
+            }
+        });
+    }
+
+    public static boolean isWebAppLink(String url) {
+        if (url == null) return false;
+        try {
+            Uri uri = Uri.parse(url);
+            final String scheme = uri.getScheme();
+            if (scheme == null) return false;
+            final String path = uri.getPath();
+            if (path == null) return false;
+            switch (scheme) {
+                case "http":
+                case "https": {
+                    if (path.isEmpty()) return false;
+                    String host = uri.getHost().toLowerCase();
+                    Matcher prefixMatcher = LaunchActivity.PREFIX_T_ME_PATTERN.matcher(host);
+                    boolean isPrefix = prefixMatcher.find();
+                    if (host.equals("telegram.me") || host.equals("t.me") || host.equals("telegram.dog") || isPrefix) {
+                        ArrayList<String> segments = new ArrayList<>(uri.getPathSegments());
+                        if (segments.size() > 0 && segments.get(0).equals("s")) {
+                            segments.remove(0);
+                        }
+                        if (segments.size() > 0) {
+                            if (segments.size() >= 3 && "s".equals(segments.get(1))) {
+                                return false;
+                            } else if (segments.size() > 1) {
+                                final String segment0 = segments.get(0);
+                                if (TextUtils.isEmpty(segment0)) return false;
+                                switch (segment0) {
+                                    case "joinchat":
+                                    case "login":
+                                    case "addstickers":
+                                    case "addemoji":
+                                    case "msg":
+                                    case "share":
+                                    case "confirmphone":
+                                    case "setlanguage":
+                                    case "addtheme":
+                                    case "boost":
+                                    case "c":
+                                    case "contact":
+                                    case "folder":
+                                    case "addlist":
+                                        return false;
+                                }
+                                final String segment1 = segments.get(1);
+                                if (TextUtils.isEmpty(segment1)) return false;
+                                if (segment1.matches("^\\d+$")) return false;
+                                return true;
+                            } else if (segments.size() == 1) {
+                                return !TextUtils.isEmpty(uri.getQueryParameter("startapp"));
+                            }
+                        }
+                    }
+                    break;
+                }
+                case "tg": {
+                    if (url.startsWith("tg:resolve") || url.startsWith("tg://resolve")) {
+                        return !TextUtils.isEmpty(uri.getQueryParameter("appname"));
+                    }
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+        return false;
+    }
+
+    public static CharSequence removeSpans(CharSequence text, Class spanClass) {
+        if (!(text instanceof Spannable)) return text;
+        final Spannable spannable = (Spannable) text;
+        final Object[] spans = spannable.getSpans(0, spannable.length(), spanClass);
+        for (int i = 0; i < spans.length; ++i) {
+            spannable.removeSpan(spans[i]);
+        }
+        return spannable;
+    }
+
+    public static void notifyDataSetChanged(RecyclerView listView) {
+        if (listView == null) return;
+        if (listView.getAdapter() == null) return;
+        if (listView.isComputingLayout()) {
+            listView.post(() -> {
+                if (listView.getAdapter() != null) {
+                    listView.getAdapter().notifyDataSetChanged();
+                }
+            });
+        } else {
+            listView.getAdapter().notifyDataSetChanged();
+        }
     }
 
 }

@@ -253,13 +253,9 @@ public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
             }
         }
 
-        boolean checkOption(TLObject object) {
-            for (int i = 0; i < totalCount; i++) {
-                if (object == options.get(i)) {
-                    return checks[i] && (filter == null || filter[i]);
-                }
-            }
-            return false;
+        boolean checkOption(int i) {
+            if (i > totalCount) return false;
+            return checks[i] && (filter == null || filter[i]);
         }
     }
 
@@ -794,9 +790,18 @@ public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
         }
     }
 
+    private boolean banChecked;
     private void onRestrictionsChanged() {
+        if (restrict && banOrRestrict.isPresent()) {
+            banChecked = banOrRestrict.selectedCount > 0;
+        }
         if (restrict && banOrRestrict.isPresent() && banOrRestrict.selectedCount == 0) {
             banOrRestrict.toggleAllChecks();
+        } else if (!restrict && banOrRestrict.isPresent() && banChecked != (banOrRestrict.selectedCount > 0)) {
+            banOrRestrict.toggleAllChecks();
+        }
+        if (!restrict && banOrRestrict.isPresent()) {
+            banChecked = banOrRestrict.selectedCount > 0;
         }
     }
 
@@ -1000,8 +1005,8 @@ public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
 
         applyInCommonGroup.forEachSelected((participant, i) -> {
             if (participant instanceof TLRPC.User) {
-                boolean needBan = banOrRestrict.checkOption(participant);
-                boolean needDelete = banOrRestrict.checkOption(participant);
+                boolean needBan = banOrRestrict.checkOption(i);
+                boolean needDelete = deleteAll.checkOption(i);
                 if (!needBan && !needDelete) {
                     return;
                 }
@@ -1025,9 +1030,9 @@ public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
                         if (canBan && needBan) {
                             if (restrict) {
                                 TLRPC.TL_chatBannedRights rights = bannedRightsOr(bannedRights, participantsBannedRights.get(i));
-                                MessagesController.getInstance(currentAccount).setParticipantBannedRole(chat_.id, (TLRPC.User) participant, null, rights, false, getBaseFragment());
+                                MessagesController.getInstance(currentAccount).setParticipantBannedRole(chat_.id, userFinal, null, rights, false, getBaseFragment());
                             } else {
-                                MessagesController.getInstance(currentAccount).deleteParticipantFromChat(chat_.id, (TLRPC.User) participant, null, false, false);
+                                MessagesController.getInstance(currentAccount).deleteParticipantFromChat(chat_.id, userFinal, null, false, false);
                             }
                         }
                         if (canDelete && needDelete) {

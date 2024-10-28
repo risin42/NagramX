@@ -3,6 +3,7 @@ package org.telegram.messenger;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.web.WebInstantView;
 
 public class ImageLocation {
 
@@ -37,6 +38,8 @@ public class ImageLocation {
     public String thumbSize;
 
     public WebFile webFile;
+
+    public WebInstantView.WebPhoto instantFile;
 
     public static ImageLocation getForPath(String path) {
         if (path == null) {
@@ -75,6 +78,15 @@ public class ImageLocation {
         ImageLocation imageLocation = new ImageLocation();
         imageLocation.webFile = webFile;
         imageLocation.currentSize = webFile.size;
+        return imageLocation;
+    }
+
+    public static ImageLocation getForInstantFile(WebInstantView.WebPhoto instantFile) {
+        if (instantFile == null) {
+            return null;
+        }
+        ImageLocation imageLocation = new ImageLocation();
+        imageLocation.instantFile = instantFile;
         return imageLocation;
     }
 
@@ -360,7 +372,7 @@ public class ImageLocation {
     }
 
     public static String getStrippedKey(Object parentObject, Object fullObject, Object strippedObject) {
-        if (parentObject instanceof TLRPC.WebPage) {
+        if (parentObject instanceof TLRPC.WebPage || parentObject instanceof MessageObject && ((MessageObject) parentObject).type == MessageObject.TYPE_PAID_MEDIA) {
             if (fullObject instanceof ImageLocation) {
                 ImageLocation imageLocation = (ImageLocation) fullObject;
                 if (imageLocation.document != null) {
@@ -399,12 +411,14 @@ public class ImageLocation {
             return secureDocument.secureFile.dc_id + "_" + secureDocument.secureFile.id;
         } else if (photoSize instanceof TLRPC.TL_photoStrippedSize || photoSize instanceof TLRPC.TL_photoPathSize) {
             if (photoSize.bytes.length > 0) {
-                return getStrippedKey(parentObject, fullObject, photoSize);
+                return getStrippedKey(parentObject, fullObject == null ? this : fullObject, photoSize);
             }
         } else if (location != null) {
             return location.volume_id + "_" + location.local_id;
         } else if (webFile != null) {
             return Utilities.MD5(webFile.url);
+        } else if (instantFile != null) {
+            return Utilities.MD5(instantFile.url);
         } else if (document != null) {
             if (!url && document instanceof DocumentObject.ThemeDocument) {
                 DocumentObject.ThemeDocument themeDocument = (DocumentObject.ThemeDocument) document;

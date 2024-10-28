@@ -1,7 +1,7 @@
 package org.telegram.ui.Components.Premium.boosts.cells;
 
 import static org.telegram.messenger.AndroidUtilities.dp;
-import static org.telegram.tgnet.tl.TL_stories.TL_boost.NO_USER_ID;
+import static org.telegram.tgnet.tl.TL_stories.Boost.NO_USER_ID;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -78,11 +78,11 @@ public class TableCell extends FrameLayout {
         linePaint.setStyle(Paint.Style.STROKE);
         this.resourcesProvider = resourcesProvider;
 
-        fromNameTextView = createTextView(LocaleController.getString("BoostingFrom", R.string.BoostingFrom), false);
-        toNameTextView = createTextView(LocaleController.getString("BoostingTo", R.string.BoostingTo), false);
-        giftNameTextView = createTextView(LocaleController.getString("BoostingGift", R.string.BoostingGift), false);
-        reasonNameTextView = createTextView(LocaleController.getString("BoostingReason", R.string.BoostingReason), false);
-        dateNameTextView = createTextView(LocaleController.getString("BoostingDate", R.string.BoostingDate), false);
+        fromNameTextView = createTextView(LocaleController.getString(R.string.BoostingFrom), false);
+        toNameTextView = createTextView(LocaleController.getString(R.string.BoostingTo), false);
+        giftNameTextView = createTextView(LocaleController.getString(R.string.BoostingGift), false);
+        reasonNameTextView = createTextView(LocaleController.getString(R.string.BoostingReason), false);
+        dateNameTextView = createTextView(LocaleController.getString(R.string.BoostingDate), false);
 
         fromTextView = createTextView(true);
         toTextView = createTextView(true);
@@ -203,8 +203,8 @@ public class TableCell extends FrameLayout {
     public void setData(TLRPC.TL_payments_checkedGiftCode giftCode, Utilities.Callback<TLObject> onObjectClicked) {
         this.giftCode = giftCode;
         Date date = new Date(giftCode.date * 1000L);
-        String monthTxt = LocaleController.getInstance().formatterYear.format(date);
-        String timeTxt = LocaleController.getInstance().formatterDay.format(date);
+        String monthTxt = LocaleController.getInstance().getFormatterYear().format(date);
+        String timeTxt = LocaleController.getInstance().getFormatterDay().format(date);
 
         dateTextView.setText(LocaleController.formatString("formatDateAtTime", R.string.formatDateAtTime, monthTxt, timeTxt));
         reasonTextView.setTextColor(Theme.getColor(giftCode.via_giveaway ? Theme.key_dialogTextBlue : Theme.key_dialogTextBlack, resourcesProvider));
@@ -213,7 +213,7 @@ public class TableCell extends FrameLayout {
         if (giftCode.via_giveaway) {
             SpannableStringBuilder builder = new SpannableStringBuilder();
             builder.append("**");
-            builder.append(LocaleController.getString("BoostingGiveaway", R.string.BoostingGiveaway));
+            builder.append(LocaleController.getString(R.string.BoostingGiveaway));
             builder.append("**");
             builder = AndroidUtilities.replaceSingleTag(builder.toString(), Theme.key_chat_messageLinkIn, 0, () -> onObjectClicked.run(giftCode), resourcesProvider);
             reasonTextView.setText(builder);
@@ -245,11 +245,11 @@ public class TableCell extends FrameLayout {
         if (giftCode.to_id == NO_USER_ID && giftCode.via_giveaway) {
             SpannableStringBuilder builder = new SpannableStringBuilder();
             builder.append("**");
-            builder.append(LocaleController.getString("BoostingIncompleteGiveaway", R.string.BoostingIncompleteGiveaway));
+            builder.append(LocaleController.getString(R.string.BoostingIncompleteGiveaway));
             builder.append("**");
             builder = AndroidUtilities.replaceSingleTag(builder.toString(), Theme.key_chat_messageLinkIn, 0, () -> onObjectClicked.run(giftCode), resourcesProvider);
             reasonTextView.setText(builder);
-            toTextView.setText(LocaleController.getString("BoostingNoRecipient", R.string.BoostingNoRecipient));
+            toTextView.setText(LocaleController.getString(R.string.BoostingNoRecipient));
             toTextView.setTextColor(Theme.getColor(Theme.key_dialogTextBlack, resourcesProvider));
             ((MarginLayoutParams) toTextView.getLayoutParams()).leftMargin = 0;
             ((MarginLayoutParams) toTextView.getLayoutParams()).rightMargin = 0;

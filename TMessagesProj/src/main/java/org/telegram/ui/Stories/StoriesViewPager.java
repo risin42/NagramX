@@ -16,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
@@ -98,7 +99,12 @@ public class StoriesViewPager extends ViewPager {
                 pageLayout.setTag(position);
                 if (days != null) {
                     pageLayout.day = days.get(storyViewer.reversed ? days.size() - 1 - position : position);
-                    pageLayout.dialogId = daysDialogId;
+                    if (storyViewer.storiesList instanceof StoriesController.SearchStoriesList) {
+                        MessageObject msg = storyViewer.storiesList.findMessageObject(pageLayout.day.get(0));
+                        pageLayout.dialogId = msg == null ? daysDialogId : msg.getDialogId();
+                    } else {
+                        pageLayout.dialogId = daysDialogId;
+                    }
                 } else {
                     pageLayout.day = null;
                     pageLayout.dialogId = dialogs.get(position);
@@ -254,6 +260,9 @@ public class StoriesViewPager extends ViewPager {
     }
 
     public void setDays(long dialogId, ArrayList<ArrayList<Integer>> days, int currentAccount) {
+        if (this.daysDialogId == dialogId && eqA(this.days, days) && this.currentAccount == currentAccount) {
+            return;
+        }
         this.daysDialogId = dialogId;
         this.days = days;
         this.currentAccount = currentAccount;
@@ -270,6 +279,27 @@ public class StoriesViewPager extends ViewPager {
         }
         setCurrentItem(position);
         updateDelegate = true;
+    }
+
+    private static boolean eqA(ArrayList<ArrayList<Integer>> a, ArrayList<ArrayList<Integer>> b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        if (a.size() != b.size()) return false;
+        for (int i = 0; i < a.size(); ++i) {
+            if (!eq(a.get(i), b.get(i)))
+                return false;
+        }
+        return true;
+    }
+    private static boolean eq(ArrayList<Integer> a, ArrayList<Integer> b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        if (a.size() != b.size()) return false;
+        for (int i = 0; i < a.size(); ++i) {
+            if (a.get(i) != b.get(i))
+                return false;
+        }
+        return true;
     }
 
     @Override

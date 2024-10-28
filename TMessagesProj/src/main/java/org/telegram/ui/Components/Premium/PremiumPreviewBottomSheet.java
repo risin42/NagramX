@@ -198,7 +198,8 @@ public class PremiumPreviewBottomSheet extends BottomSheetWithRecyclerListView i
         return this;
     }
 
-    private void showDialog(Dialog dialog) {
+    @Override
+    public boolean showDialog(Dialog dialog) {
         if (iconTextureView != null) {
             iconTextureView.setDialogVisible(true);
         }
@@ -210,6 +211,7 @@ public class PremiumPreviewBottomSheet extends BottomSheetWithRecyclerListView i
             starParticlesView.setPaused(false);
         });
         dialog.show();
+        return true;
     }
 
     @Override
@@ -415,7 +417,7 @@ public class PremiumPreviewBottomSheet extends BottomSheetWithRecyclerListView i
 
     @Override
     protected CharSequence getTitle() {
-        return LocaleController.getString("TelegramPremium", R.string.TelegramPremium);
+        return LocaleController.getString(R.string.TelegramPremium);
     }
 
     @Override
@@ -599,12 +601,12 @@ public class PremiumPreviewBottomSheet extends BottomSheetWithRecyclerListView i
                     SpannableStringBuilder stringBuilder1 = AndroidUtilities.replaceSingleTag(
                             terms1,
                             Theme.key_chat_messageLinkIn, 0,
-                            () -> Browser.openUrl(fragment.getParentActivity(), LocaleController.getString("TermsOfServiceUrl", R.string.TermsOfServiceUrl)));
+                            () -> Browser.openUrl(fragment.getParentActivity(), LocaleController.getString(R.string.TermsOfServiceUrl)));
                     String terms2 = getString("GiftPremiumPrivacyPolicy", R.string.GiftPremiumPrivacyPolicy);
                     SpannableStringBuilder stringBuilder2 = AndroidUtilities.replaceSingleTag(
                             terms2,
                             Theme.key_chat_messageLinkIn, 0,
-                            () -> Browser.openUrl(fragment.getParentActivity(), LocaleController.getString("PrivacyPolicyUrl", R.string.PrivacyPolicyUrl)));
+                            () -> Browser.openUrl(fragment.getParentActivity(), LocaleController.getString(R.string.PrivacyPolicyUrl)));
                     cell.setText(AndroidUtilities.replaceCharSequence("%1$s", stringBuilder1, stringBuilder2));
                     view = cell;
                     break;

@@ -129,49 +129,49 @@ public class ChatObject {
     public static String getAllowedSendString(TLRPC.Chat chat) {
         StringBuilder stringBuilder = new StringBuilder();
         if (ChatObject.canSendPhoto(chat)) {
-            stringBuilder.append(LocaleController.getString("SendMediaPermissionPhotos", R.string.SendMediaPermissionPhotos));
+            stringBuilder.append(LocaleController.getString(R.string.SendMediaPermissionPhotos));
         }
         if (ChatObject.canSendVideo(chat)) {
             if (stringBuilder.length() > 0) {
                 stringBuilder.append(", ");
             }
-            stringBuilder.append(LocaleController.getString("SendMediaPermissionVideos", R.string.SendMediaPermissionVideos));
+            stringBuilder.append(LocaleController.getString(R.string.SendMediaPermissionVideos));
         }
         if (ChatObject.canSendStickers(chat)) {
             if (stringBuilder.length() > 0) {
                 stringBuilder.append(", ");
             }
-            stringBuilder.append(LocaleController.getString("SendMediaPermissionStickersGifs", R.string.SendMediaPermissionStickersGifs));
+            stringBuilder.append(LocaleController.getString(R.string.SendMediaPermissionStickersGifs));
         }
         if (ChatObject.canSendMusic(chat)) {
             if (stringBuilder.length() > 0) {
                 stringBuilder.append(", ");
             }
-            stringBuilder.append(LocaleController.getString("SendMediaPermissionMusic", R.string.SendMediaPermissionMusic));
+            stringBuilder.append(LocaleController.getString(R.string.SendMediaPermissionMusic));
         }
         if (ChatObject.canSendDocument(chat)) {
             if (stringBuilder.length() > 0) {
                 stringBuilder.append(", ");
             }
-            stringBuilder.append(LocaleController.getString("SendMediaPermissionFiles", R.string.SendMediaPermissionFiles));
+            stringBuilder.append(LocaleController.getString(R.string.SendMediaPermissionFiles));
         }
         if (ChatObject.canSendVoice(chat)) {
             if (stringBuilder.length() > 0) {
                 stringBuilder.append(", ");
             }
-            stringBuilder.append(LocaleController.getString("SendMediaPermissionVoice", R.string.SendMediaPermissionVoice));
+            stringBuilder.append(LocaleController.getString(R.string.SendMediaPermissionVoice));
         }
         if (ChatObject.canSendRoundVideo(chat)) {
             if (stringBuilder.length() > 0) {
                 stringBuilder.append(", ");
             }
-            stringBuilder.append(LocaleController.getString("SendMediaPermissionRound", R.string.SendMediaPermissionRound));
+            stringBuilder.append(LocaleController.getString(R.string.SendMediaPermissionRound));
         }
         if (ChatObject.canSendEmbed(chat)) {
             if (stringBuilder.length() > 0) {
                 stringBuilder.append(", ");
             }
-            stringBuilder.append(LocaleController.getString("SendMediaEmbededLinks", R.string.SendMediaEmbededLinks));
+            stringBuilder.append(LocaleController.getString(R.string.SendMediaEmbededLinks));
         }
 
         return stringBuilder.toString();
@@ -1784,7 +1784,7 @@ public class ChatObject {
     }
 
     public static boolean canSendAsPeers(TLRPC.Chat chat) {
-        return ChatObject.isChannel(chat) && chat.megagroup && (ChatObject.isPublic(chat) || chat.has_geo || chat.has_link);
+        return ChatObject.isChannel(chat) && (!chat.megagroup && chat.signatures && ChatObject.hasAdminRights(chat) && ChatObject.canWriteToChat(chat) || chat.megagroup && (ChatObject.isPublic(chat) || chat.has_geo || chat.has_link));
     }
 
     public static boolean isChannel(TLRPC.Chat chat) {
@@ -1801,6 +1801,15 @@ public class ChatObject {
 
     public static boolean isChannelAndNotMegaGroup(TLRPC.Chat chat) {
         return isChannel(chat) && !isMegagroup(chat);
+    }
+
+    public static boolean isDiscussionGroup(int currentAccount, long chatId) {
+        final MessagesController messagesController = MessagesController.getInstance(currentAccount);
+        return isDiscussionGroup(messagesController.getChat(chatId), messagesController.getChatFull(chatId));
+    }
+
+    public static boolean isDiscussionGroup(TLRPC.Chat chat, TLRPC.ChatFull chatFull) {
+        return isMegagroup(chat) && chatFull != null && chatFull.linked_chat_id != 0;
     }
 
     public static boolean isBoostSupported(TLRPC.Chat chat) {
@@ -1908,6 +1917,9 @@ public class ChatObject {
     }
 
     public static boolean canSendMessages(TLRPC.Chat chat) {
+        if (isNotInChat(chat) && chat != null && chat.join_to_send) {
+            return false;
+        }
         if (isIgnoredChatRestrictionsForBoosters(chat)) {
             return true;
         }
@@ -1943,6 +1955,9 @@ public class ChatObject {
             return p.user_id != 0 ? p.user_id : invertChannel ? -p.channel_id : p.channel_id;
         }
         if (chat != null && chat.admin_rights != null && chat.admin_rights.anonymous) {
+            return invertChannel ? -chat.id : chat.id;
+        }
+        if (chat != null && ChatObject.isChannelAndNotMegaGroup(chat) && !chat.signatures) {
             return invertChannel ? -chat.id : chat.id;
         }
         return UserConfig.getInstance(UserConfig.selectedAccount).getClientUserId();
@@ -2110,7 +2125,7 @@ public class ChatObject {
     public static String getRestrictedErrorText(TLRPC.Chat chat, int action) {
         if (action == ACTION_SEND_GIFS) {
             if (chat == null || ChatObject.isActionBannedByDefault(chat, action)) {
-                return LocaleController.getString("GlobalAttachGifRestricted", R.string.GlobalAttachGifRestricted);
+                return LocaleController.getString(R.string.GlobalAttachGifRestricted);
             } else if (AndroidUtilities.isBannedForever(chat.banned_rights)) {
                 return LocaleController.formatString("AttachGifRestrictedForever", R.string.AttachGifRestrictedForever);
             } else {
@@ -2118,7 +2133,7 @@ public class ChatObject {
             }
         } else if (action == ACTION_SEND_STICKERS) {
             if (chat == null || ChatObject.isActionBannedByDefault(chat, action)) {
-                return LocaleController.getString("GlobalAttachStickersRestricted", R.string.GlobalAttachStickersRestricted);
+                return LocaleController.getString(R.string.GlobalAttachStickersRestricted);
             } else if (AndroidUtilities.isBannedForever(chat.banned_rights)) {
                 return LocaleController.formatString("AttachStickersRestrictedForever", R.string.AttachStickersRestrictedForever);
             } else {
@@ -2126,7 +2141,7 @@ public class ChatObject {
             }
         } else if (action == ACTION_SEND_PHOTO) {
             if (chat == null || ChatObject.isActionBannedByDefault(chat, action)) {
-                return LocaleController.getString("GlobalAttachPhotoRestricted", R.string.GlobalAttachPhotoRestricted);
+                return LocaleController.getString(R.string.GlobalAttachPhotoRestricted);
             } else if (AndroidUtilities.isBannedForever(chat.banned_rights)) {
                 return LocaleController.formatString("AttachPhotoRestrictedForever", R.string.AttachPhotoRestrictedForever);
             } else {
@@ -2134,7 +2149,7 @@ public class ChatObject {
             }
         } else if (action == ACTION_SEND_VIDEO) {
             if (chat == null || ChatObject.isActionBannedByDefault(chat, action)) {
-                return LocaleController.getString("GlobalAttachVideoRestricted", R.string.GlobalAttachVideoRestricted);
+                return LocaleController.getString(R.string.GlobalAttachVideoRestricted);
             } else if (AndroidUtilities.isBannedForever(chat.banned_rights)) {
                 return LocaleController.formatString("AttachVideoRestrictedForever", R.string.AttachVideoRestrictedForever);
             } else {
@@ -2142,7 +2157,7 @@ public class ChatObject {
             }
         } else if (action == ACTION_SEND_DOCUMENTS) {
             if (chat == null || ChatObject.isActionBannedByDefault(chat, action)) {
-                return LocaleController.getString("GlobalAttachDocumentsRestricted", R.string.GlobalAttachDocumentsRestricted);
+                return LocaleController.getString(R.string.GlobalAttachDocumentsRestricted);
             } else if (AndroidUtilities.isBannedForever(chat.banned_rights)) {
                 return LocaleController.formatString("AttachDocumentsRestrictedForever", R.string.AttachDocumentsRestrictedForever);
             } else {
@@ -2150,7 +2165,7 @@ public class ChatObject {
             }
         } else if (action == ACTION_SEND_MEDIA) {
             if (chat == null || ChatObject.isActionBannedByDefault(chat, action)) {
-                return LocaleController.getString("GlobalAttachMediaRestricted", R.string.GlobalAttachMediaRestricted);
+                return LocaleController.getString(R.string.GlobalAttachMediaRestricted);
             } else if (AndroidUtilities.isBannedForever(chat.banned_rights)) {
                 return LocaleController.formatString("AttachMediaRestrictedForever", R.string.AttachMediaRestrictedForever);
             } else {
@@ -2158,7 +2173,7 @@ public class ChatObject {
             }
         } else if (action == ACTION_SEND_MUSIC) {
             if (chat == null || ChatObject.isActionBannedByDefault(chat, action)) {
-                return LocaleController.getString("GlobalAttachAudioRestricted", R.string.GlobalAttachAudioRestricted);
+                return LocaleController.getString(R.string.GlobalAttachAudioRestricted);
             } else if (AndroidUtilities.isBannedForever(chat.banned_rights)) {
                 return LocaleController.formatString("AttachAudioRestrictedForever", R.string.AttachAudioRestrictedForever);
             } else {
@@ -2166,7 +2181,7 @@ public class ChatObject {
             }
         } else if (action == ACTION_SEND_PLAIN) {
             if (chat == null || ChatObject.isActionBannedByDefault(chat, action)) {
-                return LocaleController.getString("GlobalAttachPlainRestricted", R.string.GlobalAttachPlainRestricted);
+                return LocaleController.getString(R.string.GlobalAttachPlainRestricted);
             } else if (AndroidUtilities.isBannedForever(chat.banned_rights)) {
                 return LocaleController.formatString("AttachPlainRestrictedForever", R.string.AttachPlainRestrictedForever);
             } else {
@@ -2174,7 +2189,7 @@ public class ChatObject {
             }
         } else if (action == ACTION_SEND_ROUND) {
             if (chat == null || ChatObject.isActionBannedByDefault(chat, action)) {
-                return LocaleController.getString("GlobalAttachRoundRestricted", R.string.GlobalAttachRoundRestricted);
+                return LocaleController.getString(R.string.GlobalAttachRoundRestricted);
             } else if (AndroidUtilities.isBannedForever(chat.banned_rights)) {
                 return LocaleController.formatString("AttachRoundRestrictedForever", R.string.AttachRoundRestrictedForever);
             } else {
@@ -2182,7 +2197,7 @@ public class ChatObject {
             }
         } else if (action == ACTION_SEND_VOICE) {
             if (chat == null || ChatObject.isActionBannedByDefault(chat, action)) {
-                return LocaleController.getString("GlobalAttachVoiceRestricted", R.string.GlobalAttachVoiceRestricted);
+                return LocaleController.getString(R.string.GlobalAttachVoiceRestricted);
             } else if (AndroidUtilities.isBannedForever(chat.banned_rights)) {
                 return LocaleController.formatString("AttachVoiceRestrictedForever", R.string.AttachVoiceRestrictedForever);
             } else {

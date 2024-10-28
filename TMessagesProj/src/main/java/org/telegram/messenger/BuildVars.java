@@ -17,7 +17,7 @@ import android.os.Build;
 @SuppressWarnings("ConstantConditions")
 public class BuildVars {
 
-    public static final boolean IS_BILLING_UNAVAILABLE = true;
+    public static final boolean IS_BILLING_UNAVAILABLE = false;
     public static boolean DEBUG_VERSION = BuildConfig.BUILD_TYPE.equals("debug");
     public static boolean DEBUG_PRIVATE_VERSION = DEBUG_VERSION;
     public static boolean LOGS_ENABLED = DEBUG_PRIVATE_VERSION;
@@ -49,7 +49,12 @@ public class BuildVars {
 
         if (ApplicationLoader.applicationContext != null) {
             SharedPreferences sharedPreferences = ApplicationLoader.applicationContext.getSharedPreferences("systemConfig", Context.MODE_PRIVATE);
-            LOGS_ENABLED = DEBUG_VERSION = sharedPreferences.getBoolean("logsEnabled", DEBUG_VERSION);
+            LOGS_ENABLED = DEBUG_VERSION || sharedPreferences.getBoolean("logsEnabled", DEBUG_VERSION);
+            if (LOGS_ENABLED) {
+                Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
+                    FileLog.fatal(exception, true);
+                });
+            }
         }
     }
 

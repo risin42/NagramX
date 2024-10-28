@@ -105,6 +105,7 @@ public class NotificationCenter {
     public static final int wasUnableToFindCurrentLocation = totalEvents++;
     public static final int reloadHints = totalEvents++;
     public static final int reloadInlineHints = totalEvents++;
+    public static final int reloadWebappsHints = totalEvents++;
     public static final int newDraftReceived = totalEvents++;
     public static final int recentDocumentsDidLoad = totalEvents++;
     public static final int needAddArchivedStickers = totalEvents++;
@@ -143,6 +144,8 @@ public class NotificationCenter {
     public static final int businessMessagesUpdated = totalEvents++;
     public static final int quickRepliesUpdated = totalEvents++;
     public static final int quickRepliesDeleted = totalEvents++;
+    public static final int bookmarkAdded = totalEvents++;
+    public static final int starReactionAnonymousUpdate = totalEvents++;
 
     public static final int businessLinksUpdated = totalEvents++;
     public static final int businessLinkCreated = totalEvents++;
@@ -252,9 +255,20 @@ public class NotificationCenter {
     public static final int premiumFloodWaitReceived = totalEvents++;
     public static final int availableEffectsUpdate = totalEvents++;
     public static final int starOptionsLoaded = totalEvents++;
+    public static final int starGiftOptionsLoaded = totalEvents++;
+    public static final int starGiveawayOptionsLoaded = totalEvents++;
     public static final int starBalanceUpdated = totalEvents++;
     public static final int starTransactionsLoaded = totalEvents++;
+    public static final int starSubscriptionsLoaded = totalEvents++;
     public static final int factCheckLoaded = totalEvents++;
+    public static final int botStarsUpdated = totalEvents++;
+    public static final int botStarsTransactionsLoaded = totalEvents++;
+    public static final int channelStarsUpdated = totalEvents++;
+    public static final int webViewResolved = totalEvents++;
+    public static final int updateAllMessages = totalEvents++;
+    public static final int starGiftsLoaded = totalEvents++;
+    public static final int starUserGiftsLoaded = totalEvents++;
+    public static final int starGiftSoldOut = totalEvents++;
 
     //global
     public static final int pushMessagesUpdated = totalEvents++;
@@ -319,6 +333,7 @@ public class NotificationCenter {
     public static final int userEmojiStatusUpdated = totalEvents++;
     public static final int requestPermissions = totalEvents++;
     public static final int permissionsGranted = totalEvents++;
+    public static final int activityPermissionsGranted = totalEvents++;
     public static final int topicsDidLoaded = totalEvents++;
     public static final int chatSwithcedToForum = totalEvents++;
     public static final int didUpdateGlobalAutoDeleteTimer = totalEvents++;
@@ -541,7 +556,7 @@ public class NotificationCenter {
         AndroidUtilities.runOnUIThread(() -> postNotificationName(id, args));
     }
 
-    public void postNotificationName(int id, Object... args) {
+    public void postNotificationName(final int id, Object... args) {
         boolean allowDuringAnimation = id == startAllHeavyOperations || id == stopAllHeavyOperations || id == didReplacedPhotoInMemCache || id == closeChats || id == invalidateMotionBackground || id == needCheckSystemBarColors;
         ArrayList<Integer> expiredIndices = null;
         if (!allowDuringAnimation && allowedNotifications.size() > 0) {
@@ -590,20 +605,20 @@ public class NotificationCenter {
         }
     }
 
-    SparseArray<Runnable> alreadyPostedRannubles = new SparseArray<>();
+    SparseArray<Runnable> alreadyPostedRunnubles = new SparseArray<>();
 
     private void postNotificationDebounced(int id, Object[] args) {
         int hash = id + (Arrays.hashCode(args) << 16);
-        if (alreadyPostedRannubles.indexOfKey(hash) >= 0) {
+        if (alreadyPostedRunnubles.indexOfKey(hash) >= 0) {
             //skip
-        } else {
-            Runnable runnable = () -> {
-                postNotificationNameInternal(id, false, args);
-                alreadyPostedRannubles.remove(hash);
-            };
-            alreadyPostedRannubles.put(hash, runnable);
-            AndroidUtilities.runOnUIThread(runnable, 250);
+            return;
         }
+        final Runnable runnable = () -> {
+            postNotificationNameInternal(id, false, args);
+            alreadyPostedRunnubles.remove(hash);
+        };
+        alreadyPostedRunnubles.put(hash, runnable);
+        AndroidUtilities.runOnUIThread(runnable, 250);
     }
 
     private boolean shouldDebounce(int id, Object[] args) {

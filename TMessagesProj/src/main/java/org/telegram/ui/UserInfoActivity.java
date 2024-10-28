@@ -29,18 +29,14 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
 import org.telegram.ui.ActionBar.AlertDialog;
-import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Business.LocationActivity;
 import org.telegram.ui.Business.OpeningHoursActivity;
 import org.telegram.ui.Cells.EditTextCell;
 import org.telegram.ui.Components.AlertsCreator;
-import org.telegram.ui.Components.BottomSheetWithRecyclerListView;
 import org.telegram.ui.Components.BulletinFactory;
-import org.telegram.ui.Components.ChatAttachAlertLocationLayout;
 import org.telegram.ui.Components.CircularProgressDrawable;
 import org.telegram.ui.Components.CrossfadeDrawable;
-import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.UItem;
 import org.telegram.ui.Components.UniversalAdapter;
 import org.telegram.ui.Components.UniversalFragment;
@@ -86,7 +82,7 @@ public class UserInfoActivity extends UniversalFragment implements NotificationC
 
     @Override
     public View createView(Context context) {
-        firstNameEdit = new EditTextCell(context, getString(R.string.EditProfileFirstName), false, -1) {
+        firstNameEdit = new EditTextCell(context, getString(R.string.EditProfileFirstName), false, false, -1, resourceProvider) {
             @Override
             protected void onTextChanged(CharSequence newText) {
                 super.onTextChanged(newText);
@@ -96,7 +92,7 @@ public class UserInfoActivity extends UniversalFragment implements NotificationC
         firstNameEdit.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
         firstNameEdit.setDivider(true);
         firstNameEdit.hideKeyboardOnEnter();
-        lastNameEdit = new EditTextCell(context, getString(R.string.EditProfileLastName), false, -1) {
+        lastNameEdit = new EditTextCell(context, getString(R.string.EditProfileLastName), false, false, -1, resourceProvider) {
             @Override
             protected void onTextChanged(CharSequence newText) {
                 super.onTextChanged(newText);
@@ -105,7 +101,7 @@ public class UserInfoActivity extends UniversalFragment implements NotificationC
         };
         lastNameEdit.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
         lastNameEdit.hideKeyboardOnEnter();
-        bioEdit = new EditTextCell(context, getString(R.string.EditProfileBioHint), true, getMessagesController().getAboutLimit()) {
+        bioEdit = new EditTextCell(context, getString(R.string.EditProfileBioHint), true, false, getMessagesController().getAboutLimit(), resourceProvider) {
             @Override
             protected void onTextChanged(CharSequence newText) {
                 super.onTextChanged(newText);
@@ -136,7 +132,7 @@ public class UserInfoActivity extends UniversalFragment implements NotificationC
         Drawable checkmark = context.getResources().getDrawable(R.drawable.ic_ab_done).mutate();
         checkmark.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_actionBarDefaultIcon), PorterDuff.Mode.MULTIPLY));
         doneButtonDrawable = new CrossfadeDrawable(checkmark, new CircularProgressDrawable(Theme.getColor(Theme.key_actionBarDefaultIcon)));
-        doneButton = actionBar.createMenu().addItemWithWidth(done_button, doneButtonDrawable, dp(56), LocaleController.getString("Done", R.string.Done));
+        doneButton = actionBar.createMenu().addItemWithWidth(done_button, doneButtonDrawable, dp(56), LocaleController.getString(R.string.Done));
         checkDone(false);
 
         setValue();
@@ -208,12 +204,12 @@ public class UserInfoActivity extends UniversalFragment implements NotificationC
             calendar.set(Calendar.YEAR, birthday.year);
             calendar.set(Calendar.MONTH, birthday.month - 1);
             calendar.set(Calendar.DAY_OF_MONTH, birthday.day);
-            return LocaleController.getInstance().formatterBoostExpired.format(calendar.getTimeInMillis());
+            return LocaleController.getInstance().getFormatterBoostExpired().format(calendar.getTimeInMillis());
         } else {
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.MONTH, birthday.month - 1);
             calendar.set(Calendar.DAY_OF_MONTH, birthday.day);
-            return LocaleController.getInstance().formatterDayMonth.format(calendar.getTimeInMillis());
+            return LocaleController.getInstance().getFormatterDayMonth().format(calendar.getTimeInMillis());
         }
     }
 
@@ -438,6 +434,7 @@ public class UserInfoActivity extends UniversalFragment implements NotificationC
                 userFull.birthday = null;
             }
             requests.add(req);
+            getMessagesController().invalidateContentSettings();
 
             NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.premiumPromoUpdated);
         }

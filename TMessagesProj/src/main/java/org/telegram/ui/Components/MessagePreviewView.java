@@ -382,7 +382,8 @@ public class MessagePreviewView extends FrameLayout {
                         cell.drawMessageText(canvas);
                         if ((cell.getCurrentMessagesGroup() == null || cell.getCurrentPosition() != null && ((cell.getCurrentPosition().flags & cell.captionFlag()) != 0 && (cell.getCurrentPosition().flags & MessageObject.POSITION_FLAG_LEFT) != 0 || cell.getCurrentMessagesGroup() != null && cell.getCurrentMessagesGroup().isDocuments)) || cell.getTransitionParams().animateBackgroundBoundsInner) {
                             cell.drawCaptionLayout(canvas, false, cell.getAlpha());
-                            cell.drawReactionsLayout(canvas, cell.getAlpha());
+                            cell.drawReactionsLayout(canvas, cell.getAlpha(), null);
+                            cell.drawCommentLayout(canvas, cell.getAlpha());
                         }
                         if (cell.getCurrentMessagesGroup() != null || cell.getTransitionParams().animateBackgroundBoundsInner) {
                             cell.drawNamesLayout(canvas, cell.getAlpha());
@@ -990,7 +991,7 @@ public class MessagePreviewView extends FrameLayout {
                 menu.addView(deleteLink, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
 
 //                ActionBarMenuSubItem sendMessagesView = new ActionBarMenuSubItem(context, false, true, resourcesProvider);
-//                sendMessagesView.setTextAndIcon(LocaleController.getString("ForwardSendMessages", R.string.ForwardSendMessages), R.drawable.msg_send);
+//                sendMessagesView.setTextAndIcon(LocaleController.getString(R.string.ForwardSendMessages), R.drawable.msg_send);
 //                menu.addView(sendMessagesView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
 //                sendMessagesView.setOnClickListener(View -> didSendPressed());
 
@@ -1200,9 +1201,9 @@ public class MessagePreviewView extends FrameLayout {
                             subtitle = LocaleController.formatString("ForwardPreviewSendersNameVisible", R.string.ForwardPreviewSendersNameVisible, ContactsController.formatName(currentUser.first_name, currentUser.last_name));
                         } else {
                             if (ChatObject.isChannel(currentChat) && !currentChat.megagroup) {
-                                subtitle = LocaleController.getString("ForwardPreviewSendersNameVisibleChannel", R.string.ForwardPreviewSendersNameVisibleChannel);
+                                subtitle = LocaleController.getString(R.string.ForwardPreviewSendersNameVisibleChannel);
                             } else {
-                                subtitle = LocaleController.getString("ForwardPreviewSendersNameVisibleGroup", R.string.ForwardPreviewSendersNameVisibleGroup);
+                                subtitle = LocaleController.getString(R.string.ForwardPreviewSendersNameVisibleGroup);
                             }
                         }
                     } else {

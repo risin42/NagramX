@@ -52,7 +52,7 @@ public class PickerBottomLayout extends FrameLayout {
         cancelButton.setGravity(Gravity.CENTER);
         cancelButton.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_picker_enabledButton, resourcesProvider) & 0x0fffffff, 0));
         cancelButton.setPadding(AndroidUtilities.dp(33), 0, AndroidUtilities.dp(33), 0);
-        cancelButton.setText(LocaleController.getString("Cancel", R.string.Cancel).toUpperCase());
+        cancelButton.setText(LocaleController.getString(R.string.Cancel).toUpperCase());
         cancelButton.setTypeface(AndroidUtilities.bold());
         addView(cancelButton, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
 
@@ -63,14 +63,14 @@ public class PickerBottomLayout extends FrameLayout {
 
         middleButton = new LinearLayout(context);
         middleButton.setOrientation(LinearLayout.HORIZONTAL);
-        middleButton.setBackgroundDrawable(Theme.createSelectorDrawable(0x0f000000, 0));
+        middleButton.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_picker_enabledButton, resourcesProvider) & 0x0fffffff, 0));
         middleButton.setPadding(AndroidUtilities.dp(33), 0, AndroidUtilities.dp(33), 0);
         middleButton.setVisibility(GONE);
         rightLayout.addView(middleButton);
 
         middleButtonTextView = new TextView(context);
         middleButtonTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        middleButtonTextView.setTextColor(Theme.getColor(Theme.key_picker_enabledButton));
+        middleButtonTextView.setTextColor(Theme.getColor(Theme.key_picker_enabledButton, resourcesProvider));
         middleButtonTextView.setGravity(Gravity.CENTER);
         middleButtonTextView.setCompoundDrawablePadding(AndroidUtilities.dp(8));
         middleButtonTextView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
@@ -98,7 +98,7 @@ public class PickerBottomLayout extends FrameLayout {
         doneButtonTextView.setTextColor(Theme.getColor(Theme.key_picker_enabledButton, resourcesProvider));
         doneButtonTextView.setGravity(Gravity.CENTER);
         doneButtonTextView.setCompoundDrawablePadding(AndroidUtilities.dp(8));
-        doneButtonTextView.setText(LocaleController.getString("Send", R.string.Send).toUpperCase());
+        doneButtonTextView.setText(LocaleController.getString(R.string.Send).toUpperCase());
         doneButtonTextView.setTypeface(AndroidUtilities.bold());
         doneButton.addView(doneButtonTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL));
     }

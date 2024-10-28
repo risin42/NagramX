@@ -184,7 +184,7 @@ public class SharedPhotoVideoCell extends FrameLayout {
         public void setMessageObject(MessageObject messageObject) {
             currentMessageObject = messageObject;
             imageView.getImageReceiver().setVisible(!PhotoViewer.isShowingImage(messageObject), false);
-            String restrictionReason = MessagesController.getRestrictionReason(messageObject.messageOwner.restriction_reason);
+            String restrictionReason = MessagesController.getInstance(currentAccount).getRestrictionReason(messageObject.messageOwner.restriction_reason);
             if (!TextUtils.isEmpty(restrictionReason)) {
                 videoInfoContainer.setVisibility(INVISIBLE);
                 imageView.setImageResource(R.drawable.photo_placeholder_in);
@@ -252,9 +252,9 @@ public class SharedPhotoVideoCell extends FrameLayout {
         public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
             super.onInitializeAccessibilityNodeInfo(info);
             if (currentMessageObject.isVideo()) {
-                info.setText(LocaleController.getString("AttachVideo", R.string.AttachVideo) + ", " + LocaleController.formatDuration((int) currentMessageObject.getDuration()));
+                info.setText(LocaleController.getString(R.string.AttachVideo) + ", " + LocaleController.formatDuration((int) currentMessageObject.getDuration()));
             } else {
-                info.setText(LocaleController.getString("AttachPhoto", R.string.AttachPhoto));
+                info.setText(LocaleController.getString(R.string.AttachPhoto));
             }
             if (checkBox.isChecked()) {
                 info.setCheckable(true);

@@ -1,5 +1,6 @@
 package org.telegram.ui.bots;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.ui.ActionBar.Theme.key_windowBackgroundWhiteBlackText;
 
 import android.animation.Animator;
@@ -10,8 +11,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -49,6 +52,10 @@ import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
 import org.telegram.ui.ActionBar.ActionBarMenuSubItem;
 import org.telegram.ui.ActionBar.AlertDialog;
+import org.telegram.ui.ActionBar.BaseFragment;
+import org.telegram.ui.ActionBar.BottomSheetTabDialog;
+import org.telegram.ui.ActionBar.BottomSheetTabs;
+import org.telegram.ui.ActionBar.BottomSheetTabsOverlay;
 import org.telegram.ui.ActionBar.INavigationLayout;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ChatActivity;
@@ -58,20 +65,26 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.SimpleFloatPropertyCompat;
 import org.telegram.ui.DialogsActivity;
-//import org.telegram.ui.PaymentFormActivity;
+import org.telegram.ui.LaunchActivity;
+import org.telegram.ui.PaymentFormActivity;
 import org.telegram.ui.Stars.StarsController;
+import org.telegram.ui.web.BotWebViewContainer;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class BotWebViewMenuContainer extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
+public class BotWebViewMenuContainer extends FrameLayout implements NotificationCenter.NotificationCenterDelegate, BottomSheetTabsOverlay.Sheet, BottomSheetTabsOverlay.SheetView {
     private final static int POLL_PERIOD = 60000;
 
     private final static SimpleFloatPropertyCompat<BotWebViewMenuContainer> ACTION_BAR_TRANSITION_PROGRESS_VALUE = new SimpleFloatPropertyCompat<BotWebViewMenuContainer>("actionBarTransitionProgress", obj -> obj.actionBarTransitionProgress, (obj, value) -> {
         obj.actionBarTransitionProgress = value;
         obj.invalidate();
         obj.invalidateActionBar();
+
+        if (obj.botCollapseItem != null) {
+            obj.botCollapseItem.setAlpha(value);
+        }
     }).setMultiplier(100f);
 
     private float actionBarTransitionProgress;
@@ -100,12 +113,15 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
     private String botUrl;
 
     private boolean isLoaded;
+    private TLObject loadedResponse;
+    private long loadedResponseTime;
     private boolean dismissed;
 
     private Boolean wasLightStatusBar;
     private long queryId;
 
     private ActionBarMenuItem botMenuItem;
+    private ActionBarMenuItem botCollapseItem;
     private ActionBar.ActionBarMenuOnItemClick actionBarOnItemClick;
     private ActionBarMenuSubItem settingsItem;
     private ActionBarMenuSubItem addToHomeScreenItem;
@@ -119,6 +135,7 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
     private float overrideActionBarBackgroundProgress;
     private int overrideActionBarBackground;
     private boolean overrideBackgroundColor;
+    private int actionBarColorKey = -1;
 
     private boolean needCloseConfirmation;
     ActionBarColorsAnimating actionBarColors;
@@ -144,8 +161,93 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
     };
     private boolean actionBarIsLight;
     private int lineColor;
+    private boolean preserving;
+
+    public boolean isFullSize() {
+        return false;
+    }
+
+    @Override
+    public boolean setDialog(BottomSheetTabDialog dialog) {
+        return false;
+    }
+
+    public BottomSheetTabs.WebTabData saveState() {
+        preserving = true;
+        BottomSheetTabs.WebTabData tab = new BottomSheetTabs.WebTabData();
+
+        tab.actionBarColor = overrideBackgroundColor ? overrideActionBarBackground : actionBarColors.getColor(Theme.key_windowBackgroundWhite);
+        tab.actionBarColorKey = actionBarColorKey;
+        tab.overrideActionBarColor = overrideBackgroundColor;
+        tab.backgroundColor = backgroundPaint.getColor();
+
+        tab.props = new WebViewRequestProps();
+        tab.props.currentAccount = currentAccount;
+        tab.props.botId = botId;
+        tab.props.peerId = botId;
+        tab.props.buttonUrl = botUrl;
+        tab.props.type = BotWebViewAttachedSheet.TYPE_BOT_MENU_BUTTON;
+        tab.props.response = loadedResponse;
+        tab.props.responseTime = loadedResponseTime;
+        tab.ready = webViewContainer != null && webViewContainer.isPageLoaded();
+        tab.lastUrl = webViewContainer != null ? webViewContainer.getUrlLoaded() : null;
+        tab.themeIsDark = Theme.isCurrentThemeDark();
+        tab.settings = settingsItem != null && settingsItem.getVisibility() == View.VISIBLE;
+        tab.main = mainButtonSettings;
+        tab.confirmDismiss = needCloseConfirmation;
+        tab.expanded = swipeContainer != null && ((1f - Math.min(swipeContainer.getTopActionBarOffsetY(), swipeContainer.getTranslationY() - swipeContainer.getTopActionBarOffsetY()) / swipeContainer.getTopActionBarOffsetY()) > .5f);
+        tab.expandedOffset = swipeContainer != null ? swipeContainer.getOffsetY() : Float.MAX_VALUE;
+        tab.needsContext = true;
+
+        BotWebViewContainer.MyWebView webView = webViewContainer == null ? null : webViewContainer.getWebView();
+        if (webView != null) {
+            webViewContainer.preserveWebView();
+            tab.webView = webView;
+            tab.proxy = webViewContainer == null ? null : webViewContainer.getBotProxy();
+            tab.viewWidth = webView.getWidth();
+            tab.viewScroll = webView.getScrollY();
+            tab.viewHeight = webView.getHeight();
+            webView.onPause();
+//            webView.pauseTimers();
+            webView.setContainers(null, null);
+        }
+        return tab;
+    }
+
+    // not really used, tab is already open from BotWebViewAttachedSheet place
+    public boolean restoreState(BaseFragment fragment, BottomSheetTabs.WebTabData tab) {
+        if (tab == null || tab.props == null) return false;
+//        setBackgroundColor(tab.backgroundColor, false);
+//        setActionBarColor(tab.actionBarColor, tab.overrideActionBarColor, false);
+        if (tab.webView != null) {
+//            tab.webView.resumeTimers();
+            tab.webView.onResume();
+            webViewContainer.replaceWebView(tab.webView, tab.proxy);
+        } else {
+            tab.props.response = null;
+            tab.props.responseTime = 0;
+        }
+        currentAccount = tab.props.currentAccount;
+        botId = tab.props.botId;
+        botUrl = tab.props.buttonUrl;
+        loadedResponse = tab.props.response;
+        loadedResponseTime = tab.props.responseTime;
+        loadWebView();
+        return true;
+    }
 
     private void checkBotMenuItem() {
+        if (botCollapseItem == null) {
+            ActionBarMenu menu = parentEnterView.getParentFragment().getActionBar().createMenu();
+            botCollapseItem = menu.addItem(R.id.menu_collapse_bot, R.drawable.arrow_more);
+            menu.removeView(botCollapseItem);
+            menu.addView(botCollapseItem, 0);
+            botCollapseItem.setOnClickListener(v -> {
+                dismiss(true);
+            });
+            botCollapseItem.setAlpha(actionBarTransitionProgress);
+            botCollapseItem.setVisibility(GONE);
+        }
         if (botMenuItem == null) {
             ActionBarMenu menu = parentEnterView.getParentFragment().getActionBar().createMenu();
             botMenuItem = menu.addItem(1000, R.drawable.ic_ab_other);
@@ -175,7 +277,7 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
         ActionBar actionBar = chatActivity.getActionBar();
         actionBarOnItemClick = actionBar.getActionBarMenuOnItemClick();
 
-        webViewContainer = new BotWebViewContainer(context, parentEnterView.getParentFragment().getResourceProvider(), getColor(Theme.key_windowBackgroundWhite)) {
+        webViewContainer = new BotWebViewContainer(context, parentEnterView.getParentFragment().getResourceProvider(), getColor(Theme.key_windowBackgroundWhite), true) {
             @Override
             public void onWebViewCreated() {
                 swipeContainer.setWebView(webViewContainer.getWebView());
@@ -194,10 +296,16 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
             }
 
             @Override
-            public void onWebAppSetActionBarColor(int color, boolean isOverrideColor) {
+            public void onWebAppSwipingBehavior(boolean allowSwiping) {
+                swipeContainer.setAllowSwipes(allowSwiping);
+            }
+
+            @Override
+            public void onWebAppSetActionBarColor(int colorKey, int color, boolean isOverrideColor) {
                 int from = overrideActionBarBackground;
                 int to = color;
 
+                actionBarColorKey = colorKey;
                 actionBarColors = new BotWebViewMenuContainer.ActionBarColorsAnimating();
                 actionBarColors.setFrom(overrideBackgroundColor ? from : 0, null);
                 overrideBackgroundColor = isOverrideColor;
@@ -261,7 +369,7 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
                     args.putBoolean("allowBots", chatTypes.contains("bots"));
 
                     DialogsActivity dialogsActivity = new DialogsActivity(args);
-                    dialogsActivity.setDelegate((fragment, dids, message1, param, topicsFragment) -> {
+                    dialogsActivity.setDelegate((fragment, dids, message1, param, notify, scheduleDate, topicsFragment) -> {
                         long did = dids.get(0).dialogId;
 
                         Bundle args1 = new Bundle();
@@ -286,40 +394,39 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
 
             @Override
             public void onWebAppOpenInvoice(TLRPC.InputInvoice inputInvoice, String slug, TLObject response) {
-                Toast.makeText(getContext(), LocaleController.getString("nekoXPaymentRemovedToast", R.string.nekoXPaymentRemovedToast), Toast.LENGTH_LONG).show();
-//                ChatActivity parentFragment = parentEnterView.getParentFragment();
-//                PaymentFormActivity paymentFormActivity = null;
-//                if (response instanceof TLRPC.TL_payments_paymentFormStars) {
-//                    final AlertDialog progressDialog = new AlertDialog(getContext(), AlertDialog.ALERT_TYPE_SPINNER);
-//                    progressDialog.showDelayed(150);
-//                    StarsController.getInstance(currentAccount).openPaymentForm(inputInvoice, (TLRPC.TL_payments_paymentFormStars) response, () -> {
-//                        progressDialog.dismiss();
-//                    }, status -> {
-//                        webViewContainer.onInvoiceStatusUpdate(slug, status);
-//                    });
-//                    return;
-//                } else if (response instanceof TLRPC.PaymentForm) {
-//                    TLRPC.PaymentForm form = (TLRPC.PaymentForm) response;
-//                    MessagesController.getInstance(currentAccount).putUsers(form.users, false);
-//                    paymentFormActivity = new PaymentFormActivity(form, slug, parentFragment);
-//                } else if (response instanceof TLRPC.PaymentReceipt) {
-//                    paymentFormActivity = new PaymentFormActivity((TLRPC.PaymentReceipt) response);
-//                }
-//
-//                if (paymentFormActivity != null) {
-//                    paymentFormActivity.setPaymentFormCallback(status -> webViewContainer.onInvoiceStatusUpdate(slug, status.name().toLowerCase(Locale.ROOT)));
-//                    parentFragment.presentFragment(paymentFormActivity);
-//                }
+                ChatActivity parentFragment = parentEnterView.getParentFragment();
+                PaymentFormActivity paymentFormActivity = null;
+                if (response instanceof TLRPC.TL_payments_paymentFormStars) {
+                    final AlertDialog progressDialog = new AlertDialog(getContext(), AlertDialog.ALERT_TYPE_SPINNER);
+                    progressDialog.showDelayed(150);
+                    StarsController.getInstance(currentAccount).openPaymentForm(null, inputInvoice, (TLRPC.TL_payments_paymentFormStars) response, () -> {
+                        progressDialog.dismiss();
+                    }, status -> {
+                        webViewContainer.onInvoiceStatusUpdate(slug, status);
+                    });
+                    return;
+                } else if (response instanceof TLRPC.PaymentForm) {
+                    TLRPC.PaymentForm form = (TLRPC.PaymentForm) response;
+                    MessagesController.getInstance(currentAccount).putUsers(form.users, false);
+                    paymentFormActivity = new PaymentFormActivity(form, slug, parentFragment);
+                } else if (response instanceof TLRPC.PaymentReceipt) {
+                    paymentFormActivity = new PaymentFormActivity((TLRPC.PaymentReceipt) response);
+                }
+
+                if (paymentFormActivity != null) {
+                    paymentFormActivity.setPaymentFormCallback(status -> webViewContainer.onInvoiceStatusUpdate(slug, status.name().toLowerCase(Locale.ROOT)));
+                    parentFragment.presentFragment(paymentFormActivity);
+                }
             }
 
             @Override
-            public void onSetupMainButton(boolean isVisible, boolean isActive, String text, int color, int textColor, boolean isProgressVisible) {
-                ChatActivityBotWebViewButton botWebViewButton = parentEnterView.getBotWebViewButton();
-                botWebViewButton.setupButtonParams(isActive, text, color, textColor, isProgressVisible);
-                botWebViewButton.setOnClickListener(v -> webViewContainer.onMainButtonPressed());
-                if (isVisible != botWebViewButtonWasVisible) {
-                    animateBotButton(isVisible);
-                }
+            public void onSetupMainButton(boolean isVisible, boolean isActive, String text, int color, int textColor, boolean isProgressVisible, boolean hasShineEffect) {
+                setMainButton(BotWebViewAttachedSheet.MainButtonSettings.of(isVisible, isActive, text, color, textColor, isProgressVisible));
+            }
+
+            @Override
+            public void onSetupSecondaryButton(boolean isVisible, boolean isActive, String text, int color, int textColor, boolean isProgressVisible, boolean hasShineEffect, String position) {
+
             }
 
             @Override
@@ -395,12 +502,18 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
 
             if (springAnimation != null) {
                 float progress = (1f - Math.min(swipeContainer.getTopActionBarOffsetY(), swipeContainer.getTranslationY() - swipeContainer.getTopActionBarOffsetY()) / swipeContainer.getTopActionBarOffsetY());
-                if (BotWebViewMenuContainer.this.getVisibility() != VISIBLE) {
+                if (BotWebViewMenuContainer.this.getVisibility() != VISIBLE || preserving) {
                     progress = 0;
                 }
                 float newPos = (progress > 0.5f ? 1 : 0) * 100f;
                 if (springAnimation.getSpring().getFinalPosition() != newPos) {
                     springAnimation.getSpring().setFinalPosition(newPos);
+                    if (newPos == 100) {
+                        checkBotMenuItem();
+                        if (botCollapseItem != null) {
+                            botCollapseItem.setVisibility(VISIBLE);
+                        }
+                    }
                     springAnimation.start();
 
                     if (!webViewContainer.isBackButtonVisible()) {
@@ -417,9 +530,10 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
         swipeContainer.setScrollEndListener(()-> webViewContainer.invalidateViewPortHeight(true));
         swipeContainer.addView(webViewContainer);
         swipeContainer.setDelegate(() -> {
-            if (!onCheckDismissByUser()) {
-                swipeContainer.stickTo(0);
-            }
+//            if (!onCheckDismissByUser()) {
+//                swipeContainer.stickTo(0);
+//            }
+            dismiss(true, null);
         });
         swipeContainer.setTopActionBarOffsetY(ActionBar.getCurrentActionBarHeight() + AndroidUtilities.statusBarHeight - AndroidUtilities.dp(24));
         swipeContainer.setSwipeOffsetAnimationDisallowed(true);
@@ -480,7 +594,8 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
         }
 
         if (getVisibility() == VISIBLE) {
-            onCheckDismissByUser();
+            dismiss(true);
+//            onCheckDismissByUser();
             return true;
         }
 
@@ -565,6 +680,8 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
                     chatActivity.showHeaderItem(false);
                     checkBotMenuItem();
                     botMenuItem.setVisibility(VISIBLE);
+                    botCollapseItem.setVisibility(VISIBLE);
+//                    botCollapseItem.animate().alpha(1f).setDuration(320).setInterpolator(CubicBezierInterpolator.EASE_OUT_QUINT).start();
                     actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
                         @Override
                         public void onItemClick(int id) {
@@ -599,6 +716,9 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
                     chatActivity.showHeaderItem(true);
                     if (botMenuItem != null) {
                         botMenuItem.setVisibility(GONE);
+                    }
+                    if (botCollapseItem != null) {
+                        botCollapseItem.setVisibility(GONE);
                     }
                     actionBar.setActionBarMenuOnItemClick(actionBarOnItemClick);
                 }
@@ -685,7 +805,7 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
     }
 
     private void updateLightStatusBar() {
-        int color = Theme.getColor(Theme.key_windowBackgroundWhite, null, true);
+        int color = backgroundPaint.getColor();
         boolean lightStatusBar = ColorUtils.calculateLuminance(color) >= 0.9 && actionBarTransitionProgress >= 0.85f;
 
         if (wasLightStatusBar != null && wasLightStatusBar == lightStatusBar) {
@@ -706,6 +826,7 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (drawingFromOverlay) return;
         super.onDraw(canvas);
 
         if (!overrideBackgroundColor) {
@@ -729,7 +850,8 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN && event.getY() <= AndroidUtilities.lerp(swipeContainer.getTranslationY() + AndroidUtilities.dp(24), 0, actionBarTransitionProgress)) {
-            onCheckDismissByUser();
+//            onCheckDismissByUser();
+            dismiss(true);
             return true;
         }
         return super.onTouchEvent(event);
@@ -737,6 +859,8 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
 
     @Override
     public void draw(Canvas canvas) {
+        if (drawingFromOverlay) return;
+
         super.draw(canvas);
 
         lineColor = actionBarColors.getColor(Theme.key_sheet_scrollUp);
@@ -784,6 +908,8 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
         }
 
         if (!isLoaded) {
+            overrideBackgroundColor = false;
+            backgroundPaint.setColor(getColor(Theme.key_windowBackgroundWhite));
             loadWebView();
         }
 
@@ -812,6 +938,11 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
     }
 
     private void loadWebView() {
+//        if (loadedResponse != null) {
+//            processResponse(loadedResponse);
+//            return;
+//        }
+
         progressView.setLoadProgress(0);
         progressView.setAlpha(1f);
         progressView.setVisibility(VISIBLE);
@@ -840,17 +971,23 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
         req.from_bot_menu = true;
 
         ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
-            if (response instanceof TLRPC.TL_webViewResultUrl) {
-                isLoaded = true;
-
-                TLRPC.TL_webViewResultUrl resultUrl = (TLRPC.TL_webViewResultUrl) response;
-                queryId = resultUrl.query_id;
-                webViewContainer.loadUrl(currentAccount, resultUrl.url);
-                swipeContainer.setWebView(webViewContainer.getWebView());
-
-                AndroidUtilities.runOnUIThread(pollRunnable, POLL_PERIOD);
-            }
+            processResponse(response);
         }));
+    }
+
+    private void processResponse(TLObject response) {
+        if (response instanceof TLRPC.TL_webViewResultUrl) {
+            isLoaded = true;
+            loadedResponse = response;
+            loadedResponseTime = System.currentTimeMillis();
+
+            TLRPC.TL_webViewResultUrl resultUrl = (TLRPC.TL_webViewResultUrl) response;
+            queryId = resultUrl.query_id;
+            webViewContainer.loadUrl(currentAccount, resultUrl.url);
+            swipeContainer.setWebView(webViewContainer.getWebView());
+
+            AndroidUtilities.runOnUIThread(pollRunnable, POLL_PERIOD);
+        }
     }
 
     private int getColor(int key) {
@@ -869,32 +1006,71 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
      * Dismisses menu
      */
     public void dismiss() {
-        dismiss(null);
+        dismiss(false, null);
     }
 
     /**
      * Dismisses menu
      */
     public void dismiss(Runnable callback) {
+        dismiss(false, callback);
+    }
+
+    public void dismiss(boolean intoTabs) {
+        dismiss(intoTabs, null);
+    }
+
+    public void dismiss(boolean intoTabs, Runnable callback) {
         if (dismissed) {
             return;
         }
         dismissed = true;
-        swipeContainer.stickTo(swipeContainer.getHeight() + parentEnterView.getSizeNotifierLayout().measureKeyboardHeight(), ()->{
-            onDismiss();
-            if (callback != null) {
-                callback.run();
+
+        if (intoTabs && (LaunchActivity.instance == null || LaunchActivity.instance.getBottomSheetTabsOverlay() == null)) {
+            intoTabs = false;
+        }
+        if (intoTabs) {
+            if (springAnimation != null) {
+                springAnimation.getSpring().setFinalPosition(0);
+                springAnimation.start();
             }
-            if (globalOnDismissListener != null) {
-                globalOnDismissListener.run();
+            ChatActivity chatActivity = parentEnterView.getParentFragment();
+            if (chatActivity != null) {
+                ActionBar actionBar = chatActivity.getActionBar();
+                if (actionBar != null) {
+                    AndroidUtilities.updateImageViewImageAnimated(actionBar.getBackButton(), actionBar.getBackButtonDrawable());
+                }
             }
-        });
+            LaunchActivity.instance.getBottomSheetTabsOverlay().dismissSheet(this);
+        } else {
+            swipeContainer.stickTo(swipeContainer.getHeight() + parentEnterView.getSizeNotifierLayout().measureKeyboardHeight(), () -> {
+                onDismiss();
+                if (callback != null) {
+                    callback.run();
+                }
+                if (globalOnDismissListener != null) {
+                    globalOnDismissListener.run();
+                }
+            });
+        }
+    }
+
+    public void release() {
+        onDismiss();
     }
 
     /**
      * Called when menu is fully dismissed
      */
     public void onDismiss() {
+        ChatActivity chatActivity = parentEnterView == null ? null : parentEnterView.getParentFragment();
+        if (botMenuItem != null) {
+            botMenuItem.setVisibility(GONE);
+        }
+        if (botCollapseItem != null) {
+            botCollapseItem.setVisibility(GONE);
+        }
+
         setVisibility(GONE);
 
         needCloseConfirmation = false;
@@ -904,7 +1080,7 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
         webViewContainer.destroyWebView();
         swipeContainer.removeView(webViewContainer);
 
-        webViewContainer = new BotWebViewContainer(getContext(), parentEnterView.getParentFragment().getResourceProvider(), getColor(Theme.key_windowBackgroundWhite)) {
+        webViewContainer = new BotWebViewContainer(getContext(), parentEnterView.getParentFragment().getResourceProvider(), getColor(Theme.key_windowBackgroundWhite), true) {
             @Override
             public void onWebViewCreated() {
                 swipeContainer.setWebView(webViewContainer.getWebView());
@@ -935,6 +1111,7 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
             botWebViewButtonWasVisible = false;
             animateBotButton(false);
         }
+        mainButtonSettings = null;
 
         AndroidUtilities.runOnUIThread(()->{
             if (savedEditText != null && parentEnterView.getEditField() != null) {
@@ -942,20 +1119,20 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
                 savedEditText = null;
             }
             if (savedReplyMessageObject != null) {
-                ChatActivity chatActivity = parentEnterView.getParentFragment();
                 if (chatActivity != null) {
                     chatActivity.showFieldPanelForReply(savedReplyMessageObject);
                 }
                 savedReplyMessageObject = null;
             }
             if (savedEditMessageObject != null) {
-                ChatActivity chatActivity = parentEnterView.getParentFragment();
                 if (chatActivity != null) {
                     chatActivity.showFieldPanelForEdit(true, savedEditMessageObject);
                 }
                 savedEditMessageObject = null;
             }
         }, delayRestoreText ? 200 : 0);
+
+        preserving = false;
     }
 
     public boolean hasSavedText() {
@@ -1034,15 +1211,93 @@ public class BotWebViewMenuContainer extends FrameLayout implements Notification
         public void updateActionBar(ActionBar actionBar, float progress) {
             this.progress = progress;
             actionBar.setTitleColor(getColor(Theme.key_windowBackgroundWhiteBlackText));
+            actionBar.setSubtitleColor(Theme.multAlpha(getColor(Theme.key_windowBackgroundWhiteBlackText), .45f));
             actionBar.setItemsColor(getColor(Theme.key_windowBackgroundWhiteBlackText), false);
             if (actionBar.backButtonImageView != null) {
                 actionBar.backButtonImageView.setColorFilter(new PorterDuffColorFilter(getColor(Theme.key_windowBackgroundWhiteBlackText), PorterDuff.Mode.SRC_IN));
             }
             actionBar.setItemsBackgroundColor(getColor(Theme.key_actionBarWhiteSelector), false);
-            actionBar.setPopupBackgroundColor(getColor(Theme.key_actionBarDefaultSubmenuBackground), false);
-            actionBar.setPopupItemsColor(getColor(Theme.key_actionBarDefaultSubmenuItem), false, false);
-            actionBar.setPopupItemsColor(getColor(Theme.key_actionBarDefaultSubmenuItemIcon), true, false);
-            actionBar.setPopupItemsSelectorColor(getColor(Theme.key_dialogButtonSelector), false);
+//            actionBar.setPopupBackgroundColor(getColor(Theme.key_actionBarDefaultSubmenuBackground), false);
+//            actionBar.setPopupItemsColor(getColor(Theme.key_actionBarDefaultSubmenuItem), false, false);
+//            actionBar.setPopupItemsColor(getColor(Theme.key_actionBarDefaultSubmenuItemIcon), true, false);
+//            actionBar.setPopupItemsSelectorColor(getColor(Theme.key_dialogButtonSelector), false);
         }
     }
+
+
+    private boolean drawingFromOverlay;
+    public void setDrawingFromOverlay(boolean drawingFromOverlay) {
+        if (this.drawingFromOverlay != drawingFromOverlay) {
+            this.drawingFromOverlay = drawingFromOverlay;
+            invalidate();
+        }
+    }
+
+    public BottomSheetTabsOverlay.SheetView getWindowView() {
+        return this;
+    }
+
+    @Override
+    public void show() {
+        show(currentAccount, botId, botUrl);
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        if (drawingFromOverlay) return;
+        super.dispatchDraw(canvas);
+    }
+
+    private final RectF rect = new RectF();
+    private final Path clipPath = new Path();
+
+    @Override
+    public RectF getRect() {
+        rect.set(swipeContainer.getLeft(), swipeContainer.getTranslationY() + dp(24), swipeContainer.getRight(), getHeight());
+        return rect;
+    }
+
+    public float drawInto(Canvas canvas, RectF finalRect, float progress, RectF clipRect, float alpha, boolean opening) {
+        rect.set(swipeContainer.getLeft(), swipeContainer.getTranslationY() + dp(24), swipeContainer.getRight(), getHeight());
+        AndroidUtilities.lerpCentered(rect, finalRect, progress, clipRect);
+
+        canvas.save();
+
+        clipPath.rewind();
+        float radius = dp(16) * (AndroidUtilities.isTablet() ? 1f : 1f - actionBarTransitionProgress);
+        final float r = AndroidUtilities.lerp(radius, dp(10), progress);
+        clipPath.addRoundRect(clipRect, r, r, Path.Direction.CW);
+        canvas.clipPath(clipPath);
+        canvas.drawPaint(backgroundPaint);
+
+        if (swipeContainer != null) {
+            canvas.saveLayerAlpha(clipRect, (int) (0xFF * (1f - progress)), Canvas.ALL_SAVE_FLAG);
+            canvas.translate(swipeContainer.getX(), Math.max(swipeContainer.getY(), clipRect.top) + progress * dp(51));
+            swipeContainer.draw(canvas);
+            canvas.restore();
+        }
+
+        canvas.restore();
+
+        return r;
+    }
+
+    private BotWebViewAttachedSheet.MainButtonSettings mainButtonSettings;
+
+    public void setMainButton(BotWebViewAttachedSheet.MainButtonSettings s) {
+        mainButtonSettings = s;
+
+        ChatActivityBotWebViewButton botWebViewButton = parentEnterView.getBotWebViewButton();
+        botWebViewButton.setupButtonParams(s.isActive, s.text, s.color, s.textColor, s.isProgressVisible);
+        botWebViewButton.setOnClickListener(v -> webViewContainer.onMainButtonPressed());
+        if (s.isVisible != botWebViewButtonWasVisible) {
+            animateBotButton(s.isVisible);
+        }
+    }
+
+    @Override
+    public int getNavigationBarColor(int color) {
+        return 0;
+    }
+
 }

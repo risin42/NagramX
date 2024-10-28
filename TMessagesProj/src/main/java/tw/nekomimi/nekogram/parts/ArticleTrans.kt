@@ -60,8 +60,7 @@ fun ArticleViewer.doTransLATE() {
 
     status.setOnCancelListener {
 
-        adapter[0].trans = false
-        transMenu.setTextAndIcon(LocaleController.getString("Translate", R.string.Translate), R.drawable.ic_translate)
+        updateTranslateButton(false)
         cancel.set(true)
         transPool.close()
 
@@ -69,8 +68,8 @@ fun ArticleViewer.doTransLATE() {
 
     GlobalScope.launch(Dispatchers.IO) {
 
-        val copy = HashMap(adapter[0].textToBlocks)
-        val array = HashSet(adapter[0].textBlocks).filterBaseTexts()
+        val copy = HashMap(pages[0].adapter.textToBlocks)
+        val array = HashSet(pages[0].adapter.textBlocks).filterBaseTexts()
 
         val errorCount = AtomicInteger()
 
@@ -85,7 +84,7 @@ fun ArticleViewer.doTransLATE() {
 
             when (item) {
 
-                is TLRPC.RichText -> getText(adapter[0], null, item, item, copy[item]
+                is TLRPC.RichText -> getText(pages[0].adapter, null, item, item, copy[item]
                         ?: copy[item.parentRichText], 1000, true).takeIf { it.isNotBlank() }?.toString()
                 is String -> item
                 else -> null
@@ -135,9 +134,7 @@ fun ArticleViewer.doTransLATE() {
                                 cancel.set(true)
                                 status.dismiss()
                                 updatePaintSize()
-                                adapter[0].trans = false
-                                transMenu.setTextAndIcon(LocaleController.getString("Translate", R.string.Translate), R.drawable.ic_translate)
-
+                                updateTranslateButton(false)
                                 AlertUtil.showTransFailedDialog(parentActivity, it is UnsupportedOperationException, it.message
                                         ?: it.javaClass.simpleName, Runnable {
                                     doTransLATE()

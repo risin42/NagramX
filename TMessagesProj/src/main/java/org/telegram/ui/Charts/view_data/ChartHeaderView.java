@@ -77,7 +77,7 @@ public class ChartHeaderView extends FrameLayout {
 
 
         back.setVisibility(View.GONE);
-        back.setText(LocaleController.getString("ZoomOut", R.string.ZoomOut));
+        back.setText(LocaleController.getString(R.string.ZoomOut));
         zoomIcon = ContextCompat.getDrawable(getContext(), R.drawable.msg_zoomout_stats);
         back.setCompoundDrawablesWithIntrinsicBounds(zoomIcon, null, null, null);
         back.setCompoundDrawablePadding(AndroidUtilities.dp(4));
@@ -111,9 +111,9 @@ public class ChartHeaderView extends FrameLayout {
         }
         final String newText;
         if (end - start >= 86400000L) {
-            newText = LocaleController.getInstance().formatterYear.format(new Date(start)) + " — " + LocaleController.getInstance().formatterYear.format(new Date(end));
+            newText = LocaleController.getInstance().getFormatterYear().format(new Date(start)) + " — " + LocaleController.getInstance().getFormatterYear().format(new Date(end));
         } else {
-            newText = LocaleController.getInstance().formatterYear.format(new Date(start));
+            newText = LocaleController.getInstance().getFormatterYear().format(new Date(start));
         }
 
         dates.setText(newText);

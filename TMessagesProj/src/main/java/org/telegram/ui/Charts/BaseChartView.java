@@ -1127,7 +1127,7 @@ public abstract class BaseChartView<T extends ChartData, L extends LineViewData>
     }
 
     public void moveLegend(float offset) {
-        if (chartData == null || selectedIndex == -1 || !legendShowing) return;
+        if (chartData == null || selectedIndex < 0 || selectedIndex >= chartData.x.length || !legendShowing) return;
         legendSignatureView.setData(selectedIndex, chartData.x[selectedIndex], (ArrayList<LineViewData>) lines, false, chartData.yTooltipFormatter, chartData.yRate);
         legendSignatureView.setVisibility(VISIBLE);
         legendSignatureView.measure(
@@ -1175,8 +1175,10 @@ public abstract class BaseChartView<T extends ChartData, L extends LineViewData>
         return minValue;
     }
 
-    public void setData(T chartData) {
+    public boolean setData(T chartData) {
+        boolean updated = false;
         if (this.chartData != chartData) {
+            updated = true;
             invalidate();
             lines.clear();
             if (chartData != null && chartData.lines != null) {
@@ -1211,7 +1213,7 @@ public abstract class BaseChartView<T extends ChartData, L extends LineViewData>
             pickerMaxHeight = 0;
             pickerMinHeight = Integer.MAX_VALUE;
             initPickerMaxHeight();
-            if (chartData.yTooltipFormatter == ChartData.FORMATTER_TON) {
+            if (chartData.yTooltipFormatter == ChartData.FORMATTER_TON || chartData.yTooltipFormatter == ChartData.FORMATTER_XTR) {
                 legendSignatureView.setSize(2 * lines.size());
             } else {
                 legendSignatureView.setSize(lines.size());
@@ -1236,6 +1238,7 @@ public abstract class BaseChartView<T extends ChartData, L extends LineViewData>
                 alphaAnimator.cancel();
             }
         }
+        return updated;
     }
 
     protected float getMinDistance() {

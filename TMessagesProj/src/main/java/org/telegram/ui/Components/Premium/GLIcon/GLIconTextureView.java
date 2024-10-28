@@ -244,6 +244,7 @@ public class GLIconTextureView extends TextureView implements TextureView.Surfac
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        ready = false;
         stopThread();
         return false;
     }
@@ -251,11 +252,11 @@ public class GLIconTextureView extends TextureView implements TextureView.Surfac
     public void stopThread() {
         if (thread != null) {
             isRunning = false;
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                thread.join();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
             thread = null;
         }
 
@@ -269,13 +270,26 @@ public class GLIconTextureView extends TextureView implements TextureView.Surfac
         mRenderer.setBackground(gradientTextureBitmap);
     }
 
+    private volatile boolean ready;
+    private volatile Runnable readyListener;
+    public void whenReady(Runnable whenReady) {
+        if (ready) whenReady.run();
+        else readyListener = whenReady;
+    }
+
 
     private class RenderThread extends Thread {
         @Override
         public void run() {
             isRunning = true;
 
-            initGL();
+            try {
+                initGL();
+            } catch (Exception e) {
+                FileLog.e(e);
+                isRunning = false;
+                return;
+            }
             checkGlError();
 
             long lastFrameTime = System.currentTimeMillis();
@@ -294,11 +308,21 @@ public class GLIconTextureView extends TextureView implements TextureView.Surfac
                     rendererChanged = false;
                 }
 
-                if (!shouldSleep()) {
-                    final long now = System.currentTimeMillis();
-                    float dt = (now - lastFrameTime) / 1000f;
-                    lastFrameTime = now;
-                    drawSingleFrame(dt);
+                try {
+                    if (!shouldSleep()) {
+                        final long now = System.currentTimeMillis();
+                        float dt = (now - lastFrameTime) / 1000f;
+                        lastFrameTime = now;
+                        drawSingleFrame(dt);
+                        if (!ready) {
+                            ready = true;
+                            AndroidUtilities.runOnUIThread(readyListener);
+                            readyListener = null;
+                        }
+                    }
+                } catch (Exception e) {
+                    FileLog.e(e);
+                    break;
                 }
 
                 try {
@@ -473,7 +497,7 @@ public class GLIconTextureView extends TextureView implements TextureView.Surfac
         return gestureDetector.onTouchEvent(event);
     }
 
-    private void startBackAnimation() {
+    public void startBackAnimation() {
         cancelAnimatons();
         float fromX = mRenderer.angleX;
         float fromY = mRenderer.angleY;
@@ -496,7 +520,7 @@ public class GLIconTextureView extends TextureView implements TextureView.Surfac
         scheduleIdleAnimation(idleDelay);
     }
 
-    private void cancelAnimatons() {
+    public void cancelAnimatons() {
         if (backAnimation != null) {
             backAnimation.removeAllListeners();
             backAnimation.cancel();
@@ -555,7 +579,7 @@ public class GLIconTextureView extends TextureView implements TextureView.Surfac
         mRenderer.angleY = (float) valueAnimator.getAnimatedValue();
     };
 
-    private void scheduleIdleAnimation(long time) {
+    public void scheduleIdleAnimation(long time) {
         AndroidUtilities.cancelRunOnUIThread(idleAnimation);
         if (dialogIsVisible) {
             return;
@@ -563,8 +587,12 @@ public class GLIconTextureView extends TextureView implements TextureView.Surfac
         AndroidUtilities.runOnUIThread(idleAnimation, time);
     }
 
+    public void cancelIdleAnimation() {
+        AndroidUtilities.cancelRunOnUIThread(idleAnimation);
+    }
 
-    private void startIdleAnimation() {
+
+    protected void startIdleAnimation() {
         if (!attached) {
             return;
         }

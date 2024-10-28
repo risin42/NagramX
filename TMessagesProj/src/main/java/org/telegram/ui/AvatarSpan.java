@@ -5,8 +5,10 @@ import static org.telegram.messenger.AndroidUtilities.dp;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.style.ReplacementSpan;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,7 @@ import androidx.annotation.Nullable;
 import org.telegram.messenger.ImageReceiver;
 import org.telegram.messenger.MessagesController;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.AvatarDrawable;
 
 public class AvatarSpan extends ReplacementSpan {
@@ -34,6 +37,7 @@ public class AvatarSpan extends ReplacementSpan {
     public AvatarSpan(View parent, int currentAccount, float sz) {
         this.currentAccount = currentAccount;
         this.imageReceiver = new ImageReceiver(parent);
+        imageReceiver.setInvalidateAll(true);
         this.avatarDrawable = new AvatarDrawable();
         setSize(sz);
 
@@ -87,6 +91,14 @@ public class AvatarSpan extends ReplacementSpan {
         }
     };
 
+    public void setDialogId(long dialogId) {
+        if (dialogId >= 0) {
+            setUser(MessagesController.getInstance(currentAccount).getUser(dialogId));
+        } else {
+            setChat(MessagesController.getInstance(currentAccount).getChat(-dialogId));
+        }
+    }
+
     public void setChat(TLRPC.Chat chat) {
         avatarDrawable.setInfo(currentAccount, chat);
         imageReceiver.setForUserOrChat(chat, avatarDrawable);
@@ -102,17 +114,27 @@ public class AvatarSpan extends ReplacementSpan {
         imageReceiver.setForUserOrChat(null, avatarDrawable);
     }
 
+    public void setImageDrawable(Drawable drawable) {
+        imageReceiver.setImageBitmap(drawable);
+    }
+
     @Override
     public int getSize(@NonNull Paint paint, CharSequence text, int start, int end, @Nullable Paint.FontMetricsInt fm) {
         return dp(sz);
     }
 
     private float translateX, translateY;
+    private int shadowPaintAlpha = 0xFF;
 
     @Override
     public void draw(@NonNull Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, @NonNull Paint paint) {
+        if (shadowPaintAlpha != paint.getAlpha()) {
+            shadowPaint.setAlpha(shadowPaintAlpha = paint.getAlpha());
+            shadowPaint.setShadowLayer(dp(1), 0, dp(.66f), Theme.multAlpha(0x33000000, shadowPaintAlpha / 255f));
+        }
         canvas.drawCircle(translateX + x + dp(sz) / 2f, translateY + (top + bottom) / 2f, dp(sz) / 2f, shadowPaint);
         imageReceiver.setImageCoords(translateX + x, translateY + (top + bottom) / 2f - dp(sz) / 2f, dp(sz), dp(sz));
+        imageReceiver.setAlpha(paint.getAlpha() / 255f);
         imageReceiver.draw(canvas);
     }
 

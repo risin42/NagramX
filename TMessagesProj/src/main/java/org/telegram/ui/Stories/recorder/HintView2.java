@@ -58,6 +58,7 @@ import org.telegram.ui.Components.AnimatedEmojiSpan;
 import org.telegram.ui.Components.AnimatedFloat;
 import org.telegram.ui.Components.AnimatedTextView;
 import org.telegram.ui.Components.ButtonBounce;
+import org.telegram.ui.Components.ColoredImageSpan;
 import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LinkPath;
 import org.telegram.ui.Components.LinkSpanDrawable;
@@ -131,6 +132,10 @@ public class HintView2 extends View {
     private int iconWidth, iconHeight;
     private boolean iconLeft;
 
+    public HintView2(Context context) {
+        this(context, 0);
+    }
+
     public HintView2(Context context, int direction) {
         super(context);
         this.direction = direction;
@@ -144,6 +149,11 @@ public class HintView2 extends View {
 
         setTextSize(14);
         setTextColor(0xffffffff);
+    }
+
+    public HintView2 setDirection(int direction) {
+        this.direction = direction;
+        return this;
     }
 
     public HintView2 setRounding(float roundingDp) {
@@ -265,7 +275,7 @@ public class HintView2 extends View {
         return this;
     }
 
-    private static float measureCorrectly(CharSequence text, TextPaint paint) {
+    public static float measureCorrectly(CharSequence text, TextPaint paint) {
         if (text == null) {
             return 0;
         }
@@ -276,9 +286,13 @@ public class HintView2 extends View {
         TypefaceSpan[] spans = spanned.getSpans(0, text.length(), TypefaceSpan.class);
         AnimatedEmojiSpan[] animatedSpans = spanned.getSpans(0, text.length(), AnimatedEmojiSpan.class);
         Emoji.EmojiSpan[] emojiSpans = spanned.getSpans(0, text.length(), Emoji.EmojiSpan.class);
+        ColoredImageSpan[] imageSpans = spanned.getSpans(0, text.length(), ColoredImageSpan.class);
         int add = 0;
         for (int i = 0; i < emojiSpans.length; ++i) {
             add += emojiSpans[i].size;
+        }
+        for (int i = 0; i < imageSpans.length; ++i) {
+            add += imageSpans[i].getSize(paint, text, spanned.getSpanStart(imageSpans[i]), spanned.getSpanEnd(imageSpans[i]), paint.getFontMetricsInt());
         }
         for (int i = 0; i < animatedSpans.length; ++i) {
             add += animatedSpans[i].size;

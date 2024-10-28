@@ -36,6 +36,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.multidex.MultiDex;
 
@@ -186,7 +187,11 @@ public class ApplicationLoader extends Application {
         NativeLoader.initNativeLibs(ApplicationLoader.applicationContext);
 
         SharedConfig.loadConfig();
-        LocaleController.getInstance();
+        try {
+            LocaleController.getInstance(); //TODO improve
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         SharedPrefsHelper.init(applicationContext);
         UserConfig.getInstance(0).loadConfig();
 
@@ -299,8 +304,6 @@ public class ApplicationLoader extends Application {
 
         super.onCreate();
 
-        AnalyticsHelper.start(this);
-
         if (BuildVars.LOGS_ENABLED) {
             FileLog.d("app start time = " + (startTime = SystemClock.elapsedRealtime()));
             try {
@@ -321,6 +324,9 @@ public class ApplicationLoader extends Application {
         } catch (UnsatisfiedLinkError error) {
             throw new RuntimeException("can't load native libraries " +  Build.CPU_ABI + " lookup folder " + NativeLoader.getAbiFolder());
         }
+
+        AnalyticsHelper.start(this);
+
         new ForegroundDetector(this) {
             @Override
             public void onActivityStarted(Activity activity) {
@@ -685,6 +691,20 @@ public class ApplicationLoader extends Application {
         return exists;
     }
 
+    @Nullable
+    public static Intent registerReceiverNotExported(@Nullable BroadcastReceiver receiver, IntentFilter filter) {
+        return ApplicationLoader.registerReceiverNotExported(ApplicationLoader.applicationContext, receiver, filter);
+    }
+
+    @Nullable
+    public static Intent registerReceiverNotExported(Context context, @Nullable BroadcastReceiver receiver, IntentFilter filter) {
+        if (SDK_INT < 33) {
+            return context.registerReceiver(receiver, filter);
+        } else {
+            return context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        }
+    }
+
     public boolean showUpdateAppPopup(Context context, TLRPC.TL_help_appUpdate update, int account) {
         try {
             (new UpdateAppAlertDialog(context, update, account)).show();
@@ -737,5 +757,4 @@ public class ApplicationLoader extends Application {
     public BaseFragment openSettings(int n) {
         return null;
     }
-
 }

@@ -328,7 +328,8 @@ public class MessageEntityView extends EntityView {
                             if (cell.getTransitionParams().wasDraw) {
                                 canvas.translate(canvasOffsetX, canvasOffsetY);
                                 cell.setInvalidatesParent(true);
-                                cell.drawReactionsLayout(canvas, alpha);
+                                cell.drawReactionsLayout(canvas, alpha, null);
+                                cell.drawCommentLayout(canvas, alpha);
                                 cell.setInvalidatesParent(false);
                                 canvas.restore();
                             }
@@ -960,11 +961,12 @@ public class MessageEntityView extends EntityView {
         return null;
     }
 
-    public void getBubbleBounds(RectF rect) {
+    public float getBubbleBounds(RectF rect) {
         float left = Integer.MAX_VALUE;
         float right = Integer.MIN_VALUE;
         float top = Integer.MAX_VALUE;
         float bottom = Integer.MIN_VALUE;
+        float radius = 0;
         for (int i = 0; i < listView.getChildCount(); ++i) {
             View child = listView.getChildAt(i);
             if (child instanceof ChatMessageCell) {
@@ -980,9 +982,9 @@ public class MessageEntityView extends EntityView {
                     if (groupedMessages == null) { // pinned bottom
                         cleft += dp(8);
                     }
-                    cright = container.getX() + child.getX() + cell.getBackgroundDrawableRight() - dp(1);
-                    ctop = container.getY() + child.getY() + cell.getBackgroundDrawableTop() + dp(1.33f);
-                    cbottom = container.getY() + child.getY() + cell.getBackgroundDrawableBottom() - dp(.66f);
+                    cright = container.getX() + child.getX() + cell.getBackgroundDrawableRight() - dp(1.66f);
+                    ctop = container.getY() + child.getY() + cell.getBackgroundDrawableTop() + dp(2);
+                    cbottom = container.getY() + child.getY() + cell.getBackgroundDrawableBottom() - dp(1);
                 }
                 left = Math.min(left, cleft);
                 left = Math.min(left, cright);
@@ -995,6 +997,7 @@ public class MessageEntityView extends EntityView {
             }
         }
         rect.set(left, top, right, bottom);
+        return dp(SharedConfig.bubbleRadius);
     }
 
     public void invalidateAll() {

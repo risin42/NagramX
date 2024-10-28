@@ -190,7 +190,7 @@ public class ChatAttachAlertContactsLayout extends ChatAttachAlert.AttachAlertLa
                 statusTextView.setText(currentStatus);
             } else if (currentUser != null) {
                 if (TextUtils.isEmpty(currentUser.phone)) {
-                    statusTextView.setText(LocaleController.getString("NumberUnknown", R.string.NumberUnknown));
+                    statusTextView.setText(LocaleController.getString(R.string.NumberUnknown));
                 } else {
                     if (formattedPhoneNumberUser != currentUser && formattedPhoneNumber != null) {
                         statusTextView.setText(formattedPhoneNumber);
@@ -362,12 +362,12 @@ public class ChatAttachAlertContactsLayout extends ChatAttachAlert.AttachAlertLa
             public void onTextChange(String text) {
                 if (text.length() != 0) {
                     if (emptyView != null) {
-                        emptyView.setText(LocaleController.getString("NoResult", R.string.NoResult));
+                        emptyView.setText(LocaleController.getString(R.string.NoResult));
                     }
                 } else {
                     if (listView.getAdapter() != listAdapter) {
                         int top = getCurrentTop();
-                        emptyView.setText(LocaleController.getString("NoContacts", R.string.NoContacts));
+                        emptyView.setText(LocaleController.getString(R.string.NoContacts));
                         emptyView.showTextView();
                         listView.setAdapter(listAdapter);
                         listAdapter.notifyDataSetChanged();
@@ -400,12 +400,12 @@ public class ChatAttachAlertContactsLayout extends ChatAttachAlert.AttachAlertLa
                 parentAlert.makeFocusable(editText, true);
             }
         };
-        searchField.setHint(LocaleController.getString("SearchFriends", R.string.SearchFriends));
+        searchField.setHint(LocaleController.getString(R.string.SearchFriends));
         frameLayout.addView(searchField, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
 
         emptyView = new EmptyTextProgressView(context, null, resourcesProvider);
         emptyView.showTextView();
-        emptyView.setText(LocaleController.getString("NoContacts", R.string.NoContacts));
+        emptyView.setText(LocaleController.getString(R.string.NoContacts));
         addView(emptyView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT, 0, 52, 0, 0));
 
         listView = new RecyclerListView(context, resourcesProvider) {
@@ -560,7 +560,7 @@ public class ChatAttachAlertContactsLayout extends ChatAttachAlert.AttachAlertLa
     }
 
     private void showErrorBox(String error) {
-        new AlertDialog.Builder(getContext(), resourcesProvider).setTitle(LocaleController.getString("AppName", R.string.AppName)).setMessage(error).setPositiveButton(LocaleController.getString("OK", R.string.OK), null).show();
+        new AlertDialog.Builder(getContext(), resourcesProvider).setTitle(LocaleController.getString(R.string.AppName)).setMessage(error).setPositiveButton(LocaleController.getString(R.string.OK), null).show();
     }
 
     private TLRPC.User prepareContact(Object object) {
@@ -590,7 +590,7 @@ public class ChatAttachAlertContactsLayout extends ChatAttachAlert.AttachAlertLa
         ArrayList<AndroidUtilities.VcardItem> items = new ArrayList<>();
         ArrayList<AndroidUtilities.VcardItem> phones = new ArrayList<>();
         ArrayList<AndroidUtilities.VcardItem> other = new ArrayList<>();
-        ArrayList<TLRPC.TL_restrictionReason> vcard = null;
+        ArrayList<TLRPC.RestrictionReason> vcard = null;
         if (contact.key != null) {
             Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, contact.key);
             result = AndroidUtilities.loadVCardFromStream(uri, parentAlert.currentAccount, true, items, name);
@@ -680,7 +680,7 @@ public class ChatAttachAlertContactsLayout extends ChatAttachAlert.AttachAlertLa
                 }
             }
             currentUser.restriction_reason.clear();
-            TLRPC.TL_restrictionReason reason = new TLRPC.TL_restrictionReason();
+            TLRPC.RestrictionReason reason = new TLRPC.RestrictionReason();
             reason.text = builder.toString();
             reason.reason = "";
             reason.platform = "";

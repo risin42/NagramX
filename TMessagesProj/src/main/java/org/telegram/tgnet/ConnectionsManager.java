@@ -6,15 +6,12 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.SystemClock;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.SparseArray;
 import android.util.LongSparseArray;
 import android.util.SparseIntArray;
 
-import com.google.android.exoplayer2.util.Log;
 import com.google.android.gms.tasks.Task;
 import com.google.android.play.core.integrity.IntegrityManager;
 import com.google.android.play.core.integrity.IntegrityManagerFactory;
@@ -40,20 +37,11 @@ import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.PushListenerController;
-import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.StatsController;
 import org.telegram.messenger.UserConfig;
-import org.telegram.messenger.UserObject;
 import org.telegram.messenger.Utilities;
-import org.telegram.ui.ActionBar.BaseFragment;
-import org.telegram.ui.ChatActivity;
-import org.telegram.ui.Components.BulletinFactory;
-import org.telegram.ui.Components.TypefaceSpan;
-import org.telegram.ui.DialogsActivity;
-import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.LoginActivity;
-import org.telegram.ui.PremiumPreviewFragment;
 
 import java.io.File;
 import java.net.Inet4Address;
@@ -383,16 +371,18 @@ SharedPreferences mainPreferences;
                 startRequestTime = System.currentTimeMillis();
             }
             long finalStartRequestTime = startRequestTime;
-            listen(requestToken, (response, errorCode, errorText, networkType, timestamp, requestMsgId) -> {
+            listen(requestToken, (response, errorCode, errorText, networkType, timestamp, requestMsgId, dcId) -> {
                 try {
                     TLObject resp = null;
                     TLRPC.TL_error error = null;
-
+                    int responseSize = 0;
                     if (response != 0) {
                         NativeByteBuffer buff = NativeByteBuffer.wrap(response);
                         buff.reused = true;
+                        responseSize = buff.limit();
+                        int magic = buff.readInt32(true);
                         try {
-                            resp = object.deserializeResponse(buff, buff.readInt32(true), true);
+                            resp = object.deserializeResponse(buff, magic, true);
                         } catch (Exception e2) {
                             if (BuildVars.DEBUG_PRIVATE_VERSION) {
                                 throw e2;
@@ -493,14 +483,14 @@ SharedPreferences mainPreferences;
         }
     }
 
-    public static void onRequestComplete(int currentAccount, int requestToken, long response, int errorCode, String errorText, int networkType, long timestamp, long requestMsgId) {
+    public static void onRequestComplete(int currentAccount, int requestToken, long response, int errorCode, String errorText, int networkType, long timestamp, long requestMsgId, int dcId) {
         ConnectionsManager connectionsManager = getInstance(currentAccount);
         if (connectionsManager == null) return;
         RequestCallbacks callbacks = connectionsManager.requestCallbacks.get(requestToken);
         connectionsManager.requestCallbacks.remove(requestToken);
         if (callbacks != null) {
             if (callbacks.onComplete != null) {
-                callbacks.onComplete.run(response, errorCode, errorText, networkType, timestamp, requestMsgId);
+                callbacks.onComplete.run(response, errorCode, errorText, networkType, timestamp, requestMsgId, dcId);
             }
             FileLog.d("{rc} onRequestComplete(" + currentAccount + ", " + requestToken + "): found request " + requestToken + ", " + connectionsManager.requestCallbacks.size() + " requests' callbacks");
         } else {
@@ -1231,34 +1221,43 @@ SharedPreferences mainPreferences;
             if (UserConfig.selectedAccount != currentAccount) {
                 return;
             }
-
-            boolean updated = false;
-            if (isUpload) {
-                FileUploadOperation operation = FileLoader.getInstance(currentAccount).findUploadOperationByRequestToken(requestToken);
-                if (operation != null) {
-                    updated = !operation.caughtPremiumFloodWait;
-                    operation.caughtPremiumFloodWait = true;
+            AndroidUtilities.runOnUIThread(() -> {
+                boolean updated = false;
+                if (isUpload) {
+                    FileUploadOperation operation = FileLoader.getInstance(currentAccount).findUploadOperationByRequestToken(requestToken);
+                    if (operation != null) {
+                        updated = !operation.caughtPremiumFloodWait;
+                        operation.caughtPremiumFloodWait = true;
+                    }
+                } else {
+                    FileLoadOperation operation = FileLoader.getInstance(currentAccount).findLoadOperationByRequestToken(requestToken);
+                    if (operation != null) {
+                        updated = !operation.caughtPremiumFloodWait;
+                        operation.caughtPremiumFloodWait = true;
+                    }
                 }
-            } else {
-                FileLoadOperation operation = FileLoader.getInstance(currentAccount).findLoadOperationByRequestToken(requestToken);
-                if (operation != null) {
-                    updated = !operation.caughtPremiumFloodWait;
-                    operation.caughtPremiumFloodWait = true;
+                final boolean finalUpdated = updated;
+                if (finalUpdated) {
+                    NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.premiumFloodWaitReceived);
                 }
-            }
-
-            if (updated) {
-                NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.premiumFloodWaitReceived);
-            }
+            });
         });
     }
 
-    public static void onIntegrityCheckClassic(final int currentAccount, final int requestToken, final String nonce) {
+    public static void onIntegrityCheckClassic(final int currentAccount, final int requestToken, final String project, final String nonce) {
         AndroidUtilities.runOnUIThread(() -> {
             long start = System.currentTimeMillis();
-            FileLog.d("account"+currentAccount+": server requests integrity classic check with nonce = " + nonce);
+            FileLog.d("account"+currentAccount+": server requests integrity classic check with project = "+project+" nonce = " + nonce);
             IntegrityManager integrityManager = IntegrityManagerFactory.create(ApplicationLoader.applicationContext);
-            Task<IntegrityTokenResponse> integrityTokenResponse = integrityManager.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).setCloudProjectNumber(760348033671L).build());
+            final long project_id;
+            try {
+                project_id = Long.parseLong(project);
+            } catch (Exception e) {
+                FileLog.d("account"+currentAccount+": integrity check failes to parse project id");
+                native_receivedIntegrityCheckClassic(currentAccount, requestToken, nonce, "PLAYINTEGRITY_FAILED_EXCEPTION_NOPROJECT");
+                return;
+            }
+            Task<IntegrityTokenResponse> integrityTokenResponse = integrityManager.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).setCloudProjectNumber(project_id).build());
             integrityTokenResponse
                 .addOnSuccessListener(r -> {
                     final String token = r.token();

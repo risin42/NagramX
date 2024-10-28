@@ -357,7 +357,7 @@ public class SharedDocumentCell extends FrameLayout implements DownloadControlle
         if (builder.length() > 0) {
             builder.append(", ");
         }
-        builder.append(LocaleController.getInstance().formatterStats.format(entry.dateTaken));
+        builder.append(LocaleController.getInstance().getFormatterStats().format(entry.dateTaken));
         dateTextView.setText(builder);
         placeholderImageView.setVisibility(GONE);
     }
@@ -414,20 +414,20 @@ public class SharedDocumentCell extends FrameLayout implements DownloadControlle
             if (TextUtils.isEmpty(fileName) && document.mime_type != null) {
                 if (document.mime_type.startsWith("video")) {
                     if (MessageObject.isGifDocument(document)) {
-                        fileName = LocaleController.getString("AttachGif", R.string.AttachGif);
+                        fileName = LocaleController.getString(R.string.AttachGif);
                     } else {
-                        fileName = LocaleController.getString("AttachVideo", R.string.AttachVideo);
+                        fileName = LocaleController.getString(R.string.AttachVideo);
                     }
                 } else if (document.mime_type.startsWith("image")) {
                     if (MessageObject.isGifDocument(document)) {
-                        fileName = LocaleController.getString("AttachGif", R.string.AttachGif);
+                        fileName = LocaleController.getString(R.string.AttachGif);
                     } else {
-                        fileName = LocaleController.getString("AttachPhoto", R.string.AttachPhoto);
+                        fileName = LocaleController.getString(R.string.AttachPhoto);
                     }
                 } else if (document.mime_type.startsWith("audio")) {
-                    fileName = LocaleController.getString("AttachAudio", R.string.AttachAudio);
+                    fileName = LocaleController.getString(R.string.AttachAudio);
                 } else {
-                    fileName = LocaleController.getString("AttachDocument", R.string.AttachDocument);
+                    fileName = LocaleController.getString(R.string.AttachDocument);
                 }
             }
             if (name == null) {
@@ -518,7 +518,7 @@ public class SharedDocumentCell extends FrameLayout implements DownloadControlle
                     .append(fromName));
             rightDateTextView.setText(LocaleController.stringForMessageListDate(message.messageOwner.date));
         } else {
-            dateTextView.setText(String.format("%s, %s", fileSize, LocaleController.formatString("formatDateAtTime", R.string.formatDateAtTime, LocaleController.getInstance().formatterYear.format(new Date(date)), LocaleController.getInstance().formatterDay.format(new Date(date)))));
+            dateTextView.setText(String.format("%s, %s", fileSize, LocaleController.formatString("formatDateAtTime", R.string.formatDateAtTime, LocaleController.getInstance().getFormatterYear().format(new Date(date)), LocaleController.getInstance().getFormatterDay().format(new Date(date)))));
         }
     }
 
