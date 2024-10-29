@@ -221,7 +221,7 @@
     <string name="AddProxyWs">WebSocket リレーの追加</string>
     <string name="ProxyInfoWS">WebSocket リレーの設定</string>
     <string name="AppLinkFDroid">F-Droid</string>
-    <string name="AutoDownload">自動ダウンロード</string>
+    <string name="AutoDownload">自動ダウンロードを禁止</string>
     <string name="Win32ExecutableFiles">Win32 実行ファイル</string>
     <string name="VersionUpdateTitle">新バージョン発売</string>
     <string name="BackupSettings">バックアップ設定</string>
