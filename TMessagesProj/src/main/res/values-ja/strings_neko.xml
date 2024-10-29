@@ -13,7 +13,7 @@
     <string name="DeleteAllFromSelfDone">すべてのメッセージが削除されました</string>
     <string name="BotLogin">ボットログイン</string>
     <string name="InvalidAccessToken">無効なアクセストークン</string>
-    <string name="IgnoreBlocked">ブロックしたユーザーのグループメッセージを非表示</string>
+    <string name="IgnoreBlocked">ブロックしたユーザーのメッセージを非表示</string>
     <string name="Connection">接続</string>
     <string name="Chat">チャット</string>
     <string name="NameOrder">名前の順序</string>
@@ -94,7 +94,7 @@
     <string name="Categories">カテゴリ</string>
     <string name="OfficialChannel">公式チャンネル</string>
     <string name="About">アプリについて</string>
-    <string name="IgnoreBlockedAbout">ブロックされたユーザーからのグループメッセージは表示されなくなります。</string>
+    <string name="IgnoreBlockedAbout">当ユーザーからのグループメッセージは表示されなくなります。</string>
     <string name="GooglePlay">Google Play</string>
     <string name="SourceCode">GitHubのソースコード</string>
     <string name="ResetStickerSize">ステッカーサイズをリセット</string>
