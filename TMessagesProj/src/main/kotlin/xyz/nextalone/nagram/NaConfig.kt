@@ -128,7 +128,7 @@ object NaConfig {
         addConfig(
             "NoQuoteForward",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val showRepeatAsCopy =
         addConfig(
@@ -620,7 +620,7 @@ object NaConfig {
         addConfig(
             "ShowHiddenFeature",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val searchHashtagDefaultPageChannel =
         addConfig(
