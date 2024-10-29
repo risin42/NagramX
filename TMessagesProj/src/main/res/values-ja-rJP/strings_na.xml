@@ -36,7 +36,7 @@
     <string name="ShowPremiumStarInChat">チャットにプレミアムスターを表示</string>
     <string name="ShowPremiumAvatarAnimation">プレミアムアバターアニメーションを表示</string>
     <string name="AlwaysSaveChatOffset">常にチャットオフセットを保存</string>
-    <string name="AutoReplaceRepeat">引用符なしで繰り返しを自動置換</string>
+    <string name="AutoReplaceRepeat">引用なしでリピートに自動置換</string>
     <string name="AppIconGoogle">Google</string>
     <string name="AppIconColorful">カラフル</string>
     <string name="AppIconDarkGreen">ダークグリーン</string>
@@ -57,7 +57,7 @@
     <string name="AlwaysShowDownloadIcon">常にダウンロードアイコンを表示</string>
     <string name="QuickToggleAnonymous">匿名発言をすばやく切り替え</string>
     <string name="QuickToggleAnonymousNotice">グループの所有者である場合</string>
-    <string name="RealHideTimeForSticker">ステッカーの送信時間を本当に非表示にする</string>
+    <string name="RealHideTimeForSticker">ステッカーの送信時間を非表示にする</string>
     <string name="HideTitle">タイトルとアバターを非表示にする</string>
     <string name="IgnoreFolderCount">フォルダーラベルの未読数を無視</string>
     <string name="SendWithoutMarkdown">Markdown を無効にする</string>
@@ -89,7 +89,7 @@
     <string name="ShowForumAsNormalChat">トピックモードグループを通常のチャットとして開く</string>
     <string name="DecorationNone">なし</string>
     <string name="ChatDecoration">チャットの外観を装飾</string>
-    <string name="NeedChangeNekoSettings">この設定は N-設定によって上書きされているため、変更できません</string>
+    <string name="NeedChangeNekoSettings">この設定はN-設定によって上書きされているため、変更できません</string>
     <string name="DoNotUnarchiveBySwipe">スワイプによるアーカイブ解除を無効にする</string>
     <string name="DoNotShareMyPhoneNumber">電話番号の共有を無効にする</string>
     <string name="DefaultDeleteMenu">デフォルトの削除メニュー</string>
@@ -121,7 +121,7 @@
     <string name="TipsChannel">機能紹介チャンネル</string>
     <string name="ShowSmallGIF">GIF を小さく表示</string>
     <string name="DisableClickCommandToSend">コマンドテキストをクリックして送信するのを無効にする</string>
-    <string name="DisableClickCommandToSendHint">誤ってタッチするのを防ぐため</string>
+    <string name="DisableClickCommandToSendHint">誤ってタッチするのを防ぐ</string>
     <string name="DisableDialogsFloatingButton">メインページのフローティングボタンを無効にする</string>
     <string name="DisableFlagSecure">安全フラグを無効にする</string>
     <string name="CenterActionBarTitle">アクションバーのタイトルを中央揃えにする</string>
@@ -139,7 +139,7 @@
     <string name="DisableChannelMuteButton">チャンネルチャットページのミュートボタンを無効にする</string>
     <string name="DisablePreviewVideoSoundShortcut">プレビュービデオの音量ショートカットを無効にする</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">音量キーのショートカットでプレビュービデオの音声を有効にするのを無効にする</string>
-    <string name="DisableAutoWebLogin">公式Webサイトの自動ログインを無効にする</string>
+    <string name="DisableAutoWebLogin">公式 Web サイトの自動ログインを無効にする</string>
     <string name="PreviewSendPhoto">画像を送信</string>
     <string name="PreviewSendVideo">動画を送信</string>
     <string name="PreviewSendFile">ファイルを送信</string>
