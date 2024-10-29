@@ -91,13 +91,13 @@ public class NekoConfig {
     public static ConfigItem hideAllTab = addConfig("HideAllTab", configTypeBool, false);
 //    public static ConfigItem pressTitleToOpenAllChats = addConfig("pressTitleToOpenAllChats", configTypeBool, false);
 
-    public static ConfigItem disableChatAction = addConfig("disable_chat_action", configTypeBool, true);
+    public static ConfigItem disableChatAction = addConfig("DisableChatAction", configTypeBool, true);
     public static ConfigItem sortByUnread = addConfig("sort_by_unread", configTypeBool, false);
     public static ConfigItem sortByUnmuted = addConfig("sort_by_unmuted", configTypeBool, true);
     public static ConfigItem sortByUser = addConfig("sort_by_user", configTypeBool, true);
     public static ConfigItem sortByContacts = addConfig("sort_by_contacts", configTypeBool, true);
 
-    public static ConfigItem disableUndo = addConfig("disable_undo", configTypeBool, false);
+    public static ConfigItem disableUndo = addConfig("DisableUndo", configTypeBool, false);
 
     public static ConfigItem filterUsers = addConfig("filter_users", configTypeBool, true);
     public static ConfigItem filterContacts = addConfig("filter_contacts", configTypeBool, true);
@@ -113,9 +113,9 @@ public class NekoConfig {
 //    public static ConfigItem disableProxyWhenVpnEnabled = addConfig("DisableProxyWhenVpnEnabled", configTypeBool, false);
     public static ConfigItem skipOpenLinkConfirm = addConfig("SkipOpenLinkConfirm", configTypeBool, false);
 
-    public static ConfigItem ignoreMutedCount = addConfig("ignore_muted_count", configTypeBool, true);
+    public static ConfigItem ignoreMutedCount = addConfig("IgnoreMutedCount", configTypeBool, true);
 //    public static ConfigItem useDefaultTheme = addConfig("UseDefaultTheme", configTypeBool, false);
-    public static ConfigItem showIdAndDc = addConfig("show_id_and_dc", configTypeBool, true);
+    public static ConfigItem showIdAndDc = addConfig("ShowIdAndDc", configTypeBool, true);
 
     public static ConfigItem cachePath = addConfig("cache_path", configTypeString, "");
     public static ConfigItem customSavePath = addConfig("customSavePath", configTypeString, "Nagram");
@@ -124,7 +124,7 @@ public class NekoConfig {
     public static ConfigItem translateToLang = addConfig("TransToLang", configTypeString, ""); // "" -> translate to current language (MessageTrans.kt & Translator.kt)
     public static ConfigItem translateInputLang = addConfig("TransInputToLang", configTypeString, "en");
     public static ConfigItem useTelegramTranslateInChat = addConfig("useTelegramTranslateInChat", configTypeBool, false);
-    public static ConfigItem googleCloudTranslateKey = addConfig("google_cloud_translate_key", configTypeString, "");
+    public static ConfigItem googleCloudTranslateKey = addConfig("GoogleCloudTransKey", configTypeString, "");
 
     public static ConfigItem disableNotificationBubbles = addConfig("disableNotificationBubbles", configTypeBool, false);
 
@@ -151,18 +151,18 @@ public class NekoConfig {
     public static ConfigItem openPGPApp = addConfig("OpenPGPApp", configTypeString, "");
     public static ConfigItem openPGPKeyId = addConfig("OpenPGPKey", configTypeLong, 0L);
 
-    public static ConfigItem disableVibration = addConfig("disableVibration", configTypeBool, false);
+    public static ConfigItem disableVibration = addConfig("DisableVibration", configTypeBool, false);
     public static ConfigItem autoPauseVideo = addConfig("AutoPauseVideo", configTypeBool, false);
     public static ConfigItem disableProximityEvents = addConfig("DisableProximityEvents", configTypeBool, false);
 
     public static ConfigItem ignoreContentRestrictions = addConfig("ignoreContentRestrictions", configTypeBool, true);
-    public static ConfigItem useChatAttachMediaMenu = addConfig("useChatAttachMedia", configTypeBool, true);
+    public static ConfigItem useChatAttachMediaMenu = addConfig("UseChatAttachEnterMenu", configTypeBool, true);
     public static ConfigItem disableLinkPreviewByDefault = addConfig("DisableLinkPreviewByDefault", configTypeBool, false);
-    public static ConfigItem sendCommentAfterForward = addConfig("sendCommentAfterForward", configTypeBool, true);
+    public static ConfigItem sendCommentAfterForward = addConfig("SendCommentAfterForward", configTypeBool, true);
 //    public static ConfigItem increaseVoiceMessageQuality = addConfig("IncreaseVoiceMessageQuality", configTypeBool, true);
     public static ConfigItem disableTrending = addConfig("DisableTrending", configTypeBool, true);
-    public static ConfigItem dontSendGreetingSticker = addConfig("dontSendGreetingSticker", configTypeBool, false);
-    public static ConfigItem hideTimeForSticker = addConfig("hideTimeForSticker", configTypeBool, true);
+    public static ConfigItem dontSendGreetingSticker = addConfig("DontSendGreetingSticker", configTypeBool, false);
+    public static ConfigItem hideTimeForSticker = addConfig("HideTimeForSticker", configTypeBool, true);
     public static ConfigItem takeGIFasVideo = addConfig("takeGIFasVideo", configTypeBool, false);
     public static ConfigItem maxRecentStickerCount = addConfig("maxRecentStickerCount", configTypeInt, 20);
     public static ConfigItem disableSwipeToNext = addConfig("disableSwipeToNextChannel", configTypeBool, true);
@@ -343,8 +343,8 @@ public class NekoConfig {
             rearVideoMessages.setConfigBool(preferences.getBoolean("rearVideoMessages", false));
         if (preferences.contains("hideAllTab"))
             hideAllTab.setConfigBool(preferences.getBoolean("hideAllTab", false));
-        if (preferences.contains("disable_chat_action"))
-            disableChatAction.setConfigBool(preferences.getBoolean("disable_chat_action", true));
+        if (preferences.contains("DisableChatAction"))
+            disableChatAction.setConfigBool(preferences.getBoolean("DisableChatAction", true));
         if (preferences.contains("sort_by_unread"))
             sortByUnread.setConfigBool(preferences.getBoolean("sort_by_unread", false));
         if (preferences.contains("sort_by_unmuted"))
@@ -354,8 +354,8 @@ public class NekoConfig {
         if (preferences.contains("sort_by_contacts"))
             sortByContacts.setConfigBool(preferences.getBoolean("sort_by_contacts", true));
 
-        if (preferences.contains("disable_undo"))
-            disableUndo.setConfigBool(preferences.getBoolean("disable_undo", false));
+        if (preferences.contains("DisableUndo"))
+            disableUndo.setConfigBool(preferences.getBoolean("DisableUndo", false));
 
         if (preferences.contains("filter_users"))
             filterUsers.setConfigBool(preferences.getBoolean("filter_users", true));
@@ -381,15 +381,15 @@ public class NekoConfig {
         if (preferences.contains("skip_open_link_confirm"))
             skipOpenLinkConfirm.setConfigBool(preferences.getBoolean("skip_open_link_confirm", false));
 
-        if (preferences.contains("ignore_muted_count"))
-            ignoreMutedCount.setConfigBool(preferences.getBoolean("ignore_muted_count", true));
+        if (preferences.contains("IgnoreMutedCount"))
+            ignoreMutedCount.setConfigBool(preferences.getBoolean("IgnoreMutedCount", true));
 //        if (preferences.contains("use_default_theme"))
 //            useDefaultTheme.setConfigBool(preferences.getBoolean("use_default_theme", false));
-        if (preferences.contains("show_id_and_dc"))
-            showIdAndDc.setConfigBool(preferences.getBoolean("show_id_and_dc", true));
+        if (preferences.contains("ShowIdAndDc"))
+            showIdAndDc.setConfigBool(preferences.getBoolean("ShowIdAndDc", true));
 
-        if (preferences.contains("google_cloud_translate_key"))
-            googleCloudTranslateKey.setConfigString(preferences.getString("google_cloud_translate_key", null));
+        if (preferences.contains("GoogleCloudTransKey"))
+            googleCloudTranslateKey.setConfigString(preferences.getString("GoogleCloudTransKey", null));
         if (preferences.contains("cache_path"))
             cachePath.setConfigString(preferences.getString("cache_path", null));
 
@@ -434,8 +434,8 @@ public class NekoConfig {
         if (preferences.contains("openPGPKeyId"))
             openPGPKeyId.setConfigLong(preferences.getLong("openPGPKeyId", 0L));
 
-        if (preferences.contains("disableVibration"))
-            disableVibration.setConfigBool(preferences.getBoolean("disableVibration", false));
+        if (preferences.contains("DisableVibration"))
+            disableVibration.setConfigBool(preferences.getBoolean("DisableVibration", false));
         if (preferences.contains("autoPauseVideo"))
             autoPauseVideo.setConfigBool(preferences.getBoolean("autoPauseVideo", false));
         if (preferences.contains("disableProximityEvents"))
@@ -443,20 +443,20 @@ public class NekoConfig {
 
         if (preferences.contains("ignoreContentRestrictions"))
             ignoreContentRestrictions.setConfigBool(preferences.getBoolean("ignoreContentRestrictions", true));
-        if (preferences.contains("useChatAttachMedia"))
-            useChatAttachMediaMenu.setConfigBool(preferences.getBoolean("useChatAttachMedia", true));
+        if (preferences.contains("UseChatAttachEnterMenu"))
+            useChatAttachMediaMenu.setConfigBool(preferences.getBoolean("UseChatAttachEnterMenu", true));
         if (preferences.contains("disableLinkPreviewByDefault"))
             disableLinkPreviewByDefault.setConfigBool(preferences.getBoolean("disableLinkPreviewByDefault", false));
-        if (preferences.contains("sendCommentAfterForward"))
-            sendCommentAfterForward.setConfigBool(preferences.getBoolean("sendCommentAfterForward", true));
+        if (preferences.contains("SendCommentAfterForward"))
+            sendCommentAfterForward.setConfigBool(preferences.getBoolean("SendCommentAfterForward", true));
 //        if (preferences.contains("increaseVoiceMessageQuality"))
 //            increaseVoiceMessageQuality.setConfigBool(preferences.getBoolean("increaseVoiceMessageQuality", true));
         if (preferences.contains("disableTrending"))
             disableTrending.setConfigBool(preferences.getBoolean("disableTrending", true));
-        if (preferences.contains("dontSendGreetingSticker"))
-            dontSendGreetingSticker.setConfigBool(preferences.getBoolean("dontSendGreetingSticker", false));
-        if (preferences.contains("hideTimeForSticker"))
-            hideTimeForSticker.setConfigBool(preferences.getBoolean("hideTimeForSticker", true));
+        if (preferences.contains("DontSendGreetingSticker"))
+            dontSendGreetingSticker.setConfigBool(preferences.getBoolean("DontSendGreetingSticker", false));
+        if (preferences.contains("HideTimeForSticker"))
+            hideTimeForSticker.setConfigBool(preferences.getBoolean("HideTimeForSticker", true));
         if (preferences.contains("takeGIFasVideo"))
             takeGIFasVideo.setConfigBool(preferences.getBoolean("takeGIFasVideo", false));
         if (preferences.contains("maxRecentStickerCount"))
