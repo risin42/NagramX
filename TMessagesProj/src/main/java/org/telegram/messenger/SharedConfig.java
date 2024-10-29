@@ -333,9 +333,9 @@ public class SharedConfig {
     public static boolean debugVideoQualities = false;
     public static int repeatMode;
     public static boolean allowBigEmoji;
-    public static int fontSize = 12;
+    public static int fontSize = 16;
     public static boolean fontSizeIsDefault;
-    public static int bubbleRadius = 3;
+    public static int bubbleRadius = 17;
     public static int ivFontSize = 12;
     public static boolean proxyRotationEnabled;
     public static int proxyRotationTimeout;
@@ -662,9 +662,9 @@ public class SharedConfig {
             hasCameraCache = preferences.contains("cameraCache");
             roundCamera16to9 = true;
             repeatMode = preferences.getInt("repeatMode", 0);
-            fontSize = preferences.getInt("fons_size", AndroidUtilities.isTablet() ? 14 : 12);
+            fontSize = preferences.getInt("fons_size", AndroidUtilities.isTablet() ? 16 : 16);
             fontSizeIsDefault = !preferences.contains("fons_size");
-            bubbleRadius = preferences.getInt("bubbleRadius", 3);
+            bubbleRadius = preferences.getInt("bubbleRadius", 17);
             ivFontSize = preferences.getInt("iv_font_size", fontSize);
             allowBigEmoji = preferences.getBoolean("allowBigEmoji", true);
             streamMedia = preferences.getBoolean("streamMedia", true);
