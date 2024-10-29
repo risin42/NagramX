@@ -128,7 +128,7 @@ object NaConfig {
         addConfig(
             "NoQuoteForward",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val showRepeatAsCopy =
         addConfig(
@@ -220,7 +220,7 @@ object NaConfig {
         addConfig(
             "AutoReplaceRepeat",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val autoInsertGIFCaption =
         addConfig(
@@ -425,13 +425,13 @@ object NaConfig {
         addConfig(
             "DisableStories",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val disableSendReadStories =
         addConfig(
             "DisableSendReadStories",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val hideFilterMuteAll =
         addConfig(
@@ -566,7 +566,7 @@ object NaConfig {
         addConfig(
             "SendMp4DocumentAsVideo",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val disableChannelMuteButton =
         addConfig(
@@ -578,7 +578,7 @@ object NaConfig {
         addConfig(
             "DisablePreviewVideoSoundShortcut",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val disableAutoWebLogin =
         addConfig(
@@ -620,7 +620,7 @@ object NaConfig {
         addConfig(
             "ShowHiddenFeature",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val searchHashtagDefaultPageChannel =
         addConfig(
