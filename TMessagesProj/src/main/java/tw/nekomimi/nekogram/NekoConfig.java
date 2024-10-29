@@ -163,7 +163,7 @@ public class NekoConfig {
     public static ConfigItem disableTrending = addConfig("DisableTrending", configTypeBool, true);
     public static ConfigItem dontSendGreetingSticker = addConfig("DontSendGreetingSticker", configTypeBool, true);
     public static ConfigItem hideTimeForSticker = addConfig("HideTimeForSticker", configTypeBool, true);
-    public static ConfigItem takeGIFasVideo = addConfig("takeGIFasVideo", configTypeBool, false);
+    public static ConfigItem takeGIFasVideo = addConfig("TakeGIFasVideo", configTypeBool, false);
     public static ConfigItem maxRecentStickerCount = addConfig("maxRecentStickerCount", configTypeInt, 20);
     public static ConfigItem disableSwipeToNext = addConfig("disableSwipeToNextChannel", configTypeBool, true);
     public static ConfigItem disableRemoteEmojiInteractions = addConfig("disableRemoteEmojiInteractions", configTypeBool, true);
@@ -457,8 +457,8 @@ public class NekoConfig {
             dontSendGreetingSticker.setConfigBool(preferences.getBoolean("DontSendGreetingSticker", true));
         if (preferences.contains("HideTimeForSticker"))
             hideTimeForSticker.setConfigBool(preferences.getBoolean("HideTimeForSticker", true));
-        if (preferences.contains("takeGIFasVideo"))
-            takeGIFasVideo.setConfigBool(preferences.getBoolean("takeGIFasVideo", false));
+        if (preferences.contains("TakeGIFasVideo"))
+            takeGIFasVideo.setConfigBool(preferences.getBoolean("TakeGIFasVideo", false));
         if (preferences.contains("maxRecentStickerCount"))
             maxRecentStickerCount.setConfigInt(preferences.getInt("maxRecentStickerCount", 20));
         if (preferences.contains("disableSwipeToNext"))
