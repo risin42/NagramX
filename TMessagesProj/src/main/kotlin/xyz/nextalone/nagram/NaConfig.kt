@@ -578,7 +578,7 @@ object NaConfig {
         addConfig(
             "DisablePreviewVideoSoundShortcut",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val disableAutoWebLogin =
         addConfig(
