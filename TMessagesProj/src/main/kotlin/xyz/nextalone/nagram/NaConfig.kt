@@ -220,7 +220,7 @@ object NaConfig {
         addConfig(
             "AutoReplaceRepeat",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val autoInsertGIFCaption =
         addConfig(
@@ -425,13 +425,13 @@ object NaConfig {
         addConfig(
             "DisableStories",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val disableSendReadStories =
         addConfig(
             "DisableSendReadStories",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val hideFilterMuteAll =
         addConfig(
@@ -566,7 +566,7 @@ object NaConfig {
         addConfig(
             "SendMp4DocumentAsVideo",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val disableChannelMuteButton =
         addConfig(
