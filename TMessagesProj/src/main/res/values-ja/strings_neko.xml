@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">N-設定</string>
-    <string name="IPv6">IPv6経由で接続</string>
+    <string name="IPv6">IPv6 経由で接続</string>
     <string name="MessageMenu">メッセージメニュー</string>
     <string name="HidePhone">電話番号を非表示</string>
     <string name="Hide">非表示</string>
@@ -58,13 +58,13 @@
     <string name="UnlimitedFavoredStickers">お気に入りのスタンプが無制限</string>
     <string name="UnlimitedFavoredStickersAbout">お気に入りに無制限のスタンプを追加できます。スタンプは他のデバイスと同期されない場合があります。</string>
     <string name="MessageDetails">詳細</string>
-    <string name="ExportAsJson">JSONとしてエクスポート</string>
+    <string name="ExportAsJson">JSON としてエクスポート</string>
     <string name="Translate">翻訳</string>
-    <string name="DeleteAccount">Telegramアカウントを削除</string>
+    <string name="DeleteAccount">Telegram アカウントを削除</string>
     <string name="TranslateFailed">翻訳サーバーエラー</string>
     <string name="TranslationProvider">翻訳プロバイダ</string>
     <string name="ProviderGoogleTranslate">Google翻訳</string>
-    <string name="ProviderGoogleTranslateCN">Google翻訳（CN）</string>
+    <string name="ProviderGoogleTranslateCN">Google翻訳 CN </string>
     <string name="TranslateApiUnsupported">選択した翻訳プロバイダは、あなたの言語をサポートしていません。</string>
     <string name="ProviderLingocloud">彩雲小訳</string>
     <string name="UndoTranslate">翻訳を元に戻す</string>
@@ -75,14 +75,14 @@
     <string name="OpenArchiveOnPull">プルダウンでアーカイブを開く</string>
     <string name="HideKeyboardOnChatScroll">チャットスクロール時にキーボードを非表示</string>
     <string name="UserRestrictionsSendStickers2">スタンプを送信</string>
-    <string name="UserRestrictionsSendGifs">GIFを送信</string>
+    <string name="UserRestrictionsSendGifs">GIF を送信</string>
     <string name="ShowTabsOnForward">転送ページでタブを表示</string>
     <string name="CheckAllAdministrated">管理しているグループとチャンネルを追加</string>
     <string name="RearVideoMessages">ビデオメッセージで背面カメラをデフォルトで使用</string>
     <string name="HideAllTab">「すべてのチャット」タブを非表示</string>
     <string name="HideAllTabAbout">メインページで戻るボタンを押すと、すべてのチャットが開きます。</string>
     <string name="TabTitleType">タブバーに表示</string>
-    <string name="TabTitleTypeTip">アイコンはTelegramクラウドと同期されます。</string>
+    <string name="TabTitleTypeTip">アイコンは Telegram クラウドと同期されます。</string>
     <string name="TabTitleTypeText">タイトル</string>
     <string name="TabTitleTypeIcon">アイコン</string>
     <string name="TabTitleTypeMix">アイコンとタイトル</string>
@@ -111,7 +111,7 @@
     <string name="BlurAvatarBackground">アバターをぼかす</string>
     <string name="DarkenAvatarBackground">アバターを暗くする</string>
     <string name="ProviderDeepLTranslate">DeepL翻訳</string>
-    <string name="ProviderMicrosoftTranslator">Microsoft翻訳</string>
+    <string name="ProviderMicrosoftTranslator">Microsoft 翻訳</string>
     <string name="ProviderYouDao">有道翻訳</string>
     <string name="pressTitleToOpenAllChats">タイトルを長押しして「すべてのチャット」を開く</string>
     <string name="disableRemoteEmojiInteractions">リモート絵文字インタラクションを無効にする</string>
@@ -120,13 +120,13 @@
     <string name="maxRecentStickerCount">最近使用したスタンプの数の上限</string>
     <string name="UseMediaStreamInVoip">通話でメディアストリームを使用</string>
     <string name="customGroupVoipAudioBitrate">グループ通話の音声ビットレート</string>
-    <string name="customDoH">カスタムDoH</string>
-    <string name="useSystemDNS">システムDNSを使用</string>
+    <string name="customDoH">カスタム DoH</string>
+    <string name="useSystemDNS">システム DNS を使用</string>
     <string name="HideTimeForSticker">スタンプの送信時間を非表示</string>
     <string name="TakeGIFasVideo">GIFをビデオとして表示</string>
     <string name="DontSendGreetingSticker">挨拶スタンプを送信しない</string>
     <string name="hideGroupSticker">グループスタンプを非表示</string>
-    <string name="enablePublicProxy">NekoXパブリックプロキシ</string>
+    <string name="enablePublicProxy">NekoX パブリックプロキシ</string>
     <string name="autoUpdateSubInfo">プロキシを自動更新</string>
     <string name="hideSendAsChannel">チャンネルとして送信を非表示</string>
     <string name="showSpoilersDirectly">ネタバレ情報を直接表示</string>
@@ -146,11 +146,11 @@
     <string name="customSavePathHint">空白のままにすると直接保存されます</string>
     <string name="doubleTapShowReactions">メッセージをダブルタップしたときにのみリアクションメニューを開く</string>
     <string name="showBottomActionsWhenSelecting">メッセージを長押し選択したときに、下部のアクションボタンを表示する</string>
-    <string name="channelLabel">チャンネルID</string>
+    <string name="channelLabel">チャンネル ID</string>
     <string name="forceBlurInChat">チャットのトップバーのぼかしを強制的に有効にする</string>
     <string name="ChatBlurAlphaValue">チャットのトップバーの不透明度</string>
     <string name="disablePremiumStickerAnimation">プレミアムスタンプアニメーションを無効にする</string>
-    <string name="DatacenterStatusAbout">Telegramの**データセンター**の状態を確認します。</string>
+    <string name="DatacenterStatusAbout">Telegram の**データセンター**の状態を確認します。</string>
     <string name="DatacenterStatus">データセンターの状態</string>
     <string name="enhancedFileLoader">アップロードとダウンロードを高速化</string>
     <string name="UnknownNekoSettingsOption">そのようなN-設定オプションはありません。</string>
@@ -174,7 +174,7 @@
     <string name="AutoTranslate">自動翻訳</string>
     <string name="AutoTranslateAbout">他の言語のメッセージを自動的に翻訳します。</string>
     <string name="BrokenMLKit">オプションは利用できません</string>
-    <string name="BrokenMLKitDetail">Google ML Kit言語認識機能がこのデバイスで何らかの理由で壊れています。</string>
+    <string name="BrokenMLKitDetail">Google ML Kit 言語認識機能がこのデバイスで何らかの理由で壊れています。</string>
     <string name="RestrictionReason">制限の理由</string>
     <string name="InvalidCustomEmojiTypeface">無効なフォントファイルです。</string>
     <string name="DownloadEmojiSet">%sをダウンロード</string>
@@ -194,9 +194,9 @@
     <string name="EmojiSetApplied">絵文字セットが適用されました。</string>
     <string name="EmojiSetAppliedInfo">%1$s が絵文字セットとして適用されました。</string>
     <string name="EmojiSetAlreadyApplied">絵文字セットは既に適用されています。</string>
-    <string name="useOSMDroidMap">OSMDroidマップを使用</string>
-    <string name="mapDriftingFixForGoogleMaps">中国におけるGoogleマップのずれを修正</string>
-    <string name="useTelegramTranslateInChat">チャットでTelegram翻訳インターフェースを使用</string>
+    <string name="useOSMDroidMap">OSMDroid マップを使用</string>
+    <string name="mapDriftingFixForGoogleMaps">中国における Google マップのずれを修正</string>
+    <string name="useTelegramTranslateInChat">チャットで Telegram 翻訳インターフェースを使用</string>
     <string name="RecentChats">最近のチャット</string>
     <string name="ClearRecentChats">最近のチャットをクリア</string>
     <string name="ClearRecentChatAlert">本当に最近のチャットをクリアしますか？</string>
@@ -215,7 +215,7 @@
     <string name="CloudConfigRestoreFailed">クラウドから設定を復元できませんでした。</string>
     <string name="CopyCallback">コールバックデータをコピー</string>
     <string name="CopyInlineQuery">インラインクエリをコピー</string>
-    <string name="CopyID">IDをコピー</string>
+    <string name="CopyID">ID をコピー</string>
     <string name="UpdateInstalling">アップデートをインストールしています...</string>
     <string name="UpdateInstallingNotification">アップデートが完了したら、通知が表示されます。</string>
     <string name="UpdateInstallingRelaunch">アップデートが完了したら、アプリが再起動されます。</string>
