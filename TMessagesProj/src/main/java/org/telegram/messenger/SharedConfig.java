@@ -278,7 +278,7 @@ public class SharedConfig {
     public static boolean storiesIntroShown;
     public static boolean disableVoiceAudioEffects;
     public static boolean forceDisableTabletMode;
-    public static boolean updateStickersOrderOnSend = true;
+    public static boolean updateStickersOrderOnSend = false;
     public static boolean bigCameraForRound;
     public static Boolean useCamera2Force;
     public static boolean useNewBlur;
@@ -746,7 +746,7 @@ public class SharedConfig {
             dontAskManageStorage = preferences.getBoolean("dontAskManageStorage", false);
             hasEmailLogin = preferences.getBoolean("hasEmailLogin", false);
             isFloatingDebugActive = preferences.getBoolean("floatingDebugActive", false);
-            updateStickersOrderOnSend = preferences.getBoolean("updateStickersOrderOnSend", true);
+            updateStickersOrderOnSend = preferences.getBoolean("updateStickersOrderOnSend", false);
             dayNightWallpaperSwitchHint = preferences.getInt("dayNightWallpaperSwitchHint", 0);
             bigCameraForRound = preferences.getBoolean("bigCameraForRound", false);
             useNewBlur = preferences.getBoolean("useNewBlur", true);
