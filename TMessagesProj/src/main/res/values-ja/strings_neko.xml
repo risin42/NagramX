@@ -115,8 +115,8 @@
     <string name="ProviderYouDao">有道翻訳</string>
     <string name="pressTitleToOpenAllChats">タイトルを長押しして「すべてのチャット」を開く</string>
     <string name="disableRemoteEmojiInteractions">リモート絵文字インタラクションを無効にする</string>
-    <string name="disableChoosingSticker">スタンプ選択時にキーボード入力を維持</string>
-    <string name="disableSwipeToNextChannel">次の未読チャンネルへのスワイプを無効にする</string>
+    <string name="disableChoosingSticker">スタンプ選択時に入力中を表示</string>
+    <string name="disableSwipeToNextChannel">次のチャンネルへのスワイプを無効にする</string>
     <string name="maxRecentStickerCount">最近使用したスタンプの数の上限</string>
     <string name="UseMediaStreamInVoip">通話でメディアストリームを使用</string>
     <string name="customGroupVoipAudioBitrate">グループ通話の音声ビットレート</string>
