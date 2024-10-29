@@ -333,9 +333,9 @@ public class SharedConfig {
     public static boolean debugVideoQualities = false;
     public static int repeatMode;
     public static boolean allowBigEmoji;
-    public static int fontSize = 12;
+    public static int fontSize = 16;
     public static boolean fontSizeIsDefault;
-    public static int bubbleRadius = 3;
+    public static int bubbleRadius = 8;
     public static int ivFontSize = 12;
     public static boolean proxyRotationEnabled;
     public static int proxyRotationTimeout;
