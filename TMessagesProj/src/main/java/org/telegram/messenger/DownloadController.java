@@ -263,8 +263,8 @@ public class DownloadController extends BaseController implements NotificationCe
         super(instance);
         SharedPreferences preferences = MessagesController.getMainSettings(currentAccount);
         String defaultLow = "1_1_1_1_1048576_512000_512000_524288_0_0_1_1_50_0";
-        String defaultMedium = "13_13_13_13_1048576_10485760_1048576_524288_1_1_1_0_100_1";
-        String defaultHigh = "13_13_13_13_1048576_15728640_3145728_524288_1_1_1_0_100_1";
+        String defaultMedium = "13_13_13_13_1048576_10485760_1048576_524288_1_1_1_0_100_0";
+        String defaultHigh = "13_13_13_13_1048576_15728640_3145728_524288_1_1_1_0_100_0";
         lowPreset = new Preset(preferences.getString("preset0", defaultLow), defaultLow);
         lowPreset.preloadStories = false;
         mediumPreset = new Preset(preferences.getString("preset1", defaultMedium), defaultMedium);
@@ -307,6 +307,8 @@ public class DownloadController extends BaseController implements NotificationCe
             wifiMaxFileSize[3] = preferences.getLong("wifiMaxDownloadSize" + 3, highPreset.sizes[PRESET_SIZE_NUM_DOCUMENT]);
             roamingMaxFileSize[2] = preferences.getLong("roamingMaxDownloadSize" + 2, lowPreset.sizes[PRESET_SIZE_NUM_VIDEO]);
             roamingMaxFileSize[3] = preferences.getLong("roamingMaxDownloadSize" + 3, lowPreset.sizes[PRESET_SIZE_NUM_DOCUMENT]);
+
+            roamingPreset.enabled = false;
 
             boolean globalAutodownloadEnabled = preferences.getBoolean("globalAutodownloadEnabled", true);
             mobilePreset = new Preset(mobileDataDownloadMask, mediumPreset.sizes[PRESET_SIZE_NUM_PHOTO], mobileMaxFileSize[2], mobileMaxFileSize[3], true, true, globalAutodownloadEnabled, false, 100, false);
