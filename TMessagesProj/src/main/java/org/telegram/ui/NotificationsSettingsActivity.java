@@ -149,6 +149,11 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
         MessagesController.getInstance(currentAccount).loadSignUpNotificationsSettings();
         loadExceptions();
 
+        SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
+        if (!preferences.contains("EnableInChatSound")) {
+            preferences.edit().putBoolean("EnableInChatSound", false).apply();
+        }
+
         if (UserConfig.getActivatedAccountsCount() > 1) {
             accountsSectionRow = rowCount++;
             accountsAllRow = rowCount++;
@@ -613,7 +618,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
             } else if (position == inchatSoundRow) {
                 SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
                 SharedPreferences.Editor editor = preferences.edit();
-                enabled = preferences.getBoolean("EnableInChatSound", false);
+                enabled = preferences.getBoolean("EnableInChatSound", true);
                 editor.putBoolean("EnableInChatSound", !enabled);
                 editor.commit();
                 getNotificationsController().setInChatSoundEnabled(!enabled);
