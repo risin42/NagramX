@@ -38,19 +38,19 @@ public class NekoXConfig {
 //            1151172683, // NekoX Chat
 //            1299578049, // NekoX Chat Channel
 //            1137038259, // NekoX APKs
-            1500637449, // Nagram
-            1645699549, // Nagram Updates
-            2001739482, // Nagram Tips
+//            1500637449, // Nagram
+//            1645699549, // Nagram Updates
+//            2001739482, // Nagram Tips
     };
 
     public static long[] developers = {
-            896711046, // nekohasekai
-            380570774, // Haruhi
-            784901712, // NextAlone
-            457896977, // Queally
-            782954985, // MaiTungTM
-            5412523572L, //blxueya
-            676660002, // mrwangzhe
+//            896711046, // nekohasekai
+//            380570774, // Haruhi
+//            784901712, // NextAlone
+//            457896977, // Queally
+//            782954985, // MaiTungTM
+//            5412523572L, //blxueya
+//            676660002, // mrwangzhe
     };
 
     public static final int TITLE_TYPE_TEXT = 0;
@@ -73,7 +73,7 @@ public class NekoXConfig {
     public static boolean disableStatusUpdate = preferences.getBoolean("disable_status_update", false);
     public static boolean keepOnlineStatus = preferences.getBoolean("keepOnlineStatus", false);
 
-    public static int autoUpdateReleaseChannel = preferences.getInt("autoUpdateReleaseChannel", 2);
+    public static int autoUpdateReleaseChannel = preferences.getInt("autoUpdateReleaseChannel", 0);
 //    public static String ignoredUpdateTag = preferences.getString("ignoredUpdateTag", "");
 //    public static long nextUpdateCheck = preferences.getLong("nextUpdateCheckTimestamp", 0);
 
