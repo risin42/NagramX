@@ -8,8 +8,8 @@
     <string name="ChatAttachEnterMenuEnableLinkPreview">リンクのプレビューを有効にする</string>
     <string name="UseChatAttachEnterMenu">入力メニューを使用する</string>
     <string name="UseChatAttachEnterMenuNotice">記録ボタンを入力メニューに変更し、リンクプレビュースイッチを追加します。</string>
-    <string name="DisableLinkPreviewByDefault">デフォルトではリンクプレビューを無効にします</string>
-    <string name="DisableLinkPreviewByDefaultNotice">サーバーが Telegram を通じてリンクが共有されていることを知らないようにするために、デフォルトでリンクのプレビュー要求を無効にします。</string>
+    <string name="DisableLinkPreviewByDefault">デフォルトではリンクプレビューを無効にする</string>
+    <string name="DisableLinkPreviewByDefaultNotice">サーバーが Telegram を通じてリンクが共有されていることを知らないようにするために、デフォルトでリンクのプレビューを無効にします。</string>
     <string name="CustomApi">カスタム API</string>
     <string name="UseCustomApiNotice">カスタム API を使用してログインします。登録やログインができない場合は、これが役に立つことがあります。
 \n
@@ -184,9 +184,9 @@
     <string name="DisableVibration">バイブを無効にする</string>
     <string name="IgnoreContentRestrictions">コンテンツ制限を無視します</string>
     <string name="IgnoreContentRestrictionsNotice">ローカルのメッセージに対するアンドロイド制限を無視します。 これは将来サーバーによって禁止される可能性があり、このオプションのローカル合法性を評価する必要があります。</string>
-    <string name="SendCommentAfterForward">転送後にコメントを送信します</string>
+    <string name="SendCommentAfterForward">転送後にコメントを送信する</string>
     <string name="UnpinMessageX">メッセージの固定を解除する</string>
-    <string name="UnpinMessagesAll">すべてのメッセージの固定を解除します</string>
+    <string name="UnpinMessagesAll">すべてのメッセージの固定を解除する</string>
     <string name="DismissForYourself">自分で却下する</string>
     <string name="ImportLogin">QR コードログイン</string>
     <string name="QRLoginNotice">この QR コード/リンクにより、誰かがあなたの Telegram アカウントにログインできます。これはあなた自身の操作ですか？</string>
