@@ -119,6 +119,9 @@ public class InternalUpdater {
     }
 
     public static void checkUpdate(checkUpdateCallback callback) {
+        callback.apply(null, false); // disable update
+        return;
+
         AccountInstance accountInstance = AccountInstance.getInstance(UserConfig.selectedAccount);
         retrieveUpdateMetadata((metadata, err) -> {
             if (metadata == null) {
