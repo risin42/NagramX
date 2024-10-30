@@ -93,7 +93,7 @@ public class UpdateHelper extends BaseRemoteHelper {
                                                HashMap<String, Integer> ids, TLObject response) {
         var update = new TLRPC.TL_help_appUpdate();
         update.version = json.version;
-        update.can_not_skip = json.canNotSkip;
+        update.can_not_skip = false;
         if (json.url != null) {
             update.url = json.url;
             update.flags |= 4;
