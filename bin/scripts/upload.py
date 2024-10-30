@@ -26,14 +26,14 @@ def get_thumb() -> str:
 
 
 def get_caption() -> str:
-    pre = "Test version, " if test_version else ""
+    pre = "Test version, " if test_version else "Release version, "
     with open(artifacts_path / "caption.txt", "r", encoding="utf-8") as f:
         return pre + f.read()
 
 
 def get_document() -> list["InputMediaDocument"]:
     documents = []
-    abis = ["arm64-v8a", "armeabi-v7a"]
+    abis = ["arm64-v8a"]
     for abi in abis:
         if apk := find_apk(abi):
             documents.append(
