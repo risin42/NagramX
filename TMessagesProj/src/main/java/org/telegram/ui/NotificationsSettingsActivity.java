@@ -1010,7 +1010,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
                     } else if (position == badgeNumberMessagesRow) {
                         checkCell.setTextAndCheck(getString("BadgeNumberUnread", R.string.BadgeNumberUnread), getNotificationsController().showBadgeMessages, false);
                     } else if (position == inchatSoundRow) {
-                        checkCell.setTextAndCheck(getString("InChatSound", R.string.InChatSound), preferences.getBoolean("EnableInChatSound", true), true);
+                        checkCell.setTextAndCheck(getString("InChatSound", R.string.InChatSound), preferences.getBoolean("EnableInChatSound", false), true);
                     } else if (position == callsVibrateRow) {
                         checkCell.setTextAndCheck(getString("Vibrate", R.string.Vibrate), preferences.getBoolean("EnableCallVibrate", true), true);
                     } else if (position == accountsAllRow) {
