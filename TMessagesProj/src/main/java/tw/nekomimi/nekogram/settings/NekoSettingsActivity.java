@@ -377,7 +377,7 @@ public class NekoSettingsActivity extends BaseFragment {
                     presentFragment(new NekoPasscodeSettingsActivity());
                 } else if (position == experimentRow) {
                     presentFragment(new NekoExperimentalSettingsActivity());
-                  else if (position == xChannelRow) {
+                } else if (position == xChannelRow) {
                     MessagesController.getInstance(currentAccount).openByUserName("NagramX", NekoSettingsActivity.this, 1);
                 } else if (position == channelRow) {
                     MessagesController.getInstance(currentAccount).openByUserName("nagram_channel", NekoSettingsActivity.this, 1);
