@@ -334,7 +334,7 @@ public class NekoSettingsActivity extends BaseFragment {
                             TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
                             if (position == xChannelRow) {
                                 textCell.setTextAndValue(LocaleController.getString("XChannel", R.string.XChannel), "@NagramX", true);
-                            if (position == channelRow) {
+                            } else if (position == channelRow) {
                                 textCell.setTextAndValue(LocaleController.getString("OfficialChannel", R.string.OfficialChannel), "@nagram_channel", true);
                             } else if (position == channelTipsRow) {
                                 textCell.setTextAndValue(LocaleController.getString("TipsChannel", R.string.TipsChannel), "@" + channelUsernameTips, true);
