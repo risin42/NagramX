@@ -613,7 +613,7 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
             } else if (position == inchatSoundRow) {
                 SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
                 SharedPreferences.Editor editor = preferences.edit();
-                enabled = preferences.getBoolean("EnableInChatSound", true);
+                enabled = preferences.getBoolean("EnableInChatSound", false);
                 editor.putBoolean("EnableInChatSound", !enabled);
                 editor.commit();
                 getNotificationsController().setInChatSoundEnabled(!enabled);
