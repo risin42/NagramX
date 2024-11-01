@@ -245,6 +245,7 @@ public class NekoSettingsActivity extends BaseFragment {
         private int importSettingsRow = -1;
         private int exportSettingsRow = -1;
 
+        private int xChannelRow = -1;
         private int channelRow = -1;
         private int channelTipsRow = -1;
         private int sourceCodeRow = -1;
@@ -331,6 +332,8 @@ public class NekoSettingsActivity extends BaseFragment {
                         }
                         case VIEW_TYPE_TEXT_LINK: {
                             TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
+                            if (position == xChannelRow) {
+                                textCell.setTextAndValue(LocaleController.getString("XChannel", R.string.XChannel), "@NagramX", true);
                             if (position == channelRow) {
                                 textCell.setTextAndValue(LocaleController.getString("OfficialChannel", R.string.OfficialChannel), "@nagram_channel", true);
                             } else if (position == channelTipsRow) {
@@ -374,6 +377,8 @@ public class NekoSettingsActivity extends BaseFragment {
                     presentFragment(new NekoPasscodeSettingsActivity());
                 } else if (position == experimentRow) {
                     presentFragment(new NekoExperimentalSettingsActivity());
+                  else if (position == xChannelRow) {
+                    MessagesController.getInstance(currentAccount).openByUserName("NagramX", NekoSettingsActivity.this, 1);
                 } else if (position == channelRow) {
                     MessagesController.getInstance(currentAccount).openByUserName("nagram_channel", NekoSettingsActivity.this, 1);
                 } else if (position == channelTipsRow) {
@@ -416,6 +421,7 @@ public class NekoSettingsActivity extends BaseFragment {
                 importSettingsRow = rowCount++;
                 exportSettingsRow = rowCount++;
             } else {
+                xChannelRow = rowCount++;
                 channelRow = rowCount++;
                 channelTipsRow = rowCount++;
                 sourceCodeRow = rowCount++;
