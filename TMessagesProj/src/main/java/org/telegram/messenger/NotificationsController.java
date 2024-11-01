@@ -199,7 +199,7 @@ public class NotificationsController extends BaseController {
         notificationId = currentAccount + 1;
         notificationGroup = "messages" + (currentAccount == 0 ? "" : currentAccount);
         SharedPreferences preferences = getAccountInstance().getNotificationsSettings();
-        inChatSoundEnabled = preferences.getBoolean("EnableInChatSound", true);
+        inChatSoundEnabled = preferences.getBoolean("EnableInChatSound", false);
         showBadgeNumber = preferences.getBoolean("badgeNumber", true);
         showBadgeMuted = preferences.getBoolean("badgeNumberMuted", false);
         showBadgeMessages = preferences.getBoolean("badgeNumberMessages", true);
