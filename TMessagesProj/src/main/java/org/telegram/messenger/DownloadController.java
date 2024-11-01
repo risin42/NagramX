@@ -262,7 +262,7 @@ public class DownloadController extends BaseController implements NotificationCe
     public DownloadController(int instance) {
         super(instance);
         SharedPreferences preferences = MessagesController.getMainSettings(currentAccount);
-        String defaultLow = "1_1_1_1_1048576_512000_512000_524288_0_0_1_1_50_0";
+        String defaultLow = "0_0_0_0_1048576_512000_512000_524288_0_0_1_1_50_0";
         String defaultMedium = "13_13_13_13_1048576_10485760_1048576_524288_1_1_1_0_100_0";
         String defaultHigh = "13_13_13_13_1048576_15728640_3145728_524288_1_1_1_0_100_0";
         lowPreset = new Preset(preferences.getString("preset0", defaultLow), defaultLow);
