@@ -1,10 +1,10 @@
-# Nagram Variant
+# Nagram X
 A modified version of Nagram with customized features.
 
 ## CI Channel:
 https://t.me/NagramX
 
-## Differences from the upstream Nagram:
+## Differences from the upstream:
 - Removed genuine integrity checks
 - Removed in-app automatic updates, including forced updates
 - Disabled channel follow reminder pop-ups
