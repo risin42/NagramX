@@ -1,3 +1,25 @@
+# Nagram X
+A modified version of Nagram with customized features.
+
+## CI Channel:
+https://t.me/NagramX
+
+## Differences from the upstream:
+- Removed genuine integrity checks
+- Removed in-app automatic updates, including forced updates
+- Removed channel follow pop-ups
+- Redone Japanese localization
+- N-Settings hidden features are enabled by default
+- **Default setting changes:**
+    - In-Chat sound is now off
+    - Dynamic Pack Order is now off
+    - Removed default value for PushServiceTypeUnifiedGateway
+    - Adjusted default font size and bubbleRadius
+    - Adjusted some default settings in N-Settings
+- Various bug fixes and improvements
+
+Work is ongoing to enhance features and resolve some issues.
+
 # Nagram
 
 Nagram is a third-party Telegram client based on [NekoX](https://github.com/NekoX-Dev/NekoX) with some modifications.
