@@ -7,12 +7,12 @@ https://t.me/NagramX
 ## Differences from the upstream:
 - Removed genuine integrity checks
 - Removed in-app automatic updates, including forced updates
-- Disabled channel follow reminder pop-ups
-- Removed default connection address for PushServiceTypeUnifiedGateway
-- Redone Japanese localization translation
+- Removed channel follow pop-ups
+- Redone Japanese localization
+- N-Settings hidden features are enabled by default
 - **Default setting changes:**
     - In-Chat sound is now off
-    - N-Settings hidden features are enabled by default
+	- Removed default value for PushServiceTypeUnifiedGateway
     - Adjusted default font size and bubbleRadius
     - Adjusted some default settings in N-Settings
 - Various bug fixes and improvements
