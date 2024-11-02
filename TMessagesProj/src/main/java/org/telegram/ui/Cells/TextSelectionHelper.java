@@ -1418,6 +1418,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
         final ActionMode.Callback callback = new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                menu.removeItem(R.id.hyperos_ai);
                 menu.add(Menu.NONE, android.R.id.copy, 0, android.R.string.copy);
                 menu.add(Menu.NONE, R.id.menu_quote, 1, LocaleController.getString(R.string.Quote));
                 menu.add(Menu.NONE, android.R.id.selectAll, 2, android.R.string.selectAll);

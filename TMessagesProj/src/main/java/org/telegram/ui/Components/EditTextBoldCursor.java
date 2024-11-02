@@ -9,13 +9,19 @@
 package org.telegram.ui.Components;
 
 import static org.telegram.messenger.AndroidUtilities.dp;
+import static org.telegram.messenger.AndroidUtilities.getSystemProperty;
 import static org.telegram.messenger.AndroidUtilities.getWallpaperRotation;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -176,6 +182,9 @@ public class EditTextBoldCursor extends EditTextEffects {
     private static Method canUndoMethod;
     private static Method canRedoMethod;
 
+    public static boolean IS_HYPEROS = getSystemProperty("ro.mi.os.version.name") != null;
+    private static final String HYPEROS_NOTES_PKG = "com.miui.notes";
+    private static final String HYPEROS_AI_SERVICE = "com.miui.notes.ai.AiTextWidgetService";
     static {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -1219,12 +1228,112 @@ public class EditTextBoldCursor extends EditTextEffects {
             if (NaConfig.INSTANCE.getShowTextUndoRedo().Bool()) {
                 addUndoRedo(floatingActionMode.getMenu());
             }
+            if (NaConfig.INSTANCE.getEnableHyperOsAi().Bool()) {
+                addHyperOsAi(floatingActionMode.getMenu());
+            }
             floatingActionMode.invalidate();
             getViewTreeObserver().addOnPreDrawListener(floatingToolbarPreDrawListener);
             invalidate();
             return floatingActionMode;
         } else {
             return super.startActionMode(callback);
+        }
+    }
+
+    private void addHyperOsAi(Menu menu) {
+        // Check if is HyperOS
+        if (!IS_HYPEROS || !NaConfig.INSTANCE.getEnableHyperOsAi().Bool()) {
+            return;
+        }
+
+        PackageManager packageManager = getContext().getPackageManager();
+        if (packageManager == null) {
+            return;
+        }
+
+        try {
+            // Retrieve package information for HyperOS Notes
+            PackageInfo packageInfo = packageManager.getPackageInfo(HYPEROS_NOTES_PKG, 0);
+
+            if (packageInfo.versionCode < 1100) {
+                return;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            // Package not found, exit gracefully
+            return;
+        }
+
+        // Add AI menu item if it doesn't already exist
+        if (menu.findItem(R.id.hyperos_ai) == null) {
+            menu.add(Menu.NONE, R.id.hyperos_ai, 0, "AI")
+                .setAlphabeticShortcut('s')
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+    }
+
+    @Override
+    public boolean onTextContextMenuItem(int id) {
+        if (id == R.id.hyperos_ai) {
+            startHyperOsAiService();
+            return true;
+        }
+        return super.onTextContextMenuItem(id);
+    }
+
+    private void startHyperOsAiService() {
+        try {
+            String currentPackage = getContext().getPackageName();
+            Intent serviceIntent = new Intent();
+
+            // Pass the package name
+            serviceIntent.putExtra("packageName", currentPackage);
+
+            // Handle selection logic
+            String selectedText = "";
+            if (hasSelection()) {
+                int selectionStart = getSelectionStart();
+                int selectionEnd = getSelectionEnd();
+                if (selectionStart != selectionEnd) {
+                    selectedText = getText().subSequence(selectionStart, selectionEnd).toString();
+                }
+            }
+            serviceIntent.putExtra("selectedText", selectedText);
+
+            // Store original view bounds
+            serviceIntent.putExtra("originalViewLeft", getLeft());
+            serviceIntent.putExtra("originalViewTop", getTop());
+            serviceIntent.putExtra("originalViewRight", getRight());
+            serviceIntent.putExtra("originalViewBottom", getBottom());
+            serviceIntent.putExtra("originalViewName", getClass().getName());
+            serviceIntent.putExtra("isEditor", true);
+
+            // Get the active screen location
+            int[] screenCoordinates = new int[2];
+            Rect focusedRect = new Rect();
+            getLocationOnScreen(screenCoordinates);
+            getFocusedRect(focusedRect);
+            focusedRect.offset(screenCoordinates[0], screenCoordinates[1]);
+
+            Activity currentActivity = (Activity) getContext();
+            if (currentActivity != null) {
+                Rect windowFrame = new Rect();
+                currentActivity.getWindow().getDecorView().getWindowVisibleDisplayFrame(windowFrame);
+
+                // Putting the visible window bounds into the Intent
+                serviceIntent.putExtra("left", windowFrame.left);
+                serviceIntent.putExtra("top", windowFrame.top);
+                serviceIntent.putExtra("right", windowFrame.right);
+                serviceIntent.putExtra("bottom", windowFrame.bottom);
+                serviceIntent.putExtra("taskId", currentActivity.getTaskId());
+            }
+
+            // Prepare and start the service
+            serviceIntent.setComponent(new ComponentName(HYPEROS_NOTES_PKG, HYPEROS_AI_SERVICE));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                getContext().startForegroundService(serviceIntent);
+            }
+        } catch (Exception e) {
+            Log.e(NaConfig.TAG, "Error starting HyperOS AI service", e);
         }
     }
 

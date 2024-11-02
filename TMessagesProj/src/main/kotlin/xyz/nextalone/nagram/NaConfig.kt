@@ -652,6 +652,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val enableHyperOsAi =
+        addConfig(
+            "EnableHyperOsAi",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     private fun addConfig(
         k: String,

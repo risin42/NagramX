@@ -49,6 +49,7 @@ import java.util.regex.Pattern;
 
 import kotlin.Unit;
 
+import kotlin.internal.LowPriorityInOverloadResolution;
 import tw.nekomimi.nekogram.ui.PopupBuilder;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.ZipUtil;
@@ -142,6 +143,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell enablePanguOnSendingRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnablePanguOnSending(), LocaleController.getString(R.string.PanguInfo)));
     private final AbstractConfigCell enablePanguOnReceivingRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnablePanguOnReceiving()));
     private final AbstractConfigCell localeToDBCRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.localeToDBC));
+    private final AbstractConfigCell enableHyperOsAiRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableHyperOsAi()));
     private final AbstractConfigCell divider3 = cellGroup.appendCell(new ConfigCellDivider());
 
     private UndoView tooltip;
