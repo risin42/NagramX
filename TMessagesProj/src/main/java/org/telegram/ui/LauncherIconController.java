@@ -73,7 +73,7 @@ public class LauncherIconController {
         }
 
         public boolean isNekoX() {
-            return this == BLUE;
+            return this == DEFAULT;
         }
     }
 }
