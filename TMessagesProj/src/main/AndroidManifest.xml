@@ -157,8 +157,6 @@
             android:enabled="false"
             android:name="org.telegram.messenger.DefaultIcon"
             android:targetActivity="org.telegram.ui.LaunchActivity"
-            android:icon="@mipmap/ic_launcher_nagram"
-            android:roundIcon="@mipmap/ic_launcher_nagram_round"
             android:exported="true">
 
             <intent-filter>
