@@ -12,7 +12,8 @@ https://t.me/NagramX
 - N-Settings hidden features are enabled by default
 - **Default setting changes:**
     - In-Chat sound is now off
-	- Removed default value for PushServiceTypeUnifiedGateway
+    - Dynamic Pack Order is now off
+    - Removed default value for PushServiceTypeUnifiedGateway
     - Adjusted default font size and bubbleRadius
     - Adjusted some default settings in N-Settings
 - Various bug fixes and improvements
