@@ -116,8 +116,8 @@ android {
         versionName verName
         versionCode verCode
 
-        def appId = "11535358"
-        def appHash = "33d372962fadb01df47e6ceed4e33cd6"
+        def appId = ""
+        def appHash = ""
 
         //obtain your own keys at https://core.telegram.org/api/obtaining_api_id
 

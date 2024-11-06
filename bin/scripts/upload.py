@@ -1,3 +1,4 @@
+import os
 import contextlib
 from pathlib import Path
 from sys import argv
@@ -5,8 +6,8 @@ from sys import argv
 from pyrogram import Client
 from pyrogram.types import InputMediaDocument
 
-api_id = 11535358
-api_hash = "33d372962fadb01df47e6ceed4e33cd6"
+api_id = os.environ.get("APP_ID")
+api_hash = os.environ.get("APP_HASH")
 artifacts_path = Path("artifacts")
 test_version = argv[3] == "test" if len(argv) > 2 else None
 

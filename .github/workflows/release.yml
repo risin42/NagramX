@@ -242,6 +242,9 @@ jobs:
         with:
           python-version: 3.12
       - name: Send to Telegram
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          APP_HASH: ${{ secrets.APP_HASH }}
         run: |
           # send release via telegram bot api
           export mini64=$(find artifacts -name "*arm64-v8a.apk")
