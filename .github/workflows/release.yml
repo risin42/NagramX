@@ -111,7 +111,6 @@ jobs:
     strategy:
       matrix:
         flavor:
-          - armeabi-v7a
           - arm64-v8a
     steps:
       - name: Checkout
@@ -198,12 +197,6 @@ jobs:
           sed -i 's/\/\///g' settings.gradle
           git submodule status TMessagesProj/jni/ffmpeg > ffmpeg_status
           git submodule status TMessagesProj/jni/boringssl > boringssl_status
-      - name: Native Cache (armeabi-v7a)
-        uses: actions/cache@v2
-        with:
-          path: |
-            TMessagesProj/src/main/libs
-          key: ${{ hashFiles('TMessagesProj/jni/**', 'ffmpeg_status', 'boringssl_status') }}-armeabi-v7a
       - name: Native Cache (arm64-v8a)
         uses: actions/cache@v2
         with:
@@ -252,10 +245,8 @@ jobs:
         run: |
           # send release via telegram bot api
           export mini64=$(find artifacts -name "*arm64-v8a.apk")
-          export mini32=$(find artifacts -name "*armeabi-v7a.apk")
 
           echo $mini64
-          echo $mini32
 
           python -m pip install -r bin/scripts/requirements.txt
           git log -1 --pretty=format:"%s%n%n%b" > artifacts/caption.txt
