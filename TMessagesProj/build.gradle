@@ -330,7 +330,7 @@ dependencies {
     // add splash screen
     implementation("androidx.core:core-splashscreen:1.0.1")
     // add for auto translate
-    implementation 'com.google.mlkit:language-id:17.0.5'
+    implementation 'com.google.mlkit:language-id:17.0.6'
     // add for emoji
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
     // add for up
