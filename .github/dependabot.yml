@@ -5,7 +5,7 @@
 
 version: 2
 updates:
-  - package-ecosystem: "Gradle" # See documentation for possible values
+  - package-ecosystem: "gradle" # See documentation for possible values
     directories: # Location of package manifests
       - "/"
       - "/TMessagesProj"
