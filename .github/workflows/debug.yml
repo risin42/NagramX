@@ -41,7 +41,7 @@ jobs:
             TMessagesProj/jni/libvpx/build
           key: ${{ hashFiles('ffmpeg_status', 'libvpx_status', 'TMessagesProj/jni/*ffmpeg*.sh', 'TMessagesProj/jni/*libvpx*.sh', 'TMessagesProj/jni/patches/ffmpeg/*') }}
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           java-version: '17'
@@ -80,7 +80,7 @@ jobs:
             TMessagesProj/jni/boringssl/build
           key: ${{ hashFiles('boringssl_status') }}
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           java-version: '17'
@@ -145,7 +145,7 @@ jobs:
             TMessagesProj/jni/boringssl/build
           key: ${{ hashFiles('boringssl_status') }}
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           java-version: '17'
@@ -178,7 +178,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
