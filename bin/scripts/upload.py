@@ -27,7 +27,7 @@ def get_thumb() -> str:
 
 
 def get_caption() -> str:
-    pre = "Test version, " if test_version else ""
+    pre = "Test version, " if test_version else "Release version, "
     with open(artifacts_path / "caption.txt", "r", encoding="utf-8") as f:
         return pre + f.read()
 
