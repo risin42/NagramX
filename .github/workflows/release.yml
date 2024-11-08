@@ -37,7 +37,7 @@ jobs:
           git submodule status TMessagesProj/jni/libvpx > libvpx_status
       - name: FFmpeg Cache
         id: cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             TMessagesProj/jni/ffmpeg/build
@@ -77,7 +77,7 @@ jobs:
           git submodule status TMessagesProj/jni/boringssl > boringssl_status
       - name: BoringSSL Cache
         id: cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             TMessagesProj/jni/boringssl/build
@@ -123,7 +123,7 @@ jobs:
           git submodule status TMessagesProj/jni/boringssl > boringssl_status
       - name: Native Cache
         id: cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             TMessagesProj/src/main/libs
@@ -133,7 +133,7 @@ jobs:
         run: |
           git submodule update --init 'TMessagesProj/jni/*'
       - name: FFmpeg Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           path: |
@@ -141,7 +141,7 @@ jobs:
             TMessagesProj/jni/libvpx/build
           key: ${{ hashFiles('ffmpeg_status', 'libvpx_status', 'TMessagesProj/jni/*ffmpeg*.sh', 'TMessagesProj/jni/*libvpx*.sh', 'TMessagesProj/jni/patches/ffmpeg/*') }}
       - name: BoringSSL Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           path: |
@@ -198,7 +198,7 @@ jobs:
           git submodule status TMessagesProj/jni/ffmpeg > ffmpeg_status
           git submodule status TMessagesProj/jni/boringssl > boringssl_status
       - name: Native Cache (arm64-v8a)
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             TMessagesProj/src/main/libs
@@ -207,7 +207,7 @@ jobs:
         run: |
           echo "sdk.dir=${ANDROID_HOME}" >> local.properties
       - name: Gradle cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.gradle
           key: gradle-${{ hashFiles('**/*.gradle') }}
