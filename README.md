@@ -4,6 +4,8 @@ A modified version of Nagram with customized features.
 ## CI Channel:
 https://t.me/NagramX
 
+Before you download: This version enables some features by default that violate Telegram's TOS. Use at your own risk.
+
 ## Differences from the upstream:
 - Removed genuine integrity checks
 - Removed in-app automatic updates, including forced updates
