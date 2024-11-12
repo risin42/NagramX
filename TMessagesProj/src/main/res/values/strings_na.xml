@@ -167,4 +167,5 @@
     <string name="SendWithPangu">Send with Pangu</string>
     <string name="SendWithoutPangu">Send without Pangu</string>
     <string name="EnableHyperOsAi">Enable Xiaomi HyperAI in input field</string>
+    <string name="EnableAntiMessageRecall">Enable anti message recall</string>
 </resources>

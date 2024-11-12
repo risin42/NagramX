@@ -16974,6 +16974,16 @@ public class MessagesController extends BaseController implements NotificationCe
         int interfaceUpdateMask = 0;
         long clientUserId = getUserConfig().getClientUserId();
 
+        if (NaConfig.INSTANCE.getEnableAntiMessageRecall().Bool()) {
+            for (int a = 0; a < updates.size(); a++) {
+                TLRPC.Update update = updates.get(a);
+                if (update instanceof TLRPC.TL_updateDeleteChannelMessages || update instanceof TLRPC.TL_updateDeleteMessages) {
+                    updates.remove(a);
+                    a--;
+                }
+            }
+        }
+ 
         for (int c = 0, size3 = updates.size(); c < size3; c++) {
             TLRPC.Update baseUpdate = updates.get(c);
             if (BuildVars.LOGS_ENABLED && baseUpdate != null) {

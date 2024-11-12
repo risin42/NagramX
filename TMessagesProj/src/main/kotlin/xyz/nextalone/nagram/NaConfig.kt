@@ -658,7 +658,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-
+    val enableAntiMessageRecall =
+        addConfig(
+            "EnableAntiMessageRecall",
+            ConfigItem.configTypeBool,
+            false
+        )
     private fun addConfig(
         k: String,
         t: Int,
