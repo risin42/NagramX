@@ -167,5 +167,10 @@
     <string name="SendWithPangu">Send with Pangu</string>
     <string name="SendWithoutPangu">Send without Pangu</string>
     <string name="EnableHyperOsAi">Enable Xiaomi HyperAI in input field</string>
-    <string name="EnableAntiMessageRecall">Enable anti message recall</string>
+    <string name="EnableSaveDeletedMessages">Enable save deleted messages</string>
+    <string name="DeletedMessage">deleted</string>
+    <string name="EnableSaveMessagesHistory">Enable save messages history</string>
+    <string name="EditsHistoryTitle">Edits history</string>
+    <string name="EditsHistoryMenuText">History</string>
+    <string name="DeleteKeepLocally">Keep locally</string>
 </resources>

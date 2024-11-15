@@ -4,23 +4,28 @@ A modified version of Nagram with customized features.
 ## CI Channel:
 https://t.me/NagramX
 
-Before you download: This version enables some features by default that violate Telegram's TOS. Use at your own risk.
+**Disclaimer:** This version enables some features by default that violate Telegram's Terms of Service (ToS).
 
-## Differences from the upstream:
-- Removed genuine integrity checks
-- Removed in-app automatic updates, including forced updates
-- Removed channel follow pop-ups
-- Redone Japanese localization
-- N-Settings hidden features are enabled by default
-- **Default setting changes:**
-    - In-Chat sound is now off
-    - Dynamic Pack Order is now off
+Use at your own risk.
+
+## Differences from the Nagram:
+- **Additional Features**
+    - Save deleted messages (Thanks to [AyuGram4A](https://github.com/AyuGram/AyuGram4A) and [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram))
+    - Save messages history (Thanks to [AyuGram4A](https://github.com/AyuGram/AyuGram4A) and [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram))
+
+- **Cleanup & Optimization**
+    - Removed genuine integrity checks
+    - Removed in-app automatic updates (including forced updates)
+    - Removed channel follow pop-ups
+    - Redone Japanese localization
+
+- **Default Settings Adjustments**
+    - Enabled N-Settings hidden features
+    - Disabled In-Chat sound
+    - Disabled Dynamic Pack Order
     - Removed default value for PushServiceTypeUnifiedGateway
-    - Adjusted default font size and bubbleRadius
-    - Adjusted some default settings in N-Settings
-- Various bug fixes and improvements
-
-Work is ongoing to enhance features and resolve some issues.
+    - Adjusted default font size and bubbleRadius (Official Telegram defaults)
+    - Adjusted various default settings in N-Settings
 
 # Nagram
 
@@ -171,7 +176,7 @@ Build:
 7. Build with Gradle:
 
    ```shell
-   ./gradlew assembleMini<Debug/Release/ReleaseNoGcm>
+   ./gradlew TMessagesProj:assembleRelease
    ```
 
 ----
