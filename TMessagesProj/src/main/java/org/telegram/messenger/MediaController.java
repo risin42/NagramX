@@ -118,6 +118,7 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.SaveToDownloadReceiver;
 import xyz.nextalone.nagram.helper.AudioEnhance;
+import xyz.nextalone.nagram.NaConfig;
 
 public class MediaController implements AudioManager.OnAudioFocusChangeListener, NotificationCenter.NotificationCenterDelegate, SensorEventListener {
 
@@ -1617,7 +1618,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
             ArrayList<Integer> markAsDeletedMessages = (ArrayList<Integer>) args[0];
             if (playingMessageObject != null) {
                 if (channelId == playingMessageObject.messageOwner.peer_id.channel_id) {
-                    if (markAsDeletedMessages.contains(playingMessageObject.getId())) {
+                    if (markAsDeletedMessages.contains(playingMessageObject.getId()) && !NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
                         cleanupPlayer(true, true);
                     }
                 }

@@ -8340,7 +8340,7 @@ public class MessageObject {
     }
 
     public boolean needDrawBluredPreview() {
-        if (NekoXConfig.disableFlagSecure) {
+        if (NekoXConfig.disableFlagSecure || NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
             return false;
         }
         if (isRepostPreview) {

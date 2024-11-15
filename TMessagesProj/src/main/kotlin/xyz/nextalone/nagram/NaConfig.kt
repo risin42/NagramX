@@ -658,9 +658,15 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val enableAntiMessageRecall =
+    val enableSaveDeletedMessages =
         addConfig(
-            "EnableAntiMessageRecall",
+            "EnableSaveDeletedMessages",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val enableSaveMessagesHistory =
+        addConfig(
+            "EnableSaveMessagesHistory",
             ConfigItem.configTypeBool,
             false
         )

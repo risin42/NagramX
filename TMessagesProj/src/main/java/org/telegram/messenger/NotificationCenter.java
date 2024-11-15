@@ -354,11 +354,9 @@ public class NotificationCenter {
     public static boolean alreadyLogged;
 
     // custom
-
     public static final int updateUserStatus = totalEvents++;
     public static final int updateLoginToken = totalEvents++;
     public static final int accountLogin = totalEvents++;
-
 
     private SparseArray<ArrayList<NotificationCenterDelegate>> observers = new SparseArray<>();
     private SparseArray<ArrayList<NotificationCenterDelegate>> removeAfterBroadcast = new SparseArray<>();

@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import tw.nekomimi.nekogram.helpers.remote.PeerColorHelper;
+import xyz.nextalone.nagram.NaConfig;
 
 public class ChatObject {
 
@@ -1770,7 +1771,11 @@ public class ChatObject {
     }
 
     public static boolean isNotInChat(TLRPC.Chat chat) {
-        return chat == null || chat instanceof TLRPC.TL_chatEmpty || chat instanceof TLRPC.TL_chatForbidden || chat instanceof TLRPC.TL_channelForbidden || chat.left || chat.kicked || chat.deactivated;
+        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+            return chat == null || chat instanceof TLRPC.TL_chatEmpty || chat instanceof TLRPC.TL_chatForbidden || chat instanceof TLRPC.TL_channelForbidden || chat.left || chat.kicked || chat.deactivated;
+        }
+
+        return chat == null || chat.left;
     }
 
     public static boolean isInChat(TLRPC.Chat chat) {
