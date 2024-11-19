@@ -118,7 +118,7 @@ android {
 
         //obtain your own keys at https://core.telegram.org/api/obtaining_api_id
 
-        def appId = 6
+        def appId = "6"
         def appHash = "eb06d4abfb49dc3eeb1aeb98ae0f581e"
 
         if (properties != null) {
