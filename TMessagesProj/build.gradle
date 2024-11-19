@@ -275,7 +275,7 @@ dependencies {
     implementation "androidx.sharetarget:sharetarget:1.2.0"
 
     // just follow official
-    compileOnly 'org.checkerframework:checker-qual:2.5.2'
+    compileOnly 'org.checkerframework:checker-qual:3.48.2'
     compileOnly 'org.checkerframework:checker-compat-qual:2.5.0'
 
     // don"t change this :)
