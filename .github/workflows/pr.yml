@@ -24,7 +24,7 @@ jobs:
     needs: check
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Fetch Status
         run: |
           sed -i 's/\/\///g' settings.gradle
@@ -65,7 +65,7 @@ jobs:
     needs: check
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Fetch Status
         run: |
           sed -i 's/\/\///g' settings.gradle
@@ -109,7 +109,7 @@ jobs:
           - arm64-v8a
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Fetch Status
         run: |
           sed -i 's/\/\///g' settings.gradle
@@ -174,7 +174,7 @@ jobs:
       - native
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
