@@ -21,16 +21,22 @@ def find_apk(abi: str) -> Path:
                 if abi in apk.name:
                     return apk
 
-
 def get_thumb() -> str:
     return "TMessagesProj/src/main/" + "ic_launcher_nagram_round_blue-playstore.png"
 
-
+def get_commit_info():
+    commit_id = os.environ.get("COMMIT_ID", "None")[:7]
+    commit_url = os.environ.get("COMMIT_URL", "None")
+    commit_message = os.environ.get("COMMIT_MESSAGE", "No commit message provided.")
+    return commit_id, commit_url, commit_message
+ 
 def get_caption() -> str:
-    pre = "Test version, " if test_version else "Release version, "
-    with open(artifacts_path / "caption.txt", "r", encoding="utf-8") as f:
-        return pre + f.read()
-
+    commit_id, commit_url, commit_message = get_commit_info()
+    pre = "Test version." if test_version else "Release version."
+    caption = f"{pre}\n\n"
+    caption += f"```Commit Message\n{commit_message}```\n\n"
+    caption += f"See commit details [{commit_id}]({commit_url})"
+    return caption
 
 def get_document() -> list["InputMediaDocument"]:
     documents = []
@@ -44,8 +50,8 @@ def get_document() -> list["InputMediaDocument"]:
                 )
             )
     documents[-1].caption = get_caption()
+    print(documents)
     return documents
-
 
 def retry(func):
     async def wrapper(*args, **kwargs):
@@ -57,7 +63,6 @@ def retry(func):
 
     return wrapper
 
-
 @retry
 async def send_to_channel(client: "Client", cid: str):
     with contextlib.suppress(ValueError):
@@ -67,7 +72,6 @@ async def send_to_channel(client: "Client", cid: str):
         media=get_document(),
     )
 
-
 def get_client(bot_token: str):
     return Client(
         "helper_bot",
@@ -75,7 +79,6 @@ def get_client(bot_token: str):
         api_hash=api_hash,
         bot_token=bot_token,
     )
-
 
 async def main():
     bot_token = argv[1]
