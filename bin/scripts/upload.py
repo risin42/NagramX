@@ -22,7 +22,7 @@ def find_apk(abi: str) -> Path:
                     return apk
 
 def get_thumb() -> str:
-    return "TMessagesProj/src/main/" + "ic_launcher_nagram_round_blue-playstore.png"
+    return "TMessagesProj/src/main/" + "ic_launcher_nagram_block_round-playstore.png"
 
 def get_commit_info():
     commit_id = os.environ.get("COMMIT_ID", "None")[:7]
@@ -34,7 +34,7 @@ def get_caption() -> str:
     commit_id, commit_url, commit_message = get_commit_info()
     pre = "Test version." if test_version else "Release version."
     caption = f"{pre}\n\n"
-    caption += f"```Commit Message\n{commit_message}```\n\n"
+    caption += f"Commit Message:\n<blockquote expandable>{commit_message}</blockquote>\n\n"
     caption += f"See commit details [{commit_id}]({commit_url})"
     return caption
 

@@ -71,7 +71,7 @@ public class AyuMessagesController {
         try {
             onMessageEditedInner(prefs, newMessage, false);
         } catch (Exception e) {
-            Log.e("NagramX", "error onMessageEdited", e);
+            Log.e("nu.gpu.nagram", "error onMessageEdited", e);
             FileLog.e("onMessageEdited", e);
         }
     }
@@ -80,7 +80,7 @@ public class AyuMessagesController {
         try {
             onMessageEditedInner(prefs, prefs.getMessage(), true);
         } catch (Exception e) {
-            Log.e("NagramX", "error onMessageEditedForce", e);
+            Log.e("nu.gpu.nagram", "error onMessageEditedForce", e);
             FileLog.e("onMessageEditedForce", e);
         }
     }
@@ -131,14 +131,14 @@ public class AyuMessagesController {
 
     public void onMessageDeleted(AyuSavePreferences prefs) {
         if (prefs.getMessage() == null) {
-            Log.w("NagramX", "null msg ?");
+            Log.w("nu.gpu.nagram", "null msg ?");
             return;
         }
 
         try {
             onMessageDeletedInner(prefs);
         } catch (Exception e) {
-            Log.e("NagramX", "error onMessageDeleted", e);
+            Log.e("nu.gpu.nagram", "error onMessageDeleted", e);
             FileLog.e("onMessageDeleted", e);
         }
     }
@@ -160,7 +160,7 @@ public class AyuMessagesController {
 
         var msg = prefs.getMessage();
 
-        Log.d("NagramX", "saving message " + prefs.getMessageId() + " for " + prefs.getDialogId() + " with topic " + prefs.getTopicId());
+        Log.d("nu.gpu.nagram", "saving message " + prefs.getMessageId() + " for " + prefs.getDialogId() + " with topic " + prefs.getTopicId());
 
         AyuMessageUtils.map(prefs, deletedMessage);
         AyuMessageUtils.mapMedia(prefs, deletedMessage, true);
@@ -190,7 +190,7 @@ public class AyuMessagesController {
                 deletedReaction.documentId = ((TLRPC.TL_reactionCustomEmoji) reaction.reaction).document_id;
                 deletedReaction.isCustom = true;
             } else {
-                Log.e("NagramX", "fake news emoji");
+                Log.e("nu.gpu.nagram", "fake news emoji");
                 continue;
             }
 
@@ -232,7 +232,7 @@ public class AyuMessagesController {
                 try {
                     p.delete();
                 } catch (Exception e) {
-                    Log.e("NagramX", "failed to delete file " + msg.message.mediaPath, e);
+                    Log.e("nu.gpu.nagram", "failed to delete file " + msg.message.mediaPath, e);
                 }
             }
         }

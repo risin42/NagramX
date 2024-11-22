@@ -56,6 +56,6 @@ public class AnalyticsHelper {
                         "nkmrcfg",
                         Context.MODE_PRIVATE
         );
-        return preferences.getBoolean("SentryAnalytics", true);
+        return preferences.getBoolean("SentryAnalytics", false);
     }
 }

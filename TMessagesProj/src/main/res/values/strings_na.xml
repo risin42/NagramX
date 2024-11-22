@@ -169,8 +169,8 @@
     <string name="EnableHyperOsAi">Enable Xiaomi HyperAI in input field</string>
     <string name="EnableSaveDeletedMessages">Enable save deleted messages</string>
     <string name="DeletedMessage">deleted</string>
-    <string name="EnableSaveMessagesHistory">Enable save messages history</string>
+    <string name="EnableSaveEditsHistory">Enable save edits history</string>
     <string name="EditsHistoryTitle">Edits history</string>
-    <string name="EditsHistoryMenuText">History</string>
+    <string name="EditsHistoryMenuText">Edits history</string>
     <string name="DeleteKeepLocally">Keep locally</string>
 </resources>

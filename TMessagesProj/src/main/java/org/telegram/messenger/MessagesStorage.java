@@ -4475,7 +4475,7 @@ public class MessagesStorage extends BaseController {
                                 
                             } else {
                                 // --- AyuGram hook
-                                if (NaConfig.INSTANCE.getEnableSaveMessagesHistory().Bool()) {
+                                if (NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool()) {
                                     var prefs = new AyuSavePreferences(message, currentAccount);
                                     prefs.setDialogId(dialogId);
                                     AyuMessagesController.getInstance().onMessageEditedForce(prefs);
@@ -14894,7 +14894,7 @@ public class MessagesStorage extends BaseController {
                                     }
                                     if (message.from_id != null && (!oldMessage.message.equals(message.message) || !sameMedia)) {
                                         // --- AyuGram hook
-                                        if (NaConfig.INSTANCE.getEnableSaveMessagesHistory().Bool()) {
+                                        if (NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool()) {
                                             var prefs = new AyuSavePreferences(oldMessage, currentAccount);
                                             prefs.setDialogId(dialogId);
                                             AyuMessagesController.getInstance().onMessageEdited(prefs, message);

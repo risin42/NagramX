@@ -20440,23 +20440,23 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (Math.abs(secretStartId - secretEndId) == 1 || (secretStartId == msg1 && secretEndId == msg2)) { // empty dialog, so load as much as we can
                     startId = minVal;
                     endId = maxVal;
-                    Log.d("NagramX", "case 1");
+                    Log.d("nu.gpu.nagram", "case 1");
                 } else if (secretStartId == msg1) { // loaded up to top
                     startId = minVal;
                     endId = msg2;
-                    Log.d("NagramX", "case 2");
+                    Log.d("nu.gpu.nagram", "case 2");
                 } else if (secretEndId == msg2) { // loaded up to bottom
                     startId = msg1;
                     endId = maxVal;
-                    Log.d("NagramX", "case 3");
+                    Log.d("nu.gpu.nagram", "case 3");
                 } else { // just between some messages
                     startId = msg1;
                     endId = msg2;
-                    Log.d("NagramX", "case 4");
+                    Log.d("nu.gpu.nagram", "case 4");
                 }
 
-                Log.d("NagramX", "omfg " + secretStartId + " " + secretEndId);
-                Log.d("NagramX", "omfg2 " + msg1 + " " + msg2);
+                Log.d("nu.gpu.nagram", "omfg " + secretStartId + " " + secretEndId);
+                Log.d("nu.gpu.nagram", "omfg2 " + msg1 + " " + msg2);
             }
 
             if (startId > endId) {
@@ -20465,7 +20465,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 endId = t;
             }
 
-            Log.d("NagramX",
+            Log.d("nu.gpu.nagram",
                     "messArr: " + messArr.size()
                     + " , startId: " + startId
                     + " , endId: " + endId

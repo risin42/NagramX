@@ -215,7 +215,7 @@
     <string name="TextReplace">Replace</string>
     <string name="ReplaceRegex">Use regex</string>
     <string name="DisableTrending">Disable trending</string>
-    <string name="AutoDownload">AutoDownload</string>
+    <string name="AutoDownload">Disable AutoDownload</string>
     <string name="Win32ExecutableFiles">Win32 executable files</string>
     <string name="ArchiveFiles">Archive files</string>
     <string name="EnableStickerPin">Enable pinning sticker</string>

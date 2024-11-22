@@ -11,7 +11,7 @@ Use at your own risk.
 ## Differences from the Nagram:
 - **Additional Features**
     - Save deleted messages (Thanks to [AyuGram4A](https://github.com/AyuGram/AyuGram4A) and [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram))
-    - Save messages history (Thanks to [AyuGram4A](https://github.com/AyuGram/AyuGram4A) and [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram))
+    - Save edits history (Thanks to [AyuGram4A](https://github.com/AyuGram/AyuGram4A) and [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram))
 
 - **Cleanup & Optimization**
     - Removed genuine integrity checks

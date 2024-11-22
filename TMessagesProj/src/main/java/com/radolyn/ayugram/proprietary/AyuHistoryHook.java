@@ -136,14 +136,14 @@ public abstract class AyuHistoryHook {
                 messagesStorage.getUsersInternal(usersToLoad, someUsersFrom_usersAndChatsFromDeletedMessages);
             }
         } catch (Exception e2) {
-            Log.e("NagramX", String.valueOf(e2));
+            Log.e("nu.gpu.nagram", String.valueOf(e2));
         }
         try {
             if (!chatsToLoad.isEmpty()) {
                 messagesStorage.getChatsInternal(TextUtils.join(",", chatsToLoad), deletedChats);
             }
         } catch (Exception e3) {
-            Log.e("NagramX", String.valueOf(e3));
+            Log.e("nu.gpu.nagram", String.valueOf(e3));
         }
         LongSparseArray newMessageObjectUsers = new LongSparseArray();
         LongSparseArray newMessageObjectChats = new LongSparseArray();

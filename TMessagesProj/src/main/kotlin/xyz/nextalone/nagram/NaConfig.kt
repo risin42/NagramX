@@ -590,7 +590,7 @@ object NaConfig {
         addConfig(
             "SentryAnalytics",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val regexFiltersEnabled =
         addConfig(
@@ -664,9 +664,9 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val enableSaveMessagesHistory =
+    val enableSaveEditsHistory =
         addConfig(
-            "EnableSaveMessagesHistory",
+            "EnableSaveEditsHistory",
             ConfigItem.configTypeBool,
             false
         )

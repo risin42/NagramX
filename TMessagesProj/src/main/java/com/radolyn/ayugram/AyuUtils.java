@@ -41,7 +41,7 @@ public class AyuUtils {
         try {
             success = from.renameTo(to);
         } catch (SecurityException e) {
-            Log.d("NagramX", e.toString());
+            Log.d("nu.gpu.nagram", e.toString());
             success = false;
         }
 
@@ -49,7 +49,7 @@ public class AyuUtils {
             try {
                 success = AndroidUtilities.copyFile(from, to);
             } catch (Exception e) {
-                Log.d("NagramX", e.toString());
+                Log.d("nu.gpu.nagram", e.toString());
             }
         }
 
@@ -156,7 +156,7 @@ public class AyuUtils {
 
             return new Pair<>(w, h);
         } catch (Exception e) {
-            Log.d("NagramX", "extractImageSizeFromName fucked", e);
+            Log.d("nu.gpu.nagram", "extractImageSizeFromName fucked", e);
             return null;
         }
     }
@@ -172,7 +172,7 @@ public class AyuUtils {
 
             return new Pair<>(w, h);
         } catch (Exception e) {
-            Log.d("NagramX", "extractImageSizeFromFile fucked", e);
+            Log.d("nu.gpu.nagram", "extractImageSizeFromFile fucked", e);
             return null;
         }
     }

@@ -50,7 +50,7 @@ public abstract class AyuMessageUtils {
             }
             return arrayList;
         } catch (Exception unused) {
-            Log.e("NagramX", "Failed to allocate buffer");
+            Log.e("nu.gpu.nagram", "Failed to allocate buffer");
             return new ArrayList();
         }
     }
@@ -191,7 +191,7 @@ public abstract class AyuMessageUtils {
                         nativeByteBuffer.rewind();
                         tLRPC$Message.media = TLRPC.MessageMedia.TLdeserialize(nativeByteBuffer, nativeByteBuffer.readInt32(false), false);
                     } catch (Exception unused) {
-                        Log.e("NagramX", "fake news sticker..");
+                        Log.e("nu.gpu.nagram", "fake news sticker..");
                     }
                     tLRPC$Message.stickerVerified = 1;
                     return;
@@ -292,7 +292,7 @@ public abstract class AyuMessageUtils {
                     nativeByteBuffer.buffer.get(bArr);
                     ayuMessageBase.documentSerialized = bArr;
                 } catch (Exception e) {
-                    Log.e("NagramX", "fake news sticker", e);
+                    Log.e("nu.gpu.nagram", "fake news sticker", e);
                 }
             } else {
                 ayuMessageBase.documentType = 3;
@@ -327,7 +327,7 @@ public abstract class AyuMessageUtils {
                         ayuMessageBase.mimeType = message.media.document.mime_type;
                     }
                 } catch (Exception e2) {
-                    Log.e("NagramX", "failed to save media", e2);
+                    Log.e("nu.gpu.nagram", "failed to save media", e2);
                 }
                 String absolutePath = file.getAbsolutePath();
                 if (absolutePath.equals("/")) {
@@ -373,7 +373,7 @@ public abstract class AyuMessageUtils {
         if (file3.exists()) {
             File internalCacheDir = FileLoader.getInternalCacheDir();
             File file4 = new File(internalCacheDir, file3.getName() + ".key");
-            Log.d("NagramX", "key file " + file4.getAbsolutePath() + " exists " + file4.exists());
+            Log.d("nu.gpu.nagram", "key file " + file4.getAbsolutePath() + " exists " + file4.exists());
             if (file4.exists()) {
                 try {
                     EncryptedFileInputStream encryptedFileInputStream = new EncryptedFileInputStream(file3, file4);
@@ -383,7 +383,7 @@ public abstract class AyuMessageUtils {
                         while (true) {
                             int read = encryptedFileInputStream.read(bArr);
                             if (read == -1) {
-                                Log.d("NagramX", "encrypted media copy success");
+                                Log.d("nu.gpu.nagram", "encrypted media copy success");
                                 fileOutputStream.close();
                                 encryptedFileInputStream.close();
                                 return file2;
@@ -399,7 +399,7 @@ public abstract class AyuMessageUtils {
                         throw th;
                     }
                 } catch (Exception e) {
-                    Log.e("NagramX", "encrypted media copy failed", e);
+                    Log.e("nu.gpu.nagram", "encrypted media copy failed", e);
                     return new File("/");
                 }
             }
@@ -429,7 +429,7 @@ public abstract class AyuMessageUtils {
             nativeByteBuffer.buffer.get(bArr);
             return bArr;
         } catch (Exception unused) {
-            Log.e("NagramX", "Failed to allocate buffer for message entities");
+            Log.e("nu.gpu.nagram", "Failed to allocate buffer for message entities");
             return "".getBytes();
         }
     }
@@ -442,7 +442,7 @@ public abstract class AyuMessageUtils {
             // }
             TLRPC.Chat chat = MessagesController.getInstance(ayuSavePreferences.getAccountId()).getChat(Long.valueOf(Math.abs(ayuSavePreferences.getDialogId())));
             if (chat == null) {
-                Log.e("NagramX", "chat is null so saving media just in case");
+                Log.e("nu.gpu.nagram", "chat is null so saving media just in case");
                 return true;
             }
             boolean isPublic = ChatObject.isPublic(chat);
