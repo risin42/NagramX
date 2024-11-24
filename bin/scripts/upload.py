@@ -25,9 +25,9 @@ def get_thumb() -> str:
     return "TMessagesProj/src/main/" + "ic_launcher_nagram_block_round-playstore.png"
 
 def get_commit_info():
-    commit_id = os.environ.get("COMMIT_ID", "None")[:7]
-    commit_url = os.environ.get("COMMIT_URL", "None")
-    commit_message = os.environ.get("COMMIT_MESSAGE", "No commit message provided.")
+    commit_id = os.environ.get("COMMIT_ID", "")[:7]
+    commit_url = os.environ.get("COMMIT_URL", "")
+    commit_message = os.environ.get("COMMIT_MESSAGE", "")
     return commit_id, commit_url, commit_message
  
 def get_caption() -> str:

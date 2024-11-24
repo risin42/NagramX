@@ -209,7 +209,7 @@ jobs:
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
           export DEBUG_BUILD=true
           sed -i 's/signingConfig signingConfigs.release//g' TMessagesProj/build.gradle
-          ./gradlew TMessagesProj:assembleRelease
+          ./gradlew TMessagesProj:assembleStaging
 
           APK=$(find TMessagesProj/build/outputs/apk -name '*arm64-v8a*.apk')
           APK=$(dirname $APK)

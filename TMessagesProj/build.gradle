@@ -192,6 +192,18 @@ android {
             signingConfig signingConfigs.release
         }
 
+        staging {
+            debuggable false
+            jniDebuggable false
+            minifyEnabled true
+            shrinkResources true
+            multiDexEnabled true
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            matchingFallbacks = ["release", "staging", "debug"]
+            signingConfig signingConfigs.release
+        }
+
         release {
             debuggable false
             jniDebuggable false
@@ -200,7 +212,7 @@ android {
             multiDexEnabled true
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            matchingFallbacks = ["release", "debug"]
+            matchingFallbacks = ["release", "staging", "debug"]
             signingConfig signingConfigs.release
         }
     }
@@ -212,6 +224,15 @@ android {
         }
 
         debug {
+            java {
+                srcDirs "src/main/java"
+            }
+            jniLibs {
+                srcDir "src/main/libs"
+            }
+        }
+
+        staging {
             java {
                 srcDirs "src/main/java"
             }
@@ -246,10 +267,11 @@ android {
 
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach { output ->
-            String gramName = "Nagram-X"
+            String gramName = "NagramX"
             String first = String.format("%s-v%s(%s)", gramName, versionName, versionCode)
             String name = outputFileName.replace("TMessagesProj", first)
             name = name.replace("-release", "")
+            name = name.replace("-staging", "")
             outputFileName = name
         }
     }
