@@ -13,7 +13,7 @@ buildscript {
         classpath 'gradle.plugin.org.mozilla.rust-android-gradle:plugin:0.9.0'
         //noinspection GradleDependency
         classpath "com.github.triplet.gradle:play-publisher:3.6.0"
-        classpath 'cn.hutool:hutool-core:5.7.13'
+        classpath 'cn.hutool:hutool-core:5.8.33'
         classpath "io.sentry:sentry-android-gradle-plugin:4.13.0"
     }
 }
