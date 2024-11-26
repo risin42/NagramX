@@ -56,5 +56,4 @@
     <item name="passcode_btn_fingerprint" type="id"/>
     <item name="passcode_btn_backspace" type="id"/>
     <item name="passcode_btn_done" type="id"/>
-    <item name="hyperos_ai" type="id" />
 </resources>

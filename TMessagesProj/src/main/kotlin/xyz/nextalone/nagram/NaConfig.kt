@@ -652,12 +652,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val enableHyperOsAi =
-        addConfig(
-            "EnableHyperOsAi",
-            ConfigItem.configTypeBool,
-            false
-        )
     val enableSaveDeletedMessages =
         addConfig(
             "EnableSaveDeletedMessages",
@@ -670,6 +664,13 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val defaultHlsVideoQuality =
+        addConfig(
+            "DefaultHlsVideoQuality",
+            ConfigItem.configTypeInt,
+            0
+        )
+
     private fun addConfig(
         k: String,
         t: Int,

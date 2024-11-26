@@ -9,20 +9,13 @@
 package org.telegram.ui.Components;
 
 import static org.telegram.messenger.AndroidUtilities.dp;
-import static org.telegram.messenger.AndroidUtilities.getSystemProperty;
 import static org.telegram.messenger.AndroidUtilities.getWallpaperRotation;
-import static org.telegram.ui.Cells.TextSelectionHelper.HYPEROS_AI;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -84,7 +77,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.helper.HyperOsHelper;
 
 public class EditTextBoldCursor extends EditTextEffects {
 
@@ -184,9 +176,6 @@ public class EditTextBoldCursor extends EditTextEffects {
     private static Method canUndoMethod;
     private static Method canRedoMethod;
 
-    public static boolean IS_HYPEROS = getSystemProperty("ro.mi.os.version.name") != null;
-    private static final String HYPEROS_NOTES_PKG = "com.miui.notes";
-    private static final String HYPEROS_AI_SERVICE = "com.miui.notes.ai.AiTextWidgetService";
     static {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -1230,7 +1219,6 @@ public class EditTextBoldCursor extends EditTextEffects {
             if (NaConfig.INSTANCE.getShowTextUndoRedo().Bool()) {
                 addUndoRedo(floatingActionMode.getMenu());
             }
-            addHyperOsAi(floatingActionMode.getMenu());
             floatingActionMode.invalidate();
             getViewTreeObserver().addOnPreDrawListener(floatingToolbarPreDrawListener);
             invalidate();
@@ -1238,27 +1226,6 @@ public class EditTextBoldCursor extends EditTextEffects {
         } else {
             return super.startActionMode(callback);
         }
-    }
-
-    private void addHyperOsAi(Menu menu) {
-        if (!HyperOsHelper.INSTANCE.isHyperAiAvailable(getContext())) {
-            return;
-        }
-        // Add AI menu item if it doesn't already exist
-        if (menu.findItem(HYPEROS_AI) == null) {
-            menu.add(Menu.NONE, HYPEROS_AI, HYPEROS_AI, "AI")
-                    .setAlphabeticShortcut('s')
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
-    }
-
-    @Override
-    public boolean onTextContextMenuItem(int id) {
-        if (id == HYPEROS_AI) {
-            HyperOsHelper.INSTANCE.startHyperOsAiService(this);
-            return true;
-        }
-        return super.onTextContextMenuItem(id);
     }
 
     private boolean shouldShowQuoteButton() {

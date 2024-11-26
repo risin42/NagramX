@@ -166,11 +166,11 @@
     <string name="PanguInfo">Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean), half-width English, digit and symbol characters.</string>
     <string name="SendWithPangu">Send with Pangu</string>
     <string name="SendWithoutPangu">Send without Pangu</string>
-    <string name="EnableHyperOsAi">Enable Xiaomi HyperAI in input field</string>
     <string name="EnableSaveDeletedMessages">Enable save deleted messages</string>
     <string name="DeletedMessage">deleted</string>
     <string name="EnableSaveEditsHistory">Enable save edits history</string>
     <string name="EditsHistoryTitle">Edits history</string>
     <string name="EditsHistoryMenuText">Edits history</string>
     <string name="DeleteKeepLocally">Keep locally</string>
+    <string name="DefaultHlsVideoQuality">Default Hls Video Quality</string>
 </resources>
