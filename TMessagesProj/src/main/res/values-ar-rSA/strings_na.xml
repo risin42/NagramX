@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">تكوين N-Config</string>
     <string name="ForceCopy">إجبار النسخ</string>
-    <string name="InvertReply">Invert</string>
-    <string name="Great">عظيم</string>
-    <string name="Poor">رديء</string>
     <string name="CombineMessage">دمج الرسالة</string>
     <string name="TextStyle">نمط النص</string>
     <string name="CombineMessageEnabledWithReply">دمج الرسالة مع الرد</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">حفظ بدون علامة</string>
     <string name="SendAsEmoji">إرسال كإيموجي</string>
     <string name="CustomArtworkApi">Api مخصص للأعمال الفنية</string>
-    <string name="CustomGreat">كلمة رد مخصصة</string>
-    <string name="CustomGreatHint">رائع افتراضي</string>
-    <string name="CustomPoor">تخصيص النقر مطولاً على كلمة الرد</string>
-    <string name="CustomPoorHint">المخزن الافتراضي</string>
     <string name="CustomEditedMessage">تعديل كلمة الرسالة المخصصة</string>
     <string name="FakeHighPerformanceDevice">جهاز الأداء العالي الوهمي</string>
     <string name="DisableEmojiDrawLimit">تعطيل حد رسم الرموز التعبيرية</string>

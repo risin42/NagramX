@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-設定</string>
     <string name="ForceCopy">強制コピー</string>
-    <string name="InvertReply">反転</string>
-    <string name="Great">いいね</string>
-    <string name="Poor">ダメ</string>
     <string name="CombineMessage">メッセージを結合</string>
     <string name="TextStyle">テキストスタイル</string>
     <string name="CombineMessageEnabledWithReply">最初のメッセージに返信して結合</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Markdown を無効にする</string>
     <string name="SendAsEmoji">ミニゲームを無効にする</string>
     <string name="CustomArtworkApi">カスタムアートワーク API</string>
-    <string name="CustomGreat">カスタムクイック返信ワード</string>
-    <string name="CustomGreatHint">デフォルトは「いいね」</string>
-    <string name="CustomPoor">カスタム長押しクイック返信ワード</string>
-    <string name="CustomPoorHint">デフォルトは「ダメ」</string>
     <string name="CustomEditedMessage">編集済みメッセージのカスタムヒント</string>
     <string name="FakeHighPerformanceDevice">高性能デバイスを偽装</string>
     <string name="DisableEmojiDrawLimit">絵文字のレンダリング制限を解除</string>

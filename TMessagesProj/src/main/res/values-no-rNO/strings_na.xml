@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-konfigurasjon</string>
     <string name="ForceCopy">Tving kopi</string>
-    <string name="InvertReply">Invert</string>
-    <string name="Great">Utmerket</string>
-    <string name="Poor">Dårlig</string>
     <string name="CombineMessage">Kombiner melding</string>
     <string name="TextStyle">Tekst stil</string>
     <string name="CombineMessageEnabledWithReply">Kombiner meldingen aktivert med svar</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Lagre uten markdown</string>
     <string name="SendAsEmoji">Send som emoji</string>
     <string name="CustomArtworkApi">Egendefinert Artwork Api</string>
-    <string name="CustomGreat">Egendefinert svar ord</string>
-    <string name="CustomGreatHint">Standard flott</string>
-    <string name="CustomPoor">Standard svar langt trykk</string>
-    <string name="CustomPoorHint">Standard samling</string>
     <string name="CustomEditedMessage">Tilpasset redigerte meldings-ord</string>
     <string name="FakeHighPerformanceDevice">Falsk enhet for høy ytelse</string>
     <string name="DisableEmojiDrawLimit">Deaktiver Emoji remis grense</string>

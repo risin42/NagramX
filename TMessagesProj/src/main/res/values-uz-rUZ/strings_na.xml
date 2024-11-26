@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">Sozlamalar</string>
     <string name="ForceCopy">Force Copy</string>
-    <string name="InvertReply">Invert</string>
-    <string name="Great">Zo\'r</string>
-    <string name="Poor">Poor</string>
     <string name="CombineMessage">Combine Message</string>
     <string name="TextStyle">Text Style</string>
     <string name="CombineMessageEnabledWithReply">Combine Message Enabled With Reply</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Save without markdown</string>
     <string name="SendAsEmoji">Send as emoji</string>
     <string name="CustomArtworkApi">Custom Artwork Api</string>
-    <string name="CustomGreat">Custom reply word</string>
-    <string name="CustomGreatHint">Default great</string>
-    <string name="CustomPoor">Custom long click reply word</string>
-    <string name="CustomPoorHint">Default pool</string>
     <string name="CustomEditedMessage">Custom Edited Message word</string>
     <string name="FakeHighPerformanceDevice">Fake High Performance Device</string>
     <string name="DisableEmojiDrawLimit">Disable Emoji Draw Limit</string>

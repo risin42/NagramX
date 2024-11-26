@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-Config</string>
     <string name="ForceCopy">Kopyalamaya Zorla</string>
-    <string name="InvertReply">Ters çevir</string>
-    <string name="Great">Harika</string>
-    <string name="Poor">Zayıf</string>
     <string name="CombineMessage">Mesajı Birleştir</string>
     <string name="TextStyle">Metin Stili</string>
     <string name="CombineMessageEnabledWithReply">Etkinleştirilmiş İletiyi Yanıtla Birleştir</string>

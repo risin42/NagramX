@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-Ρύθμιση</string>
     <string name="ForceCopy">Εξαναγκασμός Αντιγραφής</string>
-    <string name="InvertReply">Αναστροφή</string>
-    <string name="Great">Μεγάλη</string>
-    <string name="Poor">Φτωχή</string>
     <string name="CombineMessage">Συνδυασμός Μηνύματος</string>
     <string name="TextStyle">Στυλ Κειμένου</string>
     <string name="CombineMessageEnabledWithReply">Συνδυασμός Μηνύματος Ενεργοποιημένο Με Απάντηση</string>
@@ -66,10 +63,6 @@
     <string name="SaveWithoutMarkdown">Αποθήκευση χωρίς markdown</string>
     <string name="SendAsEmoji">Αποστολή ως emoji</string>
     <string name="CustomArtworkApi">Προσαρμοσμένο Εξώφυλλο API</string>
-    <string name="CustomGreat">Προσαρμοσμένη λέξη απάντησης</string>
-    <string name="CustomGreatHint">Προεπιλογή μεγάλη</string>
-    <string name="CustomPoor">Προσαρμ. λέξη απάντ. παρατ/μένου κλικ</string>
-    <string name="CustomPoorHint">Προεπιλεγμένη πισίνα</string>
     <string name="CustomEditedMessage">Προσαρμ. λέξη επεξεργασμένου μηνύματος</string>
     <string name="FakeHighPerformanceDevice">Ψευδής Συσκευή Υψηλής Απόδοσης</string>
     <string name="DisableEmojiDrawLimit">Απενεργ/ση Ορίου Σχεδίου Emoji</string>

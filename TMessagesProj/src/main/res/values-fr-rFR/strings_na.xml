@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-Configuration</string>
     <string name="ForceCopy">Forcer la copie</string>
-    <string name="InvertReply">Inverser</string>
-    <string name="Great">Superbe</string>
-    <string name="Poor">Faible</string>
     <string name="CombineMessage">Combiner le message</string>
     <string name="TextStyle">Style du texte</string>
     <string name="CombineMessageEnabledWithReply">Combiner le message activé avec la réponse</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Enregistrer sans marquage</string>
     <string name="SendAsEmoji">Envoyer en tant qu\'émoji</string>
     <string name="CustomArtworkApi">Api Artwork personnalisé</string>
-    <string name="CustomGreat">Mot de réponse personnalisé</string>
-    <string name="CustomGreatHint">Super par défaut</string>
-    <string name="CustomPoor">Mot de réponse par clic long personnalisé</string>
-    <string name="CustomPoorHint">Groupement par défaut</string>
     <string name="CustomEditedMessage">Mot de message modifié personnalisé</string>
     <string name="FakeHighPerformanceDevice">Faux appareil à haute performance</string>
     <string name="DisableEmojiDrawLimit">Désactiver la limite de dessins d\'Émojis</string>

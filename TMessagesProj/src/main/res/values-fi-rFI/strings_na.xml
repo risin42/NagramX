@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-Config</string>
     <string name="ForceCopy">Pakota Kopio</string>
-    <string name="InvertReply">Invert</string>
-    <string name="Great">Hieno</string>
-    <string name="Poor">Huono</string>
     <string name="CombineMessage">Yhdistä Viesti</string>
     <string name="TextStyle">Tekstin Tyyli</string>
     <string name="CombineMessageEnabledWithReply">Yhdistä Viesti Käytössä Vastauksella</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Tallenna ilman merkintää</string>
     <string name="SendAsEmoji">Lähetä emojina</string>
     <string name="CustomArtworkApi">Mukautettu Taideteos API</string>
-    <string name="CustomGreat">Mukautettu vastaussana</string>
-    <string name="CustomGreatHint">Oletus suuri</string>
-    <string name="CustomPoor">Mukautettu pitkän klikkauksen vastaussana</string>
-    <string name="CustomPoorHint">Oletus pooli</string>
     <string name="CustomEditedMessage">Muokattu Viestin sana</string>
     <string name="FakeHighPerformanceDevice">Fake Korkean Suorituskyvyn Laite</string>
     <string name="DisableEmojiDrawLimit">Poista Emoji Piirrä Raja Käytöstä</string>

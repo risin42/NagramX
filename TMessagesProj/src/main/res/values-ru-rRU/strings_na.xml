@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">Настройки N</string>
     <string name="ForceCopy">Принудительное копирование</string>
-    <string name="InvertReply">Инвертировать</string>
-    <string name="Great">Отлично</string>
-    <string name="Poor">Плохо</string>
     <string name="CombineMessage">Объединение сообщений</string>
     <string name="TextStyle">Стиль текста</string>
     <string name="CombineMessageEnabledWithReply">Включено для сообщений с ответом</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Сохранить без markdown</string>
     <string name="SendAsEmoji">Отправить как эмодзи</string>
     <string name="CustomArtworkApi">API пользовательского оформления</string>
-    <string name="CustomGreat">Слово для быстрого ответа</string>
-    <string name="CustomGreatHint">По умолчанию «Отлично»</string>
-    <string name="CustomPoor">Слово для быстрого ответа при долгом нажатии</string>
-    <string name="CustomPoorHint">По умолчанию «Плохо»</string>
     <string name="CustomEditedMessage">Подпись для изменённых сообщений</string>
     <string name="FakeHighPerformanceDevice">Поддельное высокопроизводительное устройство</string>
     <string name="DisableEmojiDrawLimit">Отключить ограничение на отрисовку эмодзи</string>

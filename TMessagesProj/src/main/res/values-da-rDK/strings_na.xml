@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-Config</string>
     <string name="ForceCopy">Gennemtving Kopiering</string>
-    <string name="InvertReply">Invert</string>
-    <string name="Great">Stor</string>
-    <string name="Poor">Dårlig</string>
     <string name="CombineMessage">Kombiner Besked</string>
     <string name="TextStyle">Tekst Stil</string>
     <string name="CombineMessageEnabledWithReply">Kombiner Besked Aktiveret Med Svar</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Gem uden markdown</string>
     <string name="SendAsEmoji">Send som emoji</string>
     <string name="CustomArtworkApi">Brugerdefineret Kunstværk API</string>
-    <string name="CustomGreat">Tilpasset svar ord</string>
-    <string name="CustomGreatHint">Standard stor</string>
-    <string name="CustomPoor">Brugerdefineret langt klik svar ord</string>
-    <string name="CustomPoorHint">Standard pool</string>
     <string name="CustomEditedMessage">Brugerdefineret redigeret besked ord</string>
     <string name="FakeHighPerformanceDevice">Falske Højtydende Enhed</string>
     <string name="DisableEmojiDrawLimit">Deaktiver Emoji Tegn Grænse</string>

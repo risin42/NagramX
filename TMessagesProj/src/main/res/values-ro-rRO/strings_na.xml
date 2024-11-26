@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-Config</string>
     <string name="ForceCopy">Copiere forțată</string>
-    <string name="InvertReply">Invert</string>
-    <string name="Great">Grozav</string>
-    <string name="Poor">Slabă</string>
     <string name="CombineMessage">Combină mesajul</string>
     <string name="TextStyle">Stil text</string>
     <string name="CombineMessageEnabledWithReply">Combină mesajul activat cu răspuns</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Salvează fără marcaj</string>
     <string name="SendAsEmoji">Trimite ca emoji</string>
     <string name="CustomArtworkApi">Aplicații de Artwork Personalizate</string>
-    <string name="CustomGreat">Cuvânt răspuns personalizat</string>
-    <string name="CustomGreatHint">Implicit grozav</string>
-    <string name="CustomPoor">Cuvânt de răspuns personalizat la clic lung</string>
-    <string name="CustomPoorHint">Grup implicit</string>
     <string name="CustomEditedMessage">Cuvânt Mesaj personalizat editat</string>
     <string name="FakeHighPerformanceDevice">Dispozitiv de Înaltă Performanță</string>
     <string name="DisableEmojiDrawLimit">Dezactivați limita de desenare emotigrame</string>

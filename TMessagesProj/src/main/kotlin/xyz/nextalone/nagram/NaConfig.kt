@@ -34,18 +34,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val showInvertReply =
-        addConfig(
-            "InvertReply",
-            ConfigItem.configTypeBool,
-            false
-        )
-    val showGreatOrPoor =
-        addConfig(
-            "GreatOrPoor",
-            ConfigItem.configTypeBool,
-            false
-        )
     val showTextBold =
         addConfig(
             "TextBold",
@@ -289,23 +277,6 @@ object NaConfig {
             "CustomArtworkApi",
             ConfigItem.configTypeString,
             ""
-        )
-    val customGreat =
-        addConfig(
-            "CustomGreat",
-            ConfigItem.configTypeString,
-            LocaleController.getString(
-                R.string.Great
-            )
-        )
-    val CustomPoor =
-        addConfig(
-            "CustomPoor",
-            ConfigItem.configTypeString,
-            LocaleController.getString(
-                R.string.Poor
-            )
-
         )
     val customEditedMessage =
         addConfig(

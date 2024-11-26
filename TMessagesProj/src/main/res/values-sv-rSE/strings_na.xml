@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-Konfiguration</string>
     <string name="ForceCopy">Tvinga kopiering</string>
-    <string name="InvertReply">Invert</string>
-    <string name="Great">Bra</string>
-    <string name="Poor">Dålig</string>
     <string name="CombineMessage">Kombinera meddelande</string>
     <string name="TextStyle">Textstil</string>
     <string name="CombineMessageEnabledWithReply">Kombinera meddelande aktiverat med svar</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Spara utan markdown</string>
     <string name="SendAsEmoji">Skicka som emoji</string>
     <string name="CustomArtworkApi">Anpassad tryckfil Api</string>
-    <string name="CustomGreat">Anpassat svar ord</string>
-    <string name="CustomGreatHint">Standard stor</string>
-    <string name="CustomPoor">Anpassad långklicka på svarsord</string>
-    <string name="CustomPoorHint">Förvald frågebank</string>
     <string name="CustomEditedMessage">Anpassat redigerat ord</string>
     <string name="FakeHighPerformanceDevice">Falska högpresterande enhet</string>
     <string name="DisableEmojiDrawLimit">Inaktivera gränsen för Emoji Draw</string>

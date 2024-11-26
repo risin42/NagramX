@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-конфігурації</string>
     <string name="ForceCopy">Примусова копія</string>
-    <string name="InvertReply">Invert</string>
-    <string name="Great">Чудово</string>
-    <string name="Poor">Бідний</string>
     <string name="CombineMessage">Об\'єднати повідомлення</string>
     <string name="TextStyle">Стиль тексту</string>
     <string name="CombineMessageEnabledWithReply">Об\'єднати повідомлення Включено з відповіддю</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Зберегти без markdown</string>
     <string name="SendAsEmoji">Відправити як смайл</string>
     <string name="CustomArtworkApi">Індивідуальне додавання вгорі Api</string>
-    <string name="CustomGreat">Довільне слово відповіді</string>
-    <string name="CustomGreatHint">Типовий смак</string>
-    <string name="CustomPoor">Власне слово для відповіді на довгому натисканні</string>
-    <string name="CustomPoorHint">Стандартна басейн</string>
     <string name="CustomEditedMessage">Відредаговане слово повідомлення</string>
     <string name="FakeHighPerformanceDevice">Підроблений пристрій високої продуктивності</string>
     <string name="DisableEmojiDrawLimit">Вимкнути межа відображення емодзі</string>

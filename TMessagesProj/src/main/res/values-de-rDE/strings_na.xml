@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">Nagram Einstellungen</string>
     <string name="ForceCopy">Kopie erzwingen</string>
-    <string name="InvertReply">Invertieren</string>
-    <string name="Great">Tolle</string>
-    <string name="Poor">Arm</string>
     <string name="CombineMessage">Nachricht kombinieren</string>
     <string name="TextStyle">Textstil</string>
     <string name="CombineMessageEnabledWithReply">Nachricht mit Antwort kombinieren aktiviert</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Ohne Markdown speichern</string>
     <string name="SendAsEmoji">Als Emoji senden</string>
     <string name="CustomArtworkApi">Eigene Artwork-API</string>
-    <string name="CustomGreat">Benutzerdefiniertes Antwortwort</string>
-    <string name="CustomGreatHint">Standard groß</string>
-    <string name="CustomPoor">Benutzerdefiniertes Antwortwort</string>
-    <string name="CustomPoorHint">Standardpool</string>
     <string name="CustomEditedMessage">Benutzerdefiniertes Nachrichtenwort</string>
     <string name="FakeHighPerformanceDevice">Hochleistungsgerät vortäuschen</string>
     <string name="DisableEmojiDrawLimit">Emoji Draw Limit deaktivieren</string>

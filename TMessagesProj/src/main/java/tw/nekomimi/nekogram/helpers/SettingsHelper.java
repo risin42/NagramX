@@ -17,7 +17,7 @@ import java.util.Map;
 import tw.nekomimi.nekogram.settings.BaseNekoSettingsActivity;
 import tw.nekomimi.nekogram.settings.BaseNekoXSettingsActivity;
 import tw.nekomimi.nekogram.settings.NekoChatSettingsActivity;
-import tw.nekomimi.nekogram.settings.NekoAccountSettingsActivity;
+// import tw.nekomimi.nekogram.settings.NekoAccountSettingsActivity;
 import tw.nekomimi.nekogram.settings.NekoEmojiSettingsActivity;
 import tw.nekomimi.nekogram.settings.NekoExperimentalSettingsActivity;
 import tw.nekomimi.nekogram.settings.NekoGeneralSettingsActivity;
@@ -45,10 +45,10 @@ public class SettingsHelper {
             fragment = neko_fragment = new NekoPasscodeSettingsActivity();
         } else {
             switch (segments.get(1)) {
-                case "a":
-                case "account":
-                    fragment = nekox_fragment = new NekoAccountSettingsActivity();
-                    break;
+                // case "a":
+                // case "account":
+                //     fragment = nekox_fragment = new NekoAccountSettingsActivity();
+                //     break;
                 case "about":
                     fragment = new NekoSettingsActivity().startOnAbout();
                     break;

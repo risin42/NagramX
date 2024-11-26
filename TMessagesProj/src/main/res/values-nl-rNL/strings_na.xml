@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-Configuratie</string>
     <string name="ForceCopy">Forceer kopiëren</string>
-    <string name="InvertReply">Invert</string>
-    <string name="Great">Fantastisch</string>
-    <string name="Poor">Onvoldoende</string>
     <string name="CombineMessage">Bericht combineren</string>
     <string name="TextStyle">Tekst stijl</string>
     <string name="CombineMessageEnabledWithReply">Combineer bericht ingeschakeld met antwoord</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Opslaan zonder markdown</string>
     <string name="SendAsEmoji">Als emoji verzenden</string>
     <string name="CustomArtworkApi">Aangepaste Artwork Api</string>
-    <string name="CustomGreat">Aangepast antwoordwoord</string>
-    <string name="CustomGreatHint">Standaard groot</string>
-    <string name="CustomPoor">Aangepast antwoord woord voor lang klikken</string>
-    <string name="CustomPoorHint">Standaard pool</string>
     <string name="CustomEditedMessage">Eigen bewerkt berichtwoord</string>
     <string name="FakeHighPerformanceDevice">Nep Hoge Prestatie Apparaat</string>
     <string name="DisableEmojiDrawLimit">Schakel Emoji Draw Limiet uit</string>

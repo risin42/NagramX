@@ -235,7 +235,7 @@ public class NekoSettingsActivity extends BaseFragment {
 
         private int rowCount;
         private int generalRow = -1;
-        private int accountRow = -1;
+        // private int accountRow = -1;
         private int chatRow = -1;
         private int passcodeRow = -1;
         private int experimentRow = -1;
@@ -325,9 +325,9 @@ public class NekoSettingsActivity extends BaseFragment {
                                 textCell.setTextAndIcon(LocaleController.getString("PasscodeNeko", R.string.PasscodeNeko), R.drawable.msg_permissions, true);
                             } else if (position == experimentRow) {
                                 textCell.setTextAndIcon(LocaleController.getString("Experiment", R.string.Experiment), R.drawable.msg_fave, true);
-                            } else if (position == accountRow) {
-                                textCell.setTextAndIcon(LocaleController.getString("Account", R.string.Account), R.drawable.msg_contacts, true);
-                            }
+                            } // else if (position == accountRow) {
+                            //     textCell.setTextAndIcon(LocaleController.getString("Account", R.string.Account), R.drawable.msg_contacts, true);
+                            // }
                             break;
                         }
                         case VIEW_TYPE_TEXT_LINK: {
@@ -360,7 +360,7 @@ public class NekoSettingsActivity extends BaseFragment {
                         return VIEW_TYPE_BOTTOM;
                     } else if (position == importRow) {
                         return VIEW_TYPE_HEADER;
-                    } else if (position == chatRow || position == accountRow || position == generalRow || position == passcodeRow || position == experimentRow) {
+                    } else if (position == chatRow || position == generalRow || position == passcodeRow || position == experimentRow) {
                         return VIEW_TYPE_TEXT;
                     }
                     return VIEW_TYPE_TEXT_LINK;
@@ -371,8 +371,8 @@ public class NekoSettingsActivity extends BaseFragment {
                     presentFragment(new NekoChatSettingsActivity());
                 } else if (position == generalRow) {
                     presentFragment(new NekoGeneralSettingsActivity());
-                } else if (position == accountRow) {
-                    presentFragment(new NekoAccountSettingsActivity());
+                // } else if (position == accountRow) {
+                //     presentFragment(new NekoAccountSettingsActivity());
                 } else if (position == passcodeRow) {
                     presentFragment(new NekoPasscodeSettingsActivity());
                 } else if (position == experimentRow) {
@@ -408,7 +408,7 @@ public class NekoSettingsActivity extends BaseFragment {
             rowCount = 0;
             if (type == PAGE_TYPE) {
                 generalRow = rowCount++;
-                accountRow = rowCount++;
+                // accountRow = rowCount++;
                 chatRow = rowCount++;
                 if (!PasscodeHelper.isSettingsHidden()) {
                     passcodeRow = rowCount++;

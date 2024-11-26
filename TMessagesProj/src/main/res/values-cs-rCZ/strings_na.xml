@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">Konfigurace N-</string>
     <string name="ForceCopy">Vynutit kopírování</string>
-    <string name="InvertReply">Invert</string>
-    <string name="Great">Skvělá</string>
-    <string name="Poor">Špatné</string>
     <string name="CombineMessage">Kombinovat zprávu</string>
     <string name="TextStyle">Styl textu</string>
     <string name="CombineMessageEnabledWithReply">Kombinovat zprávu s odpovědí</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Uložit bez markdown</string>
     <string name="SendAsEmoji">Odeslat jako emoji</string>
     <string name="CustomArtworkApi">Vlastní artefakt Api</string>
-    <string name="CustomGreat">Vlastní slovo odpovědi</string>
-    <string name="CustomGreatHint">Výchozí skvělý</string>
-    <string name="CustomPoor">Vlastní slovo odpovědi dlouhým kliknutím</string>
-    <string name="CustomPoorHint">Výchozí bazén</string>
     <string name="CustomEditedMessage">Vlastní editované slovo</string>
     <string name="FakeHighPerformanceDevice">Falešné vysoce výkonné zařízení</string>
     <string name="DisableEmojiDrawLimit">Zakázat limit kreslení Emoji</string>

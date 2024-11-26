@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">Cấu hình-N</string>
     <string name="ForceCopy">Buộc sao chép</string>
-    <string name="InvertReply">Đảo ngược</string>
-    <string name="Great">Tuyệt</string>
-    <string name="Poor">Đáng thương</string>
     <string name="CombineMessage">Hợp nhất tin nhắn</string>
     <string name="TextStyle">Phong cách văn bản</string>
     <string name="CombineMessageEnabledWithReply">Hợp nhất và trả lời tin nhắn đầu tiên</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Tắt đánh dấu</string>
     <string name="SendAsEmoji">Tắt các biểu tượng cảm xúc nhỏ</string>
     <string name="CustomArtworkApi">API bìa nhạc tùy chỉnh</string>
-    <string name="CustomGreat">Từ tùy chỉnh trả lời nhanh</string>
-    <string name="CustomGreatHint">Mặc định là Tuyệt</string>
-    <string name="CustomPoor">Tùy chỉnh nhấn và giữ từ trả lời nhanh</string>
-    <string name="CustomPoorHint">Mặc định chung</string>
     <string name="CustomEditedMessage">Tùy chỉnh chỉnh sửa lời nhắc tin nhắn</string>
     <string name="FakeHighPerformanceDevice">Ngụy trang thành thiết bị cao cấp</string>
     <string name="DisableEmojiDrawLimit">Nâng giới hạn kết xuất biểu tượng cảm xúc</string>

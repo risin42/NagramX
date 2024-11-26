@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">N-设置</string>
     <string name="ForceCopy">强制复制</string>
-    <string name="InvertReply">反转</string>
-    <string name="Great">好耶</string>
-    <string name="Poor">破烂</string>
     <string name="CombineMessage">合并消息</string>
     <string name="TextStyle">文本样式</string>
     <string name="CombineMessageEnabledWithReply">合并并回复首条消息</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">禁用 Markdown</string>
     <string name="SendAsEmoji">禁用小游戏</string>
     <string name="CustomArtworkApi">自定义音乐封面 API</string>
-    <string name="CustomGreat">自定义快捷回复词</string>
-    <string name="CustomGreatHint">默认好耶</string>
-    <string name="CustomPoor">自定义长按快捷回复词</string>
-    <string name="CustomPoorHint">默认破烂</string>
     <string name="CustomEditedMessage">自定义已编辑消息提示词</string>
     <string name="FakeHighPerformanceDevice">伪装高性能设备</string>
     <string name="DisableEmojiDrawLimit">解除 emoji 渲染上限</string>

@@ -2,9 +2,6 @@
 <resources>
     <string name="N_Config">Preferencias de na</string>
     <string name="ForceCopy">Forzar copiado</string>
-    <string name="InvertReply">Invertir</string>
-    <string name="Great">Excelente</string>
-    <string name="Poor">Pobre</string>
     <string name="CombineMessage">Combinar el mensaje</string>
     <string name="TextStyle">Estilo del texto</string>
     <string name="CombineMessageEnabledWithReply">Combinar mensaje habilitado con respuesta</string>
@@ -64,10 +61,6 @@
     <string name="SaveWithoutMarkdown">Guardar sin markdown</string>
     <string name="SendAsEmoji">Enviar como emoji</string>
     <string name="CustomArtworkApi">Api de Arte Personalizado</string>
-    <string name="CustomGreat">Palabra de respuesta personalizada</string>
-    <string name="CustomGreatHint">Excelente por defecto</string>
-    <string name="CustomPoor">Palabra de respuesta personalizada en clic largo</string>
-    <string name="CustomPoorHint">Piscina por defecto</string>
     <string name="CustomEditedMessage">Palabra personalizada del mensaje editado</string>
     <string name="FakeHighPerformanceDevice">Falsear como dispositivo de alto rendimiento</string>
     <string name="DisableEmojiDrawLimit">Deshabilitar límite de dibujado de emojis</string>

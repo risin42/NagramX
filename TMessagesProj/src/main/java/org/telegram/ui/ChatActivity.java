@@ -380,8 +380,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int nkbtn_PGPImportPrivate = 2023;
     private final static int nkbtn_PGPImport = 2024;
     private final static int nkbtn_copy_link_in_pm = 2025;
-    private final static int nkbtn_invertReply = 2026;
-    private final static int nkbtn_greatOrPoor = 2027;
     private final static int nkbtn_repeatascopy = 2028;
     private final static int nkbtn_setReminder = 2029;
     private final static int nkbtn_sticker_copy = 2031;
@@ -30481,16 +30479,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 options.add(nkbtn_repeatascopy);
                                 icons.add(R.drawable.msg_repeat);
                             }
-                            if (allowRepeat && NaConfig.INSTANCE.getShowInvertReply().Bool()) {
-                                items.add(LocaleController.getString("InvertReply", R.string.InvertReply));
-                                options.add(nkbtn_invertReply);
-                                icons.add(R.drawable.msg_reset);
-                            }
-                            if (allowRepeat && NaConfig.INSTANCE.getShowGreatOrPoor().Bool()) {
-                                items.add(NaConfig.INSTANCE.getCustomGreat().String());
-                                options.add(nkbtn_greatOrPoor);
-                                icons.add(R.drawable.msg_prpr);
-                            }
                         }
                         if (chatMode != MODE_SCHEDULED) {
                             boolean allowViewHistory = currentChat != null && chatMode == 0 && !currentChat.broadcast && !(threadMessageObjects != null && threadMessageObjects.contains(message));
@@ -33633,14 +33621,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             case nkbtn_repeatascopy: {
                 repeatMessage(true, true);
-                return 2;
-            }
-            case nkbtn_invertReply: {
-                invertReplyMessage(true);
-                return 2;
-            }
-            case nkbtn_greatOrPoor: {
-                sendGreatOrGreat(true);
                 return 2;
             }
         }
@@ -42431,12 +42411,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         } else if (id == nkbtn_repeatascopy) {
             repeatMessage(false, true);
             clearSelectionMode();
-        } else if (id == nkbtn_invertReply) {
-            invertReplyMessage(false);
-            clearSelectionMode();
-        } else if (id == nkbtn_greatOrPoor) {
-            sendGreatOrGreat(false);
-            clearSelectionMode();
         } else if (id == nkheaderbtn_hide_title) {
             if (avatarContainer != null) {
                 avatarContainer.setTitle("");
@@ -42478,14 +42452,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             case nkbtn_repeatascopy: {
                 repeatMessage(false, true);
-                break;
-            }
-            case nkbtn_invertReply: {
-                invertReplyMessage(false);
-                break;
-            }
-            case nkbtn_greatOrPoor: {
-                sendGreatOrGreat(false);
                 break;
             }
             case nkbtn_forward_noquote: {
@@ -42886,58 +42852,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         } else {
             forwardMessages(messages, false, false, true, 0);
         }
-    }
-
-    public void invertReplyMessage(boolean isLongClick) {
-        if (checkSlowMode(chatActivityEnterView.getSendButton())) {
-            return;
-        }
-        if (selectedObject != null) {
-            MessageObject replyTo = isLongClick ? selectedObject : getThreadMessage();
-            if (selectedObject.type == 0 || selectedObject.isAnimatedEmoji() || getMessageCaption(selectedObject,
-             selectedObjectGroup) != null) {
-                CharSequence caption = getMessageCaption(selectedObject, selectedObjectGroup);
-                if (caption == null) {
-                    caption = getMessageContent(selectedObject, 0, false);
-                }
-                if (!TextUtils.isEmpty(caption)) {
-                    StringBuilder toSend = new StringBuilder();
-                    for (int i = 0; i < caption.length(); i++) {
-                        char c = caption.charAt(i);
-                        if (c == '我') {
-                            toSend.append('你');
-                        } else if (c == '你') {
-                            toSend.append('我');
-                        } else if (c == '咱') {
-                            toSend.append('您');
-                        } else if (c == '您') {
-                            toSend.append('咱');
-                        } else {
-                            toSend.append(c);
-                        }
-                    }
-                    caption = toSend.toString();
-                    SendMessagesHelper.getInstance(currentAccount)
-                            .sendMessage(caption.toString(), dialog_id, replyTo,
-                                    getThreadMessage(), null,
-                                    false, selectedObject.messageOwner.entities, null, null,
-                                    true, 0, null, false);
-                }
-            } else if ((selectedObject.isSticker() || selectedObject.isAnimatedSticker()) && selectedObject.getDocument() != null) {
-                SendMessagesHelper.getInstance(currentAccount)
-                        .sendSticker(selectedObject.getDocument(), null, dialog_id, replyTo, getThreadMessage(), null
-                        , null, null, true, 0, false, null, quickReplyShortcut, getQuickReplyId());
-            }
-        }
-    }
-
-    public void sendGreatOrGreat(boolean isLongClick) {
-        if (checkSlowMode(chatActivityEnterView.getSendButton())) {
-            return;
-        }
-        getSendMessagesHelper().sendMessage(isLongClick ? NaConfig.INSTANCE.getCustomPoor().String() : NaConfig.INSTANCE.getCustomGreat().String(),
-                dialog_id, selectedObject, threadMessageObject, null, false,
-                null, null, null, true, 0, null, false);
     }
 
     public void setScrollToMessage() {
