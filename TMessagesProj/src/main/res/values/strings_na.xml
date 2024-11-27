@@ -168,4 +168,5 @@
     <string name="DefaultHlsVideoQuality">Default Hls Video Quality</string>
     <string name="ClearNagramXDatabase">Clear Nagram X Database</string>
     <string name="ClearNagramXDatabaseNotification">Nagram X Database cleared</string>
+    <string name="CustomDeletedMark">Custom Deleted Message marker</string>
 </resources>

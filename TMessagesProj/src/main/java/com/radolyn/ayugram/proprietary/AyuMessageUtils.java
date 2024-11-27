@@ -79,7 +79,7 @@ public abstract class AyuMessageUtils {
         tLRPC$Message.edit_hide = (2097152 & i2) != 0;
         tLRPC$Message.pinned = (16777216 & i2) != 0;
         tLRPC$Message.noforwards = false;
-        tLRPC$Message.ayuNoforwards = (67108864 & i2) != 0;
+        // tLRPC$Message.ayuNoforwards = (67108864 & i2) != 0;
         // tLRPC$Message.topic_start = (i2 & 134217728) != 0;
         tLRPC$Message.edit_date = ayuMessageBase.editDate;
         tLRPC$Message.views = ayuMessageBase.views;

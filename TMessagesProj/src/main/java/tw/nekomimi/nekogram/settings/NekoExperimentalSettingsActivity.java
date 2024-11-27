@@ -94,8 +94,8 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell useMediaStreamInVoipRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useMediaStreamInVoip));
     private final AbstractConfigCell customAudioBitrateRow = cellGroup.appendCell(new ConfigCellCustom("CustomAudioBitrate", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell enableSaveDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveDeletedMessages()));
-    private final AbstractConfigCell EnableSaveEditsHistoryRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveEditsHistory()));
-    private final AbstractConfigCell clearAyuDatabaseRow = cellGroup.appendCell(new ConfigCellText("ClearNagramXDatabase", () -> {
+    private final AbstractConfigCell enableSaveEditsHistoryRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveEditsHistory()));
+    private final AbstractConfigCell clearNagramXDatabaseRow = cellGroup.appendCell(new ConfigCellText("ClearNagramXDatabase", () -> {
         AyuMessagesController.getInstance().clean();
         BulletinFactory.of(this).createSimpleBulletin(R.raw.info, LocaleController.getString("ClearNagramXDatabaseNotification")).show();
     }));
@@ -614,10 +614,15 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 //                    if (position == cellGroup.rows.indexOf(smoothKeyboardRow) && AndroidUtilities.isTablet()) {
 //                        holder.itemView.setVisibility(View.GONE);
 //                    }
-                    if (position == cellGroup.rows.indexOf(clearAyuDatabaseRow)) {
+                    if (holder.itemView instanceof TextSettingsCell) {
                         TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
-                        textCell.setText(LocaleController.getString(R.string.ClearNagramXDatabase), false);
-                        textCell.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
+                        if (position == cellGroup.rows.indexOf(clearNagramXDatabaseRow)) {
+                            textCell.setText(LocaleController.getString(R.string.ClearNagramXDatabase), false);
+                            textCell.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
+                        } else {
+                            // Reset text color to default for other TextSettingsCells
+                            textCell.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+                        }
                     }
                 }
             }

@@ -623,6 +623,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val defaultHlsVideoQuality =
+        addConfig(
+            "DefaultHlsVideoQuality",
+            ConfigItem.configTypeInt,
+            0
+        )
     val enableSaveDeletedMessages =
         addConfig(
             "EnableSaveDeletedMessages",
@@ -635,11 +641,11 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val defaultHlsVideoQuality =
+    val customDeletedMark =
         addConfig(
-            "DefaultHlsVideoQuality",
-            ConfigItem.configTypeInt,
-            0
+            "CustomDeletedMark",
+            ConfigItem.configTypeString,
+            ""
         )
 
     private fun addConfig(

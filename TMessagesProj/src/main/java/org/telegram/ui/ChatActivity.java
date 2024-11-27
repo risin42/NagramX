@@ -30895,15 +30895,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 icons.add(idx, R.drawable.msg_download);
             }
 
-            // if (!AyuConfig.sendReadPackets && !isAyuDeleted
-            //         && message != null
-            //         && message.messageOwner.from_id != null
-            //         && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
-            // ) {
-            //     items.add(LocaleController.getString("ReadUntilMenuText", R.string.ReadUntilMenuText));
-            //     options.add(AyuConstants.OPTION_READ_UNTIL);
-            //     icons.add(R.drawable.msg_view_file);
-            // }
             // --- AyuGram menu
 
             if (options.isEmpty() && optionsView == null) {
@@ -32761,13 +32752,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             case AyuConstants.OPTION_HISTORY:
                 presentFragment(new AyuMessageHistory(selectedObject));
                 break;
-            // case AyuConstants.OPTION_TTL:
-            //     AyuState.setAllowReadPacket(true, 1);
-            //     sendSecretMessageRead(selectedObject, true);
-            //     break;
-            // case AyuConstants.OPTION_READ_UNTIL:
-            //     AyuGhostUtils.markReadOnServer(currentAccount, selectedObject.messageOwner.id, getMessagesController().getInputPeer(selectedObject.messageOwner.peer_id));
-            //     break;
             case OPTION_RETRY: {
                 if (selectedObjectGroup != null) {
                     boolean success = true;

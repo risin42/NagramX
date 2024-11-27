@@ -16081,6 +16081,10 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 }
             }
         }
+        String editedStr = NaConfig.INSTANCE.getCustomEditedMessage().String();
+        String editedStrFin = editedStr.equals("") ? getString(R.string.EditedMessage) : editedStr;
+        String deletedStr = NaConfig.INSTANCE.getCustomDeletedMark().String();
+        String deletedStrFin = deletedStr.equals("") ? getString(R.string.DeletedMessage) : deletedStr;
         if (currentMessageObject.notime || currentMessageObject.isSponsored() || currentMessageObject.isQuickReply()) {
             timeString = "";
         } else if (currentMessageObject.scheduled && currentMessageObject.messageOwner.date == 0x7FFFFFFE) {
@@ -16090,13 +16094,11 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         } else if (currentMessageObject.isRepostPreview) {
             timeString = LocaleController.formatSmallDateChat(messageObject.messageOwner.date) + ", " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
         } else if (edited && !ayuDeleted) {
-            String customStr = NaConfig.INSTANCE.getCustomEditedMessage().String();
-            timeString = (customStr.equals("") ? getString(R.string.EditedMessage) : customStr) + " " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
+            timeString = editedStrFin + " " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
         } else if (!edited && ayuDeleted) {
-            timeString = getString("DeletedMessage", R.string.DeletedMessage) + " " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
+            timeString = deletedStrFin + " " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
         } else if (edited && ayuDeleted) {
-            String customStr = NaConfig.INSTANCE.getCustomEditedMessage().String();
-            timeString = getString("DeletedMessage", R.string.DeletedMessage) + " " + (customStr.equals("") ? getString("EditedMessage", R.string.EditedMessage) : customStr) + " " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
+            timeString = deletedStrFin + " " + editedStrFin + " " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
         } else if (currentMessageObject.isSaved && currentMessageObject.messageOwner.fwd_from != null && (currentMessageObject.messageOwner.fwd_from.date != 0 || currentMessageObject.messageOwner.fwd_from.saved_date != 0)) {
             int date = currentMessageObject.messageOwner.fwd_from.saved_date;
             if (date == 0) {
@@ -24460,16 +24462,17 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             }
             if ((edited || ayuDeleted) && !lastDrawingEdited && timeLayout != null) {
                 String customStr = NaConfig.INSTANCE.getCustomEditedMessage().String();
-                String customEditedStr = customStr.equals("") ? getString("EditedMessage", R.string.EditedMessage) : customStr;
-                String deletedStr = getString("DeletedMessage", R.string.DeletedMessage);
+                String customStrFin = customStr.equals("") ? getString(R.string.EditedMessage) : customStr;
+                String deletedStr = NaConfig.INSTANCE.getCustomDeletedMark().String();
+                String deletedStrFin = deletedStr.equals("") ? getString(R.string.DeletedMessage) : deletedStr;
                 String editedStr;
                 if (edited && !ayuDeleted){
-                    editedStr = customEditedStr;
+                    editedStr = customStrFin;
                 } else if (!edited) {
-                    editedStr = deletedStr;
+                    editedStr = deletedStrFin;
                 } else {
                     // it's both edited and deleted
-                    editedStr = customEditedStr + " (" + deletedStr + ")";
+                    editedStr = customStrFin + " (" + deletedStrFin + ")";
                 }
                 CharSequence text = timeLayout.getText();
                 int i = text.toString().indexOf(editedStr);
