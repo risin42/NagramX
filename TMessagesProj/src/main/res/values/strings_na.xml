@@ -166,4 +166,6 @@
     <string name="EditsHistoryMenuText">Edits history</string>
     <string name="DeleteKeepLocally">Keep locally</string>
     <string name="DefaultHlsVideoQuality">Default Hls Video Quality</string>
+    <string name="ClearNagramXDatabase">Clear Nagram X Database</string>
+    <string name="ClearNagramXDatabaseNotification">Nagram X Database cleared</string>
 </resources>

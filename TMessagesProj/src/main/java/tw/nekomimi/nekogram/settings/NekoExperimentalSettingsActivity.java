@@ -38,6 +38,7 @@ import org.telegram.ui.Cells.TextInfoPrivacyCell;
 import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.AlertsCreator;
 import org.telegram.ui.Components.BlurredRecyclerView;
+import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.UndoView;
@@ -58,6 +59,7 @@ import tw.nekomimi.nekogram.config.cell.AbstractConfigCell;
 import tw.nekomimi.nekogram.config.cell.*;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.ExternalStickerCacheHelper;
+import com.radolyn.ayugram.messages.AyuMessagesController;
 
 @SuppressLint("RtlHardcoded")
 public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity {
@@ -93,6 +95,10 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell customAudioBitrateRow = cellGroup.appendCell(new ConfigCellCustom("CustomAudioBitrate", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell enableSaveDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveDeletedMessages()));
     private final AbstractConfigCell EnableSaveEditsHistoryRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveEditsHistory()));
+    private final AbstractConfigCell clearAyuDatabaseRow = cellGroup.appendCell(new ConfigCellText("ClearNagramXDatabase", () -> {
+        AyuMessagesController.getInstance().clean();
+        BulletinFactory.of(this).createSimpleBulletin(R.raw.info, LocaleController.getString("ClearNagramXDatabaseNotification")).show();
+    }));
     private final AbstractConfigCell divider0 = cellGroup.appendCell(new ConfigCellDivider());
     
     private final AbstractConfigCell header2 = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("N_Config")));
@@ -608,6 +614,11 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 //                    if (position == cellGroup.rows.indexOf(smoothKeyboardRow) && AndroidUtilities.isTablet()) {
 //                        holder.itemView.setVisibility(View.GONE);
 //                    }
+                    if (position == cellGroup.rows.indexOf(clearAyuDatabaseRow)) {
+                        TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
+                        textCell.setText(LocaleController.getString(R.string.ClearNagramXDatabase), false);
+                        textCell.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
+                    }
                 }
             }
         }
