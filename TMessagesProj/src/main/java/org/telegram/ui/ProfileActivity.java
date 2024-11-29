@@ -4175,11 +4175,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             } else if (position == nekoRow) {
                 presentFragment(new NekoSettingsActivity());
             } else if (position == questionRow) {
-                Browser.openUrl(getParentActivity(), "https://t.me/NekogramX");
+                showDialog(AlertsCreator.createSupportAlert(ProfileActivity.this, resourcesProvider));
             } else if (position == faqRow) {
-                Browser.openUrl(getParentActivity(), NekoXConfig.FAQ_URL);
+                Browser.openUrl(getParentActivity(), LocaleController.getString(R.string.TelegramFaqUrl));
             } else if (position == policyRow) {
-                Browser.openUrl(getParentActivity(), "https://github.com/NekoX-Dev/NekoX/wiki/Privacy-Policy");
+                Browser.openUrl(getParentActivity(), LocaleController.getString(R.string.PrivacyPolicyUrl));
             } else if (position == sendLogsRow) {
                 sendLogs(getParentActivity(), false);
             } else if (position == sendLastLogsRow) {
@@ -9474,6 +9474,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     premiumSectionsRow = rowCount++;
                 }
                 helpHeaderRow = rowCount++;
+                questionRow = rowCount++;
                 faqRow = rowCount++;
                 policyRow = rowCount++;
                 if (BuildVars.LOGS_ENABLED) {
@@ -12250,11 +12251,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     } else if (position == liteModeRow) {
                         textCell.setTextAndIcon(LocaleController.getString(R.string.PowerUsage), R.drawable.msg2_battery, true);
                     } else if (position == questionRow) {
-                        textCell.setTextAndIcon(LocaleController.getString(R.string.NekoXUpdatesChannel), R.drawable.menu_channel_ny, true);
+                        textCell.setTextAndIcon(LocaleController.getString(R.string.AskAQuestion), R.drawable.msg2_ask_question, true);
                     } else if (position == faqRow) {
-                        textCell.setTextAndIcon(LocaleController.getString(R.string.NekoXFaq), R.drawable.msg_help, true);
+                        textCell.setTextAndIcon(LocaleController.getString(R.string.TelegramFAQ), R.drawable.msg2_help, true);
                     } else if (position == policyRow) {
-                        textCell.setTextAndIcon(LocaleController.getString(R.string.PrivacyPolicy), R.drawable.msg_policy, true);
+                        textCell.setTextAndIcon(LocaleController.getString(R.string.PrivacyPolicy), R.drawable.msg2_policy, false);
                     } else if (position == sendLogsRow) {
                         textCell.setTextAndIcon(LocaleController.getString(R.string.DebugSendLogs), R.drawable.msg_filled_data_sent, true);
                     } else if (position == sendLastLogsRow) {
