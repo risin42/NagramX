@@ -91,7 +91,6 @@
     <string name="CallTo">Call to **%1$s**?</string>
     <string name="DisableNumberRounding">Disable number rounding</string>
     <string name="Categories">Categories</string>
-    <string name="XChannel">Nagram X channel</string>
     <string name="OfficialChannel">Official channel</string>
     <string name="About">About</string>
     <string name="IgnoreBlockedAbout">You\'ll no longer see messages from blocked users in groups.</string>

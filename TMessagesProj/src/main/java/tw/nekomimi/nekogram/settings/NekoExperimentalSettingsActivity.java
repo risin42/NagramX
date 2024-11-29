@@ -95,9 +95,9 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell customAudioBitrateRow = cellGroup.appendCell(new ConfigCellCustom("CustomAudioBitrate", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell enableSaveDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveDeletedMessages()));
     private final AbstractConfigCell enableSaveEditsHistoryRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveEditsHistory()));
-    private final AbstractConfigCell clearNagramXDatabaseRow = cellGroup.appendCell(new ConfigCellText("ClearNagramXDatabase", () -> {
+    private final AbstractConfigCell clearMessageDatabaseRow = cellGroup.appendCell(new ConfigCellText("ClearMessageDatabase", () -> {
         AyuMessagesController.getInstance().clean();
-        BulletinFactory.of(this).createSimpleBulletin(R.raw.info, LocaleController.getString("ClearNagramXDatabaseNotification")).show();
+        BulletinFactory.of(this).createSimpleBulletin(R.raw.info, LocaleController.getString("ClearMessageDatabaseNotification")).show();
     }));
     private final AbstractConfigCell divider0 = cellGroup.appendCell(new ConfigCellDivider());
     
@@ -616,8 +616,8 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 //                    }
                     if (holder.itemView instanceof TextSettingsCell) {
                         TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
-                        if (position == cellGroup.rows.indexOf(clearNagramXDatabaseRow)) {
-                            textCell.setText(LocaleController.getString(R.string.ClearNagramXDatabase), false);
+                        if (position == cellGroup.rows.indexOf(clearMessageDatabaseRow)) {
+                            textCell.setText(LocaleController.getString(R.string.ClearMessageDatabase), false);
                             textCell.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
                         } else {
                             // Reset text color to default for other TextSettingsCells

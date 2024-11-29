@@ -159,14 +159,17 @@
     <string name="PanguInfo">Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean), half-width English, digit and symbol characters.</string>
     <string name="SendWithPangu">Send with Pangu</string>
     <string name="SendWithoutPangu">Send without Pangu</string>
-    <string name="EnableSaveDeletedMessages">Enable save deleted messages</string>
+    <string name="XChannel">Nagram X channel</string>
+    <string name="EnableSaveDeletedMessages">Save Deleted Messages</string>
     <string name="DeletedMessage">deleted</string>
-    <string name="EnableSaveEditsHistory">Enable save edits history</string>
+    <string name="EnableSaveEditsHistory">Save Edits History</string>
     <string name="EditsHistoryTitle">Edits history</string>
     <string name="EditsHistoryMenuText">Edits history</string>
     <string name="DeleteKeepLocally">Keep locally</string>
     <string name="DefaultHlsVideoQuality">Default Hls Video Quality</string>
-    <string name="ClearNagramXDatabase">Clear Nagram X Database</string>
-    <string name="ClearNagramXDatabaseNotification">Nagram X Database cleared</string>
+    <string name="ClearMessageDatabase">Clear Message Database</string>
+    <string name="ClearMessageDatabaseNotification">Message Database cleared</string>
     <string name="CustomDeletedMark">Custom Deleted Message marker</string>
+    <string name="HidePremiumSection">Hide Premium Section</string>
+    <string name="HideHelpSection">Hide Help Section</string>
 </resources>

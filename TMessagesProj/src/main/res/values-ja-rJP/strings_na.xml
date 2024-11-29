@@ -158,4 +158,17 @@
     <string name="PanguInfo">テキストを読みやすくします。CJK（中国語、日本語、韓国語）、半角英数字、記号の間に自動的にスペースを挿入します。</string>
     <string name="SendWithPangu">Pangu を使用して送信</string>
     <string name="SendWithoutPangu">Pangu を使用せずに送信</string>
+    <string name="XChannel">Nagram X チャンネル</string>
+    <string name="EnableSaveDeletedMessages">削除されたメッセージを保存する</string>
+    <string name="DeletedMessage">削除済み</string>
+    <string name="EnableSaveEditsHistory">編集履歴を保存する</string>
+    <string name="EditsHistoryTitle">編集履歴</string>
+    <string name="EditsHistoryMenuText">編集履歴</string>
+    <string name="DeleteKeepLocally">ローカルに保持</string>
+    <string name="DefaultHlsVideoQuality">デフォルトのHLS動画品質</string>
+    <string name="ClearMessageDatabase">メッセージデータベースをリセット</string>
+    <string name="ClearMessageDatabaseNotification">メッセージデータベースがリセットされました</string>
+    <string name="CustomDeletedMark">カスタム削除メッセージマーカー</string>
+    <string name="HidePremiumSection">プレミアムセクションを非表示</string>  
+    <string name="HideHelpSection">ヘルプセクションを非表示</string>
 </resources>

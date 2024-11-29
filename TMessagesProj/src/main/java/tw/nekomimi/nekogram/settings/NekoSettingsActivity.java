@@ -333,7 +333,7 @@ public class NekoSettingsActivity extends BaseFragment {
                         case VIEW_TYPE_TEXT_LINK: {
                             TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
                             if (position == xChannelRow) {
-                                textCell.setTextAndValue(LocaleController.getString("XChannel", R.string.XChannel), "@NagramX", true);
+                                textCell.setTextAndValue(LocaleController.getString(R.string.XChannel), "@NagramX", true);
                             } else if (position == channelRow) {
                                 textCell.setTextAndValue(LocaleController.getString("OfficialChannel", R.string.OfficialChannel), "@nagram_channel", true);
                             } else if (position == channelTipsRow) {
