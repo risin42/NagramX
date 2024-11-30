@@ -647,6 +647,18 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
+    val hidePremiumSection =
+        addConfig(
+            "HidePremiumSection",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val hideHelpSection =
+        addConfig(
+            "HideHelpSection",
+            ConfigItem.configTypeBool,
+            true
+        )
 
     private fun addConfig(
         k: String,

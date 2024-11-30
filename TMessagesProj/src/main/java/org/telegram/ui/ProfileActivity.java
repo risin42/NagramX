@@ -9457,26 +9457,35 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 devicesRow = rowCount++;
                 nekoRow = rowCount++;
                 languageRow = rowCount++;
-                devicesSectionRow = rowCount++;
-                if (!getMessagesController().premiumFeaturesBlocked()) {
-                    premiumRow = rowCount++;
+                // nagram x
+                boolean hidePremium = NaConfig.INSTANCE.getHidePremiumSection().Bool();
+                boolean hideHelp = NaConfig.INSTANCE.getHideHelpSection().Bool();
+                if (!(hidePremium && hideHelp)) {
+                    devicesSectionRow = rowCount++;
                 }
-                if (getMessagesController().starsPurchaseAvailable()) {
-                    starsRow = rowCount++;
+                if (!hidePremium) {
+                    if (!getMessagesController().premiumFeaturesBlocked()) {
+                        premiumRow = rowCount++;
+                    }
+                    if (getMessagesController().starsPurchaseAvailable()) {
+                        starsRow = rowCount++;
+                    }
+                    if (!getMessagesController().premiumFeaturesBlocked()) {
+                        businessRow = rowCount++;
+                    }
+                    if (!getMessagesController().premiumPurchaseBlocked()) {
+                        premiumGiftingRow = rowCount++;
+                    }
+                    if ((premiumRow >= 0 || starsRow >= 0 || businessRow >= 0 || premiumGiftingRow >= 0) && !hideHelp) {
+                        premiumSectionsRow = rowCount++;
+                    }
                 }
-                if (!getMessagesController().premiumFeaturesBlocked()) {
-                    businessRow = rowCount++;
+                if (!hideHelp) {
+                    helpHeaderRow = rowCount++;
+                    questionRow = rowCount++;
+                    faqRow = rowCount++;
+                    policyRow = rowCount++;
                 }
-                if (!getMessagesController().premiumPurchaseBlocked()) {
-                    premiumGiftingRow = rowCount++;
-                }
-                if (premiumRow >= 0 || starsRow >= 0 || businessRow >= 0 || premiumGiftingRow >= 0) {
-                    premiumSectionsRow = rowCount++;
-                }
-                // helpHeaderRow = rowCount++;
-                // questionRow = rowCount++;
-                // faqRow = rowCount++;
-                // policyRow = rowCount++;
                 if (BuildVars.LOGS_ENABLED) {
                     helpSectionCell = rowCount++;
                     debugHeaderRow = rowCount++;
