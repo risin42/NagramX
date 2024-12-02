@@ -3779,7 +3779,7 @@ public class ChatAttachAlertPhotoLayout extends ChatAttachAlert.AttachAlertLayou
     }
 
     public void setCheckCameraWhenShown(boolean checkCameraWhenShown) {
-        this.checkCameraWhenShown = checkCameraWhenShown;
+        this.checkCameraWhenShown = checkCameraWhenShown && !NekoConfig.disableInstantCamera.Bool();
     }
 
     @Override
@@ -3991,7 +3991,7 @@ public class ChatAttachAlertPhotoLayout extends ChatAttachAlert.AttachAlertLayou
 
     @Override
     public void onOpenAnimationEnd() {
-        checkCamera(parentAlert != null && parentAlert.baseFragment instanceof ChatActivity);
+        checkCamera(parentAlert != null && parentAlert.baseFragment instanceof ChatActivity && !NekoConfig.disableInstantCamera.Bool());
     }
 
     @Override
