@@ -133,7 +133,6 @@
     <string name="PreviewSendPhoto">Отправить фото</string>
     <string name="PreviewSendVideo">Отправить видео</string>
     <string name="PreviewSendFile">Отправить файл</string>
-    <string name="SentryAnalytics">Отчёты о сбоях Sentry</string>
     <string name="UnblockDeleted">Разблокировать удалённых пользователей</string>
     <string name="UnblockDeletedWarn">Вы уверены, что хотите разблокировать **всех удалённых пользователей**?</string>
     <string name="RegexFilters">Фильтры сообщений</string>

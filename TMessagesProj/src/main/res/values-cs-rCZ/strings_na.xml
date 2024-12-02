@@ -133,7 +133,6 @@
     <string name="PreviewSendPhoto">Odeslat fotku</string>
     <string name="PreviewSendVideo">Poslat video</string>
     <string name="PreviewSendFile">Odeslat soubor</string>
-    <string name="SentryAnalytics">Zpráva o pádu aplikace</string>
     <string name="UnblockDeleted">Odblokovat smazané uživatele</string>
     <string name="UnblockDeletedWarn">Opravdu chcete odblokovat **všechny odstraněné uživatele**?</string>
     <string name="RegexFilters">Filtry zpráv</string>

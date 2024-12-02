@@ -133,7 +133,6 @@
     <string name="PreviewSendPhoto">傳送照片</string>
     <string name="PreviewSendVideo">傳送視頻</string>
     <string name="PreviewSendFile">傳送文件</string>
-    <string name="SentryAnalytics">崩潰自動上報</string>
     <string name="UnblockDeleted">解禁已刪除賬號</string>
     <string name="UnblockDeletedWarn">您確定要解除屏蔽**所有已刪除賬號**嗎？</string>
     <string name="RegexFilters">消息過濾</string>

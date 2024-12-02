@@ -133,7 +133,6 @@
     <string name="PreviewSendPhoto">Enviar foto</string>
     <string name="PreviewSendVideo">Enviar vídeo</string>
     <string name="PreviewSendFile">Enviar archivo</string>
-    <string name="SentryAnalytics">Monitoreo de errores</string>
     <string name="UnblockDeleted">Desbloquear usuarios eliminados</string>
     <string name="UnblockDeletedWarn">¿Estás seguro de que quieres desbloquear **todos los usuarios eliminados**?</string>
     <string name="RegexFilters">Filtros de mensajes</string>

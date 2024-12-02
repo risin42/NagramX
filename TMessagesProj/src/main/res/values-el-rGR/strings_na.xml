@@ -135,7 +135,6 @@
     <string name="PreviewSendPhoto">Αποστολή Φωτογραφίας</string>
     <string name="PreviewSendVideo">Αποστολή Βίντεο</string>
     <string name="PreviewSendFile">Αποστολή Αρχείου</string>
-    <string name="SentryAnalytics">Περιφρούρηση Αναφοράς Κατάρρευσης</string>
     <string name="UnblockDeleted">Κατάργηση Μπλοκάρισμα Διαγραμμένων Χρηστών</string>
     <string name="UnblockDeletedWarn">Είστε βέβαιοι ότι θέλετε να ξεμπλοκάρετε **όλους τους διαγραμμένους χρήστες**?</string>
     <string name="RegexFilters">Φίλτρα Μηνυμάτων</string>

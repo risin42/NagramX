@@ -133,7 +133,6 @@
     <string name="PreviewSendPhoto">画像を送信</string>
     <string name="PreviewSendVideo">動画を送信</string>
     <string name="PreviewSendFile">ファイルを送信</string>
-    <string name="SentryAnalytics">Sentry クラッシュ自動レポート</string>
     <string name="UnblockDeleted">削除済みアカウントのブロックを解除</string>
     <string name="UnblockDeletedWarn">**すべての削除済みアカウント**のブロックを解除してもよろしいですか？</string>
     <string name="RegexFilters">メッセージフィルター</string>

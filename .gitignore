@@ -8,7 +8,6 @@
 .vscode/
 .idx/
 local.properties
-sentry.properties
 service_account_credentials.json
 obj/
 build/
