@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Nachricht mit Antwort kombinieren aktiviert</string>
     <string name="CombineMessageEnabled">Kombiniere Nachricht aktiviert</string>
     <string name="CombineMessageDisabled">Kombiniere Nachricht deaktiviert</string>
-    <string name="TextUndoRedo">Rückgängig/Wiederholen</string>
-    <string name="TextUndo">Rückgängig</string>
-    <string name="TextRedo">Wiederholen</string>
     <string name="NoiseSuppressAndVoiceEnhance">Geräuschunterdrückung und Sprachverstärkung</string>
     <string name="RepeatAsCopy">Als Kopie wiederholen</string>
     <string name="DoubleTapAction">Doppeltes Tippen Aktion</string>

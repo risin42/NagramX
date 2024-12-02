@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Kombinera meddelande aktiverat med svar</string>
     <string name="CombineMessageEnabled">Kombinera meddelande aktiverat</string>
     <string name="CombineMessageDisabled">Kombinera meddelande inaktiverat</string>
-    <string name="TextUndoRedo">Ångra/Gör om</string>
-    <string name="TextUndo">Ångra</string>
-    <string name="TextRedo">Gör om</string>
     <string name="NoiseSuppressAndVoiceEnhance">Ljuddämpning och röstförstärkning</string>
     <string name="RepeatAsCopy">Upprepa som kopia</string>
     <string name="DoubleTapAction">Åtgärd för dubbeltryck</string>

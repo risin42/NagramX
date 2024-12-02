@@ -57,7 +57,6 @@ import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.TextView;
 
-import org.lsposed.hiddenapibypass.HiddenApiBypass;
 import com.google.common.primitives.Chars;
 
 import org.telegram.messenger.AndroidUtilities;
@@ -75,8 +74,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-import xyz.nextalone.nagram.NaConfig;
 
 public class EditTextBoldCursor extends EditTextEffects {
 
@@ -173,60 +170,6 @@ public class EditTextBoldCursor extends EditTextEffects {
 
     private List<TextWatcher> registeredTextWatchers = new ArrayList<>();
     private boolean isTextWatchersSuppressed = false;
-    private static Method canUndoMethod;
-    private static Method canRedoMethod;
-
-    static {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                canUndoMethod = HiddenApiBypass.getDeclaredMethod(TextView.class, "canUndo");
-                canRedoMethod = HiddenApiBypass.getDeclaredMethod(TextView.class, "canRedo");
-            } else {
-                canUndoMethod = TextView.class.getDeclaredMethod("canUndo");
-                canRedoMethod = TextView.class.getDeclaredMethod("canRedo");
-            }
-            canUndoMethod.setAccessible(true);
-            canRedoMethod.setAccessible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            FileLog.e(e);
-            canUndoMethod = null;
-            canRedoMethod = null;
-        }
-    }
-
-    public final boolean canUndo() {
-        if (canUndoMethod == null) {
-            return false;
-        }
-        try {
-            return (boolean) canUndoMethod.invoke(this);
-        } catch (Exception e) {
-            FileLog.e(e);
-        }
-        return false;
-    }
-
-    public final boolean canRedo() {
-        if (canRedoMethod == null) {
-            return false;
-        }
-        try {
-            return (boolean) canRedoMethod.invoke(this);
-        } catch (Exception e) {
-            FileLog.e(e);
-        }
-        return false;
-    }
-
-    private void addUndoRedo(Menu menu) {
-        if (canUndo()) {
-            menu.add(R.id.menu_undoredo, android.R.id.undo, 2, LocaleController.getString("TextUndo", R.string.TextUndo));
-        }
-        if (canRedo()) {
-            menu.add(R.id.menu_undoredo, android.R.id.redo, 3, LocaleController.getString("TextRedo", R.string.TextRedo));
-        }
-    }
 
     public void setHintText2(CharSequence text, boolean animated) {
         if (hintAnimatedDrawable2 != null) {
@@ -1216,9 +1159,6 @@ public class EditTextBoldCursor extends EditTextEffects {
             };
             callback.onCreateActionMode(floatingActionMode, floatingActionMode.getMenu());
             extendActionMode(floatingActionMode, floatingActionMode.getMenu());
-            if (NaConfig.INSTANCE.getShowTextUndoRedo().Bool()) {
-                addUndoRedo(floatingActionMode.getMenu());
-            }
             floatingActionMode.invalidate();
             getViewTreeObserver().addOnPreDrawListener(floatingToolbarPreDrawListener);
             invalidate();

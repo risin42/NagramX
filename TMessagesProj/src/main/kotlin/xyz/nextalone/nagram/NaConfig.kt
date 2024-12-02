@@ -100,12 +100,6 @@ object NaConfig {
             ConfigItem.configTypeInt,
             0
         )
-    val showTextUndoRedo =
-        addConfig(
-            "TextUndoRedo",
-            ConfigItem.configTypeBool,
-            false
-        )
     val noiseSuppressAndVoiceEnhance =
         addConfig(
             "NoiseSuppressAndVoiceEnhance",

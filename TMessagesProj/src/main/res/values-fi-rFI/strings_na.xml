@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Yhdistä Viesti Käytössä Vastauksella</string>
     <string name="CombineMessageEnabled">Yhdistä Viesti Käytössä</string>
     <string name="CombineMessageDisabled">Yhdistä Viesti Pois Käytöstä</string>
-    <string name="TextUndoRedo">Kumoa/Tee Uudelleen</string>
-    <string name="TextUndo">Kumoa</string>
-    <string name="TextRedo">Toista</string>
     <string name="NoiseSuppressAndVoiceEnhance">Melunvaimennus Ja Äänen Parantaminen</string>
     <string name="RepeatAsCopy">Toista kopiona</string>
     <string name="DoubleTapAction">Kaksoisnapautuksen Toiminto</string>

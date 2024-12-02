@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">最初のメッセージに返信して結合</string>
     <string name="CombineMessageEnabled">メッセージのみを結合</string>
     <string name="CombineMessageDisabled">無効</string>
-    <string name="TextUndoRedo">元に戻す/やり直し</string>
-    <string name="TextUndo">元に戻す</string>
-    <string name="TextRedo">やり直し</string>
     <string name="NoiseSuppressAndVoiceEnhance">ノイズ抑制と音声強調</string>
     <string name="RepeatAsCopy">引用なしでリピート</string>
     <string name="DoubleTapAction">ダブルタップ操作</string>

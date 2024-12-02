@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Kombiner Besked Aktiveret Med Svar</string>
     <string name="CombineMessageEnabled">Kombiner Besked Aktiveret</string>
     <string name="CombineMessageDisabled">Kombinér Besked Deaktiveret</string>
-    <string name="TextUndoRedo">Fortryd/Gentag</string>
-    <string name="TextUndo">Fortryd</string>
-    <string name="TextRedo">Gendan</string>
     <string name="NoiseSuppressAndVoiceEnhance">Støj Undertryk Og Stemme Forbedre</string>
     <string name="RepeatAsCopy">Gentag som kopi</string>
     <string name="DoubleTapAction">Dobbelttryk Handling</string>

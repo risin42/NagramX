@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Etkinleştirilmiş İletiyi Yanıtla Birleştir</string>
     <string name="CombineMessageEnabled">Mesajı Birleştir Etkin</string>
     <string name="CombineMessageDisabled">Mesajı Birleştir Devre Dışı</string>
-    <string name="TextUndoRedo">Undo/Redo</string>
-    <string name="TextUndo">Geri Al</string>
-    <string name="TextRedo">Redo</string>
     <string name="NoiseSuppressAndVoiceEnhance">Gürültü Bastırma ve Ses İyileştirici</string>
     <string name="RepeatAsCopy">Kopya Olarak Tekrarlay</string>
     <string name="DoubleTapAction">Çift Dokunma Eylemi</string>

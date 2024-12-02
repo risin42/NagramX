@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">合併並回復首條訊息</string>
     <string name="CombineMessageEnabled">僅合併訊息</string>
     <string name="CombineMessageDisabled">關閉</string>
-    <string name="TextUndoRedo">取消/重做</string>
-    <string name="TextUndo">取消</string>
-    <string name="TextRedo">重做</string>
     <string name="NoiseSuppressAndVoiceEnhance">噪音抑制和語音增強</string>
     <string name="RepeatAsCopy">無引用復讀</string>
     <string name="DoubleTapAction">雙擊操作</string>

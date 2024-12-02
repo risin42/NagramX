@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Συνδυασμός Μηνύματος Ενεργοποιημένο Με Απάντηση</string>
     <string name="CombineMessageEnabled">Συνδυασμός Μηνύματος Ενεργοποιημένο</string>
     <string name="CombineMessageDisabled">Συνδυασμός Μηνύματος Απενεργοποιημένο</string>
-    <string name="TextUndoRedo">Αναίρεση/Επαναφορά</string>
-    <string name="TextUndo">Αναίρεση</string>
-    <string name="TextRedo">Επανάληψη</string>
     <string name="NoiseSuppressAndVoiceEnhance">Καταστολή Θορύβου Και Βελτίωση Φωνής</string>
     <string name="RepeatAsCopy">Επανάληψη ως Αντιγραφή</string>
     <string name="DoubleTapAction">Ενέργεια Διπλής Αφής</string>

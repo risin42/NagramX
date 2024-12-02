@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Kombinovat zprávu s odpovědí</string>
     <string name="CombineMessageEnabled">Kombinovat zprávu povolena</string>
     <string name="CombineMessageDisabled">Kombinace zpráv zakázána</string>
-    <string name="TextUndoRedo">Zpět/Zpět</string>
-    <string name="TextUndo">Zpět</string>
-    <string name="TextRedo">Znovu</string>
     <string name="NoiseSuppressAndVoiceEnhance">Potlačit šum a zesílit hlas</string>
     <string name="RepeatAsCopy">Opakovat jako kopírování</string>
     <string name="DoubleTapAction">Akce dvojím poklepáním</string>

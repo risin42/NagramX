@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Połączenie wiadomości włączone z odpowiedzią</string>
     <string name="CombineMessageEnabled">Połączenie wiadomości włączone</string>
     <string name="CombineMessageDisabled">Połączenie wiadomości wyłączone</string>
-    <string name="TextUndoRedo">Cofnij/Ponów</string>
-    <string name="TextUndo">Cofnij</string>
-    <string name="TextRedo">Ponów</string>
     <string name="NoiseSuppressAndVoiceEnhance">Hałas i wzmocnienie głosu</string>
     <string name="RepeatAsCopy">Powtórz jako kopię</string>
     <string name="DoubleTapAction">Akcja podwójnego naciśnięcia</string>

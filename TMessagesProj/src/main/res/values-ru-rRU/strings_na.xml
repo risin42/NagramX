@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Включено для сообщений с ответом</string>
     <string name="CombineMessageEnabled">Включено</string>
     <string name="CombineMessageDisabled">Отключено</string>
-    <string name="TextUndoRedo">Отменить/повторить</string>
-    <string name="TextUndo">Отменить</string>
-    <string name="TextRedo">Повторить</string>
     <string name="NoiseSuppressAndVoiceEnhance">Подавление шума и улучшение голоса</string>
     <string name="RepeatAsCopy">Повторить как копию</string>
     <string name="DoubleTapAction">Действие при двойном нажатии</string>

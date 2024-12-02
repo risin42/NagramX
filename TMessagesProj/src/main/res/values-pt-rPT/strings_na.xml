@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Combinar Mensagem Habilitada Com Resposta</string>
     <string name="CombineMessageEnabled">Combinar Mensagem Ativada</string>
     <string name="CombineMessageDisabled">Mesclar Mensagem Desativada</string>
-    <string name="TextUndoRedo">Desfazer/Refazer</string>
-    <string name="TextUndo">Desfazer</string>
-    <string name="TextRedo">Refazer</string>
     <string name="NoiseSuppressAndVoiceEnhance">Suprimir ruído e melhorar voz</string>
     <string name="RepeatAsCopy">Repetir como cópia</string>
     <string name="DoubleTapAction">Ação de Toque Duplo</string>

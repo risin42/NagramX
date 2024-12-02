@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Hợp nhất và trả lời tin nhắn đầu tiên</string>
     <string name="CombineMessageEnabled">Bật hợp nhất tin nhắn</string>
     <string name="CombineMessageDisabled">Tắt hợp nhất tin nhắn</string>
-    <string name="TextUndoRedo">Hoàn tác/Làm lại</string>
-    <string name="TextUndo">Hoàn tác</string>
-    <string name="TextRedo">Làm lại</string>
     <string name="NoiseSuppressAndVoiceEnhance">Khử tiếng ồn và tăng cường giọng nói</string>
     <string name="RepeatAsCopy">Đọc lại như trích dẫn</string>
     <string name="DoubleTapAction">Thao tác nhấp đúp</string>

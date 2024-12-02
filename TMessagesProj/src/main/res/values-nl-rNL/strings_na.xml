@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Combineer bericht ingeschakeld met antwoord</string>
     <string name="CombineMessageEnabled">Gecombineerd bericht ingeschakeld</string>
     <string name="CombineMessageDisabled">Bericht combineren uitgeschakeld</string>
-    <string name="TextUndoRedo">Ongedaan maken/Opnieuw</string>
-    <string name="TextUndo">Herstel</string>
-    <string name="TextRedo">Opnieuw</string>
     <string name="NoiseSuppressAndVoiceEnhance">Geluid Onderdrukken en spraakversterkingen</string>
     <string name="RepeatAsCopy">Herhaal als kopie</string>
     <string name="DoubleTapAction">Dubbel Tik Actie</string>

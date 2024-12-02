@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Об\'єднати повідомлення Включено з відповіддю</string>
     <string name="CombineMessageEnabled">Включити комбіноване повідомлення</string>
     <string name="CombineMessageDisabled">Об\'єднати повідомлення відключено</string>
-    <string name="TextUndoRedo">Скасувати/повторити</string>
-    <string name="TextUndo">Скасувати</string>
-    <string name="TextRedo">Повторити дію</string>
     <string name="NoiseSuppressAndVoiceEnhance">Заглушення шуму та посилення голосу</string>
     <string name="RepeatAsCopy">Повторити як копіювання</string>
     <string name="DoubleTapAction">Дія подвійного дотику</string>

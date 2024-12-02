@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Combină mesajul activat cu răspuns</string>
     <string name="CombineMessageEnabled">Combinare mesaj activat</string>
     <string name="CombineMessageDisabled">Combinare mesaj dezactivat</string>
-    <string name="TextUndoRedo">Anulează/Reface</string>
-    <string name="TextUndo">Anulează</string>
-    <string name="TextRedo">Reface</string>
     <string name="NoiseSuppressAndVoiceEnhance">Suprimarea zgomotului şi Îmbunătăţirea vocii</string>
     <string name="RepeatAsCopy">Repetă ca Copie</string>
     <string name="DoubleTapAction">Acțiune dublă la atingere</string>

@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">دمج الرسالة مع الرد</string>
     <string name="CombineMessageEnabled">تم تمكين الرسالة مجتمعة</string>
     <string name="CombineMessageDisabled">تم تعطيل الرسالة مجتمعة</string>
-    <string name="TextUndoRedo">التراجع/إعادة</string>
-    <string name="TextUndo">التراجع</string>
-    <string name="TextRedo">إعادة</string>
     <string name="NoiseSuppressAndVoiceEnhance">قمع الضوضاء وتعزيز الصوت</string>
     <string name="RepeatAsCopy">كرر كنسخة</string>
     <string name="DoubleTapAction">إجراء النقر المزدوج</string>

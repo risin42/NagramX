@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Kombiner meldingen aktivert med svar</string>
     <string name="CombineMessageEnabled">Kombiner meldingen aktivert</string>
     <string name="CombineMessageDisabled">Kombiner meldingen deaktivert</string>
-    <string name="TextUndoRedo">Angre/gjør om</string>
-    <string name="TextUndo">Angre</string>
-    <string name="TextRedo">Gjenta</string>
     <string name="NoiseSuppressAndVoiceEnhance">Støyundertrykk og stemmestyrke</string>
     <string name="RepeatAsCopy">Gjenta som kopi</string>
     <string name="DoubleTapAction">Handling ved dobbelttrykk</string>

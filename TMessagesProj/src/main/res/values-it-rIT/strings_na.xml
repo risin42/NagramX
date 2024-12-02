@@ -7,9 +7,6 @@
     <string name="CombineMessageEnabledWithReply">Combina Messaggio Abilitato Con Risposta</string>
     <string name="CombineMessageEnabled">Combina Messaggio Abilitato</string>
     <string name="CombineMessageDisabled">Combina Messaggio Disabilitato</string>
-    <string name="TextUndoRedo">Annulla/Ripeti</string>
-    <string name="TextUndo">Annulla</string>
-    <string name="TextRedo">Ripeti</string>
     <string name="NoiseSuppressAndVoiceEnhance">Soppressione Del Rumore E Miglioramento Della Voce</string>
     <string name="RepeatAsCopy">Ripeti come copia</string>
     <string name="DoubleTapAction">Azione Doppio Tocco</string>
