@@ -161,7 +161,7 @@
     <string name="EditsHistoryTitle">編集履歴</string>
     <string name="EditsHistoryMenuText">編集履歴</string>
     <string name="DeleteKeepLocally">ローカルに保持</string>
-    <string name="DefaultHlsVideoQuality">デフォルトのHLS動画品質</string>
+    <string name="DefaultHlsVideoQuality">デフォルトの Hls ビデオ品質</string>
     <string name="ClearMessageDatabase">メッセージデータベースをリセット</string>
     <string name="ClearMessageDatabaseNotification">メッセージデータベースがリセットされました</string>
     <string name="CustomDeletedMark">カスタム削除メッセージマーカー</string>
