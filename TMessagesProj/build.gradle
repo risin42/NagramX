@@ -335,7 +335,7 @@ dependencies {
     implementation "com.google.firebase:firebase-crashlytics:$crashlyticsVersion"
 //    implementation "com.google.android.play:core:$playCoreVersion"
 
-    implementation 'com.stripe:stripe-android:2.0.2'
+    implementation 'com.stripe:stripe-android:21.2.0'
     implementation 'com.android.billingclient:billing:7.1.1'
 
     // testImplementation "junit:junit:4.13.2"
