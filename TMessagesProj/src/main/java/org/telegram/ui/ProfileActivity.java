@@ -4495,10 +4495,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             public boolean onItemClick(View view, int position) {
                 if (position == versionRow) {
                     pressCount++;
-                    if (pressCount >= 5) {
-                        NaConfig.INSTANCE.getShowHiddenFeature().toggleConfigBool();
-                        Toast.makeText(getParentActivity(), LocaleController.getString("ErrorOccurred", R.string.ErrorOccurred), Toast.LENGTH_SHORT).show();
-                    }
+                    // if (pressCount >= 5) {
+                    //     NaConfig.INSTANCE.getShowHiddenFeature().toggleConfigBool();
+                    //     Toast.makeText(getParentActivity(), LocaleController.getString("ErrorOccurred", R.string.ErrorOccurred), Toast.LENGTH_SHORT).show();
+                    // }
                     if (pressCount >= 2 || BuildVars.DEBUG_PRIVATE_VERSION) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity(), resourcesProvider);
                         builder.setTitle(getString("DebugMenu", R.string.DebugMenu));
