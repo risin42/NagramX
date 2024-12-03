@@ -1,23 +1,23 @@
 # Nagram X
-A modified version of Nagram with customized features.
+A modified version of Nagram with additional features.
 
 ## CI Channel:
 https://t.me/NagramX
 
-**Disclaimer:** This version enables some features by default that violate Telegram's Terms of Service (ToS).
-
-Use at your own risk.
-
 ## Differences from the Nagram:
 - **Additional Features**
-    - Save deleted messages (Thanks to [AyuGram4A](https://github.com/AyuGram/AyuGram4A) and [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram))
-    - Save edits history (Thanks to [AyuGram4A](https://github.com/AyuGram/AyuGram4A) and [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram))
+    - Save deleted messages
+    - Save edits history
+    (Thanks to [AyuGram4A](https://github.com/AyuGram/AyuGram4A) and [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram))
+    - AI Translator with customizable API endpoint and Model
+    - Hide Premium and Help Sections
 
 - **Cleanup & Optimization**
-    - Removed genuine integrity checks
-    - Removed in-app automatic updates (including forced updates)
+    - Removed integrity checks ```jni/integrity```
+    - Removed in-app update checks and update functionality (no more forced updates).
     - Removed channel follow pop-ups
-    - Redone Japanese localization
+    - Redone Japanese localization(N-Settings)
+    - Other minor optimizations and cleanup
 
 - **Default Settings Adjustments**
     - Enabled N-Settings hidden features
@@ -25,7 +25,7 @@ Use at your own risk.
     - Disabled Dynamic Pack Order
     - Removed default value for PushServiceTypeUnifiedGateway
     - Adjusted default font size and bubbleRadius (Official Telegram defaults)
-    - Adjusted various default settings in N-Settings
+    - Other minor adjustments
 
 # Nagram
 

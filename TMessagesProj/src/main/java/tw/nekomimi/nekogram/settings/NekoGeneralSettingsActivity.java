@@ -107,6 +107,18 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell googleCloudTranslateKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.googleCloudTranslateKey, (view, position) -> {
         customDialog_BottomInputString(position, NekoConfig.googleCloudTranslateKey, LocaleController.getString("GoogleCloudTransKeyNotice"), "Key");
     }, LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty)));
+
+    // AI Translator
+    private final AbstractConfigCell llmApiKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> {
+        customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiKey(), LocaleController.getString(R.string.LlmApiKeyNotice), "Key");
+    }, LocaleController.getString(R.string.None)));
+    private final AbstractConfigCell llmApiUrlRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiUrl(), (view, position) -> {
+        customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiUrl(), LocaleController.getString(R.string.LlmApiUrlNotice), "e.g. https://api.openai.com/v1");
+    }, LocaleController.getString(R.string.LlmApiUrlDefault)));
+    private final AbstractConfigCell llmModelNameRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmModelName(), (view, position) -> {
+        customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmModelName(), LocaleController.getString(R.string.LlmModelNameNotice), "e.g. gpt-4o-mini");
+    }, LocaleController.getString(R.string.LlmModelNameDefault)));
+
     private final AbstractConfigCell hideOriginAfterTranslationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideOriginAfterTranslation()));
     private final AbstractConfigCell autoTranslateRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getAutoTranslate(), LocaleController.getString("AutoTranslateAbout")));
     private final AbstractConfigCell dividerTranslation = cellGroup.appendCell(new ConfigCellDivider());
@@ -383,6 +395,7 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                             LocaleController.getString("ProviderMicrosoftTranslator", R.string.ProviderDeepLTranslate),
                             LocaleController.getString("ProviderTelegramAPI", R.string.ProviderTelegramAPI),
                             LocaleController.getString("ProviderTranSmartTranslate", R.string.ProviderTranSmartTranslate),
+                            LocaleController.getString(R.string.ProviderLLMTranslator),
                     }, (i, __) -> {
                         boolean needReset = NekoConfig.translationProvider.Int() - 1 != i && (NekoConfig.translationProvider.Int() == 1 || i == 0);
                         NekoConfig.translationProvider.setConfigInt(i + 1);
@@ -818,6 +831,9 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                                     break;
                                 case Translator.providerTranSmart:
                                     value = LocaleController.getString("ProviderTranSmartTranslate", R.string.ProviderTranSmartTranslate);
+                                    break;
+                                case Translator.providerLLMTranslator:
+                                    value = LocaleController.getString(R.string.ProviderLLMTranslator);
                                     break;
                                 default:
                                     value = "Unknown";

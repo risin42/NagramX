@@ -647,6 +647,24 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val llmApiUrl =
+        addConfig(
+            "LlmApiUrl",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmApiKey =
+        addConfig(
+            "LlmApiKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmModelName =
+        addConfig(
+            "LlmModelName",
+            ConfigItem.configTypeString,
+            ""
+        )
 
     private fun addConfig(
         k: String,
