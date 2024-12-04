@@ -173,5 +173,5 @@
     <string name="LlmModelName">AI翻訳 モデル名</string>
     <string name="LlmApiUrlNotice">APIホストURL。OpenAI互換エンドポイントのみをサポートしています。\n\n`/chat/completions`より前のURL部分を指定してください。例： `https://api.x.ai/v1`。\n\n空欄のままにすると、GeminiのOpenAI互換APIエンドポイントである `https://generativelanguage.googleapis.com/v1beta/openai` がデフォルトで使用されます。</string>
     <string name="LlmApiKeyNotice">APIキーは、API URLへのリクエスト送信に使用されます。</string>
-    <string name="LlmModelNameNotice">空白のままにすると、gemini-1.5-flash-latestがデフォルトで使用されます。\n\nより速い応答には、gpt-4o-mini や gemini flash などの小型モデルの使用をお勧めします。</string>
+    <string name="LlmModelNameNotice">空白のままにすると、`gemini-1.5-flash-latest`がデフォルトで使用されます。\n\nより速い応答には、gpt-4o-mini や gemini flash などの小型モデルの使用をお勧めします。</string>
 </resources>
