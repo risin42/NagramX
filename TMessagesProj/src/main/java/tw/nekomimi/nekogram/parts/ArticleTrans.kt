@@ -5,6 +5,7 @@ import org.telegram.messenger.LocaleController
 import org.telegram.messenger.R
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ArticleViewer
+import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.transtale.TranslateDb
 import tw.nekomimi.nekogram.transtale.Translator
 import tw.nekomimi.nekogram.utils.AlertUtil
@@ -54,7 +55,9 @@ fun ArticleViewer.doTransLATE() {
 
     status.show()
 
-    val transPool = newFixedThreadPoolContext(5, "Article Trans Pool")
+    val provider = NekoConfig.translationProvider.Int()
+    val poolSize = if (provider == 10) 3 else 5
+    val transPool = newFixedThreadPoolContext(poolSize, "Article Trans Pool")
 
     val cancel = AtomicBoolean(false)
 
