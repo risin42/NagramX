@@ -615,7 +615,7 @@ object NaConfig {
         addConfig(
             "DefaultHlsVideoQuality",
             ConfigItem.configTypeInt,
-            0
+            1
         )
     val enableSaveDeletedMessages =
         addConfig(
