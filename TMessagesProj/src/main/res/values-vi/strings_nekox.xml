@@ -172,15 +172,6 @@
     <string name="LoginSettings">Cài đặt đăng nhập</string>
     <string name="NekoXFaq">FAQ Nagram</string>
     <string name="TransSite">Nền tảng Dịch</string>
-    <string name="OpenKayChain">Ứng dụng khách OpenPGP</string>
-    <string name="OpenPGPApp">Nhà cung cấp OpenPGP</string>
-    <string name="OpenPGPKey">Key OpenPGP</string>
-    <string name="Sign">Chữ ký</string>
-    <string name="PGPDecrypt">Giải mã tin nhắn</string>
-    <string name="PGPVerify">Xác minh tin nhắn</string>
-    <string name="PGPImport">Nhập khóa công khai</string>
-    <string name="PGPImportPrivate">Nhập khóa cá nhân</string>
-    <string name="ShareMyKey">Chia sẻ khóa công khai của tôi</string>
     <string name="DisableVibration">Tắt rung</string>
     <string name="IgnoreContentRestrictions">Bỏ qua các hạn chế nội dung</string>
     <string name="IgnoreContentRestrictionsNotice">Bỏ qua thông báo không phải bản tải ở CH Play trong tin nhắn.</string>

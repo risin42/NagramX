@@ -25,12 +25,10 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -125,8 +123,6 @@ import androidx.recyclerview.widget.ChatListItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import org.jetbrains.annotations.NotNull;
-import org.openintents.openpgp.OpenPgpError;
-import org.openintents.openpgp.util.OpenPgpApi;
 import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.AnimationNotificationsLocker;
@@ -199,8 +195,6 @@ import org.telegram.ui.bots.BotWebViewSheet;
 import org.telegram.ui.bots.ChatActivityBotWebViewButton;
 import org.telegram.ui.bots.WebViewRequestProps;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -211,7 +205,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import kotlin.Unit;
@@ -226,7 +219,6 @@ import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.utils.AlertUtil;
-import tw.nekomimi.nekogram.utils.PGPUtil;
 import tw.nekomimi.nekogram.utils.UIUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.Dialogs;
@@ -4472,29 +4464,6 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
 
         } else {
 
-            if (StrUtil.isNotBlank(NekoConfig.openPGPApp.String())) {
-
-                cell.setTextAndIcon(LocaleController.getString("Sign", R.string.Sign), R.drawable.baseline_vpn_key_24);
-                cell.setOnClickListener(v -> {
-                    if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
-                        menuPopupWindow.dismiss();
-                    }
-                    signComment(true);
-                });
-                cell.setOnLongClickListener(v -> {
-                    if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
-                        menuPopupWindow.dismiss();
-                    }
-                    signComment(false);
-                    return true;
-                });
-                cell.setMinimumWidth(AndroidUtilities.dp(196));
-                menuPopupLayout.addView(cell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 0, 48 * a++, 0, 0));
-
-                cell = new ActionBarMenuSubItem(getContext(), false, false);
-
-            }
-
             cell.setTextAndIcon(LocaleController.getString("Translate", R.string.Translate), R.drawable.ic_translate);
             cell.setOnClickListener(v -> {
                 if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
@@ -5900,82 +5869,6 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             }
             messageEditTextWatchers.add(textWatcher);
         }
-    }
-
-    private void signComment(boolean save) {
-
-        Intent intent = new Intent();
-
-        if (NekoConfig.openPGPKeyId.Long() != 0L && save)
-            intent.putExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, NekoConfig.openPGPKeyId.Long());
-
-        signComment(intent, save);
-
-    }
-
-    private void signComment(Intent intent, boolean save) {
-
-        if (parentActivity instanceof LaunchActivity) {
-
-            ((LaunchActivity) parentActivity).callbacks.put(115, result -> {
-
-                if (result != null) {
-
-                    long keyId = result.getLongExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, 0L);
-
-                    if (save) NekoConfig.openPGPKeyId.setConfigLong(keyId);
-
-                    signComment(result, save);
-
-                }
-
-            });
-
-        }
-
-        intent.setAction(OpenPgpApi.ACTION_CLEARTEXT_SIGN);
-
-        ByteArrayInputStream is = IoUtil.toUtf8Stream(messageEditText.getText().toString());
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-        PGPUtil.post(() -> PGPUtil.api.executeApiAsync(intent, is, os, result -> {
-
-            switch (result.getIntExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_ERROR)) {
-
-                case OpenPgpApi.RESULT_CODE_SUCCESS: {
-
-                    String str = StrUtil.utf8Str(os.toByteArray());
-                    if (StrUtil.isNotBlank(str)) messageEditText.setText(str);
-                    break;
-
-                }
-
-                case OpenPgpApi.RESULT_CODE_USER_INTERACTION_REQUIRED: {
-
-                    PendingIntent pi = result.getParcelableExtra(OpenPgpApi.RESULT_INTENT);
-                    try {
-                        parentActivity.startIntentSenderFromChild(parentActivity, pi.getIntentSender(), 115, null, 0, 0, 0);
-                    } catch (Exception e) {
-                        FileLog.e(e);
-                        AlertUtil.showToast(e);
-                    }
-                    break;
-                }
-                case OpenPgpApi.RESULT_CODE_ERROR: {
-                    OpenPgpError error = result.getParcelableExtra(OpenPgpApi.RESULT_ERROR);
-                    if (error == null) return;
-                    if (error.getMessage() != null && error.getMessage().contains("not found") && save) {
-                        NekoConfig.openPGPKeyId.setConfigLong(0L);
-                        signComment(new Intent(), true);
-                    } else {
-                        AlertUtil.showToast(error.toString());
-                    }
-                    break;
-                }
-            }
-
-        }));
-
     }
 
     private void translateComment(Locale target) {

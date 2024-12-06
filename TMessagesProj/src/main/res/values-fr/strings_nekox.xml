@@ -157,14 +157,6 @@
     <string name="LoginSettings">Paramètres de connexion</string>
     <string name="NekoXFaq">FAQ Nagram</string>
     <string name="TransSite">Platforme de Traduction</string>
-    <string name="OpenKayChain">Client OpenPGP</string>
-    <string name="OpenPGPApp">Fournisseur OpenPGP</string>
-    <string name="OpenPGPKey">Clé OpenPGP</string>
-    <string name="PGPDecrypt">Déchiffrer le message</string>
-    <string name="PGPVerify">Vérifier le message</string>
-    <string name="PGPImport">Importer une clé publique</string>
-    <string name="PGPImportPrivate">Importer une clé privée</string>
-    <string name="ShareMyKey">Partager ma clé publique</string>
     <string name="DisableVibration">Désactiver le vibreur</string>
     <string name="IgnoreContentRestrictions">Ignorer les restrictions de contenu</string>
     <string name="SendCommentAfterForward">Envoyer un commentaire après le transfert</string>
@@ -231,7 +223,6 @@
     <string name="ImportSettings">Importer les paramètres</string>
     <string name="VersionUpdateNoUpdate">Pas de Mise à jour.</string>
     <string name="DisplayPersianCalendarByLatin">Afficher le calendrier persan en caractères latins</string>
-    <string name="Sign">Signer</string>
     <string name="useCustomEmoji">Utiliser des émoticônes personnalisées</string>
     <string name="AutoDownload">Téléchargement auto</string>
     <string name="UsePersiancalendar">Utiliser le calendrier persan</string>

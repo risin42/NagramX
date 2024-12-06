@@ -172,15 +172,6 @@
     <string name="LoginSettings">تنظیمات ورود</string>
     <string name="NekoXFaq">پرسش‌های متداول Nagram</string>
     <string name="TransSite">پلتفرم ترجمه</string>
-    <string name="OpenKayChain">OpenPGP Client</string>
-    <string name="OpenPGPApp">OpenPGP Provider</string>
-    <string name="OpenPGPKey">کلید OpenPGP</string>
-    <string name="Sign">امضا</string>
-    <string name="PGPDecrypt">رمزگشایی پیام</string>
-    <string name="PGPVerify">تصدیق پیام</string>
-    <string name="PGPImport">وارد کردن کلید عمومی</string>
-    <string name="PGPImportPrivate">وارد کردن کلید خصوصی</string>
-    <string name="ShareMyKey">اشتراک‌گذاری کلید عمومی من</string>
     <string name="DisableVibration">غیرفعال کردن لرزش</string>
     <string name="IgnoreContentRestrictions">دور زدن محدودیت‌های محتوا</string>
     <string name="IgnoreContentRestrictionsNotice">نادیده گرفتن محدودیت‌های گوگل‌پلی روی پیام‌ها.</string>

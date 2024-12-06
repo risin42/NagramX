@@ -171,15 +171,6 @@
     <string name="LoginSettings">Bejelentkezés beállításai</string>
     <string name="NekoXFaq">Nagram GYIK</string>
     <string name="TransSite">Fordítási platform</string>
-    <string name="OpenKayChain">OpenPGP kliens</string>
-    <string name="OpenPGPApp">OpenPGP Szolgáltató</string>
-    <string name="OpenPGPKey">OpenPGP kulcs</string>
-    <string name="Sign">Jel</string>
-    <string name="PGPDecrypt">Az üzenet visszafejtése</string>
-    <string name="PGPVerify">Üzenet ellenőrzése</string>
-    <string name="PGPImport">Nyilvános kulcs importálása</string>
-    <string name="PGPImportPrivate">Privát kulcs importálása</string>
-    <string name="ShareMyKey">Nyilvános kulcs megosztása</string>
     <string name="DisableVibration">Tiltsa le a rezgést</string>
     <string name="IgnoreContentRestrictions">A tartalmi korlátozások figyelmen kívül hagyása</string>
     <string name="IgnoreContentRestrictionsNotice">Figyelmen kívül hagyja az üzenetek helyi korlátozását az üzeneteknél. Ezt a jövőben a szerver betilthatja, és Önnek magának kell értékelnie ennek a lehetőségnek a helyi törvényességét.</string>

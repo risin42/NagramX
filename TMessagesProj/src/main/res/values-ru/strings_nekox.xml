@@ -172,15 +172,6 @@
     <string name="LoginSettings">Настройки входа</string>
     <string name="NekoXFaq">ЧаВО Nagram (EN/CH)</string>
     <string name="TransSite">Платформа переводов</string>
-    <string name="OpenKayChain">OpenPGP</string>
-    <string name="OpenPGPApp">Провайдер OpenPGP</string>
-    <string name="OpenPGPKey">Ключ OpenPGP</string>
-    <string name="Sign">Подписать</string>
-    <string name="PGPDecrypt">Расшифровать</string>
-    <string name="PGPVerify">Проверить</string>
-    <string name="PGPImport">Импорт открытого ключа</string>
-    <string name="PGPImportPrivate">Импорт закрытого ключа</string>
-    <string name="ShareMyKey">Отправить открытый ключ</string>
     <string name="ShareMessages">Поделиться</string>
     <string name="DisableVibration">Отключить вибрацию</string>
     <string name="IgnoreContentRestrictions">Игнорировать ограничения контента</string>

@@ -172,15 +172,6 @@
     <string name="LoginSettings">Impostazioni di Accesso</string>
     <string name="NekoXFaq">FAQ Nagram</string>
     <string name="TransSite">Piattaforma di Traduzione</string>
-    <string name="OpenKayChain">Client OpenPGP</string>
-    <string name="OpenPGPApp">Provider OpenPGP</string>
-    <string name="OpenPGPKey">Chiave OpenPGP</string>
-    <string name="Sign">Firma</string>
-    <string name="PGPDecrypt">Decifra Messaggio</string>
-    <string name="PGPVerify">Verifica Messaggio</string>
-    <string name="PGPImport">Importa Chiave Pubblica</string>
-    <string name="PGPImportPrivate">Importa Chiave Privata</string>
-    <string name="ShareMyKey">Condividi la mia Chiave Pubblica</string>
     <string name="DisableVibration">Disabilita Vibrazione</string>
     <string name="IgnoreContentRestrictions">Ignora le restrizioni di contenuto</string>
     <string name="IgnoreContentRestrictionsNotice">Ignora le restrizioni di riproduzione dei messaggi.</string>

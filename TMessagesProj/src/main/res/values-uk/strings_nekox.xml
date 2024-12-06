@@ -172,15 +172,6 @@
     <string name="LoginSettings">Параметри входу</string>
     <string name="NekoXFaq">Питання Nagram</string>
     <string name="TransSite">Платформа перекладу</string>
-    <string name="OpenKayChain">Клієнт OpenPGP</string>
-    <string name="OpenPGPApp">Провайдер OpenPGP</string>
-    <string name="OpenPGPKey">Ключ OpenPGP</string>
-    <string name="Sign">Підпис</string>
-    <string name="PGPDecrypt">Розшифрувати повідомлення</string>
-    <string name="PGPVerify">Підтвердити повідомлення</string>
-    <string name="PGPImport">Імпортувати відкритий ключ</string>
-    <string name="PGPImportPrivate">Імпортувати закритий ключ</string>
-    <string name="ShareMyKey">Поділіться моїм публічним ключем</string>
     <string name="DisableVibration">Вимкнути вібрацію</string>
     <string name="IgnoreContentRestrictions">Ігнорувати обмеження на контент</string>
     <string name="IgnoreContentRestrictionsNotice">Локально ігнорує обмеження Android щодо повідомлень.</string>

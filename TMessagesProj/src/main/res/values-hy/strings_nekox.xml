@@ -172,15 +172,6 @@
     <string name="LoginSettings">Մուտքի կարգավորումներ</string>
     <string name="NekoXFaq">Nagram ՀՏՀ</string>
     <string name="TransSite">Թարգմանել պլատֆորմը</string>
-    <string name="OpenKayChain">OpenPGP հաճախորդ</string>
-    <string name="OpenPGPApp">OpenPGP մատակարար</string>
-    <string name="OpenPGPKey">OpenPGP բանալին</string>
-    <string name="Sign">Նշան</string>
-    <string name="PGPDecrypt">Վերծանել հաղորդագրությունը</string>
-    <string name="PGPVerify">Հաստատեք հաղորդագրությունը</string>
-    <string name="PGPImport">Ներմուծել հանրային բանալին</string>
-    <string name="PGPImportPrivate">Ներմուծել անձնական բանալին</string>
-    <string name="ShareMyKey">Share իմ հանրային բանալին</string>
     <string name="DisableVibration">Անջատեք թրթռումը</string>
     <string name="IgnoreContentRestrictions">Անտեսեք բովանդակության սահմանափակումները</string>
     <string name="IgnoreContentRestrictionsNotice">Անտեսում է հաղորդագրությունների նվագարկման սահմանափակումները:</string>

@@ -172,15 +172,6 @@
     <string name="LoginSettings">הגדרות כניסה</string>
     <string name="NekoXFaq">שאלות נפוצות על Nagram</string>
     <string name="TransSite">תרגם פלטפורמה</string>
-    <string name="OpenKayChain">לקוח OpenPGP</string>
-    <string name="OpenPGPApp">ספק OpenPGP</string>
-    <string name="OpenPGPKey">מפתח OpenPGP</string>
-    <string name="Sign">סִימָן</string>
-    <string name="PGPDecrypt">פענח הודעה</string>
-    <string name="PGPVerify">אמת את ההודעה</string>
-    <string name="PGPImport">ייבא מפתח ציבורי</string>
-    <string name="PGPImportPrivate">ייבא מפתח פרטי</string>
-    <string name="ShareMyKey">שתף את המפתח הציבורי שלי</string>
     <string name="DisableVibration">השבת רטט</string>
     <string name="IgnoreContentRestrictions">התעלם ממגבלות תוכן</string>
     <string name="IgnoreContentRestrictionsNotice">התעלמות מהגבלות השמעה על הודעות.</string>

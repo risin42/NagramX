@@ -55,10 +55,8 @@
     <string name="DialogsSettings">Nastavení Dialogu</string>
     <string name="NoQrFound">Nebyl nalezen žádný QR Code</string>
     <string name="AutoDownload">AutoStahování</string>
-    <string name="PGPImport">Vložit Veřejný Klíč</string>
     <string name="AddProxyTelegram">Přidat MTProto Proxy</string>
     <string name="FilterNameChannels">Kanály</string>
-    <string name="OpenPGPApp">Poskytovatel OpenPGP</string>
     <string name="BlockedListEmpty">Nezablokovali jste nikoho :)</string>
     <string name="ImportProxyFromClipboard">Importovat Ze Schránky</string>
     <string name="DeleteUnavailableServer">Smazat nedostupné servery</string>
@@ -99,10 +97,8 @@
     <string name="SubscriptionDelete">Zrušit Předplatné</string>
     <string name="DeleteAllServer">Smazat všechny servery</string>
     <string name="MinApi21Required">Je nám líto, potřebujete nejméně Android 5 (API21).</string>
-    <string name="PGPImportPrivate">Vložit Soukromý Klíč</string>
     <string name="ShareMessages">Sdílet</string>
     <string name="ScanQRCode">Naskenovat QR Code</string>
-    <string name="PGPVerify">Ověřit Zprávu</string>
     <string name="QRLoginNotice">Tento QR kód / odkaz dovoluje někomu přihlásit se do vašeho Telegram účtu. Je to vaše vlastní operace\?</string>
     <string name="StorageReset">Vyčistit Uložiště</string>
     <string name="ReplaceText">Nahradit Text</string>
@@ -136,7 +132,6 @@
     <string name="UsePersiancalendar">Použít Perský kalendář</string>
     <string name="Win32ExecutableFiles">Win32 spustitelný soubor</string>
     <string name="FCTitle">O aktualizacích aplikace</string>
-    <string name="OpenKayChain">OpenPGP Klient</string>
     <string name="VmessAlterId">Alternativní ID</string>
     <string name="DeleteUnavailableServerConfirm">Jste si jisti že chcete **smazat nedostupné servery**\?</string>
     <string name="StorageResetInfo">Všechna data této aplikace budou permanentně smazána (a pokuste se odhlásit nejdříve ze všech účtů).</string>
@@ -144,7 +139,6 @@
     <string name="LoginSettings">Nastavení Přihlášení</string>
     <string name="SortByUser">Seřadit Podle Uživatele</string>
     <string name="ImportStickersList">Importovat samolepky</string>
-    <string name="OpenPGPKey">OpenPGP Klíč</string>
     <string name="DeleteAllInChatAlert">Varování! Toto **smaže všechny zprávy** v tomto chatu pro **všechny** účastníky.</string>
     <string name="CCTarget">Cíl</string>
     <string name="FilterNameBotsDescription">Pouze zprávy od robotů</string>
@@ -157,7 +151,6 @@
     <string name="BackupSettings">Nastavení zálohy</string>
     <string name="FilterNameBots">Roboti</string>
     <string name="UnblockAll">Odblokovat Vše</string>
-    <string name="PGPDecrypt">Dešifrovat Zprávu</string>
     <string name="SortByUnread">Seřadit Podle Nepřečtených</string>
     <string name="ProxyInfoVmess">VMess Proxy Nastavení</string>
     <string name="SSPassword">Heslo</string>
@@ -173,7 +166,6 @@
     <string name="MiniVersionAlert">Je nám líto, mini verze nepodporuje tento typ proxy, prosíme změnte verzi v nastavení.</string>
     <string name="ProxyInfoSS">Nastavení Shadowsocks Proxy</string>
     <string name="StickerSets">Balíčky Samolepek</string>
-    <string name="ShareMyKey">Sdílet Můj Veřejný Klíč</string>
     <string name="CCHK">Tradiční Čínština (Hong Kong)</string>
     <string name="CCSP">Zjednodušená Čínština (Čína)</string>
     <string name="ShareProxy">Sdílet Proxy</string>
@@ -186,7 +178,6 @@
     <string name="EnableDeveloperMode">Povolit Vývojářský Mód</string>
     <string name="ExportStickers">Exportovat Samolepky</string>
     <string name="AddProxySS">Přidat Shadowsocks Proxy</string>
-    <string name="Sign">Podpis / Značka</string>
     <string name="ImportSettings">Nastavení vložení</string>
     <string name="PrivacyNotice2fa">Zjistilo se že jste si nenastavili heslo, což by mohlo způsobit že hacker kontrolovaný vládou najde vaši pravou identitu, prosíme nastavte jej!</string>
     <string name="AddProxySSR">Přidat ShadowsocksR Proxy</string>

@@ -122,15 +122,6 @@
     <string name="LoginSettings">Setări de autentificare</string>
     <string name="NekoXFaq">Întrebări frecvente despre Nagram</string>
     <string name="TransSite">Platformă de traducere</string>
-    <string name="OpenKayChain">Client OpenPGP</string>
-    <string name="OpenPGPApp">Furnizor OpenPGP</string>
-    <string name="OpenPGPKey">Cheia OpenPGP</string>
-    <string name="Sign">Semn</string>
-    <string name="PGPDecrypt">Decriptare mesaj</string>
-    <string name="PGPVerify">Verificare mesaj</string>
-    <string name="PGPImport">Importă cheia publică</string>
-    <string name="PGPImportPrivate">Importă cheia privată</string>
-    <string name="ShareMyKey">Distribuie cheia mea publică</string>
     <string name="DisableVibration">Dezactivează vibrații</string>
     <string name="IgnoreContentRestrictions">Ignoră restricțiile de conținut</string>
     <string name="SendCommentAfterForward">Trimiteți comentariul după redirecționare</string>

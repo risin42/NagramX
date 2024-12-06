@@ -39,15 +39,6 @@
     <string name="SendCommentAfterForward">Enviar comentário após encaminhar</string>
     <string name="IgnoreContentRestrictions">Ignorar as restrições de conteúdo</string>
     <string name="DisableVibration">Desativar Vibração</string>
-    <string name="ShareMyKey">Compartilhar Minha Chave Pública</string>
-    <string name="PGPImportPrivate">Importar Chave Privada</string>
-    <string name="PGPImport">Importar Chave Pública</string>
-    <string name="PGPVerify">Verificar Mensagem</string>
-    <string name="PGPDecrypt">Descriptografar Mensagem</string>
-    <string name="Sign">Assinar</string>
-    <string name="OpenPGPKey">Chave OpenPGP</string>
-    <string name="OpenPGPApp">Provedor OpenPGP</string>
-    <string name="OpenKayChain">Cliente OpenPGP</string>
     <string name="TransSite">Plataforma de Tradução</string>
     <string name="NekoXFaq">Perguntas Frequentes</string>
     <string name="LoginSettings">Configurações de Login</string>

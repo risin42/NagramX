@@ -172,15 +172,6 @@
     <string name="LoginSettings">Ustawienia logowania</string>
     <string name="NekoXFaq">Często zadawane pytania</string>
     <string name="TransSite">Platforma tłumaczeń</string>
-    <string name="OpenKayChain">Klient OpenPGP</string>
-    <string name="OpenPGPApp">Dostawca OpenPGP</string>
-    <string name="OpenPGPKey">Klucz OpenPGP</string>
-    <string name="Sign">Podpisz</string>
-    <string name="PGPDecrypt">Odszyfruj wiadomość</string>
-    <string name="PGPVerify">Zweryfikuj wiadomość</string>
-    <string name="PGPImport">Zaimportuj klucz publiczny</string>
-    <string name="PGPImportPrivate">Zaimportuj klucz prywatny</string>
-    <string name="ShareMyKey">Udostępnij mój klucz publiczny</string>
     <string name="DisableVibration">Wyłącz wibracje</string>
     <string name="IgnoreContentRestrictions">Ignoruj ograniczenia dotyczące treści</string>
     <string name="IgnoreContentRestrictionsNotice">Pomijaj ograniczenia odtwarzania wiadomości.</string>

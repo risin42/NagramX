@@ -172,15 +172,6 @@
     <string name="LoginSettings">로그인 설정</string>
     <string name="NekoXFaq">Nagram 자주하는 질문</string>
     <string name="TransSite">플랫폼 번역</string>
-    <string name="OpenKayChain">OpenPGP 클라이언트</string>
-    <string name="OpenPGPApp">OpenPGP 제공자</string>
-    <string name="OpenPGPKey">OpenPGP 키</string>
-    <string name="Sign">기호</string>
-    <string name="PGPDecrypt">메시지 해독</string>
-    <string name="PGPVerify">메시지 확인</string>
-    <string name="PGPImport">공개 키 가져 오기</string>
-    <string name="PGPImportPrivate">개인 키 가져 오기</string>
-    <string name="ShareMyKey">내 공개 키 공유</string>
     <string name="DisableVibration">진동 비활성화</string>
     <string name="IgnoreContentRestrictions">콘텐츠 제한 무시</string>
     <string name="IgnoreContentRestrictionsNotice">로컬에서 메시지에 대한 Android 제한을 무시합니다. 이는 향후 서버에 의해 금지 될 수 있으며이 옵션의 현지 적법성을 직접 평가해야합니다.</string>

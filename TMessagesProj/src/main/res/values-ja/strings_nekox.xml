@@ -172,15 +172,6 @@
     <string name="LoginSettings">ログイン設定</string>
     <string name="NekoXFaq">Nagram FAQ</string>
     <string name="TransSite">プラットフォームを翻訳</string>
-    <string name="OpenKayChain">OpenPGP クライアント</string>
-    <string name="OpenPGPApp">OpenPGP プロバイダー</string>
-    <string name="OpenPGPKey">OpenPGP キー</string>
-    <string name="Sign">符号</string>
-    <string name="PGPDecrypt">メッセージの復号化</string>
-    <string name="PGPVerify">メッセージを確認</string>
-    <string name="PGPImport">公開鍵をインポート</string>
-    <string name="PGPImportPrivate">プライベートキーをインポート</string>
-    <string name="ShareMyKey">公開鍵を共有</string>
     <string name="DisableVibration">バイブを無効にする</string>
     <string name="IgnoreContentRestrictions">コンテンツ制限を無視します</string>
     <string name="IgnoreContentRestrictionsNotice">ローカルのメッセージに対するアンドロイド制限を無視します。 これは将来サーバーによって禁止される可能性があり、このオプションのローカル合法性を評価する必要があります。</string>

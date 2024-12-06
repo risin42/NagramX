@@ -172,15 +172,6 @@
     <string name="LoginSettings">Giriş Ayarları</string>
     <string name="NekoXFaq">Nagram SSS</string>
     <string name="TransSite">Çeviri Platformu</string>
-    <string name="OpenKayChain">OpenPGP İstemcisi</string>
-    <string name="OpenPGPApp">OpenPGP Sağlayıcısı</string>
-    <string name="OpenPGPKey">OpenPGP Anahtarı</string>
-    <string name="Sign">İmza</string>
-    <string name="PGPDecrypt">Mesajın Şifresini Çöz</string>
-    <string name="PGPVerify">Mesajı Doğrula</string>
-    <string name="PGPImport">Genel Anahtarı İçe Aktar</string>
-    <string name="PGPImportPrivate">Özel Anahtarı İçe Aktar</string>
-    <string name="ShareMyKey">Ortak Anahtarımı Paylaş</string>
     <string name="DisableVibration">Titreşimi Devre Dışı Bırak</string>
     <string name="IgnoreContentRestrictions">İçerik kısıtlamalarını görmezden gel</string>
     <string name="IgnoreContentRestrictionsNotice">Mesajlardaki oynatma kısıtlamalarını görmezden gelir.</string>

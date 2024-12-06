@@ -6,8 +6,6 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.ResolveInfo;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.text.TextPaint;
@@ -24,8 +22,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.openintents.openpgp.OpenPgpError;
-import org.openintents.openpgp.util.OpenPgpApi;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildVars;
@@ -61,7 +57,6 @@ import org.telegram.ui.Components.SeekBarView;
 import org.telegram.ui.Components.UndoView;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,8 +68,6 @@ import tw.nekomimi.nekogram.ui.PopupBuilder;
 import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
-import tw.nekomimi.nekogram.utils.PGPUtil;
-
 import tw.nekomimi.nekogram.config.ConfigItem;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.config.CellGroup;
@@ -173,13 +166,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
     private final AbstractConfigCell header_notification = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("NekoGeneralNotification")));
     private final AbstractConfigCell disableNotificationBubblesRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableNotificationBubbles));
     private final AbstractConfigCell divider_notification = cellGroup.appendCell(new ConfigCellDivider());
-
-    private final AbstractConfigCell header3 = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("OpenKayChain")));
-    private final AbstractConfigCell pgpAppRow = cellGroup.appendCell(new ConfigCellCustom("PgpApp", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
-    private final AbstractConfigCell keyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.openPGPKeyId, (view, position) -> {
-        requestKey(new Intent(OpenPgpApi.ACTION_GET_SIGN_KEY_ID));
-    }, "0"));
-    private final AbstractConfigCell divider3 = cellGroup.appendCell(new ConfigCellDivider());
 
     private final AbstractConfigCell header4 = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("DialogsSettings")));
     private final AbstractConfigCell sortMenuRow = cellGroup.appendCell(new ConfigCellSelectBox("SortMenu", null, null, () -> {
@@ -346,43 +332,7 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                     }
                 }
             } else if (a instanceof ConfigCellCustom) { // Custom OnClick
-                if (position == cellGroup.rows.indexOf(pgpAppRow)) {
-                    PopupBuilder builder = new PopupBuilder(view);
-
-                    builder.addSubItem(0, LocaleController.getString("None", R.string.None));
-
-                    LinkedList<String> appsMap = new LinkedList<>();
-                    appsMap.add("");
-
-                    Intent intent = new Intent(OpenPgpApi.SERVICE_INTENT_2);
-                    List<ResolveInfo> resInfo = getParentActivity().getPackageManager().queryIntentServices(intent, 0);
-
-                    if (resInfo != null) {
-                        for (ResolveInfo resolveInfo : resInfo) {
-                            if (resolveInfo.serviceInfo == null) {
-                                continue;
-                            }
-
-                            String packageName = resolveInfo.serviceInfo.packageName;
-                            String simpleName = String.valueOf(resolveInfo.serviceInfo.loadLabel(getParentActivity().getPackageManager()));
-
-                            builder.addSubItem(appsMap.size(), simpleName);
-                            appsMap.add(packageName);
-
-                        }
-                    }
-
-                    builder.setDelegate((i) -> {
-                        NekoConfig.openPGPApp.setConfigString(appsMap.get(i));
-                        NekoConfig.openPGPKeyId.setConfigLong(0L);
-                        listAdapter.notifyItemChanged(cellGroup.rows.indexOf(pgpAppRow));
-                        listAdapter.notifyItemChanged(cellGroup.rows.indexOf(keyRow));
-
-                        if (i > 0) PGPUtil.recreateConnection();
-                    });
-
-                    builder.show();
-                } else if (position == cellGroup.rows.indexOf(translationProviderRow)) {
+                if (position == cellGroup.rows.indexOf(translationProviderRow)) {
                     PopupBuilder builder = new PopupBuilder(view);
 
                     builder.setItems(new String[]{
@@ -541,76 +491,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
             cell.setUser(getUserConfig().getCurrentUser(), false);
         }
     }
-
-
-    private void requestKey(Intent data) {
-
-        PGPUtil.post(() -> PGPUtil.api.executeApiAsync(data, null, null, result -> {
-
-            switch (result.getIntExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_ERROR)) {
-
-                case OpenPgpApi.RESULT_CODE_SUCCESS: {
-
-                    long keyId = result.getLongExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, 0L);
-                    NekoConfig.openPGPKeyId.setConfigLong(keyId);
-
-                    listAdapter.notifyItemChanged(cellGroup.rows.indexOf(keyRow));
-
-                    break;
-                }
-                case OpenPgpApi.RESULT_CODE_USER_INTERACTION_REQUIRED: {
-
-                    PendingIntent pi = result.getParcelableExtra(OpenPgpApi.RESULT_INTENT);
-                    try {
-                        Activity act = (Activity) getParentActivity();
-                        act.startIntentSenderFromChild(
-                                act, pi.getIntentSender(),
-                                114, null, 0, 0, 0);
-                    } catch (IntentSender.SendIntentException e) {
-                        Log.e(OpenPgpApi.TAG, "SendIntentException", e);
-                    }
-                    break;
-                }
-                case OpenPgpApi.RESULT_CODE_ERROR: {
-                    OpenPgpError error = result.getParcelableExtra(OpenPgpApi.RESULT_ERROR);
-                    AlertUtil.showToast(error.getMessage());
-                    break;
-                }
-            }
-
-        }));
-
-
-    }
-
-    @Override
-    public void onActivityResultFragment(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 114 && resultCode == Activity.RESULT_OK) {
-            requestKey(data);
-        }
-    }
-
-    private static class OpenPgpProviderEntry {
-        private String packageName;
-        private String simpleName;
-        private Intent intent;
-
-        OpenPgpProviderEntry(String packageName, String simpleName) {
-            this.packageName = packageName;
-            this.simpleName = simpleName;
-        }
-
-        OpenPgpProviderEntry(String packageName, String simpleName, Intent intent) {
-            this(packageName, simpleName);
-            this.intent = intent;
-        }
-
-        @Override
-        public String toString() {
-            return simpleName;
-        }
-    }
-
 
     private void showSortMenuAlert() {
         if (getParentActivity() == null) {
@@ -840,8 +720,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                             }
                             textCell.setTextAndValue(LocaleController.getString("TranslationProvider", R.string.TranslationProvider), value, true);
                             if (NekoConfig.useTelegramTranslateInChat.Bool()) textCell.setEnabled(false);
-                        } else if (position == cellGroup.rows.indexOf(pgpAppRow)) {
-                            textCell.setTextAndValue(LocaleController.getString("OpenPGPApp", R.string.OpenPGPApp), NekoXConfig.getOpenPGPAppName(), true);
                         } else if (position == cellGroup.rows.indexOf(translateToLangRow)) {
                             textCell.setTextAndValue(LocaleController.getString("TransToLang", R.string.TransToLang), NekoXConfig.formatLang(NekoConfig.translateToLang.String()), true);
                         } else if (position == cellGroup.rows.indexOf(translateInputToLangRow)) {

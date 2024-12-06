@@ -172,15 +172,6 @@
     <string name="LoginSettings">Pengaturan Login</string>
     <string name="NekoXFaq">FAQ Nagram</string>
     <string name="TransSite">Platform Penterjemah</string>
-    <string name="OpenKayChain">Klien OpenPGP</string>
-    <string name="OpenPGPApp">Penyedia OpenPGP</string>
-    <string name="OpenPGPKey">Kunci OpenPGP</string>
-    <string name="Sign">Tanda</string>
-    <string name="PGPDecrypt">Dekripsi Pesan</string>
-    <string name="PGPVerify">Verifikasi Pesan</string>
-    <string name="PGPImport">Impor Kunci Publik</string>
-    <string name="PGPImportPrivate">Impor Kunci Pribadi</string>
-    <string name="ShareMyKey">Bagikan Kunci Publik Saya</string>
     <string name="DisableVibration">Matikan Fitur Getar</string>
     <string name="IgnoreContentRestrictions">Abaikan batasan konten</string>
     <string name="IgnoreContentRestrictionsNotice">Abaikan pembatasan play pada pesan.</string>

@@ -22,7 +22,6 @@
 -keep class org.telegram.tgnet.RequestDelegate { *; }
 -keep class org.telegram.tgnet.QuickAckDelegate { *; }
 -keep class org.telegram.tgnet.WriteToSocketDelegate { *; }
--keep class org.openintents.openpgp.** { *; }
 
 # -keep class io.github.trojan_gfw.** { *; }
 

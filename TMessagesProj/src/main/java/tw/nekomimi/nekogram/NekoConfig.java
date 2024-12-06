@@ -145,8 +145,6 @@ public class NekoConfig {
 
     public static ConfigItem usePersianCalendar = addConfig("UsePersiancalendar", configTypeBool, false);
     public static ConfigItem displayPersianCalendarByLatin = addConfig("DisplayPersianCalendarByLatin", configTypeBool, false);
-    public static ConfigItem openPGPApp = addConfig("OpenPGPApp", configTypeString, "");
-    public static ConfigItem openPGPKeyId = addConfig("OpenPGPKey", configTypeLong, 0L);
 
     public static ConfigItem disableVibration = addConfig("DisableVibration", configTypeBool, false);
     public static ConfigItem autoPauseVideo = addConfig("AutoPauseVideo", configTypeBool, false);

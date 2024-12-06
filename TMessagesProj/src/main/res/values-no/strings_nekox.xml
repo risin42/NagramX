@@ -21,15 +21,6 @@
     <string name="UnpinMessageX">Løsne melding</string>
     <string name="IgnoreContentRestrictions">Ignorer innholdsbegrensninger</string>
     <string name="DisableVibration">Skru av vibrering</string>
-    <string name="ShareMyKey">Del min offentlige nøkkel</string>
-    <string name="PGPImportPrivate">Importer privat nøkkel</string>
-    <string name="PGPImport">Importer offentlig nøkkel</string>
-    <string name="PGPVerify">Bekreft melding</string>
-    <string name="PGPDecrypt">Dekrypter melding</string>
-    <string name="Sign">Signer</string>
-    <string name="OpenPGPKey">OpenPGP-nøkkel</string>
-    <string name="OpenPGPApp">OpenPGP-tilbyder</string>
-    <string name="OpenKayChain">OpenPGP-klient</string>
     <string name="TransSite">Oversettelsesplattform</string>
     <string name="NekoXFaq">Nagram-O-S-S</string>
     <string name="LoginSettings">Innloggingsinnstillinger</string>

@@ -172,15 +172,6 @@
     <string name="LoginSettings">إعدادات الدخول</string>
     <string name="NekoXFaq">أسئلة Nagram الشائعة</string>
     <string name="TransSite">ترجمة النظام الأساسي</string>
-    <string name="OpenKayChain">عميل OpenPGP</string>
-    <string name="OpenPGPApp">موفر OpenPGP</string>
-    <string name="OpenPGPKey">مفتاح OpenPGP</string>
-    <string name="Sign">التوقيع</string>
-    <string name="PGPDecrypt">فك تشفير الرسالة</string>
-    <string name="PGPVerify">تحقق من الرسالة</string>
-    <string name="PGPImport">استيراد مفتاح عمومي</string>
-    <string name="PGPImportPrivate">استيراد مفتاح خاص</string>
-    <string name="ShareMyKey">شارك مفتاحي العام</string>
     <string name="DisableVibration">تعطيل الاهتزاز</string>
     <string name="IgnoreContentRestrictions">تجاهل قيود المحتوى</string>
     <string name="IgnoreContentRestrictionsNotice">يتجاهل قيود android على الرسائل محليًا. قد يحظر الخادم هذا في المستقبل ، وسوف تحتاج إلى تقييم الشرعية المحلية لهذا الخيار بنفسك.</string>

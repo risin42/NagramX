@@ -172,15 +172,6 @@
     <string name="LoginSettings">登录设置</string>
     <string name="NekoXFaq">Nagram 常见问题</string>
     <string name="TransSite">翻译平台</string>
-    <string name="OpenKayChain">OpenPGP 客户端</string>
-    <string name="OpenPGPApp">OpenPGP 客户端</string>
-    <string name="OpenPGPKey">OpenPGP 密钥</string>
-    <string name="Sign">签名</string>
-    <string name="PGPDecrypt">解密消息</string>
-    <string name="PGPVerify">验证消息</string>
-    <string name="PGPImport">导入公钥</string>
-    <string name="PGPImportPrivate">导入私钥</string>
-    <string name="ShareMyKey">分享我的公钥</string>
     <string name="DisableVibration">禁用振动</string>
     <string name="IgnoreContentRestrictions">忽略内容限制</string>
     <string name="IgnoreContentRestrictionsNotice">忽略本地消息的 Android 限制。 这可能会在将来被服务器禁止，您需要自己评估此选项的本地合法性。</string>

@@ -172,15 +172,6 @@
     <string name="LoginSettings">Giriş Ayarları</string>
     <string name="NekoXFaq">Nagram ilə bağlı suallar</string>
     <string name="TransSite">Tərcümə Platforması</string>
-    <string name="OpenKayChain">OpenPGP Müştəri</string>
-    <string name="OpenPGPApp">OpenPGP Təminatçısı</string>
-    <string name="OpenPGPKey">OpenPGP açarı</string>
-    <string name="Sign">İşarəsi</string>
-    <string name="PGPDecrypt">Mesajın şifrəsini açın</string>
-    <string name="PGPVerify">Mesajı yoxlayın</string>
-    <string name="PGPImport">Açıq açarı idxal edin</string>
-    <string name="PGPImportPrivate">Şəxsi açarı idxal edin</string>
-    <string name="ShareMyKey">Açıq Açarımı paylaşın</string>
     <string name="DisableVibration">Titrəməni deaktiv edin</string>
     <string name="IgnoreContentRestrictions">Məzmun məhdudiyyətlərini görməməzlikdən gəlin</string>
     <string name="IgnoreContentRestrictionsNotice">Yerli mesajlardakı Android məhdudiyyətlərini görməzdən gəlin. Bu gələcəkdə server tərəfindən qadağan edilə bilər və bu seçimin yerli qanuniliyini özünüz qiymətləndirməlisiniz.</string>
