@@ -64,12 +64,6 @@
     java.lang.Object readResolve();
 }
 
--keep class tw.nekomimi.nekogram.InternalUpdater$ReleaseMetadata { *; }
--keep class tw.nekomimi.nekogram.InternalUpdater$ApkMetadata { *; }
--keep class tw.nekomimi.nekogram.InternalUpdater$GithubApiContents { *; }
--keep class tw.nekomimi.nekogram.InternalUpdater$NekoXReleaseNote { *; }
--keep class tw.nekomimi.nekogram.InternalUpdater$NekoXAPK { *; }
-
 ## https://developers.google.com/ml-kit/known-issues#android_issues
 #-keep class com.google.mlkit.nl.languageid.internal.LanguageIdentificationJni { *; }
 
