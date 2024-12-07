@@ -450,7 +450,7 @@ public class NekoSettingsActivity extends BaseFragment {
 
         try {
             File cacheFile = new File(EnvUtil.getShareCachePath(), new Date().toLocaleString() + ".nekox-settings.json");
-            FileUtil.writeUtf8String(backupSettingsJson(), cacheFile);
+            FileUtil.writeUtf8String(backupSettingsJson(false, 4), cacheFile);
             ShareUtil.shareFile(getParentActivity(), cacheFile);
         } catch (JSONException e) {
             AlertUtil.showSimpleAlert(getParentActivity(), e);
@@ -458,11 +458,7 @@ public class NekoSettingsActivity extends BaseFragment {
 
     }
 
-    public static String backupSettingsJson() throws JSONException {
-        return backupSettingsJson(4);
-    }
-
-    public static String backupSettingsJson(int indentSpaces) throws JSONException {
+    public static String backupSettingsJson(boolean filterSensitive, int indentSpaces) throws JSONException {
 
         JSONObject configJson = new JSONObject();
 
@@ -473,7 +469,7 @@ public class NekoSettingsActivity extends BaseFragment {
         userconfig.add("passcodeHash");
         userconfig.add("autoLockIn");
         userconfig.add("useFingerprint");
-        spToJSON("userconfing", configJson, userconfig::contains);
+        spToJSON("userconfing", configJson, userconfig::contains, filterSensitive);
 
         ArrayList<String> mainconfig = new ArrayList<>();
         mainconfig.add("saveToGallery");
@@ -533,20 +529,23 @@ public class NekoSettingsActivity extends BaseFragment {
 
         mainconfig.add("lang_code");
 
-        spToJSON("mainconfig", configJson, mainconfig::contains);
-        spToJSON("themeconfig", configJson, null);
+        spToJSON("mainconfig", configJson, mainconfig::contains, filterSensitive);
+        spToJSON("themeconfig", configJson, null, filterSensitive);
 
-        spToJSON("nkmrcfg", configJson, null);
-        spToJSON("nekodialogconfig", configJson, null);
+        spToJSON("nkmrcfg", configJson, null, filterSensitive);
+        spToJSON("nekodialogconfig", configJson, null, filterSensitive);
 
         return configJson.toString(indentSpaces);
     }
 
-    private static void spToJSON(String sp, JSONObject object, Function<String, Boolean> filter) throws JSONException {
+    private static void spToJSON(String sp, JSONObject object, Function<String, Boolean> filter, boolean filterSensitive) throws JSONException {
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences(sp, Activity.MODE_PRIVATE);
         JSONObject jsonConfig = new JSONObject();
         for (Map.Entry<String, ?> entry : preferences.getAll().entrySet()) {
             String key = entry.getKey();
+            if (filterSensitive && key.endsWith("Key")) {
+                continue;
+            }
             if (filter != null && !filter.apply(key)) continue;
             if (entry.getValue() instanceof Long) {
                 key = key + "_long";
