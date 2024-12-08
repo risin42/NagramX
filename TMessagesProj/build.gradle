@@ -102,6 +102,9 @@ android {
         buildConfigField "int", "APP_ID", appId
         buildConfigField "String", "APP_HASH", "\"" + appHash + "\""
 
+        def deeplApiKey = System.getenv("DEEPL_API_KEY")
+        buildConfigField("String", "DEEPL_API_KEY", "\"${deeplApiKey}\"")
+
         externalNativeBuild {
             cmake {
                 arguments "-DANDROID_STL=c++_static", "-DANDROID_PLATFORM=android-21"
