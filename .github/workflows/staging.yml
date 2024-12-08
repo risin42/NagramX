@@ -214,6 +214,7 @@ jobs:
       - name: Staging Build
         run: |
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
+          export DEEPL_API_KEY="${{ secrets.DEEPL_API_KEY }}"
           ./gradlew TMessagesProj:assembleStaging
 
           APK=$(find TMessagesProj/build/outputs/apk -name '*arm64-v8a*.apk')
