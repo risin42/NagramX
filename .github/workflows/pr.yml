@@ -207,6 +207,7 @@ jobs:
       - name: Debug Build
         run: |
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
+          export DEEPL_API_KEY="DUMMY"
           export DEBUG_BUILD=true
           sed -i 's/signingConfig signingConfigs.release//g' TMessagesProj/build.gradle
           ./gradlew TMessagesProj:assembleStaging
