@@ -17,10 +17,10 @@ import android.util.SparseIntArray;
 
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.gms.tasks.Task;
-import com.google.android.play.core.integrity.IntegrityManager;
-import com.google.android.play.core.integrity.IntegrityManagerFactory;
-import com.google.android.play.core.integrity.IntegrityTokenRequest;
-import com.google.android.play.core.integrity.IntegrityTokenResponse;
+// import com.google.android.play.core.integrity.IntegrityManager;
+// import com.google.android.play.core.integrity.IntegrityManagerFactory;
+// import com.google.android.play.core.integrity.IntegrityTokenRequest;
+// import com.google.android.play.core.integrity.IntegrityTokenResponse;
 //import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import org.json.JSONArray;
@@ -1269,6 +1269,8 @@ SharedPreferences mainPreferences;
     }
 
     public static void onIntegrityCheckClassic(final int currentAccount, final int requestToken, final String project, final String nonce) {
+        // NagramX: disable IntegrityCheck
+        /*
         AndroidUtilities.runOnUIThread(() -> {
             long start = System.currentTimeMillis();
             FileLog.d("account"+currentAccount+": server requests integrity classic check with project = "+project+" nonce = " + nonce);
@@ -1304,5 +1306,6 @@ SharedPreferences mainPreferences;
                     native_receivedIntegrityCheckClassic(currentAccount, requestToken, nonce, "PLAYINTEGRITY_FAILED_EXCEPTION_" + LoginActivity.errorString(e));
                 });
         });
+        */
     }
 }
