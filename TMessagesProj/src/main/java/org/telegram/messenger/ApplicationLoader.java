@@ -118,20 +118,25 @@ public class ApplicationLoader extends Application {
 
     public static ILocationServiceProvider getLocationServiceProvider() {
         if (locationServiceProvider == null) {
-            locationServiceProvider = new GoogleLocationProvider();
+            locationServiceProvider = applicationLoaderInstance.onCreateLocationServiceProvider();
+            locationServiceProvider.init(applicationContext);
         }
         return locationServiceProvider;
     }
 
+    protected ILocationServiceProvider onCreateLocationServiceProvider() {
+        return new GoogleLocationProvider();
+    }
+
     public static IMapsProvider getMapsProvider() {
         if (mapsProvider == null) {
-            if (NekoConfig.useOSMDroidMap.Bool())
-                mapsProvider = new OSMDroidMapsProvider();
-            else {
-                mapsProvider = new GoogleMapsProvider();
-            }
+            mapsProvider = applicationLoaderInstance.onCreateMapsProvider();
         }
         return mapsProvider;
+    }
+
+    protected IMapsProvider onCreateMapsProvider() {
+        return new GoogleMapsProvider();
     }
 
     public static PushListenerController.IPushListenerServiceProvider getPushProvider() {
@@ -338,10 +343,6 @@ public class ApplicationLoader extends Application {
         }
 
         applicationHandler = new Handler(applicationContext.getMainLooper());
-
-        org.osmdroid.config.Configuration.getInstance().setUserAgentValue("Telegram-FOSS ( NekoX ) " + BuildConfig.VERSION_NAME);
-        org.osmdroid.config.Configuration.getInstance().setOsmdroidBasePath(new File(ApplicationLoader.applicationContext.getCacheDir(), "osmdroid"));
-
         LauncherIconController.tryFixLauncherIconIfNeeded();
         ProxyRotationController.init();
     }

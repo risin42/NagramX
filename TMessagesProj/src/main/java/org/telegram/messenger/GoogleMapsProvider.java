@@ -2,7 +2,6 @@ package org.telegram.messenger;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.location.Location;
@@ -31,16 +30,10 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.telegram.messenger.IMapsProvider;
-import org.telegram.messenger.R;
-
-import nekox.messenger.NekoLocationSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import tw.nekomimi.nekogram.NekoConfig;
 
 public class GoogleMapsProvider implements IMapsProvider {
 
@@ -90,7 +83,7 @@ public class GoogleMapsProvider implements IMapsProvider {
     }
 
     @Override
-    public IMarkerOptions onCreateMarkerOptions(IMapView imapView) {
+    public IMarkerOptions onCreateMarkerOptions() {
         return new GoogleMarkerOptions();
     }
 
@@ -308,12 +301,12 @@ public class GoogleMapsProvider implements IMapsProvider {
             }
 
             @Override
-            public void setIcon(Resources resources, Bitmap bitmap) {
+            public void setIcon(Bitmap bitmap) {
                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
             }
 
             @Override
-            public void setIcon(Resources resources, int resId) {
+            public void setIcon(int resId) {
                 marker.setIcon(BitmapDescriptorFactory.fromResource(resId));
             }
 
@@ -466,13 +459,13 @@ public class GoogleMapsProvider implements IMapsProvider {
         }
 
         @Override
-        public IMarkerOptions icon(Resources resources, Bitmap bitmap) {
+        public IMarkerOptions icon(Bitmap bitmap) {
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
             return this;
         }
 
         @Override
-        public IMarkerOptions icon(Resources resources, int resId) {
+        public IMarkerOptions icon(int resId) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(resId));
             return this;
         }
@@ -595,8 +588,6 @@ public class GoogleMapsProvider implements IMapsProvider {
         @Override
         public void getMapAsync(Consumer<IMap> callback) {
             mapView.getMapAsync(googleMap -> {
-                if (NekoConfig.fixDriftingForGoogleMaps())
-                    googleMap.setLocationSource(new NekoLocationSource(mapView.getContext()));
                 callback.accept(new GoogleMapImpl(googleMap));
                 findGlSurfaceView(mapView);
             });

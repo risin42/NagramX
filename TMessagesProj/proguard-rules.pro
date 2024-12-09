@@ -142,11 +142,6 @@
 # Use -keep to explicitly keep any other classes shrinking would remove
 -dontobfuscate
 
-# https://github.com/osmdroid/osmdroid/issues/633
--dontwarn org.osmdroid.tileprovider.modules.NetworkAvailabliltyCheck
-# Osmdroid
--dontwarn org.osmdroid.**
-
 -keepattributes SourceFile,LineNumberTable
 
 -dontwarn java.beans.**

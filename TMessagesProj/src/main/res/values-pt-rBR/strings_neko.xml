@@ -147,6 +147,4 @@
     <string name="forceBlurInChat">Forçar ativação do desfoque em chats</string>
     <string name="disablePremiumStickerAnimation">Desativar animação de sticker premium</string>
     <string name="enhancedFileLoader">Melhorar a velocidade de download</string>
-    <string name="useOSMDroidMap">Usar Mapa OSMDroid</string>
-    <string name="mapDriftingFixForGoogleMaps">Corrigir Google Maps derrapando na China</string>
 </resources>

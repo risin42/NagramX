@@ -146,6 +146,4 @@
     <string name="ChatBlurAlphaValue">Альфа розмиття в чаті</string>
     <string name="disablePremiumStickerAnimation">Вимкнути анімацію преміум-стікерів</string>
     <string name="enhancedFileLoader">Підвищити швидкість завантаження</string>
-    <string name="mapDriftingFixForGoogleMaps">Виправити дрейф Google Maps у Китаї</string>
-    <string name="useOSMDroidMap">Використовувати карту OSMDroid</string>
 </resources>

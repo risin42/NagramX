@@ -15,7 +15,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
 
-import org.osmdroid.util.TileSystemWebMercator;
 import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 
@@ -5993,17 +5992,6 @@ public class TLRPC {
             }
             if (result != null) {
                 result.readParams(stream, exception);
-            }
-            // nekox: Fix crash when open invalid location
-            if (result.lat < TileSystemWebMercator.MinLatitude) {
-                result.lat = TileSystemWebMercator.MinLatitude;
-            } else if (result.lat > TileSystemWebMercator.MaxLatitude) {
-                result.lat = TileSystemWebMercator.MaxLatitude;
-            }
-            if (result._long < TileSystemWebMercator.MinLongitude) {
-                result._long = TileSystemWebMercator.MinLongitude;
-            } else if (result._long > TileSystemWebMercator.MaxLongitude) {
-                result._long = TileSystemWebMercator.MaxLongitude;
             }
             return result;
         }

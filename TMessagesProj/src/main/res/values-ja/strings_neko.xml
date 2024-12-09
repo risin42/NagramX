@@ -194,8 +194,6 @@
     <string name="EmojiSetApplied">絵文字セットが適用されました。</string>
     <string name="EmojiSetAppliedInfo">%1$s が絵文字セットとして適用されました。</string>
     <string name="EmojiSetAlreadyApplied">絵文字セットは既に適用されています。</string>
-    <string name="useOSMDroidMap">OSMDroid マップを使用</string>
-    <string name="mapDriftingFixForGoogleMaps">中国における Google マップのずれを修正</string>
     <string name="useTelegramTranslateInChat">チャットで Telegram 翻訳インターフェースを使用</string>
     <string name="RecentChats">最近のチャット</string>
     <string name="ClearRecentChats">最近のチャットをクリア</string>

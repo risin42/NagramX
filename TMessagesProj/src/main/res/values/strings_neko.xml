@@ -154,8 +154,6 @@
     <string name="DatacenterStatusAbout">Check the status of Telegram\'s **datacenters**.</string>
     <string name="DatacenterStatus">Datacenter status</string>
     <string name="enhancedFileLoader">Enhance Upload and Download speed</string>
-    <string name="mapDriftingFixForGoogleMaps">Fix Google Maps drifting in China</string>
-    <string name="useOSMDroidMap">Use OSMDroid Map</string>
     <string name="UnknownNekoSettingsOption">There is no such Neko Settings option.</string>
     <string name="PasscodeNeeded">You have to enable passcode lock first</string>
     <string name="PasscodeNeko">Passcode</string>

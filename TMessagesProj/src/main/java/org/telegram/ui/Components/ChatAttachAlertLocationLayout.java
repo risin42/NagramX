@@ -21,7 +21,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -33,9 +32,7 @@ import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
-import android.text.Html;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -63,7 +60,6 @@ import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.LocationController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
-import org.telegram.messenger.OSMDroidMapsProvider;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.UserObject;
@@ -93,11 +89,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import kotlin.Unit;
-import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.location.NekoLocation;
-import tw.nekomimi.nekogram.ui.BottomBuilder;
 
 public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLayout implements NotificationCenter.NotificationCenterDelegate {
 
@@ -131,8 +122,6 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
     private FillLastLinearLayoutManager layoutManager;
     private AvatarDrawable avatarDrawable;
     private ActionBarMenuItem otherItem;
-
-    private TextView attributionOverlay;
 
     private boolean currentMapStyleDark;
 
@@ -183,16 +172,9 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
     private int clipSize;
     private int nonClipSize;
 
-    // Google Maps
     private final static int map_list_menu_map = 2;
     private final static int map_list_menu_satellite = 3;
     private final static int map_list_menu_hybrid = 4;
-
-    // OSM
-    private final static int map_list_menu_osm = 2;
-    private final static int map_list_menu_wiki = 3;
-    private final static int map_list_menu_cartodark = 4;
-
 
     public final static int LOCATION_TYPE_SEND = 0;
     public final static int LOCATION_TYPE_SEND_WITH_LIVE = 1;
@@ -271,7 +253,7 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
 
             lastPressedMarkerView = new FrameLayout(context);
             lastPressedMarkerView.setBackgroundResource(R.drawable.venue_tooltip);
-            lastPressedMarkerView.getBackground().setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogBackground), PorterDuff.Mode.SRC_IN));
+            lastPressedMarkerView.getBackground().setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogBackground), PorterDuff.Mode.MULTIPLY));
             frameLayout.addView(lastPressedMarkerView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 71));
             lastPressedMarkerView.setAlpha(0.0f);
             lastPressedMarkerView.setOnClickListener(v -> {
@@ -357,8 +339,6 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
             views.put(marker, frameLayout);
 
             map.animateCamera(ApplicationLoader.getMapsProvider().newCameraUpdateLatLng(marker.getPosition()), 300, null);
-//            final IMapController controller = mapView.getController();
-//            controller.animateTo(marker.getPosition(), mapView.getZoomLevelDouble(), 300L);
         }
 
         public void removeInfoView(IMapsProvider.IMarker marker) {
@@ -540,7 +520,7 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
         Drawable drawable = Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(40), getThemedColor(Theme.key_location_actionBackground), getThemedColor(Theme.key_location_actionPressedBackground));
         if (Build.VERSION.SDK_INT < 21) {
             Drawable shadowDrawable = context.getResources().getDrawable(R.drawable.places_btn).mutate();
-            shadowDrawable.setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.SRC_IN));
+            shadowDrawable.setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.MULTIPLY));
             CombinedDrawable combinedDrawable = new CombinedDrawable(shadowDrawable, drawable, AndroidUtilities.dp(2), AndroidUtilities.dp(2));
             combinedDrawable.setFullsize(true);
             drawable = combinedDrawable;
@@ -577,20 +557,14 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
         mapTypeButton.setSubMenuOpenSide(2);
         mapTypeButton.setAdditionalXOffset(AndroidUtilities.dp(10));
         mapTypeButton.setAdditionalYOffset(-AndroidUtilities.dp(10));
-        if (false) {
-            mapTypeButton.addSubItem(map_list_menu_map, R.drawable.msg_map, LocaleController.getString(R.string.Map), resourcesProvider);
-            mapTypeButton.addSubItem(map_list_menu_satellite, R.drawable.msg_satellite, LocaleController.getString(R.string.Satellite), resourcesProvider);
-            mapTypeButton.addSubItem(map_list_menu_hybrid, R.drawable.msg_hybrid, LocaleController.getString(R.string.Hybrid), resourcesProvider);
-        } else {
-            mapTypeButton.addSubItem(map_list_menu_map, R.drawable.msg_map, "Standard OSM", resourcesProvider);
-            mapTypeButton.addSubItem(map_list_menu_satellite, R.drawable.msg_map, "Wikimedia", resourcesProvider);
-            mapTypeButton.addSubItem(map_list_menu_hybrid, R.drawable.msg_map, "Carto Dark", resourcesProvider);
-        }
+        mapTypeButton.addSubItem(map_list_menu_map, R.drawable.msg_map, LocaleController.getString(R.string.Map), resourcesProvider);
+        mapTypeButton.addSubItem(map_list_menu_satellite, R.drawable.msg_satellite, LocaleController.getString(R.string.Satellite), resourcesProvider);
+        mapTypeButton.addSubItem(map_list_menu_hybrid, R.drawable.msg_hybrid, LocaleController.getString(R.string.Hybrid), resourcesProvider);
         mapTypeButton.setContentDescription(LocaleController.getString(R.string.AccDescrMoreOptions));
         drawable = Theme.createSimpleSelectorCircleDrawable(AndroidUtilities.dp(40), getThemedColor(Theme.key_location_actionBackground), getThemedColor(Theme.key_location_actionPressedBackground));
         if (Build.VERSION.SDK_INT < 21) {
             Drawable shadowDrawable = context.getResources().getDrawable(R.drawable.floating_shadow_profile).mutate();
-            shadowDrawable.setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.SRC_IN));
+            shadowDrawable.setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.MULTIPLY));
             CombinedDrawable combinedDrawable = new CombinedDrawable(shadowDrawable, drawable, 0, 0);
             combinedDrawable.setIconSize(AndroidUtilities.dp(40), AndroidUtilities.dp(40));
             drawable = combinedDrawable;
@@ -623,48 +597,12 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
                 map.setMapType(IMapsProvider.MAP_TYPE_HYBRID);
             }
         });
-        /*
-        *         mapTypeButton.setDelegate(id -> {
-            if (mapView == null) {
-                return;
-            }
-            if (id == map_list_menu_osm) {
-                attributionOverlay.setText(Html.fromHtml("© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"));
-                mapView.setTileSource(TileSourceFactory.MAPNIK);
-            } else if (id == map_list_menu_wiki) {
-                // Create a custom tile source
-                ITileSource tileSource = new XYTileSource(
-                        "Wikimedia", 0, 19,
-                        256, ".png",
-                        new String[]{"https://maps.wikimedia.org/osm-intl/"},
-                        "© OpenStreetMap contributors");
-                attributionOverlay.setText(Html.fromHtml("© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"));
-                mapView.setTileSource(tileSource);
-            } else if (id == map_list_menu_cartodark) {
-                // Create a custom tile source
-                ITileSource tileSource = new XYTileSource(
-                        "Carto Dark", 0, 20,
-                        256, ".png",
-                        new String[]{
-                                "https://cartodb-basemaps-a.global.ssl.fastly.net/dark_all/",
-                                "https://cartodb-basemaps-b.global.ssl.fastly.net/dark_all/",
-                                "https://cartodb-basemaps-c.global.ssl.fastly.net/dark_all/",
-                                "https://cartodb-basemaps-d.global.ssl.fastly.net/dark_all/"},
-                        "© OpenStreetMap contributors, © CARTO");
-                attributionOverlay.setText(Html.fromHtml("© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, © <a href=\"https://carto.com/attributions\">CARTO</a>"));
-                mapView.setTileSource(tileSource);
-            }
-        });
-        *
-        * */
-        if (ApplicationLoader.getMapsProvider() instanceof OSMDroidMapsProvider) {
-            mapViewClip.addView(getAttributionOverlay(context), LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.BOTTOM, LocaleController.isRTL ? 0 : 4, 0, LocaleController.isRTL ? 4 : 0, 20));
-        }
+
         locationButton = new ImageView(context);
         drawable = Theme.createSimpleSelectorCircleDrawable(AndroidUtilities.dp(40), getThemedColor(Theme.key_location_actionBackground), getThemedColor(Theme.key_location_actionPressedBackground));
         if (Build.VERSION.SDK_INT < 21) {
             Drawable shadowDrawable = context.getResources().getDrawable(R.drawable.floating_shadow_profile).mutate();
-            shadowDrawable.setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.SRC_IN));
+            shadowDrawable.setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.MULTIPLY));
             CombinedDrawable combinedDrawable = new CombinedDrawable(shadowDrawable, drawable, 0, 0);
             combinedDrawable.setIconSize(AndroidUtilities.dp(40), AndroidUtilities.dp(40));
             drawable = combinedDrawable;
@@ -684,7 +622,7 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
         locationButton.setBackgroundDrawable(drawable);
         locationButton.setImageResource(R.drawable.msg_current_location);
         locationButton.setScaleType(ImageView.ScaleType.CENTER);
-        locationButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_location_actionActiveIcon), PorterDuff.Mode.SRC_IN));
+        locationButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_location_actionActiveIcon), PorterDuff.Mode.MULTIPLY));
         locationButton.setTag(Theme.key_location_actionActiveIcon);
         locationButton.setContentDescription(LocaleController.getString(R.string.AccDescrMyLocation));
         LayoutParams layoutParams1 = LayoutHelper.createFrame(Build.VERSION.SDK_INT >= 21 ? 40 : 44, Build.VERSION.SDK_INT >= 21 ? 40 : 44, Gravity.RIGHT | Gravity.BOTTOM, 0, 0, 12, 12);
@@ -727,7 +665,7 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
 
         emptyImageView = new ImageView(context);
         emptyImageView.setImageResource(R.drawable.location_empty);
-        emptyImageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogEmptyImage), PorterDuff.Mode.SRC_IN));
+        emptyImageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogEmptyImage), PorterDuff.Mode.MULTIPLY));
         emptyView.addView(emptyImageView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
 
         emptyTitleTextView = new TextView(context);
@@ -1292,8 +1230,8 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
         for (int a = 0, N = places.size(); a < N; a++) {
             TLRPC.TL_messageMediaVenue venue = places.get(a);
             try {
-                IMapsProvider.IMarkerOptions options = ApplicationLoader.getMapsProvider().onCreateMarkerOptions(mapView).position(new IMapsProvider.LatLng(venue.geo.lat, venue.geo._long));
-                options.icon(getParentActivity().getResources(), createPlaceBitmap(a));
+                IMapsProvider.IMarkerOptions options = ApplicationLoader.getMapsProvider().onCreateMarkerOptions().position(new IMapsProvider.LatLng(venue.geo.lat, venue.geo._long));
+                options.icon(createPlaceBitmap(a));
                 options.anchor(0.5f, 0.5f);
                 options.title(venue.title);
                 options.snippet(venue.address);
@@ -1331,8 +1269,8 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
         }
 
         userLocation = new Location("network");
-        userLocation.setLatitude(48.85825);
-        userLocation.setLongitude(2.29448);
+        userLocation.setLatitude(20.659322);
+        userLocation.setLongitude(-11.406250);
 
         try {
             map.setMyLocationEnabled(true);
@@ -1664,23 +1602,16 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
 
     @SuppressLint("MissingPermission")
     private Location getLastLocation() {
-        if (Build.VERSION.SDK_INT >= 23 && getParentActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && getParentActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return null;
-        } else {
-            LocationManager lm = (LocationManager) ApplicationLoader.applicationContext.getSystemService(Context.LOCATION_SERVICE);
-            List<String> providers = lm.getProviders(true);
-            Location l = null;
-            for (int i = providers.size() - 1; i >= 0; i--) {
-                l = lm.getLastKnownLocation(providers.get(i));
-                if (l != null) {
-                    if (NekoConfig.fixDriftingForGoogleMaps()) {
-                        NekoLocation.transform(l);
-                    }
-                    break;
-                }
+        LocationManager lm = (LocationManager) ApplicationLoader.applicationContext.getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = lm.getProviders(true);
+        Location l = null;
+        for (int i = providers.size() - 1; i >= 0; i--) {
+            l = lm.getLastKnownLocation(providers.get(i));
+            if (l != null) {
+                break;
             }
-            return l;
         }
+        return l;
     }
 
     private void positionMarker() {
@@ -1840,20 +1771,20 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
                 if (activity != null) {
                     checkPermission = false;
                     if (activity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    BottomBuilder builder = new BottomBuilder(activity);
-                    builder.addTitle(LocaleController.getString("PermissionNoLocation", R.string.PermissionNoLocation), true);
-                    builder.addItem(LocaleController.getString("Ok", R.string.OK),R.drawable.msg_check, __ -> {
                         String[] permissions = parentAlert.isStoryLocationPicker && parentAlert.storyLocationPickerPhotoFile != null && Build.VERSION.SDK_INT >= 29 ?
-                                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_MEDIA_LOCATION} :
-                                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_MEDIA_LOCATION} :
+                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+                        askedForLocation = true;
+                        if (adapter != null) {
+                            adapter.setMyLocationDenied(locationDenied, askedForLocation);
+                        }
                         activity.requestPermissions(permissions, BasePermissionsActivity.REQUEST_CODE_GEOLOCATION);
-                        return Unit.INSTANCE;
-                    });
-                    builder.addItem(LocaleController.getString("Decline", R.string.Decline), R.drawable.msg_block, __ -> {
-                        parentAlert.dismiss();
-                        return Unit.INSTANCE;
-                    });
-                    builder.show();
+                    } else if (Build.VERSION.SDK_INT >= 29 && parentAlert.isStoryLocationPicker && parentAlert.storyLocationPickerPhotoFile != null && activity.checkSelfPermission(Manifest.permission.ACCESS_MEDIA_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        askedForLocation = true;
+                        if (adapter != null) {
+                            adapter.setMyLocationDenied(locationDenied, askedForLocation);
+                        }
+                        activity.requestPermissions(new String[]{Manifest.permission.ACCESS_MEDIA_LOCATION}, BasePermissionsActivity.REQUEST_CODE_MEDIA_GEO);
                     }
                 }
             }
@@ -1970,16 +1901,6 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
         themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{LocationPoweredCell.class}, new String[]{"textView2"}, null, null, null, Theme.key_dialogEmptyText));
 
         return themeDescriptions;
-    }
-
-    // NekoX: OpenStreetMap
-    private TextView getAttributionOverlay(Context context) {
-        attributionOverlay = new TextView(context);
-        attributionOverlay.setText(Html.fromHtml("© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"));
-        attributionOverlay.setShadowLayer(1, -1, -1, Color.WHITE);
-        attributionOverlay.setLinksClickable(true);
-        attributionOverlay.setMovementMethod(LinkMovementMethod.getInstance());
-        return attributionOverlay;
     }
 
     @Override

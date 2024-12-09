@@ -104,8 +104,6 @@
     <string name="forceBlurInChat">Ενεργοποίηση θόλωσης συνομιλίας</string>
     <string name="disablePremiumStickerAnimation">Απενεργ/ση κινούμενων αυτοκόλλητων premium</string>
     <string name="enhancedFileLoader">Ενίσχυση ταχύτητας λήψης</string>
-    <string name="mapDriftingFixForGoogleMaps">Διόρθωση μετατόπισης Χαρτών Google στην Κίνα</string>
-    <string name="useOSMDroidMap">Χρήση OSMDroid Map</string>
     <string name="showSpoilersDirectly">Άμεση εμφάνιση μηνυμάτων Spoiler</string>
     <string name="SaveToDownloadCount_zero">Αποθ. %1$d αρχείων σε λήψεις</string>
     <string name="SaveToDownloadCount_one">Αποθ. %1$d αρχείου σε λήψεις</string>

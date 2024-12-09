@@ -145,7 +145,5 @@
     <string name="disableChoosingSticker">Send skriveaktivitet istedenfor å sende klistremerke</string>
     <string name="disableRemoteEmojiInteractions">Skru av emoji-interaksjoner som kommer annensteds fra</string>
     <string name="disablePremiumStickerAnimation">Deaktiver premium sticker animasjon</string>
-    <string name="mapDriftingFixForGoogleMaps">Fiks Google Maps drifting i Kina</string>
     <string name="enhancedFileLoader">Forbedre nedlastingshastighet</string>
-    <string name="useOSMDroidMap">Bruk OSMDroid Map</string>
 </resources>

@@ -21,10 +21,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.LongSparseArray;
-import android.util.SparseArray;
 import android.util.Log;
 import android.util.SparseIntArray;
+
+import androidx.collection.LongSparseArray;
 
 import org.telegram.SQLite.SQLiteCursor;
 import org.telegram.SQLite.SQLitePreparedStatement;
@@ -38,9 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.location.NekoLocation;
 
 @SuppressLint("MissingPermission")
 public class LocationController extends BaseController implements NotificationCenter.NotificationCenterDelegate, ILocationServiceProvider.IAPIConnectionCallbacks, ILocationServiceProvider.IAPIOnConnectionFailedListener {
@@ -80,15 +77,15 @@ public class LocationController extends BaseController implements NotificationCe
 
     private ILocationServiceProvider.ILocationRequest locationRequest;
 
-    private static SparseArray<LocationController> Instance = new SparseArray<>();
+    private static volatile LocationController[] Instance = new LocationController[UserConfig.MAX_ACCOUNT_COUNT];
 
     public static LocationController getInstance(int num) {
-        LocationController localInstance = Instance.get(num);
+        LocationController localInstance = Instance[num];
         if (localInstance == null) {
             synchronized (LocationController.class) {
-                localInstance = Instance.get(num);
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new LocationController(num));
+                    Instance[num] = localInstance = new LocationController(num);
                 }
             }
         }
@@ -526,11 +523,8 @@ public class LocationController extends BaseController implements NotificationCe
     }
 
     private void setLastKnownLocation(Location location) {
-        if (location != null && (SystemClock.elapsedRealtimeNanos() - location.getElapsedRealtimeNanos()) / 1000000000 > 60 * 5) {
+        if (location != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && (SystemClock.elapsedRealtimeNanos() - location.getElapsedRealtimeNanos()) / 1000000000 > 60 * 5) {
             return;
-        }
-        if (NekoConfig.fixDriftingForGoogleMaps() && location != null) {
-            NekoLocation.transform(location);
         }
         lastKnownLocation = location;
         if (lastKnownLocation != null) {
@@ -812,8 +806,6 @@ public class LocationController extends BaseController implements NotificationCe
         setLastKnownLocation(location);
     }
 
-    // TFOSS it asks properly anyway
-    @SuppressLint("MissingPermission")
     private void start() {
         if (started) {
             return;
@@ -948,7 +940,7 @@ public class LocationController extends BaseController implements NotificationCe
 
     public static int getLocationsCount() {
         int count = 0;
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             count += LocationController.getInstance(a).sharingLocationsUI.size();
         }
         return count;

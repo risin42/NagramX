@@ -146,7 +146,5 @@
     <string name="forceBlurInChat">Принудительно включить размытие чатов</string>
     <string name="ChatBlurAlphaValue">Размытие чатов (Альфа)</string>
     <string name="disablePremiumStickerAnimation">Отключить анимацию премиум стикеров</string>
-    <string name="useOSMDroidMap">Используйте карту OSMDroid</string>
-    <string name="mapDriftingFixForGoogleMaps">Исправить дрейф Карт Google в Китае</string>
     <string name="enhancedFileLoader">Увеличить скорость загрузки</string>
 </resources>

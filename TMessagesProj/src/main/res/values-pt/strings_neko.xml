@@ -133,8 +133,6 @@
     <string name="customSavePath">Caminho de Armazenamento Personalizado</string>
     <string name="disablePremiumStickerAnimation">Desativar animação de sticker premium</string>
     <string name="enhancedFileLoader">Melhorar a velocidade de download</string>
-    <string name="mapDriftingFixForGoogleMaps">Corrigir Google Maps derrapando na China</string>
-    <string name="useOSMDroidMap">Usar Mapa OSMDroid</string>
     <string name="showSpoilersDirectly">Exibir mensagens de spoiler imediatamente</string>
     <string name="SaveToDownloadCount_zero">Salvando %1$d ficheiros para downloads</string>
     <string name="SaveToDownloadCount_one">Salvando %1$d ficheiro para downloads</string>

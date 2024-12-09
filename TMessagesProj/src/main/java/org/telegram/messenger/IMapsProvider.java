@@ -1,7 +1,6 @@
 package org.telegram.messenger;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.location.Location;
@@ -23,7 +22,7 @@ public interface IMapsProvider {
 
     void initializeMaps(Context context);
     IMapView onCreateMapView(Context context);
-    IMarkerOptions onCreateMarkerOptions(IMapView imapView);
+    IMarkerOptions onCreateMarkerOptions();
     ICircleOptions onCreateCircleOptions();
     ILatLngBoundsBuilder onCreateLatLngBoundsBuilder();
     ICameraUpdate newCameraUpdateLatLng(LatLng latLng);
@@ -85,15 +84,15 @@ public interface IMapsProvider {
         LatLng getPosition();
         void setPosition(LatLng latLng);
         void setRotation(int rotation);
-        void setIcon(Resources resources, Bitmap bitmap);
-        void setIcon(Resources resources, int resId);
+        void setIcon(Bitmap bitmap);
+        void setIcon(int resId);
         void remove();
     }
 
     interface IMarkerOptions {
         IMarkerOptions position(LatLng latLng);
-        IMarkerOptions icon(Resources resources, Bitmap bitmap);
-        IMarkerOptions icon(Resources resources, int resId);
+        IMarkerOptions icon(Bitmap bitmap);
+        IMarkerOptions icon(int resId);
         IMarkerOptions anchor(float lat, float lng);
         IMarkerOptions title(String title);
         IMarkerOptions snippet(String snippet);

@@ -140,8 +140,6 @@
     <string name="DontSendGreetingSticker">Ne küldjön üdvözlő matricát</string>
     <string name="disableSwipeToNextChannel">Húzással való csatornaléptetés letiltása</string>
     <string name="doubleTapShowReactions">Reakciók csak dupla koppintással való mutatása</string>
-    <string name="useOSMDroidMap">OSMDroid térkép használata</string>
     <string name="channelLabel">csatorna</string>
     <string name="enhancedFileLoader">Letöltési sebesség növelése</string>
-    <string name="mapDriftingFixForGoogleMaps">Google Térkép csúszás kijavítása Kínában</string>
 </resources>
