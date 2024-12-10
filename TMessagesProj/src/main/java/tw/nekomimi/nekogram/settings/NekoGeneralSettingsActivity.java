@@ -100,8 +100,11 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell googleCloudTranslateKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.googleCloudTranslateKey, (view, position) -> {
         customDialog_BottomInputString(position, NekoConfig.googleCloudTranslateKey, LocaleController.getString("GoogleCloudTransKeyNotice"), "Key");
     }, LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty)));
+    private final AbstractConfigCell hideOriginAfterTranslationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideOriginAfterTranslation()));
+    private final AbstractConfigCell autoTranslateRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getAutoTranslate(), LocaleController.getString("AutoTranslateAbout")));
 
     // AI Translator
+    private final AbstractConfigCell headerAITranslatorSettings = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("AITranslatorSettings")));
     private final AbstractConfigCell llmApiKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> {
         customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiKey(), LocaleController.getString(R.string.LlmApiKeyNotice), "Key");
     }, LocaleController.getString(R.string.None)));
@@ -111,9 +114,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell llmModelNameRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmModelName(), (view, position) -> {
         customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmModelName(), LocaleController.getString(R.string.LlmModelNameNotice), "e.g. gpt-4o-mini");
     }, LocaleController.getString(R.string.LlmModelNameDefault)));
-
-    private final AbstractConfigCell hideOriginAfterTranslationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideOriginAfterTranslation()));
-    private final AbstractConfigCell autoTranslateRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getAutoTranslate(), LocaleController.getString("AutoTranslateAbout")));
     private final AbstractConfigCell dividerTranslation = cellGroup.appendCell(new ConfigCellDivider());
 
     private final AbstractConfigCell headerMap = cellGroup.appendCell(new ConfigCellHeader("Map"));
@@ -459,6 +459,14 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                 }
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translationProviderRow));
             } else if (key.equals(NaConfig.INSTANCE.getPushServiceType().getKey())) {
+                if ((int) newValue == 0) {
+                    NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(true);
+                    ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabledAndUpdateState(true);
+                } else {
+                    NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(false);
+                    ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabledAndUpdateState(false);
+                }
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(pushServiceTypeInAppDialogRow));
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getPushServiceTypeInAppDialog().getKey())) {
                 ApplicationLoader.applicationContext.stopService(new Intent(ApplicationLoader.applicationContext, NotificationsService.class));
@@ -792,6 +800,9 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
         enabled = NekoConfig.largeAvatarInDrawer.Int() > 0;
         ((ConfigCellTextCheck) avatarBackgroundBlurRow).setEnabled(enabled);
         ((ConfigCellTextCheck) avatarBackgroundDarkenRow).setEnabled(enabled);
+
+        enabled = NaConfig.INSTANCE.getPushServiceType().Int() == 0;
+        ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabled(enabled);
     }
 
     //Custom dialogs

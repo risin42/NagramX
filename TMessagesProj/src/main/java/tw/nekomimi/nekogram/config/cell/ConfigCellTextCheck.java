@@ -55,6 +55,18 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
             this.cell.setEnabled(this.enabled);
     }
 
+    public void setEnabledAndUpdateState(boolean enabled) {
+        this.enabled = enabled;
+        if (this.cell != null) {
+            this.cell.setEnabled(this.enabled);
+            if (subtitle == null) {
+                cell.setTextAndCheck(title, bindConfig.Bool(), cellGroup.needSetDivider(this));
+            } else {
+                cell.setTextAndValueAndCheck(title, subtitle, bindConfig.Bool(), true, cellGroup.needSetDivider(this));
+            }
+        }
+    }
+
     public void onBindViewHolder(RecyclerView.ViewHolder holder) {
         TextCheckCell cell = (TextCheckCell) holder.itemView;
         this.cell = cell;
