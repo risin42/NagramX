@@ -178,4 +178,5 @@
     <string name="LlmApiUrlDefault">https://generativelanguage.googleapis.com/v1beta/openai</string>
     <string name="LlmModelNameDefault">gemini-1.5-flash-latest</string>
     <string name="AITranslatorSettings">AI Translator Settings</string>
+    <string name="TranslucentDeletedMessages">Translucent Deleted Messages</string>
 </resources>

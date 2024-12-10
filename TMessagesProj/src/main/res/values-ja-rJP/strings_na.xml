@@ -175,4 +175,5 @@
     <string name="LlmApiKeyNotice">API キーは、API URL へのリクエスト送信に使用されます。</string>
     <string name="LlmModelNameNotice">空白のままにすると、`gemini-1.5-flash-latest`がデフォルトで使用されます。\n\nより速い応答には、gpt-4o-mini や gemini flash などの小型モデルの使用をお勧めします。</string>
     <string name="AITranslatorSettings">AI翻訳設定</string>
+    <string name="TranslucentDeletedMessages">削除済みメッセージの透過</string>
 </resources>

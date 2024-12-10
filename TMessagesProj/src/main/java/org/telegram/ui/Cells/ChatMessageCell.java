@@ -11206,6 +11206,12 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     public void setMessageObject(MessageObject messageObject, MessageObject.GroupedMessages groupedMessages, boolean bottomNear, boolean topNear) {
+        // NagramX
+        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
+            if (messageObject.messageOwner != null && messageObject.messageOwner.ayuDeleted){
+                ayuDeleted = messageObject.messageOwner.ayuDeleted;
+            }
+        }
         if (attachedToWindow && !frozen) {
             setMessageContent(messageObject, groupedMessages, bottomNear, topNear);
         } else {
@@ -14370,6 +14376,12 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         if (currentMessageObject == null || currentMessageObject.isSponsored()) {
             return;
         }
+        // NagramX
+        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
+            if (ayuDeleted) {
+                Theme.chat_msgTextPaint.setAlpha((int) (255 * 0.8f));
+            }
+        }
         float textY = this.textY;
         if (transitionParams.animateText) {
             textY = transitionParams.animateFromTextY * (1f - transitionParams.animateChangeProgress) + this.textY * transitionParams.animateChangeProgress;
@@ -14427,6 +14439,12 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             canvas.restore();
         } else {
             drawMessageText(textX, textY, canvas, currentMessageObject.textLayoutBlocks, currentMessageObject.textXOffset, true, 1.0f, true, false, false);
+        }
+        // NagramX
+        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
+            if (ayuDeleted) {
+                Theme.chat_msgTextPaint.setAlpha(255);
+            }
         }
     }
 
@@ -17435,6 +17453,12 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         if (currentMessageObject == null || doNotDraw) {
             return;
         }
+        // NagramX
+        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
+            if (ayuDeleted) {
+                canvas.saveLayerAlpha(null, (int) (255 * 0.8f), Canvas.ALL_SAVE_FLAG);
+            }
+        }
         if (!wasLayout) {
             onLayout(false, getLeft(), getTop(), getRight(), getBottom());
         }
@@ -17697,6 +17721,12 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         }
         if (isWidthAdaptive()) {
             canvas.restore();
+        }
+        // NagramX
+        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
+            if (ayuDeleted) {
+                canvas.restore();
+            }
         }
         updateSelectionTextPosition();
     }

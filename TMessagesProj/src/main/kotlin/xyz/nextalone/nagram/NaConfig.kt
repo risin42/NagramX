@@ -665,6 +665,12 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
+    val translucentDeletedMessages =
+        addConfig(
+            "TranslucentDeletedMessages",
+            ConfigItem.configTypeBool,
+            false
+    )
 
     private fun addConfig(
         k: String,
