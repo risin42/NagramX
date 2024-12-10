@@ -1,4 +1,5 @@
 # Nagram X
+
 A modified version of Nagram with additional features.
 
 ## CI Channel:
@@ -6,26 +7,35 @@ https://t.me/NagramX
 
 ## Differences from the Nagram:
 - **Additional Features**
-    - Save deleted messages
-    - Save edits history
-    (Thanks to [AyuGram4A](https://github.com/AyuGram/AyuGram4A) and [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram))
+    - Save Deleted Messages
+    - Save Edits History
     - AI Translator with customizable API endpoint and Model
-    - Hide Premium and Help Sections
+    - Option to hide Premium and Help sections
+    - Avoids requesting camera permission when selecting images
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```
-    - Removed in-app update checks and update functionality (no more forced updates).
+    - Removed in-app updates, eliminating forced updates
     - Removed channel follow pop-ups
+    - Excluded API keys from cloud settings synchronization
     - Redone Japanese localization(N-Settings)
-    - Other minor optimizations and cleanup
+    - Other minor optimizations and code cleanup
+
+- **Fixes**
+    - Fixed ripple effect for N-Settings rows
+    - Google Maps
 
 - **Default Settings Adjustments**
     - Enabled N-Settings hidden features
     - Disabled In-Chat sound
     - Disabled Dynamic Pack Order
     - Removed default value for PushServiceTypeUnifiedGateway
-    - Adjusted default font size and bubbleRadius (Official Telegram defaults)
+    - Reverted default font size and bubble radius to official Telegram defaults
     - Other minor adjustments
+
+## Acknowledgements
+
+Thanks to [AyuGram4A](https://github.com/AyuGram/AyuGram4A) and [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram)
 
 # Nagram
 
