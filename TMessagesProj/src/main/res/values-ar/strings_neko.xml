@@ -60,7 +60,6 @@
     <string name="TranslateFailed">خطأ في خادم الترجمة</string>
     <string name="TranslationProvider">مزود الترجمة</string>
     <string name="ProviderGoogleTranslate">ترجمة جوجل</string>
-    <string name="ProviderGoogleTranslateCN">ترجمة جوجل الصينية</string>
     <string name="TranslateApiUnsupported">موفر الترجمة الذي اخترته لا يدعم لغتك.</string>
     <string name="ProviderLingocloud">لينغوكلاود</string>
     <string name="UndoTranslate">التراجع عن الترجمة</string>

@@ -68,7 +68,6 @@
     <string name="Nya">Meow!</string>
     <string name="StickerSizeDialogName">Duang</string>
     <string name="ProviderGoogleTranslate">Google</string>
-    <string name="ProviderGoogleTranslateCN">Google CN</string>
     <string name="UndoTranslate">Αναίρεση μετάφρασης</string>
     <string name="DisablePhotoViewerSideAction">Απενεγ Αναστροφής φωτο με πάτημα</string>
     <string name="BotToken">Ένδειξη</string>

@@ -60,7 +60,6 @@
     <string name="TranslateFailed">Перевести ошибку сервера</string>
     <string name="TranslationProvider">Сервис перевода</string>
     <string name="ProviderGoogleTranslate">Переводчик Google</string>
-    <string name="ProviderGoogleTranslateCN">Google (кит.)</string>
     <string name="TranslateApiUnsupported">Выбранный сервис не поддерживает ваш язык.</string>
     <string name="ProviderLingocloud">Lingocloud</string>
     <string name="UndoTranslate">Скрыть перевод</string>

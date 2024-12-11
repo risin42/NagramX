@@ -70,7 +70,6 @@
     <string name="UndoTranslate">Zrušit překlad</string>
     <string name="ProviderLingocloud">Lingocloud</string>
     <string name="TranslateApiUnsupported">Poskytovatel překladu, kterého jste vybrali, nepodporuje váš jazyk.</string>
-    <string name="ProviderGoogleTranslateCN">Google Překladač CN</string>
     <string name="ProviderGoogleTranslate">Google Překladač</string>
     <string name="TranslationProvider">Poskytovatel překladu</string>
     <string name="TranslateFailed">Chyba serveru při překladu</string>

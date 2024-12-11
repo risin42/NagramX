@@ -617,6 +617,8 @@ object NaConfig {
             ConfigItem.configTypeInt,
             1
         )
+
+    // NagramX
     val enableSaveDeletedMessages =
         addConfig(
             "EnableSaveDeletedMessages",
@@ -670,6 +672,18 @@ object NaConfig {
             "TranslucentDeletedMessages",
             ConfigItem.configTypeBool,
             false
+    )
+    val enableSeparateArticleTranslator =
+        addConfig(
+            "EnableSeparateArticleTranslator",
+            ConfigItem.configTypeBool,
+            false
+    )
+    val articleTranslationProvider =
+        addConfig(
+            "ArticleTranslationProvider",
+            ConfigItem.configTypeInt,
+            1
     )
 
     private fun addConfig(

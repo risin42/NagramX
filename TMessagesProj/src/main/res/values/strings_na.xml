@@ -179,4 +179,6 @@
     <string name="LlmModelNameDefault">gemini-1.5-flash-latest</string>
     <string name="AITranslatorSettings">AI Translator Settings</string>
     <string name="TranslucentDeletedMessages">Translucent Deleted Messages</string>
+    <string name="ArticleTranslationProvider">Article Translation Provider</string>
+    <string name="EnableSeparateArticleTranslator">Use a different provider for Article translation</string>
 </resources>

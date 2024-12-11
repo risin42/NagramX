@@ -60,7 +60,6 @@
     <string name="TranslateFailed">Gagal terhubung ke layanan terjemahan</string>
     <string name="TranslationProvider">Layanan terjemahan</string>
     <string name="ProviderGoogleTranslate">Google Terjemahan</string>
-    <string name="ProviderGoogleTranslateCN">Google China</string>
     <string name="TranslateApiUnsupported">Layanan penterjemah yang anda pilih tidak mendukung bahasa Anda.</string>
     <string name="ProviderLingocloud">Lingocloud</string>
     <string name="UndoTranslate">Batal terjemahkan</string>

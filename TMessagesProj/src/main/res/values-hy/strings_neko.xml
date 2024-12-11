@@ -60,7 +60,6 @@
     <string name="TranslateFailed">Թարգմանեք սերվերի սխալը</string>
     <string name="TranslationProvider">Թարգմանություն տրամադրող</string>
     <string name="ProviderGoogleTranslate">Գուգլ թարգմանիչ</string>
-    <string name="ProviderGoogleTranslateCN">Google Translate CN</string>
     <string name="TranslateApiUnsupported">Ձեր ընտրած թարգմանության մատակարարը չի աջակցում ձեր լեզուն:</string>
     <string name="ProviderLingocloud">Լինգոկլաուդ</string>
     <string name="UndoTranslate">Հետարկել թարգմանությունը</string>

@@ -241,7 +241,6 @@ object AlertUtil {
             items.addAll(
                 arrayOf(
                     LocaleController.getString(R.string.ProviderGoogleTranslate),
-                    LocaleController.getString(R.string.ProviderGoogleTranslateCN),
                     LocaleController.getString(R.string.ProviderYandexTranslate),
                     LocaleController.getString(R.string.ProviderLingocloud),
                     LocaleController.getString(R.string.ProviderMicrosoftTranslator),

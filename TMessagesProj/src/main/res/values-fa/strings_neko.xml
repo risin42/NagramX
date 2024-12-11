@@ -60,7 +60,6 @@
     <string name="TranslateFailed">خرابی خدمتگزار ترزبان</string>
     <string name="TranslationProvider">نمایش دهنده ترزبان</string>
     <string name="ProviderGoogleTranslate">ترزبان گوگل</string>
-    <string name="ProviderGoogleTranslateCN">ترزبان گوگل چین</string>
     <string name="TranslateApiUnsupported">دستیار ترزبانی که شما برگزیدید از زبان شما پشتیبانی نمی کند.</string>
     <string name="ProviderLingocloud">Lingocloud</string>
     <string name="UndoTranslate">واگرد ترزبانی</string>

@@ -1,22 +1,21 @@
 package tw.nekomimi.nekogram.parts
 
-import kotlinx.coroutines.*
-import org.telegram.messenger.LocaleController
-import org.telegram.messenger.R
-import org.telegram.tgnet.TLRPC
-import org.telegram.ui.ArticleViewer
-import tw.nekomimi.nekogram.NekoConfig
-import tw.nekomimi.nekogram.transtale.TranslateDb
-import tw.nekomimi.nekogram.transtale.Translator
-import tw.nekomimi.nekogram.utils.AlertUtil
-import tw.nekomimi.nekogram.utils.UIUtil
-import tw.nekomimi.nekogram.utils.uUpdate
 import java.lang.Runnable
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
+import kotlinx.coroutines.*
+import org.telegram.messenger.LocaleController
+import org.telegram.messenger.R
+import org.telegram.tgnet.TLRPC
+import org.telegram.ui.ArticleViewer
+import tw.nekomimi.nekogram.transtale.TranslateDb
+import tw.nekomimi.nekogram.transtale.Translator
+import tw.nekomimi.nekogram.utils.AlertUtil
+import tw.nekomimi.nekogram.utils.UIUtil
+import tw.nekomimi.nekogram.utils.uUpdate
 
 fun HashSet<Any>.filterBaseTexts(): HashSet<Any> {
 
@@ -55,9 +54,7 @@ fun ArticleViewer.doTransLATE() {
 
     status.show()
 
-    val provider = NekoConfig.translationProvider.Int()
-    val poolSize = if (provider == 10) 3 else 5
-    val transPool = newFixedThreadPoolContext(poolSize, "Article Trans Pool")
+    val transPool = newFixedThreadPoolContext(5, "Article Trans Pool")
 
     val cancel = AtomicBoolean(false)
 
@@ -114,7 +111,7 @@ fun ArticleViewer.doTransLATE() {
 
                         if (cancel.get()) return@async
 
-                        Translator.translate(str)
+                        Translator.translateArticle(str)
 
                         status.uUpdate((all - taskCount.get()).toString() + " / " + all)
 

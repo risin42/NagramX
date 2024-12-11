@@ -114,6 +114,8 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell llmModelNameRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmModelName(), (view, position) -> {
         customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmModelName(), LocaleController.getString(R.string.LlmModelNameNotice), "e.g. gpt-4o-mini");
     }, LocaleController.getString(R.string.LlmModelNameDefault)));
+    private final AbstractConfigCell enableSeparateArticleTranslatorRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSeparateArticleTranslator()));
+    private final AbstractConfigCell articletranslationProviderRow = cellGroup.appendCell(new ConfigCellCustom("ArticleTranslationProvider", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell dividerTranslation = cellGroup.appendCell(new ConfigCellDivider());
 
     private final AbstractConfigCell headerMap = cellGroup.appendCell(new ConfigCellHeader("Map"));
@@ -266,6 +268,10 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
     private UndoView restartTooltip;
 
     public NekoGeneralSettingsActivity() {
+        if (!NaConfig.INSTANCE.getEnableSeparateArticleTranslator().Bool()) {
+            cellGroup.rows.remove(articletranslationProviderRow);
+        }
+
         addRowsToMap(cellGroup);
     }
 
@@ -333,30 +339,13 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                 }
             } else if (a instanceof ConfigCellCustom) { // Custom OnClick
                 if (position == cellGroup.rows.indexOf(translationProviderRow)) {
-                    PopupBuilder builder = new PopupBuilder(view);
-
-                    builder.setItems(new String[]{
-                            LocaleController.getString("ProviderGoogleTranslate", R.string.ProviderGoogleTranslate),
-                            LocaleController.getString("ProviderGoogleTranslateCN", R.string.ProviderGoogleTranslateCN),
-                            LocaleController.getString("ProviderYandexTranslate", R.string.ProviderYandexTranslate),
-                            LocaleController.getString("ProviderLingocloud", R.string.ProviderLingocloud),
-                            LocaleController.getString("ProviderMicrosoftTranslator", R.string.ProviderMicrosoftTranslator),
-                            LocaleController.getString("ProviderMicrosoftTranslator", R.string.ProviderYouDao),
-                            LocaleController.getString("ProviderMicrosoftTranslator", R.string.ProviderDeepLTranslate),
-                            LocaleController.getString("ProviderTelegramAPI", R.string.ProviderTelegramAPI),
-                            LocaleController.getString("ProviderTranSmartTranslate", R.string.ProviderTranSmartTranslate),
-                            LocaleController.getString(R.string.ProviderLLMTranslator),
-                    }, (i, __) -> {
-                        boolean needReset = NekoConfig.translationProvider.Int() - 1 != i && (NekoConfig.translationProvider.Int() == 1 || i == 0);
-                        NekoConfig.translationProvider.setConfigInt(i + 1);
-                        if (needReset) {
-                            updateRows();
-                        } else {
-                            listAdapter.notifyItemChanged(position);
-                        }
-                        return Unit.INSTANCE;
+                    showProviderSelectionPopup(view, NekoConfig.translationProvider, () -> {
+                        listAdapter.notifyItemChanged(position);
                     });
-                    builder.show();
+                } else if (position == cellGroup.rows.indexOf(articletranslationProviderRow)) {
+                    showProviderSelectionPopup(view, NaConfig.INSTANCE.getArticleTranslationProvider(), () -> {
+                        listAdapter.notifyItemChanged(position);
+                    });
                 } else if (position == cellGroup.rows.indexOf(translateToLangRow) || position == cellGroup.rows.indexOf(translateInputToLangRow)) {
                     Translator.showTargetLangSelect(view, position == cellGroup.rows.indexOf(translateInputToLangRow), (locale) -> {
                         if (position == cellGroup.rows.indexOf(translateToLangRow)) {
@@ -473,6 +462,21 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                 ApplicationLoader.startPushService();
             } else if (key.equals(NaConfig.INSTANCE.getPushServiceTypeUnifiedGateway().getKey())) {
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+            } else if (key.equals(NaConfig.INSTANCE.getEnableSeparateArticleTranslator().getKey())) {
+                if ((boolean) newValue) {
+                    if (!cellGroup.rows.contains(articletranslationProviderRow)) {
+                        final int index = cellGroup.rows.indexOf(enableSeparateArticleTranslatorRow) + 1;
+                        cellGroup.rows.add(index, articletranslationProviderRow);
+                        listAdapter.notifyItemInserted(index);
+                    }
+                } else {
+                    if (cellGroup.rows.contains(articletranslationProviderRow)) {
+                        final int index = cellGroup.rows.indexOf(articletranslationProviderRow);
+                        cellGroup.rows.remove(articletranslationProviderRow);
+                        listAdapter.notifyItemRemoved(index);
+                    }
+                }
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(enableSeparateArticleTranslatorRow));
             }
         };
 
@@ -691,47 +695,14 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                     if (holder.itemView instanceof TextSettingsCell) {
                         TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
                         if (position == cellGroup.rows.indexOf(translationProviderRow)) {
-                            String value;
-                            switch (NekoConfig.translationProvider.Int()) {
-                                case Translator.providerGoogle:
-                                    value = LocaleController.getString("ProviderGoogleTranslate", R.string.ProviderGoogleTranslate);
-                                    break;
-                                case Translator.providerGoogleCN:
-                                    value = LocaleController.getString("ProviderGoogleTranslateCN", R.string.ProviderGoogleTranslateCN);
-                                    break;
-                                case Translator.providerYandex:
-                                    value = LocaleController.getString("ProviderYandexTranslate", R.string.ProviderYandexTranslate);
-                                    break;
-                                case Translator.providerLingo:
-                                    value = LocaleController.getString("ProviderLingocloud", R.string.ProviderLingocloud);
-                                    break;
-                                case Translator.providerMicrosoft:
-                                    value = LocaleController.getString("ProviderMicrosoftTranslator", R.string.ProviderMicrosoftTranslator);
-                                    break;
-                                case Translator.providerYouDao:
-                                    value = LocaleController.getString("ProviderYouDao", R.string.ProviderYouDao);
-                                    break;
-                                case Translator.providerDeepL:
-                                    value = LocaleController.getString("ProviderDeepLTranslate", R.string.ProviderDeepLTranslate);
-                                    break;
-                                case Translator.providerTelegram:
-                                    value = LocaleController.getString("ProviderTelegramAPI", R.string.ProviderTelegramAPI);
-                                    break;
-                                case Translator.providerTranSmart:
-                                    value = LocaleController.getString("ProviderTranSmartTranslate", R.string.ProviderTranSmartTranslate);
-                                    break;
-                                case Translator.providerLLMTranslator:
-                                    value = LocaleController.getString(R.string.ProviderLLMTranslator);
-                                    break;
-                                default:
-                                    value = "Unknown";
-                            }
-                            textCell.setTextAndValue(LocaleController.getString("TranslationProvider", R.string.TranslationProvider), value, true);
+                            textCell.setTextAndValue(LocaleController.getString(R.string.TranslationProvider), getProviderName(NekoConfig.translationProvider.Int()), true);
                             if (NekoConfig.useTelegramTranslateInChat.Bool()) textCell.setEnabled(false);
                         } else if (position == cellGroup.rows.indexOf(translateToLangRow)) {
-                            textCell.setTextAndValue(LocaleController.getString("TransToLang", R.string.TransToLang), NekoXConfig.formatLang(NekoConfig.translateToLang.String()), true);
+                            textCell.setTextAndValue(LocaleController.getString(R.string.TransToLang), NekoXConfig.formatLang(NekoConfig.translateToLang.String()), true);
                         } else if (position == cellGroup.rows.indexOf(translateInputToLangRow)) {
-                            textCell.setTextAndValue(LocaleController.getString("TransInputToLang", R.string.TransInputToLang), NekoXConfig.formatLang(NekoConfig.translateInputLang.String()), true);
+                            textCell.setTextAndValue(LocaleController.getString(R.string.TransInputToLang), NekoXConfig.formatLang(NekoConfig.translateInputLang.String()), true);
+                        } else if (position == cellGroup.rows.indexOf(articletranslationProviderRow)) {
+                            textCell.setTextAndValue(LocaleController.getString(R.string.ArticleTranslationProvider), getProviderName(NaConfig.INSTANCE.getArticleTranslationProvider().Int()), true);
                         }
                     }
                 } else {
@@ -843,6 +814,31 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
         AndroidUtilities.showKeyboard(keyField);
     }
 
+    private void showProviderSelectionPopup(View view, ConfigItem configItem, Runnable onSelected) {
+        PopupBuilder builder = new PopupBuilder(view);
+    
+        String[] itemNames = new String[ProviderInfo.PROVIDERS.length];
+        for (int i = 0; i < ProviderInfo.PROVIDERS.length; i++) {
+            itemNames[i] = LocaleController.getString(ProviderInfo.PROVIDERS[i].nameResId);
+        }
+    
+        builder.setItems(itemNames, (i, __) -> {
+            configItem.setConfigInt(ProviderInfo.PROVIDERS[i].providerConstant);
+            onSelected.run();
+            return Unit.INSTANCE;
+        });
+        builder.show();
+    }
+    
+    private String getProviderName(int providerConstant) {
+        for (ProviderInfo info : ProviderInfo.PROVIDERS) {
+            if (info.providerConstant == providerConstant) {
+                return LocaleController.getString(info.nameResId);
+            }
+        }
+        return "Unknown";
+    }
+
     private class ChatBlurAlphaSeekBar extends FrameLayout {
 
         private final SeekBarView sizeBar;
@@ -902,5 +898,27 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
             textPaint.setAlpha((int) ((enabled ? 1.0f : 0.3f) * 255));
             this.invalidate();
         }
+    }
+
+    private static class ProviderInfo {
+        public final int providerConstant;
+        public final int nameResId;
+    
+        public ProviderInfo(int providerConstant, int nameResId) {
+            this.providerConstant = providerConstant;
+            this.nameResId = nameResId;
+        }
+    
+        public static final ProviderInfo[] PROVIDERS = {
+                new ProviderInfo(Translator.providerGoogle, R.string.ProviderGoogleTranslate),
+                new ProviderInfo(Translator.providerYandex, R.string.ProviderYandexTranslate),
+                new ProviderInfo(Translator.providerLingo, R.string.ProviderLingocloud),
+                new ProviderInfo(Translator.providerMicrosoft, R.string.ProviderMicrosoftTranslator),
+                new ProviderInfo(Translator.providerYouDao, R.string.ProviderYouDao),
+                new ProviderInfo(Translator.providerDeepL, R.string.ProviderDeepLTranslate),
+                new ProviderInfo(Translator.providerTelegram, R.string.ProviderTelegramAPI),
+                new ProviderInfo(Translator.providerTranSmart, R.string.ProviderTranSmartTranslate),
+                new ProviderInfo(Translator.providerLLMTranslator, R.string.ProviderLLMTranslator),
+        };
     }
 }

@@ -7,7 +7,6 @@
     <string name="TranslateFailed">অনুবাদক সার্ভারে সমস্যা</string>
     <string name="TranslationProvider">অনুবাদ প্রদানকারী</string>
     <string name="ProviderGoogleTranslate">গুগল ট্রান্সলেট</string>
-    <string name="ProviderGoogleTranslateCN">গুগল ট্রান্সলেট CN</string>
     <string name="TranslateApiUnsupported">আপনি যে অনুবাদ প্রদানকারী বেছে নিয়েছেন সেটি আপনার ভাষা সমর্থন করে না।</string>
     <string name="ProviderLingocloud">লিঙ্গোক্লাউড</string>
     <string name="UndoTranslate">অনুবাদ পূর্বাবস্থায় আনুন</string>

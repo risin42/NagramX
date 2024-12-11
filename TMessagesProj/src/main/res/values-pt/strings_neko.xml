@@ -52,7 +52,6 @@
     <string name="DisablePhotoViewerSideAction">Desativar toque lateral para mudar fotos</string>
     <string name="UndoTranslate">Desfazer tradução</string>
     <string name="TranslateApiUnsupported">O provedor de tradução que selecionou não possui suporte ao seu idioma.</string>
-    <string name="ProviderGoogleTranslateCN">Google Tradutor CN</string>
     <string name="ProviderGoogleTranslate">Google Tradutor</string>
     <string name="TranslationProvider">Provedor de tradução</string>
     <string name="TranslateFailed">Erro no servidor de tradução</string>

@@ -60,7 +60,6 @@
     <string name="TranslateFailed">Server dịch bị lỗi</string>
     <string name="TranslationProvider">Nhà cung cấp dịch thuật</string>
     <string name="ProviderGoogleTranslate">Google Dịch</string>
-    <string name="ProviderGoogleTranslateCN">Google Dịch CN</string>
     <string name="TranslateApiUnsupported">Nhà cung cấp dịch thuật mà bạn đã chọn không hỗ trợ ngôn ngữ của bạn.</string>
     <string name="ProviderLingocloud">LingoCloud</string>
     <string name="UndoTranslate">Hoàn tác dịch</string>

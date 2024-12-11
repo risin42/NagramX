@@ -60,7 +60,6 @@
     <string name="TranslateFailed">Tərcümə server xətası</string>
     <string name="TranslationProvider">Tərcümə təminatçısı</string>
     <string name="ProviderGoogleTranslate">Google Tərcümə</string>
-    <string name="ProviderGoogleTranslateCN">Google Translate CN</string>
     <string name="TranslateApiUnsupported">Seçdiyiniz tərcümə təminatçısı dilinizi dəstəkləmir.</string>
     <string name="ProviderLingocloud">Lingocloud</string>
     <string name="UndoTranslate">Tərcüməni geri qaytarın</string>

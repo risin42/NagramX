@@ -27,7 +27,6 @@
     <string name="ExportAsJson">Eksporter som JSON</string>
     <string name="Translate">Oversett</string>
     <string name="DeleteAccount">Slett Telegram-konto</string>
-    <string name="ProviderGoogleTranslateCN">Google Translate Kina</string>
     <string name="TranslateApiUnsupported">Oversettelsestilbyderen du valgte støtter ikke språket ditt.</string>
     <string name="ProviderLingocloud">Lingocloud</string>
     <string name="UndoTranslate">Angre oversetting</string>

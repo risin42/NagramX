@@ -60,7 +60,6 @@
     <string name="TranslateFailed">תרגום שגיאת שרת</string>
     <string name="TranslationProvider">ספק התרגום</string>
     <string name="ProviderGoogleTranslate">גוגל תרגום</string>
-    <string name="ProviderGoogleTranslateCN">גוגל תרגום סין</string>
     <string name="TranslateApiUnsupported">ספק התרגום שבחרת לא תומך בשפה שלך.</string>
     <string name="ProviderLingocloud">לינגוקלאוד</string>
     <string name="UndoTranslate">ביטול התרגום</string>
