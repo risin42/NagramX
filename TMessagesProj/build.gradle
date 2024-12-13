@@ -189,7 +189,6 @@ android {
     }
 
     sourceSets {
-
         main {
             assets.srcDirs = ["src/main/assets"]
         }
@@ -228,9 +227,6 @@ android {
         if (((task.name.endsWith("Ndk") || task.name.startsWith("generateJsonModel") || task.name.startsWith("externalNativeBuild"))) && !task.name.contains("Debug")) {
             task.enabled = false
         }
-        if (task.name.contains("uploadCrashlyticsMappingFile")) {
-            enabled = false
-        }
         if (disableCMakeRelWithDebInfo && task.name.contains("CMakeRelWithDebInfo")) {
             enabled = false
         }
@@ -246,7 +242,6 @@ android {
             outputFileName = name
         }
     }
-
 }
 
 dependencies {
@@ -282,23 +277,22 @@ dependencies {
     // Nagram
     implementation "androidx.browser:browser:1.5.0"
     implementation "androidx.viewpager:viewpager:1.0.0"
-
+    // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.23"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
-
+    // utilities 
     implementation "com.jakewharton:process-phoenix:2.1.2"
     implementation "org.dizitart:nitrite:3.4.3"
     implementation "org.osmdroid:osmdroid-android:6.1.10"
-
+    // network
     implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.10"
     implementation 'com.neovisionaries:nv-websocket-client:2.14'
     implementation 'dnsjava:dnsjava:3.4.1'
     implementation "cn.hutool:hutool-core:5.7.13"
     implementation 'cn.hutool:hutool-http:5.7.5'
-
     // add for emoji
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
-    // add for up
+    // add for UnifiedPush
     implementation 'com.github.UnifiedPush:android-connector:2.3.1'
     // NagramX: add for save deleted messages
     implementation "androidx.room:room-runtime:2.5.2"
@@ -329,11 +323,5 @@ android {
     }
     buildFeatures {
         buildConfig true
-    }
-
-    tasks.configureEach { task ->
-        if (task.name.startsWith("uploadCrashlyticsMappingFile")) {
-            task.enabled = false
-        }
     }
 }
