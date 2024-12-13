@@ -274,7 +274,6 @@
     <string name="doubleTapSendReaction">Send reaction</string>
     <string name="doubleTapDisable">Disable</string>
     <string name="disableReactionsWhenSelecting">Hide reactions while selecting</string>
-
     <string name="UpgradeGroup">Upgrade Group</string>
     <string name="AccDescrShowKeyboard">Show keyboard</string>
     <string name="ConvertGroupAlertWarning">Warning</string>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="XChannel">Nagram X 频道</string>
+    <string name="EnableSaveDeletedMessages">保存已删除消息</string>
+    <string name="DeletedMessage">已删除</string>
+    <string name="EnableSaveEditsHistory">保存编辑历史</string>
+    <string name="EditsHistoryTitle">编辑历史</string>
+    <string name="EditsHistoryMenuText">编辑历史</string>
+    <string name="DeleteKeepLocally">本地保留</string>
+    <string name="ClearMessageDatabase">清除消息数据库</string>
+    <string name="ClearMessageDatabaseNotification">消息数据库已清除</string>
+    <string name="CustomDeletedMark">自定义已删除消息标记</string>
+    <string name="HidePremiumSection">在设置中隐藏 Telegram Premium 部分</string>
+    <string name="HideHelpSection">在设置中隐藏帮助部分</string>
+    <string name="ProviderLLMTranslator">AI翻译</string>
+    <string name="LlmApiUrl">API URL</string>
+    <string name="LlmApiKey">API 密钥</string>
+    <string name="LlmModelName">模型</string>
+    <string name="LlmApiUrlNotice">API 基本 URL，仅支持 OpenAI 兼容的端点。\n\n此部分应为 URL 中 `/chat/completions` 之前的部分。例如：`https://api.x.ai/v1`。\n\n如果留空，将默认为 Gemini 的 OpenAI 兼容 API 端点：`https://generativelanguage.googleapis.com/v1beta/openai`。</string>
+    <string name="LlmApiKeyNotice">API 密钥将用于向 API URL 发送请求。</string>
+    <string name="LlmModelNameNotice">如果留空，将默认使用 `gemini-1.5-flash-latest`。\n\n为了更快的响应，可以考虑使用更小的模型，例如 gpt-4o-mini 或 gemini flash。</string>
+    <string name="AITranslatorSettings">AI翻译设置</string>
+    <string name="TranslucentDeletedMessages">透明已删除消息</string>
+    <string name="ArticleTranslationProvider">文章翻译源</string>
+    <string name="EnableSeparateArticleTranslator">单独设置文章翻译源</string>
+    <string name="CrashlyticsCollection">Firebase Crashlytics 崩溃报告</string>
+    <string name="ShowStickersRowToplevel">在顶层设置中显示贴纸行</string>
+</resources>

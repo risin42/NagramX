@@ -5,12 +5,9 @@
   ~
   ~ Copyright Nikolai Kudashov, 2013-2018.
   -->
-
 <resources
     xmlns:android="http://schemas.android.com/apk/res/android">
-
     <!--THEMES-->
-
     <style name="Theme.TMessages.Start" parent="Theme.AppCompat.DayNight">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
@@ -26,12 +23,10 @@
         <item name="android:windowSplashScreenAnimationDuration">@integer/splash_screen_duration</item>
         <item name="android:windowSplashScreenBackground">#1f2732</item>
     </style>
-
     <style name="ActionBar.Transparent.TMessages.Start" parent="android:style/Widget.Material.Light.ActionBar">
         <item name="android:background">#ff232d3a</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:logo">@drawable/transparent</item>
         <item name="android:title">""</item>
     </style>
-
 </resources>

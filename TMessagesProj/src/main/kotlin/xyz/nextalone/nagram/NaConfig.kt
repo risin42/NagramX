@@ -238,9 +238,7 @@ object NaConfig {
         addConfig(
             "CustomChannelLabel",
             ConfigItem.configTypeString,
-            LocaleController.getString(
-                R.string.channelLabel
-            )
+            ""
         )
     val alwaysShowDownloadIcon =
         addConfig(

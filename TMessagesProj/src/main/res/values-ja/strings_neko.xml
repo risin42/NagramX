@@ -91,7 +91,7 @@
     <string name="CallTo">**%1$s** に電話をかけますか？</string>
     <string name="DisableNumberRounding">数値の丸めを無効にする</string>
     <string name="Categories">カテゴリ</string>
-    <string name="OfficialChannel">公式チャンネル</string>
+    <string name="OfficialChannel">Nagram チャンネル</string>
     <string name="About">アプリについて</string>
     <string name="IgnoreBlockedAbout">当ユーザーからのグループメッセージは表示されなくなります。</string>
     <string name="GooglePlay">Google Play</string>

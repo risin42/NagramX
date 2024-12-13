@@ -167,7 +167,7 @@ public class NekoSettingsActivity extends BaseFragment {
         frameLayout.addView(actionBarContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.FILL_HORIZONTAL));
 
         tabsView = new FilledTabsView(context);
-        tabsView.setTabs(LocaleController.getString("Categories", R.string.Categories), LocaleController.getString("About", R.string.About));
+        tabsView.setTabs(LocaleController.getString(R.string.Categories), LocaleController.getString(R.string.About));
         tabsView.onTabSelected(tab -> {
             if (viewPager != null) {
                 viewPager.scrollToPosition(tab);
@@ -304,7 +304,7 @@ public class NekoSettingsActivity extends BaseFragment {
                         case VIEW_TYPE_HEADER: {
                             HeaderCell headerCell = (HeaderCell) holder.itemView;
                             if (position == importRow) {
-                                headerCell.setText(LocaleController.getString("NekoSettings", R.string.NekoSettings));
+                                headerCell.setText(LocaleController.getString(R.string.NekoSettings));
                             }
                             break;
                         }
@@ -317,13 +317,13 @@ public class NekoSettingsActivity extends BaseFragment {
                         case VIEW_TYPE_TEXT: {
                             TextCell textCell = (TextCell) holder.itemView;
                             if (position == chatRow) {
-                                textCell.setTextAndIcon(LocaleController.getString("Chat", R.string.Chat), R.drawable.msg_discussion, true);
+                                textCell.setTextAndIcon(LocaleController.getString(R.string.Chat), R.drawable.msg_discussion, true);
                             } else if (position == generalRow) {
-                                textCell.setTextAndIcon(LocaleController.getString("General", R.string.General), R.drawable.msg_theme, true);
+                                textCell.setTextAndIcon(LocaleController.getString(R.string.General), R.drawable.msg_theme, true);
                             } else if (position == passcodeRow) {
-                                textCell.setTextAndIcon(LocaleController.getString("PasscodeNeko", R.string.PasscodeNeko), R.drawable.msg_permissions, true);
+                                textCell.setTextAndIcon(LocaleController.getString(R.string.PasscodeNeko), R.drawable.msg_permissions, true);
                             } else if (position == experimentRow) {
-                                textCell.setTextAndIcon(LocaleController.getString("Experiment", R.string.Experiment), R.drawable.msg_fave, true);
+                                textCell.setTextAndIcon(LocaleController.getString(R.string.Experiment), R.drawable.msg_fave, true);
                             }
                             break;
                         }
@@ -332,19 +332,19 @@ public class NekoSettingsActivity extends BaseFragment {
                             if (position == xChannelRow) {
                                 textCell.setTextAndValue(LocaleController.getString(R.string.XChannel), "@NagramX", true);
                             } else if (position == channelRow) {
-                                textCell.setTextAndValue(LocaleController.getString("OfficialChannel", R.string.OfficialChannel), "@nagram_channel", true);
+                                textCell.setTextAndValue(LocaleController.getString(R.string.OfficialChannel), "@nagram_channel", true);
                             } else if (position == channelTipsRow) {
-                                textCell.setTextAndValue(LocaleController.getString("TipsChannel", R.string.TipsChannel), "@" + channelUsernameTips, true);
+                                textCell.setTextAndValue(LocaleController.getString(R.string.TipsChannel), "@" + channelUsernameTips, true);
                             } else if (position == sourceCodeRow) {
-                                textCell.setText(LocaleController.getString("SourceCode", R.string.SourceCode), true);
+                                textCell.setText(LocaleController.getString(R.string.SourceCode), true);
                             } else if (position == translationRow) {
-                                textCell.setText(LocaleController.getString("TransSite", R.string.TransSite), true);
+                                textCell.setText(LocaleController.getString(R.string.TransSite), true);
                             } else if (position == datacenterStatusRow) {
-                                textCell.setText(LocaleController.getString("DatacenterStatus", R.string.DatacenterStatus), true);
+                                textCell.setText(LocaleController.getString(R.string.DatacenterStatus), true);
                             } else if (position == importSettingsRow) {
-                                textCell.setText(LocaleController.getString("ImportSettings", R.string.ImportSettings), true);
+                                textCell.setText(LocaleController.getString(R.string.ImportSettings), true);
                             } else if (position == exportSettingsRow) {
-                                textCell.setText(LocaleController.getString("BackupSettings", R.string.BackupSettings), true);
+                                textCell.setText(LocaleController.getString(R.string.BackupSettings), true);
                             }
                             break;
                         }
@@ -381,7 +381,7 @@ public class NekoSettingsActivity extends BaseFragment {
                 } else if (position == translationRow) {
                     Browser.openUrl(getParentActivity(), "https://xtaolabs.crowdin.com/nagram");
                 } else if (position == sourceCodeRow) {
-                    Browser.openUrl(getParentActivity(), "https://github.com/NextAlone/Nagram");
+                    Browser.openUrl(getParentActivity(), "https://github.com/risin42/NagramX");
                 } else if (position == datacenterStatusRow) {
                     presentFragment(new DatacenterActivity(0));
                 } else if (position == importSettingsRow) {
@@ -419,7 +419,7 @@ public class NekoSettingsActivity extends BaseFragment {
                 channelRow = rowCount++;
                 channelTipsRow = rowCount++;
                 sourceCodeRow = rowCount++;
-                translationRow = rowCount++;
+                // translationRow = rowCount++;
                 datacenterStatusRow = rowCount++;
             }
         }
@@ -583,9 +583,9 @@ public class NekoSettingsActivity extends BaseFragment {
     public static void importSettings(Context context, File settingsFile) {
 
         AlertUtil.showConfirm(context,
-                LocaleController.getString("ImportSettingsAlert", R.string.ImportSettingsAlert),
+                LocaleController.getString(R.string.ImportSettingsAlert),
                 R.drawable.baseline_security_24,
-                LocaleController.getString("Import", R.string.Import),
+                LocaleController.getString(R.string.Import),
                 true,
                 () -> importSettingsConfirmed(context, settingsFile));
 
@@ -598,9 +598,9 @@ public class NekoSettingsActivity extends BaseFragment {
             importSettings(configJson);
 
             AlertDialog restart = new AlertDialog(context, 0);
-            restart.setTitle(LocaleController.getString("NekoX", R.string.NekoX));
-            restart.setMessage(LocaleController.getString("RestartAppToTakeEffect", R.string.RestartAppToTakeEffect));
-            restart.setPositiveButton(LocaleController.getString("OK", R.string.OK), (__, ___) -> ProcessPhoenix.triggerRebirth(context, new Intent(context, LaunchActivity.class)));
+            restart.setTitle(LocaleController.getString(R.string.NekoX));
+            restart.setMessage(LocaleController.getString(R.string.RestartAppToTakeEffect));
+            restart.setPositiveButton(LocaleController.getString(R.string.OK), (__, ___) -> ProcessPhoenix.triggerRebirth(context, new Intent(context, LaunchActivity.class)));
             restart.show();
         } catch (Exception e) {
             AlertUtil.showSimpleAlert(context, e);
