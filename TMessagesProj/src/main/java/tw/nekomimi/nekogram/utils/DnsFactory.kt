@@ -27,11 +27,8 @@ object DnsFactory {
             "https://1.1.1.1/dns-query",
             "https://1.0.0.1/dns-query",
             "https://8.8.8.8/dns-query",
-            "https://101.101.101.101/dns-query",
-            "https://9.9.9.9/dns-query",
-            "https://185.222.222.222/dns-query",
-            "https://45.11.45.11/dns-query",
-            "https://[2606:4700:4700::1111]/dns-query",
+            "https://[2606:4700:4700::1001]/dns-query", // Cloudflare IPv6
+            "https://[2001:4860:4860::8844]/dns-query", // Google IPv6
     )
 
     val cache = Cache()
