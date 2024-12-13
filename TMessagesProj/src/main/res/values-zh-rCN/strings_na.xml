@@ -178,4 +178,5 @@
     <string name="TranslucentDeletedMessages">透明已删除消息</string>
     <string name="ArticleTranslationProvider">文章翻译源</string>
     <string name="EnableSeparateArticleTranslator">单独设置文章翻译源</string>
+    <string name="CrashlyticsCollection">Firebase Crashlytics 崩溃报告</string>
 </resources>

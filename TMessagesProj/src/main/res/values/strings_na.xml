@@ -181,4 +181,5 @@
     <string name="TranslucentDeletedMessages">Translucent Deleted Messages</string>
     <string name="ArticleTranslationProvider">Article Translation Provider</string>
     <string name="EnableSeparateArticleTranslator">Use a different provider for Article translation</string>
+    <string name="CrashlyticsCollection">Firebase Crashlytics</string>
 </resources>

@@ -685,6 +685,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             1
     )
+    val crashlyticsCollection =
+        addConfig(
+            "CrashlyticsCollection",
+            ConfigItem.configTypeBool,
+            true
+        )
 
     private fun addConfig(
         k: String,

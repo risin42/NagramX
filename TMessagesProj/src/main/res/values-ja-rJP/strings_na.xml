@@ -178,4 +178,5 @@
     <string name="TranslucentDeletedMessages">削除済みメッセージの透過</string>
     <string name="ArticleTranslationProvider">アーティクル翻訳プロバイダ</string>
     <string name="EnableSeparateArticleTranslator">アーティクル翻訳プロバイダで別のプロバイダを使用</string>
+    <string name="CrashlyticsCollection">Firebase Crashlytics クラッシュレポート</string>
 </resources>

@@ -68,6 +68,7 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import xyz.nextalone.nagram.NaConfig;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import static android.os.Build.VERSION.SDK_INT;
 
@@ -186,6 +187,9 @@ public class ApplicationLoader extends Application {
         NativeLoader.initNativeLibs(ApplicationLoader.applicationContext);
 
         SharedConfig.loadConfig();
+
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled((NaConfig.INSTANCE.getCrashlyticsCollection().Bool()));
+
         try {
             LocaleController.getInstance(); //TODO improve
         } catch (Exception e) {
