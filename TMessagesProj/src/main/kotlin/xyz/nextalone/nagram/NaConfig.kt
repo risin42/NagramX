@@ -689,6 +689,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val showStickersRowToplevel=
+        addConfig(
+            "ShowStickersRowToplevel",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     private fun addConfig(
         k: String,
