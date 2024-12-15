@@ -129,7 +129,6 @@
     <string name="autoUpdateSubInfo">プロキシを自動更新</string>
     <string name="hideSendAsChannel">チャンネルとして送信を非表示</string>
     <string name="showSpoilersDirectly">ネタバレ情報を直接表示</string>
-    <string name="disableDoubleTabReactions">ダブルタップリアクションを無効にする</string>
     <string name="SaveToDownloadCount_zero">%1$d個のファイルをダウンロードに保存しています</string>
     <string name="SaveToDownloadCount_one">%1$d個のファイルをダウンロードに保存しています</string>
     <string name="SaveToDownloadCount_two">%1$d個のファイルをダウンロードに保存しています</string>

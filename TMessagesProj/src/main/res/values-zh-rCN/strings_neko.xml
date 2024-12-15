@@ -129,7 +129,6 @@
     <string name="autoUpdateSubInfo">自动更新代理</string>
     <string name="hideSendAsChannel">隐藏以频道身份发送</string>
     <string name="showSpoilersDirectly">直接显示剧透信息</string>
-    <string name="disableDoubleTabReactions">禁用双击反应</string>
     <string name="SaveToDownloadCount_zero">正在保存%1$d个文件到下载</string>
     <string name="SaveToDownloadCount_one">正在保存%1$d个文件到下载</string>
     <string name="SaveToDownloadCount_two">正在保存%1$d个文件到下载</string>

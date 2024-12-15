@@ -133,13 +133,9 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell useIPv6Row = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useIPv6));
     private final AbstractConfigCell useProxyItemRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useProxyItem));
     private final AbstractConfigCell hideProxyByDefaultRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.hideProxyByDefault));
-//    private final AbstractConfigCell autoUpdateSubInfoRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.autoUpdateSubInfo));
     private final AbstractConfigCell useSystemDNSRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useSystemDNS));
     private final AbstractConfigCell disableProxyWhenVpnEnabledRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableProxyWhenVpnEnabled()));
     private final AbstractConfigCell customDoHRow = cellGroup.appendCell(new ConfigCellTextInput(null, NekoConfig.customDoH, "https://1.0.0.1/dns-query", null));
-//    private final AbstractConfigCell customPublicProxyIPRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.customPublicProxyIP, (view, position) -> {
-//        customDialog_BottomInputString(position, NekoConfig.customPublicProxyIP, LocaleController.getString("customPublicProxyIPNotice"), "IP");
-//    }, LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty)));
 private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getDefaultHlsVideoQuality(),
         new String[]{
                 LocaleController.getString(R.string.QualityAuto),
@@ -246,8 +242,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
             LocaleController.getString("LastFirst", R.string.LastFirst),
             LocaleController.getString("FirstLast", R.string.FirstLast)
     }, null));
-    private final AbstractConfigCell usePersianCalendarRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.usePersianCalendar, LocaleController.getString("UsePersiancalendarInfo")));
-    private final AbstractConfigCell displayPersianCalendarByLatinRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.displayPersianCalendarByLatin));
     private final AbstractConfigCell divider7 = cellGroup.appendCell(new ConfigCellDivider());
 
     private final AbstractConfigCell headerPushService = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("Notifications", R.string.Notifications)));
@@ -402,10 +396,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
             } else if (key.equals(NekoConfig.tabletMode.getKey())) {
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
             } else if (key.equals(NekoConfig.newYear.getKey())) {
-                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
-            } else if (key.equals(NekoConfig.usePersianCalendar.getKey())) {
-                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
-            } else if (key.equals(NekoConfig.displayPersianCalendarByLatin.getKey())) {
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
             } else if (key.equals(NekoConfig.disableSystemAccount.getKey())) {
                 if ((boolean) newValue) {
