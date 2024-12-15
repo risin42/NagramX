@@ -820,14 +820,22 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
 
     private void showProviderSelectionPopup(View view, ConfigItem configItem, Runnable onSelected) {
         PopupBuilder builder = new PopupBuilder(view);
-    
-        String[] itemNames = new String[ProviderInfo.PROVIDERS.length];
-        for (int i = 0; i < ProviderInfo.PROVIDERS.length; i++) {
-            itemNames[i] = LocaleController.getString(ProviderInfo.PROVIDERS[i].nameResId);
+
+        List<ProviderInfo> filteredProviders = new ArrayList<>();
+        for (ProviderInfo provider : ProviderInfo.PROVIDERS) {
+            if (configItem == NaConfig.INSTANCE.getArticleTranslationProvider() && provider.providerConstant == Translator.providerLLMTranslator) {
+                continue; // Exclude AI Translator for article translation provider
+            }
+            filteredProviders.add(provider);
+        }
+
+        String[] itemNames = new String[filteredProviders.size()];
+        for (int i = 0; i < filteredProviders.size(); i++) {
+            itemNames[i] = LocaleController.getString(filteredProviders.get(i).nameResId);
         }
     
         builder.setItems(itemNames, (i, __) -> {
-            configItem.setConfigInt(ProviderInfo.PROVIDERS[i].providerConstant);
+            configItem.setConfigInt(filteredProviders.get(i).providerConstant);
             onSelected.run();
             return Unit.INSTANCE;
         });
