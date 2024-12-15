@@ -154,5 +154,24 @@
     <string name="PanguInfo">テキストを読みやすくします。CJK（中国語、日本語、韓国語）、半角英数字、記号の間に自動的にスペースを挿入します。</string>
     <string name="SendWithPangu">Pangu を使用して送信</string>
     <string name="SendWithoutPangu">Pangu を使用せずに送信</string>
-    <string name="DefaultHlsVideoQuality">デフォルトの Hls ビデオ品質</string>
+    <string name="DefaultHlsVideoQuality">デフォルトの HLS ビデオ品質</string>
+    <string name="hideSponsoredMessage">スポンサードメッセージを非表示</string>
+    <string name="EnableStickerPin">ステッカーのピン留め機能を有効にする</string>
+    <string name="EnableStickerPinTip">開発中機能になっており、クラウド同期は正常に動作しない可能性があります。</string>
+    <string name="EnableStickerPinAbout">ステッカーを固定し、新しいステッカーを追加するとクラウド同期されます。</string>
+    <string name="channelAlias">チャンネルアリアス</string>
+    <string name="localPremium">ローカルプレミアム</string>
+    <string name="unreadBadgeOnBackButton">チャットウィンドウの戻るボタンに未読数を表示</string>
+    <string name="showSeconds">タイムスタンプを秒単位で表示</string>
+    <string name="DisableInstantCamera">インスタントカメラを無効にする</string>
+    <string name="labelChannelUser">チャンネルの匿名身份をラベル</string>
+    <string name="labelChannelUserDetails">チャンネルとして匿名で発言するユーザーは「チャンネル」と表示されます。</string>
+    <string name="rememberAllBackMessages">全てのクリックされた返信を記憶</string>
+    <string name="disableReactionsWhenSelecting">選択時にリアクションを無効にする</string>
+    <string name="InteractionSettings">インタラクション</string>
+    <string name="StickerSettings">ステッカー</string>
+    <string name="ReactionSettings">リアクション</string>
+   <string name="ConfirmSettings">確認</string>
+    <string name="repeatConfirm">繰り返す前に確認する</string>
+    <string name="repeatConfirmText">本当に繰り返しますか？</string>
 </resources>

@@ -683,11 +683,11 @@ object NaConfig {
             ConfigItem.configTypeInt,
             1
     )
-    val crashlyticsCollection =
+    val disableCrashlyticsCollection =
         addConfig(
-            "CrashlyticsCollection",
+            "DisableCrashlyticsCollection",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val showStickersRowToplevel=
         addConfig(

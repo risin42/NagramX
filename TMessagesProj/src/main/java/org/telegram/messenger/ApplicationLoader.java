@@ -188,7 +188,7 @@ public class ApplicationLoader extends Application {
 
         SharedConfig.loadConfig();
 
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled((NaConfig.INSTANCE.getCrashlyticsCollection().Bool()));
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!NaConfig.INSTANCE.getDisableCrashlyticsCollection().Bool());
 
         try {
             LocaleController.getInstance(); //TODO improve

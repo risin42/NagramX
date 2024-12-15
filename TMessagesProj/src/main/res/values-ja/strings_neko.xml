@@ -63,7 +63,7 @@
     <string name="DeleteAccount">Telegram アカウントを削除</string>
     <string name="TranslateFailed">翻訳サーバーエラー</string>
     <string name="TranslationProvider">翻訳プロバイダ</string>
-    <string name="ProviderGoogleTranslate">Google翻訳</string>
+    <string name="ProviderGoogleTranslate">Google 翻訳</string>
     <string name="TranslateApiUnsupported">選択した翻訳プロバイダは、あなたの言語をサポートしていません。</string>
     <string name="ProviderLingocloud">彩雲小訳</string>
     <string name="UndoTranslate">翻訳を元に戻す</string>

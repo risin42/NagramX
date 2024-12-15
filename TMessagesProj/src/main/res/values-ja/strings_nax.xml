@@ -12,17 +12,17 @@
     <string name="CustomDeletedMark">カスタム削除メッセージマーカー</string>
     <string name="HidePremiumSection">プレミアムセクションを非表示</string>  
     <string name="HideHelpSection">ヘルプセクションを非表示</string>
-    <string name="ProviderLLMTranslator">AI翻訳</string>
-    <string name="LlmApiUrl">PI URL</string>
+    <string name="ProviderLLMTranslator">AI 翻訳</string>
+    <string name="LlmApiUrl">API URL</string>
     <string name="LlmApiKey">API キー</string>
     <string name="LlmModelName">モデル</string>
     <string name="LlmApiUrlNotice">API ベース URL。OpenAI 互換エンドポイントのみをサポートしています。\n\n`/chat/completions`より前の URL 部分を指定してください。例： `https://api.x.ai/v1`。\n\n空欄のままにすると、Gemini の OpenAI 互換 API エンドポイントである `https://generativelanguage.googleapis.com/v1beta/openai` がデフォルトで使用されます。</string>
     <string name="LlmApiKeyNotice">API キーは、API URL へのリクエスト送信に使用されます。</string>
     <string name="LlmModelNameNotice">空白のままにすると、`gemini-1.5-flash-latest`がデフォルトで使用されます。\n\nより速い応答には、gpt-4o-mini や gemini flash などの小型モデルの使用をお勧めします。</string>
-    <string name="AITranslatorSettings">AI翻訳設定</string>
+    <string name="AITranslatorSettings">AI 翻訳設定</string>
     <string name="TranslucentDeletedMessages">削除済みメッセージの透過</string>
     <string name="ArticleTranslationProvider">アーティクル翻訳プロバイダ</string>
     <string name="EnableSeparateArticleTranslator">アーティクル翻訳プロバイダで別のプロバイダを使用</string>
-    <string name="CrashlyticsCollection">Firebase Crashlytics クラッシュレポート</string>
+    <string name="DisableCrashlyticsCollection">Firebase Crashlytics クラッシュレポートを無効化</string>
     <string name="ShowStickersRowToplevel">トップレベルにステッカー設定を表示</string>
 </resources>
