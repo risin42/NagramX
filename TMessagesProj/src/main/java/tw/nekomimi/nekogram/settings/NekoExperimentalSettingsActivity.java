@@ -46,6 +46,7 @@ import org.telegram.ui.Components.UndoView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import kotlin.Unit;
@@ -69,6 +70,8 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
     private boolean sensitiveCanChange = false;
     private boolean sensitiveEnabled = false;
+
+    private List<AbstractConfigCell> externalStickerRows;
 
     private final CellGroup cellGroup = new CellGroup(this);
 
@@ -159,44 +162,20 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private static final int INTENT_PICK_EXTERNAL_STICKER_DIRECTORY = 514;
 
     public NekoExperimentalSettingsActivity() {
-        if (!NaConfig.INSTANCE.getShowHiddenFeature().Bool()) {
-            cellGroup.rows.remove(localPremiumRow);
-            cellGroup.rows.remove(localQuoteColorRow);
-            cellGroup.rows.remove(enhancedFileLoaderRow);
-            cellGroup.rows.remove(disableFilteringRow);
-            cellGroup.rows.remove(unlimitedFavedStickersRow);
-            cellGroup.rows.remove(unlimitedPinnedDialogsRow);
-            cellGroup.rows.remove(enableStickerPinRow);
-
-            cellGroup.rows.remove(forceCopyRow);
-            cellGroup.rows.remove(disableFlagSecureRow);
-            cellGroup.rows.remove(hideSponsoredMessageRow);
-            cellGroup.rows.remove(ignoreBlockedRow);
-            cellGroup.rows.remove(regexFiltersEnabledRow);
-            cellGroup.rows.remove(regexFiltersEnableInChatsRow);
-            cellGroup.rows.remove(disableChatActionRow);
-            cellGroup.rows.remove(disableChoosingStickerRow);
-
-            cellGroup.rows.remove(headerStory);
-            cellGroup.rows.remove(disableStoriesRow);
-            cellGroup.rows.remove(disableSendReadStoriesRow);
-            cellGroup.rows.remove(dividerStory);
-
-            NekoConfig.localPremium.setConfigBool(false);
-            NaConfig.INSTANCE.getForceCopy().setConfigBool(false);
-            NaConfig.INSTANCE.getDisableFlagSecure().setConfigBool(false);
-            NekoConfig.hideSponsoredMessage.setConfigBool(false);
-            NekoConfig.ignoreBlocked.setConfigBool(false);
-            NaConfig.INSTANCE.getRegexFiltersEnabled().setConfigBool(false);
-            NekoConfig.disableChatAction.setConfigBool(false);
-            NekoConfig.disableChoosingSticker.setConfigBool(false);
-            NaConfig.INSTANCE.getDisableSendReadStories().setConfigBool(false);
+        externalStickerRows = List.of(
+            externalStickerCacheDirNameTypeRow,
+            externalStickerCacheSyncAllRow,
+            externalStickerCacheDeleteAllRow
+        );
+        if (NaConfig.INSTANCE.getExternalStickerCache().String().isBlank()) {
+            cellGroup.rows.removeAll(externalStickerRows);
         }
 
         addRowsToMap(cellGroup);
     }
 
     private void setExternalStickerCacheCellsEnabled(boolean enabled) {
+        ((ConfigCellTextCheck) externalStickerCacheAutoSyncRow).setEnabled(enabled);
         ((ConfigCellText) externalStickerCacheSyncAllRow).setEnabled(enabled);
         ((ConfigCellText) externalStickerCacheDeleteAllRow).setEnabled(enabled);
     }
@@ -215,9 +194,20 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             ConfigCellAutoTextCheck cell = (ConfigCellAutoTextCheck) externalStickerCacheRow;
             cell.setSubtitle(null);
             NaConfig.INSTANCE.getExternalStickerCache().setConfigString("");
+            if (cellGroup.rows.containsAll(externalStickerRows)) {
+                cellGroup.rows.removeAll(externalStickerRows);
+                int externalStickerCacheIndex = cellGroup.rows.indexOf(externalStickerCacheRow);
+                listAdapter.notifyItemRangeRemoved(externalStickerCacheIndex + 2, externalStickerRows.size());
+            }
+            tooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
         } else {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             startActivityForResult(intent, INTENT_PICK_EXTERNAL_STICKER_DIRECTORY);
+            if (!cellGroup.rows.containsAll(externalStickerRows)) {
+                int externalStickerCacheIndex = cellGroup.rows.indexOf(externalStickerCacheRow);
+                cellGroup.rows.addAll(externalStickerCacheIndex + 2, externalStickerRows);
+                listAdapter.notifyItemRangeInserted(externalStickerCacheIndex + 2, externalStickerRows.size());
+            } 
         }
     }
 
