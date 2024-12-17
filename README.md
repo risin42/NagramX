@@ -1,6 +1,6 @@
 # Nagram X
 
-A modified version of Nagram with additional features.
+Make Nagram Great Again :)
 
 ## CI Channel:
 https://t.me/NagramX
@@ -10,20 +10,22 @@ https://t.me/NagramX
     - Save Deleted Messages
     - Save Edits History
     - AI Translator with customizable API endpoint and Model
-    - Option to hide Premium and Help sections
+    - Hide the Premium and Help sections
     - Avoids requesting camera permission when selecting images
+    - Show Stickers row in Top-Level Settings
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```
-    - Removed in-app updates, eliminating forced updates
+    - Removed in-app updates
     - Removed channel follow pop-ups
     - Excluded API keys from cloud settings synchronization
-    - Redone Japanese localization(N-Settings)
+    - Refined Japanese localization (N-Settings)
     - Other minor optimizations and code cleanup
 
 - **Fixes**
-    - Fixed ripple effect for N-Settings rows
+    - Ripple effect for N-Settings rows
     - Google Maps
+    - DeepL Translator
 
 - **Default Settings Adjustments**
     - Enabled N-Settings hidden features
