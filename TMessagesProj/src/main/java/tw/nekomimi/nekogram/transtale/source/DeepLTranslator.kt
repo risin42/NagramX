@@ -9,7 +9,8 @@ import tw.nekomimi.nekogram.transtale.Translator
 
 object DeepLTranslator : Translator {
 
-    private const val API_ENDPOINT = "https://api-free.deepl.com/v2/translate"
+    private const val OFFICIAL_ENDPOINT = "https://api-free.deepl.com/v2/translate"
+    private const val FALLBACK_ENDPOINT = "https://deeplx.gpu.nu/v2/translate"
 
     override suspend fun doTranslate(from: String, to: String, query: String): String {
 
@@ -25,18 +26,15 @@ object DeepLTranslator : Translator {
         }
 
         val requestBody = JSONObject().apply {
+            put("preserve_formatting", true)
             put("text", textArray)
             put("target_lang", to.uppercase())
         }.toString()
 
-        val response = HttpUtil.createPost(API_ENDPOINT)
-                .header("Authorization", "DeepL-Auth-Key $apiKey")
-                .header("Content-Type", "application/json")
-                .body(requestBody)
-                .execute()
-
-        if (response.status != 200) {
-            error("HTTP ${response.status} : ${response.body()}")
+        val response = try {
+            makeTranslateRequest(OFFICIAL_ENDPOINT, apiKey, requestBody)
+        } catch (e: Exception) {
+            makeTranslateRequest(FALLBACK_ENDPOINT, apiKey, requestBody)
         }
 
         val respObj = JSONObject(response.body())
@@ -45,5 +43,22 @@ object DeepLTranslator : Translator {
         if (respArr.length() == 0) error("Empty translation result")
 
         return respArr.getJSONObject(0).getString("text")
+    }
+
+    private fun makeTranslateRequest(endpoint: String, apiKey: String, requestBody: String): cn.hutool.http.HttpResponse {
+        val response = HttpUtil.createPost(endpoint)
+            .header("Authorization", "DeepL-Auth-Key $apiKey")
+            .header("Content-Type", "application/json")
+            .body(requestBody)
+            .execute()
+
+        if (response.status != 200) {
+            if (endpoint == OFFICIAL_ENDPOINT) {
+                throw Exception("Official DeepL API failed")
+            }
+            error("HTTP ${response.status} : ${response.body()}")
+        }
+
+        return response
     }
 }
