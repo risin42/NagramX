@@ -612,7 +612,7 @@ public class DownloadController extends BaseController implements NotificationCe
 
     public boolean canDownloadMedia(MessageObject messageObject) {
         if (messageObject.getDocument() != null) {
-            String documentName = messageObject.getDocument().file_name;
+            String documentName = messageObject.getDocumentName();
             if (StrUtil.isNotBlank(documentName)) {
                 if ((NekoConfig.disableAutoDownloadingWin32Executable.Bool() &&
                         documentName.toLowerCase().matches(".*\\.(cmd|bat|com|exe|lnk|msi|ps1|reg|vb|vbe|vbs|vbscript)")
@@ -679,6 +679,17 @@ public class DownloadController extends BaseController implements NotificationCe
         }
         if (messageObject.isHiddenSensitive())
             return 0;
+        if (messageObject.getDocument() != null) {
+            String documentName = messageObject.getDocumentName();
+            if (StrUtil.isNotBlank(documentName)) {
+                if ((NekoConfig.disableAutoDownloadingWin32Executable.Bool() &&
+                        documentName.toLowerCase().matches(".*\\.(cmd|bat|com|exe|lnk|msi|ps1|reg|vb|vbe|vbs|vbscript)")
+                    ) || (NekoConfig.disableAutoDownloadingArchive.Bool() &&
+                        documentName.toLowerCase().matches(".*\\.(apk|zip|7z|tar|gz|zst|iso|xz|lha|lzh)")
+                    )
+                ) return 0;
+            }
+        }
         return canDownloadMediaInternal(messageObject);
     }
 
