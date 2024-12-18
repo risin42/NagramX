@@ -26,6 +26,7 @@ https://t.me/NagramX
     - Ripple effect for N-Settings rows
     - Google Maps
     - DeepL Translator
+    - Disable auto download for exe and archive files
 
 - **Default Settings Adjustments**
     - Enabled N-Settings hidden features

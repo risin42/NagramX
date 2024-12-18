@@ -9,7 +9,7 @@
     <string name="DeleteKeepLocally">Keep locally</string>
     <string name="ClearMessageDatabase">Clear Message Database</string>
     <string name="ClearMessageDatabaseNotification">Message Database cleared</string>
-    <string name="CustomDeletedMark">Custom Mark for Deleted Message</string>
+    <string name="CustomDeletedMark">Custom Mark for Deleted Messages</string>
     <string name="HidePremiumSection">Hide Premium Section</string>
     <string name="HideHelpSection">Hide Help Section</string>
     <string name="ProviderLLMTranslator">AI Translator</string>
