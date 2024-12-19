@@ -231,4 +231,5 @@
     <string name="repeatConfirmText">本当に繰り返しますか？</string>
     <string name="ImportSettings">設定をインポート</string>
     <string name="ImportSettingsAlert">設定を上書きしますか？ 不明なソースから設定をインポートすると、PINが上書きされ、アプリがロックされる可能性があります。</string>
+    <string name="nekoXPaymentRemovedToast">決済機能は廃止されました。</string>
 </resources>

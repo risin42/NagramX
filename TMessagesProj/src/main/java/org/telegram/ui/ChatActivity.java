@@ -29720,7 +29720,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     if (response instanceof TLRPC.TL_payments_paymentReceiptStars) {
                         StarsIntroActivity.showTransactionSheet(getContext(), false, currentAccount, (TLRPC.TL_payments_paymentReceiptStars) response, resourceProvider);
                     } else if (response instanceof TLRPC.PaymentReceipt) {
-                        presentFragment(new PaymentFormActivity((TLRPC.PaymentReceipt) response));
                     }
                 }), ConnectionsManager.RequestFlagFailOnServerErrors);
                 return true;

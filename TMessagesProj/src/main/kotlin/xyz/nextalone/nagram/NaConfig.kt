@@ -639,7 +639,7 @@ object NaConfig {
         addConfig(
             "HidePremiumSection",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val hideHelpSection =
         addConfig(

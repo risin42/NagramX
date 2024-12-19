@@ -251,4 +251,5 @@
     <string name="doubleTapSendReaction">发送默认回应</string>
     <string name="doubleTapDisable">禁用</string>
     <string name="disableReactionsWhenSelecting">选择消息时隐藏回应菜单</string>
+    <string name="nekoXPaymentRemovedToast">支付功能已被移除。</string>
 </resources>

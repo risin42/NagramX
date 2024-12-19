@@ -17,6 +17,7 @@ https://t.me/NagramX
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```
     - Removed in-app updates
+    - Removed payment functionality
     - Removed channel follow pop-ups
     - Excluded API keys from cloud settings synchronization
     - Refined Japanese localization (N-Settings)

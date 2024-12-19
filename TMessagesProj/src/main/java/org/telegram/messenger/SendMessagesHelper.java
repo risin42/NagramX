@@ -67,7 +67,6 @@ import org.telegram.ui.Components.AlertsCreator;
 import org.telegram.ui.Components.AnimatedEmojiSpan;
 import org.telegram.ui.Components.AnimatedFileDrawable;
 import org.telegram.ui.LaunchActivity;
-import org.telegram.ui.PaymentFormActivity;
 import org.telegram.ui.Stars.StarsController;
 import org.telegram.ui.Stars.StarsIntroActivity;
 import org.telegram.ui.bots.BotWebViewSheet;
@@ -3289,21 +3288,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                         AlertsCreator.showOpenUrlAlert(parentFragment, button.url, false, true);
                     }
                 } else if (button instanceof TLRPC.TL_keyboardButtonBuy) {
-                    if (response instanceof TLRPC.TL_payments_paymentFormStars) {
-                        TLRPC.InputInvoice inputInvoice = ((TLRPC.TL_payments_getPaymentForm) request[0]).invoice;
-                        StarsController.getInstance(currentAccount).openPaymentForm(messageObject, inputInvoice, (TLRPC.TL_payments_paymentFormStars) response, () -> {
-                            waitingForCallback.remove(key);
-                            finalKeys.remove(key);
-                        }, status -> {});
-                    } else if (response instanceof TLRPC.PaymentForm) {
-                        final TLRPC.PaymentForm form = (TLRPC.PaymentForm) response;
-                        getMessagesController().putUsers(form.users, false);
-                        parentFragment.presentFragment(new PaymentFormActivity(form, messageObject, parentFragment));
-                    } else if (response instanceof TLRPC.TL_payments_paymentReceiptStars) {
-                        StarsIntroActivity.showTransactionSheet(LaunchActivity.instance != null ? LaunchActivity.instance : ApplicationLoader.applicationContext, false, currentAccount, (TLRPC.TL_payments_paymentReceiptStars) response, null);
-                    } else if (response instanceof TLRPC.PaymentReceipt) {
-                        parentFragment.presentFragment(new PaymentFormActivity((TLRPC.PaymentReceipt) response));
-                    }
+                    Toast.makeText(ApplicationLoader.applicationContext, R.string.nekoXPaymentRemovedToast, Toast.LENGTH_SHORT).show();
                 } else {
                     TLRPC.TL_messages_botCallbackAnswer res = (TLRPC.TL_messages_botCallbackAnswer) response;
                     if (!cacheFinal && res.cache_time != 0 && !button.requires_password) {

@@ -290,7 +290,6 @@ public class ApplicationLoader extends Application {
             ContactsController.getInstance(account).checkAppAccount();
             DownloadController.getInstance(account);
         });
-//        BillingController.getInstance().startConnection();
     }
 
     public ApplicationLoader() {
