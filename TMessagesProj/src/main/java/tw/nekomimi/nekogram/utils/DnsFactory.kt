@@ -116,7 +116,7 @@ object DnsFactory {
                                     throw CustomException("$provider not successful")
                                 }
 
-                                val result = Message(response.body!!.bytes())
+                                val result = Message(response.body.bytes())
                                 val rcode = result.header.rcode
                                 if (rcode != Rcode.NOERROR && rcode != Rcode.NXDOMAIN && rcode != Rcode.NXRRSET) {
                                     throw CustomException("$provider dns error")
@@ -208,7 +208,7 @@ object DnsFactory {
                                 throw CustomException("$provider not successful")
                             }
 
-                            val result = Message(response.body!!.bytes())
+                            val result = Message(response.body.bytes())
                             val rcode = result.header.rcode
                             if (rcode != Rcode.NOERROR && rcode != Rcode.NXDOMAIN && rcode != Rcode.NXRRSET) {
                                 throw CustomException("$provider dns error")
