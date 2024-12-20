@@ -152,19 +152,19 @@ object AlertUtil {
 
     }
 
-    fun showInput(ctx: Context, title: String, hint: String, onInput: (AlertDialog.Builder, String) -> String) = UIUtil.runOnUIThread(Runnable {
+    // fun showInput(ctx: Context, title: String, hint: String, onInput: (AlertDialog.Builder, String) -> String) = UIUtil.runOnUIThread(Runnable {
 
-        val builder = AlertDialog.Builder(ctx)
+    //     val builder = AlertDialog.Builder(ctx)
 
-        builder.setTitle(title)
+    //     builder.setTitle(title)
 
-        builder.setView(EditTextBoldCursor(ctx).apply {
+    //     builder.setView(EditTextBoldCursor(ctx).apply {
 
-            setHintText(hint)
+    //         setHintText(hint)
 
-        })
+    //     })
 
-    })
+    // })
 
     @JvmStatic
     @JvmOverloads
@@ -299,42 +299,42 @@ object AlertUtil {
 
     })
 
-    fun showTimePicker(ctx: Context, title: String, callback: (Long) -> Unit) {
+    // fun showTimePicker(ctx: Context, title: String, callback: (Long) -> Unit) {
 
-        ctx.setTheme(R.style.Theme_TMessages)
+    //     ctx.setTheme(R.style.Theme_TMessages)
 
-        val builder = AlertDialog.Builder(ctx)
+    //     val builder = AlertDialog.Builder(ctx)
 
-        builder.setTitle(title)
+    //     builder.setTitle(title)
 
-        builder.setView(LinearLayout(ctx).apply {
+    //     builder.setView(LinearLayout(ctx).apply {
 
-            orientation = LinearLayout.HORIZONTAL
+    //         orientation = LinearLayout.HORIZONTAL
 
-            addView(NumberPicker(ctx).apply {
+    //         addView(NumberPicker(ctx).apply {
 
-                minValue = 0
-                maxValue = 60
+    //             minValue = 0
+    //             maxValue = 60
 
-            }, LinearLayout.LayoutParams(-2, -2).apply {
+    //         }, LinearLayout.LayoutParams(-2, -2).apply {
 
-                weight = 1F
+    //             weight = 1F
 
-            })
+    //         })
 
-            addView(NumberPicker(ctx).apply {
+    //         addView(NumberPicker(ctx).apply {
 
-                minValue = 0
-                maxValue = 60
+    //             minValue = 0
+    //             maxValue = 60
 
-            }, LinearLayout.LayoutParams(-2, -2).apply {
+    //         }, LinearLayout.LayoutParams(-2, -2).apply {
 
-                weight = 1F
+    //             weight = 1F
 
-            })
+    //         })
 
-        })
+    //     })
 
-    }
+    // }
 
 }
