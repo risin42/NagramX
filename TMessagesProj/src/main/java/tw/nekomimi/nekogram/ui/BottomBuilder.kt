@@ -97,7 +97,7 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
     fun addCheckItem(text: String, value: Boolean, switch: Boolean = false, valueText: String? = null, listener: ((cell: TextCheckCell, isChecked: Boolean) -> Unit)?): TextCheckCell {
 
         val checkBoxCell = TextCheckCell(ctx, 21, !switch)
-        checkBoxCell.setBackgroundDrawable(Theme.getSelectorDrawable(false))
+        checkBoxCell.background = Theme.getSelectorDrawable(false)
         checkBoxCell.minimumHeight = AndroidUtilities.dp(50F)
 
         if (valueText == null) {
@@ -151,7 +151,7 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
     fun addRadioItem(text: String, value: Boolean, valueText: String? = null, listener: (cell: RadioButtonCell) -> Unit): RadioButtonCell {
 
         val checkBoxCell = RadioButtonCell(ctx, true)
-        checkBoxCell.setBackgroundDrawable(Theme.getSelectorDrawable(false))
+        checkBoxCell.background = Theme.getSelectorDrawable(false)
         checkBoxCell.minimumHeight = AndroidUtilities.dp(50F)
         rootView.addView(checkBoxCell, LayoutHelper.createLinear(-1, -2))
 
@@ -204,7 +204,7 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
             gravity = Gravity.CENTER
             isSingleLine = true
             ellipsize = TextUtils.TruncateAt.END
-            setBackgroundDrawable(Theme.createSelectorDrawable(Theme.getColor(Theme.key_dialogButtonSelector), 0))
+            background = Theme.createSelectorDrawable(Theme.getColor(Theme.key_dialogButtonSelector), 0)
             setPadding(AndroidUtilities.dp(18f), 0, AndroidUtilities.dp(18f), 0)
             setText(text)
             typeface = AndroidUtilities.getTypeface("fonts/rmedium.ttf")
@@ -250,7 +250,7 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
             hintText?.also { hint = it }
             isSingleLine = true
             isFocusable = true
-            setBackgroundDrawable(null)
+            background = null
 
             this@BottomBuilder.rootView.addView(this, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, -2, rtl, AndroidUtilities.dp(6F), 0, 0, 0))
         }
