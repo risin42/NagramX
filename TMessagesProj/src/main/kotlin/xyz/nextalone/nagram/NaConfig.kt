@@ -615,6 +615,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             1
         )
+    val disableBotOpenButton =
+        addConfig(
+            "DisableBotOpenButton",
+            ConfigItem.configTypeBool,
+            false
+    )
 
     // NagramX
     val enableSaveDeletedMessages =
