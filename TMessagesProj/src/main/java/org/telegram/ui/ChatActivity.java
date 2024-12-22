@@ -3450,6 +3450,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (chatActivity != null && chatActivity.getDialogId() == UserObject.VERIFY) {
                 return false;
             }
+            if (selectedView != null && selectedView.getMessageObject() != null && selectedView.getMessageObject().messageOwner != null && selectedView.getMessageObject().messageOwner.ayuDeleted) return false;
             final boolean noforwards = (
                 chatActivity != null && chatActivity.getMessagesController().isChatNoForwards(chatActivity.getCurrentChat()) ||
                 selectedView != null && selectedView.getMessageObject() != null && selectedView.getMessageObject().messageOwner != null && selectedView.getMessageObject().messageOwner.noforwards
@@ -9980,14 +9981,17 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
 
         actionModeOtherItem.addSubItem(nkbtn_translate, R.drawable.ic_translate, LocaleController.getString("Translate", R.string.Translate));
-        if (NekoConfig.showShareMessages.Bool())
+        if (NekoConfig.showShareMessages.Bool()) {
             actionModeOtherItem.addSubItem(nkbtn_sharemessage, R.drawable.msg_shareout, LocaleController.getString("ShareMessages", R.string.ShareMessages));
+        }
         actionModeOtherItem.addSubItem(nkbtn_unpin, R.drawable.msg_unpin, LocaleController.getString("UnpinMessage", R.string.UnpinMessage));
-        if (!noforward)
+        if (!noforward) {
             actionModeOtherItem.addSubItem(nkbtn_savemessage, R.drawable.menu_saved, LocaleController.getString("AddToSavedMessages", R.string.AddToSavedMessages));
-        if (NekoConfig.showRepeat.Bool() && !noforward)
+        }
+        if (!noforward && NekoConfig.showRepeat.Bool()) {
             actionModeOtherItem.addSubItem(nkbtn_repeat, R.drawable.msg_repeat, LocaleController.getString("Repeat", R.string.Repeat));
-        if (NaConfig.INSTANCE.getShowRepeatAsCopy().Bool() || (NaConfig.INSTANCE.getAutoReplaceRepeat().Bool() && noforward)) {
+        }
+        if (!noforward && NaConfig.INSTANCE.getShowRepeatAsCopy().Bool()) {
             actionModeOtherItem.addSubItem(nkbtn_repeatascopy, R.drawable.msg_repeat, LocaleController.getString("RepeatAsCopy", R.string.RepeatAsCopy));
         }
         if (NekoConfig.showMessageHide.Bool()) {
@@ -12097,6 +12101,21 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         return false;
     }
 
+    private boolean hasSelectedAyuDeletedMessage() {
+
+        try {
+            for (int i = 0; i < selectedMessagesIds.length; ++i) {
+                for (int j = 0; j < selectedMessagesIds[i].size(); ++j) {
+                    MessageObject msg = selectedMessagesIds[i].valueAt(j);
+                    if (msg != null && msg.messageOwner != null && msg.messageOwner.ayuDeleted) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception ignore) {}
+        return false;
+    }
+
     private float pagedownLoadingT;
     private ValueAnimator pagedownAnimator;
     private void setPagedownLoading(boolean loading, boolean animated) {
@@ -13251,7 +13270,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private void showTextSelectionHint(MessageObject messageObject) {
-        if (getParentActivity() == null || (getMessagesController().isChatNoForwardsWithOverride(messageObject.getChatId()) || (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.noforwards && !NekoXConfig.disableFlagSecure))) {
+        if (getParentActivity() == null || (getMessagesController().isChatNoForwardsWithOverride(messageObject.getChatId()) || (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.noforwards && !NekoXConfig.disableFlagSecure && messageObject.messageOwner.ayuDeleted))) {
             return;
         }
         CharSequence text;
@@ -18599,14 +18618,18 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 ActionBarMenuSubItem saveMessageItem = null;
                 ActionBarMenuSubItem forwardNoQuoteItem = null;
                 ActionBarMenuSubItem starItem = null;
+                ActionBarMenuSubItem repeatItem = null;
+                ActionBarMenuSubItem RepeatAsCopyItem = null;
                 if (actionModeOtherItem != null) {
                     saveToDownloadsItem = actionModeOtherItem.getSubItem(save_to);
                     saveMessageItem = actionModeOtherItem.getSubItem(nkbtn_savemessage);
                     forwardNoQuoteItem = actionModeOtherItem.getSubItem(nkbtn_forward_noquote);
                     starItem = actionModeOtherItem.getSubItem(star);
+                    repeatItem = actionModeOtherItem.getSubItem(nkbtn_repeat);
+                    RepeatAsCopyItem = actionModeOtherItem.getSubItem(nkbtn_repeatascopy);
                 }
 
-                boolean noforwards = getMessagesController().isChatNoForwards(currentChat) || hasSelectedNoforwardsMessage();
+                boolean noforwards = getMessagesController().isChatNoForwards(currentChat) || hasSelectedNoforwardsMessage() || hasSelectedAyuDeletedMessage();
                 boolean canForward = chatMode != MODE_SCHEDULED && cantForwardMessagesCount == 0 && !noforwards;
 
                 if (forwardNoQuoteItem != null) {
@@ -18614,6 +18637,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
                 if (saveMessageItem != null) {
                     saveMessageItem.setVisibility(canForward);
+                }
+                if (repeatItem != null) {
+                    repeatItem.setVisibility(canForward);
+                }
+                if (RepeatAsCopyItem != null) {
+                    RepeatAsCopyItem.setVisibility(canForward);
                 }
 
                 if (NekoConfig.showBottomActionsWhenSelecting.Bool())
@@ -18692,7 +18721,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
 
                 if (replyItem != null) {
-                    boolean showReplyItem = chatMode != MODE_SCHEDULED && ChatObject.canSendMessages(currentChat) && selectedCount == 1;
+                    boolean showReplyItem = chatMode != MODE_SCHEDULED && ChatObject.canSendMessages(currentChat) && selectedCount == 1 && !hasSelectedAyuDeletedMessage();
                     boolean doShrinkActionBarItems = isActionBarTooNarrow && newCopyVisible == View.VISIBLE && canForward && canEditMessagesCount == 1 && selectedCount == 1;
                     replyItem.setVisibility(!doShrinkActionBarItems && showReplyItem);
                 }
@@ -29854,10 +29883,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         // there's a chance Telegram will clean "Saved messages"
         // btw, thanks @AniMyaaa for testing on herself lol
         if (isAyuDeleted) {
-            //            allowChatActions = false;
+                        allowChatActions = false;
                         allowPin = false;
                         allowUnpin = false;
                         allowEdit = false;
+                        noforwards = true;
                     }
                     // --- AyuGram hack
 
@@ -30034,7 +30064,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 //                            options.add(OPTION_EDIT_PRICE);
 //                            icons.add(R.drawable.menu_feature_paid);
 //                        }
-                        if (NekoConfig.showReport.Bool()) {
+                        if (!isAyuDeleted && NekoConfig.showReport.Bool()) {
                             if (selectedObject.contentType == 0 && !selectedObject.isMediaEmptyWebpage() && selectedObject.getId() > 0 && !selectedObject.isOut() && (currentChat != null || currentUser != null && currentUser.bot)) {
                                 items.add(LocaleController.getString(R.string.ReportChat));
                                 options.add(OPTION_REPORT_CHAT);
@@ -30083,7 +30113,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 icons.add(R.drawable.msg_fave);
                             }
                         }
-                        if ((allowChatActions || !noforwardsOrPaidMedia && ChatObject.isChannelAndNotMegaGroup(currentChat) && !selectedObject.isSponsored() && selectedObject.contentType == 0 && chatMode == MODE_DEFAULT) && !isInsideContainer) {
+                        if ((allowChatActions || !noforwardsOrPaidMedia && ChatObject.isChannelAndNotMegaGroup(currentChat) && !selectedObject.isSponsored() && selectedObject.contentType == 0 && chatMode == MODE_DEFAULT) && !isInsideContainer && !isAyuDeleted) {
                             items.add(LocaleController.getString(R.string.Reply));
                             options.add(OPTION_REPLY);
                             icons.add(R.drawable.menu_reply);
@@ -30106,7 +30136,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             icons.add(R.drawable.msg_viewreplies);
                             items.add(LocaleController.getString("ViewInChat", R.string.ViewInChat));
                         }
-                        if (!selectedObject.isSponsored() && chatMode != MODE_SCHEDULED && ChatObject.isChannel(currentChat) && selectedObject.getDialogId() != mergeDialogId) {
+                        if (!selectedObject.isSponsored() && chatMode != MODE_SCHEDULED && ChatObject.isChannel(currentChat) && selectedObject.getDialogId() != mergeDialogId && !isAyuDeleted) {
                             items.add(LocaleController.getString(R.string.CopyLink));
                             options.add(OPTION_COPY_LINK);
                             icons.add(R.drawable.msg_link);
@@ -30334,8 +30364,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 icons.add(R.drawable.msg_unfave);
                             }
                         }
-                        boolean noforward = getMessagesController().isChatNoForwards(currentChat);
-                        boolean noforwardOverride = noforward && !NekoXConfig.disableFlagSecure && !NaConfig.INSTANCE.getForceCopy().Bool();
                         if (!selectedObject.isSponsored() && chatMode != MODE_QUICK_REPLIES && chatMode != MODE_SCHEDULED && (!selectedObject.needDrawBluredPreview() || selectedObject.hasExtendedMediaPreview()) &&
                                 !selectedObject.isLiveLocation() && selectedObject.type != MessageObject.TYPE_PHONE_CALL && !noforwards &&
                                 selectedObject.type != MessageObject.TYPE_GIFT_PREMIUM && selectedObject.type != MessageObject.TYPE_GIFT_PREMIUM_CHANNEL && selectedObject.type != MessageObject.TYPE_SUGGEST_PHOTO && !selectedObject.isWallpaperAction()
@@ -30345,7 +30373,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             icons.add(R.drawable.msg_forward);
                         }
                         if (chatMode != MODE_SCHEDULED && !selectedObject.needDrawBluredPreview() && !selectedObject.isLiveLocation() && selectedObject.type != 16) {
-                            if (!noforward && NaConfig.INSTANCE.getShowNoQuoteForward().Bool()) {
+                            if (!noforwards && NaConfig.INSTANCE.getShowNoQuoteForward().Bool()) {
                                 items.add(LocaleController.getString("NoQuoteForward", R.string.NoQuoteForward));
                                 options.add(nkbtn_forward_noquote);
                                 icons.add(R.drawable.msg_forward_noquote);
@@ -30358,20 +30386,19 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 icons.add(R.drawable.msg_calendar2);
                             }
                             if (!UserObject.isUserSelf(currentUser) && NekoConfig.showAddToSavedMessages.Bool()) {
-                                if (!noforwardOverride) {
+                                if (!noforwards) {
                                     items.add(LocaleController.getString("AddToSavedMessages", R.string.AddToSavedMessages));
                                     options.add(nkbtn_savemessage);
                                     icons.add(R.drawable.msg_saved);
                                 }
                             }
-                            boolean allowRepeat = currentUser != null
-                                    || (currentChat != null && ChatObject.canSendMessages(currentChat));
-                            if (allowRepeat && NekoConfig.showRepeat.Bool() && !noforward) {
+                            boolean allowRepeat = currentUser != null || (currentChat != null && ChatObject.canSendMessages(currentChat));
+                            if (allowRepeat && !noforwards && NekoConfig.showRepeat.Bool()) {
                                     items.add(LocaleController.getString("Repeat", R.string.Repeat));
                                     options.add(nkbtn_repeat);
                                     icons.add(R.drawable.msg_repeat);
                             }
-                            if (allowRepeat && (NaConfig.INSTANCE.getShowRepeatAsCopy().Bool() || (NaConfig.INSTANCE.getAutoReplaceRepeat().Bool() && noforward))){
+                            if (allowRepeat && !isAyuDeleted && (NaConfig.INSTANCE.getShowRepeatAsCopy().Bool() || (NaConfig.INSTANCE.getAutoReplaceRepeat().Bool() && noforwards))){
                                 items.add(LocaleController.getString("RepeatAsCopy", R.string.RepeatAsCopy));
                                 options.add(nkbtn_repeatascopy);
                                 icons.add(R.drawable.msg_repeat);
@@ -30485,7 +30512,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 items.add(LocaleController.getString(R.string.BlockContact));
                                 options.add(OPTION_REPORT_CHAT);
                                 icons.add(R.drawable.msg_block2);
-                            } else if (NekoConfig.showReport.Bool()) {
+                            } else if (!isAyuDeleted && NekoConfig.showReport.Bool()) {
                                 items.add(LocaleController.getString(R.string.ReportChat));
                                 options.add(OPTION_REPORT_CHAT);
                                 icons.add(R.drawable.msg_report);
@@ -31639,7 +31666,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
 
-                boolean showNoForwards = (getMessagesController().isChatNoForwards(currentChat) || message.messageOwner.noforwards && currentUser != null && currentUser.bot) && message.messageOwner.action == null && message.isSent() && !message.isEditing() && chatMode != MODE_SCHEDULED && chatMode != MODE_SAVED && getDialogId() != UserObject.VERIFY;
+                boolean showNoForwards = (getMessagesController().isChatNoForwards(currentChat) || message.messageOwner.noforwards && currentUser != null && currentUser.bot) && message.messageOwner.action == null && message.isSent() && !message.isEditing() && chatMode != MODE_SCHEDULED && chatMode != MODE_SAVED && getDialogId() != UserObject.VERIFY && message.messageOwner.ayuDeleted;
                 scrimPopupContainerLayout.addView(popupLayout, LayoutHelper.createLinearRelatively(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT, isReactionsAvailable ? 16 : 0, 0, isReactionsAvailable ? 36 : 0, 0));
                 scrimPopupContainerLayout.setPopupWindowLayout(popupLayout);
                 if (showNoForwards) {
