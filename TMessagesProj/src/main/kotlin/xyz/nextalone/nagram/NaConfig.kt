@@ -701,6 +701,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val hideShareButtonInChannel =
+        addConfig(
+            "HideShareButtonInChannel",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     private fun addConfig(
         k: String,

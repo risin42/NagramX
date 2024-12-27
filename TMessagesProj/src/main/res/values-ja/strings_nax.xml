@@ -25,4 +25,5 @@
     <string name="EnableSeparateArticleTranslator">アーティクル翻訳プロバイダで別のプロバイダを使用</string>
     <string name="DisableCrashlyticsCollection">Firebase Crashlytics クラッシュレポートを無効化</string>
     <string name="ShowStickersRowToplevel">トップレベルにステッカー設定を表示</string>
+    <string name="HideShareButtonInChannel">チャンネルで共有ボタンを非表示</string>
 </resources>

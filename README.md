@@ -13,6 +13,7 @@ https://t.me/NagramX
     - Hide the Premium and Help sections
     - Avoids requesting camera permission when selecting images
     - Show Stickers row in Top-Level Settings
+    - Hide Share Button in Channels
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```

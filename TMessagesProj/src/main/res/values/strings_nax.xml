@@ -27,4 +27,5 @@
     <string name="EnableSeparateArticleTranslator">Use a different provider for Article translation</string>
     <string name="DisableCrashlyticsCollection">Disable Firebase Crashlytics</string>
     <string name="ShowStickersRowToplevel">Show Stickers in top-level settings</string>
+    <string name="HideShareButtonInChannel">Hide Share Button in Channels</string>
 </resources>

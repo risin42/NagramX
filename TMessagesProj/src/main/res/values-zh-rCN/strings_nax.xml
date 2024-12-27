@@ -25,4 +25,5 @@
     <string name="EnableSeparateArticleTranslator">单独设置文章翻译源</string>
     <string name="DisableCrashlyticsCollection">禁用 Firebase Crashlytics 崩溃报告</string>
     <string name="ShowStickersRowToplevel">在顶层设置中显示贴纸行</string>
+    <string name="HideShareButtonInChannel">在频道中隐藏分享按钮</string>
 </resources>
