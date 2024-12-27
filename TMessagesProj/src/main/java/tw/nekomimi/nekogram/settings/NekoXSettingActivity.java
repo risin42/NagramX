@@ -35,7 +35,7 @@ import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
-import tw.nekomimi.nekogram.utils.LocaleUtil;
+// import tw.nekomimi.nekogram.utils.LocaleUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
 import tw.nekomimi.nekogram.utils.UIUtil;
 import tw.nekomimi.nekogram.utils.ZipUtil;
@@ -54,7 +54,7 @@ public class NekoXSettingActivity extends BaseFragment {
     private int disableScreenshotDetectionRow;
     private int disableStatusUpdateRow;
 
-    private int fetchAndExportLangRow;
+    // private int fetchAndExportLangRow;
 
     @Override
     public boolean onFragmentCreate() {
@@ -101,9 +101,9 @@ public class NekoXSettingActivity extends BaseFragment {
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
         listView.setOnItemClickListener((view, position, x, y) -> {
 
-            if (position == fetchAndExportLangRow) {
-                fetchAndExportLang();
-            }
+            // if (position == fetchAndExportLangRow) {
+            //     fetchAndExportLang();
+            // }
 
             if (position == enableRow) {
                 NekoXConfig.toggleDeveloperMode();
@@ -149,14 +149,14 @@ public class NekoXSettingActivity extends BaseFragment {
         disableScreenshotDetectionRow = rowCount++;
         disableStatusUpdateRow = rowCount++;
 
-        fetchAndExportLangRow = rowCount++;
+        // fetchAndExportLangRow = rowCount++;
 
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
     }
 
-    public void fetchAndExportLang() {
+    /* public void fetchAndExportLang() {
 
         AlertDialog pro = new AlertDialog(getParentActivity(), 3);
 
@@ -202,7 +202,7 @@ public class NekoXSettingActivity extends BaseFragment {
 
         });
 
-    }
+    } */
 
     @Override
     public ArrayList<ThemeDescription> getThemeDescriptions() {
@@ -299,9 +299,9 @@ public class NekoXSettingActivity extends BaseFragment {
                     if (!NekoXConfig.developerMode) {
                         textCell.setEnabled(false);
                     }
-                    if (position == fetchAndExportLangRow) {
-                        textCell.setText("Export Builtin Languages", true);
-                    }
+                    // if (position == fetchAndExportLangRow) {
+                    //     textCell.setText("Export Builtin Languages", true);
+                    // }
                 }
 
             }
@@ -350,8 +350,8 @@ public class NekoXSettingActivity extends BaseFragment {
         public int getItemViewType(int position) {
             if (position == developerSettingsRow) {
                 return 4;
-            } else if (position == fetchAndExportLangRow) {
-                return 2;
+            // } else if (position == fetchAndExportLangRow) {
+            //     return 2;
             }
             return 3;
         }
