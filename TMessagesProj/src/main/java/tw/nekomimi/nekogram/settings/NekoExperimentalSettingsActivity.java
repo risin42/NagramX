@@ -368,6 +368,8 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 act.startActivityFromChild(act, intent, INTENT_PICK_CUSTOM_EMOJI_PACK);
             } else if (key.equals(NekoConfig.localeToDBC.getKey())) {
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+            } else if (key.equals(NaConfig.INSTANCE.getDisableFlagSecure().getKey())) {
+                tooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
             }
         };
 
