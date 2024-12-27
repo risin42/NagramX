@@ -65,6 +65,7 @@ object LocaleUtil {
         val htmlParsed: Spannable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             SpannableString(Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY))
         } else {
+            @Suppress("DEPRECATION")
             SpannableString(Html.fromHtml(text))
         }
 

@@ -105,6 +105,7 @@ object MessageHelper {
                     if (Build.VERSION.SDK_INT >= 30) {
                         image.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 100, stream)
                     } else {
+                        @Suppress("DEPRECATION")
                         image.compress(Bitmap.CompressFormat.WEBP, 100, stream)
                     }
                     stream.close()

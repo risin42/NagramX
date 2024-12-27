@@ -22,6 +22,7 @@ object VibrateUtil {
                     ApplicationLoader.applicationContext.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
                 vibratorManager.defaultVibrator;
             } else {
+                @Suppress("DEPRECATION")
                 ApplicationLoader.applicationContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             }
         }
@@ -43,11 +44,12 @@ object VibrateUtil {
                     vibe = VibrationEffect.createOneShot(time, VibrationEffect.DEFAULT_AMPLITUDE)
                 }
                 vibrator.cancel()
-                vibrator.vibrate(vibe, null)
+                vibrator.vibrate(vibe)
             }
         } else {
             runCatching {
                 vibrator.cancel()
+                @Suppress("DEPRECATION")
                 vibrator.vibrate(time)
             }
         }
@@ -71,11 +73,12 @@ object VibrateUtil {
             runCatching {
                 val vibe = VibrationEffect.createWaveform(longs, repeat)
                 vibrator.cancel()
-                vibrator.vibrate(vibe, null)
+                vibrator.vibrate(vibe)
             }
         } else {
             runCatching {
                 vibrator.cancel()
+                @Suppress("DEPRECATION")
                 vibrator.vibrate(longs, repeat)
             }
         }

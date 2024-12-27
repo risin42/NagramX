@@ -103,7 +103,8 @@ object FileUtil {
     }
 
     @JvmStatic
-    @Suppress("DEPRECATION") val abi by lazy {
+    @Suppress("DEPRECATION")
+    val abi by lazy {
 
         val libDirs = mutableListOf<String>()
 
@@ -168,6 +169,7 @@ object FileUtil {
     }
 
     @JvmStatic
+    @Suppress("DEPRECATION")
     fun extLib(name: String): File {
 
         val execFile = File(ApplicationLoader.applicationContext.applicationInfo.nativeLibraryDir, "lib$name.so")
