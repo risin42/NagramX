@@ -198,12 +198,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    val autoReplaceRepeat =
-        addConfig(
-            "AutoReplaceRepeat",
-            ConfigItem.configTypeBool,
-            false
-        )
     val autoInsertGIFCaption =
         addConfig(
             "AutoInsertGIFCaption",

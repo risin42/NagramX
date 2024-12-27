@@ -116,7 +116,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
 //                    LocaleController.getString("MapPreviewProviderNobody", R.string.MapPreviewProviderNobody)
 //            }, null));
     private final AbstractConfigCell doubleTapActionRow = cellGroup.appendCell(new ConfigCellCustom("DoubleTapAction", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
-    private final AbstractConfigCell autoReplaceRepeatRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getAutoReplaceRepeat()));
     private final AbstractConfigCell textStyleRow = cellGroup.appendCell(new ConfigCellSelectBox("TextStyle", null, null, this::showTextStyleAlert));
     private final AbstractConfigCell disableZalgoSymbolsRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getZalgoFilter(), LocaleController.getString("ZalgoFilterNotice", R.string.ZalgoFilterNotice)));
     private final AbstractConfigCell quickToggleAnonymousRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getQuickToggleAnonymous(), LocaleController.getString("QuickToggleAnonymousNotice", R.string.QuickToggleAnonymousNotice)));
@@ -208,11 +207,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private UndoView tooltip;
 
     public NekoChatSettingsActivity() {
-        if (!NekoConfig.showRepeat.Bool() || NaConfig.INSTANCE.getShowRepeatAsCopy().Bool()){
-            cellGroup.rows.remove(autoReplaceRepeatRow);
-            NaConfig.INSTANCE.getAutoReplaceRepeat().setConfigBool(false);
-        }
-
         addRowsToMap(cellGroup);
     }
 

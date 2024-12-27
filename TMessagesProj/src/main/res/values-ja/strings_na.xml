@@ -30,7 +30,6 @@
     <string name="ShowPremiumStarInChat">チャットにプレミアムスターを表示</string>
     <string name="ShowPremiumAvatarAnimation">プレミアムアバターアニメーションを表示</string>
     <string name="AlwaysSaveChatOffset">常にチャットオフセットを保存</string>
-    <string name="AutoReplaceRepeat">引用なしでリピートに自動置換</string>
     <string name="AppIconGoogle">Google</string>
     <string name="AppIconColorful">カラフル</string>
     <string name="AppIconDarkGreen">ダークグリーン</string>
