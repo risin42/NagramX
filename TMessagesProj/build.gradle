@@ -102,7 +102,7 @@ android {
         buildConfigField "int", "APP_ID", appId
         buildConfigField "String", "APP_HASH", "\"" + appHash + "\""
 
-        resValue 'string', 'DEEPL_API_KEY', System.getenv("DEEPL_API_KEY")
+        resValue 'string', 'DEEPL_API_KEY', (System.getenv("DEEPL_API_KEY") ?: "")
 
         externalNativeBuild {
             cmake {
