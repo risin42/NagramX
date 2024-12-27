@@ -4843,6 +4843,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         slidingView = (ChatMessageCell) view;
                         MessageObject message = slidingView.getMessageObject();
                         boolean allowReplyOnOpenTopic = canSendMessageToTopic(message);
+                        if (message != null && message.messageOwner != null && message.messageOwner.ayuDeleted) {
+                            slidingView.setSlidingOffset(0);
+                            slidingView = null;
+                            return;
+                        }
                         if (
                                 chatMode != 0 && chatMode != MODE_QUICK_REPLIES && (chatMode != MODE_SAVED || threadMessageId != getUserConfig().getClientUserId()) ||
                                 threadMessageObjects != null && threadMessageObjects.contains(message) ||
