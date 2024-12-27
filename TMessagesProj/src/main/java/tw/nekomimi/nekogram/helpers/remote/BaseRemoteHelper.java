@@ -19,8 +19,8 @@ import org.telegram.tgnet.TLRPC;
 import java.util.ArrayList;
 
 public abstract class BaseRemoteHelper {
-    public static final int CHANNEL_METADATA_ID = 1471208507;
-    public static final String CHANNEL_METADATA_NAME = "nagram_remote_metadata";
+    public static final long CHANNEL_METADATA_ID = 2477822904L;
+    public static final String CHANNEL_METADATA_NAME = "nagramx_remote_metadata";
 
     protected static final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nekoremoteconfig", Activity.MODE_PRIVATE);
 
