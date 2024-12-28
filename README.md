@@ -2,10 +2,15 @@
 
 Make Nagram Great Again :)
 
-## CI Channel:
-https://t.me/NagramX
+## Download
 
-## Differences from the Nagram:
+You can grab the latest versions in these two ways:
+
+*   **CI Channel:** [https://t.me/NagramX](https://t.me/NagramX)
+*   **GitHub Actions Artifacts:**  You can also download artifacts from the [GitHub Actions](https://github.com/risin42/NagramX/actions) page
+
+
+## NagramX Changes
 - **Additional Features**
     - Save Deleted Messages
     - Save Edits History
@@ -14,6 +19,7 @@ https://t.me/NagramX
     - Avoids requesting camera permission when selecting images
     - Show Stickers row in Top-Level Settings
     - Hide Share Button in Channels
+    - Clear Cloud Settings data
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```
@@ -38,9 +44,10 @@ https://t.me/NagramX
     - Reverted default font size and bubble radius to official Telegram defaults
     - Other minor adjustments
 
-## Acknowledgements
+## Thanks to
 
-Thanks to [AyuGram4A](https://github.com/AyuGram/AyuGram4A) and [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram)
+- [AyuGram4A](https://github.com/AyuGram/AyuGram4A)
+- [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram)
 
 # Nagram
 
