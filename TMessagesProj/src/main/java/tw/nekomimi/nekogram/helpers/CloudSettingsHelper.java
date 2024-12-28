@@ -160,6 +160,36 @@ public class CloudSettingsHelper {
             });
         });
 
+        ButtonWithCounterView deleteButton = new ButtonWithCounterView(context, false, resourcesProvider);
+        deleteButton.setText(LocaleController.getString(R.string.DeleteCloudBackup), false);
+        deleteButton.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
+        linearLayout.addView(deleteButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 16, 8, 16, 0));
+        deleteButton.setOnClickListener(view -> {
+            syncedDate.setText(AndroidUtilities.replaceTags(LocaleController.formatString(R.string.CloudConfigSyncing)));
+            deleteCloudBackup((success, error) -> {
+                syncedDate.setText(formatSyncedDate());
+                if (!success) {
+                    if (error == null) {
+                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider)
+                                .createSimpleBulletin(R.raw.chats_infotip, 
+                                        LocaleController.getString(R.string.DeleteCloudBackupFailed))
+                                .show();
+                    } else {
+                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider)
+                                .createSimpleBulletin(R.raw.chats_infotip,
+                                        LocaleController.getString(R.string.DeleteCloudBackupFailed),
+                                        error)
+                                .show();
+                    }
+                } else {
+                    BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider)
+                            .createSimpleBulletin(R.raw.chats_infotip,
+                                    LocaleController.getString(R.string.DeleteCloudBackupSuccess))
+                            .show();
+                }
+            });
+        });
+
         MiniCheckBoxCell autoSyncCheck = new MiniCheckBoxCell(context, 8, resourcesProvider);
         autoSyncCheck.setTextAndValueAndCheck(LocaleController.getString("CloudConfigAutoSync", R.string.CloudConfigAutoSync), LocaleController.getString("CloudConfigAutoSyncDesc", R.string.CloudConfigAutoSyncDesc), autoSync);
         autoSyncCheck.setOnClickListener(view13 -> {
@@ -250,6 +280,42 @@ public class CloudSettingsHelper {
                                 FileLog.e(e);
                                 callback.run(false, e.getLocalizedMessage());
                             }
+                        }
+                    });
+                } catch (Exception e) {
+                    FileLog.e(e);
+                    callback.run(false, e.getLocalizedMessage());
+                }
+            } else {
+                callback.run(false, error);
+            }
+        });
+    }
+
+    private void deleteCloudBackup(Utilities.Callback2<Boolean, String> callback) {
+        // Check if cloud data exists
+        if (cloudSyncedDate.get(UserConfig.selectedAccount, -1L) <= 0) {
+            callback.run(false, LocaleController.getString("CloudConfigNoBackupToDelete", R.string.CloudConfigNoBackupToDelete));
+            return;
+        }
+
+        getCloudStorageHelper().getItem("neko_settings", (res, error) -> {
+            if (error == null) {
+                try {
+                    int numChunks = Integer.parseInt(res);
+                    String[] keys = new String[numChunks + 2]; // +2 for neko_settings and neko_settings_updated_at
+                    for (int i = 0; i < numChunks; i++) {
+                        keys[i] = "neko_settings_" + i;
+                    }
+                    keys[numChunks] = "neko_settings";
+                    keys[numChunks + 1] = "neko_settings_updated_at";
+                    
+                    getCloudStorageHelper().removeItems(keys, (res_, error_) -> {
+                        if (error_ == null) {
+                            cloudSyncedDate.put(UserConfig.selectedAccount, -1L);
+                            callback.run(true, null);
+                        } else {
+                            callback.run(false, error_);
                         }
                     });
                 } catch (Exception e) {

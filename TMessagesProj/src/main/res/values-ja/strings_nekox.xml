@@ -45,7 +45,7 @@
     <string name="GoogleCloudTransKey">Google Cloud Translate Key</string>
     <string name="GoogleCloudTransKeyNotice">Google Cloud Trans Key を設定すると、翻訳時に偽のフォームをウェブバージョンに送信する代わりにクラウド翻訳APIが呼び出されます（高速で安定しており、トラフィックの節約になります）</string>
     <string name="TransToLang">翻訳目標言語</string>
-    <string name="TransInputToLang">翻訳起点言語</string>
+    <string name="TransInputToLang">入力翻訳言語</string>
     <string name="More">もっと見る</string>
     <string name="NekoXUpdatesChannel">NekoX アップデートチャンネル</string>
     <string name="ShowIdAndDc">プロファイルに ID / DC を表示</string>
@@ -231,5 +231,6 @@
     <string name="repeatConfirmText">本当に繰り返しますか？</string>
     <string name="ImportSettings">設定をインポート</string>
     <string name="ImportSettingsAlert">設定を上書きしますか？ 不明なソースから設定をインポートすると、PINが上書きされ、アプリがロックされる可能性があります。</string>
+    <string name="BackupSettings">設定をバックアップ</string>
     <string name="nekoXPaymentRemovedToast">決済機能は廃止されました。</string>
 </resources>
