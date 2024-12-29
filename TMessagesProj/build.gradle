@@ -230,6 +230,9 @@ android {
         if (disableCMakeRelWithDebInfo && task.name.contains("CMakeRelWithDebInfo")) {
             enabled = false
         }
+        if (task.name.contains("uploadCrashlyticsMappingFile")) {
+            enabled = false
+        }
     }
 
     applicationVariants.configureEach { variant ->

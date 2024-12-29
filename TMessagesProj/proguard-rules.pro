@@ -20,10 +20,6 @@
 -keep class org.telegram.tgnet.NativeByteBuffer { *; }
 -keep class org.telegram.tgnet.RequestTimeDelegate { *; }
 -keep class org.telegram.tgnet.RequestDelegate { *; }
--keep class org.telegram.tgnet.QuickAckDelegate { *; }
--keep class org.telegram.tgnet.WriteToSocketDelegate { *; }
-
-# -keep class io.github.trojan_gfw.** { *; }
 
 -dontwarn com.coremedia.**
 -dontwarn org.telegram.**
@@ -64,8 +60,8 @@
     java.lang.Object readResolve();
 }
 
-## https://developers.google.com/ml-kit/known-issues#android_issues
-#-keep class com.google.mlkit.nl.languageid.internal.LanguageIdentificationJni { *; }
+# https://developers.google.com/ml-kit/known-issues#android_issues
+# -keep class com.google.mlkit.nl.languageid.internal.LanguageIdentificationJni { *; }
 
 # Constant folding for resource integers may mean that a resource passed to this method appears to be unused. Keep the method to prevent this from happening.
 -keep class com.google.android.exoplayer2.upstream.RawResourceDataSource {
@@ -140,6 +136,7 @@
 -dontwarn javax.annotation.**
 
 # Use -keep to explicitly keep any other classes shrinking would remove
+# -dontoptimize
 -dontobfuscate
 
 # https://github.com/osmdroid/osmdroid/issues/633
