@@ -173,54 +173,67 @@ interface Translator {
                 full: Boolean = false,
                 callback: (Locale) -> Unit
         ) {
-
             val builder = PopupBuilder(anchor)
 
-            var locales =
-                    (if (full) LocaleUtils.availableLocaleList().filter { it.variant.isBlank() }
-                            else
-                                    LocaleController.getInstance()
-                                            .languages
-                                            .map { it.pluralLangCode }
-                                            .toSet()
-                                            .filter { !it.lowercase().contains("duang") }
-                                            .map { it.code2Locale })
-                            .toTypedArray()
-
-            val currLocale = LocaleController.getInstance().currentLocale
-
-            for (i in locales.indices) {
-
-                val defLang = if (!input) currLocale else Locale.ENGLISH
-
-                if (locales[i] == defLang) {
-
-                    locales = ArrayUtil.remove(locales, i)
-                    locales = ArrayUtil.insert(locales, 0, defLang)
-
-                    break
-                }
+            // Get built-in language list
+            var locales: MutableList<Locale> = if (full) {
+                LocaleUtils.availableLocaleList()
+                    .filter { it.variant.isBlank() }
+                    .toMutableList()
+            } else {
+                LocaleController.getInstance()
+                    .languages
+                    .map { it.pluralLangCode }
+                    .toSet()
+                    .filter { !it.lowercase().contains("duang") }
+                    .map { it.code2Locale }
+                    .toMutableList()
             }
 
+            val firstLocale = if (!input) {
+                LocaleController.getInstance().currentLocale
+            } else {
+                Locale.ENGLISH
+            }
+
+            locales.remove(firstLocale)
+            locales.add(0, firstLocale)
+
+            // Get preferred languages and insert after first position
+            val preferredLocales = NaConfig.preferredTranslateTargetLangList
+                    .mapNotNull { lang ->
+                        try {
+                            lang.code2Locale
+                        } catch (e: Exception) {
+                            null
+                        }
+                    }
+
+            if (preferredLocales.isNotEmpty()) {
+                // Remove existing preferred languages to avoid duplicates
+                locales.removeAll(preferredLocales.toSet())
+                // Add preferred languages starting from position 1
+                locales.addAll(1, preferredLocales)
+            }
+
+            val currLocale = LocaleController.getInstance().currentLocale
             val localeNames = arrayOfNulls<String>(if (full) locales.size else locales.size + 1)
 
             for (i in locales.indices) {
-
                 localeNames[i] =
-                        if (!full && i == 0) {
-
+                        if (i == 0) {
                             LocaleController.getString(R.string.Default) +
                                     " ( " +
                                     locales[i].getDisplayName(currLocale) +
                                     " )"
+                        } else if (i <= preferredLocales.size) {
+                            "⭐ " + locales[i].getDisplayName(currLocale)
                         } else {
-
                             locales[i].getDisplayName(currLocale)
                         }
             }
 
             if (!full) {
-
                 localeNames[localeNames.size - 1] = LocaleController.getString(R.string.More)
             }
 
@@ -228,10 +241,8 @@ interface Translator {
                     index: Int,
                     _ ->
                 if (index == locales.size) {
-
                     showTargetLangSelect(anchor, input, true, callback)
                 } else {
-
                     callback(locales[index])
                 }
             }

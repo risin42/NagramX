@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Base64
+import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.R
@@ -707,6 +708,30 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val preferredTranslateTargetLang =
+        addConfig(
+            "PreferredTranslateTargetLang",
+            ConfigItem.configTypeString,
+            "ja, zh"
+        )
+
+    val preferredTranslateTargetLangList = ArrayList<String>()
+
+    fun updatePreferredTranslateTargetLangList() {
+        AndroidUtilities.runOnUIThread({
+            preferredTranslateTargetLangList.clear()
+            val str = preferredTranslateTargetLang.String().trim()
+
+            if (str.isEmpty()) return@runOnUIThread
+
+            val languages = str.replace('-', '_').split(",")
+            if (languages.isEmpty() || languages[0].trim().isEmpty()) return@runOnUIThread
+
+            languages.forEach { lang ->
+                preferredTranslateTargetLangList.add(lang.trim().lowercase())
+            }
+        }, 1000)
+    }
 
     private fun addConfig(
         k: String,
@@ -834,5 +859,6 @@ object NaConfig {
         loadConfig(
             false
         )
+        updatePreferredTranslateTargetLangList()
     }
 }

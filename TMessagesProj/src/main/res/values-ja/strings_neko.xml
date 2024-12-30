@@ -194,12 +194,12 @@
     <string name="EmojiSetAlreadyApplied">絵文字セットは既に適用されています。</string>
     <string name="useOSMDroidMap">OSMDroid マップを使用</string>
     <string name="mapDriftingFixForGoogleMaps">中国における Google マップのずれを修正</string>
-    <string name="useTelegramTranslateInChat">チャットで Telegram 翻訳インターフェースを使用</string>
+    <string name="useTelegramTranslateInChat">Telegram 翻訳 UI を使用</string>
     <string name="RecentChats">最近のチャット</string>
     <string name="ClearRecentChats">最近のチャットをクリア</string>
     <string name="ClearRecentChatAlert">本当に最近のチャットをクリアしますか？</string>
     <string name="CloudConfig">クラウド設定</string>
-    <string name="CloudConfigDesc">N-設定を Telegram クラウドに保存します。</string>
+    <string name="CloudConfigDesc">N-設定を Telegram クラウドに保存。</string>
     <string name="CloudConfigSyncDate">最終同期：%1$s、クラウド：%2$s</string>
     <string name="CloudConfigSyncDateNever">なし</string>
     <string name="CloudConfigSync">クラウドに同期</string>
@@ -214,9 +214,4 @@
     <string name="CopyCallback">コールバックデータをコピー</string>
     <string name="CopyInlineQuery">インラインクエリをコピー</string>
     <string name="CopyID">ID をコピー</string>
-    <string name="UpdateInstalling">アップデートをインストールしています...</string>
-    <string name="UpdateInstallingNotification">アップデートが完了したら、通知が表示されます。</string>
-    <string name="UpdateInstallingRelaunch">アップデートが完了したら、アプリが再起動されます。</string>
-    <string name="UpdateInstalledNotification">アップデートのインストールが完了しました。タップしてアプリを起動します。</string>
-    <string name="UpdateFailedToInstall">アップデートをインストールできませんでした：%d</string>
 </resources>

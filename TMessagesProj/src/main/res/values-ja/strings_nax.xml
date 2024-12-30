@@ -30,4 +30,7 @@
     <string name="DeleteCloudBackupFailed">クラウドデータを消去できませんでした。</string>
     <string name="DeleteCloudBackupSuccess">クラウドデータを消去しました。</string>
     <string name="CloudConfigNoBackupToDelete">消去するデータがありません。</string>
+    <string name="PreferredTranslateTargetLang">カスタム優先言語リスト</string>
+    <string name="PreferredTranslateTargetLangExample">例：ja, zh_cn, zh_tw</string>
+    <string name="PreferredTranslateTargetLangName">優先言語</string>
 </resources>

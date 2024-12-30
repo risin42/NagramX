@@ -16,10 +16,11 @@ You can grab the latest versions in these two ways:
     - Save Edits History
     - AI Translator with customizable API endpoint and Model
     - Hide the Premium and Help sections
+    - Hide Share Button in Channels
     - Avoids requesting camera permission when selecting images
     - Show Stickers row in Top-Level Settings
-    - Hide Share Button in Channels
     - Clear Cloud Settings data
+    - Custom preferred languages in translation language selector
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```

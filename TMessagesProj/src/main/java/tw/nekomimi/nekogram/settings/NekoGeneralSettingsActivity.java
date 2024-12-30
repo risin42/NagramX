@@ -97,6 +97,18 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell useTelegramTranslateInChatRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useTelegramTranslateInChat));
     private final AbstractConfigCell translateToLangRow = cellGroup.appendCell(new ConfigCellCustom("TranslateToLang", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell translateInputToLangRow = cellGroup.appendCell(new ConfigCellCustom("TranslateInputToLang", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
+    private final AbstractConfigCell preferredTranslateTargetLangRow = cellGroup.appendCell(
+        new ConfigCellTextInput(LocaleController.getString(R.string.PreferredTranslateTargetLangName),
+            NaConfig.INSTANCE.getPreferredTranslateTargetLang(),
+            LocaleController.getString(R.string.PreferredTranslateTargetLangExample),
+            null,
+            (value) -> {
+                NaConfig.INSTANCE.getPreferredTranslateTargetLang().setConfigString(value);
+                NaConfig.INSTANCE.updatePreferredTranslateTargetLangList();
+                return value;
+            }
+        )
+    );
     private final AbstractConfigCell googleCloudTranslateKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.googleCloudTranslateKey, (view, position) -> {
         customDialog_BottomInputString(position, NekoConfig.googleCloudTranslateKey, LocaleController.getString("GoogleCloudTransKeyNotice"), "Key");
     }, LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty)));
@@ -478,6 +490,9 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                 ((ConfigCellTextInput) customTitleRow).setEnabled(!enabled);
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(customTitleRow));
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+            } else if (key.equals(NaConfig.INSTANCE.getPreferredTranslateTargetLang().getKey())) {
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translateToLangRow));
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translateInputToLangRow));
             }
         };
 
