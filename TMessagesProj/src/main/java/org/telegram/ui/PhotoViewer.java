@@ -20451,8 +20451,14 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                 maxSize = 1280.0f;
                 break;
             case 3:
-            default:
                 maxSize = 1920.0f;
+                break;
+            case 4:
+                maxSize = 2560.0f;
+                break;
+            case 5:
+            default:
+                maxSize = 4096.0f;
                 break;
         }
         float scale = originalWidth > originalHeight ? maxSize / originalWidth : maxSize / originalHeight;
@@ -20732,6 +20738,13 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             compressionsCount = 2;
         } else {
             compressionsCount = 1;
+        }
+        if (NaConfig.INSTANCE.getEnhancedVideoBitrate().Bool()) {
+            if (maxSize > 2560) {
+                compressionsCount = 6;
+            } else if (maxSize > 1920) {
+                compressionsCount = 5;
+            }
         }
     }
 
