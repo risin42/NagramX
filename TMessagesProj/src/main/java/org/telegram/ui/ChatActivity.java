@@ -375,6 +375,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int nkbtn_sticker_copy = 2031;
     private final static int nkbtn_sticker_copy_png = 2032;
 
+    // NagramX: clear deleted messages in current chat
+    private final static int nkbtn_clearDeleted = 2100;
 
     public int shareAlertDebugMode = DEBUG_SHARE_ALERT_MODE_NORMAL;
     public boolean shareAlertDebugTopicsSlowMotion;
@@ -4352,6 +4354,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 toTheBeginning = headerItem.lazilyAddSubItem(to_the_beginning, R.drawable.ic_upward, LocaleController.getString("ToTheBeginning", R.string.ToTheBeginning));
                 toTheMessage = headerItem.lazilyAddSubItem(to_the_message, R.drawable.msg_go_up, LocaleController.getString("ToTheMessage", R.string.ToTheMessage));
                 hideTitleItem = headerItem.lazilyAddSubItem(nkheaderbtn_hide_title, R.drawable.hide_title, LocaleController.getString("HideTitle", R.string.HideTitle));
+                headerItem.lazilyAddSubItem(nkbtn_clearDeleted, R.drawable.msg_clearcache, LocaleController.getString(R.string.ClearDeleted));
                 if (ChatObject.isMegagroup(currentChat) || currentChat != null && !ChatObject.isChannel(currentChat)) {
                     headerItem.lazilyAddSubItem(nkheaderbtn_zibi, R.drawable.msg_delete, LocaleController.getString("DeleteAllFromSelf", R.string.DeleteAllFromSelf));
                 }
@@ -42267,6 +42270,26 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 //            if (button != null) {
 //                button.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
 //            }
+        } else if (id == nkbtn_clearDeleted) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+            builder.setTitle(LocaleController.getString(R.string.ClearDeleted));
+            builder.setMessage(LocaleController.getString(R.string.ClearDeletedAlertMessage));
+            builder.setPositiveButton(LocaleController.getString(R.string.Clear), (dialogInterface, i) -> {
+                AyuMessagesController.getInstance().deleteCurrent(dialog_id, mergeDialogId, () -> {
+                    AndroidUtilities.runOnUIThread(() -> {
+                        getNotificationCenter().removeObserver(ChatActivity.this, NotificationCenter.closeChats);
+                        getNotificationCenter().postNotificationName(NotificationCenter.closeChats);
+                        finishFragment();
+                    });
+                });
+            });
+            builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+            AlertDialog alertDialog = builder.create();
+            showDialog(alertDialog);
+            TextView button = (TextView) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            if (button != null) {
+                button.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
+            }
         } else if (id == nkheaderbtn_upgrade) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
             builder.setMessage(LocaleController.getString("ConvertGroupAlert", R.string.ConvertGroupAlert));

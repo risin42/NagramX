@@ -12,7 +12,6 @@ package com.radolyn.ayugram.messages;
 import android.os.Environment;
 import android.text.TextUtils;
 import com.google.android.exoplayer2.util.Log;
-// import com.radolyn.ayugram.AyuConfig;
 import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.database.AyuData;
 import com.radolyn.ayugram.database.dao.DeletedMessageDao;
@@ -29,6 +28,7 @@ import org.telegram.tgnet.TLRPC;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AyuMessagesController {
@@ -235,6 +235,49 @@ public class AyuMessagesController {
                     Log.e("nu.gpu.nagram", "failed to delete file " + msg.message.mediaPath, e);
                 }
             }
+        }
+    }
+ 
+    public void deleteCurrent(long dialogId, long mergeDialogId, Runnable callback) {
+        List<DeletedMessageFull> messages = deletedMessageDao.getMessagesByDialog(dialogId);
+        ArrayList<Integer> messageIds = new ArrayList<>();
+        for (DeletedMessageFull message : messages) {
+            messageIds.add(message.message.messageId);
+        }
+        
+        if (mergeDialogId != 0) {
+            List<DeletedMessageFull> mergeMessages = deletedMessageDao.getMessagesByDialog(mergeDialogId);
+            messages.addAll(mergeMessages);
+            for (DeletedMessageFull message : mergeMessages) {
+                messageIds.add(message.message.messageId);
+            }
+        }
+
+        // Delete messages and their edit history from database
+        deletedMessageDao.delete(dialogId);
+        editedMessageDao.deleteByDialogIdAndMessageIds(dialogId, messageIds);
+        
+        if (mergeDialogId != 0) {
+            deletedMessageDao.delete(mergeDialogId);
+            editedMessageDao.deleteByDialogIdAndMessageIds(mergeDialogId, messageIds);
+        }
+
+        // Clean up media files
+        for (DeletedMessageFull msg : messages) {
+            if (msg.message.mediaPath != null && !msg.message.mediaPath.isEmpty()) {
+                File mediaFile = new File(msg.message.mediaPath);
+                if (mediaFile.exists()) {
+                    try {
+                        mediaFile.delete();
+                    } catch (Exception e) {
+                        Log.e("nu.gpu.nagram", "Failed to delete media file: " + msg.message.mediaPath, e);
+                    }
+                }
+            }
+        }
+
+        if (callback != null) {
+            callback.run();
         }
     }
 

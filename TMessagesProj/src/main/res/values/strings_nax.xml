@@ -35,4 +35,6 @@
     <string name="PreferredTranslateTargetLang">Custom preferred language list</string>
     <string name="PreferredTranslateTargetLangExample">e.g. ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Preferred Languages</string>
+    <string name="ClearDeleted">Clear Deleted Messages</string>
+    <string name="ClearDeletedAlertMessage">"Are you sure you want to clear all deleted messages in this chat?"</string>
 </resources>
