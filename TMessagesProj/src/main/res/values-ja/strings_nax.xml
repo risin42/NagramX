@@ -4,7 +4,6 @@
     <string name="EnableSaveDeletedMessages">削除されたメッセージを保存する</string>
     <string name="DeletedMessage">削除済み</string>
     <string name="EnableSaveEditsHistory">編集履歴を保存する</string>
-    <string name="EditsHistoryTitle">編集履歴</string>
     <string name="EditsHistoryMenuText">編集履歴</string>
     <string name="DeleteKeepLocally">ローカルに保持</string>
     <string name="ClearMessageDatabase">メッセージデータベースをリセット</string>
@@ -27,9 +26,9 @@
     <string name="ShowStickersRowToplevel">トップレベルにステッカー設定を表示</string>
     <string name="HideShareButtonInChannel">チャンネルで共有ボタンを非表示</string>
     <string name="DeleteCloudBackup">クラウドデータを消去</string>
-    <string name="DeleteCloudBackupFailed">クラウドデータを消去できませんでした。</string>
-    <string name="DeleteCloudBackupSuccess">クラウドデータを消去しました。</string>
-    <string name="CloudConfigNoBackupToDelete">消去するデータがありません。</string>
+    <string name="DeleteCloudBackupFailed">クラウドデータを消去できませんでした</string>
+    <string name="DeleteCloudBackupSuccess">クラウドデータを消去しました</string>
+    <string name="CloudConfigNoBackupToDelete">消去するデータがありません</string>
     <string name="PreferredTranslateTargetLang">カスタム優先言語リスト</string>
     <string name="PreferredTranslateTargetLangExample">例：ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">優先言語</string>

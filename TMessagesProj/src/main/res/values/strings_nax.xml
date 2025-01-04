@@ -4,8 +4,7 @@
     <string name="EnableSaveDeletedMessages">Save Deleted Messages</string>
     <string name="DeletedMessage">deleted</string>
     <string name="EnableSaveEditsHistory">Save Edits History</string>
-    <string name="EditsHistoryTitle">Edits history</string>
-    <string name="EditsHistoryMenuText">Edits history</string>
+    <string name="EditsHistoryMenuText">Edits History</string>
     <string name="DeleteKeepLocally">Keep locally</string>
     <string name="ClearMessageDatabase">Clear Message Database</string>
     <string name="ClearMessageDatabaseNotification">Message Database cleared</string>
@@ -29,12 +28,12 @@
     <string name="ShowStickersRowToplevel">Show Stickers in top-level settings</string>
     <string name="HideShareButtonInChannel">Hide Share Button in Channels</string>
     <string name="DeleteCloudBackup">Clear cloud data</string>
-    <string name="DeleteCloudBackupFailed">Failed to clear cloud data.</string>
-    <string name="DeleteCloudBackupSuccess">Cloud data cleared successfully.</string>
-    <string name="CloudConfigNoBackupToDelete">No data to clear.</string>
+    <string name="DeleteCloudBackupFailed">Failed to clear cloud data</string>
+    <string name="DeleteCloudBackupSuccess">Cloud data cleared successfully</string>
+    <string name="CloudConfigNoBackupToDelete">No data to clear</string>
     <string name="PreferredTranslateTargetLang">Custom preferred language list</string>
     <string name="PreferredTranslateTargetLangExample">e.g. ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Preferred Languages</string>
-    <string name="ClearDeleted">Clear Deleted Messages</string>
+    <string name="ClearDeleted">Clear Deleted</string>
     <string name="ClearDeletedAlertMessage">"Are you sure you want to clear all deleted messages in this chat?"</string>
 </resources>

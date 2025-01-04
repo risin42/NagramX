@@ -66,7 +66,7 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
         } else if (peer instanceof TLRPC.Chat) {
             name = ((TLRPC.Chat) peer).title;
         } else {
-            name = LocaleController.getString("EditsHistoryTitle", R.string.EditsHistoryTitle);
+            name = LocaleController.getString(R.string.EditsHistoryMenuText);
         }
 
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);

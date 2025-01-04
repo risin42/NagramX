@@ -4,7 +4,6 @@
     <string name="EnableSaveDeletedMessages">保存已删除消息</string>
     <string name="DeletedMessage">已删除</string>
     <string name="EnableSaveEditsHistory">保存编辑历史</string>
-    <string name="EditsHistoryTitle">编辑历史</string>
     <string name="EditsHistoryMenuText">编辑历史</string>
     <string name="DeleteKeepLocally">本地保留</string>
     <string name="ClearMessageDatabase">清除消息数据库</string>
@@ -27,9 +26,9 @@
     <string name="ShowStickersRowToplevel">在顶层设置中显示贴纸行</string>
     <string name="HideShareButtonInChannel">在频道中隐藏分享按钮</string>
     <string name="DeleteCloudBackup">清除云数据</string>
-    <string name="DeleteCloudBackupFailed">云备份数据清除失败。</string>
-    <string name="DeleteCloudBackupSuccess">云备份数据已清除。</string>
-    <string name="CloudConfigNoBackupToDelete">没有数据可清除。</string>
+    <string name="DeleteCloudBackupFailed">云备份数据清除失败</string>
+    <string name="DeleteCloudBackupSuccess">云备份数据已清除</string>
+    <string name="CloudConfigNoBackupToDelete">没有数据可清除</string>
     <string name="PreferredTranslateTargetLang">自定义首选语言列表</string>
     <string name="PreferredTranslateTargetLangExample">例如：ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">首选语言</string>

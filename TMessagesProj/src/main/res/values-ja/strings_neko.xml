@@ -5,7 +5,7 @@
     <string name="MessageMenu">メッセージメニュー</string>
     <string name="HidePhone">電話番号を非表示</string>
     <string name="Hide">非表示</string>
-    <string name="DeleteAllFromSelf">自分のメッセージをすべて削除</string>
+    <string name="DeleteAllFromSelf">自分のメッセージを削除</string>
     <string name="DeleteAllFromSelfAlert">警告！この操作を実行すると、この会話の**全員**に対して、**あなたが送信したすべてのメッセージ**が削除されます。</string>
     <string name="DeleteAllFromSelfAlertBefore">警告！この操作を実行すると、この会話の**全員**に対して、**%s以前にあなたが送信したすべてのメッセージ**が削除されます。</string>
     <string name="DeleteAllFromSelfBefore">…以前</string>
@@ -22,7 +22,7 @@
     <string name="TypefaceUseDefault">システムのデフォルトフォントを使用</string>
     <string name="NoQuoteForward">引用なしで転送</string>
     <string name="Repeat">リピート</string>
-    <string name="AddToSavedMessages">保存済みメッセージに追加</string>
+    <string name="AddToSavedMessages">保存</string>
     <string name="CreateMention">@メンションを作成</string>
     <string name="ForceTabletMode">タブレットモードを強制的に有効化</string>
     <string name="Prpr">ペロペロ</string>
@@ -43,7 +43,7 @@
     <string name="TestBackendOn">このアカウントはテスト用バックエンドサーバーに接続します。</string>
     <string name="TestBackendOff">このアカウントは本番用バックエンドサーバーに接続します。</string>
     <string name="HideProxySponsorChannel">プロキシスポンサーチャンネルを非表示</string>
-    <string name="ViewHistory">履歴メッセージを表示</string>
+    <string name="ViewHistory">履歴</string>
     <string name="Nya">ニャー！</string>
     <string name="SaveCacheToExternalFilesDir">ストレージの分離</string>
     <string name="SaveCacheToExternalFilesDirAbout">「Telegram」フォルダをアプリ固有のディレクトリに保存して、共有ストレージを整理します。</string>
@@ -209,8 +209,8 @@
     <string name="CloudConfigSyncing">同期中...</string>
     <string name="CloudConfigAutoSync">自動同期</string>
     <string name="CloudConfigAutoSyncDesc">N-設定を変更した後、自動的にクラウドに同期します。</string>
-    <string name="CloudConfigSyncFailed">設定をクラウドに同期できませんでした。</string>
-    <string name="CloudConfigRestoreFailed">クラウドから設定を復元できませんでした。</string>
+    <string name="CloudConfigSyncFailed">設定をクラウドに同期できませんでした</string>
+    <string name="CloudConfigRestoreFailed">クラウドから設定を復元できませんでした</string>
     <string name="CopyCallback">コールバックデータをコピー</string>
     <string name="CopyInlineQuery">インラインクエリをコピー</string>
     <string name="CopyID">ID をコピー</string>

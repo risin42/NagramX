@@ -21,7 +21,7 @@
     <string name="UseSystemUnlock">Passcode Unlock use system ui</string>
     <string name="CopyPhoto">Copy Photo</string>
     <string name="PhotoCopied">Photo copied to Clipboard</string>
-    <string name="ToTheBeginning">To the beginning</string>
+    <string name="ToTheBeginning">To Beginning</string>
     <string name="DateOfForwardedMsg">Show date of forward message</string>
     <string name="ShowMessageID">Show message ID</string>
     <string name="ShowRPCError">Toast all RPC errors</string>
@@ -42,7 +42,7 @@
     <string name="DefaultMonoLanguage">Custom default code language</string>
     <string name="DisableGlobalSearch">Disable Global Search</string>
     <string name="InputMessageId">Input Message Id</string>
-    <string name="ToTheMessage">To the message</string>
+    <string name="ToTheMessage">Go to</string>
     <string name="HideOriginAfterTranslation">Hide origin after translation</string>
     <string name="ZalgoFilter">Filter \"Zalgo\" symbols</string>
     <string name="ZalgoFilterNotice">All \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" symbols in nicknames or messages will be removed.</string>
@@ -90,7 +90,7 @@
     <string name="ShowSquareAvatar">Show square avatar</string>
     <string name="DisableCustomWallpaperUser">Disable user custom wallpaper</string>
     <string name="DisableCustomWallpaperChannel">Disable channel custom wallpaper</string>
-    <string name="CopyPhotoAsSticker">Copy Photo As Sticker</string>
+    <string name="CopyPhotoAsSticker">Copy As Sticker</string>
     <string name="ExternalStickerCache">External sticker cache</string>
     <string name="ExternalStickerCacheHint">For sharing sticker packs with other apps. Click to pick storage location.</string>
     <string name="ExternalStickerCacheRefresh">Refresh External Cache</string>

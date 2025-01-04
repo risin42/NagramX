@@ -4,7 +4,7 @@
     <string name="IPv6">Connecting through IPv6</string>
     <string name="MessageMenu">Message menu</string>
     <string name="HidePhone">Hide my phone number</string>
-    <string name="DeleteAllFromSelf">Delete all from yourself</string>
+    <string name="DeleteAllFromSelf">Delete My Messages</string>
     <string name="DeleteAllFromSelfAlert">Warning! This will **delete all messages from you** in this chat for **all** participants.</string>
     <string name="DeleteAllFromSelfAlertBefore">Warning! This will **delete all messages from you before %s** in this chat for **all** participants.</string>
     <string name="DeleteAllFromSelfBefore">Before...</string>
@@ -21,7 +21,7 @@
     <string name="TypefaceUseDefault">Use system default font</string>
     <string name="NoQuoteForward">NoQuote forward</string>
     <string name="Repeat">Repeat</string>
-    <string name="AddToSavedMessages">Save message</string>
+    <string name="AddToSavedMessages">Save</string>
     <string name="CreateMention">Create Mention</string>
     <string name="ForceTabletMode">Force tablet mode</string>
     <string name="Prpr">Peropero</string>
@@ -37,12 +37,12 @@
     <string name="Valentine">Valentine\'s day</string>
     <string name="Snowflakes">Snowflakes</string>
     <string name="Fireworks">Fireworks</string>
-    <string name="DeleteDownloadedFile">Delete downloaded file</string>
+    <string name="DeleteDownloadedFile">Delete Downloaded</string>
     <string name="TestBackend">Test Backend</string>
     <string name="TestBackendOn">This account will connect to the test backend.</string>
     <string name="TestBackendOff">This account will connect to the production backend.</string>
     <string name="HideProxySponsorChannel">Hide proxy sponsor channel</string>
-    <string name="ViewHistory">View history</string>
+    <string name="ViewHistory">History</string>
     <string name="Nya">Meow!</string>
     <string name="SaveCacheToExternalFilesDir">Storage isolation</string>
     <string name="SaveCacheToExternalFilesDirAbout">Save \"Telegram\" folder to app-specific directory to keep shared storage tidy.</string>
@@ -212,8 +212,8 @@
     <string name="CloudConfigSyncing">Syncing...</string>
     <string name="CloudConfigAutoSync">Auto sync</string>
     <string name="CloudConfigAutoSyncDesc">Sync to cloud automatically after making changes to N-Settings.</string>
-    <string name="CloudConfigSyncFailed">Failed to sync settings to cloud.</string>
-    <string name="CloudConfigRestoreFailed">Failed to restore settings from cloud.</string>
+    <string name="CloudConfigSyncFailed">Failed to sync settings to cloud</string>
+    <string name="CloudConfigRestoreFailed">Failed to restore settings from cloud</string>
     <string name="CopyCallback">Copy Callback Data</string>
     <string name="CopyInlineQuery">Copy Inline Query</string>
     <string name="CopyID">Copy ID</string>

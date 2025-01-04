@@ -30741,7 +30741,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     idx = options.indexOf(OPTION_DETAILS);
                 }
 
-                items.add(idx, LocaleController.getString("EditsHistoryMenuText", R.string.EditsHistoryMenuText));
+                items.add(idx, LocaleController.getString(R.string.EditsHistoryMenuText));
                 options.add(idx, AyuConstants.OPTION_HISTORY);
                 icons.add(idx, R.drawable.msg_log);
             }

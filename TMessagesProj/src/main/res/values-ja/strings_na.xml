@@ -51,7 +51,7 @@
     <string name="QuickToggleAnonymous">匿名発言をすばやく切り替え</string>
     <string name="QuickToggleAnonymousNotice">グループの所有者である場合。</string>
     <string name="RealHideTimeForSticker">ステッカーの送信時間を非表示</string>
-    <string name="HideTitle">タイトルとアバターを非表示</string>
+    <string name="HideTitle">タイトルを非表示</string>
     <string name="IgnoreFolderCount">フォルダーラベルの未読数を無視</string>
     <string name="SendWithoutMarkdown">Markdown を無効にする</string>
     <string name="SaveWithoutMarkdown">Markdown を無効にする</string>
@@ -90,7 +90,7 @@
     <string name="ShowSquareAvatar">正方形のアバターを表示</string>
     <string name="DisableCustomWallpaperUser">プライベートチャットのカスタム壁紙を無効にする</string>
     <string name="DisableCustomWallpaperChannel">チャンネルのカスタム壁紙を無効にする</string>
-    <string name="CopyPhotoAsSticker">画像をステッカーとしてコピー</string>
+    <string name="CopyPhotoAsSticker">ステッカーとしてコピー</string>
     <string name="ExternalStickerCache">外部ステッカーキャッシュ</string>
     <string name="ExternalStickerCacheHint">他のアプリとステッカーパックを共有するには、クリックしてストレージの場所を選択します。</string>
     <string name="ExternalStickerCacheRefresh">外部キャッシュを更新</string>
