@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.text.TextPaint;
@@ -454,13 +455,32 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                 }
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translationProviderRow));
             } else if (key.equals(NaConfig.INSTANCE.getPushServiceType().getKey())) {
+                SharedPreferences preferences = MessagesController.getNotificationsSettings(UserConfig.selectedAccount);
+                SharedPreferences.Editor editor = preferences.edit();
+                boolean enabled;
+                if (preferences.contains("pushService")) {
+                    enabled = preferences.getBoolean("pushService", false);
+                } else {
+                    enabled = MessagesController.getMainSettings(UserConfig.selectedAccount).getBoolean("keepAliveService", false);
+                }
                 if ((int) newValue == 0) {
                     NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(true);
                     ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabledAndUpdateState(true);
+                    if (!enabled) {
+                        editor.putBoolean("pushService", !enabled);
+                        editor.putBoolean("pushConnection", !enabled);
+                        editor.apply();
+                    }
                 } else {
                     NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(false);
                     ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabledAndUpdateState(false);
+                    if (enabled) {
+                        editor.putBoolean("pushService", !enabled);
+                        editor.putBoolean("pushConnection", !enabled);
+                        editor.apply();
+                    }
                 }
+                ApplicationLoader.startPushService();
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(pushServiceTypeInAppDialogRow));
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getPushServiceTypeInAppDialog().getKey())) {
