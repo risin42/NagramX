@@ -61,7 +61,7 @@
     <string name="Translate">Translate</string>
     <string name="DeleteAccount">Delete Telegram account</string>
     <string name="TranslateFailed">Translate server error</string>
-    <string name="TranslationProvider">Translation provider</string>
+    <string name="TranslationProvider">Translation Provider</string>
     <string name="ProviderGoogleTranslate">Google Translate</string>
     <string name="TranslateApiUnsupported">The translation provider you selected don\'t support your language.</string>
     <string name="ProviderLingocloud">Lingocloud</string>

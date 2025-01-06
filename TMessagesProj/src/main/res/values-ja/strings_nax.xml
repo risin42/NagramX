@@ -35,4 +35,5 @@
     <string name="ClearDeleted">削除済みをクリア</string>
     <string name="ClearDeletedAlertMessage">このチャット内のすべての削除済みメッセージをクリアしますか？</string>
     <string name="useTelegramTranslateInChatSubtitle">Telegram API でのみ動作します</string>
+    <string name="ForwardsRestrictedInfoAyuDeleted">転送は許可されていません</string>
 </resources>

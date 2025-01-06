@@ -4954,8 +4954,8 @@
     <string name="UserAcceptedToGroupAction">un1 was accepted into the group</string>
     <string name="UserAcceptedToGroupPush">%1$s was accepted into the group</string>
     <string name="UserAcceptedToGroupPushWithGroup">%2$s|%1$s was accepted into the group</string>
-    <string name="ForwardsRestrictedInfoChannel">Сopying and forwarding is not allowed in this channel.</string>
-    <string name="ForwardsRestrictedInfoGroup">Сopying and forwarding is not allowed in this group.</string>
+    <string name="ForwardsRestrictedInfoChannel">Copying and forwarding is not allowed in this channel.</string>
+    <string name="ForwardsRestrictedInfoGroup">Copying and forwarding is not allowed in this group.</string>
     <string name="ForwardsRestrictedInfoBot">Copying and forwarding is not allowed from this bot.</string>
     <string name="TopicContainsEmojiPackSingle">This topic contains **%s**</string>
     <string name="MessageContainsEmojiPackSingle">This message contains **%s**</string>

@@ -12227,7 +12227,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private void openForward(boolean fromActionBar) {
-        if (getMessagesController().isChatNoForwards(currentChat) || hasSelectedNoforwardsMessage()) {
+        boolean hasSelectedAyuDeletedMessage = hasSelectedAyuDeletedMessage();
+        if (getMessagesController().isChatNoForwards(currentChat) || hasSelectedNoforwardsMessage() || hasSelectedAyuDeletedMessage) {
             // We should update text if user changed locale without re-opening chat activity
             String str;
             if (getMessagesController().isChatNoForwards(currentChat)) {
@@ -12238,6 +12239,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
             } else {
                 str = LocaleController.getString(R.string.ForwardsRestrictedInfoBot);
+                if (hasSelectedAyuDeletedMessage) {
+                    str = LocaleController.getString(R.string.ForwardsRestrictedInfoAyuDeleted);
+                }
             }
             if (fromActionBar) {
                 if (fwdRestrictedTopHint == null) {
@@ -13279,7 +13283,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private void showTextSelectionHint(MessageObject messageObject) {
-        if (getParentActivity() == null || (getMessagesController().isChatNoForwardsWithOverride(messageObject.getChatId()) || (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.noforwards && !NekoXConfig.disableFlagSecure && messageObject.messageOwner.ayuDeleted))) {
+        if (getParentActivity() == null || (getMessagesController().isChatNoForwardsWithOverride(messageObject.getChatId()) || (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.noforwards && !NekoXConfig.disableFlagSecure)) || messageObject.messageOwner.ayuDeleted) {
             return;
         }
         CharSequence text;
@@ -18545,7 +18549,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     if (!messageObject.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat)) {
                         cantDeleteMessagesCount--;
                     }
-                    boolean noforwards = getMessagesController().isChatNoForwardsWithOverride(currentChat);
+                    boolean noforwards = getMessagesController().isChatNoForwards(currentChat);
                     if (chatMode == MODE_SCHEDULED || !messageObject.canForwardMessage() || noforwards) {
                         cantForwardMessagesCount--;
                     } else {
@@ -18582,7 +18586,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     if (!messageObject.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat)) {
                         cantDeleteMessagesCount++;
                     }
-                    boolean noforwards = getMessagesController().isChatNoForwardsWithOverride(currentChat);
+                    boolean noforwards = getMessagesController().isChatNoForwards(currentChat);
                     if (chatMode == MODE_SCHEDULED || !messageObject.canForwardMessage() || noforwards) {
                         cantForwardMessagesCount++;
                     } else {
@@ -18638,7 +18642,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     RepeatAsCopyItem = actionModeOtherItem.getSubItem(nkbtn_repeatascopy);
                 }
 
-                boolean noforwards = getMessagesController().isChatNoForwards(currentChat) || hasSelectedNoforwardsMessage() || hasSelectedAyuDeletedMessage();
+                boolean hasSelectedAyuDeletedMessage = hasSelectedAyuDeletedMessage();
+                boolean noforwards = getMessagesController().isChatNoForwards(currentChat) || hasSelectedNoforwardsMessage() || hasSelectedAyuDeletedMessage;
                 boolean canForward = chatMode != MODE_SCHEDULED && cantForwardMessagesCount == 0 && !noforwards;
 
                 if (forwardNoQuoteItem != null) {
@@ -18729,7 +18734,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
 
                 if (replyItem != null) {
-                    boolean showReplyItem = chatMode != MODE_SCHEDULED && ChatObject.canSendMessages(currentChat) && selectedCount == 1 && !hasSelectedAyuDeletedMessage();
+                    boolean showReplyItem = chatMode != MODE_SCHEDULED && ChatObject.canSendMessages(currentChat) && selectedCount == 1 && !hasSelectedAyuDeletedMessage;
                     boolean doShrinkActionBarItems = isActionBarTooNarrow && newCopyVisible == View.VISIBLE && canForward && canEditMessagesCount == 1 && selectedCount == 1;
                     replyItem.setVisibility(!doShrinkActionBarItems && showReplyItem);
                 }
@@ -18787,12 +18792,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 //                    starItem.setIcon(hasUnfavedSelected ? R.drawable.msg_fave : R.drawable.msg_unfave);
                     starItem.setText(hasUnfavedSelected ? LocaleController.getString("AddToFavorites", R.string.AddToFavorites) : LocaleController.getString("DeleteFromFavorites", R.string.DeleteFromFavorites));
                 }
-                final int newEditVisibility = canEditMessagesCount == 1 && selectedCount == 1 ? View.VISIBLE : View.GONE;
+                final int newEditVisibility = !hasSelectedAyuDeletedMessage && canEditMessagesCount == 1 && selectedCount == 1 ? View.VISIBLE : View.GONE;
                 createBottomMessagesActionButtons();
                 if (replyButton != null) {
                     boolean allowChatActions = true;
                     if (bottomOverlayChat != null && bottomOverlayChat.getVisibility() == View.VISIBLE && !bottomOverlayChatWaitsReply ||
-                            currentChat != null && (ChatObject.isNotInChat(currentChat) && !isThreadChat() || ChatObject.isChannel(currentChat) && !ChatObject.canPost(currentChat) && !currentChat.megagroup || !ChatObject.canSendMessages(currentChat))) {
+                            currentChat != null && (ChatObject.isNotInChat(currentChat) && !isThreadChat() || ChatObject.isChannel(currentChat) && !ChatObject.canPost(currentChat) && !currentChat.megagroup || !ChatObject.canSendMessages(currentChat)) ||
+                            hasSelectedAyuDeletedMessage) {
                         allowChatActions = false;
                     }
 
@@ -31674,7 +31680,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
 
-                boolean showNoForwards = (getMessagesController().isChatNoForwards(currentChat) || message.messageOwner.noforwards && currentUser != null && currentUser.bot) && message.messageOwner.action == null && message.isSent() && !message.isEditing() && chatMode != MODE_SCHEDULED && chatMode != MODE_SAVED && getDialogId() != UserObject.VERIFY && message.messageOwner.ayuDeleted;
+                boolean showNoForwards = (getMessagesController().isChatNoForwards(currentChat) || message.messageOwner.noforwards && currentUser != null && currentUser.bot) && message.messageOwner.action == null && message.isSent() && !message.isEditing() && chatMode != MODE_SCHEDULED && chatMode != MODE_SAVED && getDialogId() != UserObject.VERIFY;
                 scrimPopupContainerLayout.addView(popupLayout, LayoutHelper.createLinearRelatively(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT, isReactionsAvailable ? 16 : 0, 0, isReactionsAvailable ? 36 : 0, 0));
                 scrimPopupContainerLayout.setPopupWindowLayout(popupLayout);
                 if (showNoForwards) {

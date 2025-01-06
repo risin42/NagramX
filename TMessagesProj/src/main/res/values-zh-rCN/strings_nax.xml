@@ -35,4 +35,5 @@
     <string name="ClearDeleted">清除已删除消息</string>
     <string name="ClearDeletedAlertMessage">您确定要清除此聊天中的所有已删除消息吗？</string>
     <string name="useTelegramTranslateInChatSubtitle">仅适用于 Telegram API</string>
+    <string name="ForwardsRestrictedInfoAyuDeleted">不允许转发</string>
 </resources>
