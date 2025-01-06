@@ -1,7 +1,5 @@
 package tw.nekomimi.nekogram.settings;
 
-import static tw.nekomimi.nekogram.utils.UpdateUtil.channelUsernameTips;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -334,7 +332,7 @@ public class NekoSettingsActivity extends BaseFragment {
                             } else if (position == channelRow) {
                                 textCell.setTextAndValue(LocaleController.getString(R.string.OfficialChannel), "@nagram_channel", true);
                             } else if (position == channelTipsRow) {
-                                textCell.setTextAndValue(LocaleController.getString(R.string.TipsChannel), "@" + channelUsernameTips, true);
+                                textCell.setTextAndValue(LocaleController.getString(R.string.TipsChannel), "@" + "NagramTips", true);
                             } else if (position == sourceCodeRow) {
                                 textCell.setText(LocaleController.getString(R.string.SourceCode), true);
                             } else if (position == translationRow) {
@@ -377,7 +375,7 @@ public class NekoSettingsActivity extends BaseFragment {
                 } else if (position == channelRow) {
                     MessagesController.getInstance(currentAccount).openByUserName("nagram_channel", NekoSettingsActivity.this, 1);
                 } else if (position == channelTipsRow) {
-                    MessagesController.getInstance(currentAccount).openByUserName(channelUsernameTips, NekoSettingsActivity.this, 1);
+                    MessagesController.getInstance(currentAccount).openByUserName("NagramTips", NekoSettingsActivity.this, 1);
                 } else if (position == translationRow) {
                     Browser.openUrl(getParentActivity(), "https://xtaolabs.crowdin.com/nagram");
                 } else if (position == sourceCodeRow) {
