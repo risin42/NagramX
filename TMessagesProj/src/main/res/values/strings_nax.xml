@@ -35,5 +35,6 @@
     <string name="PreferredTranslateTargetLangExample">e.g. ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Preferred Languages</string>
     <string name="ClearDeleted">Clear Deleted</string>
-    <string name="ClearDeletedAlertMessage">"Are you sure you want to clear all deleted messages in this chat?"</string>
+    <string name="ClearDeletedAlertMessage">Are you sure you want to clear all deleted messages in this chat?</string>
+    <string name="useTelegramTranslateInChatSubtitle">Only works with the Telegram API</string>
 </resources>

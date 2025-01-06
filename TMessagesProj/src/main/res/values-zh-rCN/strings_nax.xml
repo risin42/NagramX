@@ -33,5 +33,6 @@
     <string name="PreferredTranslateTargetLangExample">例如：ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">首选语言</string>
     <string name="ClearDeleted">清除已删除消息</string>
-    <string name="ClearDeletedAlertMessage">"您确定要清除此聊天中的所有已删除消息吗？"</string>
+    <string name="ClearDeletedAlertMessage">您确定要清除此聊天中的所有已删除消息吗？</string>
+    <string name="useTelegramTranslateInChatSubtitle">仅适用于 Telegram API</string>
 </resources>

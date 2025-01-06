@@ -33,5 +33,6 @@
     <string name="PreferredTranslateTargetLangExample">例：ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">優先言語</string>
     <string name="ClearDeleted">削除済みをクリア</string>
-    <string name="ClearDeletedAlertMessage">"このチャット内のすべての削除済みメッセージをクリアしますか？"</string>
+    <string name="ClearDeletedAlertMessage">このチャット内のすべての削除済みメッセージをクリアしますか？</string>
+    <string name="useTelegramTranslateInChatSubtitle">Telegram API でのみ動作します</string>
 </resources>

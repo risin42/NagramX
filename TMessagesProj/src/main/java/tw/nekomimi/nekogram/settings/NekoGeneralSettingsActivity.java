@@ -95,7 +95,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
 
     private final AbstractConfigCell headerTranslation = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("Translate")));
     private final AbstractConfigCell translationProviderRow = cellGroup.appendCell(new ConfigCellCustom("TranslationProvider", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
-    private final AbstractConfigCell useTelegramTranslateInChatRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useTelegramTranslateInChat));
+    private final AbstractConfigCell useTelegramTranslateInChatRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useTelegramTranslateInChat, LocaleController.getString(R.string.useTelegramTranslateInChatSubtitle)));
     private final AbstractConfigCell translateToLangRow = cellGroup.appendCell(new ConfigCellCustom("TranslateToLang", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell translateInputToLangRow = cellGroup.appendCell(new ConfigCellCustom("TranslateInputToLang", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell preferredTranslateTargetLangRow = cellGroup.appendCell(
@@ -351,6 +351,10 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
             } else if (a instanceof ConfigCellCustom) { // Custom OnClick
                 if (position == cellGroup.rows.indexOf(translationProviderRow)) {
                     showProviderSelectionPopup(view, NekoConfig.translationProvider, () -> {
+                        if (NekoConfig.translationProvider.Int() != Translator.providerTelegram) {
+                            NekoConfig.useTelegramTranslateInChat.setConfigBool(false);
+                            listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useTelegramTranslateInChatRow));
+                        }
                         listAdapter.notifyItemChanged(position);
                     });
                 } else if (position == cellGroup.rows.indexOf(articletranslationProviderRow)) {
@@ -444,14 +448,8 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                 ((ConfigCellTextCheck) mapDriftingFixForGoogleMapsRow).setEnabled(!enabled);
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(mapDriftingFixForGoogleMapsRow));
             } else if (key.equals(NekoConfig.useTelegramTranslateInChat.getKey())) {
-                var cell = (TextSettingsCell) (listView.findViewHolderForAdapterPosition(cellGroup.rows.indexOf(translationProviderRow)).itemView);
                 if (NekoConfig.useTelegramTranslateInChat.Bool()) {
                     NekoConfig.translationProvider.setConfigInt(Translator.providerTelegram);
-                    ((ConfigCellCustom) translationProviderRow).setEnabled(false);
-                    cell.setEnabled(false);
-                } else {
-                    ((ConfigCellCustom) translationProviderRow).setEnabled(true);
-                    cell.setEnabled(true);
                 }
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translationProviderRow));
             } else if (key.equals(NaConfig.INSTANCE.getPushServiceType().getKey())) {
@@ -732,7 +730,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                         TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
                         if (position == cellGroup.rows.indexOf(translationProviderRow)) {
                             textCell.setTextAndValue(LocaleController.getString(R.string.TranslationProvider), getProviderName(NekoConfig.translationProvider.Int()), true);
-                            if (NekoConfig.useTelegramTranslateInChat.Bool()) textCell.setEnabled(false);
                         } else if (position == cellGroup.rows.indexOf(translateToLangRow)) {
                             textCell.setTextAndValue(LocaleController.getString(R.string.TransToLang), NekoXConfig.formatLang(NekoConfig.translateToLang.String()), true);
                         } else if (position == cellGroup.rows.indexOf(translateInputToLangRow)) {
@@ -801,9 +798,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
 
         if (NaConfig.INSTANCE.getCustomTitleUserName().Bool())
             ((ConfigCellTextInput) customTitleRow).setEnabled(false);
-
-        if (NekoConfig.useTelegramTranslateInChat.Bool())
-            ((ConfigCellCustom) translationProviderRow).setEnabled(false);
 
         boolean enabled;
 
