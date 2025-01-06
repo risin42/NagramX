@@ -18,7 +18,7 @@ You can grab the latest versions in these two ways:
     - Hide the Premium and Help sections
     - Hide Share Button in Channels
     - Avoids requesting camera permission when selecting images
-    - Show Stickers row in Top-Level Settings
+    - Show Stickers in Main Settings
     - Clear Cloud Settings data
     - Custom preferred languages in translation language selector
 
@@ -27,12 +27,11 @@ You can grab the latest versions in these two ways:
     - Removed in-app updates
     - Removed payment functionality
     - Removed channel follow pop-ups
-    - Excluded API keys from cloud settings synchronization
-    - Refined Japanese localization (N-Settings)
+    - Refined N-Settings translations
     - Other minor optimizations and code cleanup
 
 - **Fixes**
-    - Ripple effect for N-Settings rows
+    - Ripple effect for N-Settings
     - Google Maps
     - DeepL Translator
     - Disable auto download for exe and archive files
@@ -41,8 +40,7 @@ You can grab the latest versions in these two ways:
     - Enabled N-Settings hidden features
     - Disabled In-Chat sound
     - Disabled Dynamic Pack Order
-    - Removed default value for PushServiceTypeUnifiedGateway
-    - Reverted default font size and bubble radius to official Telegram defaults
+    - Reverted font size and bubble radius to official Telegram defaults
     - Other minor adjustments
 
 ## Thanks to
