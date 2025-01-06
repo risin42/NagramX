@@ -18654,8 +18654,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     RepeatAsCopyItem.setVisibility(canForward);
                 }
 
-                if (NekoConfig.showBottomActionsWhenSelecting.Bool())
-                    createBottomMessagesActionButtons();
+                createBottomMessagesActionButtons();
 
                 if (prevCantForwardCount == 0 && cantForwardMessagesCount != 0 || prevCantForwardCount != 0 && cantForwardMessagesCount == 0) {
                     forwardButtonAnimation = new AnimatorSet();
@@ -31917,11 +31916,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (suggestEmojiPanel != null && suggestEmojiPanel.getVisibility() == View.VISIBLE) {
                 views.add(suggestEmojiPanel);
             }
-            if (NekoConfig.showBottomActionsWhenSelecting.Bool())
-                actionBar.showActionMode(true, bottomMessagesActionContainer, null, views.toArray(new View[0]), new boolean[]{false, true, true}, chatListView, translationY);
-            else
-                actionBar.showActionMode(true, null, null, null, new boolean[]{false, true, true}, chatListView, translationY);
-
+            actionBar.showActionMode(true, bottomMessagesActionContainer, null, views.toArray(new View[0]), new boolean[]{false, true, true}, chatListView, translationY);
             if (getParentActivity() instanceof LaunchActivity) {
                 ((LaunchActivity) getParentActivity()).hideVisibleActionMode();
             }
@@ -31929,15 +31924,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 chatActivityEnterView.getEditField().setAllowDrawCursor(false);
             }
         } else if (bottomOverlayChat.getVisibility() == View.VISIBLE) {
-            if (NekoConfig.showBottomActionsWhenSelecting.Bool())
-                actionBar.showActionMode(true, bottomMessagesActionContainer, null, new View[]{bottomOverlayChat}, new boolean[]{true}, chatListView, translationY);
-            else
-                actionBar.showActionMode(true, null, null, null, new boolean[]{true}, chatListView, translationY);
+            actionBar.showActionMode(true, bottomMessagesActionContainer, null, new View[]{bottomOverlayChat}, new boolean[]{true}, chatListView, translationY);
         } else {
-            if (NekoConfig.showBottomActionsWhenSelecting.Bool())
-                actionBar.showActionMode(true, bottomMessagesActionContainer, null, null, null, chatListView, translationY);
-            else
-                actionBar.showActionMode(true, null, null, null, null, chatListView, translationY);
+            actionBar.showActionMode(true, bottomMessagesActionContainer, null, null, null, chatListView, translationY);
         }
         closeMenu();
         chatLayoutManager.setCanScrollVertically(true);

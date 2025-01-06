@@ -166,7 +166,6 @@ public class NekoConfig {
     public static ConfigItem showSpoilersDirectly = addConfig("showSpoilersDirectly", configTypeBool, false);
     public static ConfigItem reactions = addConfig("reactions", configTypeInt, 0);
     public static ConfigItem disableReactionsWhenSelecting = addConfig("disableReactionsWhenSelecting", configTypeBool, true);
-    public static ConfigItem showBottomActionsWhenSelecting = addConfig("showBottomActionsWhenSelecting", configTypeBool, false);
 
     public static ConfigItem labelChannelUser = addConfig("labelChannelUser", configTypeBool, false);
     public static ConfigItem channelAlias = addConfig("channelAlias", configTypeBool, false);

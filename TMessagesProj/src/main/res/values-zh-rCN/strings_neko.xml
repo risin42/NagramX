@@ -143,7 +143,6 @@
     <string name="customSavePath">自定义存储路径</string>
     <string name="customSavePathHint">留空以直接保存</string>
     <string name="doubleTapShowReactions">仅在双击消息时打开表情回应菜单</string>
-    <string name="showBottomActionsWhenSelecting">长按选中消息时，显示底部操作按钮</string>
     <string name="channelLabel">频道身份</string>
     <string name="forceBlurInChat">强制启用对话顶栏模糊</string>
     <string name="ChatBlurAlphaValue">对话顶栏不透明度</string>
