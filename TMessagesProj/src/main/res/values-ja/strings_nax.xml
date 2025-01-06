@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="XChannel">Nagram X チャンネル</string>
-    <string name="EnableSaveDeletedMessages">削除されたメッセージを保存する</string>
+    <string name="EnableSaveDeletedMessages">削除済みメッセージを保存</string>
     <string name="DeletedMessage">削除済み</string>
-    <string name="EnableSaveEditsHistory">編集履歴を保存する</string>
+    <string name="EnableSaveEditsHistory">編集履歴を保存</string>
     <string name="EditsHistoryMenuText">編集履歴</string>
     <string name="DeleteKeepLocally">ローカルに保持</string>
     <string name="ClearMessageDatabase">メッセージデータベースをリセット</string>
     <string name="ClearMessageDatabaseNotification">メッセージデータベースがリセットされました</string>
-    <string name="CustomDeletedMark">カスタム削除メッセージマーカー</string>
+    <string name="CustomDeletedMark">削除済みメッセージのマーク</string>
     <string name="HidePremiumSection">プレミアムセクションを非表示</string>  
     <string name="HideHelpSection">ヘルプセクションを非表示</string>
     <string name="ProviderLLMTranslator">AI 翻訳</string>
     <string name="LlmApiUrl">API URL</string>
     <string name="LlmApiKey">API キー</string>
     <string name="LlmModelName">モデル</string>
-    <string name="LlmApiUrlNotice">API ベース URL。OpenAI 互換エンドポイントのみをサポートしています。\n\n`/chat/completions`より前の URL 部分を指定してください。例： `https://api.x.ai/v1`。\n\n空欄のままにすると、Gemini の OpenAI 互換 API エンドポイントである `https://generativelanguage.googleapis.com/v1beta/openai` がデフォルトで使用されます。</string>
+    <string name="LlmApiUrlNotice">API ベース URL。OpenAI 互換エンドポイントのみをサポートしています。\n\n`/chat/completions`より前の URL 部分を指定してください。例：`https://api.x.ai/v1`。\n\n空欄のままにすると、Gemini の OpenAI 互換 API エンドポイントがデフォルトで使用されます。</string>
     <string name="LlmApiKeyNotice">API キーは、API URL へのリクエスト送信に使用されます。</string>
-    <string name="LlmModelNameNotice">空白のままにすると、`gemini-1.5-flash-latest`がデフォルトで使用されます。\n\nより速い応答には、gpt-4o-mini や gemini flash などの小型モデルの使用をお勧めします。</string>
+    <string name="LlmModelNameNotice">空白のままにすると、`gemini-2.0-flash`がデフォルトで使用されます。\n\nより速い応答には、gpt-4o-mini や gemini-flash などの小型モデルの使用をお勧めします。</string>
     <string name="AITranslatorSettings">AI 翻訳設定</string>
     <string name="TranslucentDeletedMessages">削除済みメッセージの透過</string>
     <string name="ArticleTranslationProvider">アーティクル翻訳プロバイダ</string>
@@ -34,6 +34,7 @@
     <string name="PreferredTranslateTargetLangName">優先言語</string>
     <string name="ClearDeleted">削除済みをクリア</string>
     <string name="ClearDeletedAlertMessage">このチャット内のすべての削除済みメッセージをクリアしますか？</string>
-    <string name="useTelegramTranslateInChatSubtitle">Telegram API でのみ動作します</string>
-    <string name="ForwardsRestrictedInfoAyuDeleted">転送は許可されていません</string>
+    <string name="useTelegramTranslateInChatSubtitle">Telegram API でのみ動作します。</string>
+    <string name="ForwardsRestrictedInfoAyuDeleted">転送は許可されていません。</string>
+    <string name="RegexFiltersNotice">タップして編集。</string>
 </resources>

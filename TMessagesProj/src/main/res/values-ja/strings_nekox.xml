@@ -18,16 +18,8 @@
     <string name="CustomApiOfficial">テレグラム Android</string>
     <string name="CustomApiTGX">テレグラム Android X</string>
     <string name="CustomApiInput">手動入力</string>
-    <string name="CheckUpdate">アップデートを確認</string>
-    <string name="SwitchVersion">バージョンを切り替える</string>
-    <string name="NoUpdate">アップデートは見つかりませんでした</string>
-    <string name="UpdateAvailable">新しいアップデートが見つかりました</string>
-    <string name="UpdateUpdate">アップデート</string>
-    <string name="UpdateLater">後で</string>
-    <string name="DownloadFailed">ダウンロードに失敗しました</string>
     <string name="Install">インストール</string>
     <string name="Ignore">無視する</string>
-    <string name="UpdateDownloaded">アップデートがダウンロードされました</string>
     <string name="ProxyAutoSwitch">プロキシ自動切り替え</string>
     <string name="LinkedGroupChat">リンクされたグループ</string>
     <string name="LinkedChannelChat">リンクされたチャンネル</string>
@@ -58,7 +50,7 @@
     <string name="PrivacyNotice2fa">パスワードが設定されていないことが検出されました。セキュリティ保護のため、パスワードの設定をお勧めします。</string>
     <string name="ApplySuggestion">わかりました、適用します</string>
     <string name="DoNotRemindAgain">今後表示しない</string>
-    <string name="RemoveTitleEmoji">タイトルの絵文字を削除</string>
+    <string name="RemoveTitleEmoji">タイトルの絵文字を非表示</string>
     <string name="DisableChatAction">入力ステータスを送信しない</string>
     <string name="FakeScreenshot">スクリーンショットのプレビュー</string>
     <string name="ImportPxy">インポート</string>
@@ -78,7 +70,7 @@
     <string name="FilterNameUnreadDescription">未読メッセージのみ</string>
     <string name="FilterNameUnmutedAndUnread">ミュートなし &amp; 未読</string>
     <string name="FilterNameUnmutedAndUnreadDescription">ミュートされていないチャットからの未読メッセージのみ</string>
-    <string name="IgnoreMutedCount">フォルダータブでミュートされた未読数を無視する</string>
+    <string name="IgnoreMutedCount">フォルダのミュートされた未読数をカウントしない </string>
     <string name="DialogsSettings">ダイアログ設定</string>
     <string name="SortMenu">ダイアログソート設定</string>
     <string name="SortByUnread">未読で並べ替え</string>
@@ -231,4 +223,5 @@
     <string name="ImportSettingsAlert">設定を上書きしますか？ 不明なソースから設定をインポートすると、PINが上書きされ、アプリがロックされる可能性があります。</string>
     <string name="BackupSettings">設定をバックアップ</string>
     <string name="nekoXPaymentRemovedToast">決済機能は廃止されました。</string>
+    <string name="ShareMessages">共有</string>
 </resources>

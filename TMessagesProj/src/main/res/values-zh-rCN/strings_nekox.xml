@@ -18,16 +18,8 @@
     <string name="CustomApiOfficial">Telegram Android</string>
     <string name="CustomApiTGX">Telegram Android X</string>
     <string name="CustomApiInput">手动输入</string>
-    <string name="CheckUpdate">检查更新</string>
-    <string name="SwitchVersion">切换版本</string>
-    <string name="NoUpdate">没有发现更新</string>
-    <string name="UpdateAvailable">有可用的更新</string>
-    <string name="UpdateUpdate">更新</string>
-    <string name="UpdateLater">稍后</string>
-    <string name="DownloadFailed">下载失败</string>
     <string name="Install">安装</string>
     <string name="Ignore">忽略</string>
-    <string name="UpdateDownloaded">一个更新刚刚下载完成.</string>
     <string name="ProxyAutoSwitch">代理自动切换</string>
     <string name="LinkedGroupChat">链接的群组</string>
     <string name="LinkedChannelChat">链接的频道</string>
