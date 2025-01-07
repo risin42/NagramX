@@ -10,8 +10,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.R
-import tw.nekomimi.nekogram.transtale.source.GoogleAppTranslator
 import tw.nekomimi.nekogram.transtale.Translator
+import tw.nekomimi.nekogram.transtale.source.GoogleAppTranslator
 import xyz.nextalone.nagram.NaConfig
 
 object LLMTranslator : Translator {
@@ -38,7 +38,7 @@ object LLMTranslator : Translator {
                 delay(actualWaitTimeMillis)
             }
         }
-        Log.w("LLMTranslator", "Max retry count reached, fallback to GoogleAppTranslator")
+        Log.w("LLMTranslator", "Max retry count reached, falling back to GoogleAppTranslator")
         return GoogleAppTranslator.doTranslate(from, to, query)
     }
 

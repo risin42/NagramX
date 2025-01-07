@@ -82,6 +82,8 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private ListAdapter listAdapter;
     private ValueAnimator statusBarColorAnimator;
     private DrawerProfilePreviewCell profilePreviewCell;
+    private ChatBlurAlphaSeekBar chatBlurAlphaSeekbar;
+    private UndoView restartTooltip;
 
     private final CellGroup cellGroup = new CellGroup(this);
 
@@ -115,7 +117,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     }, LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty)));
     private final AbstractConfigCell hideOriginAfterTranslationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideOriginAfterTranslation()));
     private final AbstractConfigCell autoTranslateRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getAutoTranslate(), LocaleController.getString("AutoTranslateAbout")));
-
     // AI Translator
     private final AbstractConfigCell headerAITranslatorSettings = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("AITranslatorSettings")));
     private final AbstractConfigCell llmApiKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> {
@@ -149,7 +150,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell useSystemDNSRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useSystemDNS));
     private final AbstractConfigCell disableProxyWhenVpnEnabledRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableProxyWhenVpnEnabled()));
     private final AbstractConfigCell customDoHRow = cellGroup.appendCell(new ConfigCellTextInput(null, NekoConfig.customDoH, "https://1.0.0.1/dns-query", null));
-private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getDefaultHlsVideoQuality(),
+    private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getDefaultHlsVideoQuality(),
         new String[]{
                 LocaleController.getString(R.string.QualityAuto),
                 LocaleController.getString(R.string.QualityOriginal),
@@ -218,11 +219,9 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
             LocaleController.getString("Enable", R.string.Enable),
             LocaleController.getString("Disable", R.string.Disable)
     }, null));
-
     private final AbstractConfigCell forceBlurInChatRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.forceBlurInChat));
     private final AbstractConfigCell header_chatblur = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("ChatBlurAlphaValue")));
     private final AbstractConfigCell chatBlurAlphaValueRow = cellGroup.appendCell(new ConfigCellCustom("ChatBlurAlphaValue", ConfigCellCustom.CUSTOM_ITEM_CharBlurAlpha, NekoConfig.forceBlurInChat.Bool()));
-
     private final AbstractConfigCell disableDialogsFloatingButtonRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableDialogsFloatingButton()));
     private final AbstractConfigCell centerActionBarTitleRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getCenterActionBarTitle()));
     private final AbstractConfigCell hidePremiumSectionRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHidePremiumSection()));
@@ -230,6 +229,7 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
     private final AbstractConfigCell showStickersRowToplevelRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowStickersRowToplevel()));
     private final AbstractConfigCell hideShareButtonInChannelRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideShareButtonInChannel()));
     private final AbstractConfigCell divider5 = cellGroup.appendCell(new ConfigCellDivider());
+
     // Privacy
     private final AbstractConfigCell header6 = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("PrivacyTitle")));
     private final AbstractConfigCell disableSystemAccountRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableSystemAccount));
@@ -273,9 +273,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
     private final AbstractConfigCell win32Row = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableAutoDownloadingWin32Executable));
     private final AbstractConfigCell archiveRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableAutoDownloadingArchive));
     private final AbstractConfigCell dividerAutoDownload = cellGroup.appendCell(new ConfigCellDivider());
-
-    private ChatBlurAlphaSeekBar chatBlurAlphaSeekbar;
-    private UndoView restartTooltip;
 
     public NekoGeneralSettingsActivity() {
         if (!NaConfig.INSTANCE.getEnableSeparateArticleTranslator().Bool()) {
@@ -434,12 +431,12 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
             } else if (key.equals(NekoConfig.disableAppBarShadow.getKey())) {
                 ActionBarLayout.headerShadowDrawable = (boolean) newValue ? null : parentLayout.getParentActivity().getResources().getDrawable(R.drawable.header_shadow).mutate();
                 parentLayout.rebuildFragments(INavigationLayout.REBUILD_FLAG_REBUILD_LAST | INavigationLayout.REBUILD_FLAG_REBUILD_ONLY_LAST);
-            } else if (NekoConfig.forceBlurInChat.getKey().equals(key)) {
+            } else if (key.equals(NekoConfig.forceBlurInChat.getKey())) {
                 boolean enabled = (Boolean) newValue;
                 if (chatBlurAlphaSeekbar != null)
                     chatBlurAlphaSeekbar.setEnabled(enabled);
                 ((ConfigCellCustom) chatBlurAlphaValueRow).enabled = enabled;
-            } else if (NekoConfig.useOSMDroidMap.getKey().equals(key)) {
+            } else if (key.equals(NekoConfig.useOSMDroidMap.getKey())) {
                 boolean enabled = (Boolean) newValue;
                 ((ConfigCellTextCheck) mapDriftingFixForGoogleMapsRow).setEnabled(!enabled);
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(mapDriftingFixForGoogleMapsRow));
@@ -507,6 +504,15 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
             } else if (key.equals(NaConfig.INSTANCE.getPreferredTranslateTargetLang().getKey())) {
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translateToLangRow));
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translateInputToLangRow));
+            } else if (key.equals(NaConfig.INSTANCE.getIgnoreFolderCount().getKey())) {
+                setCanNotChange();
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(ignoreMutedCountRow));
+                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+            } else if (key.equals(NekoConfig.ignoreMutedCount.getKey())) {
+                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+            } else if (key.equals(NekoConfig.hideProxyByDefault.getKey())) {
+                setCanNotChange();
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useProxyItemRow));
             }
         };
 
@@ -767,7 +773,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                     break;
                 case CellGroup.ITEM_TYPE_TEXT:
                     view = new TextInfoPrivacyCell(mContext);
-                    // view.setBackground(Theme.getThemedDrawable(mContext, R.drawable.greydivider, Theme.key_windowBackgroundGrayShadow));
                     break;
                 case ConfigCellCustom.CUSTOM_ITEM_ProfilePreview:
                     view = profilePreviewCell = new DrawerProfilePreviewCell(mContext);
@@ -786,9 +791,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
     }
 
     private void setCanNotChange() {
-//        if (!NekoXConfig.isDeveloper())
-//            cellGroup.rows.remove(hideSponsoredMessageRow);
-
         if (NekoConfig.useOSMDroidMap.Bool())
             ((ConfigCellTextCheck) mapDriftingFixForGoogleMapsRow).setEnabled(false);
 
@@ -803,10 +805,15 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
 
         enabled = NaConfig.INSTANCE.getPushServiceType().Int() == 0;
         ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabled(enabled);
+
+        enabled = NaConfig.INSTANCE.getIgnoreFolderCount().Bool();
+        ((ConfigCellTextCheck) ignoreMutedCountRow).setEnabled(!enabled);
+
+        enabled = NekoConfig.hideProxyByDefault.Bool();
+        ((ConfigCellTextCheck) useProxyItemRow).setEnabled(!enabled);
     }
 
     //Custom dialogs
-
     private void customDialog_BottomInputString(int position, ConfigItem bind, String subtitle, String hint) {
         BottomBuilder builder = new BottomBuilder(getParentActivity());
 
