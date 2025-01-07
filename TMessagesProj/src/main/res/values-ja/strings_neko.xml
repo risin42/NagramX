@@ -122,8 +122,6 @@
     <string name="TakeGIFasVideo">GIF をビデオとして表示</string>
     <string name="DontSendGreetingSticker">挨拶ステッカーを送信しない</string>
     <string name="hideGroupSticker">グループステッカーを非表示</string>
-    <string name="enablePublicProxy">NekoX パブリックプロキシ</string>
-    <string name="autoUpdateSubInfo">プロキシを自動更新</string>
     <string name="hideSendAsChannel">チャンネルとして送信を非表示</string>
     <string name="showSpoilersDirectly">ネタバレ情報を直接表示</string>
     <string name="SaveToDownloadCount_zero">%1$d個のファイルをダウンロードに保存しています</string>

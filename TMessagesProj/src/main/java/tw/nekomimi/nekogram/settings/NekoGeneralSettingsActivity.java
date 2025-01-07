@@ -250,7 +250,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
     private final AbstractConfigCell useSystemUnlockRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getUseSystemUnlock()));
     private final AbstractConfigCell disableUndoRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableUndo));
     private final AbstractConfigCell showIdAndDcRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.showIdAndDc));
-    private final AbstractConfigCell inappCameraRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.inappCamera));
     private final AbstractConfigCell autoPauseVideoRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.autoPauseVideo, LocaleController.getString("AutoPauseVideoAbout")));
     private final AbstractConfigCell disableNumberRoundingRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableNumberRounding, "4.8K -> 4777"));
     private final AbstractConfigCell nameOrderRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NekoConfig.nameOrder, new String[]{
@@ -393,9 +392,6 @@ private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCel
                         ConnectionsManager.native_setIpStrategy(a, ConnectionsManager.getIpStrategy());
                     }
                 }
-            } else if (key.equals(NekoConfig.inappCamera.getKey())) {
-                SharedConfig.setInappCamera((boolean) newValue);
-                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
             } else if (key.equals(NekoConfig.hidePhone.getKey())) {
                 parentLayout.rebuildAllFragmentViews(false, false);
                 getNotificationCenter().postNotificationName(NotificationCenter.mainUserInfoChanged);

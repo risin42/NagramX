@@ -121,8 +121,6 @@
     <string name="disableSwipeToNextChannel">Disable Swipe to Next Channel</string>
     <string name="disableChoosingSticker">Send Typing Instead of Choosing Sticker</string>
     <string name="disableRemoteEmojiInteractions">Disable Emoji Interactions from Remote</string>
-    <string name="enablePublicProxy">NekoX Public Proxy</string>
-    <string name="autoUpdateSubInfo">Update proxies automatically</string>
     <string name="hideSendAsChannel">Hide Send as Channel</string>
     <string name="showSpoilersDirectly">Show Spoiler Messages Directly</string>
     <string name="SaveToDownloadCount_zero">Saving %1$d files to downloads</string>

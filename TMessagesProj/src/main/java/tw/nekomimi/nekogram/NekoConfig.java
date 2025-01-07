@@ -39,17 +39,11 @@ public class NekoConfig {
     public static ConfigItem disableInstantCamera = addConfig("DisableInstantCamera", configTypeBool, true);
     public static ConfigItem showSeconds = addConfig("showSeconds", configTypeBool, false);
 
-    public static ConfigItem enablePublicProxy = addConfig("enablePublicProxy", configTypeBool, false);
-    public static ConfigItem autoUpdateSubInfo = addConfig("autoUpdateSubInfo", configTypeBool, false);
-    public static ConfigItem lastUpdateCheckTime = addConfig("lastUpdateCheckTime", configTypeLong, 0L);
-
     // From NekoConfig
     public static ConfigItem useIPv6 = addConfig("IPv6", configTypeBool, false);
     public static ConfigItem hidePhone = addConfig("HidePhone", configTypeBool, true);
     public static ConfigItem ignoreBlocked = addConfig("IgnoreBlocked", configTypeBool, false);
     public static ConfigItem tabletMode = addConfig("TabletMode", configTypeInt, 0);
-    public static ConfigItem inappCamera = addConfig("DebugMenuEnableCamera", configTypeBool, false); // fake
-    public static ConfigItem smoothKeyboard = addConfig("DebugMenuEnableSmoothKeyboard", configTypeBool, false);// fake
 
     public static ConfigItem typeface = addConfig("TypefaceUseDefault", configTypeBool, false);
     public static ConfigItem nameOrder = addConfig("NameOrder", configTypeInt, 1);
