@@ -140,7 +140,7 @@
     <string name="channelLabel">channel</string>
     <string name="forceBlurInChat">Force Enable Chat Blur</string>
     <string name="ChatBlurAlphaValue">Chat Blur Alpha</string>
-    <string name="disablePremiumStickerAnimation">Disable premium sticker animation</string>
+    <string name="disablePremiumStickerAnimation">Disable Premium Sticker Animations</string>
     <string name="SelectAnIcon">Choose an icon</string>
     <string name="MutualContact">Mutual contact</string>
     <string name="MutualContactDescription">This contact is a mutual contact.</string>

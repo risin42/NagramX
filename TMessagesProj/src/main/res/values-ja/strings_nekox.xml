@@ -77,9 +77,9 @@
     <string name="SortByUnmuted">ミュートなしで並べ替え</string>
     <string name="SortByUser">ユーザーで並べ替え</string>
     <string name="SortByContacts">連絡先で並べ替え</string>
-    <string name="NekoXPushService">NekoX プッシュサービス</string>
-    <string name="EnablePushAlert">\"NekoX プッシュサービス\"を有効にしてください</string>
-    <string name="DisablePushAlert">\"NekoX プッシュサービス\"を無効にしてください</string>
+    <string name="NekoXPushService">Nagram プッシュサービス</string>
+    <string name="EnablePushAlert">\"Nagram プッシュサービス\"を有効にしてください</string>
+    <string name="DisablePushAlert">\"Nagram プッシュサービス\"を無効にしてください</string>
     <string name="DisableUndo">取り消しを無効にする</string>
     <string name="DisableSystemAccount">システムアカウントを無効にする</string>
     <string name="FilterMenu">ダイアログフィルターメニュー</string>
