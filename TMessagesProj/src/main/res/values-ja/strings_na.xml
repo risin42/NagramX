@@ -124,7 +124,7 @@
     <string name="SendMp4DocumentAsVideo">MP4 動画をファイルとして送信するときにプレビュー可能にする</string>
     <string name="StickersChooseShortNameForStickerPack">パックの短い名前を選択してください</string>
     <string name="StickersCopyStickerSet">ステッカーパック全体をコピー</string>
-    <string name="DisableChannelMuteButton">チャンネルチャットページのミュートボタンを無効にする</string>
+    <string name="DisableChannelMuteButton">チャンネルでボトムバーを非表示</string>
     <string name="DisablePreviewVideoSoundShortcut">プレビュー音声ショートカットを無効にする</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">音量キーによるプレビュービデオの音声オンを無効にします。</string>
     <string name="DisableAutoWebLogin">公式 Web サイトの自動ログインを無効にする</string>

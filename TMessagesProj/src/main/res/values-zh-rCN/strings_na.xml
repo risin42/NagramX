@@ -124,7 +124,7 @@
     <string name="SendMp4DocumentAsVideo">MP4 视频作为文件发送时可预览</string>
     <string name="StickersChooseShortNameForStickerPack">为您的包选择一个简短的名称。</string>
     <string name="StickersCopyStickerSet">复制整个贴纸包</string>
-    <string name="DisableChannelMuteButton">禁用频道聊天页面的静音按钮</string>
+    <string name="DisableChannelMuteButton">在频道中隐藏底栏</string>
     <string name="DisablePreviewVideoSoundShortcut">禁用预览视频音量快捷键</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">禁用音量键快捷开启预览视频的声音。</string>
     <string name="DisableAutoWebLogin">禁用官方网页自动登录</string>

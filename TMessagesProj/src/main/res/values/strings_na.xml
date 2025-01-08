@@ -124,7 +124,7 @@
     <string name="SendMp4DocumentAsVideo">Send MP4 Document as Video</string>
     <string name="StickersChooseShortNameForStickerPack">Choose a short name for your pack.</string>
     <string name="StickersCopyStickerSet">Copy Sticker Set</string>
-    <string name="DisableChannelMuteButton">Disable Channel Mute Button</string>
+    <string name="DisableChannelMuteButton">Hide Bottom Bar in Channels</string>
     <string name="DisablePreviewVideoSoundShortcut">Disable Unmute Videos with Volume Buttons</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Prevent volume key from enabling preview video sound.</string>
     <string name="DisableAutoWebLogin">Disable Auto Web Login</string>
