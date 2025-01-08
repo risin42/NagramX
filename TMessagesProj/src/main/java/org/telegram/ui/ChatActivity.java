@@ -9941,7 +9941,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private boolean isBottomOverlayHidden() {
-        return NaConfig.INSTANCE.getDisableChannelMuteButton().Bool() && isChannelBottomMuteView && !currentChat.creator && !ChatObject.canWriteToChat(currentChat);
+        return currentChat != null && NaConfig.INSTANCE.getDisableChannelMuteButton().Bool() && isChannelBottomMuteView && !currentChat.creator && !ChatObject.canWriteToChat(currentChat);
     }
 
     @Override
