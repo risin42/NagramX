@@ -182,7 +182,7 @@ public class UndoView extends FrameLayout {
     public final static int ACTION_EMAIL_COPIED = 80;
     public final static int ACTION_CLEAR_DATES = 81;
 
-    public final static int ACTION_NEED_RESATRT = 100;
+    public final static int ACTION_NEED_RESTART = 100;
 
     public final static int ACTION_PREVIEW_MEDIA_DESELECTED = 82;
     public static int ACTION_RINGTONE_ADDED = 83;
@@ -524,7 +524,7 @@ public class UndoView extends FrameLayout {
 
         infoTextView.setMovementMethod(null);
 
-        if (currentAction == ACTION_NEED_RESATRT) {
+        if (currentAction == ACTION_NEED_RESTART) {
             infoTextView.setText(LocaleController.getString("RestartAppToTakeEffect", R.string.RestartAppToTakeEffect));
 
             layoutParams.leftMargin = AndroidUtilities.dp(58);

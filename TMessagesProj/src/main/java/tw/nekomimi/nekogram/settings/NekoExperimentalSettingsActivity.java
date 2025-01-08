@@ -190,7 +190,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 int externalStickerCacheIndex = cellGroup.rows.indexOf(externalStickerCacheRow);
                 listAdapter.notifyItemRangeRemoved(externalStickerCacheIndex + 2, externalStickerRows.size());
             }
-            tooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+            tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
         } else {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             startActivityForResult(intent, INTENT_PICK_EXTERNAL_STICKER_DIRECTORY);
@@ -348,7 +348,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             } else if (key.equals(NekoConfig.useCustomEmoji.getKey())) {
                 // Check
                 if (!(boolean) newValue) {
-                    tooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+                    tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
                     return;
                 }
                 NekoConfig.useCustomEmoji.setConfigBool(false);
@@ -360,9 +360,9 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 Activity act = getParentActivity();
                 act.startActivityFromChild(act, intent, INTENT_PICK_CUSTOM_EMOJI_PACK);
             } else if (key.equals(NekoConfig.localeToDBC.getKey())) {
-                tooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+                tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getDisableFlagSecure().getKey())) {
-                tooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+                tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NekoConfig.disableChatAction.getKey())) {
                 setCanNotChange();
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(disableChoosingStickerRow));
@@ -411,7 +411,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 NekoConfig.useCustomEmoji.setConfigBool(false);
                 Toast.makeText(ApplicationLoader.applicationContext, "Failed: " + e.toString(), Toast.LENGTH_LONG).show();
             }
-            tooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+            tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
         } else if (requestCode == INTENT_PICK_EXTERNAL_STICKER_DIRECTORY && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             // reserve permissions
@@ -420,7 +420,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             // save config
             NaConfig.INSTANCE.setExternalStickerCacheUri(uri);
             refreshExternalStickerStorageState();
-            tooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+            tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
         }
     }
 
