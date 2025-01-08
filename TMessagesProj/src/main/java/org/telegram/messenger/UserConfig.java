@@ -571,11 +571,10 @@ public class UserConfig extends BaseController {
     }
 
     public boolean isPremium() {
-        TLRPC.User user = currentUser;
-        if (user == null) {
-            return false;
+        if (currentUser == null) {
+            NekoConfig.localPremium.Bool();
         }
-        return user.premium || NekoConfig.localPremium.Bool();
+        return currentUser.premium || NekoConfig.localPremium.Bool();
     }
 
     public Long getEmojiStatus() {
