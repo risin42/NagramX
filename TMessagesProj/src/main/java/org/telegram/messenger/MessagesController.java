@@ -1,10 +1,54 @@
-/*
- * This is the source code of Telegram for Android v. 5.x.x.
- * It is licensed under GNU GPL v. 2 or later.
- * You should have received a copy of the license in this archive (see LICENSE).
- *
- * Copyright Nikolai Kudashov, 2013-2018.
- */
+
+
+    public void lockFiltersInternal() {
+        boolean changed = false;
+        if (!getUserConfig().isPremium() && dialogFilters.size() - 1 > dialogFiltersLimitDefault) {
+            int n = dialogFilters.size() - 1 - dialogFiltersLimitDefault;
+            ArrayList<DialogFilter> filtersSortedById = new ArrayList<>(dialogFilters);
+            Collections.reverse(filtersSortedById);
+            for (int i = 0; i < filtersSortedById.size(); i++) {
+                if (i < n) {
+                    if (!filtersSortedById.get(i).locked) {
+                        changed = true;
+                    }
+                    filtersSortedById.get(i).locked = true;
+                } else {
+                    if (filtersSortedById.get(i).locked) {
+                        changed = true;
+                    }
+                    filtersSortedById.get(i).locked = false;
+                }
+            }
+        }
+        if (changed) {
+            getNotificationCenter().postNotificationName(NotificationCenter.dialogFiltersUpdated);
+        }
+    }
+
+    public int getCaptionMaxLengthLimit() {
+        return getUserConfig().isPremium() ? captionLengthLimitPremium : captionLengthLimitDefault;
+    }
+
+    public int getAboutLimit() {
+        return getUserConfig().isPremium() ? aboutLengthLimitPremium : aboutLengthLimitDefault;
+    }
+
+    public int getMaxUserReactionsCount() {
+        return getUserConfig().isPremium() ? reactionsUserMaxPremium : reactionsUserMaxDefault;
+    }
+
+    public int getChatReactionsCount() {
+        return getUserConfig().isPremium() ? reactionsInChatMax : 1;
+    }
+
+    public int getChatMaxUniqReactions(long dialogId) {
+        TLRPC.ChatFull chatFull = MessagesController.getInstance(curren/*
+         * This is the source code of Telegram for Android v. 5.x.x.
+         * It is licensed under GNU GPL v. 2 or later.
+         * You should have received a copy of the license in this archive (see LICENSE).
+         *
+         * Copyright Nikolai Kudashov, 2013-2018.
+         */
 
 package org.telegram.messenger;
 
@@ -129,721 +173,677 @@ import com.radolyn.ayugram.messages.AyuSavePreferences;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.utils.AyuState;
 
-public class MessagesController extends BaseController implements NotificationCenter.NotificationCenterDelegate {
+            public class MessagesController extends BaseController implements NotificationCenter.NotificationCenterDelegate {
 
-    public int lastKnownSessionsCount;
-    private final ConcurrentHashMap<Long, TLRPC.Chat> chats = new ConcurrentHashMap<>(100, 1.0f, 2);
-    private final ConcurrentHashMap<Integer, TLRPC.EncryptedChat> encryptedChats = new ConcurrentHashMap<>(10, 1.0f, 2);
-    private final ConcurrentHashMap<Long, TLRPC.User> users = new ConcurrentHashMap<>(100, 1.0f, 3);
-    private final ConcurrentHashMap<String, TLObject> objectsByUsernames = new ConcurrentHashMap<>(100, 1.0f, 2);
-    public static int stableIdPointer = 100;
+                public int lastKnownSessionsCount;
+                private final ConcurrentHashMap<Long, TLRPC.Chat> chats = new ConcurrentHashMap<>(100, 1.0f, 2);
+                private final ConcurrentHashMap<Integer, TLRPC.EncryptedChat> encryptedChats = new ConcurrentHashMap<>(10, 1.0f, 2);
+                private final ConcurrentHashMap<Long, TLRPC.User> users = new ConcurrentHashMap<>(100, 1.0f, 3);
+                private final ConcurrentHashMap<String, TLObject> objectsByUsernames = new ConcurrentHashMap<>(100, 1.0f, 2);
+                public static int stableIdPointer = 100;
 
-    private final HashMap<Long, TLRPC.Chat> activeVoiceChatsMap = new HashMap<>();
+                private final HashMap<Long, TLRPC.Chat> activeVoiceChatsMap = new HashMap<>();
 
-    private final ArrayList<Long> joiningToChannels = new ArrayList<>();
+                private final ArrayList<Long> joiningToChannels = new ArrayList<>();
 
-    private final LongSparseArray<TLRPC.TL_chatInviteExported> exportedChats = new LongSparseArray<>();
+                private final LongSparseArray<TLRPC.TL_chatInviteExported> exportedChats = new LongSparseArray<>();
 
-    public ArrayList<TLRPC.RecentMeUrl> hintDialogs = new ArrayList<>();
-    public SparseArray<ArrayList<TLRPC.Dialog>> dialogsByFolder = new SparseArray<>();
-    protected ArrayList<TLRPC.Dialog> allDialogs = new ArrayList<>();
-    public ArrayList<TLRPC.Dialog> dialogsForward = new ArrayList<>();
-    public ArrayList<TLRPC.Dialog> dialogsServerOnly = new ArrayList<>();
-    public ArrayList<TLRPC.Dialog> dialogsCanAddUsers = new ArrayList<>();
-    public ArrayList<TLRPC.Dialog> dialogsMyChannels = new ArrayList<>();
-    public ArrayList<TLRPC.Dialog> dialogsMyGroups = new ArrayList<>();
-    public ArrayList<TLRPC.Dialog> dialogsChannelsOnly = new ArrayList<>();
-    public ArrayList<TLRPC.Dialog> dialogsUsersOnly = new ArrayList<>();
-    public ArrayList<TLRPC.Dialog> dialogsForBlock = new ArrayList<>();
-    public ArrayList<TLRPC.Dialog> dialogsGroupsOnly = new ArrayList<>();
-    public DialogFilter[] selectedDialogFilter = new DialogFilter[2];
-    private int dialogsLoadedTillDate = Integer.MAX_VALUE;
-    public int unreadUnmutedDialogs;
-    public ConcurrentHashMap<Long, Integer> dialogs_read_inbox_max = new ConcurrentHashMap<>(100, 1.0f, 2);
-    public ConcurrentHashMap<Long, Integer> dialogs_read_outbox_max = new ConcurrentHashMap<>(100, 1.0f, 2);
-    public LongSparseArray<TLRPC.Dialog> dialogs_dict = new LongSparseArray<>();
-    public LongSparseArray<ArrayList<MessageObject>> dialogMessage = new LongSparseArray<>();
-    // NekoX: ignoreBlocked, Messages cache for Dialog Cell
-    public LongSparseArray<MessageObject> dialogMessageFromUnblocked = new LongSparseArray<>();
-    public LongSparseArray<MessageObject> dialogMessagesByRandomIds = new LongSparseArray<>();
-    public LongSparseIntArray deletedHistory = new LongSparseIntArray();
-    public SparseArray<MessageObject> dialogMessagesByIds = new SparseArray<>();
-    public ConcurrentHashMap<Long, ConcurrentHashMap<Integer, ArrayList<PrintingUser>>> printingUsers = new ConcurrentHashMap<>(20, 1.0f, 2);
-    public LongSparseArray<LongSparseArray<CharSequence>> printingStrings = new LongSparseArray<>();
-    public LongSparseArray<LongSparseArray<Integer>> printingStringsTypes = new LongSparseArray<>();
-    public LongSparseArray<LongSparseArray<Boolean>>[] sendingTypings = new LongSparseArray[12];
-    public ConcurrentHashMap<Long, Integer> onlinePrivacy = new ConcurrentHashMap<>(20, 1.0f, 2);
-    private LongSparseIntArray pendingUnreadCounter = new LongSparseIntArray();
-    private int lastPrintingStringCount;
-    private SparseArray<ChatlistUpdatesStat> chatlistFoldersUpdates = new SparseArray<>();
-    public int largeQueueMaxActiveOperations = 2;
-    public int smallQueueMaxActiveOperations = 5;
-    public int stealthModeFuture;
-    public int stealthModePast;
-    public int stealthModeCooldown;
-    public StoriesController storiesController;
-    public SavedMessagesController savedMessagesController;
-    public UnconfirmedAuthController unconfirmedAuthController;
-    private boolean hasArchivedChats;
-    private boolean hasStories;
-    public long storiesChangelogUserId = 777000;
-    private ChannelBoostsController channelBoostsControler;
-    public long giveawayAddPeersMax = 10;
-    public long giveawayPeriodMax = 7;
-    public long giveawayCountriesMax = 10;
-    public long giveawayBoostsPerPremium = 4;
-    public long boostsPerSentGift = 3;
+                public ArrayList<TLRPC.RecentMeUrl> hintDialogs = new ArrayList<>();
+                public SparseArray<ArrayList<TLRPC.Dialog>> dialogsByFolder = new SparseArray<>();
+                protected ArrayList<TLRPC.Dialog> allDialogs = new ArrayList<>();
+                public ArrayList<TLRPC.Dialog> dialogsForward = new ArrayList<>();
+                public ArrayList<TLRPC.Dialog> dialogsServerOnly = new ArrayList<>();
+                public ArrayList<TLRPC.Dialog> dialogsCanAddUsers = new ArrayList<>();
+                public ArrayList<TLRPC.Dialog> dialogsMyChannels = new ArrayList<>();
+                public ArrayList<TLRPC.Dialog> dialogsMyGroups = new ArrayList<>();
+                public ArrayList<TLRPC.Dialog> dialogsChannelsOnly = new ArrayList<>();
+                public ArrayList<TLRPC.Dialog> dialogsUsersOnly = new ArrayList<>();
+                public ArrayList<TLRPC.Dialog> dialogsForBlock = new ArrayList<>();
+                public ArrayList<TLRPC.Dialog> dialogsGroupsOnly = new ArrayList<>();
+                public DialogFilter[] selectedDialogFilter = new DialogFilter[2];
+                private int dialogsLoadedTillDate = Integer.MAX_VALUE;
+                public int unreadUnmutedDialogs;
+                public ConcurrentHashMap<Long, Integer> dialogs_read_inbox_max = new ConcurrentHashMap<>(100, 1.0f, 2);
+                public ConcurrentHashMap<Long, Integer> dialogs_read_outbox_max = new ConcurrentHashMap<>(100, 1.0f, 2);
+                public LongSparseArray<TLRPC.Dialog> dialogs_dict = new LongSparseArray<>();
+                public LongSparseArray<ArrayList<MessageObject>> dialogMessage = new LongSparseArray<>();
+                // NekoX: ignoreBlocked, Messages cache for Dialog Cell
+                public LongSparseArray<MessageObject> dialogMessageFromUnblocked = new LongSparseArray<>();
+                public LongSparseArray<MessageObject> dialogMessagesByRandomIds = new LongSparseArray<>();
+                public LongSparseIntArray deletedHistory = new LongSparseIntArray();
+                public SparseArray<MessageObject> dialogMessagesByIds = new SparseArray<>();
+                public ConcurrentHashMap<Long, ConcurrentHashMap<Integer, ArrayList<PrintingUser>>> printingUsers = new ConcurrentHashMap<>(20, 1.0f, 2);
+                public LongSparseArray<LongSparseArray<CharSequence>> printingStrings = new LongSparseArray<>();
+                public LongSparseArray<LongSparseArray<Integer>> printingStringsTypes = new LongSparseArray<>();
+                public LongSparseArray<LongSparseArray<Boolean>>[] sendingTypings = new LongSparseArray[12];
+                public ConcurrentHashMap<Long, Integer> onlinePrivacy = new ConcurrentHashMap<>(20, 1.0f, 2);
+                private LongSparseIntArray pendingUnreadCounter = new LongSparseIntArray();
+                private int lastPrintingStringCount;
+                private SparseArray<org.telegram.messenger.MessagesController.ChatlistUpdatesStat> chatlistFoldersUpdates = new SparseArray<>();
+                public int largeQueueMaxActiveOperations = 2;
+                public int smallQueueMaxActiveOperations = 5;
+                public int stealthModeFuture;
+                public int stealthModePast;
+                public int stealthModeCooldown;
+                public StoriesController storiesController;
+                public SavedMessagesController savedMessagesController;
+                public UnconfirmedAuthController unconfirmedAuthController;
+                private boolean hasArchivedChats;
+                private boolean hasStories;
+                public long storiesChangelogUserId = 777000;
+                private ChannelBoostsController channelBoostsControler;
+                public long giveawayAddPeersMax = 10;
+                public long giveawayPeriodMax = 7;
+                public long giveawayCountriesMax = 10;
+                public long giveawayBoostsPerPremium = 4;
+                public long boostsPerSentGift = 3;
 
-    public static TLRPC.Peer getPeerFromInputPeer(TLRPC.InputPeer peer) {
-        if (peer.chat_id != 0) {
-            TLRPC.TL_peerChat peerChat = new TLRPC.TL_peerChat();
-            peerChat.chat_id = peer.chat_id;
-            return peerChat;
-        } else if (peer.channel_id != 0) {
-            TLRPC.TL_peerChannel peerChannel = new TLRPC.TL_peerChannel();
-            peerChannel.channel_id = peer.channel_id;
-            return peerChannel;
-        } else {
-            TLRPC.TL_peerUser peerUser = new TLRPC.TL_peerUser();
-            peerUser.user_id = peer.user_id;
-            return peerUser;
-        }
-    }
-
-    public ChannelBoostsController getBoostsController() {
-        if (channelBoostsControler != null) {
-            return channelBoostsControler;
-        }
-        synchronized (lockObject) {
-            if (channelBoostsControler != null) {
-                return channelBoostsControler;
-            }
-            channelBoostsControler = new ChannelBoostsController(currentAccount);
-        }
-        return channelBoostsControler;
-    }
-
-    class ChatlistUpdatesStat {
-        public ChatlistUpdatesStat() {
-            this.loading = true;
-        }
-        public ChatlistUpdatesStat(TL_chatlists.TL_chatlists_chatlistUpdates value) {
-            this.lastRequestTime = System.currentTimeMillis();
-            this.lastValue = value;
-        }
-        boolean loading = false;
-        long lastRequestTime;
-        TL_chatlists.TL_chatlists_chatlistUpdates lastValue;
-    }
-
-    private boolean dialogsInTransaction;
-
-    private LongSparseArray<Boolean> loadingPeerSettings = new LongSparseArray<>();
-
-    private ArrayList<Long> createdDialogIds = new ArrayList<>();
-    private ArrayList<Long> createdScheduledDialogIds = new ArrayList<>();
-    private ArrayList<Long> createdDialogMainThreadIds = new ArrayList<>();
-    private ArrayList<Long> visibleDialogMainThreadIds = new ArrayList<>();
-    private ArrayList<Long> visibleScheduledDialogMainThreadIds = new ArrayList<>();
-
-    private LongSparseIntArray shortPollChannels = new LongSparseIntArray();
-    private LongSparseArray<ArrayList<Integer>> needShortPollChannels = new LongSparseArray<>();
-    private LongSparseIntArray shortPollOnlines = new LongSparseIntArray();
-    private LongSparseArray<ArrayList<Integer>> needShortPollOnlines = new LongSparseArray<>();
-
-    private LongSparseArray<TLRPC.Dialog> deletingDialogs = new LongSparseArray<>();
-    private LongSparseArray<TLRPC.Dialog> clearingHistoryDialogs = new LongSparseArray<>();
-
-    public boolean loadingBlockedPeers = false;
-    public LongSparseIntArray blockePeers = new LongSparseIntArray();
-    public int totalBlockedCount = -1;
-    public boolean blockedEndReached;
-
-    private LongSparseArray<ArrayList<Integer>> channelViewsToSend = new LongSparseArray<>();
-    private LongSparseArray<SparseArray<MessageObject>> pollsToCheck = new LongSparseArray<>();
-    private int pollsToCheckSize;
-    private long lastViewsCheckTime;
-    public SparseIntArray premiumFeaturesTypesToPosition = new SparseIntArray();
-
-    public SparseIntArray businessFeaturesTypesToPosition = new SparseIntArray();
-
-    public ArrayList<DialogFilter> dialogFilters = new ArrayList<>();
-    public ArrayList<DialogFilter> frozenDialogFilters = null;
-    public ArrayList<Long> hiddenUndoChats = new ArrayList<>();
-    public SparseArray<DialogFilter> dialogFiltersById = new SparseArray<>();
-    private boolean loadingSuggestedFilters;
-    private boolean loadingRemoteFilters;
-    public boolean dialogFiltersLoaded;
-    public ArrayList<TLRPC.TL_dialogFilterSuggested> suggestedFilters = new ArrayList<>();
-
-    private final LongSparseArray<ArrayList<TLRPC.Updates>> updatesQueueChannels = new LongSparseArray<>();
-    private LongSparseLongArray updatesStartWaitTimeChannels = new LongSparseLongArray();
-    private LongSparseIntArray channelsPts = new LongSparseIntArray();
-    private LongSparseArray<Boolean> gettingDifferenceChannels = new LongSparseArray<>();
-    private LongSparseArray<Boolean> gettingChatInviters = new LongSparseArray<>();
-
-    private LongSparseArray<Boolean> gettingUnknownChannels = new LongSparseArray<>();
-    private LongSparseArray<Boolean> gettingUnknownDialogs = new LongSparseArray<>();
-    private LongSparseArray<Boolean> checkingLastMessagesDialogs = new LongSparseArray<>();
-
-    private ArrayList<TLRPC.Updates> updatesQueueSeq = new ArrayList<>();
-    private ArrayList<TLRPC.Updates> updatesQueuePts = new ArrayList<>();
-    private ArrayList<TLRPC.Updates> updatesQueueQts = new ArrayList<>();
-    private long updatesStartWaitTimeSeq;
-    private long updatesStartWaitTimePts;
-    private long updatesStartWaitTimeQts;
-    private LongSparseArray<TLRPC.UserFull> fullUsers = new LongSparseArray<>();
-    private LongSparseArray<TLRPC.ChatFull> fullChats = new LongSparseArray<>();
-    private LongSparseArray<ChatObject.Call> groupCalls = new LongSparseArray<>();
-    private LongSparseArray<ChatObject.Call> groupCallsByChatId = new LongSparseArray<>();
-    private HashSet<Long> loadingFullUsers = new HashSet<>();
-    private LongSparseLongArray loadedFullUsers = new LongSparseLongArray();
-    private HashSet<Long> loadingFullChats = new HashSet<>();
-    private HashSet<Long> loadingGroupCalls = new HashSet<>();
-    private HashSet<Long> loadingFullParticipants = new HashSet<>();
-    private HashSet<Long> loadedFullParticipants = new HashSet<>();
-    public LongSparseLongArray loadedFullChats = new LongSparseLongArray();
-    private LongSparseArray<LongSparseArray<TLRPC.ChannelParticipant>> channelAdmins = new LongSparseArray<>();
-    private LongSparseIntArray loadingChannelAdmins = new LongSparseIntArray();
-
-    private SparseIntArray migratedChats = new SparseIntArray();
-
-    private LongSparseArray<SponsoredMessagesInfo> sponsoredMessages = new LongSparseArray<>();
-    private LongSparseArray<SendAsPeersInfo> sendAsPeers = new LongSparseArray<>();
-
-    private HashMap<String, ArrayList<MessageObject>> reloadingWebpages = new HashMap<>();
-    private LongSparseArray<ArrayList<MessageObject>> reloadingWebpagesPending = new LongSparseArray<>();
-    private HashMap<String, ArrayList<MessageObject>> reloadingScheduledWebpages = new HashMap<>();
-    private LongSparseArray<ArrayList<MessageObject>> reloadingScheduledWebpagesPending = new LongSparseArray<>();
-    private HashMap<String, ArrayList<MessageObject>> reloadingSavedWebpages = new HashMap<>();
-    private LongSparseArray<ArrayList<MessageObject>> reloadingSavedWebpagesPending = new LongSparseArray<>();
-
-    private LongSparseArray<Long> lastScheduledServerQueryTime = new LongSparseArray<>();
-    private LongSparseArray<Long> lastQuickReplyServerQueryTime = new LongSparseArray<>();
-    private LongSparseArray<Long> lastSavedServerQueryTime = new LongSparseArray<>();
-    private LongSparseArray<Long> lastServerQueryTime = new LongSparseArray<>();
-
-    private LongSparseArray<ArrayList<Integer>> reloadingMessages = new LongSparseArray<>();
-
-    private ArrayList<ReadTask> readTasks = new ArrayList<>();
-    private LongSparseArray<ReadTask> readTasksMap = new LongSparseArray<>();
-    private ArrayList<ReadTask> repliesReadTasks = new ArrayList<>();
-    private HashMap<String, ReadTask> threadsReadTasksMap = new HashMap<>();
-
-    private boolean gettingNewDeleteTask;
-    private int currentDeletingTaskTime;
-    private LongSparseArray<ArrayList<Integer>> currentDeletingTaskMids;
-    private LongSparseArray<ArrayList<Integer>> currentDeletingTaskMediaMids;
-    private Runnable currentDeleteTaskRunnable;
-
-    public boolean dialogsLoaded;
-    private SparseIntArray nextDialogsCacheOffset = new SparseIntArray();
-    private SparseBooleanArray loadingDialogs = new SparseBooleanArray();
-    private SparseBooleanArray dialogsEndReached = new SparseBooleanArray();
-    private SparseBooleanArray serverDialogsEndReached = new SparseBooleanArray();
-
-    private boolean loadingUnreadDialogs;
-    private boolean migratingDialogs;
-    public boolean gettingDifference;
-    private boolean getDifferenceFirstSync = true;
-    public boolean updatingState;
-    public boolean firstGettingTask;
-    public boolean registeringForPush;
-    private long lastPushRegisterSendTime;
-    private boolean resetingDialogs;
-    private TLRPC.TL_messages_peerDialogs resetDialogsPinned;
-    private TLRPC.messages_Dialogs resetDialogsAll;
-    private SparseIntArray loadingPinnedDialogs = new SparseIntArray();
-
-    public ArrayList<FaqSearchResult> faqSearchArray = new ArrayList<>();
-    public TLRPC.WebPage faqWebPage;
-
-    private int loadingNotificationSettings;
-    private boolean loadingNotificationSignUpSettings;
-
-    private int nextPromoInfoCheckTime;
-    private boolean checkingPromoInfo;
-    private int checkingPromoInfoRequestId;
-    private int lastCheckPromoId;
-    private TLRPC.Dialog promoDialog;
-    private boolean isLeftPromoChannel;
-    private long promoDialogId;
-    public int promoDialogType;
-    public String promoPsaMessage;
-    public String promoPsaType;
-    private String proxyDialogAddress;
-
-    private boolean checkingTosUpdate;
-    private int nextTosCheckTime;
-
-    public int secretWebpagePreview;
-    public boolean suggestContacts = true;
-
-    private volatile static long lastThemeCheckTime;
-    private Runnable themeCheckRunnable = Theme::checkAutoNightThemeConditions;
-
-    private volatile static long lastPasswordCheckTime;
-    private Runnable passwordCheckRunnable = () -> getUserConfig().checkSavedPassword();
-
-    private long lastStatusUpdateTime;
-    private int statusRequest;
-    private int statusSettingState;
-    private boolean offlineSent;
-
-    public boolean isOnline() {
-        return !offlineSent;
-    }
-
-    private String uploadingAvatar;
-
-    private HashMap<String, Object> uploadingThemes = new HashMap<>();
-
-    public String uploadingWallpaper;
-    public Theme.OverrideWallpaperInfo uploadingWallpaperInfo;
-
-    private UserNameResolver userNameResolver;
-
-    public ArrayList<DialogFilter> getDialogFilters() {
-        if (frozenDialogFilters != null) {
-            return frozenDialogFilters;
-        }
-        return dialogFilters;
-    }
-
-    private final CacheFetcher<Integer, TLRPC.TL_help_appConfig> appConfigFetcher = new CacheFetcher<Integer, TLRPC.TL_help_appConfig>() {
-        @Override
-        protected void getRemote(int currentAccount, Integer arguments, long hash, Utilities.Callback4<Boolean, TLRPC.TL_help_appConfig, Long, Boolean> onResult) {
-            TLRPC.TL_help_getAppConfig req = new TLRPC.TL_help_getAppConfig();
-            req.hash = (int) hash;
-            getConnectionsManager().sendRequest(req, (res, err) -> {
-                if (res instanceof TLRPC.TL_help_appConfigNotModified) {
-                    onResult.run(true, null, 0L, true);
-                } else if (res instanceof TLRPC.TL_help_appConfig) {
-                    onResult.run(false, (TLRPC.TL_help_appConfig) res, (long) ((TLRPC.TL_help_appConfig) res).hash, true);
-                } else {
-                    FileLog.e("getting appconfig error " + (err != null ? err.code + " " + err.text : ""));
-                    onResult.run(false, null, 0L, err == null || !(err.code == -2000 || err.code == -2001));
+                public static TLRPC.Peer getPeerFromInputPeer(TLRPC.InputPeer peer) {
+                    if (peer.chat_id != 0) {
+                        TLRPC.TL_peerChat peerChat = new TLRPC.TL_peerChat();
+                        peerChat.chat_id = peer.chat_id;
+                        return peerChat;
+                    } else if (peer.channel_id != 0) {
+                        TLRPC.TL_peerChannel peerChannel = new TLRPC.TL_peerChannel();
+                        peerChannel.channel_id = peer.channel_id;
+                        return peerChannel;
+                    } else {
+                        TLRPC.TL_peerUser peerUser = new TLRPC.TL_peerUser();
+                        peerUser.user_id = peer.user_id;
+                        return peerUser;
+                    }
                 }
-            });
-        }
 
-        @Override
-        protected void getLocal(int currentAccount, Integer arguments, Utilities.Callback2<Long, TLRPC.TL_help_appConfig> onResult) {
-            getMessagesStorage().getStorageQueue().postRunnable(() -> {
-                SQLiteCursor cursor = null;
-                try {
-                    SQLiteDatabase database = MessagesStorage.getInstance(currentAccount).getDatabase();
-                    if (database != null) {
-                        TLRPC.help_AppConfig maybeResult = null;
-                        cursor = database.queryFinalized("SELECT data FROM app_config");
-                        if (cursor.next()) {
-                            NativeByteBuffer data = cursor.byteBufferValue(0);
-                            if (data != null) {
-                                maybeResult = TLRPC.help_AppConfig.TLdeserialize(data, data.readInt32(false), true);
-                                data.reuse();
+                public ChannelBoostsController getBoostsController() {
+                    if (channelBoostsControler != null) {
+                        return channelBoostsControler;
+                    }
+                    synchronized (lockObject) {
+                        if (channelBoostsControler != null) {
+                            return channelBoostsControler;
+                        }
+                        channelBoostsControler = new ChannelBoostsController(currentAccount);
+                    }
+                    return channelBoostsControler;
+                }
+
+                class ChatlistUpdatesStat {
+                    public ChatlistUpdatesStat() {
+                        this.loading = true;
+                    }
+                    public ChatlistUpdatesStat(TL_chatlists.TL_chatlists_chatlistUpdates value) {
+                        this.lastRequestTime = System.currentTimeMillis();
+                        this.lastValue = value;
+                    }
+                    boolean loading = false;
+                    long lastRequestTime;
+                    TL_chatlists.TL_chatlists_chatlistUpdates lastValue;
+                }
+
+                private boolean dialogsInTransaction;
+
+                private LongSparseArray<Boolean> loadingPeerSettings = new LongSparseArray<>();
+
+                private ArrayList<Long> createdDialogIds = new ArrayList<>();
+                private ArrayList<Long> createdScheduledDialogIds = new ArrayList<>();
+                private ArrayList<Long> createdDialogMainThreadIds = new ArrayList<>();
+                private ArrayList<Long> visibleDialogMainThreadIds = new ArrayList<>();
+                private ArrayList<Long> visibleScheduledDialogMainThreadIds = new ArrayList<>();
+
+                private LongSparseIntArray shortPollChannels = new LongSparseIntArray();
+                private LongSparseArray<ArrayList<Integer>> needShortPollChannels = new LongSparseArray<>();
+                private LongSparseIntArray shortPollOnlines = new LongSparseIntArray();
+                private LongSparseArray<ArrayList<Integer>> needShortPollOnlines = new LongSparseArray<>();
+
+                private LongSparseArray<TLRPC.Dialog> deletingDialogs = new LongSparseArray<>();
+                private LongSparseArray<TLRPC.Dialog> clearingHistoryDialogs = new LongSparseArray<>();
+
+                public boolean loadingBlockedPeers = false;
+                public LongSparseIntArray blockePeers = new LongSparseIntArray();
+                public int totalBlockedCount = -1;
+                public boolean blockedEndReached;
+
+                private LongSparseArray<ArrayList<Integer>> channelViewsToSend = new LongSparseArray<>();
+                private LongSparseArray<SparseArray<MessageObject>> pollsToCheck = new LongSparseArray<>();
+                private int pollsToCheckSize;
+                private long lastViewsCheckTime;
+                public SparseIntArray premiumFeaturesTypesToPosition = new SparseIntArray();
+
+                public SparseIntArray businessFeaturesTypesToPosition = new SparseIntArray();
+
+                public ArrayList<DialogFilter> dialogFilters = new ArrayList<>();
+                public ArrayList<DialogFilter> frozenDialogFilters = null;
+                public ArrayList<Long> hiddenUndoChats = new ArrayList<>();
+                public SparseArray<DialogFilter> dialogFiltersById = new SparseArray<>();
+                private boolean loadingSuggestedFilters;
+                private boolean loadingRemoteFilters;
+                public boolean dialogFiltersLoaded;
+                public ArrayList<TLRPC.TL_dialogFilterSuggested> suggestedFilters = new ArrayList<>();
+
+                private final LongSparseArray<ArrayList<TLRPC.Updates>> updatesQueueChannels = new LongSparseArray<>();
+                private LongSparseLongArray updatesStartWaitTimeChannels = new LongSparseLongArray();
+                private LongSparseIntArray channelsPts = new LongSparseIntArray();
+                private LongSparseArray<Boolean> gettingDifferenceChannels = new LongSparseArray<>();
+                private LongSparseArray<Boolean> gettingChatInviters = new LongSparseArray<>();
+
+                private LongSparseArray<Boolean> gettingUnknownChannels = new LongSparseArray<>();
+                private LongSparseArray<Boolean> gettingUnknownDialogs = new LongSparseArray<>();
+                private LongSparseArray<Boolean> checkingLastMessagesDialogs = new LongSparseArray<>();
+
+                private ArrayList<TLRPC.Updates> updatesQueueSeq = new ArrayList<>();
+                private ArrayList<TLRPC.Updates> updatesQueuePts = new ArrayList<>();
+                private ArrayList<TLRPC.Updates> updatesQueueQts = new ArrayList<>();
+                private long updatesStartWaitTimeSeq;
+                private long updatesStartWaitTimePts;
+                private long updatesStartWaitTimeQts;
+                private LongSparseArray<TLRPC.UserFull> fullUsers = new LongSparseArray<>();
+                private LongSparseArray<TLRPC.ChatFull> fullChats = new LongSparseArray<>();
+                private LongSparseArray<ChatObject.Call> groupCalls = new LongSparseArray<>();
+                private LongSparseArray<ChatObject.Call> groupCallsByChatId = new LongSparseArray<>();
+                private HashSet<Long> loadingFullUsers = new HashSet<>();
+                private LongSparseLongArray loadedFullUsers = new LongSparseLongArray();
+                private HashSet<Long> loadingFullChats = new HashSet<>();
+                private HashSet<Long> loadingGroupCalls = new HashSet<>();
+                private HashSet<Long> loadingFullParticipants = new HashSet<>();
+                private HashSet<Long> loadedFullParticipants = new HashSet<>();
+                public LongSparseLongArray loadedFullChats = new LongSparseLongArray();
+                private LongSparseArray<LongSparseArray<TLRPC.ChannelParticipant>> channelAdmins = new LongSparseArray<>();
+                private LongSparseIntArray loadingChannelAdmins = new LongSparseIntArray();
+
+                private SparseIntArray migratedChats = new SparseIntArray();
+
+                private LongSparseArray<SponsoredMessagesInfo> sponsoredMessages = new LongSparseArray<>();
+                private LongSparseArray<SendAsPeersInfo> sendAsPeers = new LongSparseArray<>();
+
+                private HashMap<String, ArrayList<MessageObject>> reloadingWebpages = new HashMap<>();
+                private LongSparseArray<ArrayList<MessageObject>> reloadingWebpagesPending = new LongSparseArray<>();
+                private HashMap<String, ArrayList<MessageObject>> reloadingScheduledWebpages = new HashMap<>();
+                private LongSparseArray<ArrayList<MessageObject>> reloadingScheduledWebpagesPending = new LongSparseArray<>();
+                private HashMap<String, ArrayList<MessageObject>> reloadingSavedWebpages = new HashMap<>();
+                private LongSparseArray<ArrayList<MessageObject>> reloadingSavedWebpagesPending = new LongSparseArray<>();
+
+                private LongSparseArray<Long> lastScheduledServerQueryTime = new LongSparseArray<>();
+                private LongSparseArray<Long> lastQuickReplyServerQueryTime = new LongSparseArray<>();
+                private LongSparseArray<Long> lastSavedServerQueryTime = new LongSparseArray<>();
+                private LongSparseArray<Long> lastServerQueryTime = new LongSparseArray<>();
+
+                private LongSparseArray<ArrayList<Integer>> reloadingMessages = new LongSparseArray<>();
+
+                private ArrayList<ReadTask> readTasks = new ArrayList<>();
+                private LongSparseArray<ReadTask> readTasksMap = new LongSparseArray<>();
+                private ArrayList<ReadTask> repliesReadTasks = new ArrayList<>();
+                private HashMap<String, ReadTask> threadsReadTasksMap = new HashMap<>();
+
+                private boolean gettingNewDeleteTask;
+                private int currentDeletingTaskTime;
+                private LongSparseArray<ArrayList<Integer>> currentDeletingTaskMids;
+                private LongSparseArray<ArrayList<Integer>> currentDeletingTaskMediaMids;
+                private Runnable currentDeleteTaskRunnable;
+
+                public boolean dialogsLoaded;
+                private SparseIntArray nextDialogsCacheOffset = new SparseIntArray();
+                private SparseBooleanArray loadingDialogs = new SparseBooleanArray();
+                private SparseBooleanArray dialogsEndReached = new SparseBooleanArray();
+                private SparseBooleanArray serverDialogsEndReached = new SparseBooleanArray();
+
+                private boolean loadingUnreadDialogs;
+                private boolean migratingDialogs;
+                public boolean gettingDifference;
+                private boolean getDifferenceFirstSync = true;
+                public boolean updatingState;
+                public boolean firstGettingTask;
+                public boolean registeringForPush;
+                private long lastPushRegisterSendTime;
+                private boolean resetingDialogs;
+                private TLRPC.TL_messages_peerDialogs resetDialogsPinned;
+                private TLRPC.messages_Dialogs resetDialogsAll;
+                private SparseIntArray loadingPinnedDialogs = new SparseIntArray();
+
+                public ArrayList<FaqSearchResult> faqSearchArray = new ArrayList<>();
+                public TLRPC.WebPage faqWebPage;
+
+                private int loadingNotificationSettings;
+                private boolean loadingNotificationSignUpSettings;
+
+                private int nextPromoInfoCheckTime;
+                private boolean checkingPromoInfo;
+                private int checkingPromoInfoRequestId;
+                private int lastCheckPromoId;
+                private TLRPC.Dialog promoDialog;
+                private boolean isLeftPromoChannel;
+                private long promoDialogId;
+                public int promoDialogType;
+                public String promoPsaMessage;
+                public String promoPsaType;
+                private String proxyDialogAddress;
+
+                private boolean checkingTosUpdate;
+                private int nextTosCheckTime;
+
+                public int secretWebpagePreview;
+                public boolean suggestContacts = true;
+
+                private volatile static long lastThemeCheckTime;
+                private Runnable themeCheckRunnable = Theme::checkAutoNightThemeConditions;
+
+                private volatile static long lastPasswordCheckTime;
+                private Runnable passwordCheckRunnable = () -> getUserConfig().checkSavedPassword();
+
+                private long lastStatusUpdateTime;
+                private int statusRequest;
+                private int statusSettingState;
+                private boolean offlineSent;
+
+                public boolean isOnline() {
+                    return !offlineSent;
+                }
+
+                private String uploadingAvatar;
+
+                private HashMap<String, Object> uploadingThemes = new HashMap<>();
+
+                public String uploadingWallpaper;
+                public Theme.OverrideWallpaperInfo uploadingWallpaperInfo;
+
+                private UserNameResolver userNameResolver;
+
+                public ArrayList<DialogFilter> getDialogFilters() {
+                    if (frozenDialogFilters != null) {
+                        return frozenDialogFilters;
+                    }
+                    return dialogFilters;
+                }
+
+                private final CacheFetcher<Integer, TLRPC.TL_help_appConfig> appConfigFetcher = new CacheFetcher<Integer, TLRPC.TL_help_appConfig>() {
+                    @Override
+                    protected void getRemote(int currentAccount, Integer arguments, long hash, Utilities.Callback4<Boolean, TLRPC.TL_help_appConfig, Long, Boolean> onResult) {
+                        TLRPC.TL_help_getAppConfig req = new TLRPC.TL_help_getAppConfig();
+                        req.hash = (int) hash;
+                        getConnectionsManager().sendRequest(req, (res, err) -> {
+                            if (res instanceof TLRPC.TL_help_appConfigNotModified) {
+                                onResult.run(true, null, 0L, true);
+                            } else if (res instanceof TLRPC.TL_help_appConfig) {
+                                onResult.run(false, (TLRPC.TL_help_appConfig) res, (long) ((TLRPC.TL_help_appConfig) res).hash, true);
+                            } else {
+                                FileLog.e("getting appconfig error " + (err != null ? err.code + " " + err.text : ""));
+                                onResult.run(false, null, 0L, err == null || !(err.code == -2000 || err.code == -2001));
+                            }
+                        });
+                    }
+
+                    @Override
+                    protected void getLocal(int currentAccount, Integer arguments, Utilities.Callback2<Long, TLRPC.TL_help_appConfig> onResult) {
+                        getMessagesStorage().getStorageQueue().postRunnable(() -> {
+                            SQLiteCursor cursor = null;
+                            try {
+                                SQLiteDatabase database = MessagesStorage.getInstance(currentAccount).getDatabase();
+                                if (database != null) {
+                                    TLRPC.help_AppConfig maybeResult = null;
+                                    cursor = database.queryFinalized("SELECT data FROM app_config");
+                                    if (cursor.next()) {
+                                        NativeByteBuffer data = cursor.byteBufferValue(0);
+                                        if (data != null) {
+                                            maybeResult = TLRPC.help_AppConfig.TLdeserialize(data, data.readInt32(false), true);
+                                            data.reuse();
+                                        }
+                                    }
+
+                                    if (maybeResult instanceof TLRPC.TL_help_appConfig) {
+                                        TLRPC.TL_help_appConfig result = (TLRPC.TL_help_appConfig) maybeResult;
+                                        onResult.run((long) result.hash, result);
+                                    } else {
+                                        onResult.run(0L, null);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                FileLog.e(e);
+                                onResult.run(0L, null);
+                            } finally {
+                                if (cursor != null) {
+                                    cursor.dispose();
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    protected void setLocal(int currentAccount, Integer arguments, TLRPC.TL_help_appConfig data, long hash) {
+                        MessagesStorage.getInstance(currentAccount).getStorageQueue().postRunnable(() -> {
+                            try {
+                                SQLiteDatabase database = MessagesStorage.getInstance(currentAccount).getDatabase();
+                                if (database != null) {
+                                    database.executeFast("DELETE FROM app_config").stepThis().dispose();
+                                    if (data != null) {
+                                        SQLitePreparedStatement state = database.executeFast("INSERT INTO app_config VALUES(?)");
+                                        state.requery();
+                                        NativeByteBuffer buffer = new NativeByteBuffer(data.getObjectSize());
+                                        data.serializeToStream(buffer);
+                                        state.bindByteBuffer(1, buffer);
+                                        state.step();
+                                        buffer.reuse();
+                                        state.dispose();
+                                    }
+                                }
+                            } catch (Exception e) {
+                                FileLog.e(e);
+                            }
+                        });
+                    }
+
+                    @Override
+                    protected boolean useCache(Integer arguments) {
+                        return false;
+                    }
+                };
+
+                public int thisDc;
+
+                public boolean enableJoined;
+                public String linkPrefix;
+                public int maxGroupCount;
+                public int maxBroadcastCount = 100;
+                public int maxMegagroupCount;
+                public int minGroupConvertSize = 200;
+                public int maxEditTime;
+                public int ratingDecay;
+                public int revokeTimeLimit;
+                public int revokeTimePmLimit;
+                public boolean canRevokePmInbox;
+                public int maxRecentStickersCount;
+                public int maxFaveStickersCount;
+                public int maxRecentGifsCount;
+                public int callReceiveTimeout;
+                public int callRingTimeout;
+                public int callConnectTimeout;
+                public int callPacketTimeout;
+                public int maxFolderPinnedDialogsCountDefault;
+                public int maxFolderPinnedDialogsCountPremium;
+                public int mapProvider;
+                public int availableMapProviders;
+                public int updateCheckDelay;
+                public int chatReadMarkSizeThreshold;
+                public int chatReadMarkExpirePeriod;
+                public int pmReadDateExpirePeriod;
+                public String mapKey;
+                public int maxMessageLength;
+                public int maxCaptionLength;
+                public int roundVideoSize;
+                public int roundVideoBitrate;
+                public int roundAudioBitrate;
+                public boolean blockedCountry;
+                public boolean preloadFeaturedStickers;
+                public String youtubePipType;
+                public boolean keepAliveService;
+                public boolean backgroundConnection;
+                public float animatedEmojisZoom;
+                public boolean filtersEnabled;
+                public boolean getfileExperimentalParams;
+                public boolean smsjobsStickyNotificationEnabled;
+                public boolean collectDeviceStats;
+                public boolean showFiltersTooltip;
+                public String venueSearchBot;
+                public String storyVenueSearchBot;
+                public String gifSearchBot;
+                public String imageSearchBot;
+                public String dcDomainName;
+                public int webFileDatacenterId;
+                public String suggestedLangCode;
+                public boolean qrLoginCamera;
+                public boolean saveGifsWithStickers;
+                private String installReferer;
+                public Set<String> pendingSuggestions;
+                public Set<String> dismissedSuggestions;
+                public Set<String> exportUri;
+                public Set<String> exportGroupUri;
+                public Set<String> exportPrivateUri;
+                public boolean autoarchiveAvailable;
+                public int groupCallVideoMaxParticipants;
+                public boolean suggestStickersApiOnly;
+                public ArrayList<String> gifSearchEmojies = new ArrayList<>();
+                public HashSet<String> diceEmojies;
+                public Set<String> autologinDomains;
+                public Set<String> authDomains;
+                public String autologinToken;
+                public HashMap<String, DiceFrameSuccess> diceSuccess = new HashMap<>();
+                public HashMap<String, EmojiSound> emojiSounds = new HashMap<>();
+                public HashMap<Long, ArrayList<TLRPC.TL_sendMessageEmojiInteraction>> emojiInteractions = new HashMap<>();
+                public boolean remoteConfigLoaded;
+                public int ringtoneDurationMax;
+                public int ringtoneSizeMax;
+                public boolean storiesExportNopublicLink;
+                public int authorizationAutoconfirmPeriod;
+                public int quoteLengthMax;
+                public boolean giveawayGiftsPurchaseAvailable;
+                public PeerColors peerColors;
+                public PeerColors profilePeerColors;
+                public int transcribeAudioTrialWeeklyNumber;
+                public int transcribeAudioTrialDurationMax;
+                public int transcribeAudioTrialCooldownUntil;
+                public int transcribeAudioTrialCurrentNumber;
+                public int recommendedChannelsLimitDefault;
+                public int recommendedChannelsLimitPremium;
+                public int boostsChannelLevelMax;
+                public int channelRestrictSponsoredLevelMin;
+                public Set<String> webAppAllowedProtocols;
+                public Set<String> ignoreRestrictionReasons;
+
+                public int channelsLimitDefault;
+                public int channelsLimitPremium;
+                public int savedGifsLimitDefault;
+                public int savedGifsLimitPremium;
+                public int stickersFavedLimitDefault;
+                public int stickersFavedLimitPremium;
+                public int maxPinnedDialogsCountDefault;
+                public int maxPinnedDialogsCountPremium;
+                public int dialogFiltersLimitDefault;
+                public int dialogFiltersLimitPremium;
+                public int dialogFiltersChatsLimitDefault;
+                public int dialogFiltersChatsLimitPremium;
+                public int dialogFiltersPinnedLimitDefault;
+                public int dialogFiltersPinnedLimitPremium;
+                public int publicLinksLimitDefault;
+                public int publicLinksLimitPremium;
+                public int captionLengthLimitDefault;
+                public int captionLengthLimitPremium;
+                public int storyCaptionLengthLimitDefault;
+                public int storyCaptionLengthLimitPremium;
+                public int aboutLengthLimitDefault;
+                public int aboutLengthLimitPremium;
+                public int reactionsUserMaxDefault;
+                public int reactionsUserMaxPremium;
+                public int reactionsInChatMax;
+                public int forumUpgradeParticipantsMin;
+                public int topicsPinnedLimit;
+                public long telegramAntispamUserId;
+                public int telegramAntispamGroupSizeMin;
+                public int hiddenMembersGroupSizeMin;
+                private int chatlistUpdatePeriod;
+                public int storyExpiringLimitDefault;
+                public int storyExpiringLimitPremium;
+                public int storiesSentWeeklyLimitDefault;
+                public int storiesSentWeeklyLimitPremium;
+                public int storiesSentMonthlyLimitDefault;
+                public int storiesSentMonthlyLimitPremium;
+                public int storiesSuggestedReactionsLimitDefault;
+                public int storiesSuggestedReactionsLimitPremium;
+                public int channelBgIconLevelMin;
+                public int channelProfileIconLevelMin;
+                public int channelEmojiStatusLevelMin;
+                public int channelWallpaperLevelMin;
+                public int channelCustomWallpaperLevelMin;
+                public int groupProfileBgIconLevelMin;
+                public int groupEmojiStatusLevelMin;
+                public int groupEmojiStickersLevelMin;
+                public int groupWallpaperLevelMin;
+                public int groupCustomWallpaperLevelMin;
+                public int groupTranscribeLevelMin;
+                public int quickRepliesLimit;
+                public int quickReplyMessagesLimit;
+                public float uploadPremiumSpeedupUpload;
+                public float uploadPremiumSpeedupDownload;
+                public int uploadPremiumSpeedupNotifyPeriod;
+                public int introTitleLengthLimit;
+                public int introDescriptionLengthLimit;
+                public int businessChatLinksLimit;
+                public boolean channelRevenueWithdrawalEnabled;
+                public boolean newNoncontactPeersRequirePremiumWithoutOwnpremium;
+                public int reactionsUniqMax;
+                public String premiumManageSubscriptionUrl;
+                public boolean androidDisableRoundCamera2;
+                public int storiesPinnedToTopCountMax;
+                public boolean showAnnualPerMonth = false;
+                public boolean canEditFactcheck;
+                public int factcheckLengthLimit;
+                public long starsRevenueWithdrawalMin;
+                public long starsPaidPostAmountMax;
+                public int botPreviewMediasMax;
+                public String tonProxyAddress;
+                public String weatherSearchUsername;
+                public boolean storyWeatherPreload;
+                public boolean starsGiftsEnabled;
+                public boolean stargiftsBlocked;
+                public long starsPaidReactionAmountMax;
+                public long starsSubscriptionAmountMax;
+                public float starsUsdSellRate1000;
+                public float starsUsdWithdrawRate1000;
+                public boolean sponsoredLinksInappAllow;
+                public Set<String> starrefStartParamPrefixes = new HashSet<>();
+                public boolean starrefProgramAllowed;
+                public boolean starrefConnectAllowed;
+                public int starrefMinCommissionPermille;
+                public int starrefMaxCommissionPermille;
+
+                public long paidReactionsAnonymousTime;
+                public Boolean paidReactionsAnonymous;
+
+                public int savedDialogsPinnedLimitDefault;
+                public int savedDialogsPinnedLimitPremium;
+
+                public boolean savedViewAsChats;
+                public boolean storyQualityFull;
+
+                public int uploadMaxFileParts;
+                public int uploadMaxFilePartsPremium;
+
+                public String premiumBotUsername;
+                public String premiumInvoiceSlug;
+
+                private final SharedPreferences notificationsPreferences;
+                private final SharedPreferences mainPreferences;
+                private final SharedPreferences emojiPreferences;
+
+                public volatile boolean ignoreSetOnline;
+                public boolean premiumLocked;
+                public int transcribeButtonPressed;
+                public boolean starsLocked;
+
+                public boolean starsPurchaseAvailable() {
+                    return false;
+                }
+                public boolean premiumFeaturesBlocked() {
+                    return premiumLocked && !getUserConfig().isPremium();
+                }
+                public boolean premiumPurchaseBlocked() {
+                    return true;
+                }
+
+                public List<String> directPaymentsCurrency = new ArrayList<>();
+
+                public NewMessageCallback newMessageCallback;
+
+                private long recentEmojiStatusUpdateRunnableTimeout, recentEmojiStatusUpdateRunnableTime;
+                private Runnable recentEmojiStatusUpdateRunnable;
+                private LongSparseArray<Integer> emojiStatusUntilValues = new LongSparseArray<>();
+                private TopicsController topicsController;
+                private CacheByChatsController cacheByChatsController;
+                private TranslateController translateController;
+                public boolean uploadMarkupVideo;
+                public boolean giftAttachMenuIcon;
+                public boolean giftTextFieldIcon;
+
+                public int chatlistInvitesLimitDefault;
+                public int chatlistInvitesLimitPremium;
+                public int chatlistJoinedLimitDefault;
+                public int chatlistJoinedLimitPremium;
+                public String storiesPosting;
+                public String storiesEntities;
+                public int stargiftsMessageLengthMax;
+                public int stargiftsConvertPeriodMax;
+                public boolean videoIgnoreAltDocuments;
+                public boolean disableBotFullscreenBlur;
+
+                public int checkResetLangpack;
+                public boolean folderTags;
+
+                public void getNextReactionMention(long dialogId, long topicId, int count, Consumer<Integer> callback) {
+                    final MessagesStorage messagesStorage = getMessagesStorage();
+                    messagesStorage.getStorageQueue().postRunnable(() -> {
+                        boolean needRequest = true;
+                        try {
+                            SQLiteCursor cursor;
+                            if (topicId != 0) {
+                                cursor = getMessagesStorage().getDatabase().queryFinalized(String.format(Locale.US, "SELECT message_id FROM reaction_mentions_topics WHERE state = 1 AND dialog_id = %d AND topic_id = %d LIMIT 1", dialogId, topicId));
+                            } else {
+                                cursor = getMessagesStorage().getDatabase().queryFinalized(String.format(Locale.US, "SELECT message_id FROM reaction_mentions WHERE state = 1 AND dialog_id = %d LIMIT 1", dialogId));
+                            }
+                            int messageId = 0;
+                            if (cursor.next()) {
+                                messageId = cursor.intValue(0);
+                                needRequest = false;
+                            }
+                            cursor.dispose();
+                            if (messageId != 0) {
+                                getMessagesStorage().markMessageReactionsAsRead(dialogId, topicId, messageId, false);
+                                int finalMessageId = messageId;
+                                AndroidUtilities.runOnUIThread(() -> callback.accept(finalMessageId));
+                            }
+
+                        } catch (SQLiteException e) {
+                            e.printStackTrace();
+                        }
+                        if (needRequest) {
+                            TLRPC.TL_messages_getUnreadReactions req = new TLRPC.TL_messages_getUnreadReactions();
+                            req.peer = getMessagesController().getInputPeer(dialogId);
+                            req.limit = 1;
+                            req.add_offset = count - 1;
+                            getConnectionsManager().sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
+                                TLRPC.messages_Messages res = (TLRPC.messages_Messages) response;
+                                int messageId = 0;
+                                if (error != null && res != null && res.messages != null && !res.messages.isEmpty()) {
+                                    messageId = res.messages.get(0).id;
+                                }
+                                int finalMessageId = messageId;
+                                AndroidUtilities.runOnUIThread(() -> callback.accept(finalMessageId));
+                            }));
+                        }
+                    });
+                }
+
+                public void updatePremium(boolean premium) {
+                    if (dialogFilters.isEmpty()) {
+                        return;
+                    }
+                    if (!premium) {
+                        if (!dialogFilters.get(0).isDefault()) {
+                            for (int i = 1; i < dialogFilters.size(); i++) {
+                                if (dialogFilters.get(i).isDefault()) {
+                                    DialogFilter defaultFilter = dialogFilters.remove(i);
+                                    dialogFilters.add(0, defaultFilter);
+                                    break;
+                                }
                             }
                         }
-
-                        if (maybeResult instanceof TLRPC.TL_help_appConfig) {
-                            TLRPC.TL_help_appConfig result = (TLRPC.TL_help_appConfig) maybeResult;
-                            onResult.run((long) result.hash, result);
-                        } else {
-                            onResult.run(0L, null);
+                        lockFiltersInternal();
+                    } else {
+                        for (int i = 0; i < dialogFilters.size(); i++) {
+                            dialogFilters.get(i).locked = false;
                         }
                     }
-                } catch (Exception e) {
-                    FileLog.e(e);
-                    onResult.run(0L, null);
-                } finally {
-                    if (cursor != null) {
-                        cursor.dispose();
-                    }
-                }
-            });
-        }
 
-        @Override
-        protected void setLocal(int currentAccount, Integer arguments, TLRPC.TL_help_appConfig data, long hash) {
-            MessagesStorage.getInstance(currentAccount).getStorageQueue().postRunnable(() -> {
-                try {
-                    SQLiteDatabase database = MessagesStorage.getInstance(currentAccount).getDatabase();
-                    if (database != null) {
-                        database.executeFast("DELETE FROM app_config").stepThis().dispose();
-                        if (data != null) {
-                            SQLitePreparedStatement state = database.executeFast("INSERT INTO app_config VALUES(?)");
-                            state.requery();
-                            NativeByteBuffer buffer = new NativeByteBuffer(data.getObjectSize());
-                            data.serializeToStream(buffer);
-                            state.bindByteBuffer(1, buffer);
-                            state.step();
-                            buffer.reuse();
-                            state.dispose();
-                        }
-                    }
-                } catch (Exception e) {
-                    FileLog.e(e);
-                }
-            });
-        }
-
-        @Override
-        protected boolean useCache(Integer arguments) {
-            return false;
-        }
-    };
-
-    public int thisDc;
-
-    public boolean enableJoined;
-    public String linkPrefix;
-    public int maxGroupCount;
-    public int maxBroadcastCount = 100;
-    public int maxMegagroupCount;
-    public int minGroupConvertSize = 200;
-    public int maxEditTime;
-    public int ratingDecay;
-    public int revokeTimeLimit;
-    public int revokeTimePmLimit;
-    public boolean canRevokePmInbox;
-    public int maxRecentStickersCount;
-    public int maxFaveStickersCount;
-    public int maxRecentGifsCount;
-    public int callReceiveTimeout;
-    public int callRingTimeout;
-    public int callConnectTimeout;
-    public int callPacketTimeout;
-    public int maxFolderPinnedDialogsCountDefault;
-    public int maxFolderPinnedDialogsCountPremium;
-    public int mapProvider;
-    public int availableMapProviders;
-    public int updateCheckDelay;
-    public int chatReadMarkSizeThreshold;
-    public int chatReadMarkExpirePeriod;
-    public int pmReadDateExpirePeriod;
-    public String mapKey;
-    public int maxMessageLength;
-    public int maxCaptionLength;
-    public int roundVideoSize;
-    public int roundVideoBitrate;
-    public int roundAudioBitrate;
-    public boolean blockedCountry;
-    public boolean preloadFeaturedStickers;
-    public String youtubePipType;
-    public boolean keepAliveService;
-    public boolean backgroundConnection;
-    public float animatedEmojisZoom;
-    public boolean filtersEnabled;
-    public boolean getfileExperimentalParams;
-    public boolean smsjobsStickyNotificationEnabled;
-    public boolean collectDeviceStats;
-    public boolean showFiltersTooltip;
-    public String venueSearchBot;
-    public String storyVenueSearchBot;
-    public String gifSearchBot;
-    public String imageSearchBot;
-    public String dcDomainName;
-    public int webFileDatacenterId;
-    public String suggestedLangCode;
-    public boolean qrLoginCamera;
-    public boolean saveGifsWithStickers;
-    private String installReferer;
-    public Set<String> pendingSuggestions;
-    public Set<String> dismissedSuggestions;
-    public Set<String> exportUri;
-    public Set<String> exportGroupUri;
-    public Set<String> exportPrivateUri;
-    public boolean autoarchiveAvailable;
-    public int groupCallVideoMaxParticipants;
-    public boolean suggestStickersApiOnly;
-    public ArrayList<String> gifSearchEmojies = new ArrayList<>();
-    public HashSet<String> diceEmojies;
-    public Set<String> autologinDomains;
-    public Set<String> authDomains;
-    public String autologinToken;
-    public HashMap<String, DiceFrameSuccess> diceSuccess = new HashMap<>();
-    public HashMap<String, EmojiSound> emojiSounds = new HashMap<>();
-    public HashMap<Long, ArrayList<TLRPC.TL_sendMessageEmojiInteraction>> emojiInteractions = new HashMap<>();
-    public boolean remoteConfigLoaded;
-    public int ringtoneDurationMax;
-    public int ringtoneSizeMax;
-    public boolean storiesExportNopublicLink;
-    public int authorizationAutoconfirmPeriod;
-    public int quoteLengthMax;
-    public boolean giveawayGiftsPurchaseAvailable;
-    public PeerColors peerColors;
-    public PeerColors profilePeerColors;
-    public int transcribeAudioTrialWeeklyNumber;
-    public int transcribeAudioTrialDurationMax;
-    public int transcribeAudioTrialCooldownUntil;
-    public int transcribeAudioTrialCurrentNumber;
-    public int recommendedChannelsLimitDefault;
-    public int recommendedChannelsLimitPremium;
-    public int boostsChannelLevelMax;
-    public int channelRestrictSponsoredLevelMin;
-    public Set<String> webAppAllowedProtocols;
-    public Set<String> ignoreRestrictionReasons;
-
-    public int channelsLimitDefault;
-    public int channelsLimitPremium;
-    public int savedGifsLimitDefault;
-    public int savedGifsLimitPremium;
-    public int stickersFavedLimitDefault;
-    public int stickersFavedLimitPremium;
-    public int maxPinnedDialogsCountDefault;
-    public int maxPinnedDialogsCountPremium;
-    public int dialogFiltersLimitDefault;
-    public int dialogFiltersLimitPremium;
-    public int dialogFiltersChatsLimitDefault;
-    public int dialogFiltersChatsLimitPremium;
-    public int dialogFiltersPinnedLimitDefault;
-    public int dialogFiltersPinnedLimitPremium;
-    public int publicLinksLimitDefault;
-    public int publicLinksLimitPremium;
-    public int captionLengthLimitDefault;
-    public int captionLengthLimitPremium;
-    public int storyCaptionLengthLimitDefault;
-    public int storyCaptionLengthLimitPremium;
-    public int aboutLengthLimitDefault;
-    public int aboutLengthLimitPremium;
-    public int reactionsUserMaxDefault;
-    public int reactionsUserMaxPremium;
-    public int reactionsInChatMax;
-    public int forumUpgradeParticipantsMin;
-    public int topicsPinnedLimit;
-    public long telegramAntispamUserId;
-    public int telegramAntispamGroupSizeMin;
-    public int hiddenMembersGroupSizeMin;
-    private int chatlistUpdatePeriod;
-    public int storyExpiringLimitDefault;
-    public int storyExpiringLimitPremium;
-    public int storiesSentWeeklyLimitDefault;
-    public int storiesSentWeeklyLimitPremium;
-    public int storiesSentMonthlyLimitDefault;
-    public int storiesSentMonthlyLimitPremium;
-    public int storiesSuggestedReactionsLimitDefault;
-    public int storiesSuggestedReactionsLimitPremium;
-    public int channelBgIconLevelMin;
-    public int channelProfileIconLevelMin;
-    public int channelEmojiStatusLevelMin;
-    public int channelWallpaperLevelMin;
-    public int channelCustomWallpaperLevelMin;
-    public int groupProfileBgIconLevelMin;
-    public int groupEmojiStatusLevelMin;
-    public int groupEmojiStickersLevelMin;
-    public int groupWallpaperLevelMin;
-    public int groupCustomWallpaperLevelMin;
-    public int groupTranscribeLevelMin;
-    public int quickRepliesLimit;
-    public int quickReplyMessagesLimit;
-    public float uploadPremiumSpeedupUpload;
-    public float uploadPremiumSpeedupDownload;
-    public int uploadPremiumSpeedupNotifyPeriod;
-    public int introTitleLengthLimit;
-    public int introDescriptionLengthLimit;
-    public int businessChatLinksLimit;
-    public boolean channelRevenueWithdrawalEnabled;
-    public boolean newNoncontactPeersRequirePremiumWithoutOwnpremium;
-    public int reactionsUniqMax;
-    public String premiumManageSubscriptionUrl;
-    public boolean androidDisableRoundCamera2;
-    public int storiesPinnedToTopCountMax;
-    public boolean showAnnualPerMonth = false;
-    public boolean canEditFactcheck;
-    public int factcheckLengthLimit;
-    public long starsRevenueWithdrawalMin;
-    public long starsPaidPostAmountMax;
-    public int botPreviewMediasMax;
-    public String tonProxyAddress;
-    public String weatherSearchUsername;
-    public boolean storyWeatherPreload;
-    public boolean starsGiftsEnabled;
-    public boolean stargiftsBlocked;
-    public long starsPaidReactionAmountMax;
-    public long starsSubscriptionAmountMax;
-    public float starsUsdSellRate1000;
-    public float starsUsdWithdrawRate1000;
-    public boolean sponsoredLinksInappAllow;
-    public Set<String> starrefStartParamPrefixes = new HashSet<>();
-    public boolean starrefProgramAllowed;
-    public boolean starrefConnectAllowed;
-    public int starrefMinCommissionPermille;
-    public int starrefMaxCommissionPermille;
-
-    public long paidReactionsAnonymousTime;
-    public Boolean paidReactionsAnonymous;
-
-    public int savedDialogsPinnedLimitDefault;
-    public int savedDialogsPinnedLimitPremium;
-
-    public boolean savedViewAsChats;
-    public boolean storyQualityFull;
-
-    public int uploadMaxFileParts;
-    public int uploadMaxFilePartsPremium;
-
-    public String premiumBotUsername;
-    public String premiumInvoiceSlug;
-
-    private final SharedPreferences notificationsPreferences;
-    private final SharedPreferences mainPreferences;
-    private final SharedPreferences emojiPreferences;
-
-    public volatile boolean ignoreSetOnline;
-    public boolean premiumLocked;
-    public int transcribeButtonPressed;
-    public boolean starsLocked;
-
-    public boolean starsPurchaseAvailable() {
-        return false;
-    }
-    public boolean premiumFeaturesBlocked() {
-        return premiumLocked && !getUserConfig().isPremium();
-    }
-    public boolean premiumPurchaseBlocked() {
-        return true;
-    }
-
-    public List<String> directPaymentsCurrency = new ArrayList<>();
-
-    public NewMessageCallback newMessageCallback;
-
-    private long recentEmojiStatusUpdateRunnableTimeout, recentEmojiStatusUpdateRunnableTime;
-    private Runnable recentEmojiStatusUpdateRunnable;
-    private LongSparseArray<Integer> emojiStatusUntilValues = new LongSparseArray<>();
-    private TopicsController topicsController;
-    private CacheByChatsController cacheByChatsController;
-    private TranslateController translateController;
-    public boolean uploadMarkupVideo;
-    public boolean giftAttachMenuIcon;
-    public boolean giftTextFieldIcon;
-
-    public int chatlistInvitesLimitDefault;
-    public int chatlistInvitesLimitPremium;
-    public int chatlistJoinedLimitDefault;
-    public int chatlistJoinedLimitPremium;
-    public String storiesPosting;
-    public String storiesEntities;
-    public int stargiftsMessageLengthMax;
-    public int stargiftsConvertPeriodMax;
-    public boolean videoIgnoreAltDocuments;
-    public boolean disableBotFullscreenBlur;
-
-    public int checkResetLangpack;
-    public boolean folderTags;
-
-    public void getNextReactionMention(long dialogId, long topicId, int count, Consumer<Integer> callback) {
-        final MessagesStorage messagesStorage = getMessagesStorage();
-        messagesStorage.getStorageQueue().postRunnable(() -> {
-            boolean needRequest = true;
-            try {
-                SQLiteCursor cursor;
-                if (topicId != 0) {
-                    cursor = getMessagesStorage().getDatabase().queryFinalized(String.format(Locale.US, "SELECT message_id FROM reaction_mentions_topics WHERE state = 1 AND dialog_id = %d AND topic_id = %d LIMIT 1", dialogId, topicId));
-                } else {
-                    cursor = getMessagesStorage().getDatabase().queryFinalized(String.format(Locale.US, "SELECT message_id FROM reaction_mentions WHERE state = 1 AND dialog_id = %d LIMIT 1", dialogId));
-                }
-                int messageId = 0;
-                if (cursor.next()) {
-                    messageId = cursor.intValue(0);
-                    needRequest = false;
-                }
-                cursor.dispose();
-                if (messageId != 0) {
-                    getMessagesStorage().markMessageReactionsAsRead(dialogId, topicId, messageId, false);
-                    int finalMessageId = messageId;
-                    AndroidUtilities.runOnUIThread(() -> callback.accept(finalMessageId));
-                }
-
-            } catch (SQLiteException e) {
-                e.printStackTrace();
-            }
-            if (needRequest) {
-                TLRPC.TL_messages_getUnreadReactions req = new TLRPC.TL_messages_getUnreadReactions();
-                req.peer = getMessagesController().getInputPeer(dialogId);
-                req.limit = 1;
-                req.add_offset = count - 1;
-                getConnectionsManager().sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
-                    TLRPC.messages_Messages res = (TLRPC.messages_Messages) response;
-                    int messageId = 0;
-                    if (error != null && res != null && res.messages != null && !res.messages.isEmpty()) {
-                        messageId = res.messages.get(0).id;
-                    }
-                    int finalMessageId = messageId;
-                    AndroidUtilities.runOnUIThread(() -> callback.accept(finalMessageId));
-                }));
-            }
-        });
-    }
-
-    public void updatePremium(boolean premium) {
-        if (dialogFilters.isEmpty()) {
-            return;
-        }
-        if (!premium) {
-            if (!dialogFilters.get(0).isDefault()) {
-                for (int i = 1; i < dialogFilters.size(); i++) {
-                    if (dialogFilters.get(i).isDefault()) {
-                        DialogFilter defaultFilter = dialogFilters.remove(i);
-                        dialogFilters.add(0, defaultFilter);
-                        break;
-                    }
-                }
-            }
-            lockFiltersInternal();
-        } else {
-            for (int i = 0; i < dialogFilters.size(); i++) {
-                dialogFilters.get(i).locked = false;
-            }
-        }
-
-        getMessagesStorage().saveDialogFiltersOrder();
-        getNotificationCenter().postNotificationName(NotificationCenter.dialogFiltersUpdated);
-        getStoriesController().onPremiumChanged();
-    }
-
-    public void lockFiltersInternal() {
-        boolean changed = false;
-        if (!getUserConfig().isPremium() && dialogFilters.size() - 1 > dialogFiltersLimitDefault) {
-            int n = dialogFilters.size() - 1 - dialogFiltersLimitDefault;
-            ArrayList<DialogFilter> filtersSortedById = new ArrayList<>(dialogFilters);
-            Collections.reverse(filtersSortedById);
-            for (int i = 0; i < filtersSortedById.size(); i++) {
-                if (i < n) {
-                    if (!filtersSortedById.get(i).locked) {
-                        changed = true;
-                    }
-                    filtersSortedById.get(i).locked = true;
-                } else {
-                    if (filtersSortedById.get(i).locked) {
-                        changed = true;
-                    }
-                    filtersSortedById.get(i).locked = false;
-                }
-            }
-        }
-        if (changed) {
-            getNotificationCenter().postNotificationName(NotificationCenter.dialogFiltersUpdated);
-        }
-    }
-
-    public int getCaptionMaxLengthLimit() {
-        return getUserConfig().isPremium() ? captionLengthLimitPremium : captionLengthLimitDefault;
-    }
-
-    public int getAboutLimit() {
-        return getUserConfig().isPremium() ? aboutLengthLimitPremium : aboutLengthLimitDefault;
-    }
-
-    public int getMaxUserReactionsCount() {
-        return getUserConfig().isPremium() ? reactionsUserMaxPremium : reactionsUserMaxDefault;
-    }
-
-    public int getChatReactionsCount() {
-        return getUserConfig().isPremium() ? reactionsInChatMax : 1;
-    }
-
-    public int getChatMaxUniqReactions(long dialogId) {
-        TLRPC.ChatFull chatFull = MessagesController.getInstance(currentAccount).getChatFull(-dialogId);
+                    getMessagesStorage().saveDialogFiltersOrder();
+                    getNotificationCenter().postNotificationName(NotificationCenter.dialogFiltersUpdated);
+                    getStoriesController().onPremiumChanged();
+                }tAccount).getChatFull(-dialogId);
         if (chatFull != null && (chatFull instanceof TLRPC.TL_chatFull ? (chatFull.flags & 1048576) != 0 : (chatFull.flags2 & 8192) != 0)) {
             return chatFull.reactions_limit;
         }
@@ -851,9 +851,6 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public boolean isPremiumUser(TLRPC.User currentUser) {
-        if (NekoConfig.localPremium.Bool()) {
-            return true;
-        }
         return !premiumFeaturesBlocked() && currentUser.premium && !isSupportUser(currentUser);
     }
 
@@ -6153,7 +6150,7 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public boolean isChatNoForwards(long chatId) {
-        return isChatNoForwards(getChat(chatId));
+        return isChatNoForwards(getChat(chatId)) && !NaConfig.INSTANCE.getForceCopy().Bool();
     }
 
     public boolean isChatNoForwardsWithOverride(long chatId) {
