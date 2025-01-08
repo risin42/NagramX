@@ -851,10 +851,7 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public boolean isPremiumUser(TLRPC.User currentUser) {
-        if (NekoConfig.localPremium.Bool()) {
-            return true;
-        }
-        return !premiumFeaturesBlocked() && currentUser.premium && !isSupportUser(currentUser);
+        return !premiumFeaturesBlocked() && (currentUser.premium || currentUser.id == getUserConfig().getClientUserId() && NekoConfig.localPremium.Bool()) && !isSupportUser(currentUser);
     }
 
     public boolean didPressTranscribeButtonEnough() {
@@ -1608,8 +1605,6 @@ public class MessagesController extends BaseController implements NotificationCe
         premiumInvoiceSlug = mainPreferences.getString("premiumInvoiceSlug", null);
         premiumBotUsername = mainPreferences.getString("premiumBotUsername", null);
         premiumLocked = mainPreferences.getBoolean("premiumLocked", false);
-        if (NekoConfig.localPremium.Bool())
-            premiumLocked = false;
         starsLocked = mainPreferences.getBoolean("starsLocked", true);
         transcribeButtonPressed = mainPreferences.getInt("transcribeButtonPressed", 0);
         forumUpgradeParticipantsMin = mainPreferences.getInt("forumUpgradeParticipantsMin", 200);
