@@ -25,7 +25,6 @@
     <string name="DateOfForwardedMsg">Show Date on Forwarded Messages</string>
     <string name="ShowMessageID">Show Message ID</string>
     <string name="ShowRPCError">Toast RPC Errors</string>
-    <string name="ShowServicesTime">Show Timestamp in Service Messages</string>
     <string name="ShowPremiumStickersAnimation">Show Premium Stickers Animation</string>
     <string name="ShowPremiumStarInChat">Show Premium Star In Chat</string>
     <string name="ShowPremiumAvatarAnimation">Show Premium Avatar Animation</string>
