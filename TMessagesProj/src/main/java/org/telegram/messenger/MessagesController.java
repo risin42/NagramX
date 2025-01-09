@@ -6148,7 +6148,7 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public boolean isChatNoForwards(long chatId) {
-        return isChatNoForwards(getChat(chatId)) && !NaConfig.INSTANCE.getForceCopy().Bool();
+        return isChatNoForwards(getChat(chatId));
     }
 
     public boolean isChatNoForwardsWithOverride(long chatId) {
