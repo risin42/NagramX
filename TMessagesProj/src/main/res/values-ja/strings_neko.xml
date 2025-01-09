@@ -138,7 +138,7 @@
     <string name="customSavePath">カスタム保存パス</string>
     <string name="customSavePathHint">空白のままにすると直接保存されます</string>
     <string name="doubleTapShowReactions">メッセージをダブルタップしたときにのみリアクションメニューを開く</string>
-    <string name="channelLabel">チャンネル ID</string>
+    <string name="channelLabel">チャンネル</string>
     <string name="forceBlurInChat">チャットのトップバーのぼかしを強制的に有効にする</string>
     <string name="ChatBlurAlphaValue">チャットのトップバーの不透明度</string>
     <string name="disablePremiumStickerAnimation">プレミアムステッカーアニメーションを無効にする</string>

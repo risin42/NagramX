@@ -16444,7 +16444,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 adminWidth = (int) staticLayout.getLineWidth(0);
                 nameWidth -= adminWidth;
             } else if (NekoConfig.labelChannelUser.Bool() && isMegagroup && currentChat != null && currentMessageObject.isSenderChannel()) {
-                final String channelStr = NaConfig.INSTANCE.getCustomChannelLabel().String();
+                final String channelStr = NaConfig.INSTANCE.getCustomChannelLabel().String().isEmpty() ? getString(R.string.channelLabel) : NaConfig.INSTANCE.getCustomChannelLabel().String();
                 adminString = new SpannableStringBuilder();
                 if (NekoConfig.channelAlias.Bool()) {
                     String aliasName = NekoXConfig.getChannelAlias(currentMessageObject.messageOwner.from_id.channel_id);
