@@ -3427,7 +3427,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             this.chatActivity = chatActivity;
         }
 
-    @Override
+        @Override
         public int getParentTopPadding() {
             return chatActivity == null ? 0 : (int) chatActivity.chatListViewPaddingTop;
         }
