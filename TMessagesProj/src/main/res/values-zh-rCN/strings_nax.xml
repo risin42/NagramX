@@ -24,7 +24,7 @@
     <string name="EnableSeparateArticleTranslator">单独设置文章翻译源</string>
     <string name="DisableCrashlyticsCollection">禁用 Firebase Crashlytics 崩溃报告</string>
     <string name="ShowStickersRowToplevel">在顶层设置中显示贴纸行</string>
-    <string name="HideShareButtonInChannel">在频道中隐藏分享按钮</string>
+    <string name="HideShareButtonInChannel">隐藏右侧分享按钮</string>
     <string name="DeleteCloudBackup">清除云数据</string>
     <string name="DeleteCloudBackupFailed">云备份数据清除失败</string>
     <string name="DeleteCloudBackupSuccess">云备份数据已清除</string>
