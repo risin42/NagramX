@@ -107,8 +107,7 @@
     <string name="DisableClickProfileGalleryView">タップによるアバターの切り替えを無効にする</string>
     <string name="TipsChannel">機能紹介チャンネル</string>
     <string name="ShowSmallGIF">GIF を小さく表示</string>
-    <string name="DisableClickCommandToSend">コマンドクリック送信を無効にする</string>
-    <string name="DisableClickCommandToSendHint">誤操作防止のために。</string>
+    <string name="DisableClickCommandToSend">ボットコマンドを送信する前に確認</string>
     <string name="DisableDialogsFloatingButton">メインページのフローティングボタンを無効にする</string>
     <string name="DisableFlagSecure">FLAG_SECURE を無効にする</string>
     <string name="CenterActionBarTitle">アクションバーのタイトルを中央揃えにする</string>

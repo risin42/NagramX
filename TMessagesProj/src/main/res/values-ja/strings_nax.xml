@@ -37,4 +37,6 @@
     <string name="useTelegramTranslateInChatSubtitle">Telegram API でのみ動作します。</string>
     <string name="ForwardsRestrictedInfoAyuDeleted">転送は許可されていません。</string>
     <string name="RegexFiltersNotice">タップして編集。</string>
+    <string name="botCommandConfirmTitle">コマンド確認</string>
+    <string name="botCommandConfirmText">このコマンドを送信しますか？\n\n%s</string>
 </resources>

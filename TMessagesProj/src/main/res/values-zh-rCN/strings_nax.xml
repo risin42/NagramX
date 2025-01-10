@@ -37,4 +37,6 @@
     <string name="useTelegramTranslateInChatSubtitle">仅适用于 Telegram API。</string>
     <string name="ForwardsRestrictedInfoAyuDeleted">不允许转发。</string>
     <string name="RegexFiltersNotice">点击以编辑。</string>
+    <string name="botCommandConfirmTitle">确认指令</string>
+    <string name="botCommandConfirmText">您确定要发送此指令吗？\n\n%s</string>
 </resources>

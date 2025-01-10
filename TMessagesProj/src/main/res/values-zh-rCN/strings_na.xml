@@ -107,8 +107,7 @@
     <string name="DisableClickProfileGalleryView">禁用点按切换头像</string>
     <string name="TipsChannel">功能介绍频道</string>
     <string name="ShowSmallGIF">GIF 显示得更小</string>
-    <string name="DisableClickCommandToSend">禁用点击指令文本发送</string>
-    <string name="DisableClickCommandToSendHint">妈妈再也不用担心我会误触啦。</string>
+    <string name="DisableClickCommandToSend">点击 bot 指令发送前确认</string>
     <string name="DisableDialogsFloatingButton">禁用主页浮动按钮</string>
     <string name="DisableFlagSecure">关闭 FLAG_SECURE</string>
     <string name="CenterActionBarTitle">标题居中</string>

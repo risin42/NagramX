@@ -9556,31 +9556,43 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 openKeyboard();
             }
         } else {
-            // Na: DisableClickCommandToSend
+            // NagramX: Ask before sending bot command
             if (NaConfig.INSTANCE.getDisableClickCommandToSend().Bool()) {
-                return;
-            }
-
-            if (slowModeTimer > 0 && !isInScheduleMode()) {
-                if (delegate != null) {
-                    delegate.onUpdateSlowModeButton(slowModeButton, true, slowModeButton.getText());
-                }
-                return;
-            }
-            TLRPC.User user = messageObject != null && DialogObject.isChatDialog(dialog_id) ? accountInstance.getMessagesController().getUser(messageObject.messageOwner.from_id.user_id) : null;
-            SendMessagesHelper.SendMessageParams sendMessageParams;
-            if ((botCount != 1 || username) && user != null && user.bot && !command.contains("@")) {
-                sendMessageParams = SendMessagesHelper.SendMessageParams.of(String.format(Locale.US, "%s@%s", command, UserObject.getPublicUsername(user)), dialog_id, replyingMessageObject, getThreadMessage(), null, false, null, null, null, true, 0, null, false);
+                AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity);
+                builder.setTitle(LocaleController.getString(R.string.botCommandConfirmTitle));
+                String message = String.format(LocaleController.getString(R.string.botCommandConfirmText), command); 
+                builder.setMessage(message);
+                builder.setPositiveButton(LocaleController.getString(R.string.OK), (dialogInterface, i) -> {
+                    sendCommand(command, effectId, messageObject, username, botCount);
+                });
+                builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+                parentFragment.showDialog(builder.create());
             } else {
-                sendMessageParams = SendMessagesHelper.SendMessageParams.of(command, dialog_id, replyingMessageObject, getThreadMessage(), null, false, null, null, null, true, 0, null, false);
+                sendCommand(command, effectId, messageObject, username, botCount);
             }
-            sendMessageParams.quick_reply_shortcut = parentFragment != null ? parentFragment.quickReplyShortcut : null;
-            sendMessageParams.quick_reply_shortcut_id = parentFragment != null ? parentFragment.getQuickReplyId() : 0;
-            sendMessageParams.effect_id = effectId;
-            sendButton.setEffect(effectId = 0);
-            applyStoryToSendMessageParams(sendMessageParams);
-            SendMessagesHelper.getInstance(currentAccount).sendMessage(sendMessageParams);
         }
+    }
+
+    private void sendCommand(String command, long effectId, MessageObject messageObject, boolean username, int botCount) {
+        if (slowModeTimer > 0 && !isInScheduleMode()) {
+            if (delegate != null) {
+                delegate.onUpdateSlowModeButton(slowModeButton, true, slowModeButton.getText());
+            }
+            return;
+        }
+        TLRPC.User user = messageObject != null && DialogObject.isChatDialog(dialog_id) ? accountInstance.getMessagesController().getUser(messageObject.messageOwner.from_id.user_id) : null;
+        SendMessagesHelper.SendMessageParams sendMessageParams;
+        if ((botCount != 1 || username) && user != null && user.bot && !command.contains("@")) {
+            sendMessageParams = SendMessagesHelper.SendMessageParams.of(String.format(Locale.US, "%s@%s", command, UserObject.getPublicUsername(user)), dialog_id, replyingMessageObject, getThreadMessage(), null, false, null, null, null, true, 0, null, false);
+        } else {
+            sendMessageParams = SendMessagesHelper.SendMessageParams.of(command, dialog_id, replyingMessageObject, getThreadMessage(), null, false, null, null, null, true, 0, null, false);
+        }
+        sendMessageParams.quick_reply_shortcut = parentFragment != null ? parentFragment.quickReplyShortcut : null;
+        sendMessageParams.quick_reply_shortcut_id = parentFragment != null ? parentFragment.getQuickReplyId() : 0;
+        sendMessageParams.effect_id = effectId;
+        sendButton.setEffect(effectId = 0);
+        applyStoryToSendMessageParams(sendMessageParams);
+        SendMessagesHelper.getInstance(currentAccount).sendMessage(sendMessageParams);
     }
 
     public void setEditingBusinessLink(TLRPC.TL_businessChatLink businessLink) {

@@ -107,8 +107,7 @@
     <string name="DisableClickProfileGalleryView">Disable Flip Avatars by Tapping</string>
     <string name="TipsChannel">Features Tips Channel</string>
     <string name="ShowSmallGIF">Show Small GIF</string>
-    <string name="DisableClickCommandToSend">Disable Click Command Text to Send</string>
-    <string name="DisableClickCommandToSendHint">To prevent accidental touch.</string>
+    <string name="DisableClickCommandToSend">Ask Before Sending Bot Command</string>
     <string name="DisableDialogsFloatingButton">Disable Dialogs Floating Button</string>
     <string name="DisableFlagSecure">Disable FLAG_SECURE</string>
     <string name="CenterActionBarTitle">Center Title in Action Bar</string>
