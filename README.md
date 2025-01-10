@@ -16,11 +16,14 @@ You can grab the latest versions in these two ways:
     - Save Edits History
     - AI Translator with customizable API endpoint and Model
     - Hide the Premium and Help sections
-    - Hide Share Button in Channels
+    - Hide share button
+    - Hide bottom bar in channels
     - Avoids requesting camera permission when selecting images
-    - Show Stickers in Main Settings
+    - Show Stickers in main settings
     - Clear Cloud Settings data
     - Custom preferred languages in translation language selector
+    - Text selection in restricted channels
+    - Ask before sending bot command
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```
@@ -47,6 +50,7 @@ You can grab the latest versions in these two ways:
 
 - [AyuGram4A](https://github.com/AyuGram/AyuGram4A)
 - [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram)
+- [OctoGram](https://github.com/OctoGramApp/OctoGram)
 
 # Nagram
 
