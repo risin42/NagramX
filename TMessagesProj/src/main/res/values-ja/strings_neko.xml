@@ -16,7 +16,7 @@
     <string name="IgnoreBlocked">ブロックしたユーザーのメッセージを非表示</string>
     <string name="Connection">接続</string>
     <string name="Chat">チャット</string>
-    <string name="NameOrder">名前の順序</string>
+    <string name="NameOrder">姓名の順番</string>
     <string name="FirstLast">名・姓</string>
     <string name="LastFirst">姓・名</string>
     <string name="TypefaceUseDefault">システムのデフォルトフォントを使用</string>
@@ -27,7 +27,7 @@
     <string name="Prpr">ペロペロ</string>
     <string name="TransparentStatusBar">完全に透明なステータスバーを使用</string>
     <string name="EnableResidentNotification">常駐通知を有効にする</string>
-    <string name="NekogramRunning">Nagram実行中</string>
+    <string name="NekogramRunning">Nagram 実行中</string>
     <string name="EventType">ドロワーアイコンセット</string>
     <string name="ChristmasHat">常にサンタ帽子を表示</string>
     <string name="ActionBarDecoration">タイトルバーの装飾</string>
@@ -75,7 +75,7 @@
     <string name="UserRestrictionsSendGifs">GIF を送信</string>
     <string name="ShowTabsOnForward">転送ページでタブを表示</string>
     <string name="CheckAllAdministrated">管理しているグループとチャンネルを追加</string>
-    <string name="RearVideoMessages">ビデオメッセージで背面カメラをデフォルトで使用</string>
+    <string name="RearVideoMessages">ビデオメッセージで背面カメラを使用</string>
     <string name="HideAllTab">「すべてのチャット」タブを非表示</string>
     <string name="HideAllTabAbout">メインページで戻るボタンを押すと、すべてのチャットが開きます。</string>
     <string name="TabTitleType">タブバーに表示</string>
@@ -139,7 +139,7 @@
     <string name="customSavePathHint">空白のままにすると直接保存されます</string>
     <string name="doubleTapShowReactions">メッセージをダブルタップしたときにのみリアクションメニューを開く</string>
     <string name="channelLabel">チャンネル</string>
-    <string name="forceBlurInChat">チャットのトップバーのぼかしを強制的に有効にする</string>
+    <string name="forceBlurInChat">チャットのトップバーのぼかしを有効にする</string>
     <string name="ChatBlurAlphaValue">チャットのトップバーの不透明度</string>
     <string name="disablePremiumStickerAnimation">プレミアムステッカーアニメーションを無効にする</string>
     <string name="DatacenterStatusAbout">Telegram の**データセンター**の状態を確認します。</string>

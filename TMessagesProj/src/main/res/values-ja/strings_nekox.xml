@@ -70,7 +70,7 @@
     <string name="FilterNameUnreadDescription">未読メッセージのみ</string>
     <string name="FilterNameUnmutedAndUnread">ミュートなし &amp; 未読</string>
     <string name="FilterNameUnmutedAndUnreadDescription">ミュートされていないチャットからの未読メッセージのみ</string>
-    <string name="IgnoreMutedCount">フォルダのミュートされた未読数をカウントしない </string>
+    <string name="IgnoreMutedCount">フォルダタブでミュート未読数を非表示</string>
     <string name="DialogsSettings">ダイアログ設定</string>
     <string name="SortMenu">ダイアログソート設定</string>
     <string name="SortByUnread">未読で並べ替え</string>
@@ -83,7 +83,7 @@
     <string name="DisableUndo">取り消しを無効にする</string>
     <string name="DisableSystemAccount">システムアカウントを無効にする</string>
     <string name="FilterMenu">ダイアログフィルターメニュー</string>
-    <string name="DisableProxyWhenVpnEnabled">VPN が有効なときにプロキシを無効化する</string>
+    <string name="DisableProxyWhenVpnEnabled">VPN が有効なときにプロキシを無効にする</string>
     <string name="UseProxyItem">ボタンの代わりにサイドバーのプロキシアイテムを使用する</string>
     <string name="HideProxyByDefault">デフォルトでプロキシ設定を隠す</string>
     <string name="SkipOpenLinkConfirm">リンクを開くときの確認をスキップする</string>
@@ -206,7 +206,7 @@
     <string name="EnableStickerPinAbout">ステッカーを固定し、新しいステッカーを追加するとクラウド同期されます。</string>
     <string name="channelAlias">チャンネルアリアス</string>
     <string name="localPremium">ローカルプレミアム</string>
-    <string name="unreadBadgeOnBackButton">チャットウィンドウの戻るボタンに未読数を表示</string>
+    <string name="unreadBadgeOnBackButton">チャットの戻るボタンに未読数を表示</string>
     <string name="showSeconds">タイムスタンプを秒単位で表示</string>
     <string name="DisableInstantCamera">インスタントカメラを無効にする</string>
     <string name="labelChannelUser">チャンネルの匿名身份をラベル</string>
@@ -217,7 +217,7 @@
     <string name="StickerSettings">ステッカー</string>
     <string name="ReactionSettings">リアクション</string>
     <string name="ConfirmSettings">確認</string>
-    <string name="repeatConfirm">繰り返す前に確認する</string>
+    <string name="repeatConfirm">繰り返す前に確認</string>
     <string name="repeatConfirmText">本当に繰り返しますか？</string>
     <string name="ImportSettings">設定をインポート</string>
     <string name="ImportSettingsAlert">設定を上書きしますか？ 不明なソースから設定をインポートすると、PINが上書きされ、アプリがロックされる可能性があります。</string>

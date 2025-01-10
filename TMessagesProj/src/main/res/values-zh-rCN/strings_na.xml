@@ -45,7 +45,7 @@
     <string name="HideOriginAfterTranslation">翻译隐藏后原文</string>
     <string name="ZalgoFilter">过滤 \"Zalgo\" 符号</string>
     <string name="ZalgoFilterNotice">昵称和消息中的 \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" 符号将被过滤。</string>
-    <string name="CustomChannelLabel">自定义频道默认别名</string>
+    <string name="CustomChannelLabel">自定义默认频道标签</string>
     <string name="AlwaysShowDownloadIcon">一直显示下载管理器</string>
     <string name="QuickToggleAnonymous">快速切换匿名发言</string>
     <string name="QuickToggleAnonymousNotice">如果你是群组的所有者的话。</string>
@@ -67,12 +67,12 @@
     <string name="ShowOnlineStatus">显示用户在线状态</string>
     <string name="ShowOnlineStatusNotice">在群组聊天时用户头像的右下角显示在线状态。</string>
     <string name="ShowRecentOnlineStatus">显示用户最近在线状态</string>
-    <string name="DoActionsInCommonGroups">也在共同群操作</string>
+    <string name="DoActionsInCommonGroups">应用到共同群组</string>
     <string name="ShowFullAbout">直接显示完整的群组简介</string>
     <string name="HideMessageSeenTooltip">隐藏消息已读提示</string>
     <string name="TypeMessageHintUseGroupName">使用群组名称作为输入框提示</string>
     <string name="HideBotButtonInInputField">隐藏输入框中的机器人按钮</string>
-    <string name="ShowSendAsUnderMessageHint">在消息提示下显示发送者</string>
+    <string name="ShowSendAsUnderMessageHint">在输入提示下显示发送者</string>
     <string name="CheckAllForum">添加所有话题模式的群组</string>
     <string name="ShowForumAsNormalChat">以普通对话模式打开话题模式群组</string>
     <string name="DecorationNone">无</string>

@@ -21,9 +21,9 @@
     <string name="AITranslatorSettings">AI 翻訳設定</string>
     <string name="TranslucentDeletedMessages">削除済みメッセージの透過</string>
     <string name="ArticleTranslationProvider">アーティクル翻訳プロバイダ</string>
-    <string name="EnableSeparateArticleTranslator">アーティクル翻訳プロバイダで別のプロバイダを使用</string>
-    <string name="DisableCrashlyticsCollection">Firebase Crashlytics クラッシュレポートを無効化</string>
-    <string name="ShowStickersRowToplevel">トップレベルにステッカー設定を表示</string>
+    <string name="EnableSeparateArticleTranslator">アーティクル翻訳で別のプロバイダを使用</string>
+    <string name="DisableCrashlyticsCollection">Firebase Crashlytics を無効にする</string>
+    <string name="ShowStickersRowToplevel">ステッカーをメイン設定に表示</string>
     <string name="HideShareButtonInChannel">共有ボタンを非表示</string>
     <string name="DeleteCloudBackup">クラウドデータを消去</string>
     <string name="DeleteCloudBackupFailed">クラウドデータを消去できませんでした</string>
