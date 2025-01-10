@@ -50,11 +50,8 @@ public class NekoXSettingActivity extends BaseFragment {
     private int developerSettingsRow;
 
     private int enableRow;
-    private int disableFlagSecureRow;
     private int disableScreenshotDetectionRow;
     private int disableStatusUpdateRow;
-
-    // private int fetchAndExportLangRow;
 
     @Override
     public boolean onFragmentCreate() {
@@ -101,18 +98,9 @@ public class NekoXSettingActivity extends BaseFragment {
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
         listView.setOnItemClickListener((view, position, x, y) -> {
 
-            // if (position == fetchAndExportLangRow) {
-            //     fetchAndExportLang();
-            // }
-
             if (position == enableRow) {
                 NekoXConfig.toggleDeveloperMode();
                 updateRows();
-            } else if (position == disableFlagSecureRow) {
-                NekoXConfig.toggleDisableFlagSecure();
-                if (view instanceof TextCheckCell) {
-                    ((TextCheckCell) view).setChecked(NekoXConfig.disableFlagSecure);
-                }
             } else if (position == disableScreenshotDetectionRow) {
                 NekoXConfig.toggleDisableScreenshotDetection();
                 if (view instanceof TextCheckCell) {
@@ -142,67 +130,14 @@ public class NekoXSettingActivity extends BaseFragment {
         rowCount = 0;
 
         developerSettingsRow = rowCount++;
-
         enableRow = rowCount++;
-
-        disableFlagSecureRow = rowCount++;
         disableScreenshotDetectionRow = rowCount++;
         disableStatusUpdateRow = rowCount++;
-
-        // fetchAndExportLangRow = rowCount++;
 
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
     }
-
-    /* public void fetchAndExportLang() {
-
-        AlertDialog pro = new AlertDialog(getParentActivity(), 3);
-
-        pro.show();
-
-        UIUtil.runOnIoDispatcher(() -> {
-
-            LocaleUtil.fetchAndExportLang();
-
-            File zipFile = new File(EnvUtil.getShareCachePath(), "languages.zip");
-
-            FileUtil.delete(zipFile);
-
-            File[] files = LocaleUtil.cacheDir.listFiles();
-
-            if (files != null) {
-
-                try {
-
-                    ZipUtil.makeZip(zipFile, LocaleUtil.cacheDir);
-
-                    AndroidUtilities.runOnUIThread(() -> {
-
-                        pro.dismiss();
-
-                        ShareUtil.shareFile(getParentActivity(), zipFile);
-
-                    });
-
-                } catch (Exception e) {
-
-                    AlertUtil.showToast(e);
-
-                }
-
-            } else {
-
-                AlertUtil.showToast("No files");
-
-                AndroidUtilities.runOnUIThread(pro::dismiss);
-
-            }
-
-        });
-
-    } */
 
     @Override
     public ArrayList<ThemeDescription> getThemeDescriptions() {
@@ -282,9 +217,7 @@ public class NekoXSettingActivity extends BaseFragment {
                         if (!NekoXConfig.developerMode) {
                             textCell.setEnabled(false);
                         }
-                        if (position == disableFlagSecureRow) {
-                            textCell.setTextAndCheck("Disable Flag Secure", NekoXConfig.disableFlagSecure, true);
-                        } else if (position == disableScreenshotDetectionRow) {
+                        if (position == disableScreenshotDetectionRow) {
                             textCell.setTextAndCheck("Disable Screenshot Detection", NekoXConfig.disableScreenshotDetection, false);
                         } else if (position == disableStatusUpdateRow) {
                             textCell.setTextAndCheck("Disable Status Update", NekoXConfig.disableStatusUpdate, false);
@@ -299,9 +232,6 @@ public class NekoXSettingActivity extends BaseFragment {
                     if (!NekoXConfig.developerMode) {
                         textCell.setEnabled(false);
                     }
-                    // if (position == fetchAndExportLangRow) {
-                    //     textCell.setText("Export Builtin Languages", true);
-                    // }
                 }
 
             }
@@ -350,8 +280,6 @@ public class NekoXSettingActivity extends BaseFragment {
         public int getItemViewType(int position) {
             if (position == developerSettingsRow) {
                 return 4;
-            // } else if (position == fetchAndExportLangRow) {
-            //     return 2;
             }
             return 3;
         }

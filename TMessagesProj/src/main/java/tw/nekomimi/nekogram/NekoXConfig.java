@@ -92,13 +92,6 @@ public class NekoXConfig {
         }
     }
 
-    public static void toggleDisableFlagSecure() {
-//        preferences.edit().putBoolean("disable_flag_secure", disableFlagSecure = !disableFlagSecure).apply();
-
-        disableFlagSecure = !disableFlagSecure;
-        NaConfig.INSTANCE.getDisableFlagSecure().toggleConfigBool();
-    }
-
     public static void toggleDisableScreenshotDetection() {
         preferences.edit().putBoolean("disable_screenshot_detection", disableScreenshotDetection = !disableScreenshotDetection).apply();
     }
