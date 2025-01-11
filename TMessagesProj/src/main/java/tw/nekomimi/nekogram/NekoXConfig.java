@@ -221,4 +221,10 @@ public class NekoXConfig {
     public static String getChannelAlias(long channelID) {
         return preferences.getString(NekoConfig.channelAliasPrefix + channelID, null);
     }
+
+    public static boolean lastOnlineState = preferences.getBoolean("last_online_state", true);
+
+    public static void saveLastOnlineState(boolean online) {
+        preferences.edit().putBoolean("last_online_state", lastOnlineState = online).apply(); 
+    }
 }
