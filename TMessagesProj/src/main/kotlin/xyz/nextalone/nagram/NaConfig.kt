@@ -714,6 +714,12 @@ object NaConfig {
             ConfigItem.configTypeString,
             "ja, zh"
         )
+    val disableScreenshotDetection =
+        addConfig(
+            "DisableScreenshotDetection",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
 

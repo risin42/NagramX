@@ -50,7 +50,6 @@ public class NekoXSettingActivity extends BaseFragment {
     private int developerSettingsRow;
 
     private int enableRow;
-    private int disableScreenshotDetectionRow;
     private int disableStatusUpdateRow;
 
     @Override
@@ -101,18 +100,12 @@ public class NekoXSettingActivity extends BaseFragment {
             if (position == enableRow) {
                 NekoXConfig.toggleDeveloperMode();
                 updateRows();
-            } else if (position == disableScreenshotDetectionRow) {
-                NekoXConfig.toggleDisableScreenshotDetection();
-                if (view instanceof TextCheckCell) {
-                    ((TextCheckCell) view).setChecked(NekoXConfig.disableScreenshotDetection);
-                }
             } else if (position == disableStatusUpdateRow) {
                 NekoXConfig.toggleDisableStatusUpdate();
                 if (view instanceof TextCheckCell) {
                     ((TextCheckCell) view).setChecked(NekoXConfig.disableStatusUpdate);
                 }
             }
-
         });
 
         return fragmentView;
@@ -131,7 +124,6 @@ public class NekoXSettingActivity extends BaseFragment {
 
         developerSettingsRow = rowCount++;
         enableRow = rowCount++;
-        disableScreenshotDetectionRow = rowCount++;
         disableStatusUpdateRow = rowCount++;
 
         if (listAdapter != null) {
@@ -217,11 +209,8 @@ public class NekoXSettingActivity extends BaseFragment {
                         if (!NekoXConfig.developerMode) {
                             textCell.setEnabled(false);
                         }
-                        if (position == disableScreenshotDetectionRow) {
-                            textCell.setTextAndCheck("Disable Screenshot Detection", NekoXConfig.disableScreenshotDetection, false);
-                        } else if (position == disableStatusUpdateRow) {
+                        if (position == disableStatusUpdateRow) {
                             textCell.setTextAndCheck("Disable Status Update", NekoXConfig.disableStatusUpdate, false);
-
                         }
                     }
                     break;
@@ -233,9 +222,7 @@ public class NekoXSettingActivity extends BaseFragment {
                         textCell.setEnabled(false);
                     }
                 }
-
             }
-
         }
 
         @Override

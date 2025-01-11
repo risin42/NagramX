@@ -68,14 +68,9 @@ public class NekoXConfig {
     public static boolean developerMode = preferences.getBoolean("developer_mode", true);
 
     public static boolean disableFlagSecure = NaConfig.INSTANCE.getDisableFlagSecure().Bool();
-    public static boolean disableScreenshotDetection = preferences.getBoolean("disable_screenshot_detection", false);
 
     public static boolean disableStatusUpdate = preferences.getBoolean("disable_status_update", false);
     public static boolean keepOnlineStatus = preferences.getBoolean("keepOnlineStatus", false);
-
-    public static int autoUpdateReleaseChannel = preferences.getInt("autoUpdateReleaseChannel", 0);
-//    public static String ignoredUpdateTag = preferences.getString("ignoredUpdateTag", "");
-//    public static long nextUpdateCheck = preferences.getLong("nextUpdateCheckTimestamp", 0);
 
     public static int customApi = preferences.getInt("custom_api", 0);
     public static int customAppId = preferences.getInt("custom_app_id", 0);
@@ -86,14 +81,9 @@ public class NekoXConfig {
         if (!developerMode) {
             preferences.edit()
                     .putBoolean("disable_flag_secure", disableFlagSecure = false)
-                    .putBoolean("disable_screenshot_detection", disableScreenshotDetection = false)
                     .putBoolean("disable_status_update", disableStatusUpdate = false)
                     .apply();
         }
-    }
-
-    public static void toggleDisableScreenshotDetection() {
-        preferences.edit().putBoolean("disable_screenshot_detection", disableScreenshotDetection = !disableScreenshotDetection).apply();
     }
 
     private static Boolean hasDeveloper = null;
@@ -140,10 +130,6 @@ public class NekoXConfig {
     public static void toggleKeepOnlineStatus() {
         preferences.edit().putBoolean("keepOnlineStatus", keepOnlineStatus = !keepOnlineStatus).apply();
         NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.updateUserStatus, (Object) null);
-    }
-
-    public static void setAutoUpdateReleaseChannel(int channel) {
-        preferences.edit().putInt("autoUpdateReleaseChannel", autoUpdateReleaseChannel = channel).apply();
     }
 
     public static boolean isDeveloper() {
@@ -224,7 +210,6 @@ public class NekoXConfig {
         return color;
     }
 
-    
     public static void setChannelAlias(long channelID, String name) {
         preferences.edit().putString(NekoConfig.channelAliasPrefix + channelID, name).apply();
     }

@@ -42,4 +42,5 @@
     <string name="botCommandConfirmTitle">Send Command</string>
     <string name="botCommandConfirmText">Do you want to send this command?\n\n%s</string>
     <string name="TranslateMessagesInfo3">The ‘Show Translate Button’ is handled by N-Settings and can\'t be changed here.</string>
+    <string name="DisableScreenshotDetection">Disable Screenshot Detection</string>
 </resources>

@@ -40,4 +40,5 @@
     <string name="botCommandConfirmTitle">确认指令</string>
     <string name="botCommandConfirmText">您确定要发送此指令吗？\n\n%s</string>
     <string name="TranslateMessagesInfo3">“显示翻译按钮”已被 N-设置 覆盖，无法在此修改。</string>
+    <string name="DisableScreenshotDetection">禁用截屏检测</string>
 </resources>

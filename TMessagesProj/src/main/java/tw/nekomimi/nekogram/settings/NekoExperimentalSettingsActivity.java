@@ -124,6 +124,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                     return "";
                 }
             }));
+    private final AbstractConfigCell disableScreenshotDetectionRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableScreenshotDetection()));
     private final AbstractConfigCell divider1 = cellGroup.appendCell(new ConfigCellDivider());
 
     // Story
