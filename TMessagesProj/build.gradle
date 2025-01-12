@@ -24,6 +24,7 @@ def keystorePwd = null
 def alias = null
 def pwd = null
 def disableCMakeRelWithDebInfo = System.getenv("COMPILE_NATIVE") == null
+def nagramx_build_args = System.getenv("NAGRAMX_BUILD_ARGS")
 
 Properties properties
 def base64 = System.getenv("LOCAL_PROPERTIES")
@@ -39,6 +40,7 @@ if (properties != null) {
     keystorePwd = properties.getProperty("KEYSTORE_PASS")
     alias = properties.getProperty("ALIAS_NAME")
     pwd = properties.getProperty("ALIAS_PASS")
+    nagramx_build_args = properties.getProperty("NAGRAMX_BUILD_ARGS", nagramx_build_args)
 }
 
 keystorePwd = keystorePwd ?: System.getenv("KEYSTORE_PASS")
@@ -232,6 +234,9 @@ android {
         }
         if (task.name.contains("uploadCrashlyticsMappingFile")) {
             enabled = false
+        }
+        if (task.name.contains("buildCMakeDebug") && nagramx_build_args.contains("skip_buildCMakeDebug")) {
+            task.enabled = false
         }
     }
 
