@@ -15,16 +15,16 @@
     <string name="LlmApiUrl">API URL</string>
     <string name="LlmApiKey">API キー</string>
     <string name="LlmModelName">モデル</string>
-    <string name="LlmApiUrlNotice">API ベース URL。OpenAI 互換エンドポイントのみをサポートしています。\n\n`/chat/completions`より前の URL 部分を指定してください。例：`https://api.x.ai/v1`。\n\n空欄のままにすると、Gemini の OpenAI 互換 API エンドポイントがデフォルトで使用されます。</string>
+    <string name="LlmApiUrlNotice">API ベース URL。OpenAI 互換エンドポイントのみをサポートしています。\n\n`/chat/completions`より前の URL 部分を指定してください。\n例：`https://api.x.ai/v1`。\n\n空欄のままにすると、Gemini の OpenAI 互換 API エンドポイントがデフォルトで使用されます。</string>
     <string name="LlmApiKeyNotice">API キーは、API URL へのリクエスト送信に使用されます。</string>
     <string name="LlmModelNameNotice">空白のままにすると、`gemini-2.0-flash`がデフォルトで使用されます。\n\nより速い応答には、gpt-4o-mini や gemini-flash などの小型モデルの使用をお勧めします。</string>
     <string name="AITranslatorSettings">AI 翻訳設定</string>
     <string name="TranslucentDeletedMessages">削除済みメッセージの透過</string>
     <string name="ArticleTranslationProvider">アーティクル翻訳プロバイダ</string>
-    <string name="EnableSeparateArticleTranslator">アーティクル翻訳プロバイダで別のプロバイダを使用</string>
-    <string name="DisableCrashlyticsCollection">Firebase Crashlytics クラッシュレポートを無効化</string>
-    <string name="ShowStickersRowToplevel">トップレベルにステッカー設定を表示</string>
-    <string name="HideShareButtonInChannel">チャンネルで共有ボタンを非表示</string>
+    <string name="EnableSeparateArticleTranslator">アーティクル翻訳で別のプロバイダを使用</string>
+    <string name="DisableCrashlyticsCollection">Firebase Crashlytics を無効にする</string>
+    <string name="ShowStickersRowToplevel">ステッカーをメイン設定に表示</string>
+    <string name="HideShareButtonInChannel">共有ボタンを非表示</string>
     <string name="DeleteCloudBackup">クラウドデータを消去</string>
     <string name="DeleteCloudBackupFailed">クラウドデータを消去できませんでした</string>
     <string name="DeleteCloudBackupSuccess">クラウドデータを消去しました</string>
@@ -37,4 +37,15 @@
     <string name="useTelegramTranslateInChatSubtitle">Telegram API でのみ動作します。</string>
     <string name="ForwardsRestrictedInfoAyuDeleted">転送は許可されていません。</string>
     <string name="RegexFiltersNotice">タップして編集。</string>
+    <string name="botCommandConfirmTitle">コマンド確認</string>
+    <string name="botCommandConfirmText">このコマンドを送信しますか？\n\n%s</string>
+    <string name="TranslateMessagesInfo3">「翻訳ボタンを表示」はN-設定で管理され、ここでは変更できません。</string>
+    <string name="DisableScreenshotDetection">スクリーンショット検出を無効にする</string>
+    <string name="MessageSavingSaveMedia">メディアを保存</string>
+    <string name="MessageSavingSaveMediaHint">クリックしてその他のオプションを表示</string>
+    <string name="MessageSavingSaveMediaInPrivateChats">プライベートチャットでメディアを保存</string>
+    <string name="MessageSavingSaveMediaInPublicChannels">パブリックチャンネルでメディアを保存</string>
+    <string name="MessageSavingSaveMediaInPrivateChannels">プライベートチャンネルでメディアを保存</string>
+    <string name="MessageSavingSaveMediaInPublicGroups">パブリックグループでメディアを保存</string>
+    <string name="MessageSavingSaveMediaInPrivateGroups">プライベートグループでメディアを保存</string>
 </resources>

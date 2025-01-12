@@ -401,7 +401,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
             }));
         }
         if (NekoXConfig.disableStatusUpdate && UserConfig.getInstance(UserConfig.selectedAccount).isClientActivated() && !UserConfig.getInstance(UserConfig.selectedAccount).getCurrentUser().bot) {
-            boolean online = MessagesController.getInstance(UserConfig.selectedAccount).isOnline();
+            boolean online = NekoXConfig.lastOnlineState;
             String message = online ? StrUtil.upperFirst(LocaleController.getString("Online", R.string.Online)) : LocaleController.getString("VoipOfflineTitle", R.string.VoipOfflineTitle);
             if (NekoXConfig.keepOnlineStatus) {
                 message += " (" + LocaleController.getString("Locked", R.string.Locked) + ")";
@@ -409,6 +409,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
             items.add(new CheckItem(14, message, R.drawable.msg_view_file, () -> online, () -> {
                 MessagesController controller = MessagesController.getInstance(UserConfig.selectedAccount);
                 controller.updateStatus(!online);
+                NekoXConfig.saveLastOnlineState(!online);
                 return true;
             }));
         }

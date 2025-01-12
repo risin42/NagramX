@@ -25,7 +25,6 @@
     <string name="DateOfForwardedMsg">Show Date on Forwarded Messages</string>
     <string name="ShowMessageID">Show Message ID</string>
     <string name="ShowRPCError">Toast RPC Errors</string>
-    <string name="ShowServicesTime">Show Timestamp in Service Messages</string>
     <string name="ShowPremiumStickersAnimation">Show Premium Stickers Animation</string>
     <string name="ShowPremiumStarInChat">Show Premium Star In Chat</string>
     <string name="ShowPremiumAvatarAnimation">Show Premium Avatar Animation</string>
@@ -108,8 +107,7 @@
     <string name="DisableClickProfileGalleryView">Disable Flip Avatars by Tapping</string>
     <string name="TipsChannel">Features Tips Channel</string>
     <string name="ShowSmallGIF">Show Small GIF</string>
-    <string name="DisableClickCommandToSend">Disable Click Command Text to Send</string>
-    <string name="DisableClickCommandToSendHint">To prevent accidental touch.</string>
+    <string name="DisableClickCommandToSend">Ask Before Sending Bot Command</string>
     <string name="DisableDialogsFloatingButton">Disable Dialogs Floating Button</string>
     <string name="DisableFlagSecure">Disable FLAG_SECURE</string>
     <string name="CenterActionBarTitle">Center Title in Action Bar</string>

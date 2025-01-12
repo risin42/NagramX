@@ -120,7 +120,6 @@ import org.telegram.ui.Stories.recorder.HintView2;
 import org.telegram.ui.Stories.recorder.PreviewView;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import xyz.nextalone.nagram.NaConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1506,19 +1505,6 @@ public class ChatActionCell extends BaseCell implements DownloadController.FileD
                     }
                 } else {
                     text = AnimatedEmojiSpan.cloneSpans(messageObject.messageText);
-                }
-            } else {
-                text = AnimatedEmojiSpan.cloneSpans(messageObject.messageText);
-                if (currentMessageObject.messageOwner != null && NaConfig.INSTANCE.getShowServicesTime().Bool()) {
-                    if (currentMessageObject.messageOwner.action != null) {
-                        long date = currentMessageObject.messageOwner.date;
-                        String timestamp = LocaleController.getInstance().getFormatterDay().format(date * 1000);
-                        text += " · " + timestamp;
-                    } else if (currentMessageObject.currentEvent != null){
-                        long date = currentMessageObject.currentEvent.date;
-                        String timestamp = LocaleController.getInstance().getFormatterDay().format(date * 1000);
-                        text += " " + timestamp;
-                    }
                 }
             }
         } else {

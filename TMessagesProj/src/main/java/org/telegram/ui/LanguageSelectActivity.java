@@ -196,10 +196,11 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
                 if (view instanceof TextCheckCell) {
                     final boolean prevFullValue = getContextValue() || getChatValue();
                     if (position == 1) {
-                        boolean value = !getContextValue();
-                        getMessagesController().getTranslateController().setContextTranslateEnabled(value);
-                        ((TextCheckCell) view).setChecked(value);
-                        NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.updateSearchSettings);
+                        // boolean value = !getContextValue();
+                        // getMessagesController().getTranslateController().setContextTranslateEnabled(value);
+                        // ((TextCheckCell) view).setChecked(value);
+                        // NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.updateSearchSettings);
+                        return;
                     } else if (position == 2) {
                         boolean value = !getChatValue();
                         if (value && !getUserConfig().isPremium()) {
@@ -681,7 +682,8 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
                     TextCheckCell cell = (TextCheckCell) holder.itemView;
                     cell.updateRTL();
                     if (position == 1) {
-                        cell.setTextAndCheck(LocaleController.getString(R.string.ShowTranslateButton), getContextValue(), true);
+                        cell.setTextAndCheck(LocaleController.getString(R.string.ShowTranslateButton), true, true);
+                        cell.setEnabled(false, null);
                         cell.setCheckBoxIcon(0);
                     } else if (position == 2) {
                         cell.setTextAndCheck(LocaleController.getString(R.string.ShowTranslateChatButton), getChatValue(), getContextValue() || getChatValue());
@@ -700,7 +702,7 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
                     } else {
                         infoCell.setTopPadding(0);
                         infoCell.setBottomPadding(16);
-                        infoCell.setText(LocaleController.getString(R.string.TranslateMessagesInfo2));
+                        infoCell.setText(LocaleController.getString(R.string.TranslateMessagesInfo2) + "\n\n" + LocaleController.getString(R.string.TranslateMessagesInfo3));
                         infoCell.setBackground(Theme.getThemedDrawableByKey(mContext, R.drawable.greydivider_top, Theme.key_windowBackgroundGrayShadow));
                     }
                     break;

@@ -30,6 +30,7 @@ import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.TLRPC.MessageReplyHeader;
 import org.telegram.tgnet.TLRPC.TL_messageReplyHeader;
+import xyz.nextalone.nagram.NaConfig;
 
 /* loaded from: classes.dex */
 public abstract class AyuMessageUtils {
@@ -435,27 +436,26 @@ public abstract class AyuMessageUtils {
     }
 
     private static boolean shouldSaveMedia(AyuSavePreferences ayuSavePreferences) {
-        // if (AyuConfig.saveMedia && ayuSavePreferences.getMessage().media != null) {
-        if (ayuSavePreferences.getMessage().media != null) {
-            // if (DialogObject.isUserDialog(ayuSavePreferences.getDialogId())) {
-            //     return AyuConfig.saveMediaInPrivateChats;
-            // }
+        if (NaConfig.INSTANCE.getMessageSavingSaveMedia().Bool() && ayuSavePreferences.getMessage().media != null) {
+            if (DialogObject.isUserDialog(ayuSavePreferences.getDialogId())) {
+                return NaConfig.INSTANCE.getSaveMediaInPrivateChats().Bool();
+            }
             TLRPC.Chat chat = MessagesController.getInstance(ayuSavePreferences.getAccountId()).getChat(Long.valueOf(Math.abs(ayuSavePreferences.getDialogId())));
             if (chat == null) {
                 Log.e("nu.gpu.nagram", "chat is null so saving media just in case");
                 return true;
             }
             boolean isPublic = ChatObject.isPublic(chat);
-            // if (ChatObject.isChannel(chat)) {
-                // if (isPublic && AyuConfig.saveMediaInPublicChannels) {
-                //     return true;
-                // }
-                // return !isPublic && AyuConfig.saveMediaInPrivateChannels;
-            // } else if (isPublic && AyuConfig.saveMediaInPublicGroups) {
-                // return true;
-            // } else {
-                // return !isPublic && AyuConfig.saveMediaInPrivateGroups;
-            // }
+            if (ChatObject.isChannel(chat)) {
+                if (isPublic && NaConfig.INSTANCE.getSaveMediaInPublicChannels().Bool()) {
+                    return true;
+                }
+                return !isPublic && NaConfig.INSTANCE.getSaveMediaInPrivateChannels().Bool();
+            } else if (isPublic && NaConfig.INSTANCE.getSaveMediaInPublicGroups().Bool()) {
+                return true;
+            } else {
+                return !isPublic && NaConfig.INSTANCE.getSaveMediaInPrivateGroups().Bool();
+            }
         }
         return false;
     }
