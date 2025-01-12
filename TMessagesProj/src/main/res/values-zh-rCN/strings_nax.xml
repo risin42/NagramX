@@ -41,4 +41,11 @@
     <string name="botCommandConfirmText">您确定要发送此指令吗？\n\n%s</string>
     <string name="TranslateMessagesInfo3">“显示翻译按钮”已被 N-设置 覆盖，无法在此修改。</string>
     <string name="DisableScreenshotDetection">禁用截屏检测</string>
+    <string name="MessageSavingSaveMedia">保存媒体</string>
+    <string name="MessageSavingSaveMediaHint">点击查看更多选项</string>
+    <string name="MessageSavingSaveMediaInPrivateChats">在私聊中保存媒体</string>
+    <string name="MessageSavingSaveMediaInPublicChannels">在公开群组中保存媒体</string>
+    <string name="MessageSavingSaveMediaInPrivateChannels">在私有频道中保存媒体</string>
+    <string name="MessageSavingSaveMediaInPublicGroups">在公开群组中保存媒体</string>
+    <string name="MessageSavingSaveMediaInPrivateGroups">在私有群组中保存媒体</string>
 </resources>

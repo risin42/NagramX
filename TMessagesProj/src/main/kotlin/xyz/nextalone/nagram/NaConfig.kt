@@ -636,6 +636,42 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val messageSavingSaveMedia =
+        addConfig(
+            "MessageSavingSaveMedia",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val saveMediaInPrivateChats =
+        addConfig(
+            "SaveMediaInPrivateChats",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val saveMediaInPublicChannels =
+        addConfig(
+            "SaveMediaInPublicChannels",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val saveMediaInPrivateChannels =
+        addConfig(
+            "SaveMediaInPrivateChannels",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val saveMediaInPublicGroups =
+        addConfig(
+            "SaveMediaInPublicGroups",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val saveMediaInPrivateGroups =
+        addConfig(
+            "SaveMediaInPrivateGroups",
+            ConfigItem.configTypeBool,
+            true
+        )
     val customDeletedMark =
         addConfig(
             "CustomDeletedMark",

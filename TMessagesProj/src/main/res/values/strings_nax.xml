@@ -43,4 +43,11 @@
     <string name="botCommandConfirmText">Do you want to send this command?\n\n%s</string>
     <string name="TranslateMessagesInfo3">The ‘Show Translate Button’ is handled by N-Settings and can\'t be changed here.</string>
     <string name="DisableScreenshotDetection">Disable Screenshot Detection</string>
+    <string name="MessageSavingSaveMedia">Save Media</string>
+    <string name="MessageSavingSaveMediaHint">Click for More</string>
+    <string name="MessageSavingSaveMediaInPrivateChats">Save Media in Private Chats</string>
+    <string name="MessageSavingSaveMediaInPublicChannels">Save Media in Public Channels</string>
+    <string name="MessageSavingSaveMediaInPrivateChannels">Save Media in Private Channels</string>
+    <string name="MessageSavingSaveMediaInPublicGroups">Save Media in Public Groups</string>
+    <string name="MessageSavingSaveMediaInPrivateGroups">Save Media in Private Groups</string>
 </resources>

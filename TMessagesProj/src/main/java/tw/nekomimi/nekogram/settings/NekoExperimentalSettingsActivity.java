@@ -8,10 +8,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,12 +29,14 @@ import org.telegram.messenger.R;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.AlertDialog;
+import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ActionBar.ThemeDescription;
 import org.telegram.ui.Cells.EmptyCell;
 import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.NotificationsCheckCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
+import org.telegram.ui.Cells.TextCheckBoxCell;
 import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Cells.TextDetailSettingsCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
@@ -90,6 +95,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell customAudioBitrateRow = cellGroup.appendCell(new ConfigCellCustom("CustomAudioBitrate", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell enableSaveDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveDeletedMessages()));
     private final AbstractConfigCell enableSaveEditsHistoryRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveEditsHistory()));
+    private final AbstractConfigCell messageSavingSaveMediaRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getMessageSavingSaveMedia(), LocaleController.getString(R.string.MessageSavingSaveMediaHint)));
     private final AbstractConfigCell translucentDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getTranslucentDeletedMessages()));
     private final AbstractConfigCell clearMessageDatabaseRow = cellGroup.appendCell(new ConfigCellText("ClearMessageDatabase", () -> {
         AyuMessagesController.getInstance().clean();
@@ -252,6 +258,10 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                     presentFragment(new RegexFiltersSettingActivity());
                     return;
                 }
+                if (position == cellGroup.rows.indexOf(messageSavingSaveMediaRow) && (LocaleController.isRTL && x > AndroidUtilities.dp(76) || !LocaleController.isRTL && x < (view.getMeasuredWidth() - AndroidUtilities.dp(76)))) {
+                    showBottomSheet();
+                    return;
+                }
                 ((ConfigCellTextCheck) a).onClick((TextCheckCell) view);
             } else if (a instanceof ConfigCellSelectBox) {
                 ((ConfigCellSelectBox) a).onClick(view);
@@ -365,6 +375,12 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             } else if (key.equals(NekoConfig.disableChatAction.getKey())) {
                 setCanNotChange();
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(disableChoosingStickerRow));
+            } else if (key.equals(NaConfig.INSTANCE.getEnableSaveDeletedMessages().getKey())) {
+                setCanNotChange();
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(messageSavingSaveMediaRow));
+            } else if (key.equals(NaConfig.INSTANCE.getEnableSaveEditsHistory().getKey())) {
+                setCanNotChange();
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(messageSavingSaveMediaRow));
             }
         };
 
@@ -650,5 +666,81 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
         enabled = NekoConfig.disableChatAction.Bool();
         ((ConfigCellTextCheck) disableChoosingStickerRow).setEnabled(!enabled);
+
+        enabled = NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool() || NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool();
+        ((ConfigCellTextCheck) messageSavingSaveMediaRow).setEnabled(enabled);
+    }
+
+    private void showBottomSheet() {
+        if (getParentActivity() == null) {
+            return;
+        }
+        BottomSheet.Builder builder = new BottomSheet.Builder(getParentActivity());
+        builder.setApplyTopPadding(false);
+        builder.setApplyBottomPadding(false);
+        LinearLayout linearLayout = new LinearLayout(getParentActivity());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        builder.setCustomView(linearLayout);
+
+        HeaderCell headerCell = new HeaderCell(getParentActivity(), Theme.key_dialogTextBlue2, 21, 15, false);
+        headerCell.setText(LocaleController.getString(R.string.MessageSavingSaveMedia).toUpperCase());
+        linearLayout.addView(headerCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+        TextCheckBoxCell[] cells = new TextCheckBoxCell[5];
+        for (int a = 0; a < cells.length; a++) {
+            TextCheckBoxCell checkBoxCell = cells[a] = new TextCheckBoxCell(getParentActivity(), true, false);
+            if (a == 0) {
+                cells[a].setTextAndCheck(LocaleController.getString(R.string.MessageSavingSaveMediaInPrivateChats), NaConfig.INSTANCE.getSaveMediaInPrivateChats().Bool(), true);
+            } else if (a == 1) {
+                cells[a].setTextAndCheck(LocaleController.getString(R.string.MessageSavingSaveMediaInPublicChannels), NaConfig.INSTANCE.getSaveMediaInPublicChannels().Bool(), true);
+            } else if (a == 2) {
+                cells[a].setTextAndCheck(LocaleController.getString(R.string.MessageSavingSaveMediaInPrivateChannels), NaConfig.INSTANCE.getSaveMediaInPrivateChannels().Bool(), true);
+            } else if (a == 3) {
+                cells[a].setTextAndCheck(LocaleController.getString(R.string.MessageSavingSaveMediaInPublicGroups), NaConfig.INSTANCE.getSaveMediaInPublicGroups().Bool(), true);
+            } else { // a == 4
+                cells[a].setTextAndCheck(LocaleController.getString(R.string.MessageSavingSaveMediaInPrivateGroups), NaConfig.INSTANCE.getSaveMediaInPrivateGroups().Bool(), true);
+            }
+            cells[a].setBackgroundDrawable(Theme.getSelectorDrawable(false));
+            cells[a].setOnClickListener(v -> {
+                if (!v.isEnabled()) {
+                    return;
+                }
+                checkBoxCell.setChecked(!checkBoxCell.isChecked());
+            });
+            linearLayout.addView(cells[a], LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 50));
+        }
+
+        FrameLayout buttonsLayout = new FrameLayout(getParentActivity());
+        buttonsLayout.setPadding(AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
+        linearLayout.addView(buttonsLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 52));
+
+        TextView textView = new TextView(getParentActivity());
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        textView.setTextColor(Theme.getColor(Theme.key_dialogTextBlue2));
+        textView.setGravity(Gravity.CENTER);
+        textView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
+        textView.setText(LocaleController.getString("Cancel", R.string.Cancel).toUpperCase());
+        textView.setPadding(AndroidUtilities.dp(10), 0, AndroidUtilities.dp(10), 0);
+        buttonsLayout.addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 36, Gravity.TOP | Gravity.LEFT));
+        textView.setOnClickListener(v14 -> builder.getDismissRunnable().run());
+
+        textView = new TextView(getParentActivity());
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        textView.setTextColor(Theme.getColor(Theme.key_dialogTextBlue2));
+        textView.setGravity(Gravity.CENTER);
+        textView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
+        textView.setText(LocaleController.getString("Save", R.string.Save).toUpperCase());
+        textView.setPadding(AndroidUtilities.dp(10), 0, AndroidUtilities.dp(10), 0);
+        buttonsLayout.addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 36, Gravity.TOP | Gravity.RIGHT));
+        textView.setOnClickListener(v1 -> {
+            NaConfig.INSTANCE.getSaveMediaInPrivateChats().setConfigBool(cells[0].isChecked());
+            NaConfig.INSTANCE.getSaveMediaInPublicChannels().setConfigBool(cells[1].isChecked());
+            NaConfig.INSTANCE.getSaveMediaInPrivateChannels().setConfigBool(cells[2].isChecked());
+            NaConfig.INSTANCE.getSaveMediaInPublicGroups().setConfigBool(cells[3].isChecked());
+            NaConfig.INSTANCE.getSaveMediaInPrivateGroups().setConfigBool(cells[4].isChecked());
+
+            builder.getDismissRunnable().run();
+        });
+        showDialog(builder.create());
     }
 }
