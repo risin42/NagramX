@@ -389,7 +389,7 @@ public class ApplicationLoader extends Application {
                     am.cancel(pendingIntent);
                     am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 10 * 60 * 1000, pendingIntent);
                 } catch (Throwable e) {
-                    Log.d("TFOSS", "Failed to start push service");
+                    Log.e("TFOSS", "Failed to start push service");
                 }
             });
 

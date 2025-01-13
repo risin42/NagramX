@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
+import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLoader;
@@ -32,8 +33,8 @@ import org.telegram.tgnet.TLRPC.MessageReplyHeader;
 import org.telegram.tgnet.TLRPC.TL_messageReplyHeader;
 import xyz.nextalone.nagram.NaConfig;
 
-/* loaded from: classes.dex */
 public abstract class AyuMessageUtils {
+    private static final String NAX = "nu.gpu.nagram_AyuMessageUtils";
     public static ArrayList deserializeMultiple(byte[] bArr, Function<NativeByteBuffer, TLObject> function) {
         if (bArr == null || bArr.length == 0) {
             return new ArrayList();
@@ -51,7 +52,7 @@ public abstract class AyuMessageUtils {
             }
             return arrayList;
         } catch (Exception unused) {
-            Log.e("nu.gpu.nagram", "Failed to allocate buffer");
+            Log.e(NAX, "Failed to allocate buffer");
             return new ArrayList();
         }
     }
@@ -192,7 +193,7 @@ public abstract class AyuMessageUtils {
                         nativeByteBuffer.rewind();
                         tLRPC$Message.media = TLRPC.MessageMedia.TLdeserialize(nativeByteBuffer, nativeByteBuffer.readInt32(false), false);
                     } catch (Exception unused) {
-                        Log.e("nu.gpu.nagram", "fake news sticker..");
+                        Log.e(NAX, "fake news sticker..");
                     }
                     tLRPC$Message.stickerVerified = 1;
                     return;
@@ -293,7 +294,7 @@ public abstract class AyuMessageUtils {
                     nativeByteBuffer.buffer.get(bArr);
                     ayuMessageBase.documentSerialized = bArr;
                 } catch (Exception e) {
-                    Log.e("nu.gpu.nagram", "fake news sticker", e);
+                    Log.e(NAX, "fake news sticker", e);
                 }
             } else {
                 ayuMessageBase.documentType = 3;
@@ -328,7 +329,7 @@ public abstract class AyuMessageUtils {
                         ayuMessageBase.mimeType = message.media.document.mime_type;
                     }
                 } catch (Exception e2) {
-                    Log.e("nu.gpu.nagram", "failed to save media", e2);
+                    Log.e(NAX, "failed to save media", e2);
                 }
                 String absolutePath = file.getAbsolutePath();
                 if (absolutePath.equals("/")) {
@@ -374,7 +375,7 @@ public abstract class AyuMessageUtils {
         if (file3.exists()) {
             File internalCacheDir = FileLoader.getInternalCacheDir();
             File file4 = new File(internalCacheDir, file3.getName() + ".key");
-            Log.d("nu.gpu.nagram", "key file " + file4.getAbsolutePath() + " exists " + file4.exists());
+            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "key file " + file4.getAbsolutePath() + " exists " + file4.exists());
             if (file4.exists()) {
                 try {
                     EncryptedFileInputStream encryptedFileInputStream = new EncryptedFileInputStream(file3, file4);
@@ -384,7 +385,7 @@ public abstract class AyuMessageUtils {
                         while (true) {
                             int read = encryptedFileInputStream.read(bArr);
                             if (read == -1) {
-                                Log.d("nu.gpu.nagram", "encrypted media copy success");
+                                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "encrypted media copy success");
                                 fileOutputStream.close();
                                 encryptedFileInputStream.close();
                                 return file2;
@@ -400,7 +401,7 @@ public abstract class AyuMessageUtils {
                         throw th;
                     }
                 } catch (Exception e) {
-                    Log.e("nu.gpu.nagram", "encrypted media copy failed", e);
+                    Log.e(NAX, "encrypted media copy failed", e);
                     return new File("/");
                 }
             }
@@ -430,7 +431,7 @@ public abstract class AyuMessageUtils {
             nativeByteBuffer.buffer.get(bArr);
             return bArr;
         } catch (Exception unused) {
-            Log.e("nu.gpu.nagram", "Failed to allocate buffer for message entities");
+            Log.e(NAX, "Failed to allocate buffer for message entities");
             return "".getBytes();
         }
     }
@@ -442,7 +443,7 @@ public abstract class AyuMessageUtils {
             }
             TLRPC.Chat chat = MessagesController.getInstance(ayuSavePreferences.getAccountId()).getChat(Long.valueOf(Math.abs(ayuSavePreferences.getDialogId())));
             if (chat == null) {
-                Log.e("nu.gpu.nagram", "chat is null so saving media just in case");
+                Log.d(NAX, "chat is null so saving media just in case");
                 return true;
             }
             boolean isPublic = ChatObject.isPublic(chat);

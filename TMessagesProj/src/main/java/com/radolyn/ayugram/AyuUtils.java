@@ -19,10 +19,10 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import androidx.core.util.Pair;
-// import com.exteragram.messenger.utils.LocaleUtils;
 import com.google.android.exoplayer2.util.Log;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.MessageObject;
 import org.telegram.tgnet.TLObject;
@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import static org.telegram.messenger.Utilities.random;
 
 public class AyuUtils {
+    private static final String NAX = "nu.gpu.nagram_AyuUtils";
     private static final char[] chars = "abcdefghijklmnopqrstuvwxyz1234567890".toCharArray();
 
     public static boolean moveOrCopyFile(File from, File to) {
@@ -41,7 +42,7 @@ public class AyuUtils {
         try {
             success = from.renameTo(to);
         } catch (SecurityException e) {
-            Log.d("nu.gpu.nagram", e.toString());
+            if (BuildVars.LOGS_ENABLED) Log.e(NAX, e.toString());
             success = false;
         }
 
@@ -49,7 +50,7 @@ public class AyuUtils {
             try {
                 success = AndroidUtilities.copyFile(from, to);
             } catch (Exception e) {
-                Log.d("nu.gpu.nagram", e.toString());
+                if (BuildVars.LOGS_ENABLED) Log.e(NAX, e.toString());
             }
         }
 
@@ -156,7 +157,7 @@ public class AyuUtils {
 
             return new Pair<>(w, h);
         } catch (Exception e) {
-            Log.d("nu.gpu.nagram", "extractImageSizeFromName fucked", e);
+            if (BuildVars.LOGS_ENABLED) Log.e(NAX, "extractImageSizeFromName fucked", e);
             return null;
         }
     }
@@ -172,7 +173,7 @@ public class AyuUtils {
 
             return new Pair<>(w, h);
         } catch (Exception e) {
-            Log.d("nu.gpu.nagram", "extractImageSizeFromFile fucked", e);
+            if (BuildVars.LOGS_ENABLED) Log.e(NAX, "extractImageSizeFromFile fucked", e);
             return null;
         }
     }
