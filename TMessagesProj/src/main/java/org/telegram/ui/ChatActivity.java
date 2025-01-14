@@ -20368,7 +20368,15 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     if (BuildVars.LOGS_ENABLED) Log.d(NAX, "minMaxRes.second: " + minMaxRes.second);
                     if (BuildVars.LOGS_ENABLED) Log.d(NAX, "dialog.top_message: " + dialog.top_message);
 
-                    if (dialog != null && (dialog.top_message == endId || (minMaxRes.second == endId && dialog.top_message <= minMaxRes.second)) || topic != null && topic.top_message == endId) {
+                    // empty user dialog, so load as much as we can
+                    if (DialogObject.isUserDialog(dialogId) && (startId == dialog.top_message && endId == dialog.top_message) && messArr.size() <= 1) {
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "(DialogObject.isUserDialog(dialogId) && (startId == dialog.top_message && endId == dialog.top_message) && messArr.size() <= 1)");
+                        startId = minVal;
+                        endId = maxVal;
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "startId: " + startId + ", " + "endId: " + endId);
+                    }
+                    // allows loading messages that are under bottom messages
+                    else if (dialog != null && (dialog.top_message == endId || (minMaxRes.second == endId && dialog.top_message <= minMaxRes.second)) || topic != null && topic.top_message == endId) {
                         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (dialog != null && (dialog.top_message == endId || (minMaxRes.second == endId && dialog.top_message <= minMaxRes.second)) || topic != null && topic.top_message == endId)");
                         // startId is the smallest in the current batch
                         endId = maxVal;
@@ -20394,7 +20402,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         endId = AyuUtils.getMinRealId(messages);
                         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "startId: " + startId + ", " + "endId: " + endId);
                     }
-
+                    // empty(new) user dialog, so load as much as we can
+                    else if (DialogObject.isUserDialog(dialogId)) {
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "DialogObject.isUserDialog(dialogId)");
+                        startId = minVal;
+                        endId = maxVal;
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "startId: " + startId + ", " + "endId: " + endId);
+                    }
                     if (isCache) {
                         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "isCache");
                         startId = minVal;

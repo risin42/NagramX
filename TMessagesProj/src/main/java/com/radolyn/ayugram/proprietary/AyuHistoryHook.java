@@ -173,7 +173,7 @@ public abstract class AyuHistoryHook {
             }
         };
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "before i6 messArr.size(): " + messArr.size());
-        if (messArr.size() > 1) {
+        // if (messArr.size() > 1) { why?
             // Iterator it6 = messArr.iterator();
             // int i7 = ConnectionsManager.DEFAULT_DATACENTER_ID;
             // int i8 = Integer.MIN_VALUE;
@@ -285,7 +285,7 @@ public abstract class AyuHistoryHook {
                     }
                 }
             // }
-        }
+        // }
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "doHook END");
     }
 
