@@ -16277,7 +16277,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     protected boolean checkNeedDrawShareButton(MessageObject messageObject) {
-        if (NaConfig.INSTANCE.getHideShareButtonInChannel().Bool()) return false;
+        if (!messageObject.isSaved && NaConfig.INSTANCE.getHideShareButtonInChannel().Bool()) return false;
         if (currentMessageObject.deleted && !currentMessageObject.deletedByThanos || currentMessageObject.isSponsored() || currentMessageObject.messageOwner.ayuDeleted) {
             return false;
         }
