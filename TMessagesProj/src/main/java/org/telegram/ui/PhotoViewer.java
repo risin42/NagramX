@@ -13607,7 +13607,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                         menuItem.showSubItem(gallery_menu_showall);
                     }
                     setItemVisible(sendItem, !noforwards, false);
-                    setItemVisible(sendNoQuoteItem, true, false);
+                    setItemVisible(sendNoQuoteItem, !noforwards, false);
                 } else if (isEmbedVideo && messageObject.eventId == 0) {
                     setItemVisible(sendNoQuoteItem, true, false);
                     setItemVisible(sendItem, true, false);
