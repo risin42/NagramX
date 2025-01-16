@@ -44,7 +44,7 @@
     <string name="MessageSavingSaveMedia">保存媒体</string>
     <string name="MessageSavingSaveMediaHint">点击查看更多选项</string>
     <string name="MessageSavingSaveMediaInPrivateChats">在私聊中保存媒体</string>
-    <string name="MessageSavingSaveMediaInPublicChannels">在公开群组中保存媒体</string>
+    <string name="MessageSavingSaveMediaInPublicChannels">在公开频道中保存媒体</string>
     <string name="MessageSavingSaveMediaInPrivateChannels">在私有频道中保存媒体</string>
     <string name="MessageSavingSaveMediaInPublicGroups">在公开群组中保存媒体</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">在私有群组中保存媒体</string>

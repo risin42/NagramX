@@ -22,6 +22,7 @@ import com.radolyn.ayugram.database.entities.DeletedMessageReaction;
 import com.radolyn.ayugram.database.entities.EditedMessage;
 import com.radolyn.ayugram.proprietary.AyuMessageUtils;
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.tgnet.TLRPC;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AyuMessagesController {
+    private static final String NAX = "nu.gpu.nagram_AyuMessagesController";
     public static final String attachmentsSubfolder = "Saved Attachments";
     public static final File attachmentsPath = new File(
             new File(
@@ -71,7 +73,7 @@ public class AyuMessagesController {
         try {
             onMessageEditedInner(prefs, newMessage, false);
         } catch (Exception e) {
-            Log.e("nu.gpu.nagram", "error onMessageEdited", e);
+            Log.e(NAX, "error onMessageEdited", e);
             FileLog.e("onMessageEdited", e);
         }
     }
@@ -80,7 +82,7 @@ public class AyuMessagesController {
         try {
             onMessageEditedInner(prefs, prefs.getMessage(), true);
         } catch (Exception e) {
-            Log.e("nu.gpu.nagram", "error onMessageEditedForce", e);
+            Log.e(NAX, "error onMessageEditedForce", e);
             FileLog.e("onMessageEditedForce", e);
         }
     }
@@ -131,14 +133,14 @@ public class AyuMessagesController {
 
     public void onMessageDeleted(AyuSavePreferences prefs) {
         if (prefs.getMessage() == null) {
-            Log.w("nu.gpu.nagram", "null msg ?");
+            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "null msg ?");
             return;
         }
 
         try {
             onMessageDeletedInner(prefs);
         } catch (Exception e) {
-            Log.e("nu.gpu.nagram", "error onMessageDeleted", e);
+            Log.e(NAX, "error onMessageDeleted", e);
             FileLog.e("onMessageDeleted", e);
         }
     }
@@ -160,7 +162,7 @@ public class AyuMessagesController {
 
         var msg = prefs.getMessage();
 
-        Log.d("nu.gpu.nagram", "saving message " + prefs.getMessageId() + " for " + prefs.getDialogId() + " with topic " + prefs.getTopicId());
+        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "saving message " + prefs.getMessageId() + " for " + prefs.getDialogId() + " with topic " + prefs.getTopicId());
 
         AyuMessageUtils.map(prefs, deletedMessage);
         AyuMessageUtils.mapMedia(prefs, deletedMessage, true);
@@ -190,7 +192,7 @@ public class AyuMessagesController {
                 deletedReaction.documentId = ((TLRPC.TL_reactionCustomEmoji) reaction.reaction).document_id;
                 deletedReaction.isCustom = true;
             } else {
-                Log.e("nu.gpu.nagram", "fake news emoji");
+                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "fake news emoji");
                 continue;
             }
 
@@ -232,7 +234,7 @@ public class AyuMessagesController {
                 try {
                     p.delete();
                 } catch (Exception e) {
-                    Log.e("nu.gpu.nagram", "failed to delete file " + msg.message.mediaPath, e);
+                    Log.e(NAX, "failed to delete file " + msg.message.mediaPath, e);
                 }
             }
         }
@@ -270,7 +272,7 @@ public class AyuMessagesController {
                     try {
                         mediaFile.delete();
                     } catch (Exception e) {
-                        Log.e("nu.gpu.nagram", "Failed to delete media file: " + msg.message.mediaPath, e);
+                        Log.e(NAX, "Failed to delete media file: " + msg.message.mediaPath, e);
                     }
                 }
             }

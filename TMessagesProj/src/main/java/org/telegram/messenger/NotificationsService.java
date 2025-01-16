@@ -47,7 +47,7 @@ public class NotificationsService extends Service {
             try {
                 startForeground(9999, notification);
             } catch (Throwable e) {
-                Log.d("TFOSS", "Failed to start push service");
+                Log.e("TFOSS", "Failed to start push service");
             }
         }
     }
