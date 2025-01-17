@@ -97,7 +97,13 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
 
     private final AbstractConfigCell headerTranslation = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("Translate")));
     private final AbstractConfigCell translationProviderRow = cellGroup.appendCell(new ConfigCellCustom("TranslationProvider", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
-    private final AbstractConfigCell useTelegramTranslateInChatRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useTelegramTranslateInChat, LocaleController.getString(R.string.useTelegramTranslateInChatSubtitle)));
+    private final AbstractConfigCell translatorModeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getTranslatorMode(),
+        new String[]{
+                LocaleController.getString(R.string.TranslatorModeAppend),
+                LocaleController.getString(R.string.TranslatorModeInline),
+                LocaleController.getString(R.string.TranslatorModePopup),
+        }, null));
+    private final AbstractConfigCell useTelegramUIAutoTranslateRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getTelegramUIAutoTranslate()));
     private final AbstractConfigCell translateToLangRow = cellGroup.appendCell(new ConfigCellCustom("TranslateToLang", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell translateInputToLangRow = cellGroup.appendCell(new ConfigCellCustom("TranslateInputToLang", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell preferredTranslateTargetLangRow = cellGroup.appendCell(
@@ -115,7 +121,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell googleCloudTranslateKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.googleCloudTranslateKey, (view, position) -> {
         customDialog_BottomInputString(position, NekoConfig.googleCloudTranslateKey, LocaleController.getString("GoogleCloudTransKeyNotice"), "Key");
     }, LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty)));
-    private final AbstractConfigCell hideOriginAfterTranslationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideOriginAfterTranslation()));
     // AI Translator
     private final AbstractConfigCell headerAITranslatorSettings = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("AITranslatorSettings")));
     private final AbstractConfigCell llmApiKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> {
@@ -345,10 +350,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             } else if (a instanceof ConfigCellCustom) { // Custom OnClick
                 if (position == cellGroup.rows.indexOf(translationProviderRow)) {
                     showProviderSelectionPopup(view, NekoConfig.translationProvider, () -> {
-                        if (NekoConfig.translationProvider.Int() != Translator.providerTelegram) {
-                            NekoConfig.useTelegramTranslateInChat.setConfigBool(false);
-                            listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useTelegramTranslateInChatRow));
-                        }
                         listAdapter.notifyItemChanged(position);
                     });
                 } else if (position == cellGroup.rows.indexOf(articletranslationProviderRow)) {
@@ -438,11 +439,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                 boolean enabled = (Boolean) newValue;
                 ((ConfigCellTextCheck) mapDriftingFixForGoogleMapsRow).setEnabled(!enabled);
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(mapDriftingFixForGoogleMapsRow));
-            } else if (key.equals(NekoConfig.useTelegramTranslateInChat.getKey())) {
-                if (NekoConfig.useTelegramTranslateInChat.Bool()) {
-                    NekoConfig.translationProvider.setConfigInt(Translator.providerTelegram);
-                }
-                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translationProviderRow));
             } else if (key.equals(NaConfig.INSTANCE.getPushServiceType().getKey())) {
                 SharedPreferences preferences = MessagesController.getNotificationsSettings(UserConfig.selectedAccount);
                 SharedPreferences.Editor editor = preferences.edit();

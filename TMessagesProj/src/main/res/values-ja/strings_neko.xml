@@ -188,7 +188,6 @@
     <string name="EmojiSetAlreadyApplied">絵文字セットは既に適用されています。</string>
     <string name="useOSMDroidMap">OSMDroid マップを使用</string>
     <string name="mapDriftingFixForGoogleMaps">中国における Google マップのずれを修正</string>
-    <string name="useTelegramTranslateInChat">Telegram 翻訳 UI を使用</string>
     <string name="RecentChats">最近のチャット</string>
     <string name="ClearRecentChats">最近のチャットをクリア</string>
     <string name="ClearRecentChatAlert">本当に最近のチャットをクリアしますか？</string>

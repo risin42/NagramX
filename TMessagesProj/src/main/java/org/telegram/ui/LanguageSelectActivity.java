@@ -202,14 +202,15 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
                         // NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.updateSearchSettings);
                         return;
                     } else if (position == 2) {
-                        boolean value = !getChatValue();
-                        if (value && !getUserConfig().isPremium()) {
-                            showDialog(new PremiumFeatureBottomSheet(LanguageSelectActivity.this, PremiumPreviewFragment.PREMIUM_FEATURE_TRANSLATIONS, false));
-                            return;
-                        }
-                        getMessagesController().getTranslateController().setChatTranslateEnabled(value);
-                        NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.updateSearchSettings);
-                        ((TextCheckCell) view).setChecked(value);
+                        // boolean value = !getChatValue();
+                        // if (value && !getUserConfig().isPremium()) {
+                        //     showDialog(new PremiumFeatureBottomSheet(LanguageSelectActivity.this, PremiumPreviewFragment.PREMIUM_FEATURE_TRANSLATIONS, false));
+                        //     return;
+                        // }
+                        // getMessagesController().getTranslateController().setChatTranslateEnabled(value);
+                        // NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.updateSearchSettings);
+                        // ((TextCheckCell) view).setChecked(value);
+                        return;
                     }
                     final boolean currentFullValue = getContextValue() || getChatValue();
                     if (currentFullValue != prevFullValue) {
@@ -687,6 +688,7 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
                         cell.setCheckBoxIcon(0);
                     } else if (position == 2) {
                         cell.setTextAndCheck(LocaleController.getString(R.string.ShowTranslateChatButton), getChatValue(), getContextValue() || getChatValue());
+                        cell.setEnabled(false, null);
                         cell.setCheckBoxIcon(!getUserConfig().isPremium() ? R.drawable.permission_locked : 0);
                     }
                     break;
@@ -702,7 +704,7 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
                     } else {
                         infoCell.setTopPadding(0);
                         infoCell.setBottomPadding(16);
-                        infoCell.setText(LocaleController.getString(R.string.TranslateMessagesInfo2) + "\n\n" + LocaleController.getString(R.string.TranslateMessagesInfo3));
+                        infoCell.setText(LocaleController.getString(R.string.TranslateMessagesInfo3));
                         infoCell.setBackground(Theme.getThemedDrawableByKey(mContext, R.drawable.greydivider_top, Theme.key_windowBackgroundGrayShadow));
                     }
                     break;

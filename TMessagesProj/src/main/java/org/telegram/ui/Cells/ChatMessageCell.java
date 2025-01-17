@@ -16134,7 +16134,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             timeString = timeString + " | " + messageObject.messageOwner.id;
         }
         if (messageObject.messageOwner != null && messageObject.messageOwner.translated) {
-            timeString = timeString + " | " + LocaleController.getString(R.string.Translate);
+            timeString = timeString + " | " + LocaleController.getString(R.string.Translated);
         }
         if (messageObject.isAnyKindOfSticker() && NaConfig.INSTANCE.getRealHideTimeForSticker().Bool()) {
             timeString = "";

@@ -36,8 +36,8 @@
     <string name="ProviderYandexTranslate">Yandex.Translate</string>
     <string name="GoogleCloudTransKey">Google Cloud Translate Key</string>
     <string name="GoogleCloudTransKeyNotice">Google Cloud Trans Key を設定すると、翻訳時に偽のフォームをウェブバージョンに送信する代わりにクラウド翻訳APIが呼び出されます（高速で安定しており、トラフィックの節約になります）</string>
-    <string name="TransToLang">翻訳目標言語</string>
-    <string name="TransInputToLang">入力翻訳目標言語</string>
+    <string name="TransToLang">翻訳先言語</string>
+    <string name="TransInputToLang">入力翻訳先言語</string>
     <string name="More">もっと見る</string>
     <string name="NekoXUpdatesChannel">NekoX アップデートチャンネル</string>
     <string name="ShowIdAndDc">プロファイルに ID / DC を表示</string>

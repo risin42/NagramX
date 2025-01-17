@@ -36,12 +36,11 @@
     <string name="PreferredTranslateTargetLangName">Preferred Languages</string>
     <string name="ClearDeleted">Clear Deleted</string>
     <string name="ClearDeletedAlertMessage">Are you sure you want to clear all deleted messages in this chat?</string>
-    <string name="useTelegramTranslateInChatSubtitle">Only works with the Telegram API.</string>
     <string name="ForwardsRestrictedInfoAyuDeleted">Forwarding is not allowed.</string>
     <string name="RegexFiltersNotice">Tap to edit.</string>
     <string name="botCommandConfirmTitle">Send Command</string>
     <string name="botCommandConfirmText">Do you want to send this command?\n\n%s</string>
-    <string name="TranslateMessagesInfo3">The ‘Show Translate Button’ is handled by N-Settings and can\'t be changed here.</string>
+    <string name="TranslateMessagesInfo3">The ‘Show Translate Button’ and ‘Translate Entire Chats’ settings are handled by N-Settings and can\'t be changed here.</string>
     <string name="DisableScreenshotDetection">Disable Screenshot Detection</string>
     <string name="MessageSavingSaveMedia">Save Media</string>
     <string name="MessageSavingSaveMediaHint">Click for More</string>
@@ -50,4 +49,10 @@
     <string name="MessageSavingSaveMediaInPrivateChannels">Save Media in Private Channels</string>
     <string name="MessageSavingSaveMediaInPublicGroups">Save Media in Public Groups</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">Save Media in Private Groups</string>
+    <string name="TelegramUIAutoTranslate">Translate Entire Chats</string>
+    <string name="TranslatorMode">Mode</string>
+    <string name="TranslatorModeAppend">Append</string>
+    <string name="TranslatorModeInline">In-Message</string>
+    <string name="TranslatorModePopup">Popup</string>
+    <string name="Translated">Translated</string>
 </resources>

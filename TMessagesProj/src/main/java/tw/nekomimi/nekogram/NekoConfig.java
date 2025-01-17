@@ -112,7 +112,6 @@ public class NekoConfig {
     public static ConfigItem translationProvider = addConfig("translationProvider", configTypeInt, 1);
     public static ConfigItem translateToLang = addConfig("TransToLang", configTypeString, ""); // "" -> translate to current language (MessageTrans.kt & Translator.kt)
     public static ConfigItem translateInputLang = addConfig("TransInputToLang", configTypeString, "en");
-    public static ConfigItem useTelegramTranslateInChat = addConfig("useTelegramTranslateInChat", configTypeBool, false);
     public static ConfigItem googleCloudTranslateKey = addConfig("GoogleCloudTransKey", configTypeString, "");
 
     public static ConfigItem disableNotificationBubbles = addConfig("disableNotificationBubbles", configTypeBool, false);

@@ -1585,7 +1585,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
     private final static int topic_close = 60;
     private final static int open_forum = 61;
-    private final static int combine_message = 62;
+    private final static int combine_message = 6200; // wtf 62. translate：???
 
     private final static int translate = 62;
     private final static int scheduled = 63;
@@ -9620,7 +9620,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (contentView == null || topChatPanelView != null || getContext() == null) {
             return;
         }
-
         topChatPanelView = new BlurredFrameLayout(getContext(), contentView) {
 
             private boolean ignoreLayout;
@@ -9886,7 +9885,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         translateButton = new TranslateButton(getContext(), this, themeDelegate) {
             @Override
             protected void onButtonClick() {
-                if (getUserConfig().isPremium()) {
+                if (getMessagesController().getTranslateController().isFeatureAvailable()) {
                     getMessagesController().getTranslateController().toggleTranslatingDialog(getDialogId());
                 } else {
                     MessagesController.getNotificationsSettings(currentAccount).edit().putInt("dialog_show_translate_count" + getDialogId(), 14).commit();
@@ -18942,8 +18941,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
 
-                if (translateItem != null)
-                    translateItem.setVisibility(selectedMessagesCanCopyIds[0].size() + selectedMessagesCanCopyIds[1].size() > 0);
                 if (actionModeOtherItem != null) {
                     actionModeOtherItem.setSubItemVisibility(nkbtn_sharemessage, selectedMessagesCanCopyIds[0].size() + selectedMessagesCanCopyIds[1].size() > 0);
                 }
@@ -28078,7 +28075,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         TLRPC.EmojiStatus showEmojiStatusReport = currentUser != null && (showReport || showBlock) && !getMessagesController().premiumFeaturesBlocked() && (currentUser.emoji_status instanceof TLRPC.TL_emojiStatus || currentUser.emoji_status instanceof TLRPC.TL_emojiStatusUntil && ((TLRPC.TL_emojiStatusUntil) currentUser.emoji_status).until > (int) (System.currentTimeMillis() / 1000)) ? currentUser.emoji_status : null;
         boolean showRestartTopic = !isInPreviewMode() && forumTopic != null && forumTopic.closed && !forumTopic.hidden && ChatObject.canManageTopic(currentAccount, currentChat, forumTopic);
         boolean showTranslate = (
-            getUserConfig().isPremium() ?
+            true /*getUserConfig().isPremium()*/ ?
                 getMessagesController().getTranslateController().isDialogTranslatable(getDialogId()) && !getMessagesController().getTranslateController().isTranslateDialogHidden(getDialogId()) :
                 !getMessagesController().premiumFeaturesBlocked() && preferences.getInt("dialog_show_translate_count" + did, 5) <= 0
         );
@@ -34192,6 +34189,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             searchItemVisible = true;
             if (viewInChatItem != null)
                 viewInChatItem.setVisibility(View.GONE);
+            if (translateItem != null)
+                translateItem.setVisibility(View.GONE);
             updateSearchButtons(0, 0, -1);
             updateBottomOverlay();
         }
@@ -37290,6 +37289,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             // NekoX: hide viewInChat Item when searching
             if (viewInChatItem != null)
                 viewInChatItem.setVisibility(View.VISIBLE);
+            if (translateItem != null)
+                translateItem.setVisibility(View.VISIBLE);
             searchItemVisible = false;
             getMediaDataController().clearFoundMessageObjects();
             if (searchType == SEARCH_CHANNEL_POSTS) {
@@ -42563,7 +42564,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 break;
             }
             case nkbtn_translate: {
-                if (NekoConfig.useTelegramTranslateInChat.Bool() && !selectedObject.isPoll()) {
+                if (NaConfig.INSTANCE.getTranslatorMode().Int() == 2 && !selectedObject.isPoll()) {
                     String toLang = LocaleController.getInstance().getCurrentLocale().getLanguage();
                     int[] messageIdToTranslate = new int[] { selectedObject.getId() };
                     final CharSequence finalMessageText = getMessageCaption(selectedObject, selectedObjectGroup, messageIdToTranslate);

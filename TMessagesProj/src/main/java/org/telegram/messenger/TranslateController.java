@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.telegram.tgnet.TLRPC;
@@ -31,8 +32,13 @@ import java.util.Objects;
 import java.util.Set;
 
 import tw.nekomimi.nekogram.transtale.popupwrapper.LanguageDetector;
+import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.transtale.Translator;
+import tw.nekomimi.nekogram.transtale.TranslatorKt;
+import xyz.nextalone.nagram.NaConfig;
 
 public class TranslateController extends BaseController {
+    private static final String NAX = "nu.gpu.nagram_TranslateController";
 
     public static final String UNKNOWN_LANGUAGE = "und";
 
@@ -68,7 +74,8 @@ public class TranslateController extends BaseController {
     }
 
     public boolean isFeatureAvailable() {
-        return isChatTranslateEnabled() && UserConfig.getInstance(currentAccount).isPremium();
+        boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
+        return NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool() && (isRealPremium || NekoConfig.translationProvider.Int() != Translator.providerTelegram);
     }
 
     private Boolean chatTranslateEnabled;
@@ -124,15 +131,16 @@ public class TranslateController extends BaseController {
     }
 
     public boolean isTranslateDialogHidden(long dialogId) {
+        boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
         if (hideTranslateDialogs.contains(dialogId)) {
             return true;
         }
         TLRPC.ChatFull chatFull = getMessagesController().getChatFull(-dialogId);
-        if (chatFull != null) {
+        if (chatFull != null && isRealPremium) {
             return chatFull.translations_disabled;
         }
         TLRPC.UserFull userFull = getMessagesController().getUserFull(dialogId);
-        if (userFull != null) {
+        if (userFull != null && isRealPremium) {
             return userFull.translations_disabled;
         }
         return false;
@@ -228,14 +236,14 @@ public class TranslateController extends BaseController {
         }
 
         final boolean wasHidden = hideTranslateDialogs.contains(dialogId);
-
         boolean hidden = false;
+        boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
         TLRPC.ChatFull chatFull = getMessagesController().getChatFull(-dialogId);
-        if (chatFull != null) {
+        if (chatFull != null && isRealPremium) {
             hidden = chatFull.translations_disabled;
         } else {
             TLRPC.UserFull userFull = getMessagesController().getUserFull(dialogId);
-            if (userFull != null) {
+            if (userFull != null && isRealPremium) {
                 hidden = userFull.translations_disabled;
             }
         }
@@ -260,22 +268,25 @@ public class TranslateController extends BaseController {
     }
 
     public void setHideTranslateDialog(long dialogId, boolean hide, boolean doNotNotify) {
-        TLRPC.TL_messages_togglePeerTranslations req = new TLRPC.TL_messages_togglePeerTranslations();
-        req.peer = getMessagesController().getInputPeer(dialogId);
-        req.disabled = hide;
-        getConnectionsManager().sendRequest(req, null);
+        boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
+
+        if (isRealPremium) {
+            TLRPC.TL_messages_togglePeerTranslations req = new TLRPC.TL_messages_togglePeerTranslations();
+            req.peer = getMessagesController().getInputPeer(dialogId);
+            req.disabled = hide;
+            getConnectionsManager().sendRequest(req, null);
+        }
 
         TLRPC.ChatFull chatFull = getMessagesController().getChatFull(-dialogId);
-        if (chatFull != null) {
+        if (chatFull != null && isRealPremium) {
             chatFull.translations_disabled = hide;
             getMessagesStorage().updateChatInfo(chatFull, true);
         }
         TLRPC.UserFull userFull = getMessagesController().getUserFull(dialogId);
-        if (userFull != null) {
+        if (userFull != null && isRealPremium) {
             userFull.translations_disabled = hide;
             getMessagesStorage().updateUserInfo(userFull, true);
         }
-
         synchronized (this) {
             if (hide) {
                 hideTranslateDialogs.add(dialogId);
@@ -631,7 +642,44 @@ public class TranslateController extends BaseController {
 
     private ArrayList<Integer> pendingLanguageChecks = new ArrayList<>();
     private void checkLanguage(MessageObject messageObject) {
-        // NekoX: remove Language Detector
+        if (!LanguageDetector.hasSupport()) {
+            return;
+        }
+        if (!isTranslatable(messageObject) || messageObject.messageOwner == null || TextUtils.isEmpty(messageObject.messageOwner.message)) {
+            return;
+        }
+        if (messageObject.messageOwner.originalLanguage != null) {
+            checkDialogTranslatable(messageObject);
+            return;
+        }
+
+        final long dialogId = messageObject.getDialogId();
+        final int hash = hash(messageObject);
+        if (isDialogTranslatable(dialogId)) {
+            return;
+        }
+        if (pendingLanguageChecks.contains(hash)) {
+            return;
+        }
+
+        pendingLanguageChecks.add(hash);
+
+        Utilities.stageQueue.postRunnable(() -> {
+            LanguageDetector.detectLanguage(messageObject.messageOwner.message, lng -> AndroidUtilities.runOnUIThread(() -> {
+                String detectedLanguage = lng;
+                if (detectedLanguage == null) {
+                    detectedLanguage = UNKNOWN_LANGUAGE;
+                }
+                messageObject.messageOwner.originalLanguage = detectedLanguage;
+                getMessagesStorage().updateMessageCustomParams(dialogId, messageObject.messageOwner);
+                pendingLanguageChecks.remove((Integer) hash);
+                checkDialogTranslatable(messageObject);
+            }), err -> AndroidUtilities.runOnUIThread(() -> {
+                messageObject.messageOwner.originalLanguage = UNKNOWN_LANGUAGE;
+                getMessagesStorage().updateMessageCustomParams(dialogId, messageObject.messageOwner);
+                pendingLanguageChecks.remove((Integer) hash);
+            }));
+        });
     }
 
     private void checkDialogTranslatable(MessageObject messageObject) {
@@ -685,6 +733,8 @@ public class TranslateController extends BaseController {
     }
 
     private final Set<Integer> loadingTranslations = new HashSet<>();
+    private final Set<Integer> loadingNonPremiumTranslations = new HashSet<>();
+
     private final HashMap<Long, ArrayList<PendingTranslation>> pendingTranslations = new HashMap<>();
 
     private static class PendingTranslation {
@@ -706,6 +756,33 @@ public class TranslateController extends BaseController {
         Utilities.Callback3<Integer, TLRPC.TL_textWithEntities, String> callback
     ) {
         if (message == null || message.getId() < 0 || callback == null) {
+            return;
+        }
+
+        if (NekoConfig.translationProvider.Int() != Translator.providerTelegram) {
+            synchronized (this) {
+                loadingNonPremiumTranslations.add(message.getId()); 
+            }
+            
+            Translator.translate(TranslatorKt.getCode2Locale(language), message.messageOwner.message, new Translator.Companion.TranslateCallBack() {
+                @Override
+                public void onSuccess(@NonNull String translation) {
+                    synchronized (TranslateController.this) {
+                        loadingNonPremiumTranslations.remove(message.getId());
+                    }
+                    TLRPC.TL_textWithEntities textObj = new TLRPC.TL_textWithEntities();
+                    textObj.text = translation;
+                    callback.run(message.getId(), textObj, language);
+                }
+                
+                @Override
+                public void onFailed(boolean unsupported, @NonNull String error) {
+                    synchronized (TranslateController.this) {
+                        loadingNonPremiumTranslations.remove(message.getId());
+                    }
+                    callback.run(message.getId(), null, language);
+                }
+            });
             return;
         }
 
@@ -821,7 +898,10 @@ public class TranslateController extends BaseController {
 
     public boolean isTranslating(MessageObject messageObject) {
         synchronized (this) {
-            return messageObject != null && loadingTranslations.contains(messageObject.getId()) && isTranslatingDialog(messageObject.getDialogId());
+            return messageObject != null && 
+                   (loadingTranslations.contains(messageObject.getId()) || 
+                    loadingNonPremiumTranslations.contains(messageObject.getId())) && 
+                   isTranslatingDialog(messageObject.getDialogId());
         }
     }
 
@@ -833,12 +913,14 @@ public class TranslateController extends BaseController {
             return false;
         }
         synchronized (this) {
-            if (loadingTranslations.contains(messageObject.getId())) {
+            if (loadingTranslations.contains(messageObject.getId()) || 
+                loadingNonPremiumTranslations.contains(messageObject.getId())) {
                 return true;
             }
             if (group != null) {
                 for (MessageObject message : group.messages) {
-                    if (loadingTranslations.contains(message.getId())) {
+                    if (loadingTranslations.contains(message.getId()) ||
+                        loadingNonPremiumTranslations.contains(message.getId())) {
                         return true;
                     }
                 }
@@ -849,6 +931,8 @@ public class TranslateController extends BaseController {
 
     public void cancelAllTranslations() {
         synchronized (this) {
+            loadingNonPremiumTranslations.clear();
+
             for (ArrayList<PendingTranslation> translations : pendingTranslations.values()) {
                 if (translations != null) {
                     for (PendingTranslation pendingTranslation : translations) {
@@ -867,6 +951,8 @@ public class TranslateController extends BaseController {
 
     public void cancelTranslations(long dialogId) {
         synchronized (this) {
+            loadingNonPremiumTranslations.clear();
+
             ArrayList<PendingTranslation> translations = pendingTranslations.get(dialogId);
             if (translations != null) {
                 for (PendingTranslation pendingTranslation : translations) {

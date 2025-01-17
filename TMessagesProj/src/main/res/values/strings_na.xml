@@ -42,7 +42,6 @@
     <string name="DisableGlobalSearch">Disable Global Search</string>
     <string name="InputMessageId">Input Message ID</string>
     <string name="ToTheMessage">Go to</string>
-    <string name="HideOriginAfterTranslation">Hide Original After Translation</string>
     <string name="ZalgoFilter">Filter \"Zalgo\" Symbols</string>
     <string name="ZalgoFilterNotice">All \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" symbols in nicknames or messages will be removed.</string>
     <string name="CustomChannelLabel">Custom Default Channel Label</string>

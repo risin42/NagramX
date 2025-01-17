@@ -211,12 +211,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val hideOriginAfterTranslation: ConfigItem =
-        addConfig(
-            "HideOriginAfterTranslation",
-            ConfigItem.configTypeBool,
-            false
-        )
     val zalgoFilter =
         addConfig(
             "ZalgoFilter",
@@ -749,6 +743,18 @@ object NaConfig {
             "DisableScreenshotDetection",
             ConfigItem.configTypeBool,
             false
+        )
+    val telegramUIAutoTranslate =
+        addConfig(
+            "TelegramUIAutoTranslate",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val translatorMode =
+        addConfig(
+            "TranslatorMode",
+            ConfigItem.configTypeInt,
+            0
         )
 
     val preferredTranslateTargetLangList = ArrayList<String>()

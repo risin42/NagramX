@@ -34,12 +34,11 @@
     <string name="PreferredTranslateTargetLangName">首选语言</string>
     <string name="ClearDeleted">清除已删除消息</string>
     <string name="ClearDeletedAlertMessage">您确定要清除此聊天中的所有已删除消息吗？</string>
-    <string name="useTelegramTranslateInChatSubtitle">仅适用于 Telegram API。</string>
     <string name="ForwardsRestrictedInfoAyuDeleted">不允许转发。</string>
     <string name="RegexFiltersNotice">点击以编辑。</string>
     <string name="botCommandConfirmTitle">确认指令</string>
     <string name="botCommandConfirmText">您确定要发送此指令吗？\n\n%s</string>
-    <string name="TranslateMessagesInfo3">“显示翻译按钮”已被 N-设置 覆盖，无法在此修改。</string>
+    <string name="TranslateMessagesInfo3">“显示翻译按钮”和“翻译全部聊天记录”已被 N-设置 覆盖，无法在此修改。</string>
     <string name="DisableScreenshotDetection">禁用截屏检测</string>
     <string name="MessageSavingSaveMedia">保存媒体</string>
     <string name="MessageSavingSaveMediaHint">点击查看更多选项</string>
@@ -48,4 +47,10 @@
     <string name="MessageSavingSaveMediaInPrivateChannels">在私有频道中保存媒体</string>
     <string name="MessageSavingSaveMediaInPublicGroups">在公开群组中保存媒体</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">在私有群组中保存媒体</string>
+    <string name="TelegramUIAutoTranslate">翻译全部聊天记录</string>
+    <string name="TranslatorMode">翻译模式</string>
+    <string name="TranslatorModeAppend">追加</string>
+    <string name="TranslatorModeInline">替换</string>
+    <string name="TranslatorModePopup">弹窗</string>
+    <string name="Translated">已翻译</string>
 </resources>
