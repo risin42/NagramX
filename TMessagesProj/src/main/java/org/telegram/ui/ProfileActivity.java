@@ -11464,7 +11464,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     return;
                 }
 
-                File logcatFile = new File(dir, "NekoX-" + System.currentTimeMillis() + ".log");
+                File logcatFile = new File(dir, "NagramX-" + System.currentTimeMillis() + ".log");
                 try {
                     RuntimeUtil.exec("logcat", "-df", logcatFile.getPath()).waitFor();
                     RuntimeUtil.exec("logcat", "-c").waitFor();
