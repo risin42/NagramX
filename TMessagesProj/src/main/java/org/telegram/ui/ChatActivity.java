@@ -297,7 +297,6 @@ import java.util.stream.Collectors;
 import cn.hutool.core.util.StrUtil;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
-import tw.nekomimi.nekogram.DialogConfig;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.helpers.AyuFilter;
@@ -36834,24 +36833,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         startMessageUnselect();
                     }
                 }
-                if (DialogConfig.isAutoTranslateEnable(dialog_id, getTopicId()) && LanguageDetector.hasSupport()) {
-                    final var messageObject = messageCell.getMessageObject();
-                    if (MessageHelper.isMessageObjectAutoTranslatable(messageObject)) {
-                        LanguageDetector.detectLanguage(
-                                MessageHelper.getMessagePlainText(messageObject),
-                                (String lang) -> {
-                                    if (!isLanguageRestricted(lang)) {
-                                        ArrayList<MessageObject> fmessages = new ArrayList<>(Arrays.asList(messageObject));
-                                        MessageTransKt.translateMessages(ChatActivity.this, fmessages, true);
-                                    }
-                                },
-                                (Exception e) -> {
-                                    FileLog.e("mlkit: failed to detect language in message");
-                                    e.printStackTrace();
-                                    messageObject.translating = false;
-                                });
-                    }
-                }
                 // na: unread count
                 if (actionBar != null) {
                     actionBar.unreadBadgeSetCount(getMessagesStorage().getMainUnreadCount());
@@ -42813,35 +42794,35 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
     }
 
-    private boolean isLanguageRestricted(String lang) {
-        if (lang == null || lang.equals("und")) {
-            return false;
-        }
-        String toLang = NekoConfig.translateToLang.String();
-        if (toLang == null || toLang.isEmpty()) {
-            toLang = LocaleController.getInstance().currentLocale.getLanguage();
-        }
-        if (toLang.contains("-")) {
-            toLang = toLang.substring(0, toLang.indexOf("-"));
-        }
-        if (lang.contains("-")) {
-            lang = lang.substring(0, lang.indexOf("-"));
-        }
-        if (lang.equals(toLang)) {
-            return true;
-        }
-        boolean restricted = false;
-        for (String language : RestrictedLanguagesSelectActivity.getRestrictedLanguages()) {
-            if (language.contains("_")) {
-                language = language.substring(0, language.indexOf("_"));
-            }
-            if (language.equals(lang)) {
-                restricted = true;
-                break;
-            }
-        }
-        return restricted;
-    }
+    // private boolean isLanguageRestricted(String lang) {
+    //     if (lang == null || lang.equals("und")) {
+    //         return false;
+    //     }
+    //     String toLang = NekoConfig.translateToLang.String();
+    //     if (toLang == null || toLang.isEmpty()) {
+    //         toLang = LocaleController.getInstance().currentLocale.getLanguage();
+    //     }
+    //     if (toLang.contains("-")) {
+    //         toLang = toLang.substring(0, toLang.indexOf("-"));
+    //     }
+    //     if (lang.contains("-")) {
+    //         lang = lang.substring(0, lang.indexOf("-"));
+    //     }
+    //     if (lang.equals(toLang)) {
+    //         return true;
+    //     }
+    //     boolean restricted = false;
+    //     for (String language : RestrictedLanguagesSelectActivity.getRestrictedLanguages()) {
+    //         if (language.contains("_")) {
+    //             language = language.substring(0, language.indexOf("_"));
+    //         }
+    //         if (language.equals(lang)) {
+    //             restricted = true;
+    //             break;
+    //         }
+    //     }
+    //     return restricted;
+    // }
 
     private class RecyclerListViewInternal extends RecyclerListView implements StoriesListPlaceProvider.ClippedView {
         public RecyclerListViewInternal(Context context, ThemeDelegate themeDelegate) {

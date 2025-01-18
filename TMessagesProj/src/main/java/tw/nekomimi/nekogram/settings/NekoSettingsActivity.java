@@ -525,7 +525,6 @@ public class NekoSettingsActivity extends BaseFragment {
         spToJSON("themeconfig", configJson, null, filterSensitive);
 
         spToJSON("nkmrcfg", configJson, null, filterSensitive);
-        spToJSON("nekodialogconfig", configJson, null, filterSensitive);
 
         return configJson.toString(indentSpaces);
     }

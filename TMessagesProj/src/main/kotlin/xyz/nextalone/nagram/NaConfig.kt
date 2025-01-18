@@ -319,12 +319,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val autoTranslate =
-        addConfig(
-            "AutoTranslate",
-            ConfigItem.configTypeBool,
-            false
-        )
     val typeMessageHintUseGroupName =
         addConfig(
             "TypeMessageHintUseGroupName",
