@@ -777,10 +777,18 @@ public class TranslateController extends BaseController {
                 
                 @Override
                 public void onFailed(boolean unsupported, @NonNull String error) {
-                    synchronized (TranslateController.this) {
-                        loadingNonPremiumTranslations.remove(message.getId());
-                    }
-                    callback.run(message.getId(), null, language);
+                    AndroidUtilities.runOnUIThread(() -> {
+                        synchronized (TranslateController.this) {
+                            loadingNonPremiumTranslations.remove(message.getId());
+                        }
+                        if (unsupported) {
+                            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert2));
+                        } else {
+                            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert1));
+                        }
+                        Log.e(NAX, "Failed to translate message: " + error);
+                        callback.run(message.getId(), null, language);
+                    });
                 }
             });
             return;

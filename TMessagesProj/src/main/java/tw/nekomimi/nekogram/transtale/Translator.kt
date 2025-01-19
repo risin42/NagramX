@@ -300,10 +300,11 @@ interface Translator {
                     UIUtil.runOnUIThread(Runnable { translateCallBack.onSuccess(result) })
                 }
                         .onFailure {
+                            UIUtil.runOnUIThread(Runnable {
                             translateCallBack.onFailed(
                                     it is UnsupportedOperationException,
                                     it.message ?: it.javaClass.simpleName
-                            )
+                            )})
                         }
             }
         }
