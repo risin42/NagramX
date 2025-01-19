@@ -20365,7 +20365,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     if (BuildVars.LOGS_ENABLED && dialog != null) Log.d(NAX, "dialog.top_message: " + dialog.top_message);
 
                     // empty user dialog, so load as much as we can
-                    if (DialogObject.isUserDialog(dialogId) && (startId == dialog.top_message && endId == dialog.top_message) && messArr.size() <= 1) {
+                    if (dialog != null && DialogObject.isUserDialog(dialogId) && (startId == endId && endId == dialog.top_message) && messArr.size() <= 1) {
                         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "(DialogObject.isUserDialog(dialogId) && (startId == dialog.top_message && endId == dialog.top_message) && messArr.size() <= 1)");
                         startId = minVal;
                         endId = maxVal;
