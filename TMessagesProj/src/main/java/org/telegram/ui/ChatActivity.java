@@ -20362,7 +20362,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     var minMaxRes = getMessagesStorage().getMinAndMaxForDialog(dialogId);
                     if (BuildVars.LOGS_ENABLED) Log.d(NAX, "minMaxRes.first: " + minMaxRes.first);
                     if (BuildVars.LOGS_ENABLED) Log.d(NAX, "minMaxRes.second: " + minMaxRes.second);
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "dialog.top_message: " + dialog.top_message);
+                    if (BuildVars.LOGS_ENABLED && dialog != null) Log.d(NAX, "dialog.top_message: " + dialog.top_message);
 
                     // empty user dialog, so load as much as we can
                     if (DialogObject.isUserDialog(dialogId) && (startId == dialog.top_message && endId == dialog.top_message) && messArr.size() <= 1) {
@@ -20392,7 +20392,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 } else {
                     if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messArr isEmpty");
-                    if (!messages.isEmpty()) { // for loading uppermore
+                    if (!messages.isEmpty() && load_type != 1) { // for loading uppermore // NagramX: load_type != 1
                         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (!messages.isEmpty()) for loading uppermore");
                         startId = minVal;
                         endId = AyuUtils.getMinRealId(messages);
@@ -20464,7 +20464,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             );
             if (!isInScheduleMode() && chatMode != MODE_PINNED && (startId != minVal || endId != minVal)) {
                 var needToReset = messArr.size() == count;
-                AyuHistoryHook.doHook(currentAccount, messArr, messagesDict, startId, endId, dialogId, limit, topicId, isSecretChat());
+                AyuHistoryHook.doHook(currentAccount, messArr, messagesDict, startId, endId, dialogId, limit, topicId, isSecretChat(), load_type);
                 if (needToReset) {
                     if (BuildVars.LOGS_ENABLED) Log.d(NAX, "needToReset");
                     count = messArr.size();

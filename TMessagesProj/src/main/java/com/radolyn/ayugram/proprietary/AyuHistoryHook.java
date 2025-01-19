@@ -33,7 +33,8 @@ public abstract class AyuHistoryHook {
         long dialogId,
         int limit,
         long topicId,
-        boolean isSecretChat
+        boolean isSecretChat,
+        int load_type
     ) {
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "doHook START");
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messArr.size(): " + messArr.size());
@@ -197,6 +198,12 @@ public abstract class AyuHistoryHook {
                     // affect comparator2 :thinking:
                     comparator2 = comparator2.reversed();
                 }
+
+                if (load_type == 1) { // NagramX: check if load_type is 1
+                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "load_type 1, do reverse");
+                    comparator2 = comparator2.reversed();
+                }
+
                 if (BuildVars.LOGS_ENABLED) Log.d(NAX, "longSparseArray.size(): " + longSparseArray.size());
                 for (int i6 = 0; i6 < longSparseArray.size(); i6++) {
                     if (BuildVars.LOGS_ENABLED) Log.d(NAX, "i6 = " + i6 + ";messArr.add(...)");
