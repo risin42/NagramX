@@ -6,21 +6,33 @@ import org.json.JSONObject
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.transtale.Translator
+import tw.nekomimi.nekogram.transtale.source.raw.DeepLTranslatorRaw
+import kotlin.random.Random
 
 object DeepLTranslator : Translator {
 
     private const val OFFICIAL_ENDPOINT = "https://api-free.deepl.com/v2/translate"
     private const val FALLBACK_ENDPOINT = "https://deeplx.gpu.nu/v2/translate"
 
-    override suspend fun doTranslate(from: String, to: String, query: String): String {
+    private val rawTranslator = DeepLTranslatorRaw()
 
+    override suspend fun doTranslate(from: String, to: String, query: String): String {
         if (to.isEmpty()) {
             throw UnsupportedOperationException(LocaleController.getString(R.string.TranslateApiUnsupported))
         }
 
+        try {
+            return rawTranslator.translate(query, from, to)
+        } catch (e: Exception) {
+            val endpoint = if (Random.nextBoolean()) OFFICIAL_ENDPOINT else FALLBACK_ENDPOINT
+            return translateWithAPI(endpoint, to, query)
+        }
+    }
+
+    private fun translateWithAPI(endpoint: String, targetLang: String, query: String): String {
         val apiKey = LocaleController.getString(R.string.DEEPL_API_KEY)
         if (apiKey.isBlank()) error("Missing DeepL Translate Key")
- 
+
         val textArray = JSONArray().apply {
             put(query)
         }
@@ -28,14 +40,10 @@ object DeepLTranslator : Translator {
         val requestBody = JSONObject().apply {
             put("preserve_formatting", true)
             put("text", textArray)
-            put("target_lang", to.uppercase())
+            put("target_lang", targetLang.uppercase())
         }.toString()
 
-        val response = try {
-            makeTranslateRequest(OFFICIAL_ENDPOINT, apiKey, requestBody)
-        } catch (e: Exception) {
-            makeTranslateRequest(FALLBACK_ENDPOINT, apiKey, requestBody)
-        }
+        val response = makeTranslateRequest(endpoint, apiKey, requestBody)
 
         val respObj = JSONObject(response.body())
         val respArr = respObj.getJSONArray("translations")
@@ -53,9 +61,6 @@ object DeepLTranslator : Translator {
             .execute()
 
         if (response.status != 200) {
-            if (endpoint == OFFICIAL_ENDPOINT) {
-                throw Exception("Official DeepL API failed")
-            }
             error("HTTP ${response.status} : ${response.body()}")
         }
 
