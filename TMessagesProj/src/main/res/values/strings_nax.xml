@@ -29,7 +29,7 @@
     <string name="HideShareButtonInChannel">Hide Side \"Share\" Button</string>
     <string name="DeleteCloudBackup">Clear cloud data</string>
     <string name="DeleteCloudBackupFailed">Failed to clear cloud data</string>
-    <string name="DeleteCloudBackupSuccess">Cloud data cleared successfully</string>
+    <string name="DeleteCloudBackupSuccess">Cloud data cleared</string>
     <string name="CloudConfigNoBackupToDelete">No data to clear</string>
     <string name="PreferredTranslateTargetLang">Custom preferred language list</string>
     <string name="PreferredTranslateTargetLangExample">e.g. ja, zh_cn, zh_tw</string>

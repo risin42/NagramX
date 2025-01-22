@@ -99,7 +99,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell translucentDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getTranslucentDeletedMessages()));
     private final AbstractConfigCell clearMessageDatabaseRow = cellGroup.appendCell(new ConfigCellText("ClearMessageDatabase", () -> {
         AyuMessagesController.getInstance().clean();
-        BulletinFactory.of(this).createSimpleBulletin(R.raw.info, LocaleController.getString("ClearMessageDatabaseNotification")).show();
+        BulletinFactory.of(this).createSimpleBulletin(R.raw.done, LocaleController.getString("ClearMessageDatabaseNotification")).show();
     }));
     private final AbstractConfigCell divider0 = cellGroup.appendCell(new ConfigCellDivider());
     
