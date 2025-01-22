@@ -20353,7 +20353,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
                     TLRPC.TL_forumTopic topic = null;
                     if (isTopic) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "isTopic");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "isTopic: " + isTopic);
                         topic = getMessagesController().getTopicsController().findTopic(getCurrentChatInfo().id, getTopicId());
                     }
 
@@ -20366,7 +20366,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
                     // empty user dialog, so load as much as we can
                     if (dialog != null && DialogObject.isUserDialog(dialogId) && (startId == endId && endId == dialog.top_message) && messArr.size() <= 1) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "(DialogObject.isUserDialog(dialogId) && (startId == dialog.top_message && endId == dialog.top_message) && messArr.size() <= 1)");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (dialog != null && DialogObject.isUserDialog(dialogId) && (startId == endId && endId == dialog.top_message) && messArr.size() <= 1)");
                         startId = minVal;
                         endId = maxVal;
                         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "startId: " + startId + ", " + "endId: " + endId);
@@ -20393,20 +20393,20 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else {
                     if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messArr isEmpty");
                     if (!messages.isEmpty() && load_type != 1) { // for loading uppermore // NagramX: load_type != 1
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (!messages.isEmpty()) for loading uppermore");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (!messages.isEmpty() && load_type != 1) // for loading uppermore");
                         startId = minVal;
                         endId = AyuUtils.getMinRealId(messages);
                         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "startId: " + startId + ", " + "endId: " + endId);
                     }
                     // empty(new) user dialog, so load as much as we can
                     else if (DialogObject.isUserDialog(dialogId)) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "DialogObject.isUserDialog(dialogId)");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "else if (DialogObject.isUserDialog(dialogId))");
                         startId = minVal;
                         endId = maxVal;
                         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "startId: " + startId + ", " + "endId: " + endId);
                     }
                     if (isCache) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "isCache");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (isCache)");
                         startId = minVal;
                         endId = minVal;
                         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "startId: " + startId + ", " + "endId: " + endId);
@@ -20460,7 +20460,15 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     + " , load_type: " + load_type
                     + " , isCache: " + isCache
                     + " , isEnd: " + isEnd
-                    + ", endReached[0]: " + endReached[0]
+                    + " , endReached[0]: " + endReached[0]
+                    + " , threadMaxInboxReadId: " + threadMaxInboxReadId
+                    + " , threadMaxOutboxReadId: " + threadMaxOutboxReadId
+                    + " , replyMaxReadId: " + replyMaxReadId
+                    + " , threadMessageId: " + threadMessageId
+                    + " , replyOriginalMessageId: " + replyOriginalMessageId
+                    + " , isComments: " + isComments
+                    + " , isReplyChatComment(): " + isReplyChatComment()
+                    + " , isThreadChat(): " + isThreadChat()
             );
             if (!isInScheduleMode() && chatMode != MODE_PINNED && (startId != minVal || endId != minVal)) {
                 var needToReset = messArr.size() == count;
