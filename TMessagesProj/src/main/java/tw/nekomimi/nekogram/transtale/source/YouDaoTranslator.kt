@@ -18,17 +18,17 @@ import java.util.*
 
 object YouDaoTranslator : Translator {
 
-    private val targetLanguages = Arrays.asList("zh-CHS", "en", "es", "fr", "ja", "ru", "ko", "pt", "vi", "de", "id", "ar")
+    private val targetLanguages = listOf("ar", "de", "en", "es", "fr", "id", "it", "ja", "ko", "nl", "pt", "ru", "th", "vi", "zh-CHS", "zh-CHT")
 
     override suspend fun doTranslate(from: String, to: String, query: String): String {
-        if (to !in targetLanguages) {
-            throw UnsupportedOperationException(LocaleController.getString(R.string.TranslateApiUnsupported))
+        if (to.lowercase() !in targetLanguages.map { it.lowercase() }) {
+            throw UnsupportedOperationException(LocaleController.getString(R.string.TranslateApiUnsupported) + " " + to)
         }
 
         return withContext(Dispatchers.IO) {
             val param = "q=" + URLEncoder.encode(query, "UTF-8") +
                     "&from=Auto" +
-                    "&to=en" + to
+                    "&to=" + to
             val response = request(param)
             val jsonObject = JSONObject(response)
             if (!jsonObject.has("translation") && jsonObject.has("errorCode")) {
@@ -44,9 +44,8 @@ object YouDaoTranslator : Translator {
         val httpConnectionStream: InputStream
         val downloadUrl = URL("https://aidemo.youdao.com/trans")
         val httpConnection = downloadUrl.openConnection() as HttpURLConnection
-        httpConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A5297c Safari/602.1")
-        httpConnection.connectTimeout = 1000
-        //httpConnection.setReadTimeout(2000);
+        httpConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 18_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Mobile/15E148 Safari/605.1 NAVER(inapp; search; 2000; 12.10.4; 15PROMAX)")
+        httpConnection.connectTimeout = 3000
         httpConnection.requestMethod = "POST"
         httpConnection.doOutput = true
         val dataOutputStream = DataOutputStream(httpConnection.outputStream)
