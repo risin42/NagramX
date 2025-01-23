@@ -106,7 +106,7 @@
     <string name="BlurAvatarBackground">Blur Profile Picture</string>
     <string name="DarkenAvatarBackground">Darken Profile Picture</string>
     <string name="ProviderDeepLTranslate">DeepL Translate</string>
-    <string name="ProviderMicrosoftTranslator">Microsoft Translator</string>
+    <string name="ProviderMicrosoftTranslator">Bing Translator</string>
     <string name="ProviderYouDao">YouDao Translate</string>
     <string name="pressTitleToOpenAllChats">Press title to open \"All Chats\" tab</string>
     <string name="DontSendGreetingSticker">Don\'t Send Greeting Sticker</string>
