@@ -952,7 +952,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                 new ProviderInfo(Translator.providerYandex, R.string.ProviderYandexTranslate),
                 new ProviderInfo(Translator.providerLingo, R.string.ProviderLingocloud),
                 new ProviderInfo(Translator.providerMicrosoft, R.string.ProviderMicrosoftTranslator),
-                new ProviderInfo(Translator.providerYouDao, R.string.ProviderYouDao),
+                new ProviderInfo(Translator.providerRealMicrosoft, R.string.ProviderRealMicrosoftTranslator),
                 new ProviderInfo(Translator.providerDeepL, R.string.ProviderDeepLTranslate),
                 new ProviderInfo(Translator.providerTelegram, R.string.ProviderTelegramAPI),
                 new ProviderInfo(Translator.providerTranSmart, R.string.ProviderTranSmartTranslate),

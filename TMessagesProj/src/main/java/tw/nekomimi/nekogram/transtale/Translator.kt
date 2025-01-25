@@ -70,7 +70,7 @@ interface Translator {
         const val providerYandex = 3
         const val providerLingo = 4
         const val providerMicrosoft = 5
-        const val providerYouDao = 6
+        const val providerRealMicrosoft = 6
         const val providerDeepL = 7
         const val providerTelegram = 8
         const val providerTranSmart = 9
@@ -117,18 +117,14 @@ interface Translator {
             if (country.lowercase() == "duang") country = "CN"
 
             when (provider) {
-                providerYouDao ->
-                        if (language == "zh") {
-                            language = "zh-CHS"
-                        }
                 providerDeepL -> language = language.uppercase()
-                providerMicrosoft, providerGoogle ->
+                providerMicrosoft, providerRealMicrosoft, providerGoogle ->
                         if (language == "zh") {
                             val countryUpperCase = country.uppercase()
                             if (countryUpperCase == "CN" || countryUpperCase == "DUANG") {
-                                language = if (provider == providerMicrosoft) "zh-Hans" else "zh-CN"
+                                language = if (provider == providerMicrosoft || provider == providerRealMicrosoft) "zh-Hans" else "zh-CN"
                             } else if (countryUpperCase == "TW" || countryUpperCase == "HK") {
-                                language = if (provider == providerMicrosoft) "zh-HanT" else "zh-TW"
+                                language = if (provider == providerMicrosoft || provider == providerRealMicrosoft) "zh-HanT" else "zh-TW"
                             }
                         }
                 providerTelegram ->
@@ -140,7 +136,7 @@ interface Translator {
                         providerYandex -> YandexTranslator
                         providerLingo -> LingoTranslator
                         providerMicrosoft -> MicrosoftTranslator
-                        providerYouDao -> YouDaoTranslator
+                        providerRealMicrosoft -> RealMicrosoftTranslator
                         providerDeepL -> DeepLTranslator
                         providerTelegram -> TelegramAPITranslator
                         providerTranSmart -> TranSmartTranslator

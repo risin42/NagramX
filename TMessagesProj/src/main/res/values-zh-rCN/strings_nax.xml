@@ -53,4 +53,5 @@
     <string name="TranslatorModeInline">替换</string>
     <string name="TranslatorModePopup">弹窗</string>
     <string name="Translated">已翻译</string>
+    <string name="ProviderRealMicrosoftTranslator">微软翻译</string>
 </resources>

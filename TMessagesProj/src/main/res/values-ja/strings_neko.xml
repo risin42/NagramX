@@ -108,7 +108,6 @@
     <string name="DarkenAvatarBackground">アバターを暗くする</string>
     <string name="ProviderDeepLTranslate">DeepL 翻訳</string>
     <string name="ProviderMicrosoftTranslator">Bing 翻訳</string>
-    <string name="ProviderYouDao">有道翻訳</string>
     <string name="pressTitleToOpenAllChats">タイトルを長押しして「すべてのチャット」を開く</string>
     <string name="disableRemoteEmojiInteractions">リモート絵文字インタラクションを無効にする</string>
     <string name="disableChoosingSticker">ステッカー選択時に入力中として表示</string>

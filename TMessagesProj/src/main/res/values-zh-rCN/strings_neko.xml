@@ -108,7 +108,6 @@
     <string name="DarkenAvatarBackground">暗色头像</string>
     <string name="ProviderDeepLTranslate">DeepL 翻译</string>
     <string name="ProviderMicrosoftTranslator">Bing 翻译</string>
-    <string name="ProviderYouDao">有道翻译</string>
     <string name="pressTitleToOpenAllChats">长按标题打开“全部对话”</string>
     <string name="disableRemoteEmojiInteractions">禁用远程表情符号交互</string>
     <string name="disableChoosingSticker">选择贴纸时输入状态为输入中</string>
