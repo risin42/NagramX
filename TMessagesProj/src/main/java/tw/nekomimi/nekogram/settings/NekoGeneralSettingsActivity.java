@@ -120,7 +120,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     );
     private final AbstractConfigCell googleCloudTranslateKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.googleCloudTranslateKey, (view, position) -> {
         customDialog_BottomInputString(position, NekoConfig.googleCloudTranslateKey, LocaleController.getString("GoogleCloudTransKeyNotice"), "Key");
-    }, LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty)));
+    }, LocaleController.getString(R.string.None)));
     // AI Translator
     private final AbstractConfigCell headerAITranslatorSettings = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("AITranslatorSettings")));
     private final AbstractConfigCell llmApiKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> {

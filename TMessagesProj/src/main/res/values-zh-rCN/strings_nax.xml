@@ -48,7 +48,7 @@
     <string name="MessageSavingSaveMediaInPublicGroups">在公开群组中保存媒体</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">在私有群组中保存媒体</string>
     <string name="TelegramUIAutoTranslate">翻译全部聊天记录</string>
-    <string name="TranslatorMode">翻译模式</string>
+    <string name="TranslatorMode">单条消息翻译模式</string>
     <string name="TranslatorModeAppend">追加</string>
     <string name="TranslatorModeInline">替换</string>
     <string name="TranslatorModePopup">弹窗</string>
