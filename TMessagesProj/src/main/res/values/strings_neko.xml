@@ -62,7 +62,7 @@
     <string name="TranslationProvider">Translation Provider</string>
     <string name="ProviderGoogleTranslate">Google Translate</string>
     <string name="TranslateApiUnsupported">The translation provider you selected don\'t support your language.</string>
-    <string name="ProviderLingocloud">Lingocloud</string>
+    <string name="ProviderLingocloud">LingoCloud</string>
     <string name="UndoTranslate">Undo translate</string>
     <string name="DisablePhotoViewerSideAction">Disable Flip Photos by Tapping</string>
     <string name="BotToken">Token</string>
