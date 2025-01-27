@@ -333,6 +333,7 @@ public class SharedConfig {
     public static boolean debugVideoQualities = false;
     public static int repeatMode;
     public static boolean allowBigEmoji;
+    public static boolean useSystemEmoji;
     public static int fontSize = 16;
     public static boolean fontSizeIsDefault;
     public static int bubbleRadius = 17;
@@ -667,6 +668,7 @@ public class SharedConfig {
             bubbleRadius = preferences.getInt("bubbleRadius", 17);
             ivFontSize = preferences.getInt("iv_font_size", fontSize);
             allowBigEmoji = preferences.getBoolean("allowBigEmoji", true);
+            useSystemEmoji = preferences.getBoolean("useSystemEmoji", false);
             streamMedia = preferences.getBoolean("streamMedia", true);
             saveStreamMedia = preferences.getBoolean("saveStreamMedia", true);
             pauseMusicOnRecord = preferences.getBoolean("pauseMusicOnRecord", true);
@@ -764,14 +766,6 @@ public class SharedConfig {
             showNotificationsForAllAccounts = preferences.getBoolean("AllAccounts", true);
 
             configLoaded = true;
-
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && debugWebView) {
-                    WebView.setWebContentsDebuggingEnabled(true);
-                }
-            } catch (Exception e) {
-                FileLog.e(e);
-            }
         }
 
     }

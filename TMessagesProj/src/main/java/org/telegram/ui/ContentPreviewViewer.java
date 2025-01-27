@@ -504,8 +504,11 @@ public class ContentPreviewViewer {
                     showUnlockPremiumView();
                     menuVisible = true;
                     containerView.invalidate();
-                    if (!NekoConfig.disableVibration.Bool())
-                        containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    if (!NekoConfig.disableVibration.Bool()) {
+                        try {
+                            containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                        } catch (Exception ignored) {}
+                    }
                     return;
                 }
                 final boolean inFavs = MediaDataController.getInstance(currentAccount).isStickerInFavorites(currentDocument);
@@ -702,8 +705,11 @@ public class ContentPreviewViewer {
                 }
                 popupWindow.showAtLocation(containerView, 0, (int) ((containerView.getMeasuredWidth() - previewMenu.getMeasuredWidth()) / 2f), y);
 
-                if (!NekoConfig.disableVibration.Bool())
-                    containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                if (!NekoConfig.disableVibration.Bool()) {
+                    try {
+                        containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    } catch (Exception ignored) {}
+                }
             } else if (currentContentType == CONTENT_TYPE_EMOJI && delegate != null) {
                 ArrayList<CharSequence> items = new ArrayList<>();
                 final ArrayList<Integer> actions = new ArrayList<>();
@@ -821,8 +827,11 @@ public class ContentPreviewViewer {
                 popupWindow.showAtLocation(containerView, 0, (int) ((containerView.getMeasuredWidth() - previewMenu.getMeasuredWidth()) / 2f), y);
                 ActionBarPopupWindow.startAnimation(previewMenu);
 
-                if (!NekoConfig.disableVibration.Bool())
-                    containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                if (!NekoConfig.disableVibration.Bool()) {
+                    try {
+                        containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    } catch (Exception ignored) {}
+                }
 
                 if (moveY != 0) {
                     if (finalMoveY == 0) {
@@ -957,9 +966,11 @@ public class ContentPreviewViewer {
                 y += AndroidUtilities.dp(24) - moveY;
                 popupWindow.showAtLocation(containerView, 0, (int) ((containerView.getMeasuredWidth() - previewMenu.getMeasuredWidth()) / 2f), y);
 
-                if (!NekoConfig.disableVibration.Bool())
-                    containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-
+                if (!NekoConfig.disableVibration.Bool()) {
+                    try {
+                        containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    } catch (Exception ignored) {}
+                }
                 if (moveY != 0) {
                     if (finalMoveY == 0) {
                         finalMoveY = 0;
@@ -1452,8 +1463,11 @@ public class ContentPreviewViewer {
                         }
                     }
                     if (opened) {
-                        if (!NekoConfig.disableVibration.Bool())
-                            currentPreviewCell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                        if (!NekoConfig.disableVibration.Bool()) {
+                            try {
+                                currentPreviewCell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                            } catch (Exception ignored) {}
+                        }
                         if (delegate != null) {
                             delegate.resetTouch();
                         }
@@ -1611,7 +1625,7 @@ public class ContentPreviewViewer {
                     }
                 }
                 if (emojiPath != null) {
-                    CharSequence emoji = Emoji.replaceEmoji(emojiPath, textPaint.getFontMetricsInt(), AndroidUtilities.dp(24), false);
+                    CharSequence emoji = Emoji.replaceEmoji(emojiPath, textPaint.getFontMetricsInt(), false);
                     emoji = TextUtils.ellipsize(emoji, textPaint, dp(200), TextUtils.TruncateAt.END);
                     emoji = AndroidUtilities.replaceCharSequence("\u2026", emoji, "");
                     stickerEmojiLayout = new StaticLayout(emoji, textPaint, AndroidUtilities.dp(200), Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
@@ -1643,7 +1657,7 @@ public class ContentPreviewViewer {
                         TLRPC.DocumentAttribute attribute = document.attributes.get(a);
                         if (attribute instanceof TLRPC.TL_documentAttributeSticker) {
                             if (!TextUtils.isEmpty(attribute.alt)) {
-                                CharSequence emoji = Emoji.replaceEmoji(attribute.alt, textPaint.getFontMetricsInt(), AndroidUtilities.dp(24), false);
+                                CharSequence emoji = Emoji.replaceEmoji(attribute.alt, textPaint.getFontMetricsInt(), false);
                                 emoji = TextUtils.ellipsize(emoji, textPaint, dp(200), TextUtils.TruncateAt.END);
                                 emoji = AndroidUtilities.replaceCharSequence("\u2026", emoji, "");
                                 stickerEmojiLayout = new StaticLayout(emoji, textPaint, AndroidUtilities.dp(200), Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
@@ -1662,7 +1676,7 @@ public class ContentPreviewViewer {
                     paintingOverlay.setEntities(sticker.videoEditedInfo.mediaEntities, true, true, false);
                 }
                 if (emojiPath != null) {
-                    CharSequence emoji = Emoji.replaceEmoji(emojiPath, textPaint.getFontMetricsInt(), AndroidUtilities.dp(24), false);
+                    CharSequence emoji = Emoji.replaceEmoji(emojiPath, textPaint.getFontMetricsInt(), false);
                     emoji = TextUtils.ellipsize(emoji, textPaint, dp(200), TextUtils.TruncateAt.END);
                     emoji = AndroidUtilities.replaceCharSequence("\u2026", emoji, "");
                     stickerEmojiLayout = new StaticLayout(emoji, textPaint, AndroidUtilities.dp(200), Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
@@ -2004,7 +2018,9 @@ public class ContentPreviewViewer {
             return;
         }
         preparingBitmap = true;
+        centerImage.setVisible(false, false);
         AndroidUtilities.makeGlobalBlurBitmap(bitmap -> {
+            centerImage.setVisible(true, false);
             blurrBitmap = bitmap;
             preparingBitmap = false;
             if (containerView != null) {

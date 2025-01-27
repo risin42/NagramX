@@ -21,13 +21,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import androidx.browser.customtabs.CustomTabColorSchemeParams;
-import androidx.browser.customtabs.CustomTabsCallback;
-import androidx.browser.customtabs.CustomTabsClient;
-import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.browser.customtabs.CustomTabsServiceConnection;
-import androidx.browser.customtabs.CustomTabsSession;
-
 import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
@@ -41,16 +34,24 @@ import org.telegram.messenger.R;
 import org.telegram.messenger.ShareBroadcastReceiver;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.Utilities;
+import org.telegram.messenger.support.customtabs.CustomTabsCallback;
+import org.telegram.messenger.support.customtabs.CustomTabsClient;
+import org.telegram.messenger.support.customtabs.CustomTabsIntent;
+import org.telegram.messenger.support.customtabs.CustomTabsServiceConnection;
+import org.telegram.messenger.support.customtabs.CustomTabsSession;
 import org.telegram.messenger.support.customtabsclient.shared.CustomTabsHelper;
 import org.telegram.messenger.support.customtabsclient.shared.ServiceConnection;
 import org.telegram.messenger.support.customtabsclient.shared.ServiceConnectionCallback;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tgnet.tl.TL_account;
 import org.telegram.ui.ActionBar.ActionBarLayout;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.BottomSheetTabs;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.BubbleActivity;
 import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.web.RestrictedDomainsList;
 
@@ -158,18 +159,18 @@ public class Browser {
         }
     }
 
-    private static List<String> TWITTER_FIXES = List.of(
-            "fxtwitter.com",
-            "fixupx.com",
-            "twittpr.com",
-            "vxtwitter.com"
-    );
-
     public static void openUrl(Context context, String url) {
         if (url == null) {
             return;
         }
         openUrl(context, Uri.parse(url), true);
+    }
+
+    public static void openUrlInSystemBrowser(Context context, String url) {
+        if (url == null) {
+            return;
+        }
+        openUrl(context, Uri.parse(url), false, true, false, null, null, false, false, false);
     }
 
     public static void openUrl(Context context, Uri uri) {
@@ -234,7 +235,26 @@ public class Browser {
     }
 
     public static class Progress {
-        public void init() {}
+
+        private Runnable onInitListener;
+        private Runnable onCancelListener;
+        private Runnable onEndListener;
+
+        public Progress() {
+
+        }
+
+        public Progress(Runnable init, Runnable end) {
+            this.onInitListener = init;
+            this.onEndListener = end;
+        }
+
+        public void init() {
+            if (onInitListener != null) {
+                onInitListener.run();
+                onInitListener = null;
+            }
+        }
         public void end() {
             end(false);
         }
@@ -254,14 +274,14 @@ public class Browser {
             end(replaced);
         }
 
-        private Runnable onCancelListener;
-        public void onCancel(Runnable onCancelListener) {
+        public Progress onCancel(Runnable onCancelListener) {
             this.onCancelListener = onCancelListener;
+            return this;
         }
 
-        private Runnable onEndListener;
-        public void onEnd(Runnable onEndListener) {
+        public Progress onEnd(Runnable onEndListener) {
             this.onEndListener = onEndListener;
+            return this;
         }
     }
 
@@ -295,7 +315,7 @@ public class Browser {
                     };
 
                     Uri finalUri = uri;
-                    TLRPC.TL_messages_getWebPagePreview req = new TLRPC.TL_messages_getWebPagePreview();
+                    TL_account.getWebPagePreview req = new TL_account.getWebPagePreview();
                     req.message = uri.toString();
                     final int reqId = ConnectionsManager.getInstance(UserConfig.selectedAccount).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
                         if (inCaseLoading != null) {
@@ -308,11 +328,15 @@ public class Browser {
                         }
 
                         boolean ok = false;
-                        if (response instanceof TLRPC.TL_messageMediaWebPage) {
-                            TLRPC.TL_messageMediaWebPage webPage = (TLRPC.TL_messageMediaWebPage) response;
-                            if (webPage.webpage instanceof TLRPC.TL_webPage && webPage.webpage.cached_page != null) {
-                                NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.openArticle, webPage.webpage, finalUri.toString());
-                                ok = true;
+                        if (response instanceof TL_account.webPagePreview) {
+                            final TL_account.webPagePreview preview = (TL_account.webPagePreview) response;
+                            MessagesController.getInstance(currentAccount).putUsers(preview.users, false);
+                            if (preview.media instanceof TLRPC.TL_messageMediaWebPage) {
+                                TLRPC.TL_messageMediaWebPage webPage = (TLRPC.TL_messageMediaWebPage) preview.media;
+                                if (webPage.webpage instanceof TLRPC.TL_webPage && webPage.webpage.cached_page != null) {
+                                    NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.openArticle, webPage.webpage, finalUri.toString());
+                                    ok = true;
+                                }
                             }
                         }
                         if (!ok) {
@@ -383,22 +407,12 @@ public class Browser {
 
                     builder.addMenuItem(LocaleController.getString(R.string.CopyLink), copy);
 
-                    boolean dark = false;
-                    if (Theme.getActiveTheme().isDark()) {
-                        dark = true;
-                    } else if (AndroidUtilities.computePerceivedBrightness(Theme.getColor(Theme.key_windowBackgroundWhite)) < 0.721f) {
-                        dark = true;
-                    }
-                    builder.setColorScheme(dark ? CustomTabsIntent.COLOR_SCHEME_DARK : CustomTabsIntent.COLOR_SCHEME_LIGHT);
-                    CustomTabColorSchemeParams params = new CustomTabColorSchemeParams.Builder()
-                            .setToolbarColor(Theme.getColor(Theme.key_actionBarBrowser))
-                            .build();
-                    builder.setDefaultColorSchemeParams(params);
+                    builder.setToolbarColor(Theme.getColor(Theme.key_actionBarBrowser));
                     builder.setShowTitle(true);
                     builder.setActionButton(BitmapFactory.decodeResource(context.getResources(), R.drawable.msg_filled_shareout), LocaleController.getString(R.string.ShareFile), PendingIntent.getBroadcast(ApplicationLoader.applicationContext, 0, share, PendingIntent.FLAG_MUTABLE ), true);
 
                     CustomTabsIntent intent = builder.build();
-                    intent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setUseNewTask();
                     intent.launchUrl(context, uri);
                     return;
                 }
@@ -408,7 +422,7 @@ public class Browser {
         }
         try {
             final boolean inappBrowser = (
-                allowInAppBrowser &&
+                allowInAppBrowser && BubbleActivity.instance == null &&
                 SharedConfig.inappBrowser &&
                 TextUtils.isEmpty(browserPackage) &&
                 !RestrictedDomainsList.getInstance().isRestricted(AndroidUtilities.getHostAuthority(uri, true)) &&
@@ -693,14 +707,7 @@ public class Browser {
 
             }
             return true;
-        } else if ("tg".equals(uri.getScheme()) ||
-                "vmess".equals(uri.getScheme()) ||
-                "vmesss1".equals(uri.getScheme()) ||
-                "ss".equals(uri.getScheme()) ||
-                "ssr".equals(uri.getScheme()) ||
-                "ws".equals(uri.getScheme()) ||
-                "wss".equals(uri.getScheme()) ||
-                "trojan".equals(uri.getScheme())) {
+        } else if ("tg".equals(uri.getScheme())) {
             return true;
         } else if ("telegram.dog".equals(host)) {
             String path = uri.getPath();
@@ -847,7 +854,7 @@ public class Browser {
         }
         if (newPath != null) {
             modifiedUriBuilder.append(newPath);
-        } else {
+        } else if (originalUri.getPath() != null) {
             modifiedUriBuilder.append(originalUri.getPath());
         }
         if (originalUri.getQuery() != null) {

@@ -129,6 +129,13 @@ public class TextDetailSettingsCell extends FrameLayout {
         valueTextView.setText(value);
     }
 
+    public void setTextWithEmojiAnd21Value(String text, CharSequence value, boolean divider) {
+        textView.setText(Emoji.replaceEmoji(text, textView.getPaint().getFontMetricsInt(), false));
+        valueTextView.setText(value);
+        needDivider = divider;
+        setWillNotDraw(!divider);
+    }
+
     @Override
     public void invalidate() {
         super.invalidate();

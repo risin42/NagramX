@@ -163,6 +163,8 @@ public class InternalFilters {
     private static int currId = 10;
 
     private static TLRPC.DialogFilter mkFilter(String name, String description, int flag, FilterBuilder builder) {
+        TLRPC.TL_textWithEntities text = new TLRPC.TL_textWithEntities();
+        text.text = name;
 
         TLRPC.TL_dialogFilterSuggested suggestedFilter = new TLRPC.TL_dialogFilterSuggested();
 
@@ -172,7 +174,7 @@ public class InternalFilters {
 
         suggestedFilter.filter.id = currId;
 
-        suggestedFilter.filter.title = name;
+        suggestedFilter.filter.title = text;
         suggestedFilter.filter.flags = flag;
 
         builder.apply(suggestedFilter.filter);

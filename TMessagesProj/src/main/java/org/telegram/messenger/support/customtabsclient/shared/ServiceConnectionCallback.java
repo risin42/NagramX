@@ -14,7 +14,7 @@
 
 package org.telegram.messenger.support.customtabsclient.shared;
 
-import androidx.browser.customtabs.CustomTabsClient;
+import org.telegram.messenger.support.customtabs.CustomTabsClient;
 
 /**
  * Callback for events when connecting and disconnecting from Custom Tabs Service.

@@ -43,13 +43,6 @@
     <string name="ShowIdAndDc">プロファイルに ID / DC を表示</string>
     <string name="UseDefaultTheme">デフォルトテーマを使用 *</string>
     <string name="NightMode">夜間モード</string>
-    <string name="PrivacyNotice">プライバシー警告</string>
-    <string name="PrivacyNoticePhoneVisible">あなたの携帯電話番号が誰にでも見えることが検出されました。プライバシー保護のため、オフにすることをお勧めします。</string>
-    <string name="PrivacyNoticeAddByPhone">「電話番号で私を探すことを許可する」設定がオフになっていないことが検出されました。プライバシー保護のため、オフにすることをお勧めします。</string>
-    <string name="PrivacyNoticeP2p">「P2Pコールを許可」設定がオフになっていないことが検出されました。プライバシー保護のため、オフにすることをお勧めします。</string>
-    <string name="PrivacyNotice2fa">パスワードが設定されていないことが検出されました。セキュリティ保護のため、パスワードの設定をお勧めします。</string>
-    <string name="ApplySuggestion">わかりました、適用します</string>
-    <string name="DoNotRemindAgain">今後表示しない</string>
     <string name="RemoveTitleEmoji">タイトルの絵文字を非表示</string>
     <string name="DisableChatAction">入力ステータスを送信しない</string>
     <string name="FakeScreenshot">スクリーンショットのプレビュー</string>

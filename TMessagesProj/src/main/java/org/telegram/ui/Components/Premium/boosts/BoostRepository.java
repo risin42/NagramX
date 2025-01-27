@@ -22,6 +22,7 @@ import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tgnet.Vector;
 import org.telegram.tgnet.tl.TL_stories;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.bots.BotWebViewSheet;
@@ -312,7 +313,33 @@ public class BoostRepository {
         return 0;
     }
 
-    public static int searchContacts(int reqId, String query, Utilities.Callback<List<TLRPC.User>> onDone) {
+    public static int searchContacts(String query, boolean allowBots, Utilities.Callback<List<TLRPC.User>> onDone) {
+        MessagesController controller = MessagesController.getInstance(UserConfig.selectedAccount);
+        ConnectionsManager connection = ConnectionsManager.getInstance(UserConfig.selectedAccount);
+        if (query == null || query.isEmpty()) {
+            AndroidUtilities.runOnUIThread(() -> onDone.run(Collections.emptyList()));
+            return 0;
+        }
+        TLRPC.TL_contacts_search req = new TLRPC.TL_contacts_search();
+        req.q = query;
+        req.limit = 50;
+        return connection.sendRequest(req, (response, error) -> {
+            if (response instanceof TLRPC.TL_contacts_found) {
+                TLRPC.TL_contacts_found res = (TLRPC.TL_contacts_found) response;
+                controller.putUsers(res.users, false);
+                List<TLRPC.User> result = new ArrayList<>();
+                for (int a = 0; a < res.users.size(); a++) {
+                    TLRPC.User user = res.users.get(a);
+                    if (!user.self && !UserObject.isDeleted(user) && (allowBots || !user.bot) && !UserObject.isService(user.id)) {
+                        result.add(user);
+                    }
+                }
+                AndroidUtilities.runOnUIThread(() -> onDone.run(result));
+            }
+        });
+    }
+
+    public static void searchContactsLocally(String query, boolean allowBots, Utilities.Callback<List<TLRPC.User>> onDone) {
         final int currentAccount = UserConfig.selectedAccount;
         final ArrayList<TLRPC.User> users = new ArrayList<>();
         final ArrayList<TLRPC.TL_contact> contacts = ContactsController.getInstance(currentAccount).contacts;
@@ -327,7 +354,7 @@ public class BoostRepository {
                 final TLRPC.TL_contact contact = contacts.get(i);
                 if (contact != null) {
                     final TLRPC.User user = messagesController.getUser(contact.user_id);
-                    if (user == null || user.bot || UserObject.isService(user.id) || UserObject.isUserSelf(user)) continue;
+                    if (user == null || !allowBots && user.bot || UserObject.isService(user.id) || UserObject.isUserSelf(user)) continue;
                     final String u = UserObject.getUserName(user).toLowerCase();
                     final String ut = AndroidUtilities.translitSafe(u);
                     if (u.startsWith(q) || u.contains(" " + q) || ut.startsWith(qt) || ut.contains(" " + qt)) {
@@ -352,33 +379,6 @@ public class BoostRepository {
             }
         }
         onDone.run(users);
-        return -1;
-//        MessagesController controller = MessagesController.getInstance(UserConfig.selectedAccount);
-//        ConnectionsManager connection = ConnectionsManager.getInstance(UserConfig.selectedAccount);
-//        if (reqId != 0) {
-//            connection.cancelRequest(reqId, false);
-//        }
-//        if (query == null || query.isEmpty()) {
-//            AndroidUtilities.runOnUIThread(() -> onDone.run(Collections.emptyList()));
-//            return 0;
-//        }
-//        TLRPC.TL_contacts_search req = new TLRPC.TL_contacts_search();
-//        req.q = query;
-//        req.limit = 50;
-//        return connection.sendRequest(req, (response, error) -> {
-//            if (response instanceof TLRPC.TL_contacts_found) {
-//                TLRPC.TL_contacts_found res = (TLRPC.TL_contacts_found) response;
-//                controller.putUsers(res.users, false);
-//                List<TLRPC.User> result = new ArrayList<>();
-//                for (int a = 0; a < res.users.size(); a++) {
-//                    TLRPC.User user = res.users.get(a);
-//                    if (!user.self && !UserObject.isDeleted(user) && !user.bot && !UserObject.isService(user.id)) {
-//                        result.add(user);
-//                    }
-//                }
-//                AndroidUtilities.runOnUIThread(() -> onDone.run(result));
-//            }
-//        });
     }
 
     public static void searchChats(long currentChatId, int guid, String query, int count, Utilities.Callback<List<TLRPC.InputPeer>> onDone) {
