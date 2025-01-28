@@ -3329,9 +3329,9 @@ public class MessagesStorage extends BaseController {
                         filter.id = newFilter.id;
                         filter.flags = newFlags;
                         filter.name = newFilter.title.text;
+                        filter.emoticon = newFilter.emoticon;
                         filter.entities = newFilter.title.entities;
                         filter.title_noanimate = newFilter.title_noanimate;
-                        filter.emoticon = newFilter.emoticon;
                         filter.color = (newFilter.flags & 134217728) != 0 ? newFilter.color : -1;
                         filter.pendingUnreadCount = -1;
                         for (int c = 0; c < 2; c++) {
@@ -4501,7 +4501,6 @@ public class MessagesStorage extends BaseController {
                         if (message.media != null) {
                             if (!addFilesToDelete(message, filesToDelete, idsToDelete, namesToDelete, true)) {
                                 continue;
-                                
                             } else {
                                 // --- AyuGram hook
                                 if (NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool()) {
@@ -13157,6 +13156,7 @@ public class MessagesStorage extends BaseController {
         });
     }
 
+    // AyuGram
     public Pair<Integer, Integer> getMinAndMaxForDialog(long dialogId) {
         SQLiteCursor cursor = null;
         try {
@@ -14951,15 +14951,15 @@ public class MessagesStorage extends BaseController {
                                     if (oldMessage.out && !message.out) {
                                         message.out = oldMessage.out;
                                     }
+                                    // --- AyuGram hook
                                     if (message.from_id != null && (!oldMessage.message.equals(message.message) || !sameMedia)) {
-                                        // --- AyuGram hook
                                         if (NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool()) {
                                             var prefs = new AyuSavePreferences(oldMessage, currentAccount);
                                             prefs.setDialogId(dialogId);
                                             AyuMessagesController.getInstance().onMessageEdited(prefs, message);
                                         }
-                                        // --- AyuGram hook
                                     }
+                                    // --- AyuGram hook
                                     if (!sameMedia) {
                                         addFilesToDelete(oldMessage, filesToDelete, idsToDelete, namesToDelete, false);
                                     }
@@ -17406,6 +17406,7 @@ public class MessagesStorage extends BaseController {
         });
     }
 
+    // AyuGram
     public ArrayList<Long> getDialogIdsToUpdate(long dialogId, ArrayList<Integer> messages) {
         try {
             SQLiteCursor cursor;

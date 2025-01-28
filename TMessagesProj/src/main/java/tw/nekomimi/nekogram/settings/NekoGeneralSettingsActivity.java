@@ -859,7 +859,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
         for (int i = 0; i < filteredProviders.size(); i++) {
             itemNames[i] = LocaleController.getString(filteredProviders.get(i).nameResId);
         }
-    
+
         builder.setItems(itemNames, (i, __) -> {
             configItem.setConfigInt(filteredProviders.get(i).providerConstant);
             onSelected.run();
@@ -867,7 +867,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
         });
         builder.show();
     }
-    
+
     private String getProviderName(int providerConstant) {
         for (ProviderInfo info : ProviderInfo.PROVIDERS) {
             if (info.providerConstant == providerConstant) {
@@ -941,12 +941,12 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private static class ProviderInfo {
         public final int providerConstant;
         public final int nameResId;
-    
+
         public ProviderInfo(int providerConstant, int nameResId) {
             this.providerConstant = providerConstant;
             this.nameResId = nameResId;
         }
-    
+
         public static final ProviderInfo[] PROVIDERS = {
                 new ProviderInfo(Translator.providerGoogle, R.string.ProviderGoogleTranslate),
                 new ProviderInfo(Translator.providerYandex, R.string.ProviderYandexTranslate),

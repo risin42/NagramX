@@ -2312,13 +2312,19 @@ public class MessagesController extends BaseController implements NotificationCe
             return;
         }
         loadingSuggestedFilters = true;
-
         TLRPC.TL_messages_getSuggestedDialogFilters req = new TLRPC.TL_messages_getSuggestedDialogFilters();
         getConnectionsManager().sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
             loadingSuggestedFilters = false;
             suggestedFilters.clear();
             if (response instanceof Vector) {
                 suggestedFilters.addAll(((Vector<TLRPC.TL_dialogFilterSuggested>) response).objects);
+            }
+            s:
+            for (TLRPC.TL_dialogFilterSuggested suggested : InternalFilters.internalFilters) {
+                for (DialogFilter filter : dialogFilters) {
+                    if (suggested.filter.flags == filter.flags) continue s;
+                }
+                suggestedFilters.add(suggested);
             }
             getNotificationCenter().postNotificationName(NotificationCenter.suggestedFiltersLoaded);
         }));
@@ -8837,8 +8843,7 @@ public class MessagesController extends BaseController implements NotificationCe
                 ArrayList<ArrayList<Integer>> subIds = sliceThatBitch(toSend, 100);
                 for (ArrayList<Integer> ids : subIds) {
                     req = new TLRPC.TL_messages_deleteQuickReplyMessages();
-                    ArrayList<Integer> arrayList = new ArrayList<>(ids);
-                    req.id = arrayList;
+                    req.id = ids;
                     req.shortcut_id = topicId;
 
                     NativeByteBuffer data = null;

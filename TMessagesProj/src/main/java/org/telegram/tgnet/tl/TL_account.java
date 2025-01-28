@@ -144,7 +144,7 @@ public class TL_account {
         public static passwordSettings TLdeserialize(InputSerializedData stream, int constructor, boolean exception) {
             if (passwordSettings.constructor != constructor) {
                 if (exception) {
-                    throw new RuntimeException(String.format("can't parse magic %x in TL_account.passwordSettings", constructor));
+                    throw new RuntimeException(String.format("can't parse magic %x in TL_account_passwordSettings", constructor));
                 } else {
                     return null;
                 }
@@ -703,7 +703,7 @@ public class TL_account {
         public static passwordInputSettings TLdeserialize(InputSerializedData stream, int constructor, boolean exception) {
             if (passwordInputSettings.constructor != constructor) {
                 if (exception) {
-                    throw new RuntimeException(String.format("can't parse magic %x in TL_account.passwordInputSettings", constructor));
+                    throw new RuntimeException(String.format("can't parse magic %x in TL_account_passwordInputSettings", constructor));
                 } else {
                     return null;
                 }

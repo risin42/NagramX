@@ -413,11 +413,11 @@ public class AboutLinkCell extends FrameLayout {
 
                 if (getContext() != null) {
                     ClickableSpan pressedLinkFinal = (ClickableSpan) pressedLink.getSpan();
-                    BottomBuilder builder = new BottomBuilder(getContext());
+                    BottomBuilder builder = new BottomBuilder(parentFragment.getParentActivity());
                     builder.addTitle(url);
                     builder.addItems(new String[]{LocaleController.getString(R.string.Open), LocaleController.getString(R.string.Copy)},
-                        new int[]{R.drawable.msg_openin, R.drawable.msg_copy},
-                        (which, __, ___) -> {
+                            new int[]{R.drawable.msg_openin, R.drawable.msg_copy},
+                            (which, __, ___) -> {
                                 if (which == 0) {
                                     onLinkClick(pressedLinkFinal, layout, yOffset);
                                 } else if (which == 1) {
@@ -425,17 +425,17 @@ public class AboutLinkCell extends FrameLayout {
                                     if (AndroidUtilities.shouldShowClipboardToast()) {
                                         if (url.startsWith("@")) {
                                             BulletinFactory.of(parentFragment).createSimpleBulletin(R.raw.copy,
-                                                LocaleController.getString(R.string.UsernameCopied)).show();
+                                                    LocaleController.getString(R.string.UsernameCopied)).show();
                                         } else if (url.startsWith("#") || url.startsWith("$")) {
                                             BulletinFactory.of(parentFragment).createSimpleBulletin(R.raw.copy,
-                                                LocaleController.getString(R.string.HashtagCopied)).show();
+                                                    LocaleController.getString(R.string.HashtagCopied)).show();
                                         } else {
                                             BulletinFactory.of(parentFragment).createSimpleBulletin(R.raw.copy,
-                                                LocaleController.getString(R.string.LinkCopied)).show();
+                                                    LocaleController.getString(R.string.LinkCopied)).show();
                                         }
                                     }
                                 }
-                            return Unit.INSTANCE;
+                                return Unit.INSTANCE;
                             });
                     builder.setOnPreDismissListener(di -> resetPressedLink());
                     builder.show();

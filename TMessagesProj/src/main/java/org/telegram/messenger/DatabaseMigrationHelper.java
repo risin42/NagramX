@@ -1536,13 +1536,13 @@ public class DatabaseMigrationHelper {
         }
 
         if (version == 159) {
-            database.executeFast("ALTER TABLE dialog_filter ADD COLUMN entities BLOB").stepThis().dispose();
+            database.executeFast("ALTER TABLE dialog_filter_neko ADD COLUMN entities BLOB").stepThis().dispose();
             database.executeFast("PRAGMA user_version = 160").stepThis().dispose();
             version = 160;
         }
 
         if (version == 160) {
-            database.executeFast("ALTER TABLE dialog_filter ADD COLUMN noanimate INTEGER").stepThis().dispose();
+            database.executeFast("ALTER TABLE dialog_filter_neko ADD COLUMN noanimate INTEGER").stepThis().dispose();
             database.executeFast("PRAGMA user_version = 161").stepThis().dispose();
             version = 161;
         }

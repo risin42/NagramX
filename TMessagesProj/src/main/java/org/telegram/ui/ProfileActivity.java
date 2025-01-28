@@ -4484,10 +4484,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             public boolean onItemClick(View view, int position) {
                 if (position == versionRow) {
                     pressCount++;
-                    // if (pressCount >= 5) {
-                    //     NaConfig.INSTANCE.getShowHiddenFeature().toggleConfigBool();
-                    //     Toast.makeText(getParentActivity(), LocaleController.getString("ErrorOccurred", R.string.ErrorOccurred), Toast.LENGTH_SHORT).show();
-                    // }
                     if (pressCount >= 2 || BuildVars.DEBUG_PRIVATE_VERSION) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity(), resourcesProvider);
                         builder.setTitle(getString("DebugMenu", R.string.DebugMenu));
@@ -7755,9 +7751,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         onlineTextView[1].setTranslationY(newTop + h - AndroidUtilities.dpf2(18f) - onlineTextView[1].getBottom() + additionalTranslationY);
                         mediaCounterTextView.setTranslationX(onlineTextView[1].getTranslationX());
                         mediaCounterTextView.setTranslationY(onlineTextView[1].getTranslationY());
+                        updateCollectibleHint();
                         idTextView.setTranslationX(AndroidUtilities.dpf2(16f) - onlineTextView[1].getLeft());
                         idTextView.setTranslationY(newTop + h - AndroidUtilities.dpf2(3f) - idTextView.getBottom() + additionalTranslationY);
-                        updateCollectibleHint();
                     }
                 } else {
                     if (isPulledDown) {
@@ -7822,9 +7818,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         onlineTextView[1].setTranslationY(onlineY);
                         mediaCounterTextView.setTranslationX(onlineX);
                         mediaCounterTextView.setTranslationY(onlineY);
+                        updateCollectibleHint();
                         idTextView.setTranslationX(idX);
                         idTextView.setTranslationY(idY);
-                        updateCollectibleHint();
                     }
                 }
             }
@@ -7935,13 +7931,13 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     nameTextView[a].setScaleX(nameScale);
                     nameTextView[a].setScaleY(nameScale);
                 }
+                updateCollectibleHint();
 
                 if (diff > 0.85 && !searchMode && NekoConfig.showIdAndDc.Bool()) {
                     idTextView.setVisibility(View.VISIBLE);
                 } else {
                     idTextView.setVisibility(View.GONE);
                 }
-                updateCollectibleHint();
             }
 
             if (!openAnimationInProgress && (expandAnimator == null || !expandAnimator.isRunning())) {
@@ -14933,7 +14929,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         filter.neverShow.add(selectedDialogs.get(a));
                         filter.alwaysShow.remove(selectedDialogs.get(a));
                     }
-                    FilterCreateActivity.saveFilterToServer(filter, filter.flags, filter.emoticon, filter.name, filter.entities, filter.title_noanimate, filter.color, filter.alwaysShow, filter.neverShow, filter.pinnedDialogs, false, false, true, true, false, ProfileActivity.this, null);
+                    FilterCreateActivity.saveFilterToServer(filter, filter.flags, filter.emoticon, filter.name, null, false, filter.color, filter.alwaysShow, filter.neverShow, filter.pinnedDialogs, false, false, true, true, false, ProfileActivity.this, null);
                     long did;
                     if (selectedDialogs.size() == 1) {
                         did = selectedDialogs.get(0);
@@ -14950,7 +14946,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                             filter.neverShow.remove(alwaysShow.get(a));
                         }
                         filter.alwaysShow.addAll(alwaysShow);
-                        FilterCreateActivity.saveFilterToServer(filter, filter.flags, filter.emoticon, filter.name, filter.entities, filter.title_noanimate, filter.color, filter.alwaysShow, filter.neverShow, filter.pinnedDialogs, false, false, true, true, false, ProfileActivity.this, null);
+                        FilterCreateActivity.saveFilterToServer(filter, filter.flags, filter.emoticon, filter.name, null, false, filter.color, filter.alwaysShow, filter.neverShow, filter.pinnedDialogs, false, false, true, true, false, ProfileActivity.this, null);
                     }
                     long did;
                     if (alwaysShow.size() == 1) {

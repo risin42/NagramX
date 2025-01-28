@@ -120,15 +120,14 @@ public class FilterTabsView extends FrameLayout {
         public boolean isLocked;
         public boolean noanimate;
 
-        public Tab(int i, String t, String em, ArrayList<TLRPC.MessageEntity> e, boolean noanimate) {
+        public Tab(int i, String t, String e1, ArrayList<TLRPC.MessageEntity> e, boolean noanimate) {
             id = i;
-            title = new SpannableStringBuilder(t);
+            title = new SpannableStringBuilder(NekoConfig.tabsTitleType.Int() != NekoXConfig.TITLE_TYPE_ICON ? t : "");
             title = Emoji.replaceEmoji(title, textPaint.getFontMetricsInt(), false);
 //            MessageObject.addEntitiesToText(title, e, false, false, false, true);
             title = MessageObject.replaceAnimatedEmoji(title, e, textPaint.getFontMetricsInt());
             this.noanimate = noanimate;
-            title = NekoConfig.tabsTitleType.Int() != NekoXConfig.TITLE_TYPE_ICON ? title : "";
-            emoticon = i != Integer.MAX_VALUE ? em : "\uD83D\uDCAC";
+            emoticon = i != Integer.MAX_VALUE ? e1 : "\uD83D\uDCAC";
         }
 
         public int getWidth(boolean store) {
@@ -157,6 +156,7 @@ public class FilterTabsView extends FrameLayout {
         }
 
         public boolean setTitle(String newTitle, ArrayList<TLRPC.MessageEntity> newEntities, boolean noanimate) {
+            newTitle = NekoConfig.tabsTitleType.Int() != NekoXConfig.TITLE_TYPE_ICON ? newTitle : "";
             if (TextUtils.equals(title, newTitle)) {
                 return false;
             }
@@ -165,7 +165,6 @@ public class FilterTabsView extends FrameLayout {
 //            MessageObject.addEntitiesToText(title, newEntities, false, false, false, true);
             title = MessageObject.replaceAnimatedEmoji(title, newEntities, textPaint.getFontMetricsInt());
             this.noanimate = noanimate;
-            title = NekoConfig.tabsTitleType.Int() != NekoXConfig.TITLE_TYPE_ICON ? title : "";
             return true;
         }
     }
@@ -2033,7 +2032,7 @@ public class FilterTabsView extends FrameLayout {
             MessagesController.DialogFilter dialogFilter = filters.get(a);
             if (filters.get(a).isDefault()) {
                 if (showAllChatsTab)
-                    addTab(a, 0, LocaleController.getString("FilterAllChats", R.string.FilterAllChats),null, null, false, true, false);
+                    addTab(a, 0, LocaleController.getString("FilterAllChats", R.string.FilterAllChats), null, null, false, true, false);
             } else {
                 switch (NekoConfig.tabsTitleType.Int()) {
                     case NekoXConfig.TITLE_TYPE_TEXT:

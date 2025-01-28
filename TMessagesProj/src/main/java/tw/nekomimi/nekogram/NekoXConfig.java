@@ -225,6 +225,6 @@ public class NekoXConfig {
     public static boolean lastOnlineState = preferences.getBoolean("last_online_state", true);
 
     public static void saveLastOnlineState(boolean online) {
-        preferences.edit().putBoolean("last_online_state", lastOnlineState = online).apply(); 
+        preferences.edit().putBoolean("last_online_state", lastOnlineState = online).apply();
     }
 }

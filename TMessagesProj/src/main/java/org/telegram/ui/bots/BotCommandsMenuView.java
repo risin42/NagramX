@@ -141,7 +141,7 @@ public class BotCommandsMenuView extends View {
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
         info.addAction(isOpened()? AccessibilityNodeInfo.AccessibilityAction.ACTION_COLLAPSE : AccessibilityNodeInfo.AccessibilityAction.ACTION_EXPAND);
-        info.setContentDescription(getString("AccDescrBotCommands",R.string.AccDescrBotCommands));
+        info.setContentDescription(getString(R.string.AccDescrBotCommands));
     }
 
     @Override

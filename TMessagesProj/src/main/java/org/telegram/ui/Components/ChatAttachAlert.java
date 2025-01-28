@@ -4234,7 +4234,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
             } else if (typeButtonsAvailable) {
                 animators.add(ObjectAnimator.ofFloat(buttonsRecyclerView, View.TRANSLATION_Y, show ? dp(84) : 0));
                 animators.add(ObjectAnimator.ofFloat(shadow, View.TRANSLATION_Y, show ? dp(36) : 0));
-            } else if (!isSoundPicker) {
+            } else if (!isSoundPicker && !isEmojiPicker) {
                 shadow.setTranslationY(dp(36) + botMainButtonOffsetY);
                 animators.add(ObjectAnimator.ofFloat(shadow, View.ALPHA, show ? 1.0f : 0.0f));
             }

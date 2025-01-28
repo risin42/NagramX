@@ -206,7 +206,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 int externalStickerCacheIndex = cellGroup.rows.indexOf(externalStickerCacheRow);
                 cellGroup.rows.addAll(externalStickerCacheIndex + 2, externalStickerRows);
                 listAdapter.notifyItemRangeInserted(externalStickerCacheIndex + 2, externalStickerRows.size());
-            } 
+            }
         }
     }
 

@@ -1279,9 +1279,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             try {
                 String timestampStr = url.substring(url.indexOf('?') + 1);
                 timestamp = Integer.parseInt(timestampStr);
-            } catch (Throwable ignore) {
-
-            }
+            } catch (Throwable ignore) {}
         }
         if (timestamp >= 0) {
             builder.addTitle(AndroidUtilities.formatDuration(timestamp, false));
@@ -1520,7 +1518,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                             }
                             Utilities.globalQueue.postRunnable(() -> {
                                 SharedPreferences.Editor editor = ApplicationLoader.applicationContext.getSharedPreferences("media_saved_pos", Activity.MODE_PRIVATE).edit();
-                                editor.putFloat(saveFor, value).commit();
+                                editor.putFloat(saveFor, value).apply();
                             });
                         }
                     }
@@ -10882,9 +10880,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         if (aspectRatioFrameLayout != null) {
             try {
                 containerView.removeView(aspectRatioFrameLayout);
-            } catch (Throwable ignore) {
-
-            }
+            } catch (Throwable ignore) {}
             aspectRatioFrameLayout = null;
         }
         cancelFlashAnimations();

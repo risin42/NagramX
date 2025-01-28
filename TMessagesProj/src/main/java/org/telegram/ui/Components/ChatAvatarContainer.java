@@ -600,7 +600,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec) + titleTextView.getPaddingRight();
         if (parentFragment != null && parentFragment.isThreadChat() && parentFragment.getThreadId() != 0) {
-            width -= AndroidUtilities.dp(48);
+            width -= dp(48);
             // leave some width for viewInChatItem
         }
         int availableWidth = width - dp((avatarImageView.getVisibility() == VISIBLE ? 54 : 0) + 16);

@@ -24,7 +24,7 @@ def keystorePwd = null
 def alias = null
 def pwd = null
 def disableCMakeRelWithDebInfo = System.getenv("COMPILE_NATIVE") == null
-def nagramx_build_args = System.getenv("NAGRAMX_BUILD_ARGS")
+def nagramx_build_args = System.getenv("NAGRAMX_BUILD_ARGS") == null ? "" : System.getenv("NAGRAMX_BUILD_ARGS")
 
 Properties properties
 def base64 = System.getenv("LOCAL_PROPERTIES")

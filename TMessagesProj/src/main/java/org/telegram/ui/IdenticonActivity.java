@@ -314,7 +314,7 @@ public class IdenticonActivity extends BaseFragment implements NotificationCente
     @Override
     public void onTransitionAnimationEnd(boolean isOpen, boolean backward) {
         if (isOpen && !backward && emojiText != null) {
-            emojiTextView.setText(Emoji.replaceEmoji(emojiText, emojiTextView.getPaint().getFontMetricsInt(), false));
+            emojiTextView.setText(emojiText);
         }
     }
 

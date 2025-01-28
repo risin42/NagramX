@@ -379,6 +379,7 @@ public class SimpleTextView extends View implements Drawable.Callback {
         replacingDrawableTextIndex = -1;
         rightDrawableHidden = false;
         if (text != null) {
+            text = Emoji.replaceEmoji(text, textPaint.getFontMetricsInt(), false);
             try {
                 int leftDrawableWidth = 0;
                 if (leftDrawable != null && !leftDrawableOutside) {

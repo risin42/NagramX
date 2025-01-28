@@ -171,7 +171,7 @@ public class CloudSettingsHelper {
                 if (!success) {
                     if (error == null) {
                         BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider)
-                                .createSimpleBulletin(R.raw.info, 
+                                .createSimpleBulletin(R.raw.info,
                                         LocaleController.getString(R.string.CloudConfigNoBackupToDelete))
                                 .show();
                     } else {
@@ -309,7 +309,7 @@ public class CloudSettingsHelper {
                     }
                     keys[numChunks] = "neko_settings";
                     keys[numChunks + 1] = "neko_settings_updated_at";
-                    
+
                     getCloudStorageHelper().removeItems(keys, (res_, error_) -> {
                         if (error_ == null) {
                             cloudSyncedDate.put(UserConfig.selectedAccount, -1L);

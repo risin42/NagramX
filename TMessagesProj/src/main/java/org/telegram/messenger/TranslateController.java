@@ -761,9 +761,9 @@ public class TranslateController extends BaseController {
 
         if (NekoConfig.translationProvider.Int() != Translator.providerTelegram) {
             synchronized (this) {
-                loadingNonPremiumTranslations.add(message.getId()); 
+                loadingNonPremiumTranslations.add(message.getId());
             }
-            
+
             Translator.translate(TranslatorKt.getCode2Locale(language), message.messageOwner.message, new Translator.Companion.TranslateCallBack() {
                 @Override
                 public void onSuccess(@NonNull String translation) {
@@ -774,7 +774,7 @@ public class TranslateController extends BaseController {
                     textObj.text = translation;
                     callback.run(message.getId(), textObj, language);
                 }
-                
+
                 @Override
                 public void onFailed(boolean unsupported, @NonNull String error) {
                     AndroidUtilities.runOnUIThread(() -> {
@@ -906,9 +906,9 @@ public class TranslateController extends BaseController {
 
     public boolean isTranslating(MessageObject messageObject) {
         synchronized (this) {
-            return messageObject != null && 
-                   (loadingTranslations.contains(messageObject.getId()) || 
-                    loadingNonPremiumTranslations.contains(messageObject.getId())) && 
+            return messageObject != null &&
+                   (loadingTranslations.contains(messageObject.getId()) ||
+                    loadingNonPremiumTranslations.contains(messageObject.getId())) &&
                    isTranslatingDialog(messageObject.getDialogId());
         }
     }
@@ -921,7 +921,7 @@ public class TranslateController extends BaseController {
             return false;
         }
         synchronized (this) {
-            if (loadingTranslations.contains(messageObject.getId()) || 
+            if (loadingTranslations.contains(messageObject.getId()) ||
                 loadingNonPremiumTranslations.contains(messageObject.getId())) {
                 return true;
             }
