@@ -5,7 +5,6 @@ import cn.hutool.core.util.ArrayUtil
 import cn.hutool.core.util.StrUtil
 import cn.hutool.http.HttpRequest
 import java.util.*
-import org.apache.commons.lang3.LocaleUtils
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.NekoConfig
@@ -19,7 +18,6 @@ import tw.nekomimi.nekogram.utils.receiveLazy
 import xyz.nextalone.nagram.NaConfig
 
 fun <T : HttpRequest> T.applyProxy(): T {
-    //    SharedConfig.getActiveSocks5Proxy()?.let { setProxy(it) }
     return this
 }
 
@@ -161,6 +159,10 @@ interface Translator {
             return result
         }
 
+        val availableLocaleList: Array<Locale> = Locale.getAvailableLocales().also {
+            Arrays.sort(it, Comparator.comparing(Locale::toString))
+        }
+
         @JvmStatic
         @JvmOverloads
         fun showTargetLangSelect(
@@ -173,7 +175,7 @@ interface Translator {
 
             // Get built-in language list
             var locales: MutableList<Locale> = if (full) {
-                LocaleUtils.availableLocaleList()
+                availableLocaleList
                     .filter { it.variant.isBlank() }
                     .toMutableList()
             } else {
