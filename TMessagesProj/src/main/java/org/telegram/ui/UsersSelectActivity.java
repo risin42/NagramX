@@ -1088,7 +1088,7 @@ public class UsersSelectActivity extends BaseFragment implements NotificationCen
 
     private void updateHint() {
         if (type == TYPE_FILTER) {
-            int limit = getUserConfig().isPremium() ? getMessagesController().dialogFiltersChatsLimitPremium : getMessagesController().dialogFiltersChatsLimitDefault;
+            int limit = getUserConfig().isRealPremium() ? getMessagesController().dialogFiltersChatsLimitPremium : getMessagesController().dialogFiltersChatsLimitDefault;
             if (selectedCount == 0) {
                 actionBar.setSubtitle(formatString("MembersCountZero", R.string.MembersCountZero, LocaleController.formatPluralString("Chats", limit)));
             } else {
