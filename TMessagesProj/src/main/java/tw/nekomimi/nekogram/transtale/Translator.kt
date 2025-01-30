@@ -24,7 +24,7 @@ fun <T : HttpRequest> T.applyProxy(): T {
 val String.code2Locale: Locale by
         receiveLazy<String, Locale> {
             var ret: Locale
-            if (this == null || this.isBlank()) {
+            if (this.isBlank()) {
                 ret = LocaleController.getInstance().currentLocale
             } else {
                 val args = replace('-', '_').split('_')
