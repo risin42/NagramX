@@ -759,6 +759,11 @@ public class TranslateController extends BaseController {
             return;
         }
 
+        // --- NagramX Start ---
+        if (shouldSkipTranslation(message.messageOwner.message)) {
+            return;
+        }
+
         if (NekoConfig.translationProvider.Int() != Translator.providerTelegram) {
             synchronized (this) {
                 loadingNonPremiumTranslations.add(message.getId());
@@ -793,6 +798,7 @@ public class TranslateController extends BaseController {
             });
             return;
         }
+        // --- NagramX End ---
 
         long dialogId = message.getDialogId();
 
@@ -1341,5 +1347,15 @@ public class TranslateController extends BaseController {
             dialogId = msg.getDialogId();
             id = msg.getId();
         }
+    }
+
+    private boolean shouldSkipTranslation(String message) {
+        String pattern = "^(https?://|ftp://|@|#|/).*$";
+        for (String line : message.split("\\s+")) {
+            if (!line.matches(pattern)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
