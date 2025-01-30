@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="NekoX" translatable="false">Nagram X</string>
+    <string name="NekoX" translatable="false">NekoX</string>
     <string name="Locked">Locked</string>
     <string name="AccDescrChatAttachEnterMenu">Chat input menu</string>
     <string name="ChatAttachEnterMenuRecordVideo">Record Video</string>
@@ -69,9 +69,7 @@
     <string name="SortByUnmuted">Sort By Unmuted</string>
     <string name="SortByUser">Sort By User</string>
     <string name="SortByContacts">Sort By Contacts</string>
-    <string name="NekoXPushService">Nagram Push Service</string>
-    <string name="EnablePushAlert">Please enable "Nagram Push Service"</string>
-    <string name="DisablePushAlert">Please disable "Nagram Push Service"</string>
+    <string name="NagramXPushService">Push Service</string>
     <string name="DisableUndo">Disable Undo</string>
     <string name="DisableSystemAccount">Disable System Account</string>
     <string name="FilterMenu">Dialogs Filter Menu</string>

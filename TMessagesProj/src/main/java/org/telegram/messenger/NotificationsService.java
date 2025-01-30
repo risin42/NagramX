@@ -32,7 +32,7 @@ public class NotificationsService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && NaConfig.INSTANCE.getPushServiceTypeInAppDialog().Bool()) {
             String CHANNEL_ID = "push_service_channel";
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, LocaleController.getString("NekoXPushService", R.string.NekoXPushService), NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, LocaleController.getString(R.string.NagramXPushService), NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(channel);
 //            Intent explainIntent = new Intent("android.intent.action.VIEW");
 //            explainIntent.setData(Uri.parse("https://github.com/Telegram-FOSS-Team/Telegram-FOSS/blob/master/Notifications.md"));
@@ -41,8 +41,8 @@ public class NotificationsService extends Service {
 //                    .setContentIntent(explainPendingIntent)
                     .setShowWhen(false)
                     .setOngoing(true)
-                    .setSmallIcon(R.drawable.notification)
-                    .setContentText(LocaleController.getString("NekoXPushService", R.string.NekoXPushService))
+                    .setSmallIcon(R.drawable.neko_notification)
+                    .setContentText(LocaleController.getString(R.string.NagramXPushService))
                     .build();
             try {
                 startForeground(9999, notification);

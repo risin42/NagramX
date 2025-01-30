@@ -70,9 +70,7 @@
     <string name="SortByUnmuted">允许通知优先排序</string>
     <string name="SortByUser">用户优先排序</string>
     <string name="SortByContacts">联系人优先排序</string>
-    <string name="NekoXPushService">Nagram 通知服务</string>
-    <string name="EnablePushAlert">请启用 \"Nagram 通知服务\"</string>
-    <string name="DisablePushAlert">请禁用 \"Nagram 通知服务\"</string>
+    <string name="NagramXPushService">通知服务</string>
     <string name="DisableUndo">禁用五秒内后悔</string>
     <string name="DisableSystemAccount">禁用系统帐户</string>
     <string name="FilterMenu">分类菜单</string>

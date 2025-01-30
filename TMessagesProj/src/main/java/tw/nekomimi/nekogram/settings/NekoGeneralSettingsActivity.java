@@ -214,9 +214,10 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             LocaleController.getString("DecorationNone", R.string.DecorationNone),
     }, null));
     private final AbstractConfigCell notificationIconRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getNotificationIcon(), new String[]{
-            LocaleController.getString("Official", R.string.Official),
-            LocaleController.getString("Nagram", R.string.NekoX),
-            LocaleController.getString("Nekogram", R.string.Nekogram)
+            LocaleController.getString(R.string.Official),
+            LocaleController.getString(R.string.NagramX),
+            LocaleController.getString(R.string.Nagram),
+            LocaleController.getString(R.string.NekoX)
     }, null));
     private final AbstractConfigCell tabletModeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NekoConfig.tabletMode, new String[]{
             LocaleController.getString("TabletModeDefault", R.string.TabletModeDefault),

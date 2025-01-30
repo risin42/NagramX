@@ -150,7 +150,7 @@ public class CloudSettingsHelper {
                     }
                 } else {
                     AlertDialog restart = new AlertDialog(context, 0);
-                    restart.setTitle(LocaleController.getString(R.string.NekoX));
+                    restart.setTitle(LocaleController.getString(R.string.NagramX));
                     restart.setMessage(LocaleController.getString(R.string.RestartAppToTakeEffect));
                     restart.setPositiveButton(LocaleController.getString(R.string.OK), (__, ___) -> {
                         ProcessPhoenix.triggerRebirth(context, new Intent(context, LaunchActivity.class));

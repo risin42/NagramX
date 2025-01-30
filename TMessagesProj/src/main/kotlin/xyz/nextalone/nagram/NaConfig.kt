@@ -142,7 +142,7 @@ object NaConfig {
             "CustomTitle",
             ConfigItem.configTypeString,
             LocaleController.getString(
-                R.string.NekoX
+                R.string.NagramX
             )
         )
     val useSystemUnlock =

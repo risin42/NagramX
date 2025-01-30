@@ -61,7 +61,6 @@
     <string name="IconDecoration">アイコン装飾</string>
     <string name="NotificationIcon">通知アイコンスタイル</string>
     <string name="Official">公式</string>
-    <string name="Nekogram">Nekogram</string>
     <string name="HalloWeen">ハロウィン</string>
     <string name="ShowOnlineStatus">ユーザーのオンラインステータスを表示</string>
     <string name="ShowOnlineStatusNotice">グループチャットで、ユーザーのアバターの右下にオンラインステータスを表示します。</string>
