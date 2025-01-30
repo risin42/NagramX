@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.Theme;
@@ -46,7 +46,7 @@ public class ConfigCellSelectBox extends AbstractConfigCell {
         } else {
             this.selectList = null;
         }
-        title = LocaleController.getString(this.key);
+        title = getString(this.key);
         this.onClickCustom = customOnClick;
     }
 
@@ -82,7 +82,7 @@ public class ConfigCellSelectBox extends AbstractConfigCell {
             return;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context); //TODO Replace with pop-up menu
-        builder.setTitle(LocaleController.getString(bindConfig.getKey()));
+        builder.setTitle(getString(bindConfig.getKey()));
         final LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         builder.setView(linearLayout);
@@ -107,7 +107,7 @@ public class ConfigCellSelectBox extends AbstractConfigCell {
                 cellGroup.runCallback(bindConfig.getKey(), which);
             });
         }
-        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+        builder.setNegativeButton(getString(R.string.Cancel), null);
         if (ctxCustom == null) {
             cellGroup.thisFragment.showDialog(builder.create());
         } else {

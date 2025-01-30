@@ -31,7 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SendMessagesHelper;
@@ -165,7 +165,7 @@ public class NekoSettingsActivity extends BaseFragment {
         frameLayout.addView(actionBarContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.FILL_HORIZONTAL));
 
         tabsView = new FilledTabsView(context);
-        tabsView.setTabs(LocaleController.getString(R.string.Categories), LocaleController.getString(R.string.About));
+        tabsView.setTabs(getString(R.string.Categories), getString(R.string.About));
         tabsView.onTabSelected(tab -> {
             if (viewPager != null) {
                 viewPager.scrollToPosition(tab);
@@ -302,7 +302,7 @@ public class NekoSettingsActivity extends BaseFragment {
                         case VIEW_TYPE_HEADER: {
                             HeaderCell headerCell = (HeaderCell) holder.itemView;
                             if (position == importRow) {
-                                headerCell.setText(LocaleController.getString(R.string.NekoSettings));
+                                headerCell.setText(getString(R.string.NekoSettings));
                             }
                             break;
                         }
@@ -315,34 +315,34 @@ public class NekoSettingsActivity extends BaseFragment {
                         case VIEW_TYPE_TEXT: {
                             TextCell textCell = (TextCell) holder.itemView;
                             if (position == chatRow) {
-                                textCell.setTextAndIcon(LocaleController.getString(R.string.Chat), R.drawable.msg_discussion, true);
+                                textCell.setTextAndIcon(getString(R.string.Chat), R.drawable.msg_discussion, true);
                             } else if (position == generalRow) {
-                                textCell.setTextAndIcon(LocaleController.getString(R.string.General), R.drawable.msg_theme, true);
+                                textCell.setTextAndIcon(getString(R.string.General), R.drawable.msg_theme, true);
                             } else if (position == passcodeRow) {
-                                textCell.setTextAndIcon(LocaleController.getString(R.string.PasscodeNeko), R.drawable.msg_permissions, true);
+                                textCell.setTextAndIcon(getString(R.string.PasscodeNeko), R.drawable.msg_permissions, true);
                             } else if (position == experimentRow) {
-                                textCell.setTextAndIcon(LocaleController.getString(R.string.Experiment), R.drawable.msg_fave, true);
+                                textCell.setTextAndIcon(getString(R.string.Experiment), R.drawable.msg_fave, true);
                             }
                             break;
                         }
                         case VIEW_TYPE_TEXT_LINK: {
                             TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
                             if (position == xChannelRow) {
-                                textCell.setTextAndValue(LocaleController.getString(R.string.XChannel), "@NagramX", true);
+                                textCell.setTextAndValue(getString(R.string.XChannel), "@NagramX", true);
                             } else if (position == channelRow) {
-                                textCell.setTextAndValue(LocaleController.getString(R.string.OfficialChannel), "@nagram_channel", true);
+                                textCell.setTextAndValue(getString(R.string.OfficialChannel), "@nagram_channel", true);
                             } else if (position == channelTipsRow) {
-                                textCell.setTextAndValue(LocaleController.getString(R.string.TipsChannel), "@" + "NagramTips", true);
+                                textCell.setTextAndValue(getString(R.string.TipsChannel), "@" + "NagramTips", true);
                             } else if (position == sourceCodeRow) {
-                                textCell.setText(LocaleController.getString(R.string.SourceCode), true);
+                                textCell.setText(getString(R.string.SourceCode), true);
                             } else if (position == translationRow) {
-                                textCell.setText(LocaleController.getString(R.string.TransSite), true);
+                                textCell.setText(getString(R.string.TransSite), true);
                             } else if (position == datacenterStatusRow) {
-                                textCell.setText(LocaleController.getString(R.string.DatacenterStatus), true);
+                                textCell.setText(getString(R.string.DatacenterStatus), true);
                             } else if (position == importSettingsRow) {
-                                textCell.setText(LocaleController.getString(R.string.ImportSettings), true);
+                                textCell.setText(getString(R.string.ImportSettings), true);
                             } else if (position == exportSettingsRow) {
-                                textCell.setText(LocaleController.getString(R.string.BackupSettings), true);
+                                textCell.setText(getString(R.string.BackupSettings), true);
                             }
                             break;
                         }
@@ -580,9 +580,9 @@ public class NekoSettingsActivity extends BaseFragment {
     public static void importSettings(Context context, File settingsFile) {
 
         AlertUtil.showConfirm(context,
-                LocaleController.getString(R.string.ImportSettingsAlert),
+                getString(R.string.ImportSettingsAlert),
                 R.drawable.baseline_security_24,
-                LocaleController.getString(R.string.Import),
+                getString(R.string.Import),
                 true,
                 () -> importSettingsConfirmed(context, settingsFile));
 
@@ -595,9 +595,9 @@ public class NekoSettingsActivity extends BaseFragment {
             importSettings(configJson);
 
             AlertDialog restart = new AlertDialog(context, 0);
-            restart.setTitle(LocaleController.getString(R.string.NagramX));
-            restart.setMessage(LocaleController.getString(R.string.RestartAppToTakeEffect));
-            restart.setPositiveButton(LocaleController.getString(R.string.OK), (__, ___) -> ProcessPhoenix.triggerRebirth(context, new Intent(context, LaunchActivity.class)));
+            restart.setTitle(getString(R.string.NagramX));
+            restart.setMessage(getString(R.string.RestartAppToTakeEffect));
+            restart.setPositiveButton(getString(R.string.OK), (__, ___) -> ProcessPhoenix.triggerRebirth(context, new Intent(context, LaunchActivity.class)));
             restart.show();
         } catch (Exception e) {
             AlertUtil.showSimpleAlert(context, e);

@@ -37,6 +37,7 @@ import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
@@ -172,7 +173,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
     @Override
     public View createView(Context context) {
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
-        actionBar.setTitle(LocaleController.getString("MessageDetails", R.string.MessageDetails));
+        actionBar.setTitle(getString(R.string.MessageDetails));
 
         if (AndroidUtilities.isTablet()) {
             actionBar.setOccupyStatusBar(false);
@@ -201,7 +202,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
             if (position == exportRow) {
                 try {
                     AndroidUtilities.addToClipboard(gson.toJson(messageObject.messageOwner));
-                    BulletinFactory.of(this).createCopyBulletin(LocaleController.formatString("TextCopied", R.string.TextCopied)).show();
+                    BulletinFactory.of(this).createCopyBulletin(LocaleController.formatString(R.string.TextCopied)).show();
                 } catch (Exception e) {
                     FileLog.e(e);
                 }
@@ -209,7 +210,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
                 TextDetailSettingsCell textCell = (TextDetailSettingsCell) view;
                 try {
                     AndroidUtilities.addToClipboard(textCell.getValueTextView().getText());
-                    BulletinFactory.of(this).createCopyBulletin(LocaleController.formatString("TextCopied", R.string.TextCopied)).show();
+                    BulletinFactory.of(this).createCopyBulletin(LocaleController.formatString(R.string.TextCopied)).show();
                 } catch (Exception e) {
                     FileLog.e(e);
                 }
@@ -231,7 +232,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
                     } else {
                         intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
                     }
-                    startActivityForResult(Intent.createChooser(intent, LocaleController.getString("ShareFile", R.string.ShareFile)), 500);
+                    startActivityForResult(Intent.createChooser(intent, getString(R.string.ShareFile)), 500);
                 });
             } else if (position == channelRow || position == groupRow) {
                 if (fromChat != null) {
@@ -254,7 +255,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
         });
 
         copyTooltip = new UndoView(context);
-        copyTooltip.setInfoText(LocaleController.getString("TextCopied", R.string.TextCopied));
+        copyTooltip.setInfoText(getString(R.string.TextCopied));
         frameLayout.addView(copyTooltip, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 0, 8, 8));
 
         return fragmentView;
@@ -422,10 +423,10 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
                         textCell.setTextAndValue("Bot", "Yes", divider);
                     } else if (position == dateRow) {
                         long date = (long) messageObject.messageOwner.date * 1000;
-                        textCell.setTextAndValue(messageObject.scheduled ? "Scheduled date" : "Date", messageObject.messageOwner.date == 0x7ffffffe ? "When online" : LocaleController.formatString("formatDateAtTime", R.string.formatDateAtTime, LocaleController.getInstance().getFormatterYear().format(new Date(date)), LocaleController.getInstance().getFormatterDay().format(new Date(date))), divider);
+                        textCell.setTextAndValue(messageObject.scheduled ? "Scheduled date" : "Date", messageObject.messageOwner.date == 0x7ffffffe ? "When online" : LocaleController.formatString(R.string.formatDateAtTime, LocaleController.getInstance().getFormatterYear().format(new Date(date)), LocaleController.getInstance().getFormatterDay().format(new Date(date))), divider);
                     } else if (position == editedRow) {
                         long date = (long) messageObject.messageOwner.edit_date * 1000;
-                        textCell.setTextAndValue("Edited", LocaleController.formatString("formatDateAtTime", R.string.formatDateAtTime, LocaleController.getInstance().getFormatterYear().format(new Date(date)), LocaleController.getInstance().getFormatterDay().format(new Date(date))), divider);
+                        textCell.setTextAndValue("Edited", LocaleController.formatString(R.string.formatDateAtTime, LocaleController.getInstance().getFormatterYear().format(new Date(date)), LocaleController.getInstance().getFormatterDay().format(new Date(date))), divider);
                     } else if (position == forwardRow) {
                         StringBuilder builder = new StringBuilder();
                         if (messageObject.messageOwner.fwd_from.from_id == null) {
@@ -500,7 +501,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
                 case 3: {
                     TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
                     if (position == exportRow) {
-                        textCell.setText(LocaleController.getString("ExportAsJson", R.string.ExportAsJson), false);
+                        textCell.setText(getString(R.string.ExportAsJson), false);
                         textCell.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlueText));
                     }
                     break;

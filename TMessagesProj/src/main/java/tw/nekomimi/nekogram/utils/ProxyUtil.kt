@@ -38,7 +38,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.FileLog
-import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.NotificationCenter
 import org.telegram.messenger.R
 import org.telegram.messenger.SharedConfig
@@ -148,8 +148,8 @@ object ProxyUtil {
 
                         builder.addItems(arrayOf(
 
-                                LocaleController.getString(R.string.SaveToGallery),
-                                LocaleController.getString(R.string.Cancel)
+                                getString(R.string.SaveToGallery),
+                                getString(R.string.Cancel)
 
                         ), intArrayOf(
 
@@ -183,7 +183,7 @@ object ProxyUtil {
                                     }
 
                                     AndroidUtilities.addMediaToGallery(saveTo.path)
-                                    showToast(LocaleController.getString(R.string.PhotoSavedHint))
+                                    showToast(getString(R.string.PhotoSavedHint))
 
                                 }.onFailure {
                                     FileLog.e(it)
@@ -262,7 +262,7 @@ object ProxyUtil {
 
         } catch (e: Throwable) {
 
-            showToast(LocaleController.getString(R.string.NoQrFound))
+            showToast(getString(R.string.NoQrFound))
 
         }
 
@@ -286,9 +286,9 @@ object ProxyUtil {
         builder.addTitle(text)
 
         builder.addItems(arrayOf(
-                LocaleController.getString(R.string.Open),
-                LocaleController.getString(R.string.Copy),
-                LocaleController.getString(R.string.ShareQRCode)
+                getString(R.string.Open),
+                getString(R.string.Copy),
+                getString(R.string.ShareQRCode)
         ), intArrayOf(
                 R.drawable.baseline_open_in_browser_24,
                 R.drawable.baseline_content_copy_24,
@@ -298,7 +298,7 @@ object ProxyUtil {
                 0 -> Browser.openUrl(ctx, text)
                 1 -> {
                     AndroidUtilities.addToClipboard(text)
-                    showToast(LocaleController.getString(R.string.LinkCopied))
+                    showToast(getString(R.string.LinkCopied))
                 }
                 else -> showQrDialog(ctx, text)
             }
@@ -330,7 +330,7 @@ object ProxyUtil {
 
                         error = true
 
-                        showToast(LocaleController.getString(R.string.BrokenLink) + ": ${it.message ?: it.javaClass.simpleName}")
+                        showToast(getString(R.string.BrokenLink) + ": ${it.message ?: it.javaClass.simpleName}")
 
                     }
 
@@ -357,7 +357,7 @@ object ProxyUtil {
 
                                 error = true
 
-                                showToast(LocaleController.getString(R.string.BrokenLink) + ": ${it.message ?: it.javaClass.simpleName}")
+                                showToast(getString(R.string.BrokenLink) + ": ${it.message ?: it.javaClass.simpleName}")
 
                             }
 
@@ -373,13 +373,13 @@ object ProxyUtil {
 
         if (proxies.isNullOrEmpty()) {
 
-            if (!error) showToast(LocaleController.getString(R.string.BrokenLink))
+            if (!error) showToast(getString(R.string.BrokenLink))
 
             return
 
         } else if (!error) {
 
-            AlertUtil.showSimpleAlert(ctx, LocaleController.getString(R.string.ImportedProxies) + "\n\n" + proxies.joinToString("\n") { it.address })
+            AlertUtil.showSimpleAlert(ctx, getString(R.string.ImportedProxies) + "\n\n" + proxies.joinToString("\n") { it.address })
 
         }
 

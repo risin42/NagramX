@@ -9,7 +9,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.ApplicationLoader
-import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.MediaDataController
 import org.telegram.messenger.NotificationCenter
 import org.telegram.messenger.NotificationCenter.NotificationCenterDelegate
@@ -227,7 +227,7 @@ object ExternalStickerCacheHelper {
     fun syncAllCaches() {
         async {
             if (caching) {
-                showToast(LocaleController.getString(R.string.ExternalStickerCacheSyncNotFinished))
+                showToast(getString(R.string.ExternalStickerCacheSyncNotFinished))
             } else {
                 cacheStickers(false)
             }
@@ -277,7 +277,7 @@ object ExternalStickerCacheHelper {
     private fun showToast(msg: String?) {
         var realMessage = msg
         if (realMessage == null) {
-            realMessage = LocaleController.getString(R.string.Done)
+            realMessage = getString(R.string.Done)
         }
         AndroidUtilities.runOnUIThread {
             if (realMessage != null) {
@@ -297,7 +297,7 @@ object ExternalStickerCacheHelper {
 
     private suspend fun waitForSync() {
         if (caching) {
-            showToast(LocaleController.getString(R.string.ExternalStickerCacheWaitSync))
+            showToast(getString(R.string.ExternalStickerCacheWaitSync))
             do delay(3000) while (caching)
         }
     }

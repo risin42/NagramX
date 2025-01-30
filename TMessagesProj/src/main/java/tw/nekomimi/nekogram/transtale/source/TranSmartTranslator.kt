@@ -3,7 +3,7 @@ package tw.nekomimi.nekogram.transtale.source
 import cn.hutool.http.HttpUtil
 import org.json.JSONArray
 import org.json.JSONObject
-import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.transtale.Translator
 import tw.nekomimi.nekogram.utils.applyUserAgent
@@ -32,7 +32,7 @@ object TranSmartTranslator : Translator {
     override suspend fun doTranslate(from: String, to: String, query: String): String {
 
         if (to !in targetLanguages) {
-            error(LocaleController.getString(R.string.TranslateApiUnsupported))
+            error(getString(R.string.TranslateApiUnsupported))
         }
 
         val source = JSONArray()

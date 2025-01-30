@@ -6,7 +6,7 @@ import cn.hutool.http.HttpUtil
 import org.json.JSONArray
 import org.json.JSONObject
 import org.telegram.messenger.BuildVars;
-import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.transtale.Translator
 import tw.nekomimi.nekogram.utils.applyUserAgent
@@ -19,7 +19,7 @@ object LingoTranslator : Translator {
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "doTranslate: from=$from, to=$to, query=$query")
 
         if (to !in listOf("zh", "en", "es", "fr", "ja", "ru")) {
-            error(LocaleController.getString(R.string.TranslateApiUnsupported) + " " + to)
+            error(getString(R.string.TranslateApiUnsupported) + " " + to)
         }
 
         val source = JSONArray()

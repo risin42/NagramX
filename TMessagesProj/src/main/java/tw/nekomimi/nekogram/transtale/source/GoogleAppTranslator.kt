@@ -2,7 +2,7 @@ package tw.nekomimi.nekogram.transtale.source
 
 import cn.hutool.core.util.StrUtil
 import org.json.JSONObject
-import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.transtale.TransUtils
@@ -18,7 +18,7 @@ object GoogleAppTranslator : Translator {
 
         if (to !in targetLanguages) {
 
-            throw UnsupportedOperationException(LocaleController.getString(R.string.TranslateApiUnsupported))
+            throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported))
 
         }
 

@@ -1,7 +1,7 @@
 package tw.nekomimi.nekogram.transtale.source
 
 import java.io.IOException
-import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.transtale.Translator
 import tw.nekomimi.nekogram.transtale.source.raw.MicrosoftTranslatorRaw
@@ -31,7 +31,7 @@ object RealMicrosoftTranslator : Translator {
             }
 
         if (toLang.lowercase() !in targetLanguages.map { it.lowercase() }) {
-            throw UnsupportedOperationException(LocaleController.getString(R.string.TranslateApiUnsupported) + " " + to)
+            throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported) + " " + to)
         }
 
         try {

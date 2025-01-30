@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.HeaderCell;
@@ -112,7 +113,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
 
     @Override
     protected String getActionBarTitle() {
-        return LocaleController.getString(R.string.RegexFilters);
+        return getString(R.string.RegexFilters);
     }
 
     private class ListAdapter extends BaseListAdapter {
@@ -137,13 +138,13 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                 case TYPE_TEXT:
                     TextCell textCell = (TextCell) holder.itemView;
                     if (position == addFilterBtnRow) {
-                        textCell.setTextAndIcon(LocaleController.getString(R.string.RegexFiltersAdd), R.drawable.msg_add, false);
+                        textCell.setTextAndIcon(getString(R.string.RegexFiltersAdd), R.drawable.msg_add, false);
                     }
                     break;
                 case TYPE_HEADER:
                     HeaderCell headerCell = (HeaderCell) holder.itemView;
                     if (position == filtersHeaderRow) {
-                        headerCell.setText(LocaleController.getString(R.string.RegexFiltersHeader));
+                        headerCell.setText(getString(R.string.RegexFiltersHeader));
                     }
                     break;
             }

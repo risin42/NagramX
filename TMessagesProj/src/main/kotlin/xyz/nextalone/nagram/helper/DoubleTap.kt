@@ -1,6 +1,6 @@
 package xyz.nextalone.nagram.helper
 
-import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 
 object DoubleTap {
@@ -28,39 +28,39 @@ object DoubleTap {
 
     init {
         doubleTapActionMap[DOUBLE_TAP_ACTION_NONE] =
-            LocaleController.getString(
+            getString(
                 R.string.Disable
             )
         doubleTapActionMap[DOUBLE_TAP_ACTION_SEND_REACTIONS] =
-            LocaleController.getString(
+            getString(
                 R.string.SendReactions
             )
         doubleTapActionMap[DOUBLE_TAP_ACTION_SHOW_REACTIONS] =
-            LocaleController.getString(
+            getString(
                 R.string.ShowReactions
             )
         doubleTapActionMap[DOUBLE_TAP_ACTION_TRANSLATE] =
-            LocaleController.getString(
+            getString(
                 R.string.TranslateMessage
             )
         doubleTapActionMap[DOUBLE_TAP_ACTION_REPLY] =
-            LocaleController.getString(
+            getString(
                 R.string.Reply
             )
         doubleTapActionMap[DOUBLE_TAP_ACTION_SAVE] =
-            LocaleController.getString(
+            getString(
                 R.string.AddToSavedMessages
             )
         doubleTapActionMap[DOUBLE_TAP_ACTION_REPEAT] =
-            LocaleController.getString(
+            getString(
                 R.string.Repeat
             )
         doubleTapActionMap[DOUBLE_TAP_ACTION_REPEAT_AS_COPY] =
-            LocaleController.getString(
+            getString(
                 R.string.RepeatAsCopy
             )
         doubleTapActionMap[DOUBLE_TAP_ACTION_EDIT] =
-            LocaleController.getString(
+            getString(
                 R.string.Edit
             )
     }

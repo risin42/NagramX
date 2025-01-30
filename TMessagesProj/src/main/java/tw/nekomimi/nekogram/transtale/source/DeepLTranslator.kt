@@ -3,7 +3,7 @@ package tw.nekomimi.nekogram.transtale.source
 import cn.hutool.http.HttpUtil
 import org.json.JSONArray
 import org.json.JSONObject
-import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.transtale.Translator
 import tw.nekomimi.nekogram.transtale.source.raw.DeepLTranslatorRaw
@@ -18,7 +18,7 @@ object DeepLTranslator : Translator {
 
     override suspend fun doTranslate(from: String, to: String, query: String): String {
         if (to.isEmpty()) {
-            throw UnsupportedOperationException(LocaleController.getString(R.string.TranslateApiUnsupported))
+            throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported))
         }
 
         try {
@@ -30,7 +30,7 @@ object DeepLTranslator : Translator {
     }
 
     private fun translateWithAPI(endpoint: String, targetLang: String, query: String): String {
-        val apiKey = LocaleController.getString(R.string.DEEPL_API_KEY)
+        val apiKey = getString(R.string.DEEPL_API_KEY)
         if (apiKey.isBlank()) error("Missing DeepL Translate Key")
 
         val textArray = JSONArray().apply {

@@ -18,6 +18,7 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.DocumentObject;
 import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.MediaDataController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
@@ -135,7 +136,7 @@ public class DatacenterActivity extends BaseNekoSettingsActivity implements Noti
 
     @Override
     protected String getActionBarTitle() {
-        return LocaleController.getString("DatacenterStatus", R.string.DatacenterStatus);
+        return getString(R.string.DatacenterStatus);
     }
 
     @Override
@@ -171,7 +172,7 @@ public class DatacenterActivity extends BaseNekoSettingsActivity implements Noti
                 }
                 case 4: {
                     HeaderCell cell = (HeaderCell) holder.itemView;
-                    cell.setText(LocaleController.getString("DatacenterStatus", R.string.DatacenterStatus));
+                    cell.setText(getString(R.string.DatacenterStatus));
                     break;
                 }
                 case Integer.MAX_VALUE: {
@@ -362,21 +363,21 @@ public class DatacenterActivity extends BaseNekoSettingsActivity implements Noti
         public void updateStatus() {
             int colorKey;
             if (currentInfo.checking) {
-                valueTextView.setText(LocaleController.getString("Checking", R.string.Checking));
+                valueTextView.setText(getString(R.string.Checking));
                 colorKey = Theme.key_windowBackgroundWhiteGrayText2;
             } else if (currentInfo.available) {
                 if (currentInfo.ping >= 1000) {
-                    valueTextView.setText(String.format("%s, %s", LocaleController.getString("SpeedSlow", R.string.SpeedSlow), LocaleController.formatString("Ping", R.string.Ping, currentInfo.ping)));
+                    valueTextView.setText(String.format("%s, %s", getString(R.string.SpeedSlow), LocaleController.formatString(R.string.Ping, currentInfo.ping)));
                     colorKey = Theme.key_windowBackgroundWhiteRedText4;
                 } else if (currentInfo.ping != 0) {
-                    valueTextView.setText(String.format("%s, %s", LocaleController.getString("Available", R.string.Available), LocaleController.formatString("Ping", R.string.Ping, currentInfo.ping)));
+                    valueTextView.setText(String.format("%s, %s", getString(R.string.Available), LocaleController.formatString(R.string.Ping, currentInfo.ping)));
                     colorKey = Theme.key_windowBackgroundWhiteGreenText;
                 } else {
-                    valueTextView.setText(LocaleController.getString("Available", R.string.Available));
+                    valueTextView.setText(getString(R.string.Available));
                     colorKey = Theme.key_windowBackgroundWhiteGreenText;
                 }
             } else {
-                valueTextView.setText(LocaleController.getString("Unavailable", R.string.Unavailable));
+                valueTextView.setText(getString(R.string.Unavailable));
                 colorKey = Theme.key_windowBackgroundWhiteRedText4;
             }
             valueTextView.setTag(colorKey);

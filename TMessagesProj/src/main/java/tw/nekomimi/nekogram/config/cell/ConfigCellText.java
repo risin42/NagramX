@@ -1,7 +1,7 @@
 package tw.nekomimi.nekogram.config.cell;
 
 import androidx.recyclerview.widget.RecyclerView;
-import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.ui.Cells.TextSettingsCell;
 import tw.nekomimi.nekogram.config.CellGroup;
 
@@ -42,7 +42,7 @@ public class ConfigCellText extends AbstractConfigCell implements WithKey, WithO
     public void onBindViewHolder(RecyclerView.ViewHolder holder) {
         TextSettingsCell cell = (TextSettingsCell) holder.itemView;
         this.cell = cell;
-        String title = LocaleController.getString(key);
+        String title = getString(key);
         cell.setTextAndValue(title, value, cellGroup.needSetDivider(this));
         cell.setEnabled(enabled);
     }

@@ -2,7 +2,7 @@ package tw.nekomimi.nekogram.config.cell;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.ui.Cells.TextCheckCell;
 
 import tw.nekomimi.nekogram.config.CellGroup;
@@ -17,13 +17,13 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
 
     public ConfigCellTextCheck(ConfigItem bind) {
         this.bindConfig = bind;
-        this.title = LocaleController.getString(bindConfig.getKey());
+        this.title = getString(bindConfig.getKey());
         this.subtitle = null;
     }
 
     public ConfigCellTextCheck(ConfigItem bind, String subtitle) {
         this.bindConfig = bind;
-        this.title = LocaleController.getString(bindConfig.getKey());
+        this.title = getString(bindConfig.getKey());
         this.subtitle = subtitle;
     }
 

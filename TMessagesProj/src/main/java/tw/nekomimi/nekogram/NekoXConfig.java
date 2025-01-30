@@ -12,6 +12,7 @@ import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
@@ -148,7 +149,7 @@ public class NekoXConfig {
 
     public static String formatLang(String name) {
         if (name == null || name.isEmpty()) {
-            return LocaleController.getString("Default", R.string.Default);
+            return getString(R.string.Default);
         } else {
             if (name.contains("-")) {
                 return new Locale(StrUtil.subBefore(name, "-", false), StrUtil.subAfter(name, "-", false)).getDisplayName(LocaleController.getInstance().currentLocale);

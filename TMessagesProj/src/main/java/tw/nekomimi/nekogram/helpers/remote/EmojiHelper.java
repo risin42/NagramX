@@ -27,6 +27,7 @@ import org.telegram.messenger.Emoji;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
@@ -646,8 +647,8 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
         }
         EmojiSetBulletinLayout bulletinLayout = new EmojiSetBulletinLayout(
                 fragment.getParentActivity(),
-                LocaleController.getString("EmojiSetRemoved", R.string.EmojiSetRemoved),
-                LocaleController.formatString("EmojiSetRemovedInfo", R.string.EmojiSetRemovedInfo, emojiPackBase.getPackName()),
+                getString(R.string.EmojiSetRemoved),
+                LocaleController.formatString(R.string.EmojiSetRemovedInfo, emojiPackBase.getPackName()),
                 emojiPackBase,
                 null
         );

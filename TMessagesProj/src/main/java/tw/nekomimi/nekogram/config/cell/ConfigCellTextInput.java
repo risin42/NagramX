@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.Theme;
@@ -41,7 +41,7 @@ public class ConfigCellTextInput extends AbstractConfigCell {
             this.hint = hint;
         }
         if (customTitle == null) {
-            title = LocaleController.getString(bindConfig.getKey());
+            title = getString(bindConfig.getKey());
         } else {
             title = customTitle;
         }
@@ -95,7 +95,7 @@ public class ConfigCellTextInput extends AbstractConfigCell {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(LocaleController.getString(bindConfig.getKey()));
+        builder.setTitle(getString(bindConfig.getKey()));
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
@@ -106,7 +106,7 @@ public class ConfigCellTextInput extends AbstractConfigCell {
         editText.setText(bindConfig.String());
         linearLayout.addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, AndroidUtilities.dp(8), 0, AndroidUtilities.dp(10), 0));
 
-        builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), (d, v) -> {
+        builder.setPositiveButton(getString(R.string.OK), (d, v) -> {
             String newV = editText.getText().toString();
             if (this.inputChecker != null)
                 newV = this.inputChecker.apply(newV);

@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.ActionBar;
@@ -73,7 +74,7 @@ public class RegexFilterEditActivity extends BaseFragment {
     public View createView(Context context) {
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setAllowOverlayTitle(true);
-        actionBar.setTitle(LocaleController.getString(filterIdx == -1 ? R.string.RegexFiltersAdd : R.string.RegexFiltersEdit));
+        actionBar.setTitle(getString(filterIdx == -1 ? R.string.RegexFiltersAdd : R.string.RegexFiltersEdit));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -96,7 +97,7 @@ public class RegexFilterEditActivity extends BaseFragment {
                         }
 
                         errorTextView.setText(LocaleUtil.INSTANCE.htmlToString("<b>" + errorText + "</b>"));
-                        BulletinFactory.of(RegexFilterEditActivity.this).createSimpleBulletin(R.raw.error, LocaleController.getString(R.string.RegexFiltersAddError)).show();
+                        BulletinFactory.of(RegexFilterEditActivity.this).createSimpleBulletin(R.raw.error, getString(R.string.RegexFiltersAddError)).show();
                         return;
                     }
 
@@ -113,7 +114,7 @@ public class RegexFilterEditActivity extends BaseFragment {
 
         ActionBarMenu menu = actionBar.createMenu();
         doneButton = menu.addItemWithWidth(done_button, R.drawable.ic_ab_done, AndroidUtilities.dp(56));
-        doneButton.setContentDescription(LocaleController.getString("Done", R.string.Done));
+        doneButton.setContentDescription(getString(R.string.Done));
 
         fragmentView = new LinearLayout(context);
         LinearLayout linearLayout = (LinearLayout) fragmentView;
@@ -155,7 +156,7 @@ public class RegexFilterEditActivity extends BaseFragment {
         helpTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
         helpTextView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText8));
         helpTextView.setGravity(LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT);
-        helpTextView.setText(LocaleUtil.INSTANCE.htmlToString(LocaleController.getString(R.string.RegexFiltersAddDescription)));
+        helpTextView.setText(LocaleUtil.INSTANCE.htmlToString(getString(R.string.RegexFiltersAddDescription)));
         linearLayout.addView(helpTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 24, 10, 24, 0));
 
         errorTextView = new TextView(context);
@@ -168,7 +169,7 @@ public class RegexFilterEditActivity extends BaseFragment {
 
         caseInsensitiveButtonView = new TextCheckCell(context);
         caseInsensitiveButtonView.setFocusable(true);
-        caseInsensitiveButtonView.setTextAndCheck(LocaleController.getString("RegexFiltersCaseInsensitive", R.string.RegexFiltersCaseInsensitive), caseInsensitive, true);
+        caseInsensitiveButtonView.setTextAndCheck(getString(R.string.RegexFiltersCaseInsensitive), caseInsensitive, true);
         caseInsensitiveButtonView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
         caseInsensitiveButtonView.setOnClickListener((v) -> {
             boolean checked = !caseInsensitiveButtonView.isChecked();

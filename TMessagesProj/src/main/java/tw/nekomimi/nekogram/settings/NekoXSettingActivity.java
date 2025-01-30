@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.AlertDialog;
@@ -62,7 +62,7 @@ public class NekoXSettingActivity extends BaseFragment {
     @Override
     public View createView(Context context) {
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
-        actionBar.setTitle(LocaleController.getString("NekoSettings", R.string.NekoSettings));
+        actionBar.setTitle(getString(R.string.NekoSettings));
 
         if (AndroidUtilities.isTablet()) {
             actionBar.setOccupyStatusBar(false);
@@ -195,7 +195,7 @@ public class NekoXSettingActivity extends BaseFragment {
                 case 4: {
                     HeaderCell headerCell = (HeaderCell) holder.itemView;
                     if (position == developerSettingsRow) {
-                        headerCell.setText(LocaleController.getString("DeveloperSettings", R.string.DeveloperSettings));
+                        headerCell.setText(getString(R.string.DeveloperSettings));
                     }
                     break;
                 }

@@ -8,7 +8,7 @@ import kotlin.random.Random
 import kotlinx.coroutines.delay
 import org.json.JSONArray
 import org.json.JSONObject
-import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.transtale.Translator
 import tw.nekomimi.nekogram.transtale.source.GoogleAppTranslator
@@ -46,11 +46,11 @@ object LLMTranslator : Translator {
         val apiKey = NaConfig.llmApiKey.String()
         if (StrUtil.isBlank(apiKey)) error("Missing LLM API Key")
 
-        var apiUrl = NaConfig.llmApiUrl.String().takeIf { it.isNotEmpty() } ?: LocaleController.getString(R.string.LlmApiUrlDefault)
+        var apiUrl = NaConfig.llmApiUrl.String().takeIf { it.isNotEmpty() } ?: getString(R.string.LlmApiUrlDefault)
         apiUrl = apiUrl.removeSuffix("/")
         apiUrl = apiUrl.removeSuffix("/chat/completions")
 
-        val model = NaConfig.llmModelName.String().takeIf { it.isNotEmpty() } ?: LocaleController.getString(R.string.LlmModelNameDefault)
+        val model = NaConfig.llmModelName.String().takeIf { it.isNotEmpty() } ?: getString(R.string.LlmModelNameDefault)
 
         val generatedPrompt = generatePrompt(query, to)
         val messages = JSONArray().apply {

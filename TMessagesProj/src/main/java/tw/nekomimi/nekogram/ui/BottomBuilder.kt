@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.widget.*
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import org.telegram.ui.ActionBar.BottomSheet
 import org.telegram.ui.ActionBar.Theme
@@ -180,18 +181,18 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
     }
 
     fun addCancelItem() {
-        addItem(LocaleController.getString(R.string.Cancel), R.drawable.baseline_cancel_24) {}
+        addItem(getString(R.string.Cancel), R.drawable.baseline_cancel_24) {}
     }
 
     @JvmOverloads
     fun addCancelButton(left: Boolean = true) {
-        addButton(LocaleController.getString(R.string.Cancel), left = left) {}
+        addButton(getString(R.string.Cancel), left = left) {}
     }
 
 
     @JvmOverloads
     fun addOkButton(listener: ((TextView) -> Unit), noAutoDismiss: Boolean = false) {
-        addButton(LocaleController.getString(R.string.OK), noAutoDismiss) { listener(it); }
+        addButton(getString(R.string.OK), noAutoDismiss) { listener(it); }
     }
 
     @JvmOverloads

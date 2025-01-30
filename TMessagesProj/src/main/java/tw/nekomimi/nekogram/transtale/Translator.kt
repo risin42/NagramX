@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil
 import cn.hutool.http.HttpRequest
 import java.util.*
 import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.cc.CCConverter
@@ -220,7 +221,7 @@ interface Translator {
             for (i in locales.indices) {
                 localeNames[i] =
                         if (i == 0) {
-                            LocaleController.getString(R.string.Default) +
+                            getString(R.string.Default) +
                                     " ( " +
                                     locales[i].getDisplayName(currLocale) +
                                     " )"
@@ -232,7 +233,7 @@ interface Translator {
             }
 
             if (!full) {
-                localeNames[localeNames.size - 1] = LocaleController.getString(R.string.More)
+                localeNames[localeNames.size - 1] = getString(R.string.More)
             }
 
             builder.setItems(localeNames.filterIsInstance<CharSequence>().toTypedArray()) {
@@ -256,13 +257,13 @@ interface Translator {
 
             builder.setItems(
                     arrayOf(
-                            if (!input) LocaleController.getString(R.string.CCNo) else null,
-                            LocaleController.getString(R.string.CCSC),
-                            LocaleController.getString(R.string.CCSP),
-                            LocaleController.getString(R.string.CCTC),
-                            LocaleController.getString(R.string.CCHK),
-                            LocaleController.getString(R.string.CCTT),
-                            LocaleController.getString(R.string.CCJP)
+                            if (!input) getString(R.string.CCNo) else null,
+                            getString(R.string.CCSC),
+                            getString(R.string.CCSP),
+                            getString(R.string.CCTC),
+                            getString(R.string.CCHK),
+                            getString(R.string.CCTT),
+                            getString(R.string.CCJP)
                     )
             ) { index: Int, _ ->
                 callback(

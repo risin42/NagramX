@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarLayout;
@@ -120,7 +121,7 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
             if (key != null && holder != null && listAdapter.isEnabled(holder) && rowMapReverse.containsKey(position)) {
                 showDialog(new AlertDialog.Builder(context)
                         .setItems(
-                                new CharSequence[]{LocaleController.getString("CopyLink", R.string.CopyLink)},
+                                new CharSequence[]{getString(R.string.CopyLink)},
                                 (dialogInterface, i) -> {
                                     AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s", getMessagesController().linkPrefix, getKey(), rowMapReverse.get(position)));
                                     BulletinFactory.of(BaseNekoSettingsActivity.this).createCopyLinkBulletin().show();
@@ -187,7 +188,7 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
     protected abstract String getActionBarTitle();
 
     protected void showRestartBulletin() {
-        BulletinFactory.of(this).createErrorBulletin(LocaleController.formatString("RestartAppToTakeEffect", R.string.RestartAppToTakeEffect)).show();
+        BulletinFactory.of(this).createErrorBulletin(LocaleController.formatString(R.string.RestartAppToTakeEffect)).show();
     }
 
     private class BlurContentView extends SizeNotifierFrameLayout {
@@ -239,7 +240,7 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
     }
 
     protected CharSequence getSpannedString(String key, int id, String url) {
-        var text = LocaleController.getString(key, id);
+        var text = getString(key, id);
         var builder = new SpannableStringBuilder(text);
         int index1 = text.indexOf("**");
         int index2 = text.lastIndexOf("**");

@@ -6,7 +6,7 @@ import android.net.Uri
 import android.util.Base64
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader
-import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.config.ConfigItem
 import java.io.ByteArrayInputStream
@@ -141,7 +141,7 @@ object NaConfig {
         addConfig(
             "CustomTitle",
             ConfigItem.configTypeString,
-            LocaleController.getString(
+            getString(
                 R.string.NagramX
             )
         )

@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.BaseFragment;
 
@@ -107,7 +107,7 @@ public class SettingsHelper {
         fragments.add(new NekoGeneralSettingsActivity());
         fragments.add(new NekoChatSettingsActivity());
         fragments.add(new NekoExperimentalSettingsActivity());
-        String n_title = LocaleController.getString("NekoSettings", R.string.NekoSettings);
+        String n_title = getString(R.string.NekoSettings);
         for (BaseNekoXSettingsActivity fragment: fragments) {
             int uid = fragment.getBaseGuid();
             int drawable = fragment.getDrawable();
@@ -119,7 +119,7 @@ public class SettingsHelper {
                     continue;
                 }
                 int guid = uid + i;
-                String title = LocaleController.getString(key);
+                String title = getString(key);
                 if (title == null || title.isEmpty()) {
                     continue;
                 }

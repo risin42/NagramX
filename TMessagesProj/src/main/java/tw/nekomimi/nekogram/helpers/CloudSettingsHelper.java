@@ -24,6 +24,7 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
@@ -56,9 +57,9 @@ public class CloudSettingsHelper {
             var global = BulletinFactory.global();
             if (global != null) {
                 if (error == null) {
-                    global.createSimpleBulletin(R.raw.error, LocaleController.getString(R.string.CloudConfigSyncFailed)).show();
+                    global.createSimpleBulletin(R.raw.error, getString(R.string.CloudConfigSyncFailed)).show();
                 } else {
-                    global.createSimpleBulletin(R.raw.error, LocaleController.getString(R.string.CloudConfigSyncFailed), error).show();
+                    global.createSimpleBulletin(R.raw.error, getString(R.string.CloudConfigSyncFailed), error).show();
                 }
             }
         }
@@ -89,8 +90,8 @@ public class CloudSettingsHelper {
         int selectedAccount = UserConfig.selectedAccount;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context, resourcesProvider);
-        builder.setTitle(LocaleController.getString(R.string.CloudConfig));
-        builder.setMessage(AndroidUtilities.replaceTags(LocaleController.getString(R.string.CloudConfigDesc)));
+        builder.setTitle(getString(R.string.CloudConfig));
+        builder.setMessage(AndroidUtilities.replaceTags(getString(R.string.CloudConfigDesc)));
         builder.setTopImage(R.drawable.cloud, Theme.getColor(Theme.key_dialogTopBackground, resourcesProvider));
 
         TextViewSwitcher syncedDate = new TextViewSwitcher(context);
@@ -119,7 +120,7 @@ public class CloudSettingsHelper {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
         ButtonWithCounterView buttonTextView = new ButtonWithCounterView(context, true, resourcesProvider);
-        buttonTextView.setText(LocaleController.getString(R.string.CloudConfigSync), false);
+        buttonTextView.setText(getString(R.string.CloudConfigSync), false);
         linearLayout.addView(buttonTextView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 16, 0, 16, 0));
         buttonTextView.setOnClickListener(view -> {
             syncedDate.setText(AndroidUtilities.replaceTags(LocaleController.formatString(R.string.CloudConfigSyncing)));
@@ -127,16 +128,16 @@ public class CloudSettingsHelper {
                 syncedDate.setText(formatSyncedDate());
                 if (!success) {
                     if (error == null) {
-                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider).createSimpleBulletin(R.raw.error, LocaleController.getString(R.string.CloudConfigSyncFailed)).show();
+                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider).createSimpleBulletin(R.raw.error, getString(R.string.CloudConfigSyncFailed)).show();
                     } else {
-                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider).createSimpleBulletin(R.raw.error, LocaleController.getString(R.string.CloudConfigSyncFailed), error).show();
+                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider).createSimpleBulletin(R.raw.error, getString(R.string.CloudConfigSyncFailed), error).show();
                     }
                 }
             });
         });
 
         ButtonWithCounterView textView = new ButtonWithCounterView(context, false, resourcesProvider);
-        textView.setText(LocaleController.getString(R.string.CloudConfigRestore), false);
+        textView.setText(getString(R.string.CloudConfigRestore), false);
         linearLayout.addView(textView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 16, 8, 16, 0));
         textView.setOnClickListener(view -> {
             syncedDate.setText(AndroidUtilities.replaceTags(LocaleController.formatString(R.string.CloudConfigSyncing)));
@@ -144,15 +145,15 @@ public class CloudSettingsHelper {
                 syncedDate.setText(formatSyncedDate());
                 if (!success) {
                     if (error == null) {
-                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider).createSimpleBulletin(R.raw.error, LocaleController.getString(R.string.CloudConfigRestoreFailed)).show();
+                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider).createSimpleBulletin(R.raw.error, getString(R.string.CloudConfigRestoreFailed)).show();
                     } else {
-                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider).createSimpleBulletin(R.raw.error, LocaleController.getString(R.string.CloudConfigRestoreFailed), error).show();
+                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider).createSimpleBulletin(R.raw.error, getString(R.string.CloudConfigRestoreFailed), error).show();
                     }
                 } else {
                     AlertDialog restart = new AlertDialog(context, 0);
-                    restart.setTitle(LocaleController.getString(R.string.NagramX));
-                    restart.setMessage(LocaleController.getString(R.string.RestartAppToTakeEffect));
-                    restart.setPositiveButton(LocaleController.getString(R.string.OK), (__, ___) -> {
+                    restart.setTitle(getString(R.string.NagramX));
+                    restart.setMessage(getString(R.string.RestartAppToTakeEffect));
+                    restart.setPositiveButton(getString(R.string.OK), (__, ___) -> {
                         ProcessPhoenix.triggerRebirth(context, new Intent(context, LaunchActivity.class));
                     });
                     restart.show();
@@ -161,7 +162,7 @@ public class CloudSettingsHelper {
         });
 
         ButtonWithCounterView deleteButton = new ButtonWithCounterView(context, false, resourcesProvider);
-        deleteButton.setText(LocaleController.getString(R.string.DeleteCloudBackup), false);
+        deleteButton.setText(getString(R.string.DeleteCloudBackup), false);
         deleteButton.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
         linearLayout.addView(deleteButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 16, 8, 16, 0));
         deleteButton.setOnClickListener(view -> {
@@ -172,26 +173,26 @@ public class CloudSettingsHelper {
                     if (error == null) {
                         BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider)
                                 .createSimpleBulletin(R.raw.info,
-                                        LocaleController.getString(R.string.CloudConfigNoBackupToDelete))
+                                        getString(R.string.CloudConfigNoBackupToDelete))
                                 .show();
                     } else {
                         BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider)
                                 .createSimpleBulletin(R.raw.error,
-                                        LocaleController.getString(R.string.DeleteCloudBackupFailed),
+                                        getString(R.string.DeleteCloudBackupFailed),
                                         error)
                                 .show();
                     }
                 } else {
                     BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider)
                             .createSimpleBulletin(R.raw.done,
-                                    LocaleController.getString(R.string.DeleteCloudBackupSuccess))
+                                    getString(R.string.DeleteCloudBackupSuccess))
                             .show();
                 }
             });
         });
 
         MiniCheckBoxCell autoSyncCheck = new MiniCheckBoxCell(context, 8, resourcesProvider);
-        autoSyncCheck.setTextAndValueAndCheck(LocaleController.getString(R.string.CloudConfigAutoSync), LocaleController.getString(R.string.CloudConfigAutoSyncDesc), autoSync);
+        autoSyncCheck.setTextAndValueAndCheck(getString(R.string.CloudConfigAutoSync), getString(R.string.CloudConfigAutoSyncDesc), autoSync);
         autoSyncCheck.setOnClickListener(view13 -> {
             autoSync = !autoSync;
             preferences.edit().putBoolean("auto_sync", autoSync).apply();
@@ -335,8 +336,8 @@ public class CloudSettingsHelper {
     private String formatSyncedDate() {
         return LocaleController.formatString(
                 R.string.CloudConfigSyncDate,
-                localSyncedDate > 0 ? formatDateUntil(localSyncedDate) : LocaleController.getString(R.string.CloudConfigSyncDateNever),
-                cloudSyncedDate.get(UserConfig.selectedAccount, 0L) > 0 ? formatDateUntil(cloudSyncedDate.get(UserConfig.selectedAccount, 0L)) : LocaleController.getString(R.string.CloudConfigSyncDateNever));
+                localSyncedDate > 0 ? formatDateUntil(localSyncedDate) : getString(R.string.CloudConfigSyncDateNever),
+                cloudSyncedDate.get(UserConfig.selectedAccount, 0L) > 0 ? formatDateUntil(cloudSyncedDate.get(UserConfig.selectedAccount, 0L)) : getString(R.string.CloudConfigSyncDateNever));
     }
 
     private static String formatDateUntil(long date) {

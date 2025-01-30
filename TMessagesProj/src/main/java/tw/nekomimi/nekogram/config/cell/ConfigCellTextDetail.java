@@ -2,7 +2,7 @@ package tw.nekomimi.nekogram.config.cell;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.ui.Cells.TextDetailSettingsCell;
 import org.telegram.ui.Components.RecyclerListView;
 
@@ -18,7 +18,7 @@ public class ConfigCellTextDetail extends AbstractConfigCell {
 
     public ConfigCellTextDetail(ConfigItem bind, RecyclerListView.OnItemClickListener onItemClickListener, String hint) {
         this.bindConfig = bind;
-        this.title = LocaleController.getString(bindConfig.getKey());
+        this.title = getString(bindConfig.getKey());
         this.hint = hint == null ? "" : hint;
         this.onItemClickListener = onItemClickListener;
     }

@@ -7,8 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import kotlinx.coroutines.*
-import org.telegram.messenger.LocaleController
-import org.telegram.messenger.R
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ArticleViewer
 import tw.nekomimi.nekogram.transtale.TranslateDb

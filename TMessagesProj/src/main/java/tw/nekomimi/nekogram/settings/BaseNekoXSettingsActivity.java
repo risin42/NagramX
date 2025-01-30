@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -109,9 +109,9 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         String key = getRowKey(position);
         String value = getRowValue(position);
         ArrayList<CharSequence> itemsArray = new ArrayList<>();
-        itemsArray.add(LocaleController.getString("CopyLink", R.string.CopyLink));
+        itemsArray.add(getString(R.string.CopyLink));
         if (value != null) {
-            itemsArray.add(LocaleController.getString("BackupSettings", R.string.BackupSettings));
+            itemsArray.add(getString(R.string.BackupSettings));
         }
         CharSequence[] items = itemsArray.toArray(new CharSequence[0]);
         showDialog(new AlertDialog.Builder(context)
@@ -149,10 +149,10 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
                 return;
             }
             var builder = new AlertDialog.Builder(context);
-            builder.setTitle(LocaleController.getString("ImportSettings", R.string.ImportSettings));
-            builder.setMessage(LocaleController.getString("ImportSettingsAlert", R.string.ImportSettingsAlert));
-            builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), (dialogInter, i) -> scrollToRow(key, unknown));
-            builder.setPositiveButton(LocaleController.getString("Import", R.string.Import), (dialogInter, i) -> {
+            builder.setTitle(getString(R.string.ImportSettings));
+            builder.setMessage(getString(R.string.ImportSettingsAlert));
+            builder.setNegativeButton(getString(R.string.Cancel), (dialogInter, i) -> scrollToRow(key, unknown));
+            builder.setPositiveButton(getString(R.string.Import), (dialogInter, i) -> {
                 config.changed(new_value);
                 config.saveConfig();
                 updateRows();

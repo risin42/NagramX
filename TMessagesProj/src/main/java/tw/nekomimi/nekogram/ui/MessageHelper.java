@@ -29,6 +29,7 @@ import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MediaDataController;
 import org.telegram.messenger.MessageObject;
@@ -564,7 +565,7 @@ public class MessageHelper extends BaseController {
         textView.setSingleLine(true);
         textView.setGravity((LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.CENTER_VERTICAL);
         textView.setEllipsize(TextUtils.TruncateAt.END);
-        textView.setText(LocaleController.getString("DeleteAllFromSelf", R.string.DeleteAllFromSelf));
+        textView.setText(getString(R.string.DeleteAllFromSelf));
 
         frameLayout.addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, (LocaleController.isRTL ? 21 : 76), 11, (LocaleController.isRTL ? 76 : 21), 0));
         frameLayout.addView(messageTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, 24, 57, 24, 9));
@@ -572,7 +573,7 @@ public class MessageHelper extends BaseController {
         if (cell != null) {
             boolean sendAs = ChatObject.getSendAsPeerId(chat, getMessagesController().getChatFull(chat.id), true) != getUserConfig().getClientUserId();
             cell.setBackground(Theme.getSelectorDrawable(false));
-            cell.setText(LocaleController.getString("DeleteAllFromSelfAdmin", R.string.DeleteAllFromSelfAdmin), "", !ChatObject.shouldSendAnonymously(chat) && !sendAs, false);
+            cell.setText(getString(R.string.DeleteAllFromSelfAdmin), "", !ChatObject.shouldSendAnonymously(chat) && !sendAs, false);
             cell.setPadding(LocaleController.isRTL ? AndroidUtilities.dp(16) : AndroidUtilities.dp(8), 0, LocaleController.isRTL ? AndroidUtilities.dp(8) : AndroidUtilities.dp(16), 0);
             frameLayout.addView(cell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.BOTTOM | Gravity.LEFT, 0, 0, 0, 0));
             cell.setOnClickListener(v -> {
@@ -582,20 +583,20 @@ public class MessageHelper extends BaseController {
         }
 
         if (before > 0) {
-            messageTextView.setText(AndroidUtilities.replaceTags(LocaleController.formatString("DeleteAllFromSelfAlertBefore", R.string.DeleteAllFromSelfAlertBefore, LocaleController.formatDateForBan(before))));
+            messageTextView.setText(AndroidUtilities.replaceTags(LocaleController.formatString(R.string.DeleteAllFromSelfAlertBefore, LocaleController.formatDateForBan(before))));
         } else {
-            messageTextView.setText(AndroidUtilities.replaceTags(LocaleController.getString("DeleteAllFromSelfAlert", R.string.DeleteAllFromSelfAlert)));
+            messageTextView.setText(AndroidUtilities.replaceTags(getString(R.string.DeleteAllFromSelfAlert)));
         }
 
-        builder.setNeutralButton(LocaleController.getString("DeleteAllFromSelfBefore", R.string.DeleteAllFromSelfBefore), (dialog, which) -> showBeforeDatePickerAlert(fragment, before1 -> createDeleteHistoryAlert(fragment, chat, forumTopic, mergeDialogId, before1, resourcesProvider)));
-        builder.setPositiveButton(LocaleController.getString("DeleteAll", R.string.DeleteAll), (dialogInterface, i) -> {
+        builder.setNeutralButton(getString(R.string.DeleteAllFromSelfBefore), (dialog, which) -> showBeforeDatePickerAlert(fragment, before1 -> createDeleteHistoryAlert(fragment, chat, forumTopic, mergeDialogId, before1, resourcesProvider)));
+        builder.setPositiveButton(getString(R.string.DeleteAll), (dialogInterface, i) -> {
             if (cell != null && cell.isChecked()) {
                 showDeleteHistoryBulletin(fragment, 0, false, () -> getMessagesController().deleteUserChannelHistory(chat, getUserConfig().getCurrentUser(), null, 0), resourcesProvider);
             } else {
                 deleteUserHistoryWithSearch(fragment, -chat.id, forumTopic != null ? forumTopic.id : 0, mergeDialogId, before == -1 ? getConnectionsManager().getCurrentTime() : before, (count, deleteAction) -> showDeleteHistoryBulletin(fragment, count, true, deleteAction, resourcesProvider));
             }
         });
-        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+        builder.setNegativeButton(getString(R.string.Cancel), null);
         AlertDialog alertDialog = builder.create();
         fragment.showDialog(alertDialog);
         TextView button = (TextView) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -607,12 +608,12 @@ public class MessageHelper extends BaseController {
     private void showBeforeDatePickerAlert(BaseFragment fragment, Utilities.Callback<Integer> callback) {
         Context context = fragment.getParentActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(LocaleController.getString("DeleteAllFromSelfBefore", R.string.DeleteAllFromSelfBefore));
+        builder.setTitle(getString(R.string.DeleteAllFromSelfBefore));
         builder.setItems(new CharSequence[]{
                 LocaleController.formatPluralString("Days", 1),
                 LocaleController.formatPluralString("Weeks", 1),
                 LocaleController.formatPluralString("Months", 1),
-                LocaleController.getString("UserRestrictionsCustom", R.string.UserRestrictionsCustom)
+                getString(R.string.UserRestrictionsCustom)
         }, (dialog1, which) -> {
             switch (which) {
                 case 0:
@@ -631,8 +632,8 @@ public class MessageHelper extends BaseController {
                             calendar.set(year1, month, dayOfMonth1, hourOfDay, minute);
                             callback.run((int) (calendar.getTimeInMillis() / 1000));
                         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
-                        timeDialog.setButton(DialogInterface.BUTTON_POSITIVE, LocaleController.getString("Set", R.string.Set), timeDialog);
-                        timeDialog.setButton(DialogInterface.BUTTON_NEGATIVE, LocaleController.getString("Cancel", R.string.Cancel), (dialog3, which3) -> {
+                        timeDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.Set), timeDialog);
+                        timeDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Cancel), (dialog3, which3) -> {
                         });
                         fragment.showDialog(timeDialog);
                     }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -642,8 +643,8 @@ public class MessageHelper extends BaseController {
                     datePicker.setMinDate(1375315200000L);
                     datePicker.setMaxDate(System.currentTimeMillis());
 
-                    dateDialog.setButton(DialogInterface.BUTTON_POSITIVE, LocaleController.getString("Set", R.string.Set), dateDialog);
-                    dateDialog.setButton(DialogInterface.BUTTON_NEGATIVE, LocaleController.getString("Cancel", R.string.Cancel), (dialog2, which2) -> {
+                    dateDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.Set), dateDialog);
+                    dateDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Cancel), (dialog2, which2) -> {
                     });
                     dateDialog.setOnShowListener(dialog12 -> {
                         int count = datePicker.getChildCount();
@@ -673,13 +674,13 @@ public class MessageHelper extends BaseController {
         Bulletin.ButtonLayout buttonLayout;
         if (search) {
             final Bulletin.TwoLineLottieLayout layout = new Bulletin.TwoLineLottieLayout(fragment.getParentActivity(), resourcesProvider);
-            layout.titleTextView.setText(LocaleController.getString("DeleteAllFromSelfDone", R.string.DeleteAllFromSelfDone));
+            layout.titleTextView.setText(getString(R.string.DeleteAllFromSelfDone));
             layout.subtitleTextView.setText(LocaleController.formatPluralString("MessagesDeletedHint", count));
             layout.setTimer();
             buttonLayout = layout;
         } else {
             final Bulletin.LottieLayout layout = new Bulletin.LottieLayout(fragment.getParentActivity(), resourcesProvider);
-            layout.textView.setText(LocaleController.getString("DeleteAllFromSelfDone", R.string.DeleteAllFromSelfDone));
+            layout.textView.setText(getString(R.string.DeleteAllFromSelfDone));
             layout.setTimer();
             buttonLayout = layout;
         }
@@ -754,7 +755,7 @@ public class MessageHelper extends BaseController {
                 doSearchMessages(fragment, latch, messageIds, peer, replyMessageId, fromId, before, newOffsetId, calcMessagesHash(res.messages));
             } else {
                 if (error != null) {
-                    AndroidUtilities.runOnUIThread(() -> AlertsCreator.showSimpleAlert(fragment, LocaleController.getString("ErrorOccurred", R.string.ErrorOccurred) + "\n" + error.text));
+                    AndroidUtilities.runOnUIThread(() -> AlertsCreator.showSimpleAlert(fragment, getString(R.string.ErrorOccurred) + "\n" + error.text));
                 }
                 latch.countDown();
             }

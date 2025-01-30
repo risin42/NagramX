@@ -9,7 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import org.telegram.messenger.AndroidUtilities
-import org.telegram.messenger.LocaleController
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import org.telegram.ui.ActionBar.AlertDialog
 import org.telegram.ui.ActionBar.Theme
@@ -24,7 +24,7 @@ object Dialogs {
         timestamps: ArrayList<String>,
         finish: (String) -> Unit
     ) {
-        val captionString = LocaleController.getString(R.string.Caption);
+        val captionString = getString(R.string.Caption);
 
         val builder = AlertDialog.Builder(context);
         builder.setTitle(captionString);
@@ -51,13 +51,13 @@ object Dialogs {
         textLayout.addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36))
         builder.setView(textLayout);
         builder.setPositiveButton(
-            LocaleController.getString(
+            getString(
                 R.string.Send
             )
         ) { _: DialogInterface?, _: Int ->
             finish(editText.text.toString());
         }
-        builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+        builder.setNegativeButton(getString(R.string.Cancel), null);
         builder.show().setOnShowListener { dialog: DialogInterface? ->
             editText.requestFocus();
             AndroidUtilities.showKeyboard(editText);
@@ -76,9 +76,9 @@ object Dialogs {
     @JvmStatic
     fun createNeedChangeNekoSettingsAlert(context: Context) {
         val builder = AlertDialog.Builder(context)
-        builder.setTitle(LocaleController.getString(R.string.AppName))
-        builder.setMessage(LocaleController.getString(R.string.NeedChangeNekoSettings))
-        builder.setPositiveButton(LocaleController.getString(R.string.OK), null)
+        builder.setTitle(getString(R.string.AppName))
+        builder.setMessage(getString(R.string.NeedChangeNekoSettings))
+        builder.setPositiveButton(getString(R.string.OK), null)
         builder.show()
     }
 }

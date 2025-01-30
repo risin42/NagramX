@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.LocaleController;
+import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.MediaController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
@@ -71,17 +71,17 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final CellGroup cellGroup = new CellGroup(this);
 
     // Sticker Size
-    private final AbstractConfigCell header0 = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("StickerSize")));
+    private final AbstractConfigCell header0 = cellGroup.appendCell(new ConfigCellHeader(getString("StickerSize")));
     private final AbstractConfigCell stickerSizeRow = cellGroup.appendCell(new ConfigCellCustom("StickerSize", ConfigCellCustom.CUSTOM_ITEM_StickerSize, true));
     private final AbstractConfigCell divider0 = cellGroup.appendCell(new ConfigCellDivider());
 
     // Chats
-    private final AbstractConfigCell header1 = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("Chat")));
+    private final AbstractConfigCell header1 = cellGroup.appendCell(new ConfigCellHeader(getString("Chat")));
     private final AbstractConfigCell emojiSetsRow = cellGroup.appendCell(new ConfigCellCustom("EmojiSet", ConfigCellCustom.CUSTOM_ITEM_EmojiSet, true));
     private final AbstractConfigCell unreadBadgeOnBackButton = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.unreadBadgeOnBackButton));
     private final AbstractConfigCell sendCommentAfterForwardRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.sendCommentAfterForward));
-    private final AbstractConfigCell useChatAttachMediaMenuRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useChatAttachMediaMenu, LocaleController.getString("UseChatAttachEnterMenuNotice")));
-    private final AbstractConfigCell disableLinkPreviewByDefaultRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableLinkPreviewByDefault, LocaleController.getString("DisableLinkPreviewByDefaultNotice")));
+    private final AbstractConfigCell useChatAttachMediaMenuRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useChatAttachMediaMenu, getString("UseChatAttachEnterMenuNotice")));
+    private final AbstractConfigCell disableLinkPreviewByDefaultRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableLinkPreviewByDefault, getString("DisableLinkPreviewByDefaultNotice")));
     private final AbstractConfigCell takeGIFasVideoRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.takeGIFasVideo));
     private final AbstractConfigCell showSmallGifRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowSmallGIF()));
     private final AbstractConfigCell showSeconds = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.showSeconds));
@@ -104,16 +104,16 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell disableGlobalSearchRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableGlobalSearch()));
     private final AbstractConfigCell doubleTapActionRow = cellGroup.appendCell(new ConfigCellCustom("DoubleTapAction", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell textStyleRow = cellGroup.appendCell(new ConfigCellSelectBox("TextStyle", null, null, this::showTextStyleAlert));
-    private final AbstractConfigCell disableZalgoSymbolsRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getZalgoFilter(), LocaleController.getString("ZalgoFilterNotice", R.string.ZalgoFilterNotice)));
-    private final AbstractConfigCell quickToggleAnonymousRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getQuickToggleAnonymous(), LocaleController.getString("QuickToggleAnonymousNotice", R.string.QuickToggleAnonymousNotice)));
-    private final AbstractConfigCell showOnlineStatusRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowOnlineStatus(), LocaleController.getString("ShowOnlineStatusNotice", R.string.ShowOnlineStatusNotice)));
+    private final AbstractConfigCell disableZalgoSymbolsRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getZalgoFilter(), getString(R.string.ZalgoFilterNotice)));
+    private final AbstractConfigCell quickToggleAnonymousRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getQuickToggleAnonymous(), getString(R.string.QuickToggleAnonymousNotice)));
+    private final AbstractConfigCell showOnlineStatusRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowOnlineStatus(), getString(R.string.ShowOnlineStatusNotice)));
     private final AbstractConfigCell showRecentOnlineStatusRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowRecentOnlineStatus()));
     private final AbstractConfigCell disableCustomWallpaperUserRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableCustomWallpaperUser()));
     private final AbstractConfigCell disableCustomWallpaperChannelRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableCustomWallpaperChannel()));
     private final AbstractConfigCell dividerChat = cellGroup.appendCell(new ConfigCellDivider());
 
     // Interactions
-    private final AbstractConfigCell headerInteractions = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("InteractionSettings")));
+    private final AbstractConfigCell headerInteractions = cellGroup.appendCell(new ConfigCellHeader(getString("InteractionSettings")));
     private final AbstractConfigCell hideKeyboardOnChatScrollRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.hideKeyboardOnChatScroll));
     private final AbstractConfigCell rearVideoMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.rearVideoMessages));
     private final AbstractConfigCell disableInstantCameraRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableInstantCamera));
@@ -135,13 +135,13 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell doNotUnarchiveBySwipeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDoNotUnarchiveBySwipe()));
     private final AbstractConfigCell disableMarkdownRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableMarkdown()));
     private final AbstractConfigCell showQuickReplyInBotCommandsRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowQuickReplyInBotCommands()));
-    private final AbstractConfigCell disablePreviewVideoSoundShortcutRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisablePreviewVideoSoundShortcut(), LocaleController.getString(R.string.DisablePreviewVideoSoundShortcutNotice)));
+    private final AbstractConfigCell disablePreviewVideoSoundShortcutRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisablePreviewVideoSoundShortcut(), getString(R.string.DisablePreviewVideoSoundShortcutNotice)));
     private final AbstractConfigCell showTimeHintRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTimeHint()));
     private final AbstractConfigCell disableBotOpenButtonRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableBotOpenButton()));
     private final AbstractConfigCell dividerInteractions = cellGroup.appendCell(new ConfigCellDivider());
 
     // Sticker
-    private final AbstractConfigCell headerSticker = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("StickerSettings", R.string.StickerSettings)));
+    private final AbstractConfigCell headerSticker = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.StickerSettings)));
     private final AbstractConfigCell dontSendGreetingStickerRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.dontSendGreetingSticker));
     private final AbstractConfigCell hideTimeForStickerRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.hideTimeForSticker));
     private final AbstractConfigCell stickersOnlyShowReadRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getRealHideTimeForSticker()));
@@ -151,12 +151,12 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell dividerSticker = cellGroup.appendCell(new ConfigCellDivider());
 
     // Reaction
-    private final AbstractConfigCell headerReaction = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("ReactionSettings", R.string.ReactionSettings)));
+    private final AbstractConfigCell headerReaction = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.ReactionSettings)));
     private final AbstractConfigCell disableReactionsWhenSelectingRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableReactionsWhenSelecting));
     private final AbstractConfigCell dividerReaction = cellGroup.appendCell(new ConfigCellDivider());
 
     // Operation Confirmatation
-    private final AbstractConfigCell headerConfirms = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("ConfirmSettings")));
+    private final AbstractConfigCell headerConfirms = cellGroup.appendCell(new ConfigCellHeader(getString("ConfirmSettings")));
     private final AbstractConfigCell skipOpenLinkConfirmRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.skipOpenLinkConfirm));
     private final AbstractConfigCell confirmAVRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.confirmAVMessage));
     private final AbstractConfigCell askBeforeCallRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.askBeforeCall));
@@ -165,11 +165,11 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell dividerConfirms = cellGroup.appendCell(new ConfigCellDivider());
 
     // search tag
-    private final AbstractConfigCell headerSearchTag = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("SavedTagSearchHint")));
+    private final AbstractConfigCell headerSearchTag = cellGroup.appendCell(new ConfigCellHeader(getString("SavedTagSearchHint")));
     private final String[] searchPagesString = new String[]{
-            LocaleController.getString(R.string.SearchThisChat),
-            LocaleController.getString(R.string.SearchMyMessages),
-            LocaleController.getString(R.string.SearchPublicPosts),
+            getString(R.string.SearchThisChat),
+            getString(R.string.SearchMyMessages),
+            getString(R.string.SearchPublicPosts),
     };
     private final AbstractConfigCell searchHashtagDefaultPageChannelRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getSearchHashtagDefaultPageChannel(), searchPagesString, null));
     private final AbstractConfigCell searchHashtagDefaultPageChatRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getSearchHashtagDefaultPageChat(), searchPagesString, null));
@@ -209,8 +209,8 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
 
         ActionBarMenu menu = actionBar.createMenu();
         menuItem = menu.addItem(0, R.drawable.ic_ab_other);
-        menuItem.setContentDescription(LocaleController.getString("AccDescrMoreOptions", R.string.AccDescrMoreOptions));
-        menuItem.addSubItem(1, R.drawable.msg_reset, LocaleController.getString("ResetStickerSize", R.string.ResetStickerSize));
+        menuItem.setContentDescription(getString(R.string.AccDescrMoreOptions));
+        menuItem.addSubItem(1, R.drawable.msg_reset, getString(R.string.ResetStickerSize));
         menuItem.setVisibility(NekoConfig.stickerSize.Float() != 14.0f ? View.VISIBLE : View.GONE);
 
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -273,23 +273,23 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                 } else if (position == cellGroup.rows.indexOf(doubleTapActionRow)) {
                     ArrayList<String> arrayList = new ArrayList<>();
                     ArrayList<Integer> types = new ArrayList<>();
-                    arrayList.add(LocaleController.getString("Disable", R.string.Disable));
+                    arrayList.add(getString(R.string.Disable));
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_NONE);
-                    arrayList.add(LocaleController.getString("SendReactions", R.string.SendReactions));
+                    arrayList.add(getString(R.string.SendReactions));
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_SEND_REACTIONS);
-                    arrayList.add(LocaleController.getString("ShowReactions", R.string.ShowReactions));
+                    arrayList.add(getString(R.string.ShowReactions));
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_SHOW_REACTIONS);
-                    arrayList.add(LocaleController.getString("TranslateMessage", R.string.TranslateMessage));
+                    arrayList.add(getString(R.string.TranslateMessage));
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_TRANSLATE);
-                    arrayList.add(LocaleController.getString("Reply", R.string.Reply));
+                    arrayList.add(getString(R.string.Reply));
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_REPLY);
-                    arrayList.add(LocaleController.getString("AddToSavedMessages", R.string.AddToSavedMessages));
+                    arrayList.add(getString(R.string.AddToSavedMessages));
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_SAVE);
-                    arrayList.add(LocaleController.getString("Repeat", R.string.Repeat));
+                    arrayList.add(getString(R.string.Repeat));
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_REPEAT);
-                    arrayList.add(LocaleController.getString("RepeatAsCopy", R.string.RepeatAsCopy));
+                    arrayList.add(getString(R.string.RepeatAsCopy));
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_REPEAT_AS_COPY);
-                    arrayList.add(LocaleController.getString("Edit", R.string.Edit));
+                    arrayList.add(getString(R.string.Edit));
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_EDIT);
                     PopupBuilder builder = new PopupBuilder(view);
                     builder.setItems(arrayList, (i, str) -> {
@@ -356,7 +356,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
 
     @Override
     public String getTitle() {
-        return LocaleController.getString("Chat", R.string.Chat);
+        return getString(R.string.Chat);
     }
 
     @Override
@@ -406,7 +406,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         }
         Context context = getParentActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(LocaleController.getString("MessageMenu", R.string.MessageMenu));
+        builder.setTitle(getString(R.string.MessageMenu));
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -420,67 +420,67 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             TextCheckCell textCell = new TextCheckCell(context);
             switch (a) {
                 case 0: {
-                    textCell.setTextAndCheck(LocaleController.getString("DeleteDownloadedFile", R.string.DeleteDownloadedFile), NekoConfig.showDeleteDownloadedFile.Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.DeleteDownloadedFile), NekoConfig.showDeleteDownloadedFile.Bool(), false);
                     break;
                 }
                 case 1: {
-                    textCell.setTextAndCheck(LocaleController.getString("CopyPhoto", R.string.CopyPhoto), NaConfig.INSTANCE.getShowCopyPhoto().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.CopyPhoto), NaConfig.INSTANCE.getShowCopyPhoto().Bool(), false);
                     break;
                 }
                 case 2 : {
-                    textCell.setTextAndCheck(LocaleController.getString("NoQuoteForward", R.string.NoQuoteForward), NaConfig.INSTANCE.getShowNoQuoteForward().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.NoQuoteForward), NaConfig.INSTANCE.getShowNoQuoteForward().Bool(), false);
                     break;
                 }
                 case 1 + 2: {
-                    textCell.setTextAndCheck(LocaleController.getString("AddToSavedMessages", R.string.AddToSavedMessages), NekoConfig.showAddToSavedMessages.Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.AddToSavedMessages), NekoConfig.showAddToSavedMessages.Bool(), false);
                     break;
                 }
                 case 2 + 2: {
-                    textCell.setTextAndCheck(LocaleController.getString("Repeat", R.string.Repeat), NekoConfig.showRepeat.Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.Repeat), NekoConfig.showRepeat.Bool(), false);
                     break;
                 }
                 case 3 + 2: {
-                    textCell.setTextAndCheck(LocaleController.getString("RepeatAsCopy", R.string.RepeatAsCopy), NaConfig.INSTANCE.getShowRepeatAsCopy().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.RepeatAsCopy), NaConfig.INSTANCE.getShowRepeatAsCopy().Bool(), false);
                     break;
                 }
                 case 3 + 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("ViewHistory", R.string.ViewHistory), NekoConfig.showViewHistory.Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.ViewHistory), NekoConfig.showViewHistory.Bool(), false);
                     break;
                 }
                 case 4 + 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("Translate", R.string.Translate), NekoConfig.showTranslate.Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.Translate), NekoConfig.showTranslate.Bool(), false);
                     break;
                 }
                 case 5 + 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("ReportChat", R.string.ReportChat), NekoConfig.showReport.Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.ReportChat), NekoConfig.showReport.Bool(), false);
                     break;
                 }
                 case 6 + 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("EditAdminRights", R.string.EditAdminRights), NekoConfig.showAdminActions.Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.EditAdminRights), NekoConfig.showAdminActions.Bool(), false);
                     break;
                 }
                 case 7 + 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("ChangePermissions", R.string.ChangePermissions), NekoConfig.showChangePermissions.Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.ChangePermissions), NekoConfig.showChangePermissions.Bool(), false);
                     break;
                 }
                 case 8 + 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("Hide", R.string.Hide), NekoConfig.showMessageHide.Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.Hide), NekoConfig.showMessageHide.Bool(), false);
                     break;
                 }
                 case 9 + 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("ShareMessages", R.string.ShareMessages), NekoConfig.showShareMessages.Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.ShareMessages), NekoConfig.showShareMessages.Bool(), false);
                     break;
                 }
                 case 10 + 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("MessageDetails", R.string.MessageDetails), NekoConfig.showMessageDetails.Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.MessageDetails), NekoConfig.showMessageDetails.Bool(), false);
                     break;
                 }
                 case 11 + 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("SetReminder", R.string.SetReminder), NaConfig.INSTANCE.getShowSetReminder().Bool(), true);
+                    textCell.setTextAndCheck(getString(R.string.SetReminder), NaConfig.INSTANCE.getShowSetReminder().Bool(), true);
                     break;
                 }
                 case 12 + 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("Reactions", R.string.Reactions), NaConfig.INSTANCE.getShowReactions().Bool(), true);
+                    textCell.setTextAndCheck(getString(R.string.Reactions), NaConfig.INSTANCE.getShowReactions().Bool(), true);
                     break;
                 }
             }
@@ -557,7 +557,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                 }
             });
         }
-        builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), null);
+        builder.setPositiveButton(getString(R.string.OK), null);
         builder.setView(linearLayout);
         showDialog(builder.create());
     }
@@ -569,7 +569,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
 
         Context context = getParentActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(LocaleController.getString("TextStyle", R.string.TextStyle));
+        builder.setTitle(getString(R.string.TextStyle));
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -582,43 +582,43 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             textCell.setTag(a);
             switch (a) {
                 case 0: {
-                    textCell.setTextAndCheck(LocaleController.getString("Bold", R.string.Bold), NaConfig.INSTANCE.getShowTextBold().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.Bold), NaConfig.INSTANCE.getShowTextBold().Bool(), false);
                     break;
                 }
                 case 1: {
-                    textCell.setTextAndCheck(LocaleController.getString("Italic", R.string.Italic), NaConfig.INSTANCE.getShowTextItalic().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.Italic), NaConfig.INSTANCE.getShowTextItalic().Bool(), false);
                     break;
                 }
                 case 2: {
-                    textCell.setTextAndCheck(LocaleController.getString("Mono", R.string.Mono), NaConfig.INSTANCE.getShowTextMono().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.Mono), NaConfig.INSTANCE.getShowTextMono().Bool(), false);
                     break;
                 }
                 case 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("Strike", R.string.Strike), NaConfig.INSTANCE.getShowTextStrikethrough().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.Strike), NaConfig.INSTANCE.getShowTextStrikethrough().Bool(), false);
                     break;
                 }
                 case 4: {
-                    textCell.setTextAndCheck(LocaleController.getString("Underline", R.string.Underline), NaConfig.INSTANCE.getShowTextUnderline().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.Underline), NaConfig.INSTANCE.getShowTextUnderline().Bool(), false);
                     break;
                 }
                 case 5: {
-                    textCell.setTextAndCheck(LocaleController.getString("Spoiler", R.string.Spoiler), NaConfig.INSTANCE.getShowTextSpoiler().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.Spoiler), NaConfig.INSTANCE.getShowTextSpoiler().Bool(), false);
                     break;
                 }
                 case 6: {
-                    textCell.setTextAndCheck(LocaleController.getString("CreateLink", R.string.CreateLink), NaConfig.INSTANCE.getShowTextCreateLink().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.CreateLink), NaConfig.INSTANCE.getShowTextCreateLink().Bool(), false);
                     break;
                 }
                 case 7: {
-                    textCell.setTextAndCheck(LocaleController.getString("CreateMention", R.string.CreateMention), NaConfig.INSTANCE.getShowTextCreateMention().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.CreateMention), NaConfig.INSTANCE.getShowTextCreateMention().Bool(), false);
                     break;
                 }
                 case 8: {
-                    textCell.setTextAndCheck(LocaleController.getString("Regular", R.string.Regular), NaConfig.INSTANCE.getShowTextRegular().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.Regular), NaConfig.INSTANCE.getShowTextRegular().Bool(), false);
                     break;
                 }
                 case 9: {
-                    textCell.setTextAndCheck(LocaleController.getString("Quote", R.string.Quote), NaConfig.INSTANCE.getShowTextQuote().Bool(), false);
+                    textCell.setTextAndCheck(getString(R.string.Quote), NaConfig.INSTANCE.getShowTextQuote().Bool(), false);
                     break;
                 }
             }
@@ -672,7 +672,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             });
 
         }
-        builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), null);
+        builder.setPositiveButton(getString(R.string.OK), null);
         builder.setView(linearLayout);
         showDialog(builder.create());
     }
@@ -709,7 +709,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         }
         Context context = getParentActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(LocaleController.getString("DefaultDeleteMenu", R.string.DefaultDeleteMenu));
+        builder.setTitle(getString(R.string.DefaultDeleteMenu));
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -724,19 +724,19 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             TextCheckCell textCell = new TextCheckCell(context);
             switch (a) {
                 case 0: {
-                    textCell.setTextAndCheck(LocaleController.getString("DeleteBanUsers", R.string.DeleteBanUsers), checks[a], false);
+                    textCell.setTextAndCheck(getString(R.string.DeleteBanUsers), checks[a], false);
                     break;
                 }
                 case 1: {
-                    textCell.setTextAndCheck(LocaleController.getString("DeleteReportSpam", R.string.DeleteReportSpam), checks[a], false);
+                    textCell.setTextAndCheck(getString(R.string.DeleteReportSpam), checks[a], false);
                     break;
                 }
                 case 2 : {
-                    textCell.setTextAndCheck(LocaleController.getString("DeleteAll", R.string.DeleteAll), checks[a], false);
+                    textCell.setTextAndCheck(getString(R.string.DeleteAll), checks[a], false);
                     break;
                 }
                 case 3: {
-                    textCell.setTextAndCheck(LocaleController.getString("DoActionsInCommonGroups", R.string.DoActionsInCommonGroups), checks[a], false);
+                    textCell.setTextAndCheck(getString(R.string.DoActionsInCommonGroups), checks[a], false);
                     break;
                 }
             }
@@ -749,7 +749,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                 textCell.setChecked(checks[tag]);
             });
         }
-        builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), (dialogInterface, i) -> saveDeleteMenuChecks(checks));
+        builder.setPositiveButton(getString(R.string.OK), (dialogInterface, i) -> saveDeleteMenuChecks(checks));
         builder.setView(linearLayout);
         showDialog(builder.create());
     }
@@ -875,9 +875,9 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                     if (holder.itemView instanceof TextSettingsCell) {
                         TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
                         if (position == cellGroup.rows.indexOf(maxRecentStickerCountRow)) {
-                            textCell.setTextAndValue(LocaleController.getString("maxRecentStickerCount", R.string.maxRecentStickerCount), String.valueOf(NekoConfig.maxRecentStickerCount.Int()), true);
+                            textCell.setTextAndValue(getString(R.string.maxRecentStickerCount), String.valueOf(NekoConfig.maxRecentStickerCount.Int()), true);
                         } else if (position == cellGroup.rows.indexOf(doubleTapActionRow)) {
-                            textCell.setTextAndValue(LocaleController.getString("DoubleTapAction", R.string.DoubleTapAction), DoubleTap.doubleTapActionMap.get(NaConfig.INSTANCE.getDoubleTapAction().Int()), true);
+                            textCell.setTextAndValue(getString(R.string.DoubleTapAction), DoubleTap.doubleTapActionMap.get(NaConfig.INSTANCE.getDoubleTapAction().Int()), true);
                         }
                     } else if (view instanceof EmojiSetCell) {
                         EmojiSetCell v1 =  (EmojiSetCell) view;
