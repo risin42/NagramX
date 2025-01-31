@@ -41,6 +41,10 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
         return bindConfig;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public String getKey() {
         return bindConfig == null ? null : bindConfig.getKey();
     }
@@ -51,8 +55,9 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-        if (this.cell != null)
+        if (this.cell != null) {
             this.cell.setEnabled(this.enabled);
+        }
     }
 
     public void setEnabledAndUpdateState(boolean enabled) {

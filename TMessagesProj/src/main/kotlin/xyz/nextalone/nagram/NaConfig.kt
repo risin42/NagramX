@@ -9,6 +9,7 @@ import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.config.ConfigItem
+import tw.nekomimi.nekogram.config.ConfigItemKeyLinked
 import java.io.ByteArrayInputStream
 import java.io.ObjectInputStream
 
@@ -354,6 +355,34 @@ object NaConfig {
             "DefaultDeleteMenu",
             ConfigItem.configTypeInt,
             0
+        )
+    val defaultDeleteMenuBanUsers =
+        addConfig(
+            "DeleteBanUsers",
+            defaultDeleteMenu,
+            3,
+            false
+        )
+    val defaultDeleteMenReportSpam =
+        addConfig(
+            "DeleteReportSpam",
+            defaultDeleteMenu,
+            2,
+            false
+        )
+    val defaultDeleteMenuDeleteAll =
+        addConfig(
+            "DeleteAll",
+            defaultDeleteMenu,
+            1,
+            false
+        )
+    val defaultDeleteMenuDoActionsInCommonGroups =
+        addConfig(
+            "DoActionsInCommonGroups",
+            defaultDeleteMenu,
+            0,
+            false
         )
     val disableSuggestionView =
         addConfig(
@@ -792,6 +821,25 @@ object NaConfig {
         return a
     }
 
+    private fun addConfig(
+        k: String,
+        t: ConfigItem,
+        d: Int,
+        e: Any?
+    ): ConfigItem {
+        val a =
+            ConfigItemKeyLinked(
+                k,
+                t,
+                d,
+                e,
+            )
+        configs.add(
+            a
+        )
+        return a
+    }
+
     fun loadConfig(
         force: Boolean
     ) {
@@ -890,6 +938,10 @@ object NaConfig {
                                 HashMap<Int, Int>()
                         }
                     }
+                }
+                if (o.type == ConfigItem.configTypeBoolLinkInt) {
+                    o as ConfigItemKeyLinked
+                    o.changedFromKeyLinked(preferences.getInt(o.keyLinked.key, 0))
                 }
             }
             configLoaded =
