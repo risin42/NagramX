@@ -51,7 +51,7 @@
     <string name="MessageSavingSaveMediaInPublicGroups">... in Public Groups</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">... in Private Groups</string>
     <string name="TelegramUIAutoTranslate">Translate Entire Chats</string>
-    <string name="TranslatorMode">Single Message Translation Mode</string>
+    <string name="TranslatorMode">Manual Translation Behavior</string>
     <string name="TranslatorModeAppend">Append</string>
     <string name="TranslatorModeInline">Replace</string>
     <string name="TranslatorModePopup">Pop-up</string>

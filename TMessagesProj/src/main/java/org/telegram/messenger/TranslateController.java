@@ -52,6 +52,8 @@ public class TranslateController extends BaseController {
 
     private final Set<Long> translatingDialogs = new HashSet<>();
     private final Set<Long> translatableDialogs = new HashSet<>();
+
+    private final HashMap<Long, Set<Integer>> manualTranslationsList = new HashMap<>();
     private final HashMap<Long, TranslatableDecision> translatableDialogMessages = new HashMap<>();
     private final HashMap<Long, String> translateDialogLanguage = new HashMap<>();
     private final HashMap<Long, String> detectedDialogLanguage = new HashMap<>();
@@ -166,6 +168,7 @@ public class TranslateController extends BaseController {
             cancelTranslations(dialogId);
             notified = true;
         }
+        manualTranslationsList.clear();
         saveTranslatingDialogsCache();
         return notified;
     }
@@ -638,6 +641,7 @@ public class TranslateController extends BaseController {
         keptReplyMessageObjects.clear();
         hideTranslateDialogs.clear();
         loadingTranslations.clear();
+        manualTranslationsList.clear();
     }
 
     private ArrayList<Integer> pendingLanguageChecks = new ArrayList<>();
@@ -914,8 +918,9 @@ public class TranslateController extends BaseController {
         synchronized (this) {
             return messageObject != null &&
                    (loadingTranslations.contains(messageObject.getId()) ||
-                    loadingNonPremiumTranslations.contains(messageObject.getId())) &&
-                   isTranslatingDialog(messageObject.getDialogId());
+                        loadingNonPremiumTranslations.contains(messageObject.getId())) &&
+                   (isTranslatingDialog(messageObject.getDialogId()) ||
+                        isManualTranslated(messageObject));
         }
     }
 
@@ -923,19 +928,21 @@ public class TranslateController extends BaseController {
         if (messageObject == null) {
             return false;
         }
-        if (!isTranslatingDialog(messageObject.getDialogId())) {
-            return false;
-        }
+        // if (!isTranslatingDialog(messageObject.getDialogId())) {
+        //     return false;
+        // }
         synchronized (this) {
-            if (loadingTranslations.contains(messageObject.getId()) ||
-                loadingNonPremiumTranslations.contains(messageObject.getId())) {
-                return true;
+            if (loadingTranslations.contains(messageObject.getId()) || loadingNonPremiumTranslations.contains(messageObject.getId())) {
+                if (isTranslatingDialog(messageObject.getDialogId()) || isManualTranslated(messageObject)) {
+                    return true;
+                }
             }
             if (group != null) {
                 for (MessageObject message : group.messages) {
-                    if (loadingTranslations.contains(message.getId()) ||
-                        loadingNonPremiumTranslations.contains(message.getId())) {
-                        return true;
+                    if (loadingTranslations.contains(message.getId()) || loadingNonPremiumTranslations.contains(message.getId())) {
+                        if (isTranslatingDialog(messageObject.getDialogId()) || isManualTranslated(messageObject)) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -1357,5 +1364,36 @@ public class TranslateController extends BaseController {
             }
         }
         return true;
+    }
+
+    public boolean isManualTranslated(MessageObject messageObject) {
+        if (manualTranslationsList.containsKey(messageObject.getDialogId())) {
+            return Objects.requireNonNull(manualTranslationsList.get(messageObject.getDialogId())).contains(messageObject.getId());
+        }
+        return false;
+    }
+
+    public void addAsManualTranslate(MessageObject messageObject) {
+        if (!manualTranslationsList.containsKey(messageObject.getDialogId())) {
+            manualTranslationsList.put(messageObject.getDialogId(), new HashSet<>());
+        }
+        Objects.requireNonNull(manualTranslationsList.get(messageObject.getDialogId())).add(messageObject.getId());
+    }
+
+    public void removeAsManualTranslate(MessageObject messageObject) {
+        if (manualTranslationsList.containsKey(messageObject.getDialogId())) {
+            Objects.requireNonNull(manualTranslationsList.get(messageObject.getDialogId())).remove(messageObject.getId());
+            if (Objects.requireNonNull(manualTranslationsList.get(messageObject.getDialogId())).isEmpty()) {
+                manualTranslationsList.remove(messageObject.getDialogId());
+            }
+        }
+    }
+
+    public void addAsTranslatingItem(MessageObject messageObject) {
+        loadingTranslations.add(messageObject.getId());
+    }
+
+    public void removeAsTranslatingItem(MessageObject messageObject) {
+        loadingTranslations.remove(messageObject.getId());
     }
 }

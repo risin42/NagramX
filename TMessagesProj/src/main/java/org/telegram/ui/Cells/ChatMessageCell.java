@@ -14564,7 +14564,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             firstVisibleBlockNum = 0;
             lastVisibleBlockNum = textLayoutBlocks.size();
         }
-
         boolean translating = MessagesController.getInstance(currentAccount).getTranslateController().isTranslating(getMessageObject());
         if (!origin == (currentMessageObject != null && currentMessageObject.translated)) {
             if (translationLoadingFloat == null) {

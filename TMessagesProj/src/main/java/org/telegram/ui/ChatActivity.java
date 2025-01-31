@@ -19074,6 +19074,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         (shareItem != null && shareItem.getVisibility() == View.VISIBLE ? 1 : 0)
                     ) < 4 ? View.VISIBLE : View.GONE);
                 }
+
+                if (actionModeOtherItem != null) {
+                    final TranslateController translateController = getMessagesController().getTranslateController();
+                    actionModeOtherItem.setSubItemVisibility(nkbtn_translate, !translateController.isTranslatingDialog(messageObject.getDialogId()));
+                }
             }
         }
         updateSelectedMessageReactions();
@@ -30684,7 +30689,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                     }
                                 }
                             }
-                            if (NekoConfig.showTranslate.Bool()) {
+                            final TranslateController translateController = getMessagesController().getTranslateController();
+                            if (NekoConfig.showTranslate.Bool() && !translateController.isTranslatingDialog(selectedObject.getDialogId())) {
                                 if (messageObject != null || docsWithMessages) {
                                     boolean td;
                                     if (messageObject != null) {
@@ -30891,7 +30897,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 }
                             }
                         }
-                        if (NekoConfig.showTranslate.Bool()) {
+                        final TranslateController translateController = getMessagesController().getTranslateController();
+                        if (NekoConfig.showTranslate.Bool() && !translateController.isTranslatingDialog(selectedObject.getDialogId())) {
                             if (messageObject != null || docsWithMessages) {
                                 boolean td;
                                 if (messageObject != null) {

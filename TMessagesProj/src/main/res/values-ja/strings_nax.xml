@@ -48,7 +48,7 @@
     <string name="MessageSavingSaveMediaInPublicGroups">パブリックグループでメディアを保存</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">プライベートグループでメディアを保存</string>
     <string name="TelegramUIAutoTranslate">チャット全体を翻訳</string>
-    <string name="TranslatorMode">単一メッセージ翻訳モード</string>
+    <string name="TranslatorMode">手動翻訳表示タイプ</string>
     <string name="TranslatorModeAppend">追加</string>
     <string name="TranslatorModeInline">置換</string>
     <string name="TranslatorModePopup">ポップアップ</string>
