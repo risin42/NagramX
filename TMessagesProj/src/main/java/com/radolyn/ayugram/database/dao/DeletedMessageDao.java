@@ -27,7 +27,11 @@ public interface DeletedMessageDao {
 
     @Transaction
     @Query("SELECT * FROM deletedmessage WHERE userId = :userId AND dialogId = :dialogId AND topicId = :topicId AND :startId <= messageId AND messageId <= :endId ORDER BY messageId LIMIT :limit")
-    List<DeletedMessageFull> getMessages(long userId, long dialogId, long topicId, int startId, int endId, int limit);
+    List<DeletedMessageFull> getMessages(long userId, long dialogId, long topicId, long startId, long endId, int limit);
+
+    @Transaction
+    @Query("SELECT * FROM deletedmessage WHERE userId = :userId AND dialogId = :dialogId AND replyMessageId = :threadMessageId AND :startId <= messageId AND messageId <= :endId ORDER BY messageId LIMIT :limit")
+    List<DeletedMessageFull> getThreadMessages(long userId, long dialogId, long threadMessageId, long startId, long endId, int limit);
 
     @Transaction
     @Query("SELECT * FROM deletedmessage WHERE userId = :userId AND dialogId = :dialogId AND groupedId = :groupedId ORDER BY messageId")

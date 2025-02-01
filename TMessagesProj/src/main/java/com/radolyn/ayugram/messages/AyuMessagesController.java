@@ -212,8 +212,12 @@ public class AyuMessagesController {
         return deletedMessageDao.getMessage(userId, dialogId, messageId);
     }
 
-    public List<DeletedMessageFull> getMessages(long userId, long dialogId, long topicId, int startId, int endId, int limit) {
+    public List<DeletedMessageFull> getMessages(long userId, long dialogId, long topicId, long startId, long endId, int limit) {
         return deletedMessageDao.getMessages(userId, dialogId, topicId, startId, endId, limit);
+    }
+
+    public List<DeletedMessageFull> getThreadMessages(long userId, long dialogId, long threadMessageId, long startId, long endId, int limit) {
+        return deletedMessageDao.getThreadMessages(userId, dialogId, threadMessageId, startId, endId, limit);
     }
 
     public List<DeletedMessageFull> getMessagesGrouped(long userId, long dialogId, long groupedId) {
