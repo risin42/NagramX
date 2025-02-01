@@ -1,9 +1,9 @@
 package tw.nekomimi.nekogram.settings;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,13 +11,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.text.TextPaint;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,10 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.LocaleController;
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.NotificationsService;
@@ -38,8 +34,6 @@ import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarLayout;
-import org.telegram.ui.ActionBar.AlertDialog;
-import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.INavigationLayout;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ActionBar.ThemeDescription;
@@ -60,21 +54,25 @@ import org.telegram.ui.Components.UndoView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import cn.hutool.core.util.StrUtil;
 import kotlin.Unit;
-import tw.nekomimi.nekogram.ui.BottomBuilder;
+import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
-import tw.nekomimi.nekogram.ui.PopupBuilder;
+import tw.nekomimi.nekogram.config.CellGroup;
+import tw.nekomimi.nekogram.config.ConfigItem;
+import tw.nekomimi.nekogram.config.cell.AbstractConfigCell;
+import tw.nekomimi.nekogram.config.cell.ConfigCellCustom;
+import tw.nekomimi.nekogram.config.cell.ConfigCellDivider;
+import tw.nekomimi.nekogram.config.cell.ConfigCellHeader;
+import tw.nekomimi.nekogram.config.cell.ConfigCellSelectBox;
+import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck;
+import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
+import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
 import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
-import tw.nekomimi.nekogram.utils.AlertUtil;
-import tw.nekomimi.nekogram.config.ConfigItem;
-import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.config.CellGroup;
-import tw.nekomimi.nekogram.config.cell.AbstractConfigCell;
-import tw.nekomimi.nekogram.config.cell.*;
+import tw.nekomimi.nekogram.ui.BottomBuilder;
+import tw.nekomimi.nekogram.ui.PopupBuilder;
 import xyz.nextalone.nagram.NaConfig;
 
 @SuppressLint("RtlHardcoded")
@@ -97,7 +95,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell divider0 = cellGroup.appendCell(new ConfigCellDivider());
 
     private final AbstractConfigCell headerTranslation = cellGroup.appendCell(new ConfigCellHeader(getString("Translate")));
-    private final AbstractConfigCell translationProviderRow = cellGroup.appendCell(new ConfigCellCustom("TranslationProvider", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
+    private final AbstractConfigCell translationProviderRow = cellGroup.appendCell(new ConfigCellCustom(NekoConfig.translationProvider.getKey(), CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell translatorModeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getTranslatorMode(),
         new String[]{
                 getString(R.string.TranslatorModeAppend),
@@ -358,6 +356,15 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             } else if (a instanceof ConfigCellCustom) { // Custom OnClick
                 if (position == cellGroup.rows.indexOf(translationProviderRow)) {
                     showProviderSelectionPopup(view, NekoConfig.translationProvider, () -> {
+                        if (NekoConfig.translationProvider.Int() == Translator.providerTelegram) {
+                            boolean isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
+                            boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
+                            if (isAutoTranslateEnabled && !isRealPremium) {
+                                NaConfig.INSTANCE.getTelegramUIAutoTranslate().setConfigBool(false);
+                                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useTelegramUIAutoTranslateRow));
+                                BulletinFactory.of(this).createSimpleBulletin(R.raw.info, getString(R.string.TelegramUIAutoTranslateTips)).show();
+                            }
+                        }
                         listAdapter.notifyItemChanged(position);
                     });
                 } else if (position == cellGroup.rows.indexOf(articletranslationProviderRow)) {
@@ -517,6 +524,15 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useProxyItemRow));
             } else if (key.equals(NekoConfig.hideAllTab.getKey())) {
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
+            } else if (key.equals(NaConfig.INSTANCE.getTelegramUIAutoTranslate().getKey())) {
+                boolean enabled = (Boolean) newValue;
+                if (enabled && NekoConfig.translationProvider.Int() == Translator.providerTelegram) {
+                    boolean isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
+                    boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
+                    if (isAutoTranslateEnabled && !isRealPremium) {
+                        BulletinFactory.of(this).createSimpleBulletin(R.raw.info, getString(R.string.TelegramUIAutoTranslateTips)).show();
+                    }
+                }
             }
         };
 

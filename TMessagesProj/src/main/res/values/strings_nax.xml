@@ -57,4 +57,5 @@
     <string name="TranslatorModePopup">Pop-up</string>
     <string name="Translated">Translated</string>
     <string name="ProviderRealMicrosoftTranslator">Microsoft Translator</string>
+    <string name="TelegramUIAutoTranslateTips">Telegram API translation for Translate Entire Chats requires a valid Telegram Premium</string>
 </resources>
