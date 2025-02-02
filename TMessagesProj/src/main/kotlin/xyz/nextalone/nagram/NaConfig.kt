@@ -725,6 +725,18 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
+    val llmSystemPrompt =
+        addConfig(
+            "LlmSystemPrompt",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmUserPrompt =
+        addConfig(
+            "LlmUserPrompt",
+            ConfigItem.configTypeString,
+            ""
+        )
     val translucentDeletedMessages =
         addConfig(
             "TranslucentDeletedMessages",

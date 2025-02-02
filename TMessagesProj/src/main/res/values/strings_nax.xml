@@ -24,7 +24,7 @@
     <string name="AITranslatorSettings">AI Translator Settings</string>
     <string name="TranslucentDeletedMessages">Translucent Deleted Messages</string>
     <string name="ArticleTranslationProvider">Article Translation Provider</string>
-    <string name="EnableSeparateArticleTranslator">Use a Different Provider for Article Translation</string>
+    <string name="EnableSeparateArticleTranslator">Use a Different Provider for Article</string>
     <string name="DisableCrashlyticsCollection">Disable Firebase Crashlytics</string>
     <string name="ShowStickersRowToplevel">Show Stickers in Main Settings</string>
     <string name="HideShareButtonInChannel">Hide Side \"Share\" Button</string>
@@ -59,4 +59,8 @@
     <string name="ProviderRealMicrosoftTranslator">Microsoft Translator</string>
     <string name="TelegramUIAutoTranslateTips">Telegram API translation for Translate Entire Chats requires a valid Telegram Premium</string>
     <string name="TranslatorSettings">Translator</string>
+    <string name="LlmSystemPrompt">System Prompt</string>
+    <string name="LlmSystemPromptNotice">Define the AI\'s role and instructions.\n\nThis prompt sets the tone, personality, and limitations for the AI. Consider describing what type of assistant the AI should be.\n\nCan be left empty to not set this property.</string>
+    <string name="LlmUserPrompt">User Prompt</string>
+    <string name="LlmUserPromptNotice">Use @text as a placeholder for the original message, and @toLang for the target language (optional).\n\nExample: \'Translate @text to @toLang without any explanation.\'\n\nLeaving this blank will use the default prompt.</string>
 </resources>

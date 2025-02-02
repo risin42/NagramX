@@ -8,6 +8,7 @@ import kotlin.random.Random
 import kotlinx.coroutines.delay
 import org.json.JSONArray
 import org.json.JSONObject
+import org.telegram.messenger.BuildVars
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.transtale.Translator
@@ -34,11 +35,11 @@ object LLMTranslator : Translator {
                     break
                 }
 
-                Log.w("LLMTranslator", "Rate limited, retrying in ${actualWaitTimeMillis}ms, retry count: $retryCount")
+                if (BuildVars.LOGS_ENABLED) Log.w("LLMTranslator", "Rate limited, retrying in ${actualWaitTimeMillis}ms, retry count: $retryCount")
                 delay(actualWaitTimeMillis)
             }
         }
-        Log.w("LLMTranslator", "Max retry count reached, falling back to GoogleAppTranslator")
+        if (BuildVars.LOGS_ENABLED) Log.w("LLMTranslator", "Max retry count reached, falling back to GoogleAppTranslator")
         return GoogleAppTranslator.doTranslate(from, to, query)
     }
 
@@ -52,13 +53,31 @@ object LLMTranslator : Translator {
 
         val model = NaConfig.llmModelName.String().takeIf { it.isNotEmpty() } ?: getString(R.string.LlmModelNameDefault)
 
-        val generatedPrompt = generatePrompt(query, to)
+        val sysPrompt = NaConfig.llmSystemPrompt.String().orEmpty()
+
+        val userCustomPrompt = NaConfig.llmUserPrompt.String().orEmpty()
+
+        val userPrompt = if (userCustomPrompt.isNotEmpty()) {
+            userCustomPrompt
+                .replace("@text", query)
+                .replace("@toLang", to)
+        } else {
+            generatePrompt(query, to)
+        }
+
         val messages = JSONArray().apply {
+            if (sysPrompt.isNotEmpty()) {
+                put(JSONObject().apply {
+                    put("role", "system")
+                    put("content", sysPrompt)
+                })
+            }
             put(JSONObject().apply {
                 put("role", "user")
-                put("content", generatedPrompt)
+                put("content", userPrompt)
             })
         }
+        if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "Requesting LLM API with model: $model, messages: $messages")
 
         val response = HttpUtil.createPost("$apiUrl/chat/completions")
             .header("Authorization", "Bearer $apiKey")
@@ -71,6 +90,7 @@ object LLMTranslator : Translator {
                 }.toString()
             )
             .execute()
+        if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "LLM API response: ${response.status} : ${response.body()}")
 
         if (response.status == 429) {
             throw RateLimitException("LLM API rate limit exceeded")
@@ -87,7 +107,7 @@ object LLMTranslator : Translator {
         return content
     }
 
-    fun generatePrompt(query: String, to: String): String {
+    private fun generatePrompt(query: String, to: String): String {
         return """
             Translate the following text from its original language to $to.
             If the text contains code snippets, provide the translated text and briefly explain the function or purpose of the code in $to.
