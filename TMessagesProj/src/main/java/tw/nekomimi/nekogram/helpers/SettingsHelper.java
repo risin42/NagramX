@@ -113,6 +113,8 @@ public class SettingsHelper {
         fragments.add(new NekoGeneralSettingsActivity());
         fragments.add(new NekoChatSettingsActivity());
         fragments.add(new NekoExperimentalSettingsActivity());
+        fragments.add(new NekoTranslatorSettingsActivity());
+
         String n_title = getString(R.string.NekoSettings);
         for (BaseNekoXSettingsActivity fragment: fragments) {
             int uid = fragment.getBaseGuid();
