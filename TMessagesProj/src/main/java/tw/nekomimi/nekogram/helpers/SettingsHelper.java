@@ -22,6 +22,7 @@ import tw.nekomimi.nekogram.settings.NekoExperimentalSettingsActivity;
 import tw.nekomimi.nekogram.settings.NekoGeneralSettingsActivity;
 import tw.nekomimi.nekogram.settings.NekoPasscodeSettingsActivity;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
+import tw.nekomimi.nekogram.settings.NekoTranslatorSettingsActivity;
 
 public class SettingsHelper {
 
@@ -62,6 +63,11 @@ public class SettingsHelper {
                 case "general":
                 case "g":
                     fragment = nekox_fragment = new NekoGeneralSettingsActivity();
+                    break;
+                case "translator":
+                case "translate":
+                case "t":
+                    fragment = nekox_fragment = new NekoTranslatorSettingsActivity();
                     break;
                 case "send_logs":
                     sendLogs(activity, false);
