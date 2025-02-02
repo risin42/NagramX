@@ -55,4 +55,5 @@
     <string name="Translated">翻訳済み</string>
     <string name="ProviderRealMicrosoftTranslator">Microsoft 翻訳</string>
     <string name="TelegramUIAutoTranslateTips">チャット全体を翻訳に Telegram API を使用するには、Telegram Premium が必要です</string>
+    <string name="TranslatorSettings">翻訳</string>
 </resources>

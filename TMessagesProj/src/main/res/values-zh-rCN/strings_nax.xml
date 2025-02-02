@@ -55,4 +55,5 @@
     <string name="Translated">已翻译</string>
     <string name="ProviderRealMicrosoftTranslator">微软翻译</string>
     <string name="TelegramUIAutoTranslateTips">Telegram API 仅在账户为有效的 Telegram Premium 时可用于自动翻译</string>
+    <string name="TranslatorSettings">翻译</string>
 </resources>

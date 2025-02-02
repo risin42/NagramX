@@ -233,6 +233,7 @@ public class NekoSettingsActivity extends BaseFragment {
 
         private int rowCount;
         private int generalRow = -1;
+        private int translatorRow = -1;
         private int chatRow = -1;
         private int passcodeRow = -1;
         private int experimentRow = -1;
@@ -318,6 +319,8 @@ public class NekoSettingsActivity extends BaseFragment {
                                 textCell.setTextAndIcon(getString(R.string.Chat), R.drawable.msg_discussion, true);
                             } else if (position == generalRow) {
                                 textCell.setTextAndIcon(getString(R.string.General), R.drawable.msg_theme, true);
+                            } else if (position == translatorRow) {
+                                textCell.setTextAndIcon(getString(R.string.TranslatorSettings), R.drawable.ic_translate, true);
                             } else if (position == passcodeRow) {
                                 textCell.setTextAndIcon(getString(R.string.PasscodeNeko), R.drawable.msg_permissions, true);
                             } else if (position == experimentRow) {
@@ -355,7 +358,7 @@ public class NekoSettingsActivity extends BaseFragment {
                         return VIEW_TYPE_BOTTOM;
                     } else if (position == importRow) {
                         return VIEW_TYPE_HEADER;
-                    } else if (position == chatRow || position == generalRow || position == passcodeRow || position == experimentRow) {
+                    } else if (position == chatRow || position == generalRow || position == passcodeRow || position == experimentRow || position == translatorRow) {
                         return VIEW_TYPE_TEXT;
                     }
                     return VIEW_TYPE_TEXT_LINK;
@@ -370,6 +373,8 @@ public class NekoSettingsActivity extends BaseFragment {
                     presentFragment(new NekoPasscodeSettingsActivity());
                 } else if (position == experimentRow) {
                     presentFragment(new NekoExperimentalSettingsActivity());
+                } else if (position == translatorRow) {
+                    presentFragment(new NekoTranslatorSettingsActivity());
                 } else if (position == xChannelRow) {
                     MessagesController.getInstance(currentAccount).openByUserName("NagramX", NekoSettingsActivity.this, 1);
                 } else if (position == channelRow) {
@@ -401,6 +406,7 @@ public class NekoSettingsActivity extends BaseFragment {
             rowCount = 0;
             if (type == PAGE_TYPE) {
                 generalRow = rowCount++;
+                translatorRow = rowCount++;
                 chatRow = rowCount++;
                 if (!PasscodeHelper.isSettingsHidden()) {
                     passcodeRow = rowCount++;
