@@ -14927,7 +14927,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         filter.neverShow.add(selectedDialogs.get(a));
                         filter.alwaysShow.remove(selectedDialogs.get(a));
                     }
-                    FilterCreateActivity.saveFilterToServer(filter, filter.flags, filter.emoticon, filter.name, null, false, filter.color, filter.alwaysShow, filter.neverShow, filter.pinnedDialogs, false, false, true, true, false, ProfileActivity.this, null);
+                    FilterCreateActivity.saveFilterToServer(filter, filter.flags, filter.emoticon, filter.name, filter.entities, filter.title_noanimate, filter.color, filter.alwaysShow, filter.neverShow, filter.pinnedDialogs, false, false, true, true, false, ProfileActivity.this, null);
                     long did;
                     if (selectedDialogs.size() == 1) {
                         did = selectedDialogs.get(0);
@@ -14944,7 +14944,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                             filter.neverShow.remove(alwaysShow.get(a));
                         }
                         filter.alwaysShow.addAll(alwaysShow);
-                        FilterCreateActivity.saveFilterToServer(filter, filter.flags, filter.emoticon, filter.name, null, false, filter.color, filter.alwaysShow, filter.neverShow, filter.pinnedDialogs, false, false, true, true, false, ProfileActivity.this, null);
+                        FilterCreateActivity.saveFilterToServer(filter, filter.flags, filter.emoticon, filter.name, filter.entities, filter.title_noanimate, filter.color, filter.alwaysShow, filter.neverShow, filter.pinnedDialogs, false, false, true, true, false, ProfileActivity.this, null);
                     }
                     long did;
                     if (alwaysShow.size() == 1) {
