@@ -543,6 +543,9 @@ public class NekoSettingsActivity extends BaseFragment {
             if (filterSensitive && key.endsWith("Key")) {
                 continue;
             }
+            if (key.endsWith("Prompt")) {
+                continue;
+            }
             if (filter != null && !filter.apply(key)) continue;
             if (entry.getValue() instanceof Long) {
                 key = key + "_long";
