@@ -2949,7 +2949,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                         }
                         if (message != null) {
                             lastSendState = message.messageOwner.send_state;
-}
+                        }
                     }
                 } else {
                     unreadCount = 0;

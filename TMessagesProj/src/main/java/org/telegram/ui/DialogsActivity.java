@@ -4535,7 +4535,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                         searchItem.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
                     }
                 }
-@Override
+
+                @Override
                 public void onButtonClicked(DialogCell dialogCell) {
                     if (dialogCell.getMessage() != null) {
                         TLRPC.TL_forumTopic topic = getMessagesController().getTopicsController().findTopic(-dialogCell.getDialogId(), MessageObject.getTopicId(currentAccount, dialogCell.getMessage().messageOwner, true));

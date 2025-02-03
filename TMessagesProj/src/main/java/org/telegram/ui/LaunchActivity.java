@@ -6487,7 +6487,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
-
        if (requestCode == SCREEN_CAPTURE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 VoIPService service = VoIPService.getSharedInstance();
@@ -6602,10 +6601,11 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             }
             if (AndroidUtilities.isTablet()) {
                 if (rightActionBarLayout != null) {
-                rightActionBarLayout.onPause();
-            }
-            if (layersActionBarLayout != null) {
-                layersActionBarLayout.onPause();}
+                    rightActionBarLayout.onPause();
+                }
+                if (layersActionBarLayout != null) {
+                    layersActionBarLayout.onPause();
+                }
             }
             if (passcodeDialog != null) {
                 passcodeDialog.passcodeView.onPause();
@@ -8031,8 +8031,8 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             if (SearchTagsList.onBackPressedRenameTagAlert()) {
                 return;
             } else if (ContentPreviewViewer.hasInstance() && ContentPreviewViewer.getInstance().isVisible()) {
-            ContentPreviewViewer.getInstance().closeWithMenu();
-        } if (SecretMediaViewer.hasInstance() && SecretMediaViewer.getInstance().isVisible()) {
+                ContentPreviewViewer.getInstance().closeWithMenu();
+            } else if (SecretMediaViewer.hasInstance() && SecretMediaViewer.getInstance().isVisible()) {
                 SecretMediaViewer.getInstance().closePhoto(true, false);
             } else if (PhotoViewer.hasInstance() && PhotoViewer.getInstance().isVisible()) {
                 PhotoViewer.getInstance().closePhoto(true, false);
@@ -8044,7 +8044,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 if (layersActionBarLayout != null && layersActionBarLayout.getView().getVisibility() == View.VISIBLE) {
                     layersActionBarLayout.onBackPressed();
                 } else if (rightActionBarLayout != null) {
-
                     if (rightActionBarLayout.getView().getVisibility() == View.VISIBLE && !rightActionBarLayout.getFragmentStack().isEmpty()) {
                         BaseFragment lastFragment = rightActionBarLayout.getFragmentStack().get(rightActionBarLayout.getFragmentStack().size() - 1);
                         if (lastFragment.onBackPressed()) {
