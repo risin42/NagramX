@@ -797,6 +797,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             0
         )
+    val centerActionBarTitleType =
+        addConfig(
+            "CenterActionBarTitleType",
+            ConfigItem.configTypeInt,
+            1 // 0: off; 1: always on; 2: settings only; 3: chats only
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
 

@@ -181,7 +181,13 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell header_chatblur = cellGroup.appendCell(new ConfigCellHeader(getString("ChatBlurAlphaValue")));
     private final AbstractConfigCell chatBlurAlphaValueRow = cellGroup.appendCell(new ConfigCellCustom("ChatBlurAlphaValue", ConfigCellCustom.CUSTOM_ITEM_CharBlurAlpha, NekoConfig.forceBlurInChat.Bool()));
     private final AbstractConfigCell disableDialogsFloatingButtonRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableDialogsFloatingButton()));
-    private final AbstractConfigCell centerActionBarTitleRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getCenterActionBarTitle()));
+    // private final AbstractConfigCell centerActionBarTitleRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getCenterActionBarTitle()));
+    private final AbstractConfigCell centerActionBarTitleRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getCenterActionBarTitleType(), new String[]{
+        getString(R.string.Disable),
+        getString(R.string.Enable),
+        getString(R.string.SettingsOnly),
+        getString(R.string.ChatsOnly)
+    }, null));
     private final AbstractConfigCell hidePremiumSectionRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHidePremiumSection()));
     private final AbstractConfigCell hideHelpSectionRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideHelpSection()));
     private final AbstractConfigCell showStickersRowToplevelRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowStickersRowToplevel()));
@@ -232,6 +238,10 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell dividerAutoDownload = cellGroup.appendCell(new ConfigCellDivider());
 
     public NekoGeneralSettingsActivity() {
+        if (!NaConfig.INSTANCE.getCenterActionBarTitle().Bool()) {
+            NaConfig.INSTANCE.getCenterActionBarTitleType().setConfigInt(0);
+        }
+
         addRowsToMap(cellGroup);
     }
 
@@ -423,6 +433,9 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useProxyItemRow));
             } else if (key.equals(NekoConfig.hideAllTab.getKey())) {
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
+            } else if (key.equals(NaConfig.INSTANCE.getCenterActionBarTitleType().getKey())) {
+                int value = (int) newValue;
+                NaConfig.INSTANCE.getCenterActionBarTitle().setConfigBool(value != 0);
             }
         };
 

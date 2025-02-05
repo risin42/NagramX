@@ -108,7 +108,7 @@
     <string name="DisableClickCommandToSend">ボットコマンドを送信する前に確認</string>
     <string name="DisableDialogsFloatingButton">チャットのフローティングボタンを無効にする</string>
     <string name="DisableFlagSecure">FLAG_SECURE を無効にする</string>
-    <string name="CenterActionBarTitle">アクションバーのタイトルを中央揃えにする</string>
+    <string name="CenterActionBarTitleType">タイトルを中央揃えにする</string>
     <string name="ShowQuickReplyInBotCommands">ボットコマンドでクイック返信を表示</string>
     <string name="PushServiceType">通知プッシュサービス</string>
     <string name="PushServiceTypeInApp">内蔵</string>

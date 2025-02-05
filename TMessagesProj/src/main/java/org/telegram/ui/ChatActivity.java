@@ -4093,6 +4093,31 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             protected void openSearch() {
                 openSearchWithText(isSupportedTags() ? "" : null);
             }
+
+            @Override
+            protected boolean onAvatarClick() {
+                if (isTitleCentered()) {
+                    if (editTextItem != null && editTextItem.getView() != null && editTextItem.getView().getVisibility() == VISIBLE) {
+                        editTextItem.getView().performClick();
+                        return true;
+                    }
+
+                    getHeaderItem().performClick();
+                    return true;
+                }
+
+                return super.onAvatarClick();
+            }
+
+            @Override
+            protected boolean isCentered() {
+                return isTitleCentered();
+            }
+
+            @Override
+            protected boolean isPreviewMode() {
+                return isInPreviewMode();
+            }
         };
         avatarContainer.allowShorterStatus = true;
         avatarContainer.premiumIconHiddable = true;
@@ -4160,6 +4185,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
 
         ActionBarMenu menu = actionBar.createMenu();
+        menu.setCenteredTitle(isTitleCentered());
 
         if (isThreadChat() && threadMessageId != 0 && !isTopic) {
             viewInChatItem = menu.addItem(nkbtn_view_in_chat, R.drawable.msg_viewreplies);
@@ -4183,7 +4209,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             searchItemVisible = false;
         }
 
-        if (chatMode == 0 && (threadMessageId == 0 || isTopic) && !UserObject.isReplyUser(currentUser) && !isReport()) {
+        if (chatMode == 0 && (threadMessageId == 0 || isTopic) && !UserObject.isReplyUser(currentUser) && !isReport() && !isTitleCentered()) {
             TLRPC.UserFull userFull = null;
             if (currentUser != null) {
                 audioCallIconItem = menu.lazilyAddItem(call, R.drawable.ic_call, themeDelegate);
@@ -17714,13 +17740,14 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else {
                     showSearchAsIcon = false;
                 }
+                showSearchAsIcon = showSearchAsIcon && !isTitleCentered();
                 if (showSearchAsIcon || showAudioCallAsIcon) {
                     if (avatarContainer != null && avatarContainer.getLayoutParams() != null) {
-                        ((ViewGroup.MarginLayoutParams) avatarContainer.getLayoutParams()).rightMargin = AndroidUtilities.dp(chatMode == MODE_SAVED ? 40 : 96);
+                        ((ViewGroup.MarginLayoutParams) avatarContainer.getLayoutParams()).rightMargin = isTitleCentered() ? 0 : AndroidUtilities.dp(chatMode == MODE_SAVED ? 40 : 96);
                     }
                 } else {
                     if (avatarContainer != null && avatarContainer.getLayoutParams() != null) {
-                        ((ViewGroup.MarginLayoutParams) avatarContainer.getLayoutParams()).rightMargin = AndroidUtilities.dp(40);
+                        ((ViewGroup.MarginLayoutParams) avatarContainer.getLayoutParams()).rightMargin = isTitleCentered() ? 0 : AndroidUtilities.dp(40);
                     }
                 }
                 if (showSearchAsIcon) {
@@ -28969,7 +28996,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (avatarContainer != null) {
             avatarContainer.setOccupyStatusBar(!value);
             avatarContainer.setTitleExpand(showAudioCallAsIcon);
-            avatarContainer.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT, !value ? 56 : (chatMode == MODE_PINNED ? 10 : 0), 0, 40, 0));
+            avatarContainer.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT, !value ? 56 : (chatMode == MODE_PINNED ? 10 : 0), 0, isTitleCentered() ? 0 : 40, 0));
         }
         if (chatActivityEnterView != null) {
             chatActivityEnterView.setVisibility(!value ? View.VISIBLE : View.INVISIBLE);
@@ -44054,4 +44081,30 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         return -1;
     }
+
+    // --- NagramX Start---
+    private boolean isTitleCentered() {
+        return canShowCenteredTitle(this);
+    }
+
+    private boolean canShowCenteredTitle(ChatActivity parentFragment) {
+        if (!NaConfig.INSTANCE.getCenterActionBarTitle().Bool()) {
+            return false;
+        }
+        if (NaConfig.INSTANCE.getCenterActionBarTitleType().Int() == 2) {
+            return false;
+        }
+        if (parentFragment == null) {
+            return false;
+        }
+        if (parentFragment.isReplyChatComment() || parentFragment.isReport()) {
+            return false;
+        }
+        return parentFragment.getChatMode() != ChatActivity.MODE_SEARCH && parentFragment.getChatMode() != ChatActivity.MODE_SAVED;
+    }
+
+    private boolean canShowCenteredTitle(ChatActivity.ChatActivityFragmentView parentFragment) {
+        return canShowCenteredTitle(parentFragment.getChatActivity());
+    }
+    // --- NagramX End---
 }

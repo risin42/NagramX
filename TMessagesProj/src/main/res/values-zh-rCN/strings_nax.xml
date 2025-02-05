@@ -60,4 +60,6 @@
     <string name="LlmSystemPromptNotice">定义 AI 的角色和行为。\n\n此提示设置 AI 的语调、个性和限制。考虑描述 AI 应该成为什么样的助手。\n\n可以留空不设置此参数。</string>
     <string name="LlmUserPrompt">用户提示词</string>
     <string name="LlmUserPromptNotice">使用 @text 作为原始消息的占位符，使用 @toLang 作为目标语言的占位符（可选）。\n\n例如：\'将 @text 翻译成 @toLang 无需任何解释。\'\n\n留空将使用默认提示词。</string>
+    <string name="SettingsOnly">仅设置</string>
+    <string name="ChatsOnly">仅聊天</string>
 </resources>
