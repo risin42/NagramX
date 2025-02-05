@@ -258,11 +258,13 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
         titleTextView.setEllipsizeByGradient(true);
         titleTextView.setTextColor(getThemedColor(Theme.key_actionBarDefaultTitle));
         titleTextView.setTextSize(18);
-        titleTextView.setGravity(Gravity.LEFT);
+        titleTextView.setGravity(isCentered() ? Gravity.CENTER_HORIZONTAL : Gravity.LEFT);
         titleTextView.setTypeface(AndroidUtilities.bold());
         titleTextView.setLeftDrawableTopPadding(-dp(1.3f));
         titleTextView.setCanHideRightDrawable(false);
-        titleTextView.setRightDrawableOutside(true);
+        //titleTextView.setRightDrawableOutside(true);
+        titleTextView.setRightDrawableOutside(!isCentered());
+        titleTextView.setScrollNonFitText(isCentered());
         titleTextView.setPadding(0, dp(6), 0, dp(12));
         addView(titleTextView);
 
@@ -273,8 +275,8 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
             animatedSubtitleTextView.setTextColor(getThemedColor(Theme.key_actionBarDefaultSubtitle));
             animatedSubtitleTextView.setTag(Theme.key_actionBarDefaultSubtitle);
             animatedSubtitleTextView.setTextSize(dp(14));
-            animatedSubtitleTextView.setGravity(Gravity.LEFT);
-            animatedSubtitleTextView.setPadding(0, 0, dp(10), 0);
+            animatedSubtitleTextView.setGravity(isCentered() ? Gravity.CENTER_HORIZONTAL : Gravity.LEFT);
+            animatedSubtitleTextView.setPadding(0, 0, isCentered() ? 0 : dp(10), 0);
             animatedSubtitleTextView.setTranslationY(-dp(1));
             addView(animatedSubtitleTextView);
         } else {
@@ -283,8 +285,8 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
             subtitleTextView.setTextColor(getThemedColor(Theme.key_actionBarDefaultSubtitle));
             subtitleTextView.setTag(Theme.key_actionBarDefaultSubtitle);
             subtitleTextView.setTextSize(14);
-            subtitleTextView.setGravity(Gravity.LEFT);
-            subtitleTextView.setPadding(0, 0, dp(10), 0);
+            subtitleTextView.setGravity(isCentered() ? Gravity.CENTER_HORIZONTAL : Gravity.LEFT);
+            subtitleTextView.setPadding(0, 0, isCentered() ? 0 : dp(10), 0);
             addView(subtitleTextView);
         }
 
@@ -405,6 +407,14 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
         return super.dispatchTouchEvent(ev);
     }
 
+    protected boolean isCentered() {
+        return false;
+    }
+
+    protected boolean isPreviewMode() {
+        return false;
+    }
+
     protected boolean canSearch() {
         return false;
     }
@@ -418,7 +428,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
     }
 
     public void setTitleExpand(boolean titleExpand) {
-        int newRightPadding = titleExpand ? dp(10) : 0;
+        int newRightPadding = (titleExpand && !isCentered()) ? dp(10) : 0;
         if (titleTextView.getPaddingRight() != newRightPadding) {
             titleTextView.setPadding(0, dp(6), newRightPadding, dp(12));
             requestLayout();
@@ -502,7 +512,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
     }
 
     public void openProfile(boolean byAvatar) {
-        openProfile(byAvatar, true, false);
+        openProfile(byAvatar, !isCentered(), false);
     }
 
     public void openProfile(boolean byAvatar, boolean fromChatAnimation, boolean removeLast) {
@@ -598,18 +608,15 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = MeasureSpec.getSize(widthMeasureSpec) + titleTextView.getPaddingRight();
-        if (parentFragment != null && parentFragment.isThreadChat() && parentFragment.getThreadId() != 0) {
-            width -= dp(48);
-            // leave some width for viewInChatItem
-        }
-        int availableWidth = width - dp((avatarImageView.getVisibility() == VISIBLE ? 54 : 0) + 16);
+        int padding = isCentered() ? dp(10) : 0;
+        int width = MeasureSpec.getSize(widthMeasureSpec) + (isCentered() ? 0 : titleTextView.getPaddingRight());
+        int availableWidth = width - dp(((avatarImageView.getVisibility() == VISIBLE || isCentered()) ? 54 : 0) + 16);
         avatarImageView.measure(MeasureSpec.makeMeasureSpec(dp(42), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(dp(42), MeasureSpec.EXACTLY));
-        titleTextView.measure(MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(dp(24 + 8) + titleTextView.getPaddingRight(), MeasureSpec.AT_MOST));
+        titleTextView.measure(MeasureSpec.makeMeasureSpec(availableWidth - padding, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(dp(24 + 8) + titleTextView.getPaddingRight(), MeasureSpec.AT_MOST));
         if (subtitleTextView != null) {
-            subtitleTextView.measure(MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(dp(20), MeasureSpec.AT_MOST));
+            subtitleTextView.measure(MeasureSpec.makeMeasureSpec(availableWidth - padding, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(dp(20), MeasureSpec.AT_MOST));
         } else if (animatedSubtitleTextView != null) {
-            animatedSubtitleTextView.measure(MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(dp(20), MeasureSpec.AT_MOST));
+            animatedSubtitleTextView.measure(MeasureSpec.makeMeasureSpec(availableWidth - padding, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(dp(20), MeasureSpec.AT_MOST));
         }
         if (timeItem != null) {
             timeItem.measure(MeasureSpec.makeMeasureSpec(dp(34), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(dp(34), MeasureSpec.EXACTLY));
@@ -642,7 +649,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
         this.titleTextLargerCopyView.set(titleTextLargerCopyView);
         titleTextLargerCopyView.setTextColor(getThemedColor(Theme.key_actionBarDefaultTitle));
         titleTextLargerCopyView.setTextSize(18);
-        titleTextLargerCopyView.setGravity(Gravity.LEFT);
+        titleTextLargerCopyView.setGravity(isCentered() ? Gravity.CENTER_HORIZONTAL : Gravity.LEFT);
         titleTextLargerCopyView.setTypeface(AndroidUtilities.bold());
         titleTextLargerCopyView.setLeftDrawableTopPadding(-dp(1.3f));
         titleTextLargerCopyView.setRightDrawable(titleTextView.getRightDrawable());
@@ -668,7 +675,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
         subtitleTextLargerCopyView.setTextColor(getThemedColor(Theme.key_actionBarDefaultSubtitle));
         subtitleTextLargerCopyView.setTag(Theme.key_actionBarDefaultSubtitle);
         subtitleTextLargerCopyView.setTextSize(14);
-        subtitleTextLargerCopyView.setGravity(Gravity.LEFT);
+        subtitleTextLargerCopyView.setGravity(isCentered() ? Gravity.CENTER_HORIZONTAL : Gravity.LEFT);
         if (subtitleTextView != null) {
             subtitleTextLargerCopyView.setText(subtitleTextView.getText());
         } else if (animatedSubtitleTextView != null) {
@@ -693,8 +700,23 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int actionBarHeight = ActionBar.getCurrentActionBarHeight();
         int viewTop = (actionBarHeight - dp(42)) / 2 + (Build.VERSION.SDK_INT >= 21 && occupyStatusBar ? AndroidUtilities.statusBarHeight : 0);
-        avatarImageView.layout(leftPadding, viewTop + 1, leftPadding + dp(42), viewTop + 1 + dp(42));
-        int l = leftPadding + (avatarImageView.getVisibility() == VISIBLE ? dp( 54) : 0) + rightAvatarPadding;
+
+        int avatarLeft = leftPadding;
+        int avatarRight = leftPadding + dp(42);
+
+        if (isCentered()) {
+            avatarLeft = getWidth() - leftPadding - dp(42);
+            avatarRight = avatarLeft + dp(42);
+        }
+
+        avatarImageView.layout(avatarLeft, viewTop + 1, avatarRight, viewTop + 1 + dp(42));
+
+        int l = leftPadding + (avatarImageView.getVisibility() == VISIBLE && !isCentered() ? dp( 54) : 0) + (isCentered() ? 0 : rightAvatarPadding);
+
+        if (isPreviewMode() && isCentered()) {
+            l += dp(AndroidUtilities.isTablet() ? 80 : 72) / 2;
+        }
+
         SimpleTextView titleTextLargerCopyView = this.titleTextLargerCopyView.get();
         if (getSubtitleTextView().getVisibility() != GONE) {
             titleTextView.layout(l, viewTop + dp(1.3f) - titleTextView.getPaddingTop(), l + titleTextView.getMeasuredWidth(), viewTop + titleTextView.getTextHeight() + dp(1.3f) - titleTextView.getPaddingTop() + titleTextView.getPaddingBottom());
@@ -708,7 +730,15 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
             }
         }
         if (timeItem != null) {
-            timeItem.layout(leftPadding + dp(16), viewTop + dp(15), leftPadding + dp(16 + 34), viewTop + dp(15 + 34));
+            int timeItemLeft = leftPadding + dp(16);
+            int timeItemRight = leftPadding + dp(16 + 34);
+            
+            if (isCentered()) {
+                timeItemLeft = getWidth() - leftPadding - dp(25);
+                timeItemRight = timeItemLeft + dp(34);
+            }
+            
+            timeItem.layout(timeItemLeft, viewTop + dp(15), timeItemRight, viewTop + dp(15 + 34));
         }
         if (starBgItem != null) {
             starBgItem.layout(leftPadding + dp(28), viewTop + dp(24), leftPadding + dp(28) + starBgItem.getMeasuredWidth(), viewTop + dp(24) + starBgItem.getMeasuredHeight());
@@ -834,15 +864,22 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
     }
 
     public void setTitle(CharSequence value) {
-        setTitle(value, false, false, false, false, null, false);
+        setTitle(value, false, false, false, false, null, false, false);
     }
 
     public void setTitle(CharSequence value, boolean scam, boolean fake, boolean verified, boolean premium, TLRPC.EmojiStatus emojiStatus, boolean animated) {
+        setTitle(value, scam, fake, verified, premium, emojiStatus, animated, false);
+    }
+
+    public void setTitle(CharSequence value, boolean scam, boolean fake, boolean verified, boolean premium, TLRPC.EmojiStatus emojiStatus, boolean animated, boolean scrollable) {
         if (value != null) {
             value = MessageHelper.INSTANCE.zalgoFilter(value);
             value = Emoji.replaceEmoji(value, titleTextView.getPaint().getFontMetricsInt(), false);
         }
+
         titleTextView.setText(value);
+        titleTextView.setScrollNonFitText(scrollable || isCentered());
+
         if (scam || fake) {
             if (!(titleTextView.getRightDrawable() instanceof ScamDrawable)) {
                 ScamDrawable drawable = new ScamDrawable(11, scam ? 0 : 1);
@@ -884,6 +921,9 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
             titleTextView.setRightDrawable(emojiStatusDrawable);
             rightDrawableIsScamOrVerified = false;
             rightDrawableContentDescription = LocaleController.getString(R.string.AccDescrPremium);
+            if (isCentered()) {
+                titleTextView.setRightDrawable2(null);
+            }
         } else {
             titleTextView.setRightDrawable(null);
             rightDrawableContentDescription = null;
@@ -931,7 +971,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
     }
 
     private void setTypingAnimation(boolean start) {
-        if (subtitleTextView == null) return;
+        if (subtitleTextView == null || isCentered()) return;
         if (start) {
             try {
                 int type = MessagesController.getInstance(currentAccount).getPrintingStringType(parentFragment.getDialogId(), parentFragment.getThreadId());

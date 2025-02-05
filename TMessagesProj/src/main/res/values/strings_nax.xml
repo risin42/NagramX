@@ -63,4 +63,6 @@
     <string name="LlmSystemPromptNotice">Define the AI\'s role and behavior.\n\nThis prompt sets the tone, personality, and limitations for the AI. Consider describing what type of assistant the AI should be.\n\nCan be left empty.</string>
     <string name="LlmUserPrompt">User Prompt</string>
     <string name="LlmUserPromptNotice">Use @text as a placeholder for the original message, and @toLang for the target language (optional).\n\nExample: \'Translate @text to @toLang without any explanation.\'\n\nLeaving this blank will use the default prompt.</string>
+    <string name="SettingsOnly">Just in settings</string>
+    <string name="ChatsOnly">Just in chats</string>
 </resources>

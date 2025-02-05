@@ -29,6 +29,8 @@ public class ActionBarMenu extends LinearLayout {
     protected ActionBar parentActionBar;
     protected boolean isActionMode;
 
+    private boolean isCenteredTitle = false;
+
     private ArrayList<Integer> ids;
 
     public ActionBarMenu(Context context, ActionBar layer) {
@@ -59,6 +61,10 @@ public class ActionBarMenu extends LinearLayout {
                 ((ActionBarMenuItem) view).setIconColor(isActionMode ? parentActionBar.itemsActionModeColor : parentActionBar.itemsColor);
             }
         }
+    }
+
+    public void setCenteredTitle(boolean centeredTitle) {
+        isCenteredTitle = centeredTitle;
     }
 
     public ActionBarMenuItem addItem(int id, Drawable drawable) {
@@ -112,6 +118,14 @@ public class ActionBarMenu extends LinearLayout {
     protected ActionBarMenuItem addItemAt(int index, int id, int icon, CharSequence text, int backgroundColor, Drawable drawable, int width, CharSequence title, Theme.ResourcesProvider resourcesProvider) {
         ActionBarMenuItem menuItem = new ActionBarMenuItem(getContext(), this, backgroundColor, isActionMode ? parentActionBar.itemsActionModeColor : parentActionBar.itemsColor, text != null, resourcesProvider);
         menuItem.setTag(id);
+
+        if (isCenteredTitle) {
+            menuItem.setAlpha(0f);
+            menuItem.setVisibility(GONE);
+            menuItem.setClickable(false);
+            menuItem.setEnabled(false);
+        }
+
         if (text != null) {
             menuItem.textView.setText(text);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width != 0 ? width : ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
