@@ -42,11 +42,11 @@
     <string name="DisableScreenshotDetection">禁用截屏检测</string>
     <string name="MessageSavingSaveMedia">保存媒体</string>
     <string name="MessageSavingSaveMediaHint">点击查看更多选项</string>
-    <string name="MessageSavingSaveMediaInPrivateChats">在私聊中保存媒体</string>
-    <string name="MessageSavingSaveMediaInPublicChannels">在公开频道中保存媒体</string>
-    <string name="MessageSavingSaveMediaInPrivateChannels">在私有频道中保存媒体</string>
-    <string name="MessageSavingSaveMediaInPublicGroups">在公开群组中保存媒体</string>
-    <string name="MessageSavingSaveMediaInPrivateGroups">在私有群组中保存媒体</string>
+    <string name="MessageSavingSaveMediaInPrivateChats">私聊</string>
+    <string name="MessageSavingSaveMediaInPublicChannels">公开频道</string>
+    <string name="MessageSavingSaveMediaInPrivateChannels">私有频道</string>
+    <string name="MessageSavingSaveMediaInPublicGroups">公开群组</string>
+    <string name="MessageSavingSaveMediaInPrivateGroups">私有群组</string>
     <string name="TelegramUIAutoTranslate">自动翻译</string>
     <string name="TranslatorMode">手动翻译显示类型</string>
     <string name="TranslatorModeAppend">追加</string>
@@ -57,7 +57,7 @@
     <string name="TelegramUIAutoTranslateTips">Telegram API 仅在账户为有效的 Telegram Premium 时可用于自动翻译</string>
     <string name="TranslatorSettings">翻译</string>
     <string name="LlmSystemPrompt">系统提示词</string>
-    <string name="LlmSystemPromptNotice">定义 AI 的角色和指令。\n\n此提示设置 AI 的语调、个性和限制。考虑描述 AI 应该成为什么样的助手。\n\n可以留空不设置此属性。</string>
+    <string name="LlmSystemPromptNotice">定义 AI 的角色和行为。\n\n此提示设置 AI 的语调、个性和限制。考虑描述 AI 应该成为什么样的助手。\n\n可以留空不设置此参数。</string>
     <string name="LlmUserPrompt">用户提示词</string>
     <string name="LlmUserPromptNotice">使用 @text 作为原始消息的占位符，使用 @toLang 作为目标语言的占位符（可选）。\n\n例如：\'将 @text 翻译成 @toLang 无需任何解释。\'\n\n留空将使用默认提示词。</string>
 </resources>
