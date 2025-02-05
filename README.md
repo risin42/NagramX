@@ -1,6 +1,6 @@
 # Nagram X
 
-Make Nagram Great Again :)
+A variant of Nagram with additional(ToS breaking) features.
 
 ## Download
 
@@ -16,14 +16,16 @@ You can grab the latest versions in these two ways:
     - AI Translator with customizable API endpoint and Model
     - Hide the Premium and Help sections in settings
     - Hide side share button
-    - Hide bottom bar in channels
+    - Hide bottom bar in channels(merged upstream)
     - Avoids requesting camera permission when selecting images
     - Show Stickers row in main settings
     - Clear Cloud Settings data
     - Custom preferred languages in translation language selector
-    - Text selection in restricted channels
+    - Text selection in restricted channels(merged upstream)
     - Ask before sending bot command
     - Translate Entire Chats
+    - Microsoft Translator
+    - Center title in chat
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```
@@ -38,6 +40,7 @@ You can grab the latest versions in these two ways:
     - Ripple effect for N-Settings
     - Google Maps
     - DeepL Translator
+    - Bing Translator
     - Disable auto download for exe and archive files
     - Other minor fixes
 
@@ -50,9 +53,10 @@ You can grab the latest versions in these two ways:
 
 ## Thanks to
 
-- [AyuGram4A](https://github.com/AyuGram/AyuGram4A)
+- [AyuGram](https://github.com/AyuGram/AyuGram4A)
 - [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram)
 - [OctoGram](https://github.com/OctoGramApp/OctoGram)
+- [Nagram](https://github.com/NextAlone/Nagram)
 
 # Nagram
 
