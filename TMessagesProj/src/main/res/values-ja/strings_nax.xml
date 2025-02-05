@@ -42,11 +42,11 @@
     <string name="DisableScreenshotDetection">スクリーンショット検出を無効にする</string>
     <string name="MessageSavingSaveMedia">メディアを保存</string>
     <string name="MessageSavingSaveMediaHint">クリックしてその他のオプションを表示</string>
-    <string name="MessageSavingSaveMediaInPrivateChats">プライベートチャットでメディアを保存</string>
-    <string name="MessageSavingSaveMediaInPublicChannels">パブリックチャンネルでメディアを保存</string>
-    <string name="MessageSavingSaveMediaInPrivateChannels">プライベートチャンネルでメディアを保存</string>
-    <string name="MessageSavingSaveMediaInPublicGroups">パブリックグループでメディアを保存</string>
-    <string name="MessageSavingSaveMediaInPrivateGroups">プライベートグループでメディアを保存</string>
+    <string name="MessageSavingSaveMediaInPrivateChats">プライベートチャット</string>
+    <string name="MessageSavingSaveMediaInPublicChannels">パブリックチャンネル</string>
+    <string name="MessageSavingSaveMediaInPrivateChannels">プライベートチャンネル</string>
+    <string name="MessageSavingSaveMediaInPublicGroups">パブリックグループ</string>
+    <string name="MessageSavingSaveMediaInPrivateGroups">プライベートグループ</string>
     <string name="TelegramUIAutoTranslate">チャット全体を翻訳</string>
     <string name="TranslatorMode">手動翻訳表示タイプ</string>
     <string name="TranslatorModeAppend">追加</string>
@@ -57,7 +57,7 @@
     <string name="TelegramUIAutoTranslateTips">チャット全体を翻訳に Telegram API を使用するには、Telegram Premium が必要です</string>
     <string name="TranslatorSettings">翻訳</string>
     <string name="LlmSystemPrompt">システムプロンプト</string>
-    <string name="LlmSystemPromptNotice">AI の役割と指示を定義します。\n\nこのプロンプトは、AI の口調、個性、制約を設定します。AI をどのようなアシスタントにすべきかを記述することを検討してください。\n\nこのプロパティを設定しない場合は空白のままにできます。</string>
+    <string name="LlmSystemPromptNotice">AI の役割と行動指針を定義します。\n\nこのプロンプトは、AI の口調、個性、制約を設定します。AI をどのようなアシスタントにすべきかを記述することを検討してください。\n\n設定したくない場合は空白のままにできます。</string>
     <string name="LlmUserPrompt">ユーザープロンプト</string>
-    <string name="LlmUserPromptNotice">元のメッセージのプレースホルダーとして @text を、ターゲット言語のプレースホルダーとして @toLang を使用します（オプション）。\n\n例：\'@text を @toLang に説明なしで翻訳してください。\'\n\nこれを空白のままにすると、デフォルトのプロンプトが使用されます。</string>
+    <string name="LlmUserPromptNotice">元のメッセージのプレースホルダーとして @text を、ターゲット言語のプレースホルダーとして @toLang を使用します（オプション）。\n\n例：\'@text を @toLang に説明なしで翻訳してください。\'\n\n空白のままにすると、デフォルトのプロンプトが使用されます。</string>
 </resources>
