@@ -42306,6 +42306,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         getNotificationCenter().postNotificationName(NotificationCenter.closeChats);
                         finishFragment();
                     });
+                    LaunchActivity.getLastFragment().getFragmentView().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                 });
             });
             builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
