@@ -133,16 +133,15 @@ public class TranslateController extends BaseController {
     }
 
     public boolean isTranslateDialogHidden(long dialogId) {
-        boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
         if (hideTranslateDialogs.contains(dialogId)) {
             return true;
         }
         TLRPC.ChatFull chatFull = getMessagesController().getChatFull(-dialogId);
-        if (chatFull != null && isRealPremium) {
+        if (chatFull != null) {
             return chatFull.translations_disabled;
         }
         TLRPC.UserFull userFull = getMessagesController().getUserFull(dialogId);
-        if (userFull != null && isRealPremium) {
+        if (userFull != null) {
             return userFull.translations_disabled;
         }
         return false;
@@ -239,14 +238,14 @@ public class TranslateController extends BaseController {
         }
 
         final boolean wasHidden = hideTranslateDialogs.contains(dialogId);
+
         boolean hidden = false;
-        boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
         TLRPC.ChatFull chatFull = getMessagesController().getChatFull(-dialogId);
-        if (chatFull != null && isRealPremium) {
+        if (chatFull != null) {
             hidden = chatFull.translations_disabled;
         } else {
             TLRPC.UserFull userFull = getMessagesController().getUserFull(dialogId);
-            if (userFull != null && isRealPremium) {
+            if (userFull != null) {
                 hidden = userFull.translations_disabled;
             }
         }
@@ -271,25 +270,22 @@ public class TranslateController extends BaseController {
     }
 
     public void setHideTranslateDialog(long dialogId, boolean hide, boolean doNotNotify) {
-        boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
-
-        if (isRealPremium) {
-            TLRPC.TL_messages_togglePeerTranslations req = new TLRPC.TL_messages_togglePeerTranslations();
-            req.peer = getMessagesController().getInputPeer(dialogId);
-            req.disabled = hide;
-            getConnectionsManager().sendRequest(req, null);
-        }
+        TLRPC.TL_messages_togglePeerTranslations req = new TLRPC.TL_messages_togglePeerTranslations();
+        req.peer = getMessagesController().getInputPeer(dialogId);
+        req.disabled = hide;
+        getConnectionsManager().sendRequest(req, null);
 
         TLRPC.ChatFull chatFull = getMessagesController().getChatFull(-dialogId);
-        if (chatFull != null && isRealPremium) {
+        if (chatFull != null) {
             chatFull.translations_disabled = hide;
             getMessagesStorage().updateChatInfo(chatFull, true);
         }
         TLRPC.UserFull userFull = getMessagesController().getUserFull(dialogId);
-        if (userFull != null && isRealPremium) {
+        if (userFull != null) {
             userFull.translations_disabled = hide;
             getMessagesStorage().updateUserInfo(userFull, true);
         }
+
         synchronized (this) {
             if (hide) {
                 hideTranslateDialogs.add(dialogId);
