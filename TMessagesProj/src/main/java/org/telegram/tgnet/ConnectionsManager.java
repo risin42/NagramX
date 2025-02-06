@@ -272,7 +272,7 @@ public class ConnectionsManager extends BaseController {
         String pushString = getRegId();
 
         int timezoneOffset = (TimeZone.getDefault().getRawOffset() + TimeZone.getDefault().getDSTSavings()) / 1000;
-SharedPreferences mainPreferences;
+        SharedPreferences mainPreferences;
         if (currentAccount == 0) {
             mainPreferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
         } else {

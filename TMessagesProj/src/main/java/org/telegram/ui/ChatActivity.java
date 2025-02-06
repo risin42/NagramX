@@ -42813,36 +42813,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
     }
 
-    // private boolean isLanguageRestricted(String lang) {
-    //     if (lang == null || lang.equals("und")) {
-    //         return false;
-    //     }
-    //     String toLang = NekoConfig.translateToLang.String();
-    //     if (toLang == null || toLang.isEmpty()) {
-    //         toLang = LocaleController.getInstance().currentLocale.getLanguage();
-    //     }
-    //     if (toLang.contains("-")) {
-    //         toLang = toLang.substring(0, toLang.indexOf("-"));
-    //     }
-    //     if (lang.contains("-")) {
-    //         lang = lang.substring(0, lang.indexOf("-"));
-    //     }
-    //     if (lang.equals(toLang)) {
-    //         return true;
-    //     }
-    //     boolean restricted = false;
-    //     for (String language : RestrictedLanguagesSelectActivity.getRestrictedLanguages()) {
-    //         if (language.contains("_")) {
-    //             language = language.substring(0, language.indexOf("_"));
-    //         }
-    //         if (language.equals(lang)) {
-    //             restricted = true;
-    //             break;
-    //         }
-    //     }
-    //     return restricted;
-    // }
-
     private class RecyclerListViewInternal extends RecyclerListView implements StoriesListPlaceProvider.ClippedView {
         public RecyclerListViewInternal(Context context, ThemeDelegate themeDelegate) {
             super(context, themeDelegate);
