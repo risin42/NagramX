@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.SpannableStringBuilder;
@@ -26,12 +25,12 @@ import android.util.Xml;
 import androidx.annotation.StringRes;
 
 import org.telegram.messenger.time.FastDateFormat;
-import org.telegram.tgnet.Vector;
-import org.telegram.ui.Stars.StarsController;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tgnet.Vector;
 import org.telegram.ui.RestrictedLanguagesSelectActivity;
+import org.telegram.ui.Stars.StarsController;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.BufferedWriter;
@@ -1381,27 +1380,12 @@ public class LocaleController {
                 }
             }
         }
-        if (value == null || value.isEmpty()) {
+        if (value == null) {
             value = "LOC_ERR:" + key;
-            if (getFallbackResources() != null)
-                value = getFallbackResources().getString(res);
         } else if (NekoConfig.localeToDBC.Bool()) {
             value = LocFiltersKt.filter(value);
         }
         return value;
-    }
-
-    private static Resources fallbackResources = null;
-
-    private static Resources getFallbackResources() {
-        if (fallbackResources == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Configuration conf = ApplicationLoader.applicationContext.getResources().getConfiguration();
-            conf = new Configuration(conf);
-            conf.setLocale(new Locale("en"));
-            Context localizedContext = ApplicationLoader.applicationContext.createConfigurationContext(conf);
-            fallbackResources = localizedContext.getResources();
-        }
-        return fallbackResources;
     }
 
     public static String getServerString(String key) {
