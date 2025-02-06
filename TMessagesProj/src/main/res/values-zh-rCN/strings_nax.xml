@@ -15,9 +15,9 @@
     <string name="LlmApiUrl">API URL</string>
     <string name="LlmApiKey">API 密钥</string>
     <string name="LlmModelName">模型</string>
-    <string name="LlmApiUrlNotice">API 基本 URL，仅支持 OpenAI 兼容的端点。\n\n请填写 URL 中`/chat/completions`之前的部分。\n例如：`https://api.x.ai/v1`。\n\n如果留空，将默认为 Gemini 的 OpenAI 兼容 API 端点。</string>
+    <string name="LlmApiUrlNotice">API 基本 URL，支持任何与 OpenAI 兼容的端点。例如 Gemini、xAI (Grok)、Groq、Mistral、DeepSeek 等。\n\n如果留空将默认使用 Gemini 的 OpenAI 兼容端点。</string>
     <string name="LlmApiKeyNotice">API 密钥将用于向 API URL 发送请求。</string>
-    <string name="LlmModelNameNotice">如果留空，将默认使用`gemini-2.0-flash`。\n\n为了更快的响应，可以考虑使用更小的模型，例如 gpt-4o-mini 或 gemini-flash。</string>
+    <string name="LlmModelNameNotice">如果留空将默认使用 `gemini-2.0-flash`。\n\n为了更快的响应，可以考虑使用更小的模型，例如 gpt-4o-mini 或 gemini-flash。</string>
     <string name="AITranslatorSettings">AI 翻译设置</string>
     <string name="TranslucentDeletedMessages">透明已删除消息</string>
     <string name="ArticleTranslationProvider">文章翻译源</string>

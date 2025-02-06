@@ -15,9 +15,9 @@
     <string name="LlmApiUrl">API URL</string>
     <string name="LlmApiKey">API キー</string>
     <string name="LlmModelName">モデル</string>
-    <string name="LlmApiUrlNotice">API ベース URL。OpenAI 互換エンドポイントのみをサポートしています。\n\n`/chat/completions`より前の URL 部分を指定してください。\n例：`https://api.x.ai/v1`。\n\n空欄のままにすると、Gemini の OpenAI 互換 API エンドポイントがデフォルトで使用されます。</string>
+    <string name="LlmApiUrlNotice">API ベース URL。Gemini、xAI (Grok)、Groq、Mistral、DeepSeek など OpenAI 互換エンドポイントに対応しています。\n\n空白のままにすると、デフォルトで Gemini の OpenAI 互換エンドポイントが使用されます。</string>
     <string name="LlmApiKeyNotice">API キーは、API URL へのリクエスト送信に使用されます。</string>
-    <string name="LlmModelNameNotice">空白のままにすると、`gemini-2.0-flash`がデフォルトで使用されます。\n\nより速い応答には、gpt-4o-mini や gemini-flash などの小型モデルの使用をお勧めします。</string>
+    <string name="LlmModelNameNotice">空白のままにすると、デフォルトで `gemini-2.0-flash` が使用されます。\n\nより速い応答には、gpt-4o-mini や gemini-flash などの小型モデルの使用をお勧めします。</string>
     <string name="AITranslatorSettings">AI 翻訳設定</string>
     <string name="TranslucentDeletedMessages">削除済みメッセージの透過</string>
     <string name="ArticleTranslationProvider">アーティクル翻訳プロバイダ</string>
