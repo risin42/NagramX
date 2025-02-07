@@ -80,7 +80,7 @@ public class NekoConfig {
     public static ConfigItem hideAllTab = addConfig("HideAllTab", configTypeBool, false);
 //    public static ConfigItem pressTitleToOpenAllChats = addConfig("pressTitleToOpenAllChats", configTypeBool, false);
 
-    public static ConfigItem disableChatAction = addConfig("DisableChatAction", configTypeBool, true);
+    public static ConfigItem disableChatAction = addConfig("DisableChatAction", configTypeBool, false);
     public static ConfigItem sortByUnread = addConfig("sort_by_unread", configTypeBool, false);
     public static ConfigItem sortByUnmuted = addConfig("sort_by_unmuted", configTypeBool, true);
     public static ConfigItem sortByUser = addConfig("sort_by_user", configTypeBool, true);
@@ -170,7 +170,7 @@ public class NekoConfig {
     public static ConfigItem useMediaStreamInVoip = addConfig("UseMediaStreamInVoip", configTypeBool, false);
     public static ConfigItem customAudioBitrate = addConfig("customAudioBitrate", configTypeInt, 32);
     public static ConfigItem disableGroupVoipAudioProcessing = addConfig("disableGroupVoipAudioProcessing", configTypeBool, false);
-    public static ConfigItem enhancedFileLoader = addConfig("enhancedFileLoader", configTypeBool, true);
+    public static ConfigItem enhancedFileLoader = addConfig("enhancedFileLoader", configTypeBool, false);
     public static ConfigItem useOSMDroidMap = addConfig("useOSMDroidMap", configTypeBool, false);
     public static ConfigItem mapDriftingFixForGoogleMaps = addConfig("mapDriftingFixForGoogleMaps", configTypeBool, true);
 
