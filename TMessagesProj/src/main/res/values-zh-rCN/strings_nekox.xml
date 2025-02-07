@@ -36,8 +36,8 @@
     <string name="ProviderYandexTranslate">Yandex.翻译</string>
     <string name="GoogleCloudTransKey">Google Cloud 翻译密钥</string>
     <string name="GoogleCloudTransKeyNotice">如果您设置了一个 Google Cloud 密钥：云翻译 API 将被调用，而不是提交模拟表单到网页版 (更快速、稳定和节省流量)。</string>
-    <string name="TransToLang">目标翻译语言</string>
-    <string name="TransInputToLang">输入翻译目标语言</string>
+    <string name="TransToLang">翻译目标语言</string>
+    <string name="TransInputToLang">发送前翻译目标语言</string>
     <string name="More">更多</string>
     <string name="NekoXUpdatesChannel">Nagram 更新频道</string>
     <string name="ShowIdAndDc">在个人资料中显示 ID/ DC</string>

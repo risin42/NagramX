@@ -16,8 +16,15 @@
     <string name="LlmApiKey">API キー</string>
     <string name="LlmModelName">モデル</string>
     <string name="LlmApiUrlNotice">API ベース URL。Gemini、xAI (Grok)、Groq、Mistral、DeepSeek など OpenAI 互換エンドポイントに対応しています。\n\n空白のままにすると、デフォルトで Gemini の OpenAI 互換エンドポイントが使用されます。</string>
-    <string name="LlmApiKeyNotice">API キーは、API URL へのリクエスト送信に使用されます。</string>
+    <string name="LlmApiKeyNotice">API キーは、API URL にリクエストを送信するために使用されます。\n\n複数のキーをコンマで区切って入力してください（例：key1, key2, key3）。\n複数のキーが提供された場合、それらは順番に使用されます。</string>
     <string name="LlmModelNameNotice">空白のままにすると、デフォルトで `gemini-2.0-flash` が使用されます。\n\nより速い応答には、gpt-4o-mini や gemini-flash などの小型モデルの使用をお勧めします。</string>
+    <string name="LlmProviderPreset">モデルプロバイダー</string>
+    <string name="LlmProviderCustom">カスタム</string>
+    <string name="LlmSystemPrompt">システムプロンプト</string>
+    <string name="LlmSystemPromptNotice">AI の役割と行動指針を定義します。\n\nこのプロンプトは、AI の口調、個性、制約を設定します。AI をどのようなアシスタントにすべきかを記述することを検討してください。\n\n設定したくない場合は空白のままにできます。</string>
+    <string name="LlmUserPrompt">ユーザープロンプト</string>
+    <string name="LlmUserPromptNotice">元のメッセージのプレースホルダーとして @text を、ターゲット言語のプレースホルダーとして @toLang を使用します（オプション）。\n\n例：\'@text を @toLang に説明なしで翻訳してください。\'\n\n空白のままにすると、デフォルトのプロンプトが使用されます。</string>
+    <string name="LlmTemperature">温度</string>
     <string name="AITranslatorSettings">AI 翻訳設定</string>
     <string name="TranslucentDeletedMessages">削除済みメッセージの透過</string>
     <string name="ArticleTranslationProvider">アーティクル翻訳プロバイダ</string>
@@ -56,10 +63,7 @@
     <string name="ProviderRealMicrosoftTranslator">Microsoft 翻訳</string>
     <string name="TelegramUIAutoTranslateTips">チャット全体を翻訳に Telegram API を使用するには、Telegram Premium が必要です</string>
     <string name="TranslatorSettings">翻訳</string>
-    <string name="LlmSystemPrompt">システムプロンプト</string>
-    <string name="LlmSystemPromptNotice">AI の役割と行動指針を定義します。\n\nこのプロンプトは、AI の口調、個性、制約を設定します。AI をどのようなアシスタントにすべきかを記述することを検討してください。\n\n設定したくない場合は空白のままにできます。</string>
-    <string name="LlmUserPrompt">ユーザープロンプト</string>
-    <string name="LlmUserPromptNotice">元のメッセージのプレースホルダーとして @text を、ターゲット言語のプレースホルダーとして @toLang を使用します（オプション）。\n\n例：\'@text を @toLang に説明なしで翻訳してください。\'\n\n空白のままにすると、デフォルトのプロンプトが使用されます。</string>
     <string name="SettingsOnly">設定のみ</string>
     <string name="ChatsOnly">チャットのみ</string>
+    <string name="InstantViewTranslation">アーティクル</string>
 </resources>

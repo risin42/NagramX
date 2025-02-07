@@ -737,6 +737,49 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
+    val llmProviderPreset =
+        addConfig(
+            "LlmProviderPreset",
+            ConfigItem.configTypeInt,
+            0
+        )
+    val llmProviderOpenAIKey =
+        addConfig(
+            "LlmProviderOpenAIKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderGeminiKey =
+        addConfig(
+            "LlmProviderGeminiKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderXAIKey =
+        addConfig(
+            "LlmProviderXAIKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderGroqKey =
+        addConfig(
+            "LlmProviderGroqKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderDeepSeekKey =
+        addConfig(
+            "LlmProviderDeepSeekKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmTemperature =
+        addConfig(
+            "LlmTemperature",
+            ConfigItem.configTypeFloat,
+            0.7f
+        )
+
     val translucentDeletedMessages =
         addConfig(
             "TranslucentDeletedMessages",
