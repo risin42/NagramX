@@ -34,7 +34,7 @@ def get_caption() -> str:
     commit_id, commit_url, commit_message = get_commit_info()
     pre = "Test version." if test_version else "Release version."
     caption = f"{pre}\n\n"
-    caption += f"Commit Message:\n<blockquote expandable>{commit_message}</blockquote>\n\n"
+    caption += f"Commit Message:\n<blockquote>{commit_message}</blockquote>\n\n"
     caption += f"See commit details [{commit_id}]({commit_url})"
     return caption
 
