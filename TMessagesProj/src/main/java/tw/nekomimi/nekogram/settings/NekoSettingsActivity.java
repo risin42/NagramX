@@ -456,7 +456,7 @@ public class NekoSettingsActivity extends BaseFragment {
 
     }
 
-    public static String backupSettingsJson(boolean filterSensitive, int indentSpaces) throws JSONException {
+    public static String backupSettingsJson(boolean isCloud, int indentSpaces) throws JSONException {
 
         JSONObject configJson = new JSONObject();
 
@@ -467,7 +467,7 @@ public class NekoSettingsActivity extends BaseFragment {
         userconfig.add("passcodeHash");
         userconfig.add("autoLockIn");
         userconfig.add("useFingerprint");
-        spToJSON("userconfing", configJson, userconfig::contains, filterSensitive);
+        spToJSON("userconfing", configJson, userconfig::contains, isCloud);
 
         ArrayList<String> mainconfig = new ArrayList<>();
         mainconfig.add("saveToGallery");
@@ -527,23 +527,23 @@ public class NekoSettingsActivity extends BaseFragment {
 
         mainconfig.add("lang_code");
 
-        spToJSON("mainconfig", configJson, mainconfig::contains, filterSensitive);
-        spToJSON("themeconfig", configJson, null, filterSensitive);
+        spToJSON("mainconfig", configJson, mainconfig::contains, isCloud);
+        spToJSON("themeconfig", configJson, null, isCloud);
 
-        spToJSON("nkmrcfg", configJson, null, filterSensitive);
+        spToJSON("nkmrcfg", configJson, null, isCloud);
 
         return configJson.toString(indentSpaces);
     }
 
-    private static void spToJSON(String sp, JSONObject object, Function<String, Boolean> filter, boolean filterSensitive) throws JSONException {
+    private static void spToJSON(String sp, JSONObject object, Function<String, Boolean> filter, boolean isCloud) throws JSONException {
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences(sp, Activity.MODE_PRIVATE);
         JSONObject jsonConfig = new JSONObject();
         for (Map.Entry<String, ?> entry : preferences.getAll().entrySet()) {
             String key = entry.getKey();
-            if (filterSensitive && key.endsWith("Key")) {
-                continue;
-            }
-            if (key.endsWith("Prompt")) {
+//            if (isCloud && key.endsWith("Key")) {
+//                continue;
+//            }
+            if (isCloud && key.endsWith("Prompt")) {
                 continue;
             }
             if (filter != null && !filter.apply(key)) continue;
