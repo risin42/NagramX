@@ -689,6 +689,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val saveDeletedMessageForBot =
+        addConfig(
+            "SaveDeletedMessageForBot",
+            ConfigItem.configTypeBool,
+            true
+        )
     val customDeletedMark =
         addConfig(
             "CustomDeletedMark",

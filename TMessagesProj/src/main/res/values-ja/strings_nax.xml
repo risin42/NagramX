@@ -71,4 +71,5 @@
     <string name="SettingsOnly">設定のみ</string>
     <string name="ChatsOnly">チャットのみ</string>
     <string name="InstantViewTranslation">アーティクル</string>
+    <string name="SaveDeletedMessageForBot">ボットチャットで保存</string>
 </resources>

@@ -10,8 +10,11 @@
 package com.radolyn.ayugram.messages;
 
 import org.telegram.messenger.MessageObject;
+import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
+
+import xyz.nextalone.nagram.NaConfig;
 
 public class AyuSavePreferences {
     private final TLRPC.Message message;
@@ -86,5 +89,16 @@ public class AyuSavePreferences {
 
     public int getRequestCatchTime() {
         return requestCatchTime;
+    }
+
+    public static boolean saveDeletedMessageFor(int accountId, long dialogId) {
+        if (!NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+            return false;
+        }
+        var user = MessagesController.getInstance(accountId).getUser(Math.abs(dialogId));
+        if (user == null) {
+            return true;
+        }
+        return !user.bot || NaConfig.INSTANCE.getSaveDeletedMessageForBot().Bool();
     }
 }

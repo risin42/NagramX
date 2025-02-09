@@ -147,9 +147,9 @@ public class AyuMessagesController {
     }
 
     private void onMessageDeletedInner(AyuSavePreferences prefs) {
-        // if (!AyuConfig.saveDeletedMessageFor(prefs.getAccountId(), prefs.getDialogId())) {
-        //     return;
-        // }
+         if (!AyuSavePreferences.saveDeletedMessageFor(prefs.getAccountId(), prefs.getDialogId())) {
+             return;
+         }
 
         if (deletedMessageDao.exists(prefs.getUserId(), prefs.getDialogId(), prefs.getTopicId(), prefs.getMessageId())) {
             return;

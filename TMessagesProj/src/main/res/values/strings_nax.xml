@@ -84,4 +84,5 @@
     <string name="SettingsOnly">Just in settings</string>
     <string name="ChatsOnly">Just in chats</string>
     <string name="InstantViewTranslation">Instant View</string>
+    <string name="SaveDeletedMessageForBot">Save in Bot Dialogs</string>
 </resources>
