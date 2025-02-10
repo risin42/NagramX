@@ -20441,7 +20441,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
 
             // --- AyuGram history hook start
-            final String NAX = "nu.gpu.nagram_hookMain";
+            final String NAX = "AyuHistoryHookMain";
 
             var dialogId = getDialogId();
             var topicId = getTopicId();

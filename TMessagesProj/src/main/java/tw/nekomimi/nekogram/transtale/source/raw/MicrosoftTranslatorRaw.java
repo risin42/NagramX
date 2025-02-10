@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MicrosoftTranslatorRaw {
-    private static final String NAX = "nu.gpu.nagram_MicrosoftTranslatorRaw";
+    private static final String NAX = "MicrosoftTranslatorRaw";
 
     private static final String PREF_NAME = "microsoft_translator_config";
     private static final String API_AUTH = "https://edge.microsoft.com/translate/auth";

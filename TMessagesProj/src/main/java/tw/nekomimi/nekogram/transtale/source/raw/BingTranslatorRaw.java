@@ -25,7 +25,7 @@ import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildVars;
 
 public class BingTranslatorRaw {
-    private static final String NAX = "nu.gpu.nagram_BingTranslatorRaw";
+    private static final String NAX = "BingTranslatorRaw";
 
     private static final String PREF_NAME = "bing_translator_config";
     private static final String TRANSLATOR_URL = "https://www.bing.com/translator";

@@ -34,7 +34,8 @@ import org.telegram.tgnet.TLRPC.TL_messageReplyHeader;
 import xyz.nextalone.nagram.NaConfig;
 
 public abstract class AyuMessageUtils {
-    private static final String NAX = "nu.gpu.nagram_AyuMessageUtils";
+    private static final String NAX = "AyuMessageUtils";
+
     public static ArrayList deserializeMultiple(byte[] bArr, Function<NativeByteBuffer, TLObject> function) {
         if (bArr == null || bArr.length == 0) {
             return new ArrayList();

@@ -34,7 +34,8 @@ import java.util.ArrayList;
 import static org.telegram.messenger.Utilities.random;
 
 public class AyuUtils {
-    private static final String NAX = "nu.gpu.nagram_AyuUtils";
+    private static final String NAX = "AyuUtils";
+
     private static final char[] chars = "abcdefghijklmnopqrstuvwxyz1234567890".toCharArray();
 
     public static boolean moveOrCopyFile(File from, File to) {

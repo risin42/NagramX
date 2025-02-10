@@ -38,7 +38,7 @@ import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import xyz.nextalone.nagram.NaConfig;
 
 public class TranslateController extends BaseController {
-    private static final String NAX = "nu.gpu.nagram_TranslateController";
+    private static final String NAX = "TranslateController";
 
     public static final String UNKNOWN_LANGUAGE = "und";
 

@@ -33,7 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AyuMessagesController {
-    private static final String NAX = "nu.gpu.nagram_AyuMessagesController";
+    private static final String NAX = "AyuMessagesController";
+
     public static final String attachmentsSubfolder = "Saved Attachments";
     public static final File attachmentsPath = new File(
             new File(

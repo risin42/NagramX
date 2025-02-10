@@ -23,7 +23,8 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.TLRPC.MessageReplyHeader;
 
 public abstract class AyuHistoryHook {
-    private static final String NAX = "nu.gpu.nagram_AyuHistoryHook";
+    private static final String NAX = "AyuHistoryHook";
+
     public static void doHook(
         int currentAccount,
         ArrayList<MessageObject> messArr,

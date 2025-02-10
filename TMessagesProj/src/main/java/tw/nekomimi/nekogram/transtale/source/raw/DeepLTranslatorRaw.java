@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 public class DeepLTranslatorRaw {
-    private static final String NAX = "nu.gpu.nagram_DeepLTranslatorRaw";
+    private static final String NAX = "DeepLTranslatorRaw";
 
     private static final String API_URL = "https://www2.deepl.com/jsonrpc";
     private static final String REFERER = "https://www.deepl.com/";
