@@ -29,11 +29,11 @@ object LLMTranslator : Translator {
     )
 
     private val providerModels = mapOf(
-        1 to "gpt-4o-mini",
-        2 to "gemini-2.0-flash-lite-preview",
-        3 to "llama-3.3-70b-versatile",
-        4 to "deepseek-chat",
-        5 to "grok-2",
+        1 to getString(R.string.LlmProviderOpenAIModel),
+        2 to getString(R.string.LlmProviderGeminiModel),
+        3 to getString(R.string.LlmProviderGroqModel),
+        4 to getString(R.string.LlmProviderDeepSeekModel),
+        5 to getString(R.string.LlmProviderXAIModel),
     )
 
     private var apiKeys: List<String> = emptyList()
