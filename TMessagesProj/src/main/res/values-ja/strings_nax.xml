@@ -20,6 +20,11 @@
     <string name="LlmModelNameNotice">空白のままにすると、デフォルトで `gemini-2.0-flash` が使用されます。\n\nより速い応答には、gpt-4o-mini や gemini-flash などの小型モデルの使用をお勧めします。</string>
     <string name="LlmProviderPreset">モデルプロバイダー</string>
     <string name="LlmProviderCustom">カスタム</string>
+    <string name="LlmProviderOpenAIKey">OpenAI API キー</string>
+    <string name="LlmProviderGeminiKey">Gemini API キー</string>
+    <string name="LlmProviderGroqKey">Groq API キー</string>
+    <string name="LlmProviderDeepSeekKey">DeepSeek API キー</string>
+    <string name="LlmProviderXAIKey">xAI API キー</string>
     <string name="LlmSystemPrompt">システムプロンプト</string>
     <string name="LlmSystemPromptNotice">AI の役割と行動指針を定義します。\n\nこのプロンプトは、AI の口調、個性、制約を設定します。AI をどのようなアシスタントにすべきかを記述することを検討してください。\n\n設定したくない場合は空白のままにできます。</string>
     <string name="LlmUserPrompt">ユーザープロンプト</string>

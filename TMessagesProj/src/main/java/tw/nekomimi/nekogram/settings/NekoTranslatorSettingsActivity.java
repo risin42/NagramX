@@ -423,7 +423,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 }
 
                 cellGroup.rows.clear();
-
                 cellGroup.appendCell(headerTranslation);
                 cellGroup.appendCell(translationProviderRow);
                 cellGroup.appendCell(translatorModeRow);
@@ -433,14 +432,13 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 cellGroup.appendCell(preferredTranslateTargetLangRow);
                 cellGroup.appendCell(googleCloudTranslateKeyRow);
                 cellGroup.appendCell(dividerTranslation);
+
                 cellGroup.appendCell(headerAITranslatorSettings);
                 cellGroup.appendCell(llmProviderRow);
-
                 List<AbstractConfigCell> newLlmProviderConfigRows = llmProviderConfigMap.get(newLlmProvider);
                 if (newLlmProviderConfigRows != null) {
                     newLlmProviderConfigRows.forEach(cellGroup::appendCell);
                 }
-
                 cellGroup.appendCell(llmSystemPromptRow);
                 cellGroup.appendCell(llmUserPromptRow);
                 cellGroup.appendCell(header_temperature);
@@ -455,11 +453,9 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 cellGroup.appendCell(dividerArticleTranslation);
 
                 oldLlmProvider = newLlmProvider;
-
                 updateRows();
             }
         };
-
         return fragmentView;
     }
 
