@@ -734,6 +734,37 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
                     StoryRecorder.getInstance(LaunchActivity.this, currentAccount).open(null);
                     drawerLayoutContainer.closeDrawer(true);
+                } else if (id == DrawerLayoutAdapter.nkbtnSettings) {
+                    presentFragment(new NekoSettingsActivity());
+                    drawerLayoutContainer.closeDrawer(false);
+                } else if (id == DrawerLayoutAdapter.nkbtnQrLogin) {  
+                    ActionIntroActivity fragment = new ActionIntroActivity(ActionIntroActivity.ACTION_TYPE_QR_LOGIN);
+                    fragment.setQrLoginDelegate(code -> {
+                        AlertDialog progressDialog = new AlertDialog(LaunchActivity.this, AlertDialog.ALERT_TYPE_SPINNER);
+                        progressDialog.setCanCancel(false);
+                        progressDialog.show();
+                        byte[] token = Base64.decode(code.substring("tg://login?token=".length()), Base64.URL_SAFE);
+                        TLRPC.TL_auth_acceptLoginToken req = new TLRPC.TL_auth_acceptLoginToken();
+                        req.token = token;
+                        ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
+                            try {
+                                progressDialog.dismiss();
+                            } catch (Exception ignore) {
+                            }
+                            if (!(response instanceof TLRPC.TL_authorization)) {
+                                AndroidUtilities.runOnUIThread(() -> AlertsCreator.showSimpleAlert(fragment, LocaleController.getString(R.string.AuthAnotherClient), LocaleController.getString(R.string.ErrorOccurred) + "\n" + error.text));
+                            }
+                        }));
+                    });
+                    actionBarLayout.presentFragment(fragment, false, true, true, false);
+                    if (AndroidUtilities.isTablet()) {
+                        actionBarLayout.showLastFragment();
+                        rightActionBarLayout.showLastFragment();
+                        drawerLayoutContainer.setAllowOpenDrawer(false, false);
+                    } else {
+                        drawerLayoutContainer.setAllowOpenDrawer(true, false);
+                    }
+                    drawerLayoutContainer.closeDrawer(false);
                 }
             }
         });

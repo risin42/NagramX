@@ -65,6 +65,8 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
     private SideMenultItemAnimator itemAnimator;
 
     public static int nkbtnNewStory = 1000;
+    public static int nkbtnSettings = 1001;
+    public static int nkbtnQrLogin = 1002;
 
     public DrawerLayoutAdapter(Context context, SideMenultItemAnimator animator, DrawerLayoutContainer drawerLayoutContainer) {
         mContext = context;
@@ -296,6 +298,8 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         int settingsIcon;
         int inviteIcon;
         int helpIcon;
+        int nSettingsIcon = R.drawable.nagramx_notification;
+        int qrLoginIcon = R.drawable.msg_qrcode;
         if (NaConfig.INSTANCE.getIconDecoration().Int() == 4) {
             eventType = -1;
         }
@@ -374,16 +378,6 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         if (showDivider) {
             items.add(null); // divider
         }
-
-        // TODO: NekoX: Fix icon here
-//        int newGroupIcon = R.drawable.baseline_group_24;
-//        int newSecretIcon = R.drawable.baseline_lock_24;
-//        int newChannelIcon = R.drawable.baseline_chat_bubble_24;
-//        int contactsIcon = R.drawable.baseline_perm_contact_calendar_24;
-//        int savedIcon = R.drawable.baseline_bookmark_24;
-//        int settingsIcon = R.drawable.baseline_settings_24;
-//        int callsIcon = R.drawable.baseline_call_24;
-
         items.add(new Item(2, LocaleController.getString(R.string.NewGroup), newGroupIcon));
         //items.add(new Item(3, LocaleController.getString(R.string.NewSecretChat), newSecretIcon));
         //items.add(new Item(4, LocaleController.getString(R.string.NewChannel), newChannelIcon));
@@ -413,6 +407,9 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
                 return true;
             }));
         }
+        items.add(null); // divider
+        items.add(new Item(nkbtnSettings, LocaleController.getString(R.string.NekoSettings), nSettingsIcon));
+        items.add(new Item(nkbtnQrLogin, LocaleController.getString(R.string.QrCode), qrLoginIcon));
     }
 
     public boolean click(View view, int position) {
