@@ -19,7 +19,7 @@
     <string name="NameOrder">姓名の順番</string>
     <string name="FirstLast">名・姓</string>
     <string name="LastFirst">姓・名</string>
-    <string name="TypefaceUseDefault">システムのデフォルトフォントを使用</string>
+    <string name="TypefaceUseDefault">システムフォントを使用</string>
     <string name="NoQuoteForward">引用なしで転送</string>
     <string name="Repeat">リピート</string>
     <string name="AddToSavedMessages">保存</string>

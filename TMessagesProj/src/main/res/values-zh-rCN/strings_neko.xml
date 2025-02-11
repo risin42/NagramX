@@ -19,7 +19,7 @@
     <string name="NameOrder">姓名顺序</string>
     <string name="FirstLast">名字 姓氏</string>
     <string name="LastFirst">姓氏 名字</string>
-    <string name="TypefaceUseDefault">使用系统默认字体</string>
+    <string name="TypefaceUseDefault">使用系统字体</string>
     <string name="NoQuoteForward">无引用转发</string>
     <string name="Repeat">复读</string>
     <string name="AddToSavedMessages">保存消息</string>

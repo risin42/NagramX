@@ -409,7 +409,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         }
         items.add(null); // divider
         items.add(new Item(nkbtnSettings, LocaleController.getString(R.string.NekoSettings), nSettingsIcon));
-        items.add(new Item(nkbtnQrLogin, LocaleController.getString(R.string.QrCode), qrLoginIcon));
+        items.add(new Item(nkbtnQrLogin, LocaleController.getString(R.string.ImportLogin), qrLoginIcon));
     }
 
     public boolean click(View view, int position) {

@@ -10,8 +10,8 @@
     <string name="ClearMessageDatabase">Clear Message Database</string>
     <string name="ClearMessageDatabaseNotification">Message Database cleared</string>
     <string name="CustomDeletedMark">Custom Deleted Mark</string>
-    <string name="HidePremiumSection">Hide Premium Section</string>
-    <string name="HideHelpSection">Hide Help Section</string>
+    <string name="HidePremiumSection">Hide Premium in Settings</string>
+    <string name="HideHelpSection">Hide Help in Settings</string>
     <string name="ProviderLLMTranslator">AI Translator</string>
     <string name="LlmApiUrl">API URL</string>
     <string name="LlmApiKey">API Key</string>

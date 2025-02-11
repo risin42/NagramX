@@ -9,8 +9,8 @@
     <string name="ClearMessageDatabase">メッセージデータベースをリセット</string>
     <string name="ClearMessageDatabaseNotification">メッセージデータベースがリセットされました</string>
     <string name="CustomDeletedMark">削除済みメッセージのマーク</string>
-    <string name="HidePremiumSection">プレミアムセクションを非表示</string>  
-    <string name="HideHelpSection">ヘルプセクションを非表示</string>
+    <string name="HidePremiumSection">Telegram Premium を非表示</string>
+    <string name="HideHelpSection">ヘルプを非表示</string>
     <string name="ProviderLLMTranslator">AI 翻訳</string>
     <string name="LlmApiUrl">API URL</string>
     <string name="LlmApiKey">API キー</string>
