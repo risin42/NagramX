@@ -26,6 +26,7 @@ You can grab the latest versions in these two ways:
     - Translate Entire Chats
     - Microsoft Translator
     - Center title in chat
+    - Custom drawer elements
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```
@@ -33,7 +34,6 @@ You can grab the latest versions in these two ways:
     - Removed in-app updates
     - Removed payment functionality
     - Removed channel follow pop-ups
-    - Refined N-Settings translations
     - Other minor optimizations and cleanup
 
 - **Fixes**
@@ -45,7 +45,6 @@ You can grab the latest versions in these two ways:
     - Other minor fixes
 
 - **Default Settings Adjustments**
-    - Enabled N-Settings hidden features
     - Disabled In-Chat sound
     - Disabled Dynamic Pack Order
     - Reverted font size and bubble radius to official Telegram defaults
