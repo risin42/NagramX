@@ -16,20 +16,16 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
     public TextCheckCell cell;
 
     public ConfigCellTextCheck(ConfigItem bind) {
-        this.bindConfig = bind;
-        this.title = getString(bindConfig.getKey());
-        this.subtitle = null;
+        this(bind, null);
     }
 
     public ConfigCellTextCheck(ConfigItem bind, String subtitle) {
-        this.bindConfig = bind;
-        this.title = getString(bindConfig.getKey());
-        this.subtitle = subtitle;
+        this(bind, subtitle, null);
     }
 
     public ConfigCellTextCheck(ConfigItem bind, String subtitle, String customTitle) {
         this.bindConfig = bind;
-        this.title = customTitle;
+        this.title = customTitle == null ? getString(bindConfig.getKey()) : customTitle;
         this.subtitle = subtitle;
     }
 

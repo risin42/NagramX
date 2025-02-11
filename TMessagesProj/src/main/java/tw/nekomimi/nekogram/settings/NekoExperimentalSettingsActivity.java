@@ -26,6 +26,7 @@ import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.MediaController;
+import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.tl.TL_account;
@@ -389,6 +390,9 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(messageSavingSaveMediaRow));
             } else if (key.equals(NaConfig.INSTANCE.getDisableStories().getKey())) {
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
+            } else if (key.equals(NekoConfig.localPremium.getKey())) {
+                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.mainUserInfoChanged);
+                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
             }
         };
 
