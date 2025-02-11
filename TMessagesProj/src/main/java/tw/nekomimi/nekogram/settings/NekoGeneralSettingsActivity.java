@@ -191,6 +191,21 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell hidePremiumSectionRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHidePremiumSection()));
     private final AbstractConfigCell hideHelpSectionRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideHelpSection()));
     private final AbstractConfigCell showStickersRowToplevelRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowStickersRowToplevel()));
+    private final AbstractConfigCell drawerElementsRow = cellGroup.appendCell(new ConfigCellSelectBox("DrawerElements", null, null, () -> {
+        if (getParentActivity() == null) return;
+        showDialog(NekoChatSettingsActivity.showConfigMenuAlert(getParentActivity(), "DrawerElements", new ArrayList<>() {{
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemMyProfile(), null, getString(R.string.MyProfile)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemSetEmojiStatus(), null, getString(R.string.SetEmojiStatus)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemNewGroup(), null, getString(R.string.NewGroup)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemNewChannel(), null, getString(R.string.NewChannel)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemContacts(), null, getString(R.string.Contacts)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemCalls(), null, getString(R.string.Calls)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemSaved(), null, getString(R.string.SavedMessages)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemSettings(), null, getString(R.string.Settings)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemNSettings(), null, getString(R.string.NekoSettings)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemQrLogin(), null, getString(R.string.ImportLogin)));
+        }}));
+    }));
     private final AbstractConfigCell divider5 = cellGroup.appendCell(new ConfigCellDivider());
 
     // Privacy

@@ -300,13 +300,14 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         int helpIcon;
         int nSettingsIcon = R.drawable.nagramx_notification;
         int qrLoginIcon = R.drawable.msg_qrcode;
+
         if (NaConfig.INSTANCE.getIconDecoration().Int() == 4) {
             eventType = -1;
         }
         if (eventType == 0 || NaConfig.INSTANCE.getIconDecoration().Int() == 1) {
             newGroupIcon = R.drawable.msg_groups_ny;
             //newSecretIcon = R.drawable.msg_secret_ny;
-            //newChannelIcon = R.drawable.msg_channel_ny;
+            newChannelIcon = R.drawable.msg_channel;
             contactsIcon = R.drawable.msg_contacts_ny;
             callsIcon = R.drawable.msg_calls_ny;
             savedIcon = R.drawable.msg_saved_ny;
@@ -316,7 +317,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         } else if (eventType == 1 || NaConfig.INSTANCE.getIconDecoration().Int() == 2) {
             newGroupIcon = R.drawable.msg_groups_14;
             //newSecretIcon = R.drawable.msg_secret_14;
-            //newChannelIcon = R.drawable.msg_channel_14;
+            newChannelIcon = R.drawable.msg_channel;
             contactsIcon = R.drawable.msg_contacts_14;
             callsIcon = R.drawable.msg_calls_14;
             savedIcon = R.drawable.msg_saved_14;
@@ -326,7 +327,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         } else if (eventType == 2 || NaConfig.INSTANCE.getIconDecoration().Int() == 3) {
             newGroupIcon = R.drawable.msg_groups_hw;
             //newSecretIcon = R.drawable.msg_secret_hw;
-            //newChannelIcon = R.drawable.msg_channel_hw;
+            newChannelIcon = R.drawable.msg_channel;
             contactsIcon = R.drawable.msg_contacts_hw;
             callsIcon = R.drawable.msg_calls_hw;
             savedIcon = R.drawable.msg_saved_hw;
@@ -336,7 +337,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         } else {
             newGroupIcon = R.drawable.msg_groups;
             //newSecretIcon = R.drawable.msg_secret;
-            //newChannelIcon = R.drawable.msg_channel;
+            newChannelIcon = R.drawable.msg_channel;
             contactsIcon = R.drawable.msg_contacts;
             callsIcon = R.drawable.msg_calls;
             savedIcon = R.drawable.msg_saved;
@@ -346,25 +347,32 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         }
         UserConfig me = UserConfig.getInstance(UserConfig.selectedAccount);
         boolean showDivider = false;
-        items.add(new Item(16, LocaleController.getString(R.string.MyProfile), R.drawable.left_status_profile));
-        if (me != null && me.isPremium()) {
+
+        boolean showMyProfile = NaConfig.INSTANCE.getDrawerItemMyProfile().Bool();
+        if (showMyProfile) items.add(new Item(16, LocaleController.getString(R.string.MyProfile), R.drawable.left_status_profile));
+
+        boolean showSetEmojiStatus = me != null && me.isPremium() && NaConfig.INSTANCE.getDrawerItemSetEmojiStatus().Bool();
+        if (showSetEmojiStatus) {
             if (me.getEmojiStatus() != null) {
                 items.add(new Item(15, LocaleController.getString(R.string.ChangeEmojiStatus), R.drawable.msg_status_edit));
             } else {
                 items.add(new Item(15, LocaleController.getString(R.string.SetEmojiStatus), R.drawable.msg_status_set));
             }
+//            showDivider = true;
+        }
+        if (showMyProfile || showSetEmojiStatus) {
             showDivider = true;
         }
 //        if (MessagesController.getInstance(UserConfig.selectedAccount).storiesEnabled()) {
 //            items.add(new Item(17, LocaleController.getString(R.string.ProfileStories), R.drawable.msg_menu_stories));
 //            showDivider = true;
 //        }
-        showDivider = true;
-        if (ApplicationLoader.applicationLoaderInstance != null) {
-            if (ApplicationLoader.applicationLoaderInstance.extendDrawer(items)) {
-                showDivider = true;
-            }
-        }
+//        showDivider = true;
+//        if (ApplicationLoader.applicationLoaderInstance != null) {
+//            if (ApplicationLoader.applicationLoaderInstance.extendDrawer(items)) {
+//                showDivider = true;
+//            }
+//        }
         TLRPC.TL_attachMenuBots menuBots = MediaDataController.getInstance(UserConfig.selectedAccount).getAttachMenuBots();
         if (menuBots != null && menuBots.bots != null) {
             for (int i = 0; i < menuBots.bots.size(); i++) {
@@ -378,13 +386,13 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         if (showDivider) {
             items.add(null); // divider
         }
-        items.add(new Item(2, LocaleController.getString(R.string.NewGroup), newGroupIcon));
+        if (NaConfig.INSTANCE.getDrawerItemNewGroup().Bool()) items.add(new Item(2, LocaleController.getString(R.string.NewGroup), newGroupIcon));
         //items.add(new Item(3, LocaleController.getString(R.string.NewSecretChat), newSecretIcon));
-        //items.add(new Item(4, LocaleController.getString(R.string.NewChannel), newChannelIcon));
-        items.add(new Item(6, LocaleController.getString(R.string.Contacts), contactsIcon));
-        items.add(new Item(10, LocaleController.getString(R.string.Calls), callsIcon));
-        items.add(new Item(11, LocaleController.getString(R.string.SavedMessages), savedIcon));
-        items.add(new Item(8, LocaleController.getString(R.string.Settings), settingsIcon));
+        if (NaConfig.INSTANCE.getDrawerItemNewChannel().Bool()) items.add(new Item(4, LocaleController.getString(R.string.NewChannel), newChannelIcon));
+        if (NaConfig.INSTANCE.getDrawerItemContacts().Bool()) items.add(new Item(6, LocaleController.getString(R.string.Contacts), contactsIcon));
+        if (NaConfig.INSTANCE.getDrawerItemCalls().Bool()) items.add(new Item(10, LocaleController.getString(R.string.Calls), callsIcon));
+        if (NaConfig.INSTANCE.getDrawerItemSaved().Bool()) items.add(new Item(11, LocaleController.getString(R.string.SavedMessages), savedIcon));
+        if (NaConfig.INSTANCE.getDrawerItemSettings().Bool()) items.add(new Item(8, LocaleController.getString(R.string.Settings), settingsIcon));
 //        items.add(null); // divider
 //        items.add(new Item(7, LocaleController.getString(R.string.InviteFriends), inviteIcon));
 //        items.add(new Item(13, LocaleController.getString(R.string.TelegramFeatures), helpIcon));
@@ -394,6 +402,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
                 return true;
             }));
         }
+
         if (NekoXConfig.disableStatusUpdate && UserConfig.getInstance(UserConfig.selectedAccount).isClientActivated() && !UserConfig.getInstance(UserConfig.selectedAccount).getCurrentUser().bot) {
             boolean online = NekoXConfig.lastOnlineState;
             String message = online ? StrUtil.upperFirst(LocaleController.getString("Online", R.string.Online)) : LocaleController.getString("VoipOfflineTitle", R.string.VoipOfflineTitle);
@@ -407,9 +416,12 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
                 return true;
             }));
         }
-        items.add(null); // divider
-        items.add(new Item(nkbtnSettings, LocaleController.getString(R.string.NekoSettings), nSettingsIcon));
-        items.add(new Item(nkbtnQrLogin, LocaleController.getString(R.string.ImportLogin), qrLoginIcon));
+
+        boolean showNSettings = NaConfig.INSTANCE.getDrawerItemNSettings().Bool();
+        boolean showQrLogin = NaConfig.INSTANCE.getDrawerItemQrLogin().Bool();
+        if (showNSettings || showQrLogin) items.add(null); // divider
+        if (showNSettings) items.add(new Item(nkbtnSettings, LocaleController.getString(R.string.NekoSettings), nSettingsIcon));
+        if (showQrLogin) items.add(new Item(nkbtnQrLogin, LocaleController.getString(R.string.ImportLogin), qrLoginIcon));
     }
 
     public boolean click(View view, int position) {

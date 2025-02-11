@@ -467,6 +467,8 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                 Integer tag = (Integer) v2.getTag();
                 if (tag == finalA) {
                     textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
+                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.mainUserInfoChanged);
+                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
                 }
             });
         }
