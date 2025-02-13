@@ -1115,7 +1115,7 @@ public class FilterCreateActivity extends BaseFragment {
         req.filter.title.entities = newFilterNameEntities;
         if (newFilterEmoticon != null) {
             req.filter.emoticon = newFilterEmoticon;
-            req.filter.flags |= 33554432;
+            req.filter.flags |= ConnectionsManager.FileTypeVideo;
         }
         req.filter.title_noanimate = newFilterNoanimate;
         if (newFilterColor < 0) {
