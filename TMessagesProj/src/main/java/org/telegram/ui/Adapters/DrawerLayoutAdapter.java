@@ -67,6 +67,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
     public static int nkbtnNewStory = 1000;
     public static int nkbtnSettings = 1001;
     public static int nkbtnQrLogin = 1002;
+    public static int nkbtnArchivedChats = 1003;
 
     public DrawerLayoutAdapter(Context context, SideMenultItemAnimator animator, DrawerLayoutContainer drawerLayoutContainer) {
         mContext = context;
@@ -300,6 +301,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         int helpIcon;
         int nSettingsIcon = R.drawable.nagramx_notification;
         int qrLoginIcon = R.drawable.msg_qrcode;
+        int archiveIcon = R.drawable.msg_archive;
 
         if (NaConfig.INSTANCE.getIconDecoration().Int() == 4) {
             eventType = -1;
@@ -385,6 +387,10 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         }
         if (showDivider) {
             items.add(null); // divider
+        }
+        if (NaConfig.INSTANCE.getDrawerItemArchivedChats().Bool()) { 
+            items.add(new Item(nkbtnArchivedChats, LocaleController.getString(R.string.ArchivedChats), archiveIcon));
+            items.add(null);
         }
         if (NaConfig.INSTANCE.getDrawerItemNewGroup().Bool()) items.add(new Item(2, LocaleController.getString(R.string.NewGroup), newGroupIcon));
         //items.add(new Item(3, LocaleController.getString(R.string.NewSecretChat), newSecretIcon));

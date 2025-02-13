@@ -912,6 +912,18 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    var drawerItemArchivedChats =
+        addConfig(
+            "DrawerItemArchivedChats",
+            ConfigItem.configTypeBool,
+            false
+        )
+    var hideArchive =
+        addConfig(
+            "HideArchive",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
 

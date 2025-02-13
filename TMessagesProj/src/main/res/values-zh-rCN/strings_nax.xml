@@ -73,4 +73,5 @@
     <string name="InstantViewTranslation">即时预览</string>
     <string name="SaveDeletedMessageForBot">在机器人对话中保存</string>
     <string name="DrawerElements">侧栏菜单</string>
+    <string name="HideArchive">移除聊天列表中的已归档聊天</string>
 </resources>

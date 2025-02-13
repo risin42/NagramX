@@ -765,7 +765,12 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                         drawerLayoutContainer.setAllowOpenDrawer(true, false);
                     }
                     drawerLayoutContainer.closeDrawer(false);
-                }
+                } else if (id == DrawerLayoutAdapter.nkbtnArchivedChats) {
+                    Bundle args = new Bundle();
+                    args.putInt("folderId", 1);
+                    presentFragment(new DialogsActivity(args));
+                    drawerLayoutContainer.closeDrawer(false);
+                }  
             }
         });
         final ItemTouchHelper sideMenuTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {

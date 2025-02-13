@@ -86,4 +86,5 @@
     <string name="InstantViewTranslation">Instant View</string>
     <string name="SaveDeletedMessageForBot">Save in Bot Dialogs</string>
     <string name="DrawerElements">Drawer Elements</string>
+    <string name="HideArchive">Remove Archived Chats from Dialog List</string>
 </resources>

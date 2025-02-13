@@ -73,4 +73,5 @@
     <string name="InstantViewTranslation">アーティクル</string>
     <string name="SaveDeletedMessageForBot">ボットチャットで保存</string>
     <string name="DrawerElements">ドロワーメニュー</string>
+    <string name="HideArchive">チャットリストで収納したチャットを非表示</string>
 </resources>

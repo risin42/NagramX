@@ -9071,6 +9071,9 @@ public class MessagesController extends BaseController implements NotificationCe
         if (dialogs == null) {
             return new ArrayList<>();
         }
+        if (NaConfig.INSTANCE.getHideArchive().Bool()) {
+            removeFolder(1);
+        }
         return dialogs;
     }
 

@@ -115,6 +115,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell headerFolder = cellGroup.appendCell(new ConfigCellHeader(getString("Folder")));
     private final AbstractConfigCell hideAllTabRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.hideAllTab, getString("HideAllTabAbout")));
     private final AbstractConfigCell openArchiveOnPullRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.openArchiveOnPull));
+    private final AbstractConfigCell hideArchiveRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideArchive()));
     private final AbstractConfigCell ignoreMutedCountRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.ignoreMutedCount));
     private final AbstractConfigCell ignoreFolderCountRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getIgnoreFolderCount()));
     private final AbstractConfigCell tabsTitleTypeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NekoConfig.tabsTitleType,
@@ -196,6 +197,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
         showDialog(NekoChatSettingsActivity.showConfigMenuAlert(getParentActivity(), "DrawerElements", new ArrayList<>() {{
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemMyProfile(), null, getString(R.string.MyProfile)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemSetEmojiStatus(), null, getString(R.string.SetEmojiStatus)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemArchivedChats(), null, getString(R.string.ArchivedChats)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemNewGroup(), null, getString(R.string.NewGroup)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemNewChannel(), null, getString(R.string.NewChannel)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemContacts(), null, getString(R.string.Contacts)));
@@ -451,6 +453,10 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             } else if (key.equals(NaConfig.INSTANCE.getCenterActionBarTitleType().getKey())) {
                 int value = (int) newValue;
                 NaConfig.INSTANCE.getCenterActionBarTitle().setConfigBool(value != 0);
+            } else if (key.equals(NaConfig.INSTANCE.getHideArchive().getKey())) {
+                setCanNotChange();
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(openArchiveOnPullRow));
+                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             }
         };
 
@@ -662,6 +668,9 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
 
         enabled = NekoConfig.hideProxyByDefault.Bool();
         ((ConfigCellTextCheck) useProxyItemRow).setEnabled(!enabled);
+
+        enabled = NaConfig.INSTANCE.getHideArchive().Bool();
+        ((ConfigCellTextCheck) openArchiveOnPullRow).setEnabled(!enabled);
     }
 
     private class ChatBlurAlphaSeekBar extends FrameLayout {
