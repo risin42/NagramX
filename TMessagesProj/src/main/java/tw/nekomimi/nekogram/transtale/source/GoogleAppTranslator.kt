@@ -7,7 +7,6 @@ import org.telegram.messenger.R
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.transtale.TransUtils
 import tw.nekomimi.nekogram.transtale.Translator
-import tw.nekomimi.nekogram.transtale.applyProxy
 import tw.nekomimi.nekogram.utils.applyIf
 
 object GoogleAppTranslator : Translator {

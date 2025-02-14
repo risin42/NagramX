@@ -9,11 +9,10 @@ import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.transtale.Translator
-import tw.nekomimi.nekogram.utils.applyUserAgent
 
 object LingoTranslator : Translator {
 
-    private const val NAX = "nu.gpu.nagram_LingoTranslator"
+    private const val NAX = "LingoTranslator"
 
     override suspend fun doTranslate(from: String, to: String, query: String): String {
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "doTranslate: from=$from, to=$to, query=$query")
@@ -39,7 +38,7 @@ object LingoTranslator : Translator {
         val response = HttpUtil.createPost("https://api.interpreter.caiyunai.com/v1/translator")
             .header("Content-Type", "application/json; charset=UTF-8")
             .header("X-Authorization", "token 9sdftiq37bnv410eon2l") // 白嫖
-            .applyUserAgent()
+            .header("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A5297c Safari/602.1")
             .body(requestBody)
             .execute()
 

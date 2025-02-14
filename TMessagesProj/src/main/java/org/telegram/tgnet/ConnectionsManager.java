@@ -80,7 +80,6 @@ import javax.net.ssl.SSLException;
 import cn.hutool.core.util.StrUtil;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.utils.DnsFactory;
-import tw.nekomimi.nekogram.ErrorDatabase;
 
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import xyz.nextalone.nagram.NaConfig;

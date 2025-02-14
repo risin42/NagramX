@@ -18,10 +18,6 @@ import tw.nekomimi.nekogram.utils.receive
 import tw.nekomimi.nekogram.utils.receiveLazy
 import xyz.nextalone.nagram.NaConfig
 
-fun <T : HttpRequest> T.applyProxy(): T {
-    return this
-}
-
 val String.code2Locale: Locale by
         receiveLazy<String, Locale> {
             var ret: Locale

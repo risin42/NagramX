@@ -6,7 +6,6 @@ import org.json.JSONObject
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.transtale.Translator
-import tw.nekomimi.nekogram.utils.applyUserAgent
 import java.util.Date
 import java.util.UUID
 
@@ -42,7 +41,7 @@ object TranSmartTranslator : Translator {
 
         val response = HttpUtil.createPost("https://transmart.qq.com/api/imt")
             .header("Content-Type", "application/json; charset=UTF-8")
-            .applyUserAgent()
+            .header("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A5297c Safari/602.1")
             .body(JSONObject().apply {
                 put("header", JSONObject().apply{
                     put("client_key", "browser-chrome-${getRandomBrowserVersion()}-${getRandomOperatingSystem()}-${UUID.randomUUID()}-${Date().time}")

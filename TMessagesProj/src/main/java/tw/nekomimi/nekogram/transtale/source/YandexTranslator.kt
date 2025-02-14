@@ -4,8 +4,6 @@ import cn.hutool.core.lang.UUID
 import cn.hutool.http.HttpUtil
 import org.json.JSONObject
 import tw.nekomimi.nekogram.transtale.Translator
-import tw.nekomimi.nekogram.transtale.applyProxy
-import tw.nekomimi.nekogram.utils.applyUserAgent
 
 object YandexTranslator : Translator {
 
@@ -16,8 +14,7 @@ object YandexTranslator : Translator {
         val uuid2 = UUID.fastUUID().toString(true)
 
         val response = HttpUtil.createPost("https://translate.yandex.net/api/v1/tr.json/translate?srv=android&uuid=$uuid&id=$uuid2-9-0")
-                .applyUserAgent()
-                .applyProxy()
+                .header("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A5297c Safari/602.1")
                 .form("text", query)
                 .form("lang", if (from == "auto") to else "$from-$to")
                 .execute()

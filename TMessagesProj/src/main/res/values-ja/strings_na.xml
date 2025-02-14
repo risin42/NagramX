@@ -24,7 +24,6 @@
     <string name="ToTheBeginning">先頭に戻る</string>
     <string name="DateOfForwardedMsg">転送メッセージの日付を表示</string>
     <string name="ShowMessageID">メッセージ ID を表示</string>
-    <string name="ShowRPCError">RPC エラーを表示</string>
     <string name="ShowPremiumStickersAnimation">プレミアムステッカーアニメーションを表示</string>
     <string name="ShowPremiumStarInChat">チャットにプレミアムスターを表示</string>
     <string name="ShowPremiumAvatarAnimation">プレミアムアバターアニメーションを表示</string>
