@@ -13,20 +13,19 @@ You can grab the latest versions in these two ways:
 - **Additional Features**
     - Save Deleted Messages
     - Save Edits History
-    - AI Translator with customizable API endpoint and Model
+    - AI Translator
     - Hide the Premium and Help sections in settings
     - Hide side share button
-    - Hide bottom bar in channels(merged upstream)
     - Avoids requesting camera permission when selecting images
     - Show Stickers row in main settings
     - Clear Cloud Settings data
     - Custom preferred languages in translation language selector
-    - Text selection in restricted channels(merged upstream)
     - Ask before sending bot command
     - Translate Entire Chats
     - Microsoft Translator
     - Center title in chat
     - Custom drawer elements
+    - Remove Archived Chats from dialog list
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```
@@ -37,7 +36,6 @@ You can grab the latest versions in these two ways:
     - Other minor optimizations and cleanup
 
 - **Fixes**
-    - Ripple effect for N-Settings
     - Google Maps
     - DeepL Translator
     - Bing Translator
