@@ -351,12 +351,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
         // Cells: Set OnSettingChanged Callbacks
         cellGroup.callBackSettingsChanged = (key, newValue) -> {
-            if (key.equals(NekoConfig.mediaPreview.getKey())) {
-                if ((boolean) newValue) {
-                    tooltip.setInfoText(AndroidUtilities.replaceTags(LocaleController.formatString(R.string.BetaWarning)));
-                    tooltip.showWithAction(0, UndoView.ACTION_CACHE_WAS_CLEARED, null, null);
-                }
-            } else if (key.equals(NekoConfig.enableStickerPin.getKey())) {
+            if (key.equals(NekoConfig.enableStickerPin.getKey())) {
                 if ((boolean) newValue) {
                     tooltip.setInfoText(AndroidUtilities.replaceTags(LocaleController.formatString(R.string.EnableStickerPinTip)));
                     tooltip.showWithAction(0, UndoView.ACTION_CACHE_WAS_CLEARED, null, null);

@@ -26,7 +26,7 @@
     <string name="LlmProviderDeepSeekKey">DeepSeek API キー</string>
     <string name="LlmProviderXAIKey">xAI API キー</string>
     <string name="LlmSystemPrompt">システムプロンプト</string>
-    <string name="LlmSystemPromptNotice">AI の役割と行動指針を定義します。\n\nこのプロンプトは、AI の口調、個性、制約を設定します。AI をどのようなアシスタントにすべきかを記述することを検討してください。\n\n設定したくない場合は空白のままにできます。</string>
+    <string name="LlmSystemPromptNotice">AI の役割と行動指針を定義します。\n\nこのプロンプトは、AI の口調や個性、制約などを設定するものです。どのようなアシスタントとして振る舞ってほしいかを記述してください。\n\n特に設定が不要な場合は、空白のままでも構いません。</string>
     <string name="LlmUserPrompt">ユーザープロンプト</string>
     <string name="LlmUserPromptNotice">元のメッセージのプレースホルダーとして @text を、ターゲット言語のプレースホルダーとして @toLang を使用します（オプション）。\n\n例：\'@text を @toLang に説明なしで翻訳してください。\'\n\n空白のままにすると、デフォルトのプロンプトが使用されます。</string>
     <string name="LlmTemperature">温度</string>

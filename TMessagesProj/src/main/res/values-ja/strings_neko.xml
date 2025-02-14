@@ -38,13 +38,9 @@
     <string name="Fireworks">花火</string>
     <string name="DeleteDownloadedFile">キャッシュされたファイルを削除</string>
     <string name="TestBackend">バックエンドサーバーをテスト</string>
-    <string name="TestBackendOn">このアカウントはテスト用バックエンドサーバーに接続します。</string>
-    <string name="TestBackendOff">このアカウントは本番用バックエンドサーバーに接続します。</string>
     <string name="HideProxySponsorChannel">プロキシスポンサーチャンネルを非表示</string>
     <string name="ViewHistory">履歴</string>
     <string name="Nya">ニャー！</string>
-    <string name="SaveCacheToExternalFilesDir">ストレージの分離</string>
-    <string name="SaveCacheToExternalFilesDirAbout">「Telegram」フォルダをアプリ固有のディレクトリに保存して、共有ストレージを整理します。</string>
     <string name="SensitiveDisableFiltering">センシティブコンテンツフィルターを無効にする</string>
     <string name="SensitiveAbout">すべてのデバイスで公開チャンネルのセンシティブなメディアコンテンツを表示します。</string>
     <string name="StickerSize">ステッカーサイズ</string>
@@ -58,7 +54,6 @@
     <string name="MessageDetails">詳細</string>
     <string name="ExportAsJson">JSON としてエクスポート</string>
     <string name="Translate">翻訳</string>
-    <string name="DeleteAccount">Telegram アカウントを削除</string>
     <string name="TranslateFailed">翻訳サーバーエラー</string>
     <string name="TranslationProvider">翻訳プロバイダ</string>
     <string name="ProviderGoogleTranslate">Google 翻訳</string>
@@ -73,7 +68,6 @@
     <string name="HideKeyboardOnChatScroll">チャットスクロール時にキーボードを非表示</string>
     <string name="UserRestrictionsSendStickers2">ステッカーを送信</string>
     <string name="UserRestrictionsSendGifs">GIF を送信</string>
-    <string name="ShowTabsOnForward">転送ページでタブを表示</string>
     <string name="CheckAllAdministrated">管理しているグループとチャンネルを追加</string>
     <string name="RearVideoMessages">ビデオメッセージで背面カメラを使用</string>
     <string name="HideAllTab">「すべてのチャット」タブを非表示</string>
@@ -96,12 +90,10 @@
     <string name="ResetStickerSize">ステッカーサイズをリセット</string>
     <string name="RestartAppToTakeEffect">変更を適用するにはアプリを再起動してください。</string>
     <string name="DisableAppBarShadow">アプリバーの影を無効にする</string>
-    <string name="BetaWarning">これは **Telegram** によって実装された **ベータ版** 機能です。</string>
     <string name="MediaPreview">チャットリストのメディアプレビュー</string>
     <string name="AutoPauseVideo">ビデオの自動一時停止</string>
     <string name="AutoPauseVideoAbout">画面ロック時/バックグラウンドに移動時。</string>
     <string name="DisableProximityEvents">近接センサーイベントを無効にする</string>
-    <string name="IncreaseVoiceMessageQuality">音声メッセージの音質を向上</string>
     <string name="SelectBetween">…から選択</string>
     <string name="AvatarAsBackground">アバターを背景として使用</string>
     <string name="BlurAvatarBackground">アバターをぼかす</string>
@@ -131,12 +123,9 @@
     <string name="SaveToDownloadCount_many">%1$d個のファイルをダウンロードに保存しています</string>
     <string name="NekoGeneralNotification">通知</string>
     <string name="disableNotificationBubbles">通知バブルを無効にする</string>
-    <string name="reactions">リアクションメニュー</string>
-    <string name="doubleTapSendReactions">メッセージをダブルタップしてリアクションを送信(デフォルト)</string>
     <string name="ReactionsDisabled">リアクションメニューを無効にする</string>
     <string name="customSavePath">カスタム保存パス</string>
     <string name="customSavePathHint">空白のままにすると直接保存されます</string>
-    <string name="doubleTapShowReactions">メッセージをダブルタップしたときにのみリアクションメニューを開く</string>
     <string name="channelLabel">チャンネル</string>
     <string name="forceBlurInChat">チャットのトップバーのぼかしを有効にする</string>
     <string name="ChatBlurAlphaValue">チャットのトップバーの不透明度</string>
@@ -163,9 +152,6 @@
     <string name="PasscodeRemoveConfirmMessage">本当にこのアカウントのパスコードを削除しますか？</string>
     <string name="PasscodePanicCodeAbout">問題が発生した場合、緊急コードを使用してアカウントからログアウトします。</string>
     <string name="AutoTranslate">自動翻訳</string>
-    <string name="AutoTranslateAbout">他の言語のメッセージを自動的に翻訳します。</string>
-    <string name="BrokenMLKit">オプションは利用できません</string>
-    <string name="BrokenMLKitDetail">Google ML Kit 言語認識機能がこのデバイスで何らかの理由で壊れています。</string>
     <string name="RestrictionReason">制限の理由</string>
     <string name="InvalidCustomEmojiTypeface">無効なフォントファイルです。</string>
     <string name="DownloadEmojiSet">%sをダウンロード</string>

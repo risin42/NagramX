@@ -44,7 +44,8 @@
     <string name="ToTheMessage">回到消息</string>
     <string name="ZalgoFilter">过滤 \"Zalgo\" 符号</string>
     <string name="ZalgoFilterNotice">昵称和消息中的 \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" 符号将被过滤。</string>
-    <string name="CustomChannelLabel">自定义默认频道标签</string>
+    <string name="labelChannelUser">标记频道身份发言用户</string>
+    <string name="CustomChannelLabel">频道身份发言用户的标记</string>
     <string name="AlwaysShowDownloadIcon">一直显示下载管理器</string>
     <string name="QuickToggleAnonymous">快速切换匿名发言</string>
     <string name="QuickToggleAnonymousNotice">如果你是群组的所有者的话。</string>

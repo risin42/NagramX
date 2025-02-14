@@ -44,7 +44,8 @@
     <string name="ToTheMessage">メッセージに移動</string>
     <string name="ZalgoFilter">「Zalgo」文字をフィルタリング</string>
     <string name="ZalgoFilterNotice">ニックネームやメッセージの「Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓」文字はフィルタリングされます。</string>
-    <string name="CustomChannelLabel">カスタムチャンネルのラベル</string>
+    <string name="labelChannelUser">チャンネル発言者をマーク</string>
+    <string name="CustomChannelLabel">チャンネル発言者のマーク</string>
     <string name="AlwaysShowDownloadIcon">常にダウンロードアイコンを表示</string>
     <string name="QuickToggleAnonymous">匿名発言をすばやく切り替え</string>
     <string name="QuickToggleAnonymousNotice">グループの所有者である場合。</string>

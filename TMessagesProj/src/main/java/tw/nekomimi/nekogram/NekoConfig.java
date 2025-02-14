@@ -132,8 +132,6 @@ public class NekoConfig {
     public static ConfigItem disableAppBarShadow = addConfig("DisableAppBarShadow", configTypeBool, false);
     public static ConfigItem mediaPreview = addConfig("MediaPreview", configTypeBool, true);
 
-    public static ConfigItem proxyAutoSwitch = addConfig("ProxyAutoSwitch", configTypeBool, false);
-
     public static ConfigItem disableVibration = addConfig("DisableVibration", configTypeBool, false);
     public static ConfigItem autoPauseVideo = addConfig("AutoPauseVideo", configTypeBool, false);
     public static ConfigItem disableProximityEvents = addConfig("DisableProximityEvents", configTypeBool, false);
@@ -142,7 +140,6 @@ public class NekoConfig {
     public static ConfigItem useChatAttachMediaMenu = addConfig("UseChatAttachEnterMenu", configTypeBool, true);
     public static ConfigItem disableLinkPreviewByDefault = addConfig("DisableLinkPreviewByDefault", configTypeBool, false);
     public static ConfigItem sendCommentAfterForward = addConfig("SendCommentAfterForward", configTypeBool, true);
-//    public static ConfigItem increaseVoiceMessageQuality = addConfig("IncreaseVoiceMessageQuality", configTypeBool, true);
     public static ConfigItem disableTrending = addConfig("DisableTrending", configTypeBool, true);
     public static ConfigItem dontSendGreetingSticker = addConfig("DontSendGreetingSticker", configTypeBool, true);
     public static ConfigItem hideTimeForSticker = addConfig("HideTimeForSticker", configTypeBool, true);
@@ -157,7 +154,6 @@ public class NekoConfig {
     public static ConfigItem rememberAllBackMessages = addConfig("rememberAllBackMessages", configTypeBool, false);
     public static ConfigItem hideSendAsChannel = addConfig("hideSendAsChannel", configTypeBool, true);
     public static ConfigItem showSpoilersDirectly = addConfig("showSpoilersDirectly", configTypeBool, false);
-    public static ConfigItem reactions = addConfig("reactions", configTypeInt, 0);
     public static ConfigItem disableReactionsWhenSelecting = addConfig("disableReactionsWhenSelecting", configTypeBool, true);
 
     public static ConfigItem labelChannelUser = addConfig("labelChannelUser", configTypeBool, false);
