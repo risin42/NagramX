@@ -90,7 +90,9 @@ public abstract class AyuMessageUtils {
             TLRPC.TL_messageFwdHeader tLRPC$TL_messageFwdHeader = new TLRPC.TL_messageFwdHeader();
             tLRPC$Message.fwd_from = tLRPC$TL_messageFwdHeader;
             tLRPC$TL_messageFwdHeader.flags = ayuMessageBase.fwdFlags;
-            tLRPC$TL_messageFwdHeader.from_id = messagesController.getPeer(ayuMessageBase.fwdFromId);
+            if (ayuMessageBase.fwdFromId != 0) {
+                tLRPC$TL_messageFwdHeader.from_id = messagesController.getPeer(ayuMessageBase.fwdFromId);
+            }
             TLRPC.MessageFwdHeader tLRPC$MessageFwdHeader = tLRPC$Message.fwd_from;
             tLRPC$MessageFwdHeader.from_name = ayuMessageBase.fwdName;
             tLRPC$MessageFwdHeader.date = ayuMessageBase.fwdDate;
