@@ -1184,8 +1184,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int OPTION_DETAILS = 204;
     private final static int OPTION_HISTORY = 205;
 
-    private boolean isChannelBottomMuteView = false;
-
     private final static int[] allowedNotificationsDuringChatListAnimations = new int[]{
             AyuConstants.MESSAGES_DELETED_NOTIFICATION,
             NotificationCenter.messagesRead,
@@ -9965,13 +9963,30 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             return;
         }
         undoView = new UndoView(getContext(), this, false, themeDelegate);
-        undoView.setAdditionalTranslationY(isBottomOverlayHidden() ? 0 : AndroidUtilities.dp(51));
+        undoView.setAdditionalTranslationY(isBottomOverlayHidden() ? 0 : AndroidUtilities.dp(searchContainerHeight));
         contentView.addView(undoView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 0, 8, 8));
     }
 
+    // --- NagramX: hide bottom bar in channels ---
     private boolean isBottomOverlayHidden() {
-        return currentChat != null && NaConfig.INSTANCE.getDisableChannelMuteButton().Bool() && isChannelBottomMuteView && !currentChat.creator && !ChatObject.canWriteToChat(currentChat);
+        if (NaConfig.INSTANCE.getDisableChannelMuteButton().Bool()) {
+            createSearchContainer();
+            return bottomOverlayChat.getVisibility() == View.INVISIBLE
+                    && chatActivityEnterView.getVisibility() == View.INVISIBLE
+                    && bottomMessagesActionContainer.getVisibility() == View.INVISIBLE
+                    && searchContainer.getVisibility() == View.INVISIBLE
+                    && !isInPreviewMode()
+                    && !isInBubbleMode();
+        }
+        return false;
     }
+
+    private boolean isMuteUnmuteButton() {
+        return NaConfig.INSTANCE.getDisableChannelMuteButton().Bool()
+                && (bottomOverlayChatText.getText() == LocaleController.getString(R.string.ChannelMute)
+                || bottomOverlayChatText.getText() == LocaleController.getString(R.string.ChannelUnmute));
+    }
+    // --- NagramX: hide bottom bar in channels ---
 
     @Override
     public INavigationLayout.BackButtonState getBackButtonState() {
@@ -12005,7 +12020,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             bottomMessagesActionContainer.setTranslationY(bottomPanelTranslationYReverse);
         }
         if (undoView != null) {
-            undoView.setAdditionalTranslationY(chatActivityEnterView.getHeightWithTopView() - chatActivityEnterView.getAnimatedTop() - (isBottomOverlayHidden() ? AndroidUtilities.dp(51) : 0));
+            undoView.setAdditionalTranslationY(chatActivityEnterView.getHeightWithTopView() - chatActivityEnterView.getAnimatedTop() - (isBottomOverlayHidden() ? AndroidUtilities.dp(searchContainerHeight) : 0));
         }
         if (messagesSearchListContainer != null) {
             messagesSearchListContainer.setTranslationY(getHashtagTabsHeight() + contentPanTranslation);
@@ -17698,7 +17713,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     bottom = bottomOverlayChat.getBottom();
                 }
                 top -= (int) ((pullingDownAnimateToActivity == null ? 0 : pullingDownAnimateToActivity.pullingBottomOffset) * pullingDownAnimateProgress);
-                pullingDownDrawable.drawBottomPanel(canvas, top, bottom, getMeasuredWidth());
+                if ((!isMuteUnmuteButton() && bottomOverlayChat.getVisibility() == View.VISIBLE) || chatActivityEnterView.getVisibility() == View.VISIBLE) {
+                    pullingDownDrawable.drawBottomPanel(canvas, top, bottom, getMeasuredWidth());
+                }
             }
             if (pullingDownAnimateToActivity != null) {
                 canvas.saveLayerAlpha(0, 0, getMeasuredWidth(), getMeasuredHeight(), (int) (255 * pullingDownAnimateProgress), Canvas.ALL_SAVE_FLAG);
@@ -17874,7 +17891,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else if (child == chatListView || child == chatListThanosEffect) {
                     int contentWidthSpec = View.MeasureSpec.makeMeasureSpec(widthSize, View.MeasureSpec.EXACTLY);
                     int h = heightSize - listViewTopHeight - (inPreviewMode && Build.VERSION.SDK_INT >= 21 ? AndroidUtilities.statusBarHeight : 0) + blurredViewTopOffset + blurredViewBottomOffset;
-                    h += (isBottomOverlayHidden() ? AndroidUtilities.dp(51) : 0);
+                    h += (isBottomOverlayHidden() ? AndroidUtilities.dp(searchContainerHeight) : 0);
                     if (keyboardSize > AndroidUtilities.dp(20) && getLayoutParams().height < 0 && !isInsideContainer) {
                         h += keyboardSize;
                     }
@@ -18096,7 +18113,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         childTop -= chatActivityEnterView.getMeasuredHeight();
                     }
                     if (isBottomOverlayHidden()) {
-                        childTop += AndroidUtilities.dp(51);
+                        childTop += AndroidUtilities.dp(searchContainerHeight);
                     }
                 } else if (child == emptyViewContainer) {
                     childTop -= inputFieldHeight / 2 - (actionBar.getVisibility() == VISIBLE ? actionBar.getMeasuredHeight() / 2 : 0);
@@ -26743,7 +26760,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         bottomOverlayChatWaitsReply = false;
         bottomOverlayLinks = false;
         boolean forceNoBottom = false;
-        boolean tempMuteView = false;
         boolean showGiftButton = false;
         if (chatMode == MODE_DEFAULT && getDialogId() != getUserConfig().getClientUserId() && userInfo != null && userInfo.contact_require_premium && !getUserConfig().isPremium()) {
             bottomOverlayLinks = true;
@@ -26792,7 +26808,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             showBottomOverlayProgress(false, false);
         } else if (currentUser != null && currentUser.id == UserObject.VERIFY) {
-            tempMuteView = true;
             if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                 bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMute), false);
                 bottomOverlayChatText.setEnabled(true);
@@ -26830,7 +26845,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     bottomOverlayChatText.setTextInfo(LocaleController.getString(R.string.ForumReplyToMessagesInTopic));
                     bottomOverlayChatText.setEnabled(false);
                 } else if (!isThreadChat()) {
-                    tempMuteView = true;
                     if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                         bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMute), false);
                         bottomOverlayChatText.setEnabled(true);
@@ -26884,7 +26898,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
             } else if (UserObject.isReplyUser(currentUser)) {
-                tempMuteView = true;
                 if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                     bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMute), false);
                 } else {
@@ -26910,8 +26923,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         }
 
-        isChannelBottomMuteView = tempMuteView;
-
         if (currentChat != null && currentChat.gigagroup && !isReport() && chatMode == 0) {
             bottomOverlayImage.setVisibility(View.VISIBLE);
             showGiftButton = false;
@@ -26922,10 +26933,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (searchContainer != null) {
                 searchContainer.setVisibility(View.INVISIBLE);
             }
-            bottomOverlayChat.setVisibility(View.INVISIBLE);
-            chatActivityEnterView.setFieldFocused(false);
-            chatActivityEnterView.setVisibility(View.INVISIBLE);
-        } else if (isBottomOverlayHidden()) {
             bottomOverlayChat.setVisibility(View.INVISIBLE);
             chatActivityEnterView.setFieldFocused(false);
             chatActivityEnterView.setVisibility(View.INVISIBLE);
@@ -27106,6 +27113,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             bottomOverlayChat.setVisibility(View.GONE);
             chatActivityEnterView.setVisibility(View.VISIBLE);
             chatActivityEnterView.setBotInfo(botInfo);
+        }
+        if (isMuteUnmuteButton()) {
+            bottomOverlayChat.setVisibility(View.INVISIBLE);
         }
         showGiftButton(showGiftButton && bottomOverlayChat.getVisibility() == View.VISIBLE, false);
         checkRaiseSensors();
@@ -29116,7 +29126,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     height += translationY;
                 }
                 height += contentPanTranslation;
-                return height - AndroidUtilities.dp(1.5f) - (isBottomOverlayHidden() ? AndroidUtilities.dp(51) : 0);
+                return height - AndroidUtilities.dp(1.5f) - (isBottomOverlayHidden() ? AndroidUtilities.dp(searchContainerHeight) : 0);
             }
 
             @Override
