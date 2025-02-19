@@ -10892,13 +10892,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             }
             createMessageFilterItem();
             if (chat != null && (chat.has_link || (chatInfo != null && chatInfo.linked_chat_id != 0))) {
-                String text;
-                if (!chat.megagroup) {
-                    text = LocaleController.getString("LinkedGroupChat", R.string.LinkedGroupChat);
-                    otherItem.addSubItem(view_discussion, R.drawable.msg_discussion, text);
-                } else {
-                    text = LocaleController.getString("LinkedChannelChat", R.string.LinkedChannelChat);
-                    otherItem.addSubItem(view_discussion, R.drawable.msg_channel, text);
+                if (chat.megagroup) {
+                    otherItem.addSubItem(view_discussion, R.drawable.msg_channel, LocaleController.getString(R.string.LinkedChannelChat));
                 }
             }
             if (ChatObject.isChannel(chat)) {
