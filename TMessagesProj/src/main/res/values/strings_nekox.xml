@@ -41,7 +41,7 @@
     <string name="NightMode">Night Mode</string>
     <string name="RemoveTitleEmoji">Remove emoji in title</string>
     <string name="DisableChatAction">Don\'t Send Typing</string>
-    <string name="IgnoreMutedCount">Ignore Muted Unread Count on Folders</string>
+    <string name="IgnoreMutedCount">Hide Muted Unread Count on Folders</string>
     <string name="DialogsSettings">Dialogs Settings</string>
     <string name="SortMenu">Dialog Sort Settings</string>
     <string name="SortByUnread">Sort By Unread</string>
@@ -83,7 +83,7 @@
     <string name="ShareMessages">Share</string>
     <string name="DisableVibration">Disable Vibration</string>
     <string name="IgnoreContentRestrictions">Ignore content restrictions</string>
-    <string name="SendCommentAfterForward">Send Comment After Forwarding</string>
+    <string name="SendCommentAfterForward">Send Comment after Forwarding</string>
     <string name="UnpinMessageX">Unpin message</string>
     <string name="UnpinMessagesAll">Unpin all messages</string>
     <string name="DismissForYourself">Dismiss for yourself</string>

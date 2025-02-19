@@ -89,7 +89,7 @@
     <string name="ResetStickerSize">Reset sticker size</string>
     <string name="RestartAppToTakeEffect">Restart the app to take effect.</string>
     <string name="DisableAppBarShadow">Disable Title Bar Shadow</string>
-    <string name="MediaPreview">Media Preview in Dialog List</string>
+    <string name="MediaPreview">Media Preview in Chat List</string>
     <string name="AutoPauseVideo">Auto Pause Video</string>
     <string name="AutoPauseVideoAbout">When lock screen/switch to background.</string>
     <string name="DisableProximityEvents">Disable Proximity Events</string>

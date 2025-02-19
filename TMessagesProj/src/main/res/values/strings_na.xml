@@ -2,30 +2,26 @@
 <resources>
     <string name="N_Config">N-Config</string>
     <string name="ForceCopy">Force Copy</string>
-    <string name="CombineMessage">Combine Message</string>
+    <string name="CombineMessage">Combine Messages</string>
     <string name="TextStyle">Text Style</string>
-    <string name="CombineMessageEnabledWithReply">Combine Message Enabled With Reply</string>
-    <string name="CombineMessageEnabled">Combine Message Enabled</string>
-    <string name="CombineMessageDisabled">Combine Message Disabled</string>
-    <string name="NoiseSuppressAndVoiceEnhance">Noise Suppress and Voice Enhance</string>
+    <string name="NoiseSuppressAndVoiceEnhance">Noise Suppression and Voice Enhancement</string>
     <string name="RepeatAsCopy">Repeat as Copy</string>
     <string name="DoubleTapAction">Double Tap Action</string>
     <string name="SendReactions">Send Reactions</string>
     <string name="ShowReactions">Show Reactions</string>
     <string name="CustomTitle">Custom Title</string>
-    <string name="CustomTitleHint">Leave blank to use Nagram</string>
+    <string name="CustomTitleHint">Leave blank to use Nagram X</string>
     <string name="CodeSyntaxHighlight">Code Syntax Highlight</string>
     <string name="CreateMono">Create Monospace</string>
-    <string name="CreateMonoLanguage">Code language</string>
-    <string name="CodeSyntaxHighlightDetails">Thanks to prismjs and Nekogram</string>
-    <string name="UseSystemUnlock">Use System UI for Passcode Unlock</string>
+    <string name="CreateMonoLanguage">Code Language</string>
+    <string name="UseSystemUnlock">Use System UI for Passcode Lock</string>
     <string name="CopyPhoto">Copy Photo</string>
-    <string name="PhotoCopied">Photo copied to Clipboard</string>
+    <string name="PhotoCopied">Photo copied to clipboard</string>
     <string name="ToTheBeginning">To Beginning</string>
     <string name="DateOfForwardedMsg">Show Date on Forwarded Messages</string>
     <string name="ShowMessageID">Show Message ID</string>
     <string name="ShowPremiumStickersAnimation">Show Premium Stickers Animation</string>
-    <string name="ShowPremiumStarInChat">Show Premium Star In Chat</string>
+    <string name="ShowPremiumStarInChat">Show Premium Star in Chat</string>
     <string name="ShowPremiumAvatarAnimation">Show Premium Avatar Animation</string>
     <string name="AlwaysSaveChatOffset">Always Save Chat Offset</string>
     <string name="AppIconGoogle">Google</string>
@@ -50,13 +46,13 @@
     <string name="QuickToggleAnonymousNotice">If you\'re owner of the group.</string>
     <string name="RealHideTimeForSticker">Hide Time for Stickers</string>
     <string name="HideTitle">Hide Title</string>
-    <string name="IgnoreFolderCount">Ignore Unread Count on Folders</string>
+    <string name="IgnoreFolderCount">Hide Unread Count on Folders</string>
     <string name="SendWithoutMarkdown">Send without markdown</string>
     <string name="SaveWithoutMarkdown">Save without markdown</string>
     <string name="SendAsEmoji">Send as emoji</string>
     <string name="CustomArtworkApi">Custom Artwork API</string>
     <string name="CustomEditedMessage">Custom Edited Mark</string>
-    <string name="FakeHighPerformanceDevice">Fake High Performance Device</string>
+    <string name="FakeHighPerformanceDevice">Treat as High-Performance Device</string>
     <string name="DisableEmojiDrawLimit">Disable Emoji Draw Limit</string>
     <string name="IconDecoration">Icon Decoration</string>
     <string name="NotificationIcon">Notification Icon</string>
@@ -83,7 +79,7 @@
     <string name="DisableSuggestionView">Disable Profile Settings Suggestion</string>
     <string name="DisableStories">Disable Stories</string>
     <string name="DisableSendReadStories">Don\'t Read Stories</string>
-    <string name="HideFilterMuteAll">Hide \"Mute All\" in Folder Long Press Settings</string>
+    <string name="HideFilterMuteAll">Hide \"Mute All\" in Folder Long-Press Menu</string>
     <string name="UseLocalQuoteColor">Local Quote Color</string>
     <string name="ShowSquareAvatar">Square Avatar</string>
     <string name="DisableCustomWallpaperUser">Disable User Custom Wallpaper</string>
@@ -107,7 +103,7 @@
     <string name="TipsChannel">Features Tips Channel</string>
     <string name="ShowSmallGIF">Show Small GIF</string>
     <string name="DisableClickCommandToSend">Ask Before Sending Bot Command</string>
-    <string name="DisableDialogsFloatingButton">Disable Dialogs Floating Button</string>
+    <string name="DisableDialogsFloatingButton">Hide Floating Button from Chat List</string>
     <string name="DisableFlagSecure">Disable FLAG_SECURE</string>
     <string name="CenterActionBarTitleType">Use Centered Title</string>
     <string name="ShowQuickReplyInBotCommands">Show Quick Reply in Bot Commands</string>
@@ -140,8 +136,8 @@
     You can also use plain text, but don\'t forget to escape brackets.</string>
     <string name="RegexFiltersAddError">Regex syntax error</string>
     <string name="ShowTimeHint">Click Message Time to Show Details</string>
-    <string name="SearchHashtagDefaultPageChannel">Channel Click Hashtag Default Search Page</string>
-    <string name="SearchHashtagDefaultPageChat">Chat Click Hashtag Default Search Page</string>
+    <string name="SearchHashtagDefaultPageChannel">Default Hashtag Search Page in Channels</string>
+    <string name="SearchHashtagDefaultPageChat">Default Hashtag Search Page in Chats</string>
     <string name="OpenUrlOutBotWebViewRegex">URL Regex to Open Links Outside Bot WebView</string>
     <string name="LocaleToDBC">Locale Text Using DBC Case</string>
     <string name="Pangu" translatable="false">Pangu</string>
