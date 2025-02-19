@@ -24,7 +24,6 @@
     <string name="Repeat">复读</string>
     <string name="AddToSavedMessages">保存消息</string>
     <string name="CreateMention">创建\@</string>
-    <string name="Prpr">ペロペロ</string>
     <string name="TransparentStatusBar">使用完全透明的状态栏</string>
     <string name="EnableResidentNotification">请让猫咪住在通知栏里吧</string>
     <string name="NekogramRunning">猫猫奔跑中</string>
@@ -73,7 +72,6 @@
     <string name="HideAllTab">隐藏“全部对话”</string>
     <string name="HideAllTabAbout">在主页按返回键打开全部对话。</string>
     <string name="TabTitleType">在标签栏上显示</string>
-    <string name="TabTitleTypeTip">图标由 Telegram 云同步。</string>
     <string name="TabTitleTypeText">标题</string>
     <string name="TabTitleTypeIcon">图标</string>
     <string name="TabTitleTypeMix">图标与标题</string>
@@ -86,7 +84,7 @@
     <string name="OfficialChannel">Nagram 频道</string>
     <string name="About">关于</string>
     <string name="IgnoreBlockedAbout">您将不会再看到被屏蔽的用户在群组中的消息。</string>
-    <string name="SourceCode">GitHub 上的源代码</string>
+    <string name="SourceCode">源代码</string>
     <string name="ResetStickerSize">重置贴纸大小</string>
     <string name="RestartAppToTakeEffect">重启应用以生效。</string>
     <string name="DisableAppBarShadow">禁用标题栏阴影</string>
@@ -151,7 +149,6 @@
     <string name="PasscodePanicCodeRemoveConfirmMessage">您确定要关闭紧急代码吗？</string>
     <string name="PasscodeRemoveConfirmMessage">您确定要移除这个账户的锁定码吗？</string>
     <string name="PasscodePanicCodeAbout">如果出现问题，使用紧急代码退出登录账户。</string>
-    <string name="AutoTranslate">自动翻译</string>
     <string name="RestrictionReason">限制原因</string>
     <string name="InvalidCustomEmojiTypeface">无效的字体文件。</string>
     <string name="DownloadEmojiSet">下载 %s</string>

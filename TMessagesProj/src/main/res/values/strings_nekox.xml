@@ -16,18 +16,12 @@
     <string name="CustomApiOfficial">Telegram Android</string>
     <string name="CustomApiTGX">Telegram Android X</string>
     <string name="CustomApiInput">Manual input</string>
-    <string name="Install">Install</string>
-    <string name="Ignore">Ignore</string>
     <string name="LinkedGroupChat">Linked Group</string>
     <string name="LinkedChannelChat">Linked Channel</string>
     <string name="DevModeTitle">**Your Telegram account may be banned**</string>
     <string name="DevModeNotice">We are not responsible for any improper use of developer features.</string>
     <string name="PlaceHolder">Placeholder - Please Disable</string>
     <string name="CustomBackend">Custom Backend</string>
-    <string name="CustomBackendNotice">This function is only provided for expert users, if you don\'t know what the following options represent, just ignore it.</string>
-    <string name="CustomBackendProduction">Official Production DataCenter</string>
-    <string name="CustomBackendTestDC">Official Test DataCenter</string>
-    <string name="AllowFlashCall">Allow flash call</string>
     <string name="ChangeTranslateProvider">Change Provider</string>
     <string name="ProviderYandexTranslate">Yandex.Translate</string>
     <string name="GoogleCloudTransKey">Google Cloud Translate Key</string>
@@ -35,11 +29,8 @@
     <string name="TransToLang">Target Language</string>
     <string name="TransInputToLang">Pre-Send Translation Language</string>
     <string name="More">More</string>
-    <string name="NekoXUpdatesChannel">NekoX Updates Channel</string>
     <string name="ShowIdAndDc">Show ID / DC in Profile</string>
     <string name="UseDefaultTheme">Use default theme *</string>
-    <string name="NightMode">Night Mode</string>
-    <string name="RemoveTitleEmoji">Remove emoji in title</string>
     <string name="DisableChatAction">Don\'t Send Typing</string>
     <string name="IgnoreMutedCount">Hide Muted Unread Count on Folders</string>
     <string name="DialogsSettings">Dialogs Settings</string>
@@ -126,9 +117,9 @@
     <string name="DeleteDownloadedFileSucceed">Deleted</string>
     <string name="DeleteDownloadedFileExternal">External file is skipped.</string>
     <string name="useCustomEmoji">Use custom emoji</string>
-    <string name="useCustomEmojiInvalid">Not a vaild emoji ZIP-file.</string>
-    <string name="repeatConfirm">Ask Before Repeat</string>
-    <string name="repeatConfirmText">Are you sure to repeat?</string>
+    <string name="useCustomEmojiInvalid">Not a valid emoji pack.</string>
+    <string name="repeatConfirm">Ask Before Repost</string>
+    <string name="repeatConfirmText">Are you sure you want to Repost?</string>
     <string name="valuesLargeAvatarInDrawer">Telegram Default\nAvatar as background\nBig avatar as background</string>
     <string name="hideSponsoredMessage">Hide Sponsored Messages</string>
     <string name="rememberAllBackMessages">Remember All Clicked Replies</string>
@@ -155,5 +146,5 @@
     <string name="NoFilesInfo">This folder is empty.</string>
     <string name="SearchRecentFiles">Search Recent Files</string>
     <string name="NoFilesFoundInfo">There are no matches with **%1$s** in current directory.</string>
-    <string name="EmojiUseDefault">Use system default emoji</string>
+    <string name="EmojiUseDefault">Use system emoji</string>
 </resources>

@@ -21,10 +21,9 @@
     <string name="LastFirst">姓・名</string>
     <string name="TypefaceUseDefault">システムフォントを使用</string>
     <string name="NoQuoteForward">引用なしで転送</string>
-    <string name="Repeat">リピート</string>
+    <string name="Repeat">リポスト</string>
     <string name="AddToSavedMessages">保存</string>
     <string name="CreateMention">@メンションを作成</string>
-    <string name="Prpr">ペロペロ</string>
     <string name="TransparentStatusBar">完全に透明なステータスバーを使用</string>
     <string name="EnableResidentNotification">常駐通知を有効にする</string>
     <string name="NekogramRunning">Nagram 実行中</string>
@@ -63,7 +62,7 @@
     <string name="DisablePhotoViewerSideAction">タップで画像切り替えを無効にする</string>
     <string name="BotToken">トークン</string>
     <string name="UnlimitedPinnedDialogs">無制限のピン留め</string>
-    <string name="UnlimitedPinnedDialogsAbout">同期をオフにして無制限のダイアログをピン留めします。</string>
+    <string name="UnlimitedPinnedDialogsAbout">同期をオフにして無制限のチャットをピン留めします。</string>
     <string name="OpenArchiveOnPull">プルダウンでアーカイブを開く</string>
     <string name="HideKeyboardOnChatScroll">チャットスクロール時にキーボードを非表示</string>
     <string name="UserRestrictionsSendStickers2">ステッカーを送信</string>
@@ -73,7 +72,6 @@
     <string name="HideAllTab">「すべてのチャット」タブを非表示</string>
     <string name="HideAllTabAbout">メインページで戻るボタンを押すと、すべてのチャットが開きます。</string>
     <string name="TabTitleType">タブバーに表示</string>
-    <string name="TabTitleTypeTip">アイコンは Telegram クラウドと同期されます。</string>
     <string name="TabTitleTypeText">タイトル</string>
     <string name="TabTitleTypeIcon">アイコン</string>
     <string name="TabTitleTypeMix">アイコンとタイトル</string>
@@ -86,7 +84,7 @@
     <string name="OfficialChannel">Nagram チャンネル</string>
     <string name="About">アプリについて</string>
     <string name="IgnoreBlockedAbout">当ユーザーからのグループメッセージは表示されなくなります。</string>
-    <string name="SourceCode">GitHub上のソースコード</string>
+    <string name="SourceCode">ソースコード</string>
     <string name="ResetStickerSize">ステッカーサイズをリセット</string>
     <string name="RestartAppToTakeEffect">変更を適用するにはアプリを再起動してください。</string>
     <string name="DisableAppBarShadow">アプリバーの影を無効にする</string>
@@ -151,7 +149,6 @@
     <string name="PasscodePanicCodeRemoveConfirmMessage">本当に緊急コードをオフにしますか？</string>
     <string name="PasscodeRemoveConfirmMessage">本当にこのアカウントのパスコードを削除しますか？</string>
     <string name="PasscodePanicCodeAbout">問題が発生した場合、緊急コードを使用してアカウントからログアウトします。</string>
-    <string name="AutoTranslate">自動翻訳</string>
     <string name="RestrictionReason">制限の理由</string>
     <string name="InvalidCustomEmojiTypeface">無効なフォントファイルです。</string>
     <string name="DownloadEmojiSet">%sをダウンロード</string>

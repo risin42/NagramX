@@ -9,8 +9,8 @@
     <string name="ClearMessageDatabase">メッセージデータベースをリセット</string>
     <string name="ClearMessageDatabaseNotification">メッセージデータベースがリセットされました</string>
     <string name="CustomDeletedMark">削除済みメッセージのマーク</string>
-    <string name="HidePremiumSection">Telegram Premium を非表示</string>
-    <string name="HideHelpSection">ヘルプを非表示</string>
+    <string name="HidePremiumSection">設定で Telegram Premium を非表示</string>
+    <string name="HideHelpSection">設定でヘルプを非表示</string>
     <string name="ProviderLLMTranslator">AI 翻訳</string>
     <string name="LlmApiUrl">API URL</string>
     <string name="LlmApiKey">API キー</string>
@@ -54,11 +54,11 @@
     <string name="DisableScreenshotDetection">スクリーンショット検出を無効にする</string>
     <string name="MessageSavingSaveMedia">メディアを保存</string>
     <string name="MessageSavingSaveMediaHint">クリックしてその他のオプションを表示</string>
-    <string name="MessageSavingSaveMediaInPrivateChats">プライベートチャット</string>
-    <string name="MessageSavingSaveMediaInPublicChannels">パブリックチャンネル</string>
-    <string name="MessageSavingSaveMediaInPrivateChannels">プライベートチャンネル</string>
-    <string name="MessageSavingSaveMediaInPublicGroups">パブリックグループ</string>
-    <string name="MessageSavingSaveMediaInPrivateGroups">プライベートグループ</string>
+    <string name="MessageSavingSaveMediaInPrivateChats">プライベートチャットで保存</string>
+    <string name="MessageSavingSaveMediaInPublicChannels">パブリックチャンネルで保存</string>
+    <string name="MessageSavingSaveMediaInPrivateChannels">プライベートチャンネルで保存</string>
+    <string name="MessageSavingSaveMediaInPublicGroups">パブリックグループで保存</string>
+    <string name="MessageSavingSaveMediaInPrivateGroups">プライベートグループで保存</string>
     <string name="TelegramUIAutoTranslate">チャット全体を翻訳</string>
     <string name="TranslatorMode">手動翻訳表示タイプ</string>
     <string name="TranslatorModeAppend">追加</string>

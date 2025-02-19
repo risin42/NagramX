@@ -53,7 +53,7 @@
     <string name="CustomArtworkApi">自定义音乐封面 API</string>
     <string name="CustomEditedMessage">自定义已编辑消息标记</string>
     <string name="FakeHighPerformanceDevice">伪装高性能设备</string>
-    <string name="DisableEmojiDrawLimit">解除 emoji 渲染上限</string>
+    <string name="DisableEmojiDrawLimit">解除 Emoji 渲染上限</string>
     <string name="IconDecoration">图标装饰</string>
     <string name="NotificationIcon">通知图标样式</string>
     <string name="Official">官方的</string>
@@ -68,7 +68,6 @@
     <string name="HideBotButtonInInputField">隐藏输入框中的机器人按钮</string>
     <string name="ShowSendAsUnderMessageHint">在输入提示下显示发送者</string>
     <string name="CheckAllForum">添加所有话题模式的群组</string>
-    <string name="ShowForumAsNormalChat">以普通对话模式打开话题模式群组</string>
     <string name="DecorationNone">无</string>
     <string name="ChatDecoration">聊天框装饰</string>
     <string name="NeedChangeNekoSettings">此设置已被 N-设置 覆盖，无法修改</string>
@@ -131,12 +130,11 @@
     <string name="RegexFiltersCaseInsensitive">不区分大小写</string>
     <string name="RegexFiltersAdd">添加正则表达式</string>
     <string name="RegexFiltersEdit">修改正则表达式</string>
-    <string name="RegexFiltersAddDescription">您可以使用网站 <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> 来测试您的正则表达式。
-    您也可以使用纯文本，但请不要忘记使用转义符号。</string>
+    <string name="RegexFiltersAddDescription">您可以使用网站 <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> 来测试您的正则表达式。您也可以使用纯文本，但请不要忘记使用转义符号。</string>
     <string name="RegexFiltersAddError">正则表达式语法错误</string>
     <string name="ShowTimeHint">点击消息时间显示详细信息</string>
-    <string name="SearchHashtagDefaultPageChannel">在频道点击标签默认搜索页面</string>
-    <string name="SearchHashtagDefaultPageChat">在其他对话点击标签默认搜索页面</string>
+    <string name="SearchHashtagDefaultPageChannel">在频道中点击标签时默认的搜索页面</string>
+    <string name="SearchHashtagDefaultPageChat">在对话中点击标签时默认的搜索页面</string>
     <string name="OpenUrlOutBotWebViewRegex">指定 URL Regex 跳出 bot webview</string>
     <string name="LocaleToDBC">界面文本使用半角符号</string>
     <string name="EnablePanguOnReceiving">接受信息 Pangu 化</string>
