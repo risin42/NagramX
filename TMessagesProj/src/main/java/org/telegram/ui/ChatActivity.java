@@ -4359,9 +4359,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             translateItem = headerItem.lazilyAddSubItem(translate, R.drawable.msg_translate, LocaleController.getString(R.string.TranslateMessage));
             updateTranslateItemVisibility();
-            if (currentChat != null && !currentChat.creator && !ChatObject.hasAdminRights(currentChat)) {
-                headerItem.lazilyAddSubItem(report, R.drawable.msg_report, LocaleController.getString(R.string.ReportChat));
-            }
+//            if (currentChat != null && !currentChat.creator && !ChatObject.hasAdminRights(currentChat)) {
+//                headerItem.lazilyAddSubItem(report, R.drawable.msg_report, LocaleController.getString(R.string.ReportChat));
+//            }
 
             if (currentChat != null && (currentChat.has_link || (chatInfo != null && chatInfo.linked_chat_id != 0))) {
                 String text;

@@ -10999,6 +10999,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     otherItem.addSubItem(add_to_folder, R.drawable.msg_folders, LocaleController.getString(R.string.FilterAddTo));
                 }
                 otherItem.addSubItem(clear_cache, R.drawable.msg_delete, LocaleController.getString(R.string.ClearCache));
+                if (userId == 0 && !ChatObject.hasAdminRights(currentChat)) {
+                    otherItem.addSubItem(report, R.drawable.msg_report, LocaleController.getString(R.string.ReportChat)).setColors(getThemedColor(Theme.key_text_RedRegular), getThemedColor(Theme.key_text_RedRegular));
+                }
             }
         }
         if (!isPulledDown) {
