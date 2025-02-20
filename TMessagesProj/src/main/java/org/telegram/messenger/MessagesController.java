@@ -15631,10 +15631,6 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     private void checkChannelError(String text, long channelId) {
-        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
-            return;
-        }
-
         switch (text) {
             case "CHANNEL_PRIVATE":
                 getNotificationCenter().postNotificationName(NotificationCenter.chatInfoCantLoad, channelId, 0);

@@ -22256,6 +22256,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 builder.setTopAnimationIsNew(true);
                 if (reason == 0) {
                     if (currentChat instanceof TLRPC.TL_channelForbidden) {
+                        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) return;
                         builder.setTitle(LocaleController.getString(R.string.ChannelCantOpenBannedByAdminTitle));
                         builder.setMessage(LocaleController.getString(R.string.ChannelCantOpenBannedByAdmin));
                     } else {
