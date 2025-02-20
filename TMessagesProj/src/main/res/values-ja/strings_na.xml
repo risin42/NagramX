@@ -14,7 +14,6 @@
     <string name="CodeSyntaxHighlight">コードの構文ハイライト</string>
     <string name="CreateMono">等幅フォントを作成</string>
     <string name="CreateMonoLanguage">等幅フォントの言語</string>
-    <string name="UseSystemUnlock">システム UI でパスコードロックを解除</string>
     <string name="CopyPhoto">画像をコピー</string>
     <string name="PhotoCopied">画像がクリップボードにコピーされました</string>
     <string name="ToTheBeginning">先頭に戻る</string>

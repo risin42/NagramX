@@ -14,7 +14,6 @@
     <string name="CodeSyntaxHighlight">Code Syntax Highlight</string>
     <string name="CreateMono">Create Monospace</string>
     <string name="CreateMonoLanguage">Code Language</string>
-    <string name="UseSystemUnlock">Use System UI for Passcode Lock</string>
     <string name="CopyPhoto">Copy Photo</string>
     <string name="PhotoCopied">Photo copied to clipboard</string>
     <string name="ToTheBeginning">To Beginning</string>

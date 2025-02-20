@@ -146,12 +146,6 @@ object NaConfig {
                 R.string.NagramX
             )
         )
-    val useSystemUnlock =
-        addConfig(
-            "UseSystemUnlock",
-            ConfigItem.configTypeBool,
-            true
-        )
     val codeSyntaxHighlight =
         addConfig(
             "CodeSyntaxHighlight",
