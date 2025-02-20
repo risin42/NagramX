@@ -912,6 +912,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var hideChannelSilentBroadcast =
+        addConfig(
+            "HideChannelSilentBroadcast",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
 

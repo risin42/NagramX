@@ -74,4 +74,5 @@
     <string name="SaveDeletedMessageForBot">在机器人对话中保存</string>
     <string name="DrawerElements">侧栏菜单</string>
     <string name="HideArchive">移除聊天列表中的已归档聊天</string>
+    <string name="HideChannelSilentBroadcast">隐藏频道静默广播按钮</string>
 </resources>

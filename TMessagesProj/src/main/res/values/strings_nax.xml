@@ -87,4 +87,5 @@
     <string name="SaveDeletedMessageForBot">Save in Bot Chats</string>
     <string name="DrawerElements">Drawer Elements</string>
     <string name="HideArchive">Remove Archived Chats from Chat List</string>
+    <string name="HideChannelSilentBroadcast">Hide Silent Broadcast Switch in Channels</string>
 </resources>
