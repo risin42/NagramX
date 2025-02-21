@@ -57,7 +57,7 @@
     <string name="ProviderGoogleTranslate">Google Translate</string>
     <string name="TranslateApiUnsupported">The translation provider you selected don\'t support your language.</string>
     <string name="ProviderLingocloud">LingoCloud Translate</string>
-    <string name="UndoTranslate">Undo translate</string>
+    <string name="UndoTranslate">Hide Translation</string>
     <string name="DisablePhotoViewerSideAction">Disable Flip Photos by Tapping</string>
     <string name="BotToken">Token</string>
     <string name="UnlimitedPinnedDialogs">Unlimited Pinned Dialogs</string>
@@ -92,9 +92,9 @@
     <string name="AutoPauseVideoAbout">When lock screen/switch to background.</string>
     <string name="DisableProximityEvents">Disable Proximity Events</string>
     <string name="SelectBetween">Select between</string>
-    <string name="AvatarAsBackground">Profile Picture as Background</string>
-    <string name="BlurAvatarBackground">Blur Profile Picture</string>
-    <string name="DarkenAvatarBackground">Darken Profile Picture</string>
+    <string name="AvatarAsBackground">Profile Photo as Background</string>
+    <string name="BlurAvatarBackground">Blur Background</string>
+    <string name="DarkenAvatarBackground">Darken Background</string>
     <string name="ProviderDeepLTranslate">DeepL Translate</string>
     <string name="ProviderMicrosoftTranslator">Bing Translator</string>
     <string name="pressTitleToOpenAllChats">Press title to open \"All Chats\" tab</string>
