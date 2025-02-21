@@ -20509,47 +20509,49 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
                     // empty user dialog, so load as much as we can
                     if (dialog != null && DialogObject.isUserDialog(dialogId) && (startId == endId && endId == dialog.top_message) && messArr.size() <= 1) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (dialog != null && DialogObject.isUserDialog(dialogId) && (startId == endId && endId == dialog.top_message) && messArr.size() <= 1)");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a1");
                         startId = minVal;
                         endId = maxVal;
                     }
                     // deleted messages loading in comments
                     else if (isChannelComment) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "else if (isChannelComment)");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a2");
                         startId = threadMaxOutboxReadId == 0 ? minVal : threadMessageId;
                         endId = threadMaxOutboxReadId == 0 ? minVal : threadMaxOutboxReadId;
                     }
                     // allows loading messages that are under bottom messages
                     else if (dialog != null && (dialog.top_message == endId || (minMaxRes.second == endId && dialog.top_message <= minMaxRes.second)) || topic != null && topic.top_message == endId) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (dialog != null && (dialog.top_message == endId || (minMaxRes.second == endId && dialog.top_message <= minMaxRes.second)) || topic != null && topic.top_message == endId)");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a3");
                         // startId is the smallest in the current batch
                         endId = maxVal;
-                    } else if (messArr.size() == 1 && messArr.get(0).messageOwner instanceof TLRPC.TL_messageService) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "else if (messArr.size() == 1 && messArr.get(0).messageOwner instanceof TLRPC.TL_messageService)");
+                    } 
+                    // TL_messageService
+                    else if (messArr.size() == 1 && messArr.get(0).messageOwner instanceof TLRPC.TL_messageService) {
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a4");
                         startId = minVal;
                         endId = AyuUtils.getMinRealId(messages);
                     }
                     // allows loading messages that are uppermore than the dialog
                     else if (messArr.size() < count && !isCache && (load_type == 2 || load_type == 1) && !messArr.isEmpty()) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, " else if (messArr.size() < count && !isCache && (load_type == 2 || load_type == 1) && !messArr.isEmpty())");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a5");
                         startId = minVal;
                         endId = Math.min(msg1, msg2);
                     }
                 } else {
                     if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messArr isEmpty");
                     if (!messages.isEmpty() && load_type != 1) { // for loading uppermore // NagramX: load_type != 1
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (!messages.isEmpty() && load_type != 1) // for loading uppermore");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b1");
                         startId = minVal;
                         endId = AyuUtils.getMinRealId(messages);
                     }
                     // empty(new) user dialog, so load as much as we can
                     else if (DialogObject.isUserDialog(dialogId)) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "else if (DialogObject.isUserDialog(dialogId))");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b2");
                         startId = minVal;
                         endId = maxVal;
                     }
                     if (isCache) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (isCache)");
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b3");
                         startId = minVal;
                         endId = minVal;
                     }
@@ -20565,25 +20567,24 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 int msg2 = msgIds.first; // smaller
 
                 if (Math.abs(secretStartId - secretEndId) == 1 || (secretStartId == msg1 && secretEndId == msg2)) { // empty dialog, so load as much as we can
+                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c1");
                     startId = minVal;
                     endId = maxVal;
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case 1");
                 } else if (secretStartId == msg1) { // loaded up to top
+                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c2");
                     startId = minVal;
                     endId = msg2;
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case 2");
                 } else if (secretEndId == msg2) { // loaded up to bottom
+                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c3");
                     startId = msg1;
                     endId = maxVal;
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case 3");
                 } else { // just between some messages
+                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c4");
                     startId = msg1;
                     endId = msg2;
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case 4");
                 }
-
-                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "omfg " + secretStartId + " " + secretEndId);
-                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "omfg2 " + msg1 + " " + msg2);
+                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "secretStartId: " + secretStartId + ", secretEndId: " + secretEndId);
+                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "msg1: " + msg1 + ", msg2: " + msg2);
             }
 
             if (startId > endId) {
@@ -20614,7 +20615,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             );
             if (!isChannelComment && !isInScheduleMode() && chatMode != MODE_PINNED && (startId != minVal || endId != minVal)) {
                 var needToReset = messArr.size() == count;
-                AyuHistoryHook.doHook(currentAccount, messArr, messagesDict, startId, endId, dialogId, limit, topicId, isSecretChat(), load_type, isChannelComment, threadMessageId);
+                AyuHistoryHook.doHook(currentAccount, messArr, messagesDict, startId, endId, dialogId, limit, topicId, isSecretChat(), load_type, isChannelComment, threadMessageId, isTopic);
                 if (needToReset) {
                     if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (needToReset) -> " + "count = messArr.size(): " + count);
                     count = messArr.size();

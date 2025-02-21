@@ -37,7 +37,8 @@ public abstract class AyuHistoryHook {
         boolean isSecretChat,
         int load_type,
         boolean isChannelComment,
-        long threadMessageId
+        long threadMessageId,
+        boolean isTopic
     ) {
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "doHook START");
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messArr.size(): " + messArr.size());
@@ -58,11 +59,14 @@ public abstract class AyuHistoryHook {
         List<DeletedMessageFull> deletedMessages = new ArrayList<>();
 
         if (isChannelComment) {
-            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "ayuMessagesController.getThreadMessages: " + "currentClientUserId: " + currentClientUserId + ", " + "dialogId: " + dialogId + ", " + "threadMessageId: " + threadMessageId + ", " + "startId: " + startId + ", " + "endId: " + endId + ", " + "limit: " + limit);
+            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "getThreadMessages: " + "currentClientUserId: " + currentClientUserId + ", " + "dialogId: " + dialogId + ", " + "threadMessageId: " + threadMessageId + ", " + "startId: " + startId + ", " + "endId: " + endId);
             deletedMessages = ayuMessagesController.getThreadMessages(currentClientUserId, dialogId, threadMessageId, startId, endId, limit);
+        } else if (isTopic && topicId != 0) {
+            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "getTopicMessages: " + "currentClientUserId: " + currentClientUserId + ", " + "dialogId: " + dialogId + ", " + "topicId: " + topicId + ", " + "startId: " + startId + ", " + "endId: " + endId);
+            deletedMessages = ayuMessagesController.getTopicMessages(currentClientUserId, dialogId, topicId, startId, endId, limit);
         } else {
-            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "ayuMessagesController.getMessages: " + "currentClientUserId: " + currentClientUserId + ", " + "dialogId: " + dialogId + ", " + "topicId: " + topicId + ", " + "startId: " + startId + ", " + "endId: " + endId + ", " + "limit: " + limit);
-            deletedMessages = ayuMessagesController.getMessages(currentClientUserId, dialogId, topicId, startId, endId, limit);
+            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "getMessages: " + "currentClientUserId: " + currentClientUserId + ", " + "dialogId: " + dialogId + ", " + "startId: " + startId + ", " + "endId: " + endId);
+            deletedMessages = ayuMessagesController.getMessages(currentClientUserId, dialogId, startId, endId, limit);
         }
 
         if (deletedMessages.isEmpty()) {
