@@ -88,4 +88,6 @@
     <string name="DrawerElements">Drawer Elements</string>
     <string name="HideArchive">Remove Archived Chats from Chat List</string>
     <string name="HideChannelSilentBroadcast">Hide Silent Broadcast Switch in Channels</string>
+    <string name="ConfirmAllLinks">Ask Before Opening Inline Links</string>
+    <string name="ConfirmAllLinksDescription">Including Telegram internal links such as t.me links in bot inline buttons.</string>
 </resources>

@@ -144,6 +144,4 @@
     <string name="DisableBotOpenButton">Disable Bot Open Button</string>
     <string name="CustomTitleUserName">Use User Nickname as Title</string>
     <string name="EnhancedVideoBitrate">Enhanced Shared Video Bitrate</string>
-    <string name="ConfirmAllLinks">Ask Before Opening All Links</string>
-    <string name="ConfirmAllLinksDescription">Including Telegram internal links such as t.me links in bot inline buttons.</string>
 </resources>

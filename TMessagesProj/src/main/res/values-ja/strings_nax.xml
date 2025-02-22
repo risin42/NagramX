@@ -75,6 +75,6 @@
     <string name="DrawerElements">ドロワーメニュー</string>
     <string name="HideArchive">チャットリストで収納したチャットを非表示</string>
     <string name="HideChannelSilentBroadcast">チャンネルで「通知せずに公開」ボタンを非表示</string>
-    <string name="ConfirmAllLinks">すべてのリンクを開く前に確認</string>
-    <string name="ConfirmAllLinksDescription">有効にすると、Telegram 内部リンクを含むすべてのリンクを開く前に、確認を求めるようになります。</string>
+    <string name="ConfirmAllLinks">埋め込みリンクを開く前に確認</string>
+    <string name="ConfirmAllLinksDescription">有効にすると、Telegram 内部リンクを含むすべての埋め込みリンクを開く前に、確認を求めるようになります。</string>
 </resources>

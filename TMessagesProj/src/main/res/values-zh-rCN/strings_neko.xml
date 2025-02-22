@@ -38,7 +38,7 @@
     <string name="DeleteDownloadedFile">删除已缓存的文件</string>
     <string name="TestBackend">测试后端服务器</string>
     <string name="HideProxySponsorChannel">隐藏代理赞助商频道</string>
-    <string name="ViewHistory">显示历史消息</string>
+    <string name="ViewHistory">历史消息</string>
     <string name="Nya">喵！</string>
     <string name="SensitiveDisableFiltering">禁用敏感内容过滤</string>
     <string name="SensitiveAbout">在您所有设备上显示公共频道中的敏感媒体内容。</string>
