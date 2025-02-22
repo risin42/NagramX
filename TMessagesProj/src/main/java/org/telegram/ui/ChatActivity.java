@@ -11444,8 +11444,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
                 preferences.edit().putInt("pin_" + dialog_id, pinnedMessageIds.get(0)).commit();
                 updatePinnedMessageView(true);
+                return;
             }
-            builder.addItem(LocaleController.getString("DismissForYourself", R.string.DismissForYourself), R.drawable.msg_cancel, c -> {
+            builder.addItem(LocaleController.getString(R.string.DismissForYourself), R.drawable.msg_cancel, c -> {
                 SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
                 if (chatInfo != null) {
                     preferences.edit().putInt("pin_" + dialog_id, chatInfo.pinned_msg_id).apply();
@@ -11478,12 +11479,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             BottomBuilder builder = new BottomBuilder(getParentActivity());
             if (allowPin) {
-                builder.addItem(LocaleController.getString("UnpinMessagesAll", R.string.UnpinMessagesAll), R.drawable.msg_unpin, true, c -> {
+                builder.addItem(LocaleController.getString(R.string.UnpinAllMessages), R.drawable.msg_unpin, true, c -> {
                     getMessagesController().unpinAllMessages(currentChat, currentUser);
                     return Unit.INSTANCE;
                 });
             }
-            builder.addItem(LocaleController.getString("DismissForYourself", R.string.DismissForYourself), R.drawable.msg_cancel, c -> {
+            builder.addItem(LocaleController.getString(R.string.DismissForYourself), R.drawable.msg_cancel, c -> {
                 SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
                 if (chatInfo != null) {
                     preferences.edit().putInt("pin_" + dialog_id, chatInfo.pinned_msg_id).apply();

@@ -72,7 +72,6 @@
     <string name="IgnoreContentRestrictions">忽略内容限制</string>
     <string name="SendCommentAfterForward">转发后发送评论</string>
     <string name="UnpinMessageX">解除消息置顶</string>
-    <string name="UnpinMessagesAll">解除置顶所有消息</string>
     <string name="DismissForYourself">暂时对自己隐藏</string>
     <string name="ImportLogin">二维码登录</string>
     <string name="CCTitle">OpenCC (简繁转换)</string>

@@ -73,8 +73,7 @@
     <string name="IgnoreContentRestrictions">コンテンツ制限を無視します</string>
     <string name="SendCommentAfterForward">転送後にコメントを送信する</string>
     <string name="UnpinMessageX">メッセージの固定を解除する</string>
-    <string name="UnpinMessagesAll">すべてのメッセージの固定を解除する</string>
-    <string name="DismissForYourself">自分で却下する</string>
+    <string name="DismissForYourself">自分のみ非表示</string>
     <string name="ImportLogin">QR コードログイン</string>
     <string name="CCTitle">OpenCC（中国語変換）</string>
     <string name="CCTarget">目標</string>

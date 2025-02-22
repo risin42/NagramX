@@ -76,8 +76,7 @@
     <string name="IgnoreContentRestrictions">Ignore content restrictions</string>
     <string name="SendCommentAfterForward">Send Comment after Forwarding</string>
     <string name="UnpinMessageX">Unpin message</string>
-    <string name="UnpinMessagesAll">Unpin all messages</string>
-    <string name="DismissForYourself">Dismiss for yourself</string>
+    <string name="DismissForYourself">Hide for me only</string>
     <string name="ImportLogin">QR Login</string>
     <string name="OpenCC" translatable="false">OpenCC</string>
     <string name="CCTitle">OpenCC (Chinese Convert)</string>
