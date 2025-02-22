@@ -206,6 +206,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell askBeforeCallRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.askBeforeCall));
     private final AbstractConfigCell repeatConfirmRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.repeatConfirm));
     private final AbstractConfigCell disableClickCommandToSendRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableClickCommandToSend()));
+    private final AbstractConfigCell confirmAllLinksRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getConfirmAllLinks(), getString(R.string.ConfirmAllLinksDescription)));
     private final AbstractConfigCell dividerConfirms = cellGroup.appendCell(new ConfigCellDivider());
 
     // search tag
@@ -271,10 +272,12 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         });
 
         listAdapter = new ListAdapter(context);
-
         fragmentView = new FrameLayout(context);
         fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
         FrameLayout frameLayout = (FrameLayout) fragmentView;
+
+        // Before listAdapter
+        setCanNotChange();
 
         listView = new BlurredRecyclerView(context);
         listView.setVerticalScrollBarEnabled(false);
@@ -366,6 +369,9 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getDisableBotOpenButton().getKey())) {
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
+            } else if (key.equals(NaConfig.INSTANCE.getConfirmAllLinks().getKey())) {
+                setCanNotChange();
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(skipOpenLinkConfirmRow));
             }
         };
 
@@ -663,5 +669,12 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
             return new RecyclerListView.Holder(view);
         }
+    }
+
+    private void setCanNotChange() {
+        boolean enabled;
+
+        enabled = NaConfig.INSTANCE.getConfirmAllLinks().Bool();
+        ((ConfigCellTextCheck) skipOpenLinkConfirmRow).setEnabled(!enabled);
     }
 }

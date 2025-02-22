@@ -918,6 +918,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var confirmAllLinks =
+        addConfig(
+            "ConfirmAllLinks",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
 

@@ -10822,7 +10822,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             sendButton.setEffect(effectId = 0);
             SendMessagesHelper.getInstance(currentAccount).sendMessage(params);
         } else if (button instanceof TLRPC.TL_keyboardButtonUrl) {
-            if (Browser.urlMustNotHaveConfirmation(button.url)) {
+            if (Browser.urlMustNotHaveConfirmation(button.url) && !NaConfig.INSTANCE.getConfirmAllLinks().Bool()) {
                 Browser.openUrl(parentActivity, Uri.parse(button.url), true, true, progress);
             } else {
                 AlertsCreator.showOpenUrlAlert(parentFragment, button.url, false, true, true, progress, resourcesProvider);
