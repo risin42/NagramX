@@ -119,9 +119,6 @@
     <string name="DisablePreviewVideoSoundShortcut">Disable Unmute Videos with Volume Buttons</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Prevent volume key from enabling preview video sound.</string>
     <string name="DisableAutoWebLogin">Disable Auto Web Login</string>
-    <string name="PreviewSendPhoto">Send Photo</string>
-    <string name="PreviewSendVideo">Send Video</string>
-    <string name="PreviewSendFile">Send File</string>
     <string name="UnblockDeleted">Unblock Deleted Users</string>
     <string name="UnblockDeletedWarn">Are you sure you want to unblock **all deleted users**?</string>
     <string name="RegexFilters">Regex Message Filters</string>
