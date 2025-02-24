@@ -164,6 +164,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val showRPCError =
+        addConfig(
+            "ShowRPCError",
+            ConfigItem.configTypeBool,
+            false
+        )
     val showPremiumStarInChat =
         addConfig(
             "ShowPremiumStarInChat",

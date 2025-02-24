@@ -80,6 +80,7 @@ import javax.net.ssl.SSLException;
 import cn.hutool.core.util.StrUtil;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.utils.DnsFactory;
+import tw.nekomimi.nekogram.ErrorDatabase;
 
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import xyz.nextalone.nagram.NaConfig;
@@ -402,6 +403,9 @@ public class ConnectionsManager extends BaseController {
                         error.text = errorText;
                         if (BuildVars.LOGS_ENABLED && error.code != -2000) {
                             FileLog.e(object + " got error " + error.code + " " + error.text);
+                        }
+                        if (NaConfig.INSTANCE.getShowRPCError().Bool()) {
+                            ErrorDatabase.showErrorToast(object, errorText);
                         }
                     }
                     if ((connectionType & ConnectionTypeDownload) != 0 && VideoPlayer.activePlayers.isEmpty()) {
