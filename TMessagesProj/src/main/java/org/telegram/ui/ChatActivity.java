@@ -22302,7 +22302,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         } else if (id == NotificationCenter.removeAllMessagesFromDialog) {
             long did = (Long) args[0];
             if (dialog_id == did) {
-                if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) return;
                 setFilterMessages(false);
                 if (threadMessageId != 0) {
                     if (forwardEndReached[0]) {
@@ -23630,7 +23629,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         } else if (id == NotificationCenter.dialogDeleted) {
             long did = (Long) args[0];
             if (did == dialog_id) {
-                if (did > 0 && NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) return;
                 if (parentLayout != null && parentLayout.getLastFragment() == this) {
                     finishFragment();
                 } else {
