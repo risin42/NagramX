@@ -118,6 +118,9 @@
     <string name="DisablePreviewVideoSoundShortcut">プレビュー音声ショートカットを無効にする</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">音量キーによるプレビュービデオの音声オンを無効にします。</string>
     <string name="DisableAutoWebLogin">公式 Web サイトの自動ログインを無効にする</string>
+    <string name="PreviewSendPhoto">画像を送信</string>
+    <string name="PreviewSendVideo">動画を送信</string>
+    <string name="PreviewSendFile">ファイルを送信</string>
     <string name="UnblockDeleted">削除済みアカウントのブロックを解除</string>
     <string name="UnblockDeletedWarn">**すべての削除済みアカウント**のブロックを解除してもよろしいですか？</string>
     <string name="RegexFilters">メッセージフィルター</string>
