@@ -6773,6 +6773,9 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                                 TLRPC.User user = accountInstance.getMessagesController().getUser(defPeer.user_id);
                                 sendAsText = new SpannableString(user != null ? "\nas " + UserObject.getUserName(user) : "");
                             }
+                        } else {
+                            TLRPC.User user = UserConfig.getInstance(currentAccount).getCurrentUser();
+                            sendAsText = new SpannableString(user != null ? "\nas " + UserObject.getUserName(user) : "");
                         }
                     }
                     SpannableStringBuilder builder;
