@@ -24178,11 +24178,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         sendAsPeersObj = getMessagesController().getSendAsPeers(dialog_id);
         if (sendAsPeersObj != null) {
-            if (NekoConfig.disableTrending.Bool()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    sendAsPeersObj.peers.removeIf(peer -> peer.premium_required);
-                }
-            }
             chatActivityEnterView.updateSendAsButton(animatedUpdate);
         }
     }
