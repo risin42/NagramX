@@ -271,6 +271,26 @@ public class TranslateButton extends FrameLayout {
             popupLayout.addView(dontTranslateButton);
         }
 
+        ActionBarMenuSubItem minimizeButton = new ActionBarMenuSubItem(getContext(), true, false, resourcesProvider);
+        minimizeButton.setTextAndIcon(LocaleController.getString(R.string.PipMinimize), R.drawable.msg_call_minimize);
+        minimizeButton.setOnClickListener(e -> {
+            translateController.setHideTranslateWithMinimize(dialogId, true);
+            TLRPC.Chat chat = MessagesController.getInstance(currentAccount).getChat(-dialogId);
+            final boolean isChannel = chat != null && ChatObject.isChannelAndNotMegaGroup(chat);
+            final CharSequence message = AndroidUtilities.replaceTags(
+                    isChannel ?
+                            LocaleController.getString(R.string.TranslatorMinimizedChannel) :
+                            chat != null ?
+                                    LocaleController.getString(R.string.TranslatorMinimizedGroup) :
+                                    LocaleController.getString(R.string.TranslatorMinimized)
+            );
+            BulletinFactory.of(fragment).createSimpleBulletin(R.raw.msg_translate, message, LocaleController.getString(R.string.Undo), () -> {
+                translateController.setHideTranslateWithMinimize(dialogId, false);
+            }).show();
+            popupWindow.dismiss();
+        });
+        popupLayout.addView(minimizeButton);
+
         ActionBarMenuSubItem hideButton = new ActionBarMenuSubItem(getContext(), true, false, resourcesProvider);
         hideButton.setTextAndIcon(LocaleController.getString(R.string.Hide), R.drawable.msg_cancel);
         hideButton.setOnClickListener(e -> {

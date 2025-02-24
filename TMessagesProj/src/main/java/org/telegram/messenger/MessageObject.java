@@ -3470,7 +3470,7 @@ public class MessageObject {
         if (
             TranslateController.isTranslatable(this) &&
             translateController.isTranslatingDialog(getDialogId()) &&
-            !translateController.isTranslateDialogHidden(getDialogId()) &&
+//            !translateController.isTranslateDialogHidden(getDialogId()) &&
             messageOwner != null &&
             messageOwner.translatedText != null &&
             TextUtils.equals(translateController.getDialogTranslateTo(getDialogId()), messageOwner.translatedToLanguage)

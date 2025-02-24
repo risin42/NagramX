@@ -77,4 +77,7 @@
     <string name="HideChannelSilentBroadcast">隐藏频道静默广播按钮</string>
     <string name="ConfirmAllLinks">打开内联链接前确认</string>
     <string name="ConfirmAllLinksDescription">启用后，打开所有内联链接（包括 Telegram 内部链接，例如机器人内联按钮中的 t.me 链接）前，都会询问是否确认。</string>
+    <string name="TranslatorMinimizedChannel">翻译栏已为此频道最小化。</string>
+    <string name="TranslatorMinimizedGroup">翻译栏已为此群组最小化。</string>
+    <string name="TranslatorMinimized">翻译栏已为此聊天最小化。</string>
 </resources>

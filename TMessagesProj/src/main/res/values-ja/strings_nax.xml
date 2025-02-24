@@ -77,4 +77,7 @@
     <string name="HideChannelSilentBroadcast">チャンネルで「通知せずに公開」ボタンを非表示</string>
     <string name="ConfirmAllLinks">埋め込みリンクを開く前に確認</string>
     <string name="ConfirmAllLinksDescription">有効にすると、Telegram 内部リンクを含むすべての埋め込みリンクを開く前に、確認を求めるようになります。</string>
+    <string name="TranslatorMinimizedChannel">このチャンネルでは、翻訳ツールバーが最小化されました。</string>
+    <string name="TranslatorMinimizedGroup">このグループでは、翻訳ツールバーが最小化されました。</string>
+    <string name="TranslatorMinimized">このチャットでは、翻訳ツールバーが最小化されました。</string>
 </resources>

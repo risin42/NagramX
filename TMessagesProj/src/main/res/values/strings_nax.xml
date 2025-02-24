@@ -90,4 +90,7 @@
     <string name="HideChannelSilentBroadcast">Hide Silent Broadcast Switch in Channels</string>
     <string name="ConfirmAllLinks">Ask Before Opening Inline Links</string>
     <string name="ConfirmAllLinksDescription">Including Telegram internal links such as t.me links in bot inline buttons.</string>
+    <string name="TranslatorMinimizedChannel">Translator bar has been minimized for this channel.</string>
+    <string name="TranslatorMinimizedGroup">Translator bar has been minimized for this group.</string>
+    <string name="TranslatorMinimized">Translator bar has been minimized for this chat.</string>
 </resources>
