@@ -1181,7 +1181,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int OPTION_COPY_PHOTO = 150;
     private final static int OPTION_COPY_PHOTO_AS_STICKER = 151;
 
-    private final static int OPTION_DETAILS = 204;
     private final static int OPTION_HISTORY = 205;
 
     private final static int[] allowedNotificationsDuringChatListAnimations = new int[]{
@@ -31027,10 +31026,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             ) {
                 var idx = options.size() - 1;
 
-                if (options.contains(OPTION_DETAILS)) {
-                    idx = options.indexOf(OPTION_DETAILS);
-                }
-
                 items.add(idx, LocaleController.getString(R.string.EditsHistoryMenuText));
                 options.add(idx, AyuConstants.OPTION_HISTORY);
                 icons.add(idx, R.drawable.msg_log);
@@ -31039,46 +31034,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (message != null && message.messageOwner.ttl > 0 && !isAyuDeleted) {
                 var idx = options.size() - 1;
 
-                if (options.contains(OPTION_DETAILS)) {
-                    idx = options.indexOf(OPTION_DETAILS);
-                }
-
                 items.add(idx, "TTL: " + LocaleController.formatTTLString(message.messageOwner.ttl));
                 options.add(idx, AyuConstants.OPTION_TTL);
                 icons.add(idx, R.drawable.msg_autodelete);
             }
-
-            if (!(options.contains(OPTION_SAVE_TO_GALLERY) || options.contains(OPTION_SAVE_TO_GALLERY2))
-                    && AyuUtils.isMediaDownloadable(selectedObject, true)
-            ) {
-                var idx = options.size() - 1;
-
-                if (options.contains(OPTION_DETAILS)) {
-                    idx = options.indexOf(OPTION_DETAILS);
-                }
-
-                items.add(idx, LocaleController.getString("SaveToGallery", R.string.SaveToGallery));
-                options.add(idx, OPTION_SAVE_TO_GALLERY);
-                icons.add(idx, R.drawable.msg_gallery);
-            }
-            if (!options.contains(OPTION_SAVE_TO_DOWNLOADS_OR_MUSIC)
-                    && AyuUtils.isMediaDownloadable(selectedObject, false)
-            ) {
-                var idx = options.size() - 1;
-
-                if (options.contains(OPTION_SAVE_TO_GALLERY)) {
-                    idx = options.indexOf(OPTION_SAVE_TO_GALLERY) + 1;
-                } else if (options.contains(OPTION_SAVE_TO_GALLERY2)) {
-                    idx = options.indexOf(OPTION_SAVE_TO_GALLERY2) + 1;
-                } else if (options.contains(OPTION_DETAILS)) {
-                    idx = options.indexOf(OPTION_DETAILS);
-                }
-
-                items.add(idx, LocaleController.getString("SaveToDownloads", R.string.SaveToDownloads));
-                options.add(idx, OPTION_SAVE_TO_DOWNLOADS_OR_MUSIC);
-                icons.add(idx, R.drawable.msg_download);
-            }
-
             // --- AyuGram menu
 
             if (options.isEmpty() && optionsView == null) {
