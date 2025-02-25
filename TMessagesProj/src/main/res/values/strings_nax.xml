@@ -22,7 +22,7 @@
     <string name="LlmApiUrlDefault">https://generativelanguage.googleapis.com/v1beta/openai</string>
     <string name="LlmModelNameDefault">gemini-2.0-flash</string>
     <string name="LlmProviderOpenAIModel">gpt-4o-mini</string>
-    <string name="LlmProviderGeminiModel">gemini-2.0-flash-lite-preview</string>
+    <string name="LlmProviderGeminiModel">gemini-2.0-flash-lite</string>
     <string name="LlmProviderGroqModel">llama-3.3-70b-versatile</string>
     <string name="LlmProviderDeepSeekModel">deepseek-chat</string>
     <string name="LlmProviderXAIModel">grok-2</string>
