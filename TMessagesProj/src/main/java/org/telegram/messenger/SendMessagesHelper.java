@@ -47,6 +47,8 @@ import androidx.annotation.UiThread;
 import androidx.collection.LongSparseArray;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
 
+import com.radolyn.ayugram.utils.AyuState;
+
 import org.json.JSONObject;
 import org.telegram.messenger.audioinfo.AudioInfo;
 import org.telegram.messenger.support.SparseLongArray;
@@ -1544,6 +1546,9 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                 mode = ChatActivity.MODE_QUICK_REPLIES;
             } else if (scheduled) {
                 mode = ChatActivity.MODE_SCHEDULED;
+            }
+            for (int i = 0; i < messageIds.size(); i++) {
+                AyuState.permitDeleteMessage(dialogId, messageIds.get(i));
             }
             getMessagesController().deleteMessages(messageIds, null, null, dialogId, topicId, false, mode);
         }
