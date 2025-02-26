@@ -930,7 +930,18 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-
+    var useDeletedIcon =
+        addConfig(
+            "UseDeletedIcon",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var useEditedIcon =
+        addConfig(
+            "UseEditedIcon",
+            ConfigItem.configTypeBool,
+            true
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

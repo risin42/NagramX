@@ -93,4 +93,6 @@
     <string name="TranslatorMinimizedChannel">Translator bar has been minimized for this channel.</string>
     <string name="TranslatorMinimizedGroup">Translator bar has been minimized for this group.</string>
     <string name="TranslatorMinimized">Translator bar has been minimized for this chat.</string>
+    <string name="UseDeletedIcon">Show Icon Instead of \"deleted\"</string>
+    <string name="UseEditedIcon">Show Icon Instead of \"edited\"</string>
 </resources>

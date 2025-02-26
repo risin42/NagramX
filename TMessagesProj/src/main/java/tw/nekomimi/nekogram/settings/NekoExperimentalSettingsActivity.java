@@ -104,6 +104,8 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell messageSavingSaveMediaRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getMessageSavingSaveMedia(), getString(R.string.MessageSavingSaveMediaHint)));
     private final AbstractConfigCell saveDeletedMessageForBotsRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSaveDeletedMessageForBot()));
     private final AbstractConfigCell translucentDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getTranslucentDeletedMessages()));
+    private final AbstractConfigCell useDeletedIconRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getUseDeletedIcon()));
+    private final AbstractConfigCell customDeletedMarkRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomDeletedMark(), "", null));
     private final AbstractConfigCell clearMessageDatabaseRow = cellGroup.appendCell(new ConfigCellText("ClearMessageDatabase", () -> {
         AyuMessagesController.getInstance().clean();
         BulletinFactory.of(this).createSimpleBulletin(R.raw.done, getString("ClearMessageDatabaseNotification")).show();
@@ -173,6 +175,9 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         );
         if (NaConfig.INSTANCE.getExternalStickerCache().String().isBlank()) {
             cellGroup.rows.removeAll(externalStickerRows);
+        }
+        if (NaConfig.INSTANCE.getUseDeletedIcon().Bool()) {
+            cellGroup.rows.remove(customDeletedMarkRow);
         }
         addRowsToMap(cellGroup);
     }
@@ -388,6 +393,20 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             } else if (key.equals(NekoConfig.localPremium.getKey())) {
                 NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.mainUserInfoChanged);
                 NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+            } else if (key.equals(NaConfig.INSTANCE.getUseDeletedIcon().getKey())) {
+                if (!(boolean) newValue) {
+                    if (!cellGroup.rows.contains(customDeletedMarkRow)) {
+                        final int index = cellGroup.rows.indexOf(useDeletedIconRow) + 1;
+                        cellGroup.rows.add(index, customDeletedMarkRow);
+                        listAdapter.notifyItemInserted(index);
+                    }
+                } else {
+                    if (cellGroup.rows.contains(customDeletedMarkRow)) {
+                        final int index = cellGroup.rows.indexOf(customDeletedMarkRow);
+                        cellGroup.rows.remove(customDeletedMarkRow);
+                        listAdapter.notifyItemRemoved(index);
+                    }
+                }
             }
         };
 

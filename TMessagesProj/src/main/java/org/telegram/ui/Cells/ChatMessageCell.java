@@ -217,7 +217,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
-
+import tw.nekomimi.nekogram.helpers.TimeStringHelper;
 import tw.nekomimi.nekogram.utils.NeteaseEmbed;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -1432,7 +1432,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     public int timeTextWidth;
     public int timeX;
     public int signWidth;
-    private CharSequence currentTimeString;
+    private SpannableStringBuilder currentTimeString;
     private boolean drawTime = true;
     private boolean forceNotDrawTime;
     private Paint drillHolePaint;
@@ -11681,8 +11681,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 timeTextWidth = AndroidUtilities.dp(10);
             }
             if (currentTimeString != null) {
-                CharSequence currentTime = Emoji.replaceEmoji(currentTimeString, Theme.chat_timePaint.getFontMetricsInt(), false);
-                timeLayout = new StaticLayout(currentTime, Theme.chat_timePaint, timeTextWidth + AndroidUtilities.dp(100), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+                timeLayout = new StaticLayout(currentTimeString, Theme.chat_timePaint, timeTextWidth + AndroidUtilities.dp(100), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
             } else {
                 timeLayout = null;
             }
@@ -16168,7 +16167,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 signString = null;
             }
         }
-        String timeString;
+        CharSequence timeString;
         TLRPC.User author = null;
         if (currentMessageObject.isFromUser()) {
             author = MessagesController.getInstance(currentAccount).getUser(fromId);
@@ -16196,10 +16195,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 }
             }
         }
-        String editedStr = NaConfig.INSTANCE.getCustomEditedMessage().String();
-        String editedStrFin = editedStr.equals("") ? getString(R.string.EditedMessage) : editedStr;
-        String deletedStr = NaConfig.INSTANCE.getCustomDeletedMark().String();
-        String deletedStrFin = deletedStr.equals("") ? getString(R.string.DeletedMessage) : deletedStr;
         if (currentMessageObject.notime || currentMessageObject.isSponsored() || currentMessageObject.isQuickReply()) {
             timeString = "";
         } else if (currentMessageObject.scheduled && currentMessageObject.messageOwner.date == 0x7FFFFFFE) {
@@ -16209,11 +16204,11 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         } else if (currentMessageObject.isRepostPreview) {
             timeString = LocaleController.formatSmallDateChat(messageObject.messageOwner.date) + ", " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
         } else if (edited && !ayuDeleted) {
-            timeString = editedStrFin + " " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
+            timeString = TimeStringHelper.createEditedString(currentMessageObject);
         } else if (!edited && ayuDeleted) {
-            timeString = deletedStrFin + " " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
+            timeString = TimeStringHelper.createDeletedString(currentMessageObject, edited);
         } else if (edited && ayuDeleted) {
-            timeString = deletedStrFin + " " + editedStrFin + " " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
+            timeString = TimeStringHelper.createDeletedString(currentMessageObject, edited);
         } else if (currentMessageObject.isSaved && currentMessageObject.messageOwner.fwd_from != null && (currentMessageObject.messageOwner.fwd_from.date != 0 || currentMessageObject.messageOwner.fwd_from.saved_date != 0)) {
             int date = currentMessageObject.messageOwner.fwd_from.saved_date;
             if (date == 0) {
@@ -16227,26 +16222,40 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             timeString = LocaleController.formatString(R.string.ScheduledTimeApprox, timeString);
         }
         if (NaConfig.INSTANCE.getShowMessageID().Bool() && messageObject.messageOwner != null && (isChat || isMegagroup || ChatObject.isChannel(currentChat))) {
-            timeString = timeString + " | " + messageObject.messageOwner.id;
+            if (!(timeString instanceof SpannableStringBuilder)) {
+                timeString = new SpannableStringBuilder(timeString);
+            }
+            ((SpannableStringBuilder) timeString).append(" | ").append(String.valueOf(messageObject.messageOwner.id));
         }
         if (messageObject.messageOwner != null && messageObject.messageOwner.translated) {
-            timeString = timeString + " | " + LocaleController.getString(R.string.Translated);
+            if (!(timeString instanceof SpannableStringBuilder)) {
+                timeString = new SpannableStringBuilder(timeString);
+            }
+            ((SpannableStringBuilder) timeString).append(" | ").append(LocaleController.getString(R.string.Translated));
         }
         if (messageObject.isAnyKindOfSticker() && NaConfig.INSTANCE.getRealHideTimeForSticker().Bool()) {
             timeString = "";
         }
+        currentTimeString = new SpannableStringBuilder(timeString);
         if (signString != null) {
             if (messageObject.messageOwner.via_business_bot_id != 0) {
-                currentTimeString = timeString + ", ";
+                currentTimeString.append(", ");
             } else if (messageObject.messageOwner.fwd_from != null && messageObject.messageOwner.fwd_from.imported) {
-                currentTimeString = " " + timeString;
+                currentTimeString.insert(0, " ");
             } else {
-                currentTimeString = ", " + timeString;
+                String toInsert = edited && !NaConfig.INSTANCE.getUseEditedIcon().Bool() ? ", " : " ";
+                currentTimeString.insert(0, toInsert);
             }
-        } else {
-            currentTimeString = timeString;
         }
         timeTextWidth = timeWidth = (int) Math.ceil(Theme.chat_timePaint.measureText(currentTimeString, 0, currentTimeString == null ? 0 : currentTimeString.length()));
+        if (timeString instanceof SpannableStringBuilder) {
+            if (edited && NaConfig.INSTANCE.getUseEditedIcon().Bool() && TimeStringHelper.editedDrawable != null) {
+                timeTextWidth = timeWidth += TimeStringHelper.editedDrawable.getIntrinsicWidth();
+            }
+            if (ayuDeleted && NaConfig.INSTANCE.getUseDeletedIcon().Bool() && TimeStringHelper.deletedDrawable != null) {
+                timeTextWidth = timeWidth += TimeStringHelper.deletedDrawable.getIntrinsicWidth();
+            }
+        }
         if (currentMessageObject.scheduled && currentMessageObject.messageOwner.date == 0x7FFFFFFE || currentMessageObject.notime) {
             timeWidth -= AndroidUtilities.dp(8);
         }
@@ -24685,7 +24694,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     editedStr = deletedStrFin;
                 } else {
                     // it's both edited and deleted
-                    editedStr = customStrFin + " (" + deletedStrFin + ")";
+                    editedStr = customStrFin + " " + deletedStrFin;
                 }
                 CharSequence text = timeLayout.getText();
                 int i = text.toString().indexOf(editedStr);

@@ -22,6 +22,7 @@ public class ColoredImageSpan extends ReplacementSpan {
     public Drawable drawable;
     public boolean recolorDrawable = true;
 
+    boolean ignorePaintAlpha = false;
     boolean usePaintColor = true;
     public boolean useLinkPaintColor = false;
     int colorKey;
@@ -61,6 +62,11 @@ public class ColoredImageSpan extends ReplacementSpan {
             drawable.setColorFilter(new PorterDuffColorFilter(drawableColor, PorterDuff.Mode.SRC_IN));
         }
         this.verticalAlignment = verticalAlignment;
+    }
+
+    public ColoredImageSpan(Drawable drawable, boolean ignorePaintTextAlpha) {
+        this(drawable, ALIGN_DEFAULT);
+        this.ignorePaintAlpha = ignorePaintTextAlpha;
     }
 
     public ColoredImageSpan(Drawable drawable, int drawableColor, int verticalAlignment) {
@@ -172,8 +178,9 @@ public class ColoredImageSpan extends ReplacementSpan {
             if (rotate != 1f) {
                 canvas.rotate(rotate, drawable.getBounds().centerX(), drawable.getBounds().centerY());
             }
-            if (alpha != 1f || paint.getAlpha() != 0xFF) {
-                drawable.setAlpha((int) (alpha * paint.getAlpha()));
+            if (alpha != 1f || paint.getAlpha() != 0xFF && !ignorePaintAlpha) {
+                var multiplier = ignorePaintAlpha ? 255 : paint.getAlpha();
+                drawable.setAlpha((int) (alpha * multiplier));
             }
             drawable.draw(canvas);
         }
