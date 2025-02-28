@@ -14468,7 +14468,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         // NagramX
         if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
             if (ayuDeleted) {
-                Theme.chat_msgTextPaint.setAlpha((int) (255 * 0.8f));
+                Theme.chat_msgTextPaint.setAlpha((int) (255 * 0.75f));
             }
         }
         float textY = this.textY;
@@ -17614,7 +17614,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         // NagramX
         if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
             if (ayuDeleted) {
-                canvas.saveLayerAlpha(null, (int) (255 * 0.8f), Canvas.ALL_SAVE_FLAG);
+                canvas.saveLayerAlpha(null, (int) (255 * 0.75f), Canvas.ALL_SAVE_FLAG);
             }
         }
         if (!wasLayout) {
