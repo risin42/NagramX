@@ -21,11 +21,13 @@ You can grab the latest versions in these two ways:
     - Clear Cloud Settings data
     - Custom preferred languages in translation language selector
     - Ask before sending bot command
+    - Ask before opening inline links
     - Translate Entire Chats
     - Microsoft Translator
     - Center title in chat
     - Custom drawer elements
     - Remove Archived Chats from dialog list
+    - Use icons instead of "deleted"/"edited" 
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```
