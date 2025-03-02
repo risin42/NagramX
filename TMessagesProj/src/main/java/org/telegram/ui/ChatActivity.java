@@ -32896,7 +32896,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (f == null) return;
             path = f.getPath();
         }
-        MediaController.saveFile(path, getParentActivity(), messageObject.isVideo() ? 1 : 0, null, null);
+        MediaController.saveFile(messageObject, path, getParentActivity(), messageObject.isVideo() ? 1 : 0, null, null);
     }
 
     public MessageObject getMessageForTranslate() {
@@ -33201,7 +33201,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     selectedObjectToEditCaption = null;
                     return;
                 }
-                MediaController.saveFile(path, getParentActivity(), selectedObject.isVideo() ? 1 : 0, null, null);
+                MediaController.saveFile(selectedObject, path, getParentActivity(), selectedObject.isVideo() ? 1 : 0, null, null);
                 BulletinFactory.createSaveToGalleryBulletin(this, selectedObject.isVideo(), themeDelegate).show();
                 break;
             }
@@ -33286,7 +33286,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     if (path == null || path.length() == 0) {
                         path = getFileLoader().getPathToMessage(selectedObject.messageOwner).toString();
                     }
-                    MediaController.saveFile(path, getParentActivity(), 2, fileName, selectedObject.getDocument() != null ? selectedObject.getDocument().mime_type : "", uri -> {
+                    MediaController.saveFile(selectedObject, path, getParentActivity(), 2, fileName, selectedObject.getDocument() != null ? selectedObject.getDocument().mime_type : "", uri -> {
                         if (getParentActivity() == null) {
                             return;
                         }

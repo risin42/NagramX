@@ -110,6 +110,7 @@ import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -4575,18 +4576,26 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                                 FileLog.d("saving file: correcting path from " + path + " to " + (sourceFile == null ? null : sourceFile.getAbsolutePath()));
                             }
                             if (sourceFile != null && sourceFile.exists()) {
-                                saveFileInternal(isMusic ? 3 : 2, sourceFile, name);
+                                saveFileInternal(isMusic ? 3 : 2, sourceFile, name, message);
                                 copiedFiles++;
                             }
                         }
                     } else {
                         File dir;
+                        String folderName = NekoConfig.customSavePath.String();
+                        if (messageObjects.get(0) != null && NaConfig.INSTANCE.getSaveToChatSubfolder().Bool()) {
+                            String chatFolderName = getChatFolderName(messageObjects.get(0));
+                            folderName = folderName + File.separator + chatFolderName;
+                        }
                         if (isMusic) {
                             dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
                         } else {
                             dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                         }
-                        dir.mkdir();
+                        if (!TextUtils.isEmpty(folderName)) {
+                            dir = new File(dir, folderName);
+                        }
+                        dir.mkdirs();
                         for (int b = 0, N = messageObjects.size(); b < N; b++) {
                             MessageObject message = messageObjects.get(b);
                             TLRPC.Document document = message.getDocument();
@@ -4784,6 +4793,18 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
     }
 
     public static void saveFile(String fullPath, Context context, final int type, final String name, final String mime, final Utilities.Callback<Uri> onSaved, boolean showProgress) {
+        saveFile(null, fullPath, context, type, name, mime, onSaved, true);
+    }
+
+    public static void saveFile(MessageObject selectedObject, String fullPath, Context context, final int type, final String name, final String mime) {
+        saveFile(selectedObject, fullPath, context, type, name, mime, null);
+    }
+
+    public static void saveFile(MessageObject selectedObject, String fullPath, Context context, final int type, final String name, final String mime, final Utilities.Callback<Uri> onSaved) {
+        saveFile(selectedObject, fullPath, context, type, name, mime, onSaved, true);
+    }
+
+    public static void saveFile(MessageObject selectedObject, String fullPath, Context context, final int type, final String name, final String mime, final Utilities.Callback<Uri> onSaved, boolean showProgress) {
         if (fullPath == null || context == null) {
             return;
         }
@@ -4827,9 +4848,13 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                 try {
                     Uri uri;
                     boolean result = true;
-                    final String folderName = NekoConfig.customSavePath.String();
+                    String folderName = NekoConfig.customSavePath.String();
+                    if (selectedObject != null && NaConfig.INSTANCE.getSaveToChatSubfolder().Bool()) {
+                        String chatFolderName = getChatFolderName(selectedObject);
+                        folderName = folderName + File.separator + chatFolderName;
+                    }
                     if (Build.VERSION.SDK_INT >= 29) {
-                        uri = saveFileInternal(type, sourceFile, name);
+                        uri = saveFileInternal(type, sourceFile, name, selectedObject);
                         result = uri != null;
                     } else {
                         File destFile;
@@ -4848,7 +4873,9 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                             } else {
                                 dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
                             }
-                            dir = new File(dir, folderName);
+                            if (!TextUtils.isEmpty(folderName)) {
+                                dir = new File(dir, folderName);
+                            }
                             dir.mkdirs();
                             destFile = new File(dir, name);
                             if (destFile.exists()) {
@@ -4935,7 +4962,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    private static Uri saveFileInternal(int type, File sourceFile, String filename) {
+    private static Uri saveFileInternal(int type, File sourceFile, String filename, MessageObject messageObject) {
         try {
             int selectedType = type;
             ContentValues contentValues = new ContentValues();
@@ -4953,7 +4980,11 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                     selectedType = 1;
                 }
             }
-            final String folderName = NekoConfig.customSavePath.String();
+            String folderName = NekoConfig.customSavePath.String();
+            if (messageObject != null && NaConfig.INSTANCE.getSaveToChatSubfolder().Bool()) {
+                String chatFolderName = getChatFolderName(messageObject);
+                folderName = folderName + File.separator + chatFolderName;
+            }
             if (selectedType == 0) {
                 if (filename == null) {
                     filename = AndroidUtilities.generateFileName(0, extension);
@@ -5975,4 +6006,47 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
     public boolean currentPlaylistIsGlobalSearch() {
         return playlistGlobalSearchParams != null;
     }
+
+    private static String getChatFolderName(MessageObject message) {
+        String chatName = "Unknown";
+
+        if (message == null) {
+            return chatName;
+        }
+
+        long peerId = MessageObject.getPeerId(message.messageOwner.peer_id);
+        int currentAccount = message.currentAccount;
+
+        if (DialogObject.isUserDialog(peerId)) {
+            TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(peerId);
+            if (user != null) {
+                chatName = UserObject.getUserName(user);
+            }
+        } else {
+            TLRPC.Chat chat = MessagesController.getInstance(currentAccount).getChat(-peerId);
+            if (chat != null) {
+                chatName = chat.title;
+            }
+        }
+
+        // Normalize Unicode to avoid issues with combined characters
+        chatName = Normalizer.normalize(chatName, Normalizer.Form.NFKC);
+
+        // Remove all invisible characters (U+200B - U+206F)
+        chatName = chatName.replaceAll("[\\u200B-\\u206F]", "");
+
+        // Replace invalid file system characters
+        chatName = chatName.replaceAll("[\\p{Cc}\\p{Cf}\\\\/:*?\"<>|]", "_");
+
+        // Trim spaces and remove leading/trailing dots (Windows does not allow filenames ending with '.')
+        chatName = chatName.trim().replaceAll("^\\.+|\\.+$", "");
+
+        // If the cleaned name is empty, use the peer ID instead
+        if (TextUtils.isEmpty(chatName)) {
+            chatName = String.valueOf(peerId);
+        }
+
+        return chatName;
+    }
+
 }

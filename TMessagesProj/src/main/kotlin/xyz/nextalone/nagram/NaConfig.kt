@@ -942,6 +942,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    var saveToChatSubfolder =
+        addConfig(
+            "SaveToChatSubfolder",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {
