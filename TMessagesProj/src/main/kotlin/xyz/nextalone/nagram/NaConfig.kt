@@ -808,7 +808,7 @@ object NaConfig {
         addConfig(
             "ShowStickersRowToplevel",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val hideShareButtonInChannel =
         addConfig(
@@ -904,7 +904,7 @@ object NaConfig {
         addConfig(
             "DrawerItemQrLogin",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     var drawerItemArchivedChats =
         addConfig(

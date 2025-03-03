@@ -324,7 +324,7 @@ public class NekoSettingsActivity extends BaseFragment {
                             } else if (position == passcodeRow) {
                                 textCell.setTextAndIcon(getString(R.string.PasscodeNeko), R.drawable.msg_permissions, true);
                             } else if (position == experimentRow) {
-                                textCell.setTextAndIcon(getString(R.string.Experiment), R.drawable.msg_fave, true);
+                                textCell.setTextAndIcon(getString(R.string.Experimental), R.drawable.msg_fave, true);
                             }
                             break;
                         }

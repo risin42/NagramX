@@ -11456,7 +11456,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             BottomBuilder builder = new BottomBuilder(getParentActivity());
             if (allowPin) {
-                builder.addItem(LocaleController.getString(R.string.UnpinMessageX), R.drawable.msg_unpin, true, c -> {
+                builder.addItem(LocaleController.getString(R.string.UnpinMessage), R.drawable.msg_unpin, true, c -> {
                     MessageObject messageObject = pinnedMessageObjects.get(currentPinnedMessageId);
                     if (messageObject == null) {
                         messageObject = messagesDict[0].get(currentPinnedMessageId);
@@ -11470,7 +11470,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 updatePinnedMessageView(true);
                 return;
             }
-            builder.addItem(LocaleController.getString(R.string.DismissForYourself), R.drawable.msg_cancel, c -> {
+            builder.addItem(LocaleController.getString(R.string.HidePinnedMessages), R.drawable.msg_cancel, c -> {
                 SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
                 if (chatInfo != null) {
                     preferences.edit().putInt("pin_" + dialog_id, chatInfo.pinned_msg_id).apply();
@@ -11508,7 +11508,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     return Unit.INSTANCE;
                 });
             }
-            builder.addItem(LocaleController.getString(R.string.DismissForYourself), R.drawable.msg_cancel, c -> {
+            builder.addItem(LocaleController.getString(R.string.HidePinnedMessages), R.drawable.msg_cancel, c -> {
                 SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
                 if (chatInfo != null) {
                     preferences.edit().putInt("pin_" + dialog_id, chatInfo.pinned_msg_id).apply();
