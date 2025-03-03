@@ -121,8 +121,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
-import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.ui.PinnedStickerHelper;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
@@ -138,7 +136,6 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
     private static final int MENU_DELETE = 1;
     private static final int MENU_SHARE = 2;
     private static final int MENU_EXPORT = 5;
-    private static final int MENU_TOGGLE_PIN = 100;
 
 
     private RecyclerListView listView;
@@ -231,34 +228,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
             if (source.getItemViewType() != target.getItemViewType()) {
                 return false;
             }
-            if (NekoConfig.enableStickerPin.Bool() && currentType == MediaDataController.TYPE_IMAGE) {
-                int from = source.getAdapterPosition();
-                int to = target.getAdapterPosition();
-                if (from < stickersStartRow + listAdapter.pinnedStickersCount) {
-                    // drag a pinned sticker
-                    if (to >= stickersStartRow + listAdapter.pinnedStickersCount) {// to a unpinned sticker
-                        return false;
-                    }
-                } else {
-                    // drag a unpinned sticker
-                    if (to < stickersStartRow + listAdapter.pinnedStickersCount) {
-                        // to a pinned sticker
-                        return false;
-                    } else {
-                        // to a unpinned sticker, like normal
-                        listAdapter.swapElements(from, to);
-                        return true;
-                    }
-                }
-                // pinned to pinned
-                if (from == to)
-                    return false;
-                int index1 = from - stickersStartRow;
-                int index2 = to - stickersStartRow;
-                PinnedStickerHelper.getInstance(currentAccount).swap(index1, index2);
-                listAdapter.swapElements(from, to);
-            } else
-                listAdapter.swapElements(source.getAdapterPosition(), target.getAdapterPosition());
+            listAdapter.swapElements(source.getAdapterPosition(), target.getAdapterPosition());
             return true;
         }
 
@@ -826,9 +796,6 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
         }
         List<TLRPC.StickerSetCovered> featuredStickersList = new ArrayList<>(featuredStickerSets);
 
-        if (MediaDataController.TYPE_IMAGE == currentType && NekoConfig.enableStickerPin.Bool()) {
-            PinnedStickerHelper.getInstance(currentAccount).reorderPinnedStickers(newList);
-        }
         DiffUtil.DiffResult diffResult = null;
         DiffUtil.DiffResult featuredDiffResult = null;
 
@@ -909,7 +876,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                     }
                 });
             }
-            listAdapter.setStickerSets(newList, false); // NekoX: dont reorder here
+            listAdapter.setStickerSets(newList);
             listAdapter.setFeaturedStickerSets(featuredStickersList);
         }
 
@@ -1144,23 +1111,9 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
         private Context mContext;
 
-        private int pinnedStickersCount = 0; // to count how many stickers are pinned, used in notifyItemMoved, need to be updated when pin/unpin
-
         public ListAdapter(Context context, List<TLRPC.TL_messages_stickerSet> stickerSets, List<TLRPC.StickerSetCovered> featuredStickerSets) {
             mContext = context;
-            List<TLRPC.TL_messages_stickerSet> temp = new ArrayList<>(stickerSets);
-            if (MediaDataController.TYPE_IMAGE == currentType && NekoConfig.enableStickerPin.Bool()) {
-                if (PinnedStickerHelper.getInstance(currentAccount).reorderPinnedStickers(stickerSets)) {
-                    // Sync is needed
-//                    AndroidUtilities.runOnUIThread(() -> {
-//                        needReorder = true;
-//                        sendReorder();
-//                    }, 400);
-                    PinnedStickerHelper.getInstance(currentAccount).sendOrderSync(stickerSets);
-                }
-                this.pinnedStickersCount = PinnedStickerHelper.getInstance(currentAccount).pinnedList.size();
-            }
-            this.stickerSets.addAll(stickerSets);
+            setStickerSets(stickerSets);
             if (featuredStickerSets.size() > 3) {
                 setFeaturedStickerSets(featuredStickerSets.subList(0, 3));
             } else {
@@ -1179,15 +1132,6 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
         }
 
         public void setStickerSets(List<TLRPC.TL_messages_stickerSet> stickerSets) {
-            this.stickerSets.clear();
-//            if (MediaDataController.TYPE_IMAGE == currentType && NekoConfig.enableStickerPin.Bool()) {
-//                pinnedStickersCount = PinnedStickerHelper.getInstance(currentAccount).reorderPinnedStickers(stickerSets);
-//            }
-            this.stickerSets.addAll(stickerSets);
-            this.pinnedStickersCount = PinnedStickerHelper.getInstance(currentAccount).pinnedList.size();
-        }
-
-        public void setStickerSets(List<TLRPC.TL_messages_stickerSet> stickerSets, boolean nekoxReorder) {
             this.stickerSets.clear();
             this.stickerSets.addAll(stickerSets);
         }
@@ -1331,17 +1275,8 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
         private void processSelectionOption(int which, TLRPC.TL_messages_stickerSet stickerSet) {
             if (which == MENU_ARCHIVE) {
                 MediaDataController.getInstance(currentAccount).toggleStickerSet(getParentActivity(), stickerSet, !stickerSet.set.archived ? 1 : 2, StickersActivity.this, true, true);
-                if (NekoConfig.enableStickerPin.Bool() && currentType == MediaDataController.TYPE_IMAGE) {
-                    // Sticker will be removed from local list in toggleStickerSet
-                    pinnedStickersCount--;
-                    setStickerSetCellPinnedMarkVisibility(stickerSet.set.id, false);
-                }
             } else if (which == MENU_DELETE) {
                 MediaDataController.getInstance(currentAccount).toggleStickerSet(getParentActivity(), stickerSet, 0, StickersActivity.this, true, true);
-                if (NekoConfig.enableStickerPin.Bool() && currentType == MediaDataController.TYPE_IMAGE) {
-                    pinnedStickersCount--;
-                    setStickerSetCellPinnedMarkVisibility(stickerSet.set.id, false);
-                }
             } else if (which == 2) {
                 try {
                     Intent intent = new Intent(Intent.ACTION_SEND);
@@ -1366,38 +1301,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                 if (index >= 0) {
                     listAdapter.toggleSelected(stickersStartRow + index);
                 }
-            } else if (which == MENU_TOGGLE_PIN && NekoConfig.enableStickerPin.Bool() && currentType == MediaDataController.TYPE_IMAGE) {
-                final PinnedStickerHelper ins = PinnedStickerHelper.getInstance(currentAccount);
-                final MediaDataController mediaDataController = MediaDataController.getInstance(currentAccount);
-                if (ins.isPinned(stickerSet.set.id)) {
-                    // unpin
-                    ins.removePinnedStickerLocal(stickerSet.set.id);
-                    pinnedStickersCount--;
-                    setStickerSetCellPinnedMarkVisibility(stickerSet.set.id, false);
-                    moveElements(stickersStartRow + this.stickerSets.indexOf(stickerSet), stickersStartRow + pinnedStickersCount);
-                    // use swapElements and native notifier and observer to make pin/unpin work like a simple move, sync works perfectly
-                } else {
-                    // pin
-                    ins.pinNewSticker(stickerSet.set.id);
-                    pinnedStickersCount++;
-                    setStickerSetCellPinnedMarkVisibility(stickerSet.set.id, true);
-                    moveElements(stickersStartRow + this.stickerSets.indexOf(stickerSet), stickersStartRow);
-                }
-                needReorder = true;
-                sendReorder();
             }
-        }
-
-        @Nullable
-        private StickerSetCell setStickerSetCellPinnedMarkVisibility(long id, boolean visible) {
-            for (int i = 0; i < listView.getChildCount(); i++) {
-                View view = listView.getChildAt(i);
-                if (view instanceof StickerSetCell) {
-                    if (((StickerSetCell) view).getStickersSet().set.id == id)
-                        ((StickerSetCell) view).setPinnedMarkVisibility(visible);
-                }
-            }
-            return null;
         }
 
         @Override
@@ -1713,11 +1617,6 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                         if (stickerSet.set.official) {
                             options.add(R.drawable.msg_reorder, LocaleController.getString(R.string.StickersReorder), () -> processSelectionOption(4, stickerSet));
                         } else {
-                            if (NekoConfig.enableStickerPin.Bool() && currentType == MediaDataController.TYPE_IMAGE) {
-                                options.add(R.drawable.msg_pin, PinnedStickerHelper.getInstance(currentAccount).isPinned(stickerSet.set.id) ?
-                                        LocaleController.getString(R.string.UnpinSticker) :
-                                        LocaleController.getString(R.string.PinSticker), () -> processSelectionOption(MENU_TOGGLE_PIN, stickerSet));
-                            }
                             options.add(R.drawable.msg_link, LocaleController.getString(R.string.StickersCopy), () -> processSelectionOption(3, stickerSet));
                             options.add(R.drawable.msg_reorder, LocaleController.getString(R.string.StickersReorder), () -> processSelectionOption(4, stickerSet));
                             options.add(R.drawable.msg_share, LocaleController.getString(R.string.StickersShare), () -> processSelectionOption(2, stickerSet));
@@ -1808,32 +1707,6 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                 notifyItemRangeChanged(fromIndex, UPDATE_DIVIDER);
                 notifyItemRangeChanged(toIndex, UPDATE_DIVIDER);
             }
-        }
-
-        private void moveElements(int fromIndex, int toIndex) {
-
-            final int index1 = fromIndex - stickersStartRow;
-            final int index2 = toIndex - stickersStartRow;
-
-            moveListElements(stickerSets, index1, index2);
-            moveListElements(MediaDataController.getInstance(currentAccount).getStickerSets(currentType), index1, index2);
-
-            notifyItemMoved(fromIndex, toIndex);
-            if (fromIndex == stickersEndRow - 1 || toIndex == stickersEndRow - 1) {
-                notifyItemRangeChanged(fromIndex, UPDATE_DIVIDER);
-                notifyItemRangeChanged(toIndex, UPDATE_DIVIDER);
-            }
-        }
-
-        /**
-         * Move element(index1) to specific index
-         *
-         * @param index2 index when the element(index1) is removed
-         */
-        private void moveListElements(List<TLRPC.TL_messages_stickerSet> stickerSets, int index1, int index2) {
-            final TLRPC.TL_messages_stickerSet temp = stickerSets.get(index1);
-            stickerSets.remove(index1);
-            stickerSets.add(index2, temp);
         }
 
         private void swapListElements(List<TLRPC.TL_messages_stickerSet> list, int index1, int index2) {

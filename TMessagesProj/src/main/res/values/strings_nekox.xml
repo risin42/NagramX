@@ -100,12 +100,6 @@
     <string name="AutoDownload">Disable Auto Download</string>
     <string name="Win32ExecutableFiles">Win32 executable files</string>
     <string name="ArchiveFiles">Archive files</string>
-    <string name="EnableStickerPin">Enable Pinning Sticker</string>
-    <string name="EnableStickerPinAbout">Pin Stickers and sync with cloud even when adding new stickers.\nPaired with Disable Favorite and Recent.</string>
-    <string name="EnableStickerPinTip">This function is under development. Syncing to cloud may not work.</string>
-    <string name="PinSticker">Pin</string>
-    <string name="UnpinSticker">Unpin</string>
-    <string name="SetPinnedSuffix">(Pinned)</string>
     <string name="AutoLockImmediately">Immediately</string>
     <string name="BackupSettings">Backup Settings</string>
     <string name="ImportSettings">Import Settings</string>

@@ -146,7 +146,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.ui.PinnedStickerHelper;
 
 public class EmojiView extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
 
@@ -6592,11 +6591,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                         if (object instanceof TLRPC.TL_messages_stickerSet) {
                             TLRPC.TL_messages_stickerSet set = (TLRPC.TL_messages_stickerSet) object;
                             if (set.set != null) {
-                                String title = set.set.title;
-                                if (PinnedStickerHelper.getInstance(currentAccount).isPinned(set.set.id)) {
-                                    title += " " + LocaleController.getString("SetPinnedSuffix", R.string.SetPinnedSuffix);
-                                }
-                                cell.setText(title, 0);
+                                cell.setText(set.set.title, 0);
                                 if (set.set.creator && !StickersAlert.DISABLE_STICKER_EDITOR) {
                                     cell.setEdit(v -> {
                                         delegate.onShowStickerSet(set.set, null, true);

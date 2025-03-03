@@ -37,7 +37,6 @@ import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.Pair;
 import android.util.SparseArray;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -104,7 +103,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.ui.PinnedStickerHelper;
 import xyz.nextalone.nagram.helper.ExternalStickerCacheHelper;
 
 @SuppressWarnings("unchecked")
@@ -2537,18 +2535,7 @@ public class MediaDataController extends BaseController {
             processLoadedStickers(type, newStickerArray, false, (int) (System.currentTimeMillis() / 1000), res.hash2, onDone);
         } else {
             LongSparseArray<TLRPC.TL_messages_stickerSet> newStickerSets = new LongSparseArray<>();
-            // NekoX: Pin Sticker
-            if (NekoConfig.enableStickerPin.Bool() && type == MediaDataController.TYPE_IMAGE) {
-                PinnedStickerHelper ins = PinnedStickerHelper.getInstance(UserConfig.selectedAccount);
-                if (ins.reorderPinnedStickersForSS(res.sets, true))
-                    AndroidUtilities.runOnUIThread(() -> {
-                        if (BuildVars.DEBUG_VERSION) {
-                            Toast.makeText(ApplicationLoader.applicationContext, "Reorder loaded stickers, sync now. Pinned: " + ins.pinnedList.size(), Toast.LENGTH_SHORT).show();
-                        }
-                        ins.sendOrderSyncForSS(res.sets);
-                    });
-            }
-            for (int a = 0; a < res.sets.size(); a++) { // reload all sitckers here
+            for (int a = 0; a < res.sets.size(); a++) {
                 TLRPC.StickerSet stickerSet = res.sets.get(a);
 
                 TLRPC.TL_messages_stickerSet oldSet = stickerSetsById.get(stickerSet.id);
@@ -2564,10 +2551,10 @@ public class MediaDataController extends BaseController {
                     }
                     continue;
                 }
-                // oldset == null, new sticker comes here
 
                 newStickerArray.add(null);
                 int index = a;
+
                 TLRPC.TL_messages_getStickerSet req = new TLRPC.TL_messages_getStickerSet();
                 req.stickerset = new TLRPC.TL_inputStickerSetID();
                 req.stickerset.id = stickerSet.id;
@@ -3271,10 +3258,6 @@ public class MediaDataController extends BaseController {
         }
         final int type = type1;
 
-        if (NekoConfig.enableStickerPin.Bool() && type == MediaDataController.TYPE_IMAGE && (toggle == 0 || toggle == 1)) {
-            PinnedStickerHelper.getInstance(currentAccount).removePinnedStickerLocal(stickerSet.id);
-        }
-
         stickerSet.archived = toggle == 1;
 
         int currentIndex = 0;
@@ -3298,8 +3281,6 @@ public class MediaDataController extends BaseController {
         loadHash[type] = calcStickersHash(stickerSets[type]);
         putStickersToCache(type, stickerSets[type], loadDate[type], loadHash[type]);
 
-        if (context == null && baseFragment != null) context = baseFragment.getParentActivity();
-
         if (toggle == 2) {
             if (!cancelRemovingStickerSet(stickerSet.id)) {
                 toggleStickerSetInternal(context, toggle, baseFragment, showSettings, stickerSetObject, stickerSet, type, showTooltip);
@@ -3308,11 +3289,7 @@ public class MediaDataController extends BaseController {
             toggleStickerSetInternal(context, toggle, baseFragment, showSettings, stickerSetObject, stickerSet, type, false);
         } else {
             StickerSetBulletinLayout bulletinLayout = new StickerSetBulletinLayout(context, stickerSetObject, toggle, null, baseFragment == null ? null : baseFragment.getResourceProvider());
-            int finalCurrentIndex = NekoConfig.enableStickerPin.Bool() && type == TYPE_IMAGE && PinnedStickerHelper.getInstance(UserConfig.selectedAccount).isPinned(stickerSet.id)
-                    ? PinnedStickerHelper.getInstance(UserConfig.selectedAccount).pinnedList.size()
-                    : currentIndex;
-            // NekoX: Pin Sticker, Fix undo for Archiving and Deleting
-            Context finalContext = context;
+            int finalCurrentIndex = currentIndex;
             boolean[] undoDone = new boolean[1];
             markSetUninstalling(stickerSet.id, true);
             Bulletin.UndoButton undoButton = new Bulletin.UndoButton(context, false).setUndoAction(() -> {
@@ -3343,7 +3320,7 @@ public class MediaDataController extends BaseController {
                     return;
                 }
                 undoDone[0] = true;
-                toggleStickerSetInternal(finalContext, toggle, baseFragment, showSettings, stickerSetObject, stickerSet, type, false);
+                toggleStickerSetInternal(context, toggle, baseFragment, showSettings, stickerSetObject, stickerSet, type, false);
             });
             bulletinLayout.setButton(undoButton);
             removingStickerSetsUndos.put(stickerSet.id, undoButton::undo);

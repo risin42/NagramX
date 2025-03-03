@@ -97,11 +97,7 @@
     <string name="AutoDownload">自動ダウンロードを禁止</string>
     <string name="Win32ExecutableFiles">Win32 実行ファイル</string>
     <string name="AutoLockImmediately">すぐに</string>
-    <string name="PinSticker">ピン</string>
     <string name="hideSponsoredMessage">スポンサードメッセージを非表示</string>
-    <string name="EnableStickerPin">ステッカーのピン留め機能を有効にする</string>
-    <string name="EnableStickerPinTip">開発中機能につき、クラウド同期は正常に動作しない可能性があります。</string>
-    <string name="EnableStickerPinAbout">ステッカーを固定し、新しいステッカーを追加するとクラウド同期されます。</string>
     <string name="channelAlias">チャンネルアリアス</string>
     <string name="localPremium">ローカルプレミアム</string>
     <string name="unreadBadgeOnBackButton">チャットの戻るボタンに未読数を表示</string>
