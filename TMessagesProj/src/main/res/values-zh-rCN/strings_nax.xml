@@ -30,7 +30,7 @@
     <string name="LlmUserPrompt">用户提示词</string>
     <string name="LlmUserPromptNotice">使用 @text 作为原始消息的占位符，使用 @toLang 作为目标语言的占位符（可选）。\n\n例如：\'将 @text 翻译成 @toLang 无需任何解释。\'\n\n留空将使用默认提示词。</string>
     <string name="LlmTemperature">严谨与想象</string>
-    <string name="AITranslatorSettings">AI 翻译设置</string>
+    <string name="AITranslatorSettings">AI 翻译</string>
     <string name="TranslucentDeletedMessages">透明已删除消息</string>
     <string name="ArticleTranslationProvider">文章翻译源</string>
     <string name="EnableSeparateArticleTranslator">单独设置文章翻译源</string>
@@ -71,10 +71,10 @@
     <string name="SettingsOnly">仅设置</string>
     <string name="ChatsOnly">仅聊天</string>
     <string name="InstantViewTranslation">即时预览</string>
-    <string name="SaveDeletedMessageForBot">在机器人对话中保存</string>
+    <string name="SaveDeletedMessageForBot">在机器人聊天中保存</string>
     <string name="DrawerElements">侧栏菜单</string>
-    <string name="HideArchive">移除聊天列表中的已归档聊天</string>
-    <string name="HideChannelSilentBroadcast">隐藏频道静默广播按钮</string>
+    <string name="HideArchive">移除聊天列表中的\"已归档聊天\"</string>
+    <string name="HideChannelSilentBroadcast">隐藏静默广播切换按钮</string>
     <string name="ConfirmAllLinks">打开内联链接前确认</string>
     <string name="ConfirmAllLinksDescription">启用后，打开所有内联链接（包括 Telegram 内部链接，例如机器人内联按钮中的 t.me 链接）前，都会询问是否确认。</string>
     <string name="TranslatorMinimizedChannel">翻译栏已为此频道最小化。</string>

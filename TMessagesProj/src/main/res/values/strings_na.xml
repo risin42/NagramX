@@ -36,15 +36,15 @@
     <string name="DefaultMonoLanguage">Default Code Language</string>
     <string name="DisableGlobalSearch">Disable Global Search</string>
     <string name="InputMessageId">Enter Message ID</string>
-    <string name="ToTheMessage">Go to</string>
+    <string name="ToTheMessage">Go To</string>
     <string name="ZalgoFilter">Filter \"Zalgo\" Symbols</string>
     <string name="ZalgoFilterNotice">All \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" symbols in nicknames or messages will be removed.</string>
-    <string name="labelChannelUser">Label Channel User</string>
-    <string name="CustomChannelLabel">Channel User Label</string>
+    <string name="labelChannelUser">Label Channel Users</string>
+    <string name="CustomChannelLabel">Custom Channel Label</string>
     <string name="AlwaysShowDownloadIcon">Always Show Download Icon</string>
     <string name="QuickToggleAnonymous">Quick Toggle Anonymous</string>
     <string name="QuickToggleAnonymousNotice">If you\'re owner of the group.</string>
-    <string name="RealHideTimeForSticker">Hide Time for Stickers</string>
+    <string name="RealHideTimeForSticker">Hide Time on Stickers</string>
     <string name="HideTitle">Hide Title</string>
     <string name="IgnoreFolderCount">Hide Unread Count on Folders</string>
     <string name="SendWithoutMarkdown">Send without markdown</string>
@@ -78,7 +78,7 @@
     <string name="DisableSuggestionView">Disable Profile Settings Suggestion</string>
     <string name="DisableStories">Disable Stories</string>
     <string name="DisableSendReadStories">Don\'t Read Stories</string>
-    <string name="HideFilterMuteAll">Hide \"Mute All\" in Folder Long-Press Menu</string>
+    <string name="HideFilterMuteAll">Hide \"Mute All\" in Long Press Menu</string>
     <string name="UseLocalQuoteColor">Local Quote Color</string>
     <string name="ShowSquareAvatar">Square Avatar</string>
     <string name="DisableCustomWallpaperUser">Disable User Custom Wallpaper</string>
@@ -102,7 +102,7 @@
     <string name="TipsChannel">Features Tips Channel</string>
     <string name="ShowSmallGIF">Show Small GIF</string>
     <string name="DisableClickCommandToSend">Ask Before Sending Bot Command</string>
-    <string name="DisableDialogsFloatingButton">Hide Floating Button from Chat List</string>
+    <string name="DisableDialogsFloatingButton">Hide Floating Button</string>
     <string name="DisableFlagSecure">Disable FLAG_SECURE</string>
     <string name="CenterActionBarTitleType">Use Centered Title</string>
     <string name="ShowQuickReplyInBotCommands">Show Quick Reply in Bot Commands</string>
@@ -148,5 +148,5 @@
     <string name="DisableBotOpenButton">Disable Bot Open Button</string>
     <string name="CustomTitleUserName">Use User Nickname as Title</string>
     <string name="EnhancedVideoBitrate">Enhanced Shared Video Bitrate</string>
-    <string name="SaveToChatSubfolder">Save Attachments to Chat-named Folders</string>
+    <string name="SaveToChatSubfolder">Save Attachments by Chat Name</string>
 </resources>

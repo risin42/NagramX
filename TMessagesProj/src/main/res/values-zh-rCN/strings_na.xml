@@ -40,8 +40,8 @@
     <string name="ZalgoFilter">过滤 \"Zalgo\" 符号</string>
     <string name="ZalgoFilterNotice">昵称和消息中的 \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" 符号将被过滤。</string>
     <string name="labelChannelUser">标记频道身份发言用户</string>
-    <string name="CustomChannelLabel">频道身份发言用户的标记</string>
-    <string name="AlwaysShowDownloadIcon">一直显示下载管理器</string>
+    <string name="CustomChannelLabel">自定义频道标记</string>
+    <string name="AlwaysShowDownloadIcon">始终显示下载图标</string>
     <string name="QuickToggleAnonymous">快速切换匿名发言</string>
     <string name="QuickToggleAnonymousNotice">如果你是群组的所有者的话。</string>
     <string name="RealHideTimeForSticker">隐藏贴纸发送时间</string>
@@ -56,7 +56,7 @@
     <string name="DisableEmojiDrawLimit">解除 Emoji 渲染上限</string>
     <string name="IconDecoration">图标装饰</string>
     <string name="NotificationIcon">通知图标样式</string>
-    <string name="Official">官方的</string>
+    <string name="Official">官方</string>
     <string name="HalloWeen">万圣节</string>
     <string name="ShowOnlineStatus">显示用户在线状态</string>
     <string name="ShowOnlineStatusNotice">在群组聊天时用户头像的右下角显示在线状态。</string>
@@ -77,7 +77,7 @@
     <string name="DisableSuggestionView">禁用修改手机号码的建议</string>
     <string name="DisableStories">禁用动态功能</string>
     <string name="DisableSendReadStories">偷偷看动态</string>
-    <string name="HideFilterMuteAll">隐藏文件夹中的\"全部取消静音\"</string>
+    <string name="HideFilterMuteAll">隐藏长按菜单中的\"全部静音\"</string>
     <string name="UseLocalQuoteColor">本地名称颜色</string>
     <string name="ShowSquareAvatar">方形头像</string>
     <string name="DisableCustomWallpaperUser">禁用私聊的自定义背景</string>
@@ -101,7 +101,7 @@
     <string name="TipsChannel">功能介绍频道</string>
     <string name="ShowSmallGIF">GIF 显示得更小</string>
     <string name="DisableClickCommandToSend">点击 bot 指令发送前确认</string>
-    <string name="DisableDialogsFloatingButton">禁用主页浮动按钮</string>
+    <string name="DisableDialogsFloatingButton">隐藏浮动按钮</string>
     <string name="DisableFlagSecure">关闭 FLAG_SECURE</string>
     <string name="CenterActionBarTitleType">标题居中</string>
     <string name="ShowQuickReplyInBotCommands">在输入框中显示快速回复按钮</string>
@@ -134,7 +134,7 @@
     <string name="RegexFiltersAddError">正则表达式语法错误</string>
     <string name="ShowTimeHint">点击消息时间显示详细信息</string>
     <string name="SearchHashtagDefaultPageChannel">在频道中点击标签时默认的搜索页面</string>
-    <string name="SearchHashtagDefaultPageChat">在对话中点击标签时默认的搜索页面</string>
+    <string name="SearchHashtagDefaultPageChat">在聊天中点击标签时默认的搜索页面</string>
     <string name="OpenUrlOutBotWebViewRegex">指定 URL Regex 跳出 bot webview</string>
     <string name="LocaleToDBC">界面文本使用半角符号</string>
     <string name="EnablePanguOnReceiving">接受信息 Pangu 化</string>
@@ -146,5 +146,5 @@
     <string name="DisableBotOpenButton">禁用 Bot 的打开小程序按钮</string>
     <string name="CustomTitleUserName">使用用户昵称作为标题</string>
     <string name="EnhancedVideoBitrate">改善上传视频画质</string>
-    <string name="SaveToChatSubfolder">保存附件到聊天名称目录</string>
+    <string name="SaveToChatSubfolder">按聊天名称保存附件</string>
 </resources>

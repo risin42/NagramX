@@ -30,7 +30,7 @@
     <string name="LlmUserPrompt">ユーザープロンプト</string>
     <string name="LlmUserPromptNotice">元のメッセージのプレースホルダーとして @text を、ターゲット言語のプレースホルダーとして @toLang を使用します（オプション）。\n\n例：\'@text を @toLang に説明なしで翻訳してください。\'\n\n空白のままにすると、デフォルトのプロンプトが使用されます。</string>
     <string name="LlmTemperature">温度</string>
-    <string name="AITranslatorSettings">AI 翻訳設定</string>
+    <string name="AITranslatorSettings">AI 翻訳</string>
     <string name="TranslucentDeletedMessages">削除済みメッセージの透過</string>
     <string name="ArticleTranslationProvider">アーティクル翻訳プロバイダ</string>
     <string name="EnableSeparateArticleTranslator">アーティクル翻訳で別のプロバイダを使用</string>
@@ -73,8 +73,8 @@
     <string name="InstantViewTranslation">アーティクル</string>
     <string name="SaveDeletedMessageForBot">ボットチャットで保存</string>
     <string name="DrawerElements">ドロワーメニュー</string>
-    <string name="HideArchive">チャットリストで収納したチャットを非表示</string>
-    <string name="HideChannelSilentBroadcast">チャンネルで「通知せずに公開」ボタンを非表示</string>
+    <string name="HideArchive">チャットリストで「収納したチャット」を非表示</string>
+    <string name="HideChannelSilentBroadcast">「通知せずに公開」ボタンを非表示</string>
     <string name="ConfirmAllLinks">埋め込みリンクを開く前に確認</string>
     <string name="ConfirmAllLinksDescription">有効にすると、Telegram 内部リンクを含むすべての埋め込みリンクを開く前に、確認を求めるようになります。</string>
     <string name="TranslatorMinimizedChannel">このチャンネルでは、翻訳ツールバーが最小化されました。</string>
