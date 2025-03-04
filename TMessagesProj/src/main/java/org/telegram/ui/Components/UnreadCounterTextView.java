@@ -114,10 +114,6 @@ public class UnreadCounterTextView extends View {
         invalidate();
     }
 
-    public CharSequence getText() {
-        return lastText;
-    }
-
     @Override
     protected void drawableStateChanged() {
         super.drawableStateChanged();

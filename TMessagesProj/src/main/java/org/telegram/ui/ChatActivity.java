@@ -1183,6 +1183,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
     private final static int OPTION_HISTORY = 205;
 
+    private boolean isChannelBottomMuteView = false;
+
     private final static int[] allowedNotificationsDuringChatListAnimations = new int[]{
             AyuConstants.MESSAGES_DELETED_NOTIFICATION,
             NotificationCenter.messagesRead,
@@ -9981,9 +9983,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private boolean isMuteUnmuteButton() {
-        return NaConfig.INSTANCE.getDisableChannelMuteButton().Bool()
-                && (bottomOverlayChatText.getText() == LocaleController.getString(R.string.ChannelMute)
-                || bottomOverlayChatText.getText() == LocaleController.getString(R.string.ChannelUnmute));
+        return NaConfig.INSTANCE.getDisableChannelMuteButton().Bool() && isChannelBottomMuteView;
     }
     // --- NagramX: hide bottom bar in channels ---
 
@@ -26756,6 +26756,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         bottomOverlayLinks = false;
         boolean forceNoBottom = false;
         boolean showGiftButton = false;
+        boolean tempMuteView = false;
         if (chatMode == MODE_DEFAULT && getDialogId() != getUserConfig().getClientUserId() && userInfo != null && userInfo.contact_require_premium && !getUserConfig().isPremium()) {
             bottomOverlayLinks = true;
             bottomOverlayChatText.setVisibility(View.GONE);
@@ -26803,6 +26804,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             showBottomOverlayProgress(false, false);
         } else if (currentUser != null && currentUser.id == UserObject.VERIFY) {
+            tempMuteView = true;
             if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                 bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMute), false);
                 bottomOverlayChatText.setEnabled(true);
@@ -26840,6 +26842,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     bottomOverlayChatText.setTextInfo(LocaleController.getString(R.string.ForumReplyToMessagesInTopic));
                     bottomOverlayChatText.setEnabled(false);
                 } else if (!isThreadChat()) {
+                    tempMuteView = true;
                     if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                         bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMute), false);
                         bottomOverlayChatText.setEnabled(true);
@@ -26893,6 +26896,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
             } else if (UserObject.isReplyUser(currentUser)) {
+                tempMuteView = true;
                 if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                     bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMute), false);
                 } else {
@@ -26917,6 +26921,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 bottomOverlayChatText.setText(LocaleController.getString(R.string.DeleteThisChat));
             }
         }
+
+        isChannelBottomMuteView = tempMuteView;
 
         if (currentChat != null && currentChat.gigagroup && !isReport() && chatMode == 0) {
             bottomOverlayImage.setVisibility(View.VISIBLE);
