@@ -4904,7 +4904,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 String markdownButtonStr = withoutMarkdown ? getString(R.string.SendWithMarkdown) : getString(R.string.SendWithoutMarkdown);
                 options.add(markdownButtonDrawable, markdownButtonStr, () -> {
                     sentFromPreview = System.currentTimeMillis();
-                    sendMessageInternal(true, 0, true, SendMessageInternalParams.markdown(withoutMarkdown));
+                    sendMessageInternal(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, true, SendMessageInternalParams.markdown(withoutMarkdown));
                     if (!containsSendMessage && messageSendPreview != null) {
                         messageSendPreview.dismiss(true);
                         messageSendPreview = null;
@@ -4916,7 +4916,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             } else if (canSendAsDice(messageEditText.getText().toString(), parentFragment, dialog_id)) {
                 options.add(R.drawable.casino_icon, getString(R.string.SendAsEmoji), () -> {
                     sentFromPreview = System.currentTimeMillis();
-                    sendMessageInternal(true, 0, true, SendMessageInternalParams.game(false));
+                    sendMessageInternal(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, true, SendMessageInternalParams.game(false));
                     if (!containsSendMessage && messageSendPreview != null) {
                         messageSendPreview.dismiss(true);
                         messageSendPreview = null;
@@ -4931,7 +4931,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 String markdownButtonStr = shouldUsePangu ? getString(R.string.SendWithPangu) : getString(R.string.SendWithoutPangu);
                 options.add(markdownButtonDrawable, markdownButtonStr, () -> {
                     sentFromPreview = System.currentTimeMillis();
-                    sendMessageInternal(true, 0, true, SendMessageInternalParams.pangu(shouldUsePangu));
+                    sendMessageInternal(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, true, SendMessageInternalParams.pangu(shouldUsePangu));
                     if (!containsSendMessage && messageSendPreview != null) {
                         messageSendPreview.dismiss(true);
                         messageSendPreview = null;
@@ -7202,7 +7202,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 }
             }, resourcesProvider);
         } else {
-            sendMessageInternal(true, 0, true);
+            sendMessageInternal(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, true);
         }
     }
 

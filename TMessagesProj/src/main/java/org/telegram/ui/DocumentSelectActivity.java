@@ -106,6 +106,7 @@ import tw.nekomimi.nekogram.transtale.TranslateDb;
 import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
+import xyz.nextalone.nagram.NaConfig;
 
 public class DocumentSelectActivity extends BaseFragment {
 
@@ -673,7 +674,7 @@ public class DocumentSelectActivity extends BaseFragment {
             if (chatActivity != null && chatActivity.isInScheduleMode()) {
                 AlertsCreator.createScheduleDatePickerDialog(getParentActivity(), chatActivity.getDialogId(), this::sendSelectedFiles);
             } else {
-                sendSelectedFiles(true, 0);
+                sendSelectedFiles(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
             }
         });
         writeButton.setOnLongClickListener(view -> {
@@ -752,7 +753,7 @@ public class DocumentSelectActivity extends BaseFragment {
                         } else if (num == 1) {
                             AlertsCreator.createScheduleDatePickerDialog(getParentActivity(), chatActivity.getDialogId(), this::sendSelectedFiles);
                         } else if (num == 2) {
-                            sendSelectedFiles(true, 0);
+                            sendSelectedFiles(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                         }
                     });
                     itemCells[a].setOnLongClickListener(v -> {

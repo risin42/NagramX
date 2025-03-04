@@ -112,6 +112,7 @@ import tw.nekomimi.nekogram.transtale.TranslateDb;
 import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
+import xyz.nextalone.nagram.NaConfig;
 
 public class PhotoPickerActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -399,7 +400,7 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
 
         @Override
         public boolean cancelButtonPressed() {
-            delegate.actionButtonPressed(true, true, 0);
+            delegate.actionButtonPressed(true, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
             finishFragment();
             return true;
         }
@@ -1083,7 +1084,7 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
                 if (chatActivity != null && chatActivity.isInScheduleMode()) {
                     AlertsCreator.createScheduleDatePickerDialog(getParentActivity(), chatActivity.getDialogId(), this::sendSelectedPhotos);
                 } else {
-                    sendSelectedPhotos(true, 0);
+                    sendSelectedPhotos(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                 }
             });
             writeButton.setOnLongClickListener(view -> {
@@ -1158,7 +1159,7 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
                             } else if (num == 1) {
                                 AlertsCreator.createScheduleDatePickerDialog(getParentActivity(), chatActivity.getDialogId(), this::sendSelectedPhotos);
                             } else if (num == 2) {
-                                sendSelectedPhotos(true, 0);
+                                sendSelectedPhotos(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                             }
                         });
                         itemCells[a].setOnLongClickListener(v -> {

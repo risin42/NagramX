@@ -86,6 +86,7 @@ import tw.nekomimi.nekogram.transtale.TranslateDb;
 import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
+import xyz.nextalone.nagram.NaConfig;
 
 public class PhotoAlbumPickerActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -442,7 +443,7 @@ public class PhotoAlbumPickerActivity extends BaseFragment implements Notificati
                     finishFragment();
                 });
             } else {
-                sendSelectedPhotos(selectedPhotos, selectedPhotosOrder, true, 0);
+                sendSelectedPhotos(selectedPhotos, selectedPhotosOrder, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                 finishFragment();
             }
         });
@@ -522,7 +523,7 @@ public class PhotoAlbumPickerActivity extends BaseFragment implements Notificati
                                 finishFragment();
                             });
                         } else if (num == 2) {
-                            sendSelectedPhotos(selectedPhotos, selectedPhotosOrder, true, 0);
+                            sendSelectedPhotos(selectedPhotos, selectedPhotosOrder, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                             finishFragment();
                         }
                     });

@@ -82,4 +82,5 @@
     <string name="TranslatorMinimized">このチャットでは、翻訳ツールバーが最小化されました。</string>
     <string name="UseDeletedIcon">「削除済み」の代わりにアイコンを表示</string>
     <string name="UseEditedIcon">「編集あり」の代わりにアイコンを表示</string>
+    <string name="SilentMessageByDefault">デフォルトでミュートメッセージを送信</string>
 </resources>

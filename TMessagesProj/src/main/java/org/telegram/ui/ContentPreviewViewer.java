@@ -900,7 +900,7 @@ public class ContentPreviewViewer {
                     }
                     int which = (int) v.getTag();
                     if (actions.get(which) == 0 || actions.get(which) == nkbtn_send_without_sound) {
-                        delegate.sendGif(currentDocument != null ? currentDocument : inlineResult, parentObject, actions.get(which) == 0, 0);
+                        delegate.sendGif(currentDocument != null ? currentDocument : inlineResult, parentObject, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool() && actions.get(which) == 0, 0);
                     } else if (actions.get(which) == 4) {
                         delegate.sendGif(currentDocument != null ? currentDocument : inlineResult, parentObject, false, 0);
                     } else if (actions.get(which) == 1) {

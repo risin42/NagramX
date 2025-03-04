@@ -948,6 +948,13 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var silentMessageByDefault =
+        addConfig(
+            "SilentMessageByDefault",
+            ConfigItem.configTypeBool,
+            false
+        )
+
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

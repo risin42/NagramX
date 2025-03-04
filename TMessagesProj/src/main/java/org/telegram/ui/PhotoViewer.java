@@ -7270,7 +7270,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             if (parentChatActivity != null && parentChatActivity.isInScheduleMode() && !parentChatActivity.isEditingMessageMedia()) {
                 showScheduleDatePickerDialog();
             } else {
-                sendPressed(true, 0);
+                sendPressed(NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
             }
         });
         pickerViewSendButton.setOnLongClickListener(view -> {
@@ -7410,9 +7410,9 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     } else if (a == 2) {
                         replacePressed();
                     } else if (a == 3) {
-                        sendPressed(true, 0);
+                        sendPressed(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                     } else if (a == 4) {
-                        sendPressed(true, 0, false, true, false);
+                        sendPressed(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, false, true, false);
                     } else if (a == 5) {
                         translateComment(TranslateDb.getChatLanguage(chatId, TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String())));
                     } else if (a == 6) {

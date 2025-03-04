@@ -152,6 +152,7 @@ import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.VibrateUtil;
+import xyz.nextalone.nagram.NaConfig;
 
 import java.util.Objects;
 
@@ -3023,7 +3024,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                 }, resourcesProvider);
             } else {
                 if (currentAttachLayout == photoLayout || currentAttachLayout == photoPreviewLayout) {
-                    sendPressed(true, 0, 0, isCaptionAbove());
+                    sendPressed(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, 0, isCaptionAbove());
                 } else {
                     currentAttachLayout.sendSelectedItems(true, 0, 0, isCaptionAbove());
                     allowPassConfirmationAlert = true;
@@ -3088,7 +3089,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                     }, resourcesProvider);
                 } else {
                     if (currentAttachLayout == photoLayout || currentAttachLayout == photoPreviewLayout) {
-                        sendPressed(true, 0, effectId, isCaptionAbove());
+                        sendPressed(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, effectId, isCaptionAbove());
                     } else {
                         currentAttachLayout.sendSelectedItems(true, 0, effectId, isCaptionAbove());
                         allowPassConfirmationAlert = true;

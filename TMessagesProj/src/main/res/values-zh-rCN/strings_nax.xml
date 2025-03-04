@@ -82,4 +82,5 @@
     <string name="TranslatorMinimized">翻译栏已为此聊天最小化。</string>
     <string name="UseDeletedIcon">使用图标代替“已删除”标记</string>
     <string name="UseEditedIcon">使用图标代替“已编辑”标记</string>
+    <string name="SilentMessageByDefault">默认发送无声消息</string>
 </resources>
