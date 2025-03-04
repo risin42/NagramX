@@ -80,6 +80,8 @@ import org.telegram.ui.LaunchActivity;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import tw.nekomimi.nekogram.NekoXConfig;
+
 public class StoryViewer implements NotificationCenter.NotificationCenterDelegate, BaseFragment.AttachedSheet {
 
     public static boolean animationInProgress;
@@ -2664,6 +2666,9 @@ public class StoryViewer implements NotificationCenter.NotificationCenterDelegat
 
     public void allowScreenshots(boolean allowScreenshots) {
         if (BuildVars.DEBUG_PRIVATE_VERSION) {
+            return;
+        }
+        if (NekoXConfig.disableFlagSecure) {
             return;
         }
         allowScreenshots = !isShowing || allowScreenshots;
