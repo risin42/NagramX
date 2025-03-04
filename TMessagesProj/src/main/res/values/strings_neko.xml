@@ -315,7 +315,6 @@
     <string name="InteractionSettings">Interactions</string>
     <string name="localPremium">Local Premium</string>
     <string name="ReactionSettings">Reaction</string>
-    <string name="disableReactionsWhenSelecting">Hide Reactions While Selecting</string>
     <string name="UpgradeGroup">Upgrade Group</string>
     <string name="AccDescrShowKeyboard">Show keyboard</string>
     <string name="ConvertGroupAlertWarning">Warning</string>

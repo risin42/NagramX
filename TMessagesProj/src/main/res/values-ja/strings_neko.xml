@@ -289,7 +289,6 @@
     <string name="showSeconds">タイムスタンプを秒単位で表示</string>
     <string name="DisableInstantCamera">インスタントカメラを無効にする</string>
     <string name="rememberAllBackMessages">全てのクリックされた返信を記憶</string>
-    <string name="disableReactionsWhenSelecting">選択時にリアクションを無効にする</string>
     <string name="InteractionSettings">インタラクション</string>
     <string name="StickerSettings">ステッカー</string>
     <string name="ReactionSettings">リアクション</string>

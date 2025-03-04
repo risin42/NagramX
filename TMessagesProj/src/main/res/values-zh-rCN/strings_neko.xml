@@ -307,7 +307,6 @@
     <string name="InteractionSettings">交互</string>
     <string name="localPremium">本地大会员</string>
     <string name="ReactionSettings">回应</string>
-    <string name="disableReactionsWhenSelecting">选择消息时隐藏回应菜单</string>
     <string name="nekoXPaymentRemovedToast">支付功能已被移除。</string>
     <string name="Chat">聊天</string>
     <string name="Appearance">外观</string>
