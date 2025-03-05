@@ -27,7 +27,9 @@ You can grab the latest versions in these two ways:
     - Center title in chat
     - Custom drawer elements
     - Remove Archived Chats from dialog list
-    - Use icons instead of "deleted"/"edited" 
+    - Use icons instead of "deleted"/"edited"
+    - Save attachments by chat name
+    - Send messages silently by default
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```
