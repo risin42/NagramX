@@ -954,6 +954,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var folderNameAsTitle =
+        addConfig(
+            "FolderNameAsTitle",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
 

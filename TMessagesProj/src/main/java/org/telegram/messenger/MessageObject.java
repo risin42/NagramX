@@ -6704,6 +6704,21 @@ public class MessageObject {
         return spannable;
     }
 
+    // NagramX: use folder name as title
+    public static long getEmojiDocumentIdFromFolderName(ArrayList<TLRPC.MessageEntity> entities) {
+        long emojiDocumentId = 0;
+
+        for (int i = 0; i < entities.size(); ++i) {
+            TLRPC.MessageEntity messageEntity = entities.get(i);
+            if (messageEntity instanceof TLRPC.TL_messageEntityCustomEmoji) {
+                TLRPC.TL_messageEntityCustomEmoji entity = (TLRPC.TL_messageEntityCustomEmoji) messageEntity;
+                emojiDocumentId = entity.document_id;
+            }
+        }
+
+        return emojiDocumentId;
+    }
+
     public static final int ENTITIES_ALL = 0;
     public static final int ENTITIES_ONLY_HASHTAGS = 1;
 

@@ -96,4 +96,5 @@
     <string name="UseDeletedIcon">Show Icon Instead of \"deleted\"</string>
     <string name="UseEditedIcon">Show Icon Instead of \"edited\"</string>
     <string name="SilentMessageByDefault">Send Messages Silently by Default</string>
+    <string name="FolderNameAsTitle">Use Folder Name as Title</string>
 </resources>

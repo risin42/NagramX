@@ -671,6 +671,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
     private Long statusDrawableGiftId;
     private AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable statusDrawable;
+    private AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable statusDrawableForFolderName;
     private DrawerProfileCell.AnimatedStatusView animatedStatusView;
     public RightSlidingDialogContainer rightSlidingDialogContainer;
 
@@ -1660,6 +1661,12 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             super.onAttachedToWindow();
             if (statusDrawable != null) {
                 statusDrawable.attach();
+            }
+            if (statusDrawableForFolderName != null) {
+                statusDrawableForFolderName.attach();
+            }
+            if (statusDrawableForFolderName != null) {
+                statusDrawableForFolderName.detach();
             }
         }
 
@@ -3076,6 +3083,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     }
 
     private int accounts;
+    private String actionBarTitleNax;
 
     @Override
     public View createView(final Context context) {
@@ -3334,43 +3342,43 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         if (onlySelect) {
             actionBar.setBackButtonImage(R.drawable.ic_ab_back);
             if (initialDialogsType == DIALOGS_TYPE_BOT_SELECT_VERIFY) {
-                actionBar.setTitle(getString(R.string.BotChooseChatToVerify));
+                actionBar.setTitle(actionBarTitleNax = getString(R.string.BotChooseChatToVerify));
             } else if (isReplyTo) {
-                actionBar.setTitle(LocaleController.getString(R.string.ReplyToDialog));
+                actionBar.setTitle(actionBarTitleNax = LocaleController.getString(R.string.ReplyToDialog));
             } else if (isQuote) {
-                actionBar.setTitle(getString(R.string.QuoteTo));
+                actionBar.setTitle(actionBarTitleNax = getString(R.string.QuoteTo));
             } else if (initialDialogsType == DIALOGS_TYPE_FORWARD && selectAlertString == null) {
-                actionBar.setTitle(getString(R.string.ForwardTo));
+                actionBar.setTitle(actionBarTitleNax = getString(R.string.ForwardTo));
             } else if (initialDialogsType == DIALOGS_TYPE_WIDGET) {
-                actionBar.setTitle(getString(R.string.SelectChats));
+                actionBar.setTitle(actionBarTitleNax = getString(R.string.SelectChats));
             } else if (initialDialogsType == DIALOGS_TYPE_START_ATTACH_BOT) {
                 if (allowBots && !allowUsers && !allowGroups && !allowChannels) {
-                    actionBar.setTitle(getString(R.string.ChooseBot));
+                    actionBar.setTitle(actionBarTitleNax = getString(R.string.ChooseBot));
                 } else if (allowUsers && !allowBots && !allowGroups && !allowChannels) {
-                    actionBar.setTitle(getString(R.string.ChooseUser));
+                    actionBar.setTitle(actionBarTitleNax = getString(R.string.ChooseUser));
                 } else if (allowGroups && !allowUsers && !allowBots && !allowChannels) {
-                    actionBar.setTitle(getString(R.string.ChooseGroup));
+                    actionBar.setTitle(actionBarTitleNax = getString(R.string.ChooseGroup));
                 } else if (allowChannels && !allowUsers && !allowBots && !allowGroups) {
-                    actionBar.setTitle(getString(R.string.ChooseChannel));
+                    actionBar.setTitle(actionBarTitleNax = getString(R.string.ChooseChannel));
                 } else {
-                    actionBar.setTitle(getString(R.string.SelectChat));
+                    actionBar.setTitle(actionBarTitleNax = getString(R.string.SelectChat));
                 }
             } else if (requestPeerType instanceof TLRPC.TL_requestPeerTypeUser) {
                 if (((TLRPC.TL_requestPeerTypeUser) requestPeerType).bot != null) {
                     if (((TLRPC.TL_requestPeerTypeUser) requestPeerType).bot) {
-                        actionBar.setTitle(getString(R.string.ChooseBot));
+                        actionBar.setTitle(actionBarTitleNax = getString(R.string.ChooseBot));
                     } else {
-                        actionBar.setTitle(getString(R.string.ChooseUser));
+                        actionBar.setTitle(actionBarTitleNax = getString(R.string.ChooseUser));
                     }
                 } else {
-                    actionBar.setTitle(getString(R.string.ChooseUser));
+                    actionBar.setTitle(actionBarTitleNax = getString(R.string.ChooseUser));
                 }
             } else if (requestPeerType instanceof TLRPC.TL_requestPeerTypeBroadcast) {
-                actionBar.setTitle(getString(R.string.ChooseChannel));
+                actionBar.setTitle(actionBarTitleNax = getString(R.string.ChooseChannel));
             } else if (requestPeerType instanceof TLRPC.TL_requestPeerTypeChat) {
-                actionBar.setTitle(getString(R.string.ChooseGroup));
+                actionBar.setTitle(actionBarTitleNax = getString(R.string.ChooseGroup));
             } else {
-                actionBar.setTitle(getString(R.string.SelectChat));
+                actionBar.setTitle(actionBarTitleNax = getString(R.string.SelectChat));
             }
             actionBar.setBackgroundColor(Theme.getColor(Theme.key_actionBarDefault));
             actionBar.setOnLongClickListener(v -> {
@@ -3389,7 +3397,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 actionBar.setBackButtonContentDescription(getString(R.string.AccDescrOpenMenu));
             }
             if (folderId != 0) {
-                actionBar.setTitle(getString(R.string.ArchivedChats));
+                actionBar.setTitle(actionBarTitleNax = getString(R.string.ArchivedChats));
             } else {
                 statusDrawable = new AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable(null, dp(26));
                 statusDrawable.center = true;
@@ -3398,6 +3406,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     TLRPC.User self = UserConfig.getInstance(currentAccount).getCurrentUser();
                     if (self != null && self.first_name != null) title = self.first_name;
                 }
+                actionBarTitleNax = title;
                 actionBar.setTitle(title, statusDrawable);
                 actionBar.setOnLongClickListener(v -> {
                     if (NekoConfig.hideAllTab.Bool() && filterTabsView != null && filterTabsView.getCurrentTabId() != Integer.MAX_VALUE) {
@@ -3433,6 +3442,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             (initialDialogsType == DIALOGS_TYPE_DEFAULT && !onlySelect || initialDialogsType == DIALOGS_TYPE_FORWARD) &&
             folderId == 0 && TextUtils.isEmpty(searchString)
         ) {
+            statusDrawableForFolderName = new AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable(null, dp(26));
             filterTabsView = new FilterTabsView(context) {
                 @Override
                 public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -3718,6 +3728,40 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 @Override
                 public void onDeletePressed(int id) {
                     showDeleteAlert(getMessagesController().getDialogFilters().get(id));
+                }
+
+                // NagramX: use folder name as title
+                @Override
+                public void onTabSelected(FilterTabsView.Tab tab, boolean forward, boolean animated) {
+                    if (!selectedDialogs.isEmpty()) {
+                        return;
+                    }
+
+                    ArrayList<MessagesController.DialogFilter> filters = getMessagesController().getDialogFilters();
+                    if (filters.size() > 1) {
+                        for (int a = 0, N = filters.size(); a < N; a++) {
+                            final MessagesController.DialogFilter filter = filters.get(tab.id);
+
+                            String finalTitle = tab.realTitle.toString();
+                            String characterFilter = "[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]";
+                            String emotionless = finalTitle.replaceAll(characterFilter,"");
+
+                            long docId = MessageObject.getEmojiDocumentIdFromFolderName(filter.entities);
+                            statusDrawableForFolderName.set(docId, true);
+
+                            boolean isPremium = getUserConfig().isPremium();
+                            boolean hasPremiumEmoji = isPremium && docId != 0;
+
+                            if (NaConfig.INSTANCE.getFolderNameAsTitle().Bool()) {
+                                actionBar.setTitleAnimatedX(
+                                        tab.isDefault ? actionBarTitleNax : isPremium ? emotionless : tab.realTitle,
+                                        tab.isDefault ? statusDrawable : hasPremiumEmoji ? statusDrawableForFolderName : null,
+                                        forward,
+                                        hasPremiumEmoji ? 400 : 200
+                                );
+                            }
+                        }
+                    }
                 }
             });
         }
@@ -6924,6 +6968,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
 
                 filterTabsView.resetTabId();
+
+                // NagramX: use folder name as title
+                if (NaConfig.INSTANCE.getFolderNameAsTitle().Bool()) {
+                    actionBar.setTitleAnimatedX(actionBarTitleNax, statusDrawable, false, 200);
+                }
             }
             updateDrawerSwipeEnabled();
         }
@@ -10350,9 +10399,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         if (commentView != null) {
             if (selectedDialogs.isEmpty()) {
                 if (initialDialogsType == 3 && selectAlertString == null) {
-                    actionBar.setTitle(LocaleController.getString(R.string.ForwardTo));
+                    actionBar.setTitle(actionBarTitleNax = LocaleController.getString(R.string.ForwardTo));
                 } else {
-                    actionBar.setTitle(LocaleController.getString(R.string.SelectChat));
+                    actionBar.setTitle(actionBarTitleNax = LocaleController.getString(R.string.SelectChat));
                 }
                 if (commentView.getTag() != null) {
                     commentView.hidePopup(false);
@@ -10415,7 +10464,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     commentViewAnimator.start();
                     commentView.setTag(1);
                 }
-                actionBar.setTitle(LocaleController.formatPluralString("Recipient", selectedDialogs.size()));
+                actionBar.setTitle(actionBarTitleNax = LocaleController.formatPluralString("Recipient", selectedDialogs.size()));
             }
         } else if (initialDialogsType == DIALOGS_TYPE_WIDGET) {
             hideFloatingButton(selectedDialogs.isEmpty());

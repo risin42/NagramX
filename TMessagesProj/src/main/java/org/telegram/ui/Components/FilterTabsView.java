@@ -107,11 +107,14 @@ public class FilterTabsView extends FrameLayout {
         void onPageReorder(int fromId, int toId);
 
         boolean canPerformActions();
+
+        default void onTabSelected(Tab tab, boolean forward, boolean animated) {};
     }
 
     public class Tab {
         public int id;
         public CharSequence title;
+        public CharSequence realTitle; // NagramX: use folder name as title
         public int titleWidth;
         public String emoticon;
         public int iconWidth;
@@ -126,6 +129,7 @@ public class FilterTabsView extends FrameLayout {
             title = Emoji.replaceEmoji(title, textPaint.getFontMetricsInt(), false);
 //            MessageObject.addEntitiesToText(title, e, false, false, false, true);
             title = MessageObject.replaceAnimatedEmoji(title, e, textPaint.getFontMetricsInt());
+            realTitle = t != null ? new SpannableStringBuilder(t) : new SpannableStringBuilder("");
             this.noanimate = noanimate;
             emoticon = i != Integer.MAX_VALUE ? e1 : "\uD83D\uDCAC";
         }
@@ -1258,6 +1262,8 @@ public class FilterTabsView extends FrameLayout {
 
         if (delegate != null) {
             delegate.onPageSelected(tab, scrollingForward);
+            delegate.onTabSelected(tab, scrollingForward, true);
+            oldAnimatedTab = currentPosition;
         }
         scrollToChild(position);
         if (NekoConfig.hideAllTab.Bool() && !currentTabIsDefault())
@@ -1360,6 +1366,8 @@ public class FilterTabsView extends FrameLayout {
     public void finishAddingTabs(boolean animated) {
         listView.setItemAnimator(animated ? itemAnimator : null);
         adapter.notifyDataSetChanged();
+        delegate.onTabSelected(tabs.get(currentPosition), false, false);
+        oldAnimatedTab = currentPosition;
     }
 
     public void animateColorsTo(int line, int active, int unactive, int selector, int background) {
@@ -1595,6 +1603,8 @@ public class FilterTabsView extends FrameLayout {
         }
     }
 
+    private int oldAnimatedTab = -1; // NagramX: use folder name as title
+
     public void selectTabWithId(int id, float progress) {
         int position = idToPosition.get(id, -1);
         if (position < 0) {
@@ -1617,6 +1627,13 @@ public class FilterTabsView extends FrameLayout {
         listView.invalidateViews();
         invalidate();
         scrollToChild(position);
+
+        // NagramX: use folder name as title
+        if ((((progress >= 0.5f && oldAnimatedTab != position) || (progress <= 0.5f && oldAnimatedTab != currentPosition)) && manualScrollingToPosition != currentPosition)) {
+            position = progress >= 0.5f ? position : currentPosition;
+            delegate.onTabSelected(tabs.get(position), currentPosition < position, true);
+            oldAnimatedTab = position;
+        }
 
         if (progress >= 1.0f) {
             manualScrollingToPosition = -1;
