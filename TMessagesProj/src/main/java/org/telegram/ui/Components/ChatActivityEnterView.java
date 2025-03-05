@@ -2759,7 +2759,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
 
             @Override
             public boolean onTouchEvent(MotionEvent motionEvent) {
-                if (NekoConfig.useChatAttachMediaMenu.Bool())
+                if (NekoConfig.useChatAttachMediaMenu.Bool() && !isStories)
                     return super.onTouchEvent(motionEvent);
                 createRecordCircle();
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -2948,7 +2948,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 return true;
             }
         };
-        if (NekoConfig.useChatAttachMediaMenu.Bool()) {
+        if (NekoConfig.useChatAttachMediaMenu.Bool() && !isStories) {
             audioVideoButtonContainer.setOnClickListener(v -> {
                 createRecordAudioPanel();
                 createRecordCircle();
@@ -3153,7 +3153,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
         audioVideoSendButton.setPadding(padding, padding, padding, padding);
         audioVideoSendButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.SRC_IN));
 
-        if (Build.VERSION.SDK_INT >= 21 && NekoConfig.useChatAttachMediaMenu.Bool()) {
+        if (Build.VERSION.SDK_INT >= 21 && NekoConfig.useChatAttachMediaMenu.Bool() && !isStories) {
             audioVideoSendButton.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector)));
         }
 
@@ -5976,7 +5976,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             }
             preferences.edit().putBoolean(isChannel ? "currentModeVideoChannel" : "currentModeVideo", visible).apply();
         }
-        if (!NekoConfig.useChatAttachMediaMenu.Bool())
+        if (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)
             audioVideoSendButton.setState(isInVideoMode() ? ChatActivityEnterViewAnimatedIconView.State.VIDEO : ChatActivityEnterViewAnimatedIconView.State.VOICE, animated);
         else
             audioVideoSendButton.setState(ChatActivityEnterViewAnimatedIconView.State.MENU, animated);
@@ -7031,7 +7031,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
 
             AnimatorSet attachIconAnimator = null;
             AnimatorSet botIconAnimator = null;
-            if (attachButton != null && NekoConfig.useChatAttachMediaMenu.Bool()) {
+            if (attachButton != null && NekoConfig.useChatAttachMediaMenu.Bool() && !isStories) {
                 checkAttachButton(false, 150);
                 if (!attachButton.isShown()) {
                     attachButton.setAlpha(0f);
@@ -7803,7 +7803,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     }
 
                     if (attachLayout != null) {
-                        if (!NekoConfig.useChatAttachMediaMenu.Bool()) {
+                        if (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories) {
                             runningAnimation2 = new AnimatorSet();
                             ArrayList<Animator> animators = new ArrayList<>();
                             animators.add(ObjectAnimator.ofFloat(attachLayout, ATTACH_LAYOUT_ALPHA, 0.0f));
@@ -7860,7 +7860,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                         runningAnimation = new AnimatorSet();
 
                         ArrayList<Animator> animators = new ArrayList<>();
-                        if (NekoConfig.useChatAttachMediaMenu.Bool() && botButton != null && botButton.getVisibility() == VISIBLE) {
+                        if (NekoConfig.useChatAttachMediaMenu.Bool() && !isStories && botButton != null && botButton.getVisibility() == VISIBLE) {
                             animators.add(ObjectAnimator.ofFloat(botButton, View.SCALE_X, 0.1f));
                             animators.add(ObjectAnimator.ofFloat(botButton, View.SCALE_Y, 0.1f));
                             animators.add(ObjectAnimator.ofFloat(botButton, View.ALPHA, 0.0f));
@@ -7942,7 +7942,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                             expandStickersButton.setVisibility(GONE);
                         }
                         if (attachLayout != null) {
-                            if (!NekoConfig.useChatAttachMediaMenu.Bool()) {
+                            if (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories) {
                                 attachLayout.setVisibility(GONE);
                                 if (delegate != null && getVisibility() == VISIBLE) {
                                     delegate.onAttachButtonHidden();
@@ -8003,7 +8003,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
 
                     if (attachLayout != null) {
 
-                        if (!NekoConfig.useChatAttachMediaMenu.Bool()) {
+                        if (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories) {
                             runningAnimation2 = new AnimatorSet();
                             ArrayList<Animator> animators = new ArrayList<>();
                             animators.add(ObjectAnimator.ofFloat(attachLayout, ATTACH_LAYOUT_ALPHA, 0.0f));
@@ -8057,7 +8057,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     runningAnimation = new AnimatorSet();
 
                     ArrayList<Animator> animators = new ArrayList<>();
-                    if (botButton != null && NekoConfig.useChatAttachMediaMenu.Bool() && botButton.getVisibility() == VISIBLE) {
+                    if (botButton != null && NekoConfig.useChatAttachMediaMenu.Bool() && !isStories && botButton.getVisibility() == VISIBLE) {
                         animators.add(ObjectAnimator.ofFloat(botButton, View.SCALE_X, 0.1f));
                         animators.add(ObjectAnimator.ofFloat(botButton, View.SCALE_Y, 0.1f));
                         animators.add(ObjectAnimator.ofFloat(botButton, View.ALPHA, 0.0f));
@@ -8106,7 +8106,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             if (animation.equals(runningAnimation)) {
-                                if (NekoConfig.useChatAttachMediaMenu.Bool() && botButton != null) {
+                                if (NekoConfig.useChatAttachMediaMenu.Bool() && !isStories && botButton != null) {
                                     botButton.setVisibility(View.GONE);
                                     updateFieldRight(1);
                                 }
@@ -8172,7 +8172,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                         expandStickersButton.setVisibility(GONE);
                     }
                     if (attachLayout != null) {
-                        if (!NekoConfig.useChatAttachMediaMenu.Bool()) {
+                        if (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories) {
                             attachLayout.setVisibility(GONE);
                             if (delegate != null && getVisibility() == VISIBLE) {
                                 delegate.onAttachButtonHidden();
@@ -8413,7 +8413,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                             scheduledButton.setTranslationX(0);
                         }
                     }
-                    if (NekoConfig.useChatAttachMediaMenu.Bool() && checkBotButton()) {
+                    if (NekoConfig.useChatAttachMediaMenu.Bool() && !isStories && checkBotButton()) {
                         animators.add(ObjectAnimator.ofFloat(botButton, View.SCALE_X, 1f));
                         animators.add(ObjectAnimator.ofFloat(botButton, View.SCALE_Y, 1f));
                         animators.add(ObjectAnimator.ofFloat(botButton, View.ALPHA, 1f));
@@ -8426,7 +8426,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                             if (animation.equals(runningAnimation2)) {
                                 runningAnimation2 = null;
                             }
-                            if (NekoConfig.useChatAttachMediaMenu.Bool() && checkBotButton()) {
+                            if (NekoConfig.useChatAttachMediaMenu.Bool() && !isStories && checkBotButton()) {
                                 updateBotButton(true);
                                 updateFieldRight(1);
                             }
@@ -8888,7 +8888,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     audioVideoSendButton.setScaleX(1f);
                     audioVideoSendButton.setScaleY(1f);
                     runningAnimationAudio.playTogether(ObjectAnimator.ofFloat(audioVideoSendButton, View.ALPHA, 1));
-                    if (!NekoConfig.useChatAttachMediaMenu.Bool())
+                    if (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)
                         audioVideoSendButton.setState(isInVideoMode() ? ChatActivityEnterViewAnimatedIconView.State.VIDEO : ChatActivityEnterViewAnimatedIconView.State.VOICE, true);
                 }
                 if (scheduledButton != null) {
@@ -9036,7 +9036,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     messageEditText.setAlpha(0f);
 
                     if (audioVideoSendButton != null) {
-                        if (!NekoConfig.useChatAttachMediaMenu.Bool())
+                        if (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)
                         audioVideoSendButton.setState(isInVideoMode() ? ChatActivityEnterViewAnimatedIconView.State.VIDEO : ChatActivityEnterViewAnimatedIconView.State.VOICE, animated);
                         audioVideoSendButton.setAlpha(1f);
                         audioVideoSendButton.setScaleX(1f);
@@ -9231,7 +9231,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     audioVideoButtonContainer.setScaleY(0);
 
                     if (attachButton != null) {
-                        if (NekoConfig.useChatAttachMediaMenu.Bool()) {
+                        if (NekoConfig.useChatAttachMediaMenu.Bool() && !isStories) {
                             checkAttachButton(false, 150);
                         } else if (attachButton.getVisibility() == View.VISIBLE) {
                             attachButton.setScaleX(0);
@@ -9274,7 +9274,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                         iconsAnimator.playTogether(ObjectAnimator.ofFloat(audioVideoSendButton, View.ALPHA, 1));
                         iconsAnimator.playTogether(ObjectAnimator.ofFloat(audioVideoSendButton, View.SCALE_X, 1));
                         iconsAnimator.playTogether(ObjectAnimator.ofFloat(audioVideoSendButton, View.SCALE_Y, 1));
-                        if (!NekoConfig.useChatAttachMediaMenu.Bool())
+                        if (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)
                             audioVideoSendButton.setState(isInVideoMode() ? ChatActivityEnterViewAnimatedIconView.State.VIDEO : ChatActivityEnterViewAnimatedIconView.State.VOICE, true);
                     }
                     if (scheduledButton != null) {
@@ -9379,7 +9379,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     audioVideoSendButton.setScaleX(1f);
                     audioVideoSendButton.setScaleY(1f);
                     iconsAnimator.playTogether(ObjectAnimator.ofFloat(audioVideoSendButton, View.ALPHA, 1));
-                    if (!NekoConfig.useChatAttachMediaMenu.Bool())
+                    if (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)
                         audioVideoSendButton.setState(isInVideoMode() ? ChatActivityEnterViewAnimatedIconView.State.VIDEO : ChatActivityEnterViewAnimatedIconView.State.VOICE, true);
                 }
                 if (attachLayout != null) {
@@ -12281,7 +12281,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             }
             boolean audio = (Boolean) args[1];
             isInVideoMode = !audio;
-            if (audioVideoSendButton != null && !NekoConfig.useChatAttachMediaMenu.Bool()) {
+            if (audioVideoSendButton != null && (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)) {
                 audioVideoSendButton.setState(audio ? ChatActivityEnterViewAnimatedIconView.State.VOICE : ChatActivityEnterViewAnimatedIconView.State.VIDEO, true);
             }
             if (!recordingAudioVideo) {
