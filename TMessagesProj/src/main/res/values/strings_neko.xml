@@ -259,12 +259,11 @@
     <string name="ScanQRCode">Scan QR Code</string>
     <string name="NoQrFound">No QR Code found</string>
     <string name="DeveloperSettings">Developer Settings</string>
-    <string name="NekoXFaq">Nagram FAQ</string>
     <string name="TransSite">Translate Platform</string>
     <string name="ShareMessages">Share</string>
     <string name="DisableVibration">Disable Vibration</string>
     <string name="IgnoreContentRestrictions">Ignore content restrictions</string>
-    <string name="SendCommentAfterForward">Send Comment after Forwarding</string>
+    <string name="SendCommentAfterForward">Send Comment After Forwarding</string>
     <string name="ImportLogin">QR Login</string>
     <string name="OpenCC" translatable="false">OpenCC</string>
     <string name="CCTitle">OpenCC (Chinese Convert)</string>
@@ -292,7 +291,7 @@
     <string name="BackupSettings">Backup Settings</string>
     <string name="ImportSettings">Import Settings</string>
     <string name="ImportSettingsAlert">Overwrite the settings\? Importing settings from unknown sources may cause the pin to be overwritten and the app to be locked.</string>
-    <string name="nekoXPaymentRemovedToast">The payment function has been removed.</string>
+    <string name="nekoXPaymentRemovedToast">Payment features have been removed.</string>
     <string name="unreadBadgeOnBackButton">Unread Badge on Back Button</string>
     <string name="DeleteDownloadedFileConfirm">Delete this file from local cache?</string>
     <string name="DeleteDownloadedFileSucceed">Deleted</string>

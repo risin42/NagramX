@@ -253,7 +253,6 @@
     <string name="ScanQRCode">扫描二维码</string>
     <string name="NoQrFound">未找到二维码</string>
     <string name="DeveloperSettings">开发者设置</string>
-    <string name="NekoXFaq">Nagram 常见问题</string>
     <string name="TransSite">翻译平台</string>
     <string name="DisableVibration">禁用振动</string>
     <string name="IgnoreContentRestrictions">忽略内容限制</string>

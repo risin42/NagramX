@@ -210,7 +210,7 @@ public class NekoXSettingActivity extends BaseFragment {
                             textCell.setEnabled(false);
                         }
                         if (position == disableStatusUpdateRow) {
-                            textCell.setTextAndCheck("Disable Status Update", NekoXConfig.disableStatusUpdate, false);
+                            textCell.setTextAndCheck("Disable Status Updates", NekoXConfig.disableStatusUpdate, false);
                         }
                     }
                     break;

@@ -204,8 +204,8 @@
     <string name="CustomApiInput">手動入力</string>
     <string name="LinkedGroupChat">リンクされたグループ</string>
     <string name="LinkedChannelChat">リンクされたチャンネル</string>
-    <string name="DevModeTitle">**あなたの Telegram アカウントが BAN されている可能性があります**</string>
-    <string name="DevModeNotice">開発者向け機能の不適切な使用については責任を負いません</string>
+    <string name="DevModeTitle">**あなたの Telegram アカウントが BAN される可能性があります**</string>
+    <string name="DevModeNotice">開発者機能の不適切な使用については、一切責任を負いかねます。</string>
     <string name="PlaceHolder">プレースホルダー - 無効にしてください</string>
     <string name="CustomBackend">カスタムバックエンド</string>
     <string name="ChangeTranslateProvider">プロバイダを変更</string>
@@ -254,7 +254,6 @@
     <string name="ScanQRCode">QR コードをスキャン</string>
     <string name="NoQrFound">QR コードが見つかりません</string>
     <string name="DeveloperSettings">開発者設定</string>
-    <string name="NekoXFaq">Nagram FAQ</string>
     <string name="TransSite">プラットフォームを翻訳</string>
     <string name="DisableVibration">バイブを無効にする</string>
     <string name="IgnoreContentRestrictions">コンテンツ制限を無視します</string>
