@@ -90,7 +90,7 @@
     <string name="AutoPauseVideo">Auto Pause Video</string>
     <string name="AutoPauseVideoAbout">When lock screen/switch to background.</string>
     <string name="DisableProximityEvents">Disable Proximity Events</string>
-    <string name="SelectBetween">Select between</string>
+    <string name="SelectBetween">Select Range</string>
     <string name="AvatarAsBackground">Profile Photo as Background</string>
     <string name="BlurAvatarBackground">Blur Background</string>
     <string name="DarkenAvatarBackground">Darken Background</string>

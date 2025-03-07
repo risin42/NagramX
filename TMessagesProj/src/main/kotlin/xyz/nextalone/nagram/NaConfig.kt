@@ -12,6 +12,7 @@ import tw.nekomimi.nekogram.config.ConfigItem
 import tw.nekomimi.nekogram.config.ConfigItemKeyLinked
 import java.io.ByteArrayInputStream
 import java.io.ObjectInputStream
+import androidx.core.net.toUri
 
 
 object NaConfig {
@@ -445,7 +446,7 @@ object NaConfig {
             ""
         )
     var externalStickerCacheUri: Uri?
-        get() = externalStickerCache.String().let { if (it.isBlank()) return null else return Uri.parse(it) }
+        get() = externalStickerCache.String().let { if (it.isBlank()) return null else return it.toUri() }
         set(value) = externalStickerCache.setConfigString(value.toString())
     val externalStickerCacheAutoRefresh =
         addConfig(
@@ -632,6 +633,36 @@ object NaConfig {
             "EnhancedVideoBitrate",
             ConfigItem.configTypeBool,
             false
+        )
+    val ActionBarButtonReply =
+        addConfig(
+            "Reply",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val ActionBarButtonEdit =
+        addConfig(
+            "Edit",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val ActionBarButtonSelectBetween =
+        addConfig(
+            "SelectBetween",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val ActionBarButtonCopy =
+        addConfig(
+            "Copy",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val ActionBarButtonForward =
+        addConfig(
+            "Forward",
+            ConfigItem.configTypeBool,
+            true
         )
 
     // NagramX

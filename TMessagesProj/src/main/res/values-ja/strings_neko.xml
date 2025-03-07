@@ -91,7 +91,7 @@
     <string name="AutoPauseVideo">ビデオの自動一時停止</string>
     <string name="AutoPauseVideoAbout">画面ロック時/バックグラウンドに移動時。</string>
     <string name="DisableProximityEvents">近接センサーイベントを無効にする</string>
-    <string name="SelectBetween">…から選択</string>
+    <string name="SelectBetween">範囲内のメッセージを選択</string>
     <string name="AvatarAsBackground">アバターを背景として使用</string>
     <string name="BlurAvatarBackground">アバターをぼかす</string>
     <string name="DarkenAvatarBackground">アバターを暗くする</string>

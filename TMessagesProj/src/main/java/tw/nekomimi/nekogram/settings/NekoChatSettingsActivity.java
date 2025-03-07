@@ -108,6 +108,16 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowReactions()));
         }}));
     }));
+    private final AbstractConfigCell actionBarButtonRow = cellGroup.appendCell(new ConfigCellSelectBox("ActionBarButtons", null, null, () -> {
+        if (getParentActivity() == null) return;
+        showDialog(showConfigMenuAlert(getParentActivity(), "ActionBarButtons", new ArrayList<>() {{
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getActionBarButtonReply()));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getActionBarButtonEdit()));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getActionBarButtonSelectBetween()));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getActionBarButtonCopy()));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getActionBarButtonForward()));
+        }}));
+    }));
     private final AbstractConfigCell defaultDeleteMenuRow = cellGroup.appendCell(new ConfigCellSelectBox("DefaultDeleteMenu", null, null, () -> {
         if (getParentActivity() == null) return;
         showDialog(showConfigMenuAlert(getParentActivity(), NaConfig.INSTANCE.getDefaultDeleteMenu().getKey(), new ArrayList<>() {{

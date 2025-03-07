@@ -147,4 +147,5 @@
     <string name="CustomTitleUserName">使用用户昵称作为标题</string>
     <string name="EnhancedVideoBitrate">改善上传视频画质</string>
     <string name="SaveToChatSubfolder">按聊天名称保存附件</string>
+    <string name="ActionBarButtons">导航栏按钮</string>
 </resources>

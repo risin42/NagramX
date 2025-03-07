@@ -91,7 +91,7 @@
     <string name="AutoPauseVideo">自动暂停视频</string>
     <string name="AutoPauseVideoAbout">当锁定屏幕/切换到后台时。</string>
     <string name="DisableProximityEvents">禁用距离传感器事件</string>
-    <string name="SelectBetween">在…中选择</string>
+    <string name="SelectBetween">选择范围内消息</string>
     <string name="AvatarAsBackground">使用头像作为背景</string>
     <string name="BlurAvatarBackground">模糊头像背景</string>
     <string name="DarkenAvatarBackground">暗色头像背景</string>
