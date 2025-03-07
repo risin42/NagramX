@@ -42584,6 +42584,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 break;
             }
             case nkbtn_view_history: {
+                if (searchFilterButton != null) {
+                    searchFilterButton.setVisibility(View.GONE);
+                }
                 // same as "search_from_user_id"
                 TLRPC.Peer peer = selectedObject.messageOwner.from_id;
                 if ((threadMessageId == 0 || isTopic) && !UserObject.isReplyUser(currentUser)) {
