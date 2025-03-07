@@ -123,15 +123,15 @@ public class FilterTabsView extends FrameLayout {
         public boolean isLocked;
         public boolean noanimate;
 
-        public Tab(int i, String t, String e1, ArrayList<TLRPC.MessageEntity> e, boolean noanimate) {
+        public Tab(int i, String t, String emoticon, ArrayList<TLRPC.MessageEntity> entities, boolean noanimate) {
             id = i;
             title = new SpannableStringBuilder(NekoConfig.tabsTitleType.Int() != NekoXConfig.TITLE_TYPE_ICON ? t : "");
             title = Emoji.replaceEmoji(title, textPaint.getFontMetricsInt(), false);
-//            MessageObject.addEntitiesToText(title, e, false, false, false, true);
-            title = MessageObject.replaceAnimatedEmoji(title, e, textPaint.getFontMetricsInt());
+//            MessageObject.addEntitiesToText(title, entities, false, false, false, true);
+            title = MessageObject.replaceAnimatedEmoji(title, entities, textPaint.getFontMetricsInt());
             realTitle = t != null ? new SpannableStringBuilder(t) : new SpannableStringBuilder("");
             this.noanimate = noanimate;
-            emoticon = i != Integer.MAX_VALUE ? e1 : "\uD83D\uDCAC";
+            this.emoticon = (i != Integer.MAX_VALUE) ? (emoticon != null ? emoticon : "") : "\uD83D\uDCAC";
         }
 
         public int getWidth(boolean store) {
@@ -459,7 +459,7 @@ public class FilterTabsView extends FrameLayout {
                 if (!TextUtils.equals(currentTab.emoticon, currentEmoticon)) {
                     currentEmoticon = currentTab.emoticon;
                     android.graphics.Rect bounds = new android.graphics.Rect(0, 0, emoticonSize, emoticonSize);
-                    icon = getResources().getDrawable(FolderIconHelper.getTabIcon(currentTab.emoticon)).mutate();
+                    icon = getResources().getDrawable(FolderIconHelper.getTabIcon(currentTab.id != getDefaultTabId() ? currentTab.emoticon:"\uD83D\uDCAC")).mutate();
                     icon.setBounds(bounds);
                 }
                 if (icon != null) {
