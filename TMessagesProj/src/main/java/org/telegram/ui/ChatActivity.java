@@ -34672,6 +34672,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (searchUserButton != null) {
                 searchUserButton.setVisibility(View.GONE);
             }
+            if (searchFilterButton != null) {
+                searchFilterButton.setVisibility(View.GONE);
+            }
         }
         if (searchItem != null) {
             preventReopenSearchWithText = true;
