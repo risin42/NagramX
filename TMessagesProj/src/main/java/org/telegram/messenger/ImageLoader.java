@@ -2397,6 +2397,18 @@ public class ImageLoader {
         FileLog.d("selected SD card = " + SharedConfig.storageCacheDir);
 
         try {
+            File publicMediaDir = null;
+            if (Build.VERSION.SDK_INT >= 30) {
+                try {
+                    if (ApplicationLoader.applicationContext.getExternalMediaDirs().length > 0) {
+                        publicMediaDir = getPublicStorageDir();
+                        publicMediaDir = new File(publicMediaDir, "NagramX");
+                        publicMediaDir.mkdirs();
+                    }
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+            }
             telegramPath = EnvUtil.getTelegramPath();
 
             if (telegramPath.isDirectory()) {
@@ -2462,6 +2474,33 @@ public class ImageLoader {
                         mediaDirs.put(FileLoader.MEDIA_DIR_STORIES, storyPath);
                         if (BuildVars.LOGS_ENABLED) {
                             FileLog.d("stories path = " + storyPath);
+                        }
+                    }
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+            }
+            if (publicMediaDir != null && publicMediaDir.isDirectory()) {
+                try {
+                    File imagePath = new File(publicMediaDir, "Telegram Images");
+                    imagePath.mkdir();
+                    if (imagePath.isDirectory() && canMoveFiles(cachePath, imagePath, FileLoader.MEDIA_DIR_IMAGE)) {
+                        mediaDirs.put(FileLoader.MEDIA_DIR_IMAGE_PUBLIC, imagePath);
+                        if (BuildVars.LOGS_ENABLED) {
+                            FileLog.d("image path = " + imagePath);
+                        }
+                    }
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+
+                try {
+                    File videoPath = new File(publicMediaDir, "Telegram Video");
+                    videoPath.mkdir();
+                    if (videoPath.isDirectory() && canMoveFiles(cachePath, videoPath, FileLoader.MEDIA_DIR_VIDEO)) {
+                        mediaDirs.put(FileLoader.MEDIA_DIR_VIDEO_PUBLIC, videoPath);
+                        if (BuildVars.LOGS_ENABLED) {
+                            FileLog.d("video path = " + videoPath);
                         }
                     }
                 } catch (Exception e) {
