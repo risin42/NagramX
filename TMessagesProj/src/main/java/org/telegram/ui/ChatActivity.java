@@ -9985,6 +9985,16 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private boolean isMuteUnmuteButton() {
         return NaConfig.INSTANCE.getDisableChannelMuteButton().Bool() && isChannelBottomMuteView;
     }
+
+    private void updateBottomPaddings() {
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f).setDuration(200);
+        animator.addUpdateListener(animation -> {
+            fragmentView.requestLayout();
+            updateBulletinLayout();
+            getUndoView().setAdditionalTranslationY(0);
+        });
+        animator.start();
+    }
     // --- NagramX: hide bottom bar in channels ---
 
     @Override
@@ -27024,6 +27034,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
                             searchContainer.setVisibility(View.INVISIBLE);
+                            if (NaConfig.INSTANCE.getDisableChannelMuteButton().Bool()) {
+                                updateBottomPaddings();
+                            }
                         }
                     }).start();
                 }
@@ -29927,6 +29940,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         if (chatActivityEnterView != null) {
             chatActivityEnterView.preventInput = false;
+        }
+        if (NaConfig.INSTANCE.getDisableChannelMuteButton().Bool()) {
+            updateBottomPaddings();
         }
         textSelectionHintWasShowed = false;
 
