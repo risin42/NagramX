@@ -11,7 +11,8 @@ package com.radolyn.ayugram.messages;
 
 import android.os.Environment;
 import android.text.TextUtils;
-import com.google.android.exoplayer2.util.Log;
+import android.util.Log;
+
 import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.database.AyuData;
 import com.radolyn.ayugram.database.dao.DeletedMessageDao;
@@ -21,6 +22,7 @@ import com.radolyn.ayugram.database.entities.DeletedMessageFull;
 import com.radolyn.ayugram.database.entities.DeletedMessageReaction;
 import com.radolyn.ayugram.database.entities.EditedMessage;
 import com.radolyn.ayugram.proprietary.AyuMessageUtils;
+
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
@@ -31,6 +33,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import tw.nekomimi.nekogram.utils.FileUtil;
 
 public class AyuMessagesController {
     private static final String NAX = "AyuMessagesController";
@@ -296,7 +300,14 @@ public class AyuMessagesController {
         AyuData.clean();
         AyuData.create();
 
+        cleanAttachmentsFolder();
+
         // force to recreate a database to avoid crash
         instance = null;
+    }
+
+    private void cleanAttachmentsFolder() {
+        FileUtil.deleteDirectory(attachmentsPath);
+        initializeAttachmentsFolder();
     }
 }
