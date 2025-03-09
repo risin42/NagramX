@@ -151,7 +151,7 @@ public class AyuMessagesController {
     }
 
     private void onMessageDeletedInner(AyuSavePreferences prefs) {
-         if (!AyuSavePreferences.saveDeletedMessageFor(prefs.getAccountId(), prefs.getDialogId())) {
+         if (!AyuSavePreferences.saveDeletedMessageFor(prefs.getAccountId(), prefs.getDialogId(), prefs.getFromUserId())) {
              return;
          }
 

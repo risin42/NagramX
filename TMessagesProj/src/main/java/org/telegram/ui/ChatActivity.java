@@ -25460,14 +25460,14 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         int commentsDeleted = 0;
         for (int a = 0; a < size; a++) {
             Integer mid = markAsDeletedMessages.get(a);
+            MessageObject obj = chatAdapter != null && chatAdapter.isFiltered ? filteredMessagesDict.get(mid) :  messagesDict[loadIndex].get(mid);
 
-            if (!AyuSavePreferences.saveDeletedMessageFor(currentAccount, getDialogId()) || AyuState.isDeletePermitted(getDialogId(), mid)) {
+            if (!AyuSavePreferences.saveDeletedMessageFor(currentAccount, getDialogId(), obj) || AyuState.isDeletePermitted(getDialogId(), mid)) {
                 AyuState.messageDeleted(getDialogId(), mid);
             } else {
                 continue;
             }
 
-            MessageObject obj = chatAdapter != null && chatAdapter.isFiltered ? filteredMessagesDict.get(mid) :  messagesDict[loadIndex].get(mid);
             if (selectedObject != null && obj == selectedObject || obj != null && selectedObjectGroup != null && selectedObjectGroup == groupedMessagesMap.get(obj.getGroupId())) {
                 closeMenu();
             }

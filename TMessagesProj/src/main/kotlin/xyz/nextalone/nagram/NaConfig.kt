@@ -716,7 +716,13 @@ object NaConfig {
         )
     val saveDeletedMessageForBot =
         addConfig(
-            "SaveDeletedMessageForBot",
+            "SaveDeletedMessageForBot", // save in bot chats
+            ConfigItem.configTypeBool,
+            true
+        )
+    val saveDeletedMessageForBotUser =
+        addConfig(
+            "SaveDeletedMessageForBotUser", // all messages from bot
             ConfigItem.configTypeBool,
             true
         )

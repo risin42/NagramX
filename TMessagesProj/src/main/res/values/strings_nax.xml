@@ -97,4 +97,5 @@
     <string name="UseEditedIcon">Show Icon Instead of \"edited\"</string>
     <string name="SilentMessageByDefault">Send Messages Silently by Default</string>
     <string name="FolderNameAsTitle">Use Folder Name as Title</string>
+    <string name="SaveDeletedMessageForBotUser">Save Bot Messages</string>
 </resources>

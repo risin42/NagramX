@@ -101,7 +101,8 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell enableSaveDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveDeletedMessages()));
     private final AbstractConfigCell enableSaveEditsHistoryRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveEditsHistory()));
     private final AbstractConfigCell messageSavingSaveMediaRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getMessageSavingSaveMedia(), getString(R.string.MessageSavingSaveMediaHint)));
-    private final AbstractConfigCell saveDeletedMessageForBotsRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSaveDeletedMessageForBot()));
+    private final AbstractConfigCell saveDeletedMessageForBotsUserRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSaveDeletedMessageForBotUser()));
+    private final AbstractConfigCell saveDeletedMessageInBotChatRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSaveDeletedMessageForBot()));
     private final AbstractConfigCell translucentDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getTranslucentDeletedMessages()));
     private final AbstractConfigCell useDeletedIconRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getUseDeletedIcon()));
     private final AbstractConfigCell customDeletedMarkRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomDeletedMark(), "", null));
@@ -178,6 +179,9 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         }
         if (NaConfig.INSTANCE.getUseDeletedIcon().Bool()) {
             cellGroup.rows.remove(customDeletedMarkRow);
+        }
+        if (!NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().Bool()) {
+            cellGroup.rows.remove(saveDeletedMessageInBotChatRow);
         }
         addRowsToMap(cellGroup);
     }
@@ -400,6 +404,20 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                         final int index = cellGroup.rows.indexOf(customDeletedMarkRow);
                         cellGroup.rows.remove(customDeletedMarkRow);
                         listAdapter.notifyItemRemoved(index);
+                    }
+                }
+            } else if (key.equals(NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().getKey())) {
+                if (!(boolean) newValue) {
+                    if (cellGroup.rows.contains(saveDeletedMessageInBotChatRow)) {
+                        final int index = cellGroup.rows.indexOf(saveDeletedMessageInBotChatRow);
+                        cellGroup.rows.remove(saveDeletedMessageInBotChatRow);
+                        listAdapter.notifyItemRemoved(index);
+                    }
+                } else {
+                    if (!cellGroup.rows.contains(saveDeletedMessageInBotChatRow)) {
+                        final int index = cellGroup.rows.indexOf(saveDeletedMessageForBotsUserRow) + 1;
+                        cellGroup.rows.add(index, saveDeletedMessageInBotChatRow);
+                        listAdapter.notifyItemInserted(index);
                     }
                 }
             }

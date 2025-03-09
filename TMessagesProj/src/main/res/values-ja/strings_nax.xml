@@ -84,4 +84,5 @@
     <string name="UseEditedIcon">「編集あり」の代わりにアイコンを表示</string>
     <string name="SilentMessageByDefault">デフォルトでミュートメッセージを送信</string>
     <string name="FolderNameAsTitle">フォルダ名をタイトルとして使用</string>
+    <string name="SaveDeletedMessageForBotUser">ボットメッセージを保存</string>
 </resources>
