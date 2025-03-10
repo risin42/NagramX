@@ -11,7 +11,7 @@ repositories {
 }
 
 def verName = APP_VERSION_NAME
-def verCode = 1203
+def verCode = 1204
 
 def officialVer = APP_VERSION_NAME
 def officialCode = APP_VERSION_CODE
