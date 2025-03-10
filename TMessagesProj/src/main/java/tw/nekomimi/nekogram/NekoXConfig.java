@@ -32,26 +32,11 @@ import xyz.nextalone.nagram.NaConfig;
 
 public class NekoXConfig {
 
-    //  public static String FAQ_URL = "https://telegra.ph/NekoX-FAQ-03-31";
     public static String FAQ_URL = "https://github.com/NextAlone/Nagram#faq";
     public static long[] officialChats = {
-//            1305127566, // NekoX Updates
-//            1151172683, // NekoX Chat
-//            1299578049, // NekoX Chat Channel
-//            1137038259, // NekoX APKs
-//            1500637449, // Nagram
-//            1645699549, // Nagram Updates
-//            2001739482, // Nagram Tips
     };
 
     public static long[] developers = {
-//            896711046, // nekohasekai
-//            380570774, // Haruhi
-//            784901712, // NextAlone
-//            457896977, // Queally
-//            782954985, // MaiTungTM
-//            5412523572L, //blxueya
-//            676660002, // mrwangzhe
     };
 
     public static final int TITLE_TYPE_TEXT = 0;
@@ -62,7 +47,6 @@ public class NekoXConfig {
 
     public static boolean loadSystemEmojiFailed = false;
     private static Typeface systemEmojiTypeface;
-
 
     public static SharedPreferences preferences = NitritesKt.openMainSharedPreference("nekox_config");
 
@@ -76,16 +60,6 @@ public class NekoXConfig {
     public static int customApi = preferences.getInt("custom_api", 0);
     public static int customAppId = preferences.getInt("custom_app_id", 0);
     public static String customAppHash = preferences.getString("custom_app_hash", "");
-
-    public static void toggleDeveloperMode() {
-        preferences.edit().putBoolean("developer_mode", developerMode = !developerMode).apply();
-        if (!developerMode) {
-            preferences.edit()
-                    .putBoolean("disable_flag_secure", disableFlagSecure = false)
-                    .putBoolean("disable_status_update", disableStatusUpdate = false)
-                    .apply();
-        }
-    }
 
     private static Boolean hasDeveloper = null;
     

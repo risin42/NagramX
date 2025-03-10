@@ -4371,12 +4371,12 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 String message = cell.getTextView().getText().toString();
                 builder.addTitle(message);
                 String finalMessage = message;
-                builder.addItem(LocaleController.getString("Copy", R.string.Copy), R.drawable.msg_copy, (it) -> {
+                builder.addItem(LocaleController.getString(R.string.Copy), R.drawable.msg_copy, (it) -> {
                     AndroidUtilities.addToClipboard(finalMessage);
-                    AlertUtil.showToast(LocaleController.getString("TextCopied", R.string.TextCopied));
+                    AlertUtil.showToast(LocaleController.getString(R.string.TextCopied));
                     return Unit.INSTANCE;
                 });
-                builder.addItem(BuildVars.LOGS_ENABLED ? LocaleController.getString("DebugMenuDisableLogs", R.string.DebugMenuDisableLogs) : LocaleController.getString("DebugMenuEnableLogs", R.string.DebugMenuEnableLogs), R.drawable.baseline_bug_report_24, (it) -> {
+                builder.addItem(BuildVars.LOGS_ENABLED ? LocaleController.getString(R.string.DebugMenuDisableLogs) : LocaleController.getString(R.string.DebugMenuEnableLogs), R.drawable.baseline_bug_report_24, (it) -> {
                     BuildVars.LOGS_ENABLED = BuildVars.DEBUG_VERSION = !BuildVars.LOGS_ENABLED;
                     SharedPreferences sharedPreferences = ApplicationLoader.applicationContext.getSharedPreferences("systemConfig", Context.MODE_PRIVATE);
                     sharedPreferences.edit().putBoolean("logsEnabled", BuildVars.LOGS_ENABLED).apply();
@@ -4385,19 +4385,17 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     return Unit.INSTANCE;
                 });
 
-                if (NaConfig.INSTANCE.getShowHiddenFeature().Bool()) {
-                    builder.addItem(LocaleController.getString("DeveloperSettings", R.string.DeveloperSettings), R.drawable.baseline_developer_mode_24, (it) -> {
-                        BottomBuilder devBuilder = new BottomBuilder(ProfileActivity.this.getParentActivity());
-                        devBuilder.addTitle(LocaleController.getString("DevModeTitle", R.string.DevModeTitle), LocaleController.getString("DevModeNotice", R.string.DevModeNotice));
-                        devBuilder.addItem(LocaleController.getString("Continue", R.string.Continue), R.drawable.baseline_warning_24, true, (__) -> {
-                            ProfileActivity.this.presentFragment(new NekoXSettingActivity());
-                            return Unit.INSTANCE;
-                        });
-                        devBuilder.addCancelItem();
-                        devBuilder.show();
+                builder.addItem(LocaleController.getString(R.string.DeveloperSettings), R.drawable.baseline_developer_mode_24, (it) -> {
+                    BottomBuilder devBuilder = new BottomBuilder(ProfileActivity.this.getParentActivity());
+                    devBuilder.addTitle(LocaleController.getString(R.string.DevModeTitle), LocaleController.getString(R.string.DevModeNotice));
+                    devBuilder.addItem(LocaleController.getString(R.string.Continue), R.drawable.baseline_warning_24, true, (__) -> {
+                        ProfileActivity.this.presentFragment(new NekoXSettingActivity());
                         return Unit.INSTANCE;
                     });
-                }
+                    devBuilder.addCancelItem();
+                    devBuilder.show();
+                    return Unit.INSTANCE;
+                });
                 builder.show();
             } else if (position == premiumRow) {
                 presentFragment(new PremiumPreviewFragment("settings"));
