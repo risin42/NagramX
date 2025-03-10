@@ -30,6 +30,7 @@ You can grab the latest versions in these two ways:
     - Use icons instead of "deleted"/"edited"
     - Save attachments by chat name
     - Send messages silently by default
+    - Use folder name as title
 
 - **Cleanup & Optimization**
     - Removed integrity checks ```jni/integrity```
@@ -46,18 +47,13 @@ You can grab the latest versions in these two ways:
     - Disable auto download for exe and archive files
     - Other minor fixes
 
-- **Default Settings Adjustments**
-    - Disabled In-Chat sound
-    - Disabled Dynamic Pack Order
-    - Reverted font size and bubble radius to official Telegram defaults
-    - Other minor adjustments
-
 ## Thanks to
 
 - [AyuGram](https://github.com/AyuGram/AyuGram4A)
+- [Cherrygram](https://github.com/arsLan4k1390/Cherrygram)
 - [Dr4iv3rNope](https://github.com/Dr4iv3rNope/NotSoAndroidAyuGram)
-- [OctoGram](https://github.com/OctoGramApp/OctoGram)
 - [Nagram](https://github.com/NextAlone/Nagram)
+- [OctoGram](https://github.com/OctoGramApp/OctoGram)
 
 # Nagram
 
