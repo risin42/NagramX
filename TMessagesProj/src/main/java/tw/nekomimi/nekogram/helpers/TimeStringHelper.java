@@ -23,6 +23,8 @@ public class TimeStringHelper {
     public static Drawable deletedDrawable;
     public static SpannableStringBuilder editedSpan;
     public static Drawable editedDrawable;
+    public static SpannableStringBuilder channelLabelSpan;
+    public static Drawable channelLabelDrawable;
     public ChatActivity.ThemeDelegate themeDelegate;
 
     public static CharSequence createDeletedString(MessageObject messageObject, boolean isEdited) {
@@ -75,5 +77,16 @@ public class TimeStringHelper {
             deletedSpan = new SpannableStringBuilder("\u200B");
             deletedSpan.setSpan(new ColoredImageSpan(deletedDrawable, true), 0, 1, 0);
         }
+    }
+
+    public static SpannableStringBuilder getChannelLabelSpan() {
+        if (channelLabelDrawable == null) {
+            channelLabelDrawable = Objects.requireNonNull(ContextCompat.getDrawable(ApplicationLoader.applicationContext, R.drawable.channel_label_solar)).mutate();
+        }
+        if (channelLabelSpan == null) {
+            channelLabelSpan = new SpannableStringBuilder("\u200B");
+            channelLabelSpan.setSpan(new ColoredImageSpan(channelLabelDrawable, true), 0, 1, 0);
+        }
+        return channelLabelSpan;
     }
 }

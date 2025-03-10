@@ -212,6 +212,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -16549,19 +16550,23 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 adminWidth = (int) staticLayout.getLineWidth(0);
                 nameWidth -= adminWidth;
             } else if (NekoConfig.labelChannelUser.Bool() && isMegagroup && currentChat != null && currentMessageObject.isSenderChannel()) {
-                final String channelStr = NaConfig.INSTANCE.getCustomChannelLabel().String().isEmpty() ? getString(R.string.channelLabel) : NaConfig.INSTANCE.getCustomChannelLabel().String();
+                final String channelStr = NaConfig.INSTANCE.getCustomChannelLabel().String();
+                SpannableStringBuilder channelLabelStringBuilder = TimeStringHelper.getChannelLabelSpan();
+
                 adminString = new SpannableStringBuilder();
-                if (NekoConfig.channelAlias.Bool()) {
-                    String aliasName = NekoXConfig.getChannelAlias(currentMessageObject.messageOwner.from_id.channel_id);
-                    if (aliasName != null) {
-                        adminString.append(aliasName + " ★");
-                    } else {
-                        adminString.append(channelStr);
-                    }
+                if (channelStr.isEmpty()) {
+                    adminString.append(channelLabelStringBuilder);
                 } else {
                     adminString.append(channelStr);
                 }
-                adminWidth = (int) Math.ceil(Theme.chat_adminPaint.measureText(adminString.toString()));
+                if (NekoConfig.channelAlias.Bool()) {
+                    String aliasName = NekoXConfig.getChannelAlias(currentMessageObject.messageOwner.from_id.channel_id);
+                    if (aliasName != null) {
+                        adminString.clear();
+                        adminString.append(aliasName + " ★");
+                    }
+                }
+                adminWidth = (int) Math.ceil(Theme.chat_adminPaint.measureText(adminString, 0, adminString.length()));
                 nameWidth -= adminWidth;
             } else {
                 adminString = null;
