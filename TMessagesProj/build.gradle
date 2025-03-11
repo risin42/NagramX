@@ -11,13 +11,17 @@ repositories {
 }
 
 def verName = APP_VERSION_NAME
-def verCode = 1204
+def verCode = 1205
 
 def officialVer = APP_VERSION_NAME
 def officialCode = APP_VERSION_CODE
 
 configurations {
     compile.exclude module: "support-v4"
+}
+
+configurations.all {
+    exclude group: 'androidx.recyclerview', module: 'recyclerview'
 }
 
 def keystorePwd = null
