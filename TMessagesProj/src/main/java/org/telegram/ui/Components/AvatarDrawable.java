@@ -57,7 +57,6 @@ public class AvatarDrawable extends Drawable {
     private float textHeight;
     private float textLeft;
     private boolean isProfile;
-    private boolean smallSize;
     private boolean drawDeleted;
     private int avatarType;
     private float archivedAvatarProgress;
@@ -373,10 +372,6 @@ public class AvatarDrawable extends Drawable {
         needApplyColorAccent = false;
     }
 
-    public void setSmallSize(boolean value) {
-        smallSize = value;
-    }
-
     public void setTextSize(int size) {
         namePaint.setTextSize(size);
     }
@@ -548,8 +543,18 @@ public class AvatarDrawable extends Drawable {
     }
 
     private Drawable customIconDrawable;
+    private int iconTx, iconTy;
     public void setCustomIcon(Drawable drawable) {
         customIconDrawable = drawable;
+    }
+
+    public void setIconTranslation(int tx, int ty) {
+        this.iconTx = tx;
+        this.iconTy = ty;
+    }
+
+    public Drawable getCustomIcon() {
+        return customIconDrawable;
     }
 
     @Override
@@ -678,14 +683,10 @@ public class AvatarDrawable extends Drawable {
                 drawable = Theme.avatarDrawables[9];
             }
             if (drawable != null) {
-                int w = (int) (drawable.getIntrinsicWidth() * scaleSize);
-                int h = (int) (drawable.getIntrinsicHeight() * scaleSize);
-                if (smallSize) {
-                    w *= 0.8f;
-                    h *= 0.8f;
-                }
-                int x = (size - w) / 2;
-                int y = (size - h) / 2;
+                final int w = (int) (drawable.getIntrinsicWidth() * scaleSize);
+                final int h = (int) (drawable.getIntrinsicHeight() * scaleSize);
+                final int x = (size - w) / 2 + iconTx;
+                final int y = (size - h) / 2 + iconTy;
                 drawable.setBounds(x, y, x + w, y + h);
                 if (alpha != 255) {
                     drawable.setAlpha(alpha);
