@@ -6340,11 +6340,6 @@ public class MessageObject {
         if (messageOwner.translatedText != null && (captionTranslated = translated)) {
             text = messageOwner.translatedText.text;
             entities = messageOwner.translatedText.entities;
-        }
-        if (captionTranslated = translated) {
-            // Official Translate
-            text = messageOwner.translatedText.text;
-            entities = messageOwner.translatedText.entities;
         } else if (messageOwner.translated) {
             // NekoX Translate
             text = messageOwner.translatedMessage;
