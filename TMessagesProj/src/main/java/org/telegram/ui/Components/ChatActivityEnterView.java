@@ -7035,6 +7035,9 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
         } else {
             setImageDrawableWithAnimation(attachButton, fromRes, targetRes, duration);
         }
+        if (this.paidMessagesPrice > 0 && attachLayout != null) {
+            attachLayout.setTranslationX(-dp(24));
+        }
     }
 
     private void hideRecordedAudioPanel(boolean wasSent) {
