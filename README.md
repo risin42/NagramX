@@ -1,5 +1,7 @@
 # Nagram X
 
+[中文](/README_zh-CN.md)
+
 A variant of [Nagram](https://github.com/NextAlone/Nagram) with additional(ToS breaking) features.
 
 ## Download
