@@ -421,14 +421,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                         editor.putBoolean("pushConnection", !enabled);
                         editor.apply();
                     }
-                } else {
-                    NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(false);
-                    ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabledAndUpdateState(false);
-                    if (enabled) {
-                        editor.putBoolean("pushService", !enabled);
-                        editor.putBoolean("pushConnection", !enabled);
-                        editor.apply();
-                    }
                 }
                 ApplicationLoader.startPushService();
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(pushServiceTypeInAppDialogRow));
