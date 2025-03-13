@@ -4,8 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Base64
-import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.ApplicationLoader
+import org.telegram.messenger.BuildVars
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.config.ConfigItem
@@ -1160,5 +1161,8 @@ object NaConfig {
             false
         )
         updatePreferredTranslateTargetLangList()
+        if (!BuildVars.LOGS_ENABLED) {
+            NaConfig.showRPCError.setConfigBool(false);
+        }
     }
 }
