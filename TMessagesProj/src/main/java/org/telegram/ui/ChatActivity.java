@@ -14397,10 +14397,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
     }
 
-    private void forwardMessages(ArrayList<MessageObject> arrayList, boolean fromMyName, boolean notify, int scheduleDate, long did) {
-        forwardMessages(arrayList, fromMyName, notify, scheduleDate, did, 0);
-    }
-
     // This method is used to forward messages to Saved Messages, or to multi Dialogs
     private void forwardMessages(ArrayList<MessageObject> arrayList, boolean fromMyName, boolean notify, int scheduleDate, long did, long payStars) {
         if (arrayList == null || arrayList.isEmpty()) {
@@ -35207,7 +35203,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             return;
         }
 
-        beforeMessageSend(notify, scheduleDate, true, 0);
+        beforeMessageSend(notify, scheduleDate, true, stars);
 
         if (videoEditedInfo != null && videoEditedInfo.roundVideo) {
             AndroidUtilities.runOnUIThread(closeInstantCameraAnimation = () -> {
@@ -42700,7 +42696,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         } else if (id == nkbtn_savemessage) {
             ArrayList<MessageObject> messages = getSelectedMessages();
-            forwardMessages(messages, false, true, 0, UserConfig.getInstance(currentAccount).getClientUserId());
+            forwardMessages(messages, false, true, 0, UserConfig.getInstance(currentAccount).getClientUserId(), 0);
             undoView.showWithAction(getUserConfig().getClientUserId(), UndoView.ACTION_FWD_MESSAGES, messages.size());
         } else if (id == nkbtn_hide) {
             ArrayList<MessageObject> messages = getSelectedMessages();
@@ -43007,7 +43003,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else {
                     messages.add(selectedObject);
                 }
-                forwardMessages(messages, false, true, 0, getUserConfig().getClientUserId());
+                forwardMessages(messages, false, true, 0, getUserConfig().getClientUserId(), 0);
                 undoView.showWithAction(getUserConfig().getClientUserId(), UndoView.ACTION_FWD_MESSAGES, messages.size());
                 break;
             }
@@ -43167,7 +43163,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     messages.add(selectedObject);
                 }
                 AlertsCreator.createScheduleDatePickerDialog(getParentActivity(), getUserConfig().getClientUserId(), (notify, scheduleDate) -> {
-                    forwardMessages(messages, false, notify, scheduleDate, getUserConfig().getClientUserId());
+                    forwardMessages(messages, false, notify, scheduleDate, getUserConfig().getClientUserId(), 0);
                     undoView.showWithAction(getUserConfig().getClientUserId(), UndoView.ACTION_FWD_MESSAGES, messages.size());
                 }, themeDelegate);
                 break;

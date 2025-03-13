@@ -1956,10 +1956,6 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
         }
     }
 
-    public int sendMessage(ArrayList<MessageObject> messages, final long peer, boolean forwardFromMyName, boolean hideCaption, boolean notify, int scheduleDate) {
-        return sendMessage(messages, peer, forwardFromMyName, hideCaption, notify, scheduleDate, null, -1, 0);
-    }
-
     public int sendMessage(ArrayList<MessageObject> messages, final long peer, boolean forwardFromMyName, boolean hideCaption, boolean notify, int scheduleDate, long payStars) {
         return sendMessage(messages, peer, forwardFromMyName, hideCaption, notify, scheduleDate, null, -1, payStars);
     }

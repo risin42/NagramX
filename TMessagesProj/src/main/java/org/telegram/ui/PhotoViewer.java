@@ -8458,9 +8458,9 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     }
                     if (noQuote) {
                         //MessageHelper.getInstance(currentAccount).processForwardFromMyName(fmessages, did, true, 0);
-                        SendMessagesHelper.getInstance(currentAccount).sendMessage(fmessages, did, true, false, notify, scheduleDate);
+                        SendMessagesHelper.getInstance(currentAccount).sendMessage(fmessages, did, true, false, notify, scheduleDate, 0);
                     } else {
-                        SendMessagesHelper.getInstance(currentAccount).sendMessage(fmessages, did, false, false, notify, scheduleDate);
+                        SendMessagesHelper.getInstance(currentAccount).sendMessage(fmessages, did, false, false, notify, scheduleDate, 0);
                     }
                 }
                 fragment1.finishFragment();

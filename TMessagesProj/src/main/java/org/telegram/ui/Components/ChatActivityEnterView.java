@@ -7348,10 +7348,6 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
 
     private boolean premiumEmojiBulletin = true;
 
-    private boolean sendMessageInternal(boolean notify, int scheduleDate, boolean allowConfirm) {
-        return sendMessageInternal(notify, scheduleDate, 0, allowConfirm);
-    }
-
     private boolean sendMessageInternal(boolean notify, int scheduleDate, long payStars, boolean allowConfirm) {
         return sendMessageInternal(notify, scheduleDate, payStars, allowConfirm, new SendMessageInternalParams());
     }
