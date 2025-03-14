@@ -4,25 +4,47 @@ import cn.hutool.core.util.StrUtil
 import org.json.JSONObject
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
+import org.telegram.tgnet.TLRPC
+import org.telegram.ui.Components.TranslateAlert2
 import tw.nekomimi.nekogram.NekoConfig
+import tw.nekomimi.nekogram.transtale.HTMLKeeper
 import tw.nekomimi.nekogram.transtale.TransUtils
 import tw.nekomimi.nekogram.transtale.Translator
-import tw.nekomimi.nekogram.utils.applyIf
 
 object GoogleAppTranslator : Translator {
 
-    override suspend fun doTranslate(from: String, to: String, query: String): String {
+    override suspend fun doTranslate(
+        from: String,
+        to: String,
+        query: String,
+        entities: ArrayList<TLRPC.MessageEntity>
+    ): TLRPC.TL_textWithEntities {
 
-        if (StrUtil.isNotBlank(NekoConfig.googleCloudTranslateKey.String())) return GoogleCloudTranslator.doTranslate(from, to, query)
+        if (StrUtil.isNotBlank(NekoConfig.googleCloudTranslateKey.String())) return GoogleCloudTranslator.doTranslate(
+            from,
+            to,
+            query,
+            entities
+        )
 
         if (to !in targetLanguages) {
-
-            throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported))
-
+            throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported) + " " + to)
         }
 
+        val originalText = TLRPC.TL_textWithEntities()
+        originalText.text = query
+        originalText.entities = entities
+
+        val finalString = StringBuilder()
+
+        val textToTranslate = if (entities.isNotEmpty()) HTMLKeeper.entitiesToHtml(
+            query,
+            entities,
+            false
+        ) else query
+
         val url = "https://translate.google.com" + "/translate_a/single?dj=1" +
-                "&q=" + TransUtils.encodeURIComponent(query) +
+                "&q=" + TransUtils.encodeURIComponent(textToTranslate) +
                 "&sl=auto" +
                 "&tl=" + to +
                 "&ie=UTF-8&oe=UTF-8&client=at&dt=t&otf=2"
@@ -33,19 +55,25 @@ object GoogleAppTranslator : Translator {
                 .execute()
 
         if (response.status != 200) {
-
             error("HTTP ${response.status} : ${response.body()}")
-
         }
-
-        val result = StringBuilder()
 
         val array = JSONObject(response.body()).getJSONArray("sentences")
         for (index in 0 until array.length()) {
-            result.append(array.getJSONObject(index).getString("trans"))
+            finalString.append(array.getJSONObject(index).getString("trans"))
         }
 
-        return result.toString()
+        var finalText = TLRPC.TL_textWithEntities()
+        if (entities.isNotEmpty()) {
+            val resultPair = HTMLKeeper.htmlToEntities(finalString.toString(), entities, false)
+            finalText.text = resultPair.first
+            finalText.entities = resultPair.second
+            finalText = TranslateAlert2.preprocess(originalText, finalText)
+        } else {
+            finalText.text = finalString.toString()
+        }
+
+        return finalText
     }
 
     private val targetLanguages = listOf(

@@ -1,12 +1,13 @@
 package tw.nekomimi.nekogram.parts
 
-import java.lang.Runnable
-import java.util.*
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newFixedThreadPoolContext
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ArticleViewer
 import tw.nekomimi.nekogram.transtale.TranslateDb
@@ -14,6 +15,9 @@ import tw.nekomimi.nekogram.transtale.Translator
 import tw.nekomimi.nekogram.utils.AlertUtil
 import tw.nekomimi.nekogram.utils.UIUtil
 import tw.nekomimi.nekogram.utils.uUpdate
+import java.util.LinkedList
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 fun HashSet<Any>.filterBaseTexts(): HashSet<Any> {
 
@@ -82,8 +86,16 @@ fun ArticleViewer.doTransLATE() {
 
             when (item) {
 
-                is TLRPC.RichText -> getText(pages[0].adapter, null, item, item, copy[item]
-                        ?: copy[item.parentRichText], 1000, true).takeIf { it.isNotBlank() }?.toString()
+                is TLRPC.RichText -> getText(
+                    pages[0].adapter,
+                    null,
+                    item,
+                    item,
+                    copy[item] ?: copy[item.parentRichText],
+                    1000,
+                    true
+                ).takeIf { it.isNotBlank() }?.toString()
+
                 is String -> item
                 else -> null
 
@@ -133,10 +145,13 @@ fun ArticleViewer.doTransLATE() {
                                 status.dismiss()
                                 updatePaintSize()
                                 updateTranslateButton(false)
-                                AlertUtil.showTransFailedDialog(parentActivity, it is UnsupportedOperationException, it.message
-                                        ?: it.javaClass.simpleName, Runnable {
+                                AlertUtil.showTransFailedDialog(
+                                    parentActivity,
+                                    it is UnsupportedOperationException,
+                                    it.message ?: it.javaClass.simpleName
+                                ) {
                                     doTransLATE()
-                                })
+                                }
 
                             })
 

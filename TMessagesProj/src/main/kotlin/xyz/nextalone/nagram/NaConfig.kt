@@ -870,7 +870,7 @@ object NaConfig {
         addConfig(
             "TranslatorMode",
             ConfigItem.configTypeInt,
-            0
+            0 // 0: append; 1: replace; 2: pop-up
         )
     val centerActionBarTitleType =
         addConfig(
@@ -992,7 +992,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-
+    var translatorKeepMarkdown =
+        addConfig(
+            "TranslatorKeepMarkdown",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

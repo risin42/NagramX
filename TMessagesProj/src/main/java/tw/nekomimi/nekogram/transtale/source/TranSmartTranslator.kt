@@ -5,15 +5,14 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
+import org.telegram.tgnet.TLRPC
+import org.telegram.ui.Components.TranslateAlert2
+import tw.nekomimi.nekogram.transtale.HTMLKeeper
 import tw.nekomimi.nekogram.transtale.Translator
 import java.util.Date
 import java.util.UUID
 
 object TranSmartTranslator : Translator {
-
-    private val targetLanguages = listOf(
-        "ar", "fr", "fil", "lo", "ja", "it", "hi", "id", "vi", "de", "km", "ms", "th", "tr", "zh", "ru", "ko", "pt", "es"
-    )
 
     private fun getRandomBrowserVersion(): String {
         val majorVersion = (Math.random() * 17).toInt() + 100
@@ -28,14 +27,31 @@ object TranSmartTranslator : Translator {
         return operatingSystems[randomIndex]
     }
 
-    override suspend fun doTranslate(from: String, to: String, query: String): String {
+    override suspend fun doTranslate(
+        from: String,
+        to: String,
+        query: String,
+        entities: ArrayList<TLRPC.MessageEntity>
+    ): TLRPC.TL_textWithEntities {
 
         if (to !in targetLanguages) {
             error(getString(R.string.TranslateApiUnsupported))
         }
 
+        val originalText = TLRPC.TL_textWithEntities()
+        originalText.text = query
+        originalText.entities = entities
+
+        val finalString = StringBuilder()
+
+        val textToTranslate = if (entities.isNotEmpty()) HTMLKeeper.entitiesToHtml(
+            query,
+            entities,
+            false
+        ) else query
+
         val source = JSONArray()
-        for (s in query.split("\n")) {
+        for (s in textToTranslate.split("\n")) {
             source.put(s)
         }
 
@@ -49,11 +65,11 @@ object TranSmartTranslator : Translator {
                     put("session", "")
                     put("user", "")
                 })
-                put("source", JSONObject().apply{
+                put("source", JSONObject().apply {
                     put("lang", if (targetLanguages.contains(from)) from else "en")
                     put("text_list", source)
                 })
-                put("target", JSONObject().apply{
+                put("target", JSONObject().apply {
                     put("lang", to)
                 })
                 put("model_category", "normal")
@@ -67,16 +83,27 @@ object TranSmartTranslator : Translator {
         }
 
         val target: JSONArray = JSONObject(response.body()).getJSONArray("auto_translation")
-        val result = StringBuilder()
         for (i in 0 until target.length()) {
-            result.append(target.getString(i))
+            finalString.append(target.getString(i))
             if (i != target.length() - 1) {
-                result.append("\n")
+                finalString.append("\n")
             }
         }
 
-        return result.toString().trimEnd()
+        var finalText = TLRPC.TL_textWithEntities()
+        if (entities.isNotEmpty()) {
+            val resultPair = HTMLKeeper.htmlToEntities(finalString.toString(), entities, false)
+            finalText.text = resultPair.first
+            finalText.entities = resultPair.second
+            finalText = TranslateAlert2.preprocess(originalText, finalText)
+        } else {
+            finalText.text = finalString.toString()
+        }
 
+        return finalText
     }
 
+    private val targetLanguages = listOf(
+        "ar", "fr", "fil", "lo", "ja", "it", "hi", "id", "vi", "de", "km", "ms", "th", "tr", "zh", "ru", "ko", "pt", "es"
+    )
 }

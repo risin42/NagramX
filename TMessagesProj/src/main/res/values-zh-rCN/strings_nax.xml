@@ -84,4 +84,6 @@
     <string name="SilentMessageByDefault">默认发送无声消息</string>
     <string name="FolderNameAsTitle">使用文件夹名称作为标题</string>
     <string name="SaveDeletedMessageForBotUser">保存机器人消息</string>
+    <string name="TranslatorKeepMarkdown">保留格式</string>
+    <string name="TranslatorOptions">选项</string>
 </resources>

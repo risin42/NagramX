@@ -5,23 +5,41 @@ import cn.hutool.http.HttpUtil
 import org.json.JSONObject
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
+import org.telegram.tgnet.TLRPC
+import org.telegram.ui.Components.TranslateAlert2
 import tw.nekomimi.nekogram.NekoConfig
+import tw.nekomimi.nekogram.transtale.HTMLKeeper
 import tw.nekomimi.nekogram.transtale.Translator
 
 object GoogleCloudTranslator : Translator {
 
-    override suspend fun doTranslate(from: String, to: String, query: String): String {
+    override suspend fun doTranslate(
+        from: String,
+        to: String,
+        query: String,
+        entities: ArrayList<TLRPC.MessageEntity>
+    ): TLRPC.TL_textWithEntities {
 
         if (to !in targetLanguages) {
-
-            throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported))
-
+            throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported) + " " + to)
         }
 
         if (StrUtil.isBlank(NekoConfig.googleCloudTranslateKey.String())) error("Missing Cloud Translate Key")
 
+        val originalText = TLRPC.TL_textWithEntities()
+        originalText.text = query
+        originalText.entities = entities
+
+        val finalString = StringBuilder()
+
+        val textToTranslate = if (entities.isNotEmpty()) HTMLKeeper.entitiesToHtml(
+            query,
+            entities,
+            false
+        ) else query
+
         val response = HttpUtil.createPost("https://translation.googleapis.com/language/translate/v2")
-                .form("q", query)
+                .form("q", textToTranslate)
                 .form("target", to)
                 .form("format", "text")
                 .form("key", NekoConfig.googleCloudTranslateKey.String())
@@ -30,9 +48,7 @@ object GoogleCloudTranslator : Translator {
                 }.execute()
 
         if (response.status != 200) {
-
             error("HTTP ${response.status} : ${response.body()}")
-
         }
 
         var respObj = JSONObject(response.body())
@@ -45,8 +61,20 @@ object GoogleCloudTranslator : Translator {
 
         if (respArr.length() == 0) error("Empty translation result")
 
-        return respArr.getJSONObject(0).getString("translatedText")
+        val translatedText = respArr.getJSONObject(0).getString("translatedText")
+        finalString.append(translatedText)
 
+        var finalText = TLRPC.TL_textWithEntities()
+        if (entities.isNotEmpty()) {
+            val resultPair = HTMLKeeper.htmlToEntities(finalString.toString(), entities, false)
+            finalText.text = resultPair.first
+            finalText.entities = resultPair.second
+            finalText = TranslateAlert2.preprocess(originalText, finalText)
+        } else {
+            finalText.text = finalString.toString()
+        }
+
+        return finalText
     }
 
     private val targetLanguages = listOf(
@@ -58,5 +86,4 @@ object GoogleCloudTranslator : Translator {
             "sr", "st", "si", "eo", "sk", "sl", "sw", "gd", "ceb", "so", "tg", "te", "ta",
             "th", "tr", "cy", "ur", "uk", "uz", "es", "iw", "el", "haw", "sd", "hu", "sn",
             "hy", "ig", "it", "yi", "hi", "su", "id", "jw", "en", "yo", "vi", "zh-TW", "zh-CN", "zh")
-
 }

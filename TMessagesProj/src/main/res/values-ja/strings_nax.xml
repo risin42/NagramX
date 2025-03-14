@@ -84,4 +84,6 @@
     <string name="SilentMessageByDefault">デフォルトでミュートメッセージを送信</string>
     <string name="FolderNameAsTitle">フォルダ名をタイトルとして使用</string>
     <string name="SaveDeletedMessageForBotUser">ボットメッセージを保存</string>
+    <string name="TranslatorKeepMarkdown">フォーマットを維持</string>
+    <string name="TranslatorOptions">オプション</string>
 </resources>

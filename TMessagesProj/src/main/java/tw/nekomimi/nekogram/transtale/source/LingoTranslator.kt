@@ -8,21 +8,36 @@ import org.json.JSONObject
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
+import org.telegram.tgnet.TLRPC
+import org.telegram.ui.Components.TranslateAlert2
+import tw.nekomimi.nekogram.transtale.HTMLKeeper
 import tw.nekomimi.nekogram.transtale.Translator
 
 object LingoTranslator : Translator {
 
     private const val NAX = "LingoTranslator"
 
-    override suspend fun doTranslate(from: String, to: String, query: String): String {
+    override suspend fun doTranslate(from: String, to: String, query: String, entities: ArrayList<TLRPC.MessageEntity>): TLRPC.TL_textWithEntities {
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "doTranslate: from=$from, to=$to, query=$query")
 
         if (to !in listOf("zh", "en", "es", "fr", "ja", "ru")) {
             error(getString(R.string.TranslateApiUnsupported) + " " + to)
         }
 
+        val originalText = TLRPC.TL_textWithEntities()
+        originalText.text = query
+        originalText.entities = entities
+
+        val finalString = StringBuilder()
+
+        val textToTranslate = if (entities.isNotEmpty()) HTMLKeeper.entitiesToHtml(
+            query,
+            entities,
+            false
+        ) else query
+
         val source = JSONArray()
-        for (s in query.split("\n")) {
+        for (s in textToTranslate.split("\n")) {
             source.put(s)
         }
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "doTranslate: source JSONArray: $source")
@@ -52,22 +67,28 @@ object LingoTranslator : Translator {
         val target: JSONArray = JSONObject(response.body()).getJSONArray("target")
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "doTranslate: target JSONArray: $target")
 
-        val result = StringBuilder()
         for (i in 0 until target.length()) {
             var translatedLine = target.getString(i)
             if (translatedLine == "\ud835") { // wtf
                 translatedLine = ""
                 if (BuildVars.LOGS_ENABLED) Log.d(NAX, "doTranslate: skip invalid character")
             }
-            result.append(translatedLine)
+            finalString.append(translatedLine)
             if (i != target.length() - 1) {
-                result.append("\n")
+                finalString.append("\n")
             }
         }
 
-        val resultString = result.toString()
-        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "doTranslate: result string: $resultString")
+        var finalText = TLRPC.TL_textWithEntities()
+        if (entities.isNotEmpty()) {
+            val resultPair = HTMLKeeper.htmlToEntities(finalString.toString(), entities, false)
+            finalText.text = resultPair.first
+            finalText.entities = resultPair.second
+            finalText = TranslateAlert2.preprocess(originalText, finalText)
+        } else {
+            finalText.text = finalString.toString()
+        }
 
-        return resultString
+        return finalText
     }
 }

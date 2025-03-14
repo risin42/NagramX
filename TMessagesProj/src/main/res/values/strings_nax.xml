@@ -97,4 +97,6 @@
     <string name="SilentMessageByDefault">Send Messages Silently by Default</string>
     <string name="FolderNameAsTitle">Use Folder Name as Title</string>
     <string name="SaveDeletedMessageForBotUser">Save Bot Messages</string>
+    <string name="TranslatorKeepMarkdown">Keep Markdown</string>
+    <string name="TranslatorOptions">Options</string>
 </resources>

@@ -3468,12 +3468,15 @@ public class MessageObject {
         boolean replyUpdated = replyMessageObject != null && replyMessageObject != this && replyMessageObject.updateTranslation(force);
         TranslateController translateController = MessagesController.getInstance(currentAccount).getTranslateController();
         if (
-            TranslateController.isTranslatable(this) &&
-            translateController.isTranslatingDialog(getDialogId()) &&
+            (translateController.isManualTranslated(this) ||
+                TranslateController.isTranslatable(this) &&
+                translateController.isTranslatingDialog(getDialogId())
+            ) &&
 //            !translateController.isTranslateDialogHidden(getDialogId()) &&
             messageOwner != null &&
             (messageOwner.translatedText != null || messageOwner.translatedPoll != null) &&
-            TextUtils.equals(translateController.getDialogTranslateTo(getDialogId()), messageOwner.translatedToLanguage)
+            (translateController.isManualTranslated(this) ||
+            TextUtils.equals(translateController.getDialogTranslateTo(getDialogId()), messageOwner.translatedToLanguage))
         ) {
             if (translated) {
                 return replyUpdated || false;
@@ -3502,14 +3505,13 @@ public class MessageObject {
         if (TextUtils.isEmpty(text)) {
             return;
         }
-
         TLRPC.User fromUser = null;
         if (isFromUser()) {
             fromUser = MessagesController.getInstance(currentAccount).getUser(messageOwner.from_id.user_id);
         }
-
-            messageText = text;
-        ArrayList<TLRPC.MessageEntity> entities = translated && messageOwner.translatedText != null ? messageOwner.translatedText.entities : messageOwner.entities;
+        messageText = text;
+        // ArrayList<TLRPC.MessageEntity> entities = translated && messageOwner.translatedText != null ? messageOwner.translatedText.entities : messageOwner.entities;
+        ArrayList<TLRPC.MessageEntity> entities = translated && messageOwner.translatedText != null ? reparseMessageEntities(messageOwner.translatedText.entities) : messageOwner.entities;
         TextPaint paint;
         if (getMedia(messageOwner) instanceof TLRPC.TL_messageMediaGame) {
             paint = Theme.chat_msgGameTextPaint;
@@ -3525,6 +3527,25 @@ public class MessageObject {
         checkEmojiOnly(emojiOnly);
         generateLayout(fromUser);
         setType();
+    }
+
+    private ArrayList<TLRPC.MessageEntity> reparseMessageEntities(ArrayList<TLRPC.MessageEntity> translatedEntities) {
+        if (!NaConfig.INSTANCE.getTranslatorKeepMarkdown().Bool()) {
+            ArrayList<TLRPC.MessageEntity> entities = new ArrayList<>();
+            for (TLRPC.MessageEntity entity : translatedEntities) {
+                boolean isMarkdownEntity = entity instanceof TLRPC.TL_messageEntitySpoiler;
+                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityBold;
+                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityItalic;
+                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityCode;
+                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityStrike;
+                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityUnderline;
+                if (!isMarkdownEntity) {
+                    entities.add(entity);
+                }
+            }
+            return entities;
+        }
+        return translatedEntities;
     }
 
     private boolean allowsBigEmoji() {
@@ -6339,7 +6360,8 @@ public class MessageObject {
         }
         if (messageOwner.translatedText != null && (captionTranslated = translated)) {
             text = messageOwner.translatedText.text;
-            entities = messageOwner.translatedText.entities;
+            // entities = messageOwner.translatedText.entities;
+            entities = reparseMessageEntities(messageOwner.translatedText.entities);
         } else if (messageOwner.translated) {
             // NekoX Translate
             text = messageOwner.translatedMessage;
@@ -6642,7 +6664,8 @@ public class MessageObject {
                 if (messageOwner.translatedText == null) {
                     entities = null;
                 } else {
-                    entities = messageOwner.translatedText.entities;
+                    // entities = messageOwner.translatedText.entities;
+                    entities = reparseMessageEntities(messageOwner.translatedText.entities);
                 }
             } else {
                 entities = messageOwner.entities;
@@ -7204,7 +7227,8 @@ public class MessageObject {
     private boolean applyEntities() {
         generateLinkDescription();
 
-        ArrayList<TLRPC.MessageEntity> entities = translated && messageOwner.translatedText != null ? messageOwner.translatedText.entities : messageOwner.entities;
+        // ArrayList<TLRPC.MessageEntity> entities = translated && messageOwner.translatedText != null ? messageOwner.translatedText.entities : messageOwner.entities;
+        ArrayList<TLRPC.MessageEntity> entities = translated && messageOwner.translatedText != null ? reparseMessageEntities(messageOwner.translatedText.entities) : messageOwner.entities;
         spoilLoginCode();
 
         boolean hasEntities;

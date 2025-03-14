@@ -828,15 +828,13 @@ public class TranslateController extends BaseController {
                 loadingTranslations.add(message.getId());
             }
 
-            Translator.translate(TranslatorKt.getCode2Locale(language), message.messageOwner.message, new Translator.Companion.TranslateCallBack() {
+            Translator.translate(TranslatorKt.getCode2Locale(language), message.messageOwner.message, message.messageOwner.entities, new Translator.Companion.TranslateCallBack2() {
                 @Override
-                public void onSuccess(@NonNull String translation) {
+                public void onSuccess(@NonNull TLRPC.TL_textWithEntities finalText) {
                     synchronized (TranslateController.this) {
                         loadingTranslations.remove(message.getId());
                     }
-                    TLRPC.TL_textWithEntities textObj = new TLRPC.TL_textWithEntities();
-                    textObj.text = translation;
-                    callback.run(message.getId(), textObj, language);
+                    callback.run(message.getId(), finalText, language);
                 }
 
                 @Override

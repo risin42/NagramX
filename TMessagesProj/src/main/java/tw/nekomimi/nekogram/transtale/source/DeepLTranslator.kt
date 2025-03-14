@@ -5,6 +5,9 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
+import org.telegram.tgnet.TLRPC
+import org.telegram.ui.Components.TranslateAlert2
+import tw.nekomimi.nekogram.transtale.HTMLKeeper
 import tw.nekomimi.nekogram.transtale.Translator
 import tw.nekomimi.nekogram.transtale.source.raw.DeepLTranslatorRaw
 import kotlin.random.Random
@@ -16,25 +19,72 @@ object DeepLTranslator : Translator {
 
     private val rawTranslator = DeepLTranslatorRaw()
 
-    override suspend fun doTranslate(from: String, to: String, query: String): String {
+    override suspend fun doTranslate(
+        from: String,
+        to: String,
+        query: String,
+        entities: ArrayList<TLRPC.MessageEntity>
+    ): TLRPC.TL_textWithEntities {
         if (to.isEmpty()) {
-            throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported))
+            throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported) + " " + to)
         }
 
         try {
-            return rawTranslator.translate(query, from, to)
+            val originalText = TLRPC.TL_textWithEntities()
+            originalText.text = query
+            originalText.entities = entities
+
+            val finalString = StringBuilder()
+
+            val textToTranslate = if (entities.isNotEmpty()) HTMLKeeper.entitiesToHtml(
+                query,
+                entities,
+                false
+            ) else query
+
+            val translatedText = rawTranslator.translate(textToTranslate, from, to)
+            finalString.append(translatedText)
+
+            var finalText = TLRPC.TL_textWithEntities()
+            if (entities.isNotEmpty()) {
+                val resultPair = HTMLKeeper.htmlToEntities(finalString.toString(), entities, false)
+                finalText.text = resultPair.first
+                finalText.entities = resultPair.second
+                finalText = TranslateAlert2.preprocess(originalText, finalText)
+            } else {
+                finalText.text = finalString.toString()
+            }
+
+            return finalText
         } catch (e: Exception) {
             val endpoint = if (Random.nextBoolean()) OFFICIAL_ENDPOINT else FALLBACK_ENDPOINT
-            return translateWithAPI(endpoint, to, query)
+            return translateWithAPI(endpoint, to, query, entities)
         }
     }
 
-    private fun translateWithAPI(endpoint: String, targetLang: String, query: String): String {
+    private fun translateWithAPI(
+        endpoint: String,
+        targetLang: String,
+        query: String,
+        entities: ArrayList<TLRPC.MessageEntity>
+    ): TLRPC.TL_textWithEntities {
         val apiKey = getString(R.string.DEEPL_API_KEY)
         if (apiKey.isBlank()) error("Missing DeepL Translate Key")
 
+        val originalText = TLRPC.TL_textWithEntities()
+        originalText.text = query
+        originalText.entities = entities
+
+        val finalString = StringBuilder()
+
+        val textToTranslate = if (entities.isNotEmpty()) HTMLKeeper.entitiesToHtml(
+            query,
+            entities,
+            false
+        ) else query
+
         val textArray = JSONArray().apply {
-            put(query)
+            put(textToTranslate)
         }
 
         val requestBody = JSONObject().apply {
@@ -44,13 +94,25 @@ object DeepLTranslator : Translator {
         }.toString()
 
         val response = makeTranslateRequest(endpoint, apiKey, requestBody)
-
         val respObj = JSONObject(response.body())
         val respArr = respObj.getJSONArray("translations")
 
         if (respArr.length() == 0) error("Empty translation result")
 
-        return respArr.getJSONObject(0).getString("text")
+        val translatedText = respArr.getJSONObject(0).getString("text")
+        finalString.append(translatedText)
+
+        var finalText = TLRPC.TL_textWithEntities()
+        if (entities.isNotEmpty()) {
+            val resultPair = HTMLKeeper.htmlToEntities(finalString.toString(), entities, false)
+            finalText.text = resultPair.first
+            finalText.entities = resultPair.second
+            finalText = TranslateAlert2.preprocess(originalText, finalText)
+        } else {
+            finalText.text = finalString.toString()
+        }
+
+        return finalText
     }
 
     private fun makeTranslateRequest(endpoint: String, apiKey: String, requestBody: String): cn.hutool.http.HttpResponse {
