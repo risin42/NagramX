@@ -199,6 +199,11 @@ jobs:
       - name: Configure Gradle
         run: |
           echo "sdk.dir=${ANDROID_HOME}" >> local.properties
+      - name: Modify Gradle JVM Args
+        run: |
+          sed -i '/^org\.gradle\.jvmargs=/d' gradle.properties
+          echo "org.gradle.jvmargs=-Xmx8G -XX:MaxMetaspaceSize=2G -XX:+UseParallelGC -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" >> gradle.properties
+          cat gradle.properties
       - name: Gradle cache
         uses: actions/cache@v4
         with:
