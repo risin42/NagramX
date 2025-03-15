@@ -12,11 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.BotWebViewVibrationEffect;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import cn.hutool.core.util.StrUtil;
 import kotlin.Unit;
@@ -86,9 +89,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                     }
             )
     );
-    private final AbstractConfigCell googleCloudTranslateKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.googleCloudTranslateKey, (view, position) -> {
-        customDialog_BottomInputString(position, NekoConfig.googleCloudTranslateKey, getString(R.string.GoogleCloudTransKeyNotice), "Key");
-    }, getString(R.string.None), true));
+    private final AbstractConfigCell googleCloudTranslateKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.googleCloudTranslateKey, (view, position) -> customDialog_BottomInputString(position, NekoConfig.googleCloudTranslateKey, getString(R.string.GoogleCloudTransKeyNotice), "Key"), getString(R.string.None), true));
 
     private final AbstractConfigCell dividerTranslation = cellGroup.appendCell(new ConfigCellDivider());
 
@@ -105,53 +106,33 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
             }, null));
 
     private final Map<Integer, List<AbstractConfigCell>> llmProviderConfigMap = new HashMap<>();
-    private List<AbstractConfigCell> llmProviderConfigRows = new ArrayList<>();
+    private final List<AbstractConfigCell> llmProviderConfigRows = new ArrayList<>();
 
     {
         llmProviderConfigMap.put(0, List.of(  // Custom
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> {
-                    customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiKey(), getString(R.string.LlmApiKeyNotice), "Key");
-                }, getString(R.string.None), true),
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiUrl(), (view, position) -> {
-                    customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiUrl(), getString(R.string.LlmApiUrlNotice), "e.g. https://api.openai.com/v1");
-                }, getString(R.string.LlmApiUrlDefault)),
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmModelName(), (view, position) -> {
-                    customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmModelName(), getString(R.string.LlmModelNameNotice), "e.g. gpt-4o-mini");
-                }, getString(R.string.LlmModelNameDefault))));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true),
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiUrl(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiUrl(), getString(R.string.LlmApiUrlNotice), "e.g. https://api.openai.com/v1"), getString(R.string.LlmApiUrlDefault)),
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmModelName(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmModelName(), getString(R.string.LlmModelNameNotice), "e.g. gpt-4o-mini"), getString(R.string.LlmModelNameDefault))));
         llmProviderConfigMap.put(1, List.of( // OpenAI
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderOpenAIKey(), (view, position) -> {
-                    customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderOpenAIKey(), getString(R.string.LlmApiKeyNotice), "Key");
-                }, getString(R.string.None), true)));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderOpenAIKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderOpenAIKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true)));
         llmProviderConfigMap.put(2, List.of( // Gemini
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGeminiKey(), (view, position) -> {
-                    customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderGeminiKey(), getString(R.string.LlmApiKeyNotice), "Key");
-                }, getString(R.string.None), true)));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGeminiKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderGeminiKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true)));
         llmProviderConfigMap.put(3, List.of( // Groq
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGroqKey(), (view, position) -> {
-                    customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderGroqKey(), getString(R.string.LlmApiKeyNotice), "Key");
-                }, getString(R.string.None), true)));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGroqKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderGroqKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true)));
         llmProviderConfigMap.put(4, List.of( // DeepSeek
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), (view, position) -> {
-                    customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), getString(R.string.LlmApiKeyNotice), "Key");
-                }, getString(R.string.None), true)));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true)));
         llmProviderConfigMap.put(5, List.of( // xAI
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderXAIKey(), (view, position) -> {
-                    customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderXAIKey(), getString(R.string.LlmApiKeyNotice), "Key");
-                }, getString(R.string.None), true)));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderXAIKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderXAIKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true)));
 
         int llmProviderPreset = NaConfig.INSTANCE.getLlmProviderPreset().Int();
         if (llmProviderConfigMap.containsKey(llmProviderPreset)) {
-            llmProviderConfigRows.addAll(llmProviderConfigMap.get(llmProviderPreset));
+            llmProviderConfigRows.addAll(Objects.requireNonNull(llmProviderConfigMap.get(llmProviderPreset)));
             llmProviderConfigRows.forEach(cellGroup::appendCell);
         }
     }
 
-    private final AbstractConfigCell llmSystemPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmSystemPrompt(), (view, position) -> {
-        customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmSystemPrompt(), getString(R.string.LlmSystemPromptNotice), "You are a helpful assistant.");
-    }, getString(R.string.None)));
-    private final AbstractConfigCell llmUserPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmUserPrompt(), (view, position) -> {
-        customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmUserPrompt(), getString(R.string.LlmUserPromptNotice), "");
-    }, getString(R.string.None)));
+    private final AbstractConfigCell llmSystemPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmSystemPrompt(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmSystemPrompt(), getString(R.string.LlmSystemPromptNotice), "You are a helpful assistant."), getString(R.string.None)));
+    private final AbstractConfigCell llmUserPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmUserPrompt(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmUserPrompt(), getString(R.string.LlmUserPromptNotice), ""), getString(R.string.None)));
     private final AbstractConfigCell header_temperature = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.LlmTemperature)));
     private final AbstractConfigCell temperatureValueRow = cellGroup.appendCell(new ConfigCellCustom(getString(R.string.LlmTemperature), ConfigCellCustom.CUSTOM_ITEM_Temperature, true));
     private final AbstractConfigCell dividerAITranslatorSettings = cellGroup.appendCell(new ConfigCellDivider());
@@ -174,25 +155,8 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         addRowsToMap(cellGroup);
     }
 
-    protected void onItemClick(View view, int position, float x, float y) {
-        if (position == cellGroup.rows.indexOf(translationProviderRow)) {
-            showProviderSelectionPopup(view, NekoConfig.translationProvider, () -> {
-                if (NekoConfig.translationProvider.Int() == Translator.providerTelegram) {
-                    boolean isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
-                    boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
-                    if (isAutoTranslateEnabled && !isRealPremium) {
-                        NaConfig.INSTANCE.getTelegramUIAutoTranslate().setConfigBool(false);
-                        listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useTelegramUIAutoTranslateRow));
-                        BulletinFactory.of(this).createSimpleBulletin(R.raw.info, getString(R.string.TelegramUIAutoTranslateTips)).show();
-                    }
-                }
-                listAdapter.notifyItemChanged(position);
-            });
-        } else if (position == cellGroup.rows.indexOf(articleTranslationProviderRow)) {
-            showProviderSelectionPopup(view, NaConfig.INSTANCE.getArticleTranslationProvider(), () -> {
-                listAdapter.notifyItemChanged(position);
-            });
-        } else if (position == cellGroup.rows.indexOf(translateToLangRow) || position == cellGroup.rows.indexOf(translateInputToLangRow)) {
+    protected void onItemClick(View view, int position, float ignoredX, float ignoredY) {
+        if (position == cellGroup.rows.indexOf(translateToLangRow) || position == cellGroup.rows.indexOf(translateInputToLangRow)) {
             Translator.showTargetLangSelect(view, position == cellGroup.rows.indexOf(translateInputToLangRow), (locale) -> {
                 if (position == cellGroup.rows.indexOf(translateToLangRow)) {
                     NekoConfig.translateToLang.setConfigString(TranslatorKt.getLocale2code(locale));
@@ -205,6 +169,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void updateRows() {
         if (listAdapter != null) {
@@ -212,6 +177,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         }
     }
 
+    /** @noinspection deprecation*/
     private void customDialog_BottomInputString(int position, ConfigItem bind, String subtitle, String hint) {
         BottomBuilder builder = new BottomBuilder(getParentActivity());
         builder.addTitle(getString(bind.getKey()), subtitle);
@@ -262,27 +228,20 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         return "Unknown";
     }
 
-    private static class ProviderInfo {
-        public final int providerConstant;
-        public final int nameResId;
-
-        public ProviderInfo(int providerConstant, int nameResId) {
-            this.providerConstant = providerConstant;
-            this.nameResId = nameResId;
-        }
+    private record ProviderInfo(int providerConstant, int nameResId) {
 
         public static final ProviderInfo[] PROVIDERS = {
-                new ProviderInfo(Translator.providerGoogle, R.string.ProviderGoogleTranslate),
-                new ProviderInfo(Translator.providerYandex, R.string.ProviderYandexTranslate),
-                new ProviderInfo(Translator.providerLingo, R.string.ProviderLingocloud),
-                new ProviderInfo(Translator.providerMicrosoft, R.string.ProviderMicrosoftTranslator),
-                new ProviderInfo(Translator.providerRealMicrosoft, R.string.ProviderRealMicrosoftTranslator),
-                new ProviderInfo(Translator.providerDeepL, R.string.ProviderDeepLTranslate),
-                new ProviderInfo(Translator.providerTelegram, R.string.ProviderTelegramAPI),
-                new ProviderInfo(Translator.providerTranSmart, R.string.ProviderTranSmartTranslate),
-                new ProviderInfo(Translator.providerLLMTranslator, R.string.ProviderLLMTranslator),
-        };
-    }
+                    new ProviderInfo(Translator.providerGoogle, R.string.ProviderGoogleTranslate),
+                    new ProviderInfo(Translator.providerYandex, R.string.ProviderYandexTranslate),
+                    new ProviderInfo(Translator.providerLingo, R.string.ProviderLingocloud),
+                    new ProviderInfo(Translator.providerMicrosoft, R.string.ProviderMicrosoftTranslator),
+                    new ProviderInfo(Translator.providerRealMicrosoft, R.string.ProviderRealMicrosoftTranslator),
+                    new ProviderInfo(Translator.providerDeepL, R.string.ProviderDeepLTranslate),
+                    new ProviderInfo(Translator.providerTelegram, R.string.ProviderTelegramAPI),
+                    new ProviderInfo(Translator.providerTranSmart, R.string.ProviderTranSmartTranslate),
+                    new ProviderInfo(Translator.providerLLMTranslator, R.string.ProviderLLMTranslator),
+            };
+        }
 
     @Override
     public boolean onFragmentCreate() {
@@ -328,6 +287,17 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         listView.setOnItemClickListener((view, position, x, y) -> {
             AbstractConfigCell a = cellGroup.rows.get(position);
             if (a instanceof ConfigCellTextCheck) {
+                if (position == cellGroup.rows.indexOf(useTelegramUIAutoTranslateRow)) {
+                    int provider = NekoConfig.translationProvider.Int();
+                    boolean isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
+                    boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
+                    if (provider == Translator.providerTelegram && !isAutoTranslateEnabled && !isRealPremium) {
+                        BulletinFactory.of(this).createSimpleBulletin(R.raw.info, getString(R.string.LoginEmailResetPremiumRequiredTitle)).show();
+                        BotWebViewVibrationEffect.APP_ERROR.vibrate();
+                        AndroidUtilities.shakeViewSpring(view, -4);
+                        return;
+                    }
+                }
                 ((ConfigCellTextCheck) a).onClick((TextCheckCell) view);
             } else if (a instanceof ConfigCellSelectBox) {
                 ((ConfigCellSelectBox) a).onClick(view);
@@ -338,7 +308,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 if (o != null) {
                     try {
                         o.onItemClick(view, position);
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 }
             } else if (a instanceof ConfigCellCustom) { // Custom OnClick
@@ -350,7 +320,10 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                             if (isAutoTranslateEnabled && !isRealPremium) {
                                 NaConfig.INSTANCE.getTelegramUIAutoTranslate().setConfigBool(false);
                                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useTelegramUIAutoTranslateRow));
-                                BulletinFactory.of(this).createSimpleBulletin(R.raw.info, getString(R.string.TelegramUIAutoTranslateTips)).show();
+                                BulletinFactory.of(this).createSimpleBulletin(R.raw.info, getString(R.string.LoginEmailResetPremiumRequiredTitle)).show();
+                                BotWebViewVibrationEffect.APP_ERROR.vibrate();
+                                View useTelegramUIAutoTranslateView = ((ConfigCellTextCheck) useTelegramUIAutoTranslateRow).cell;
+                                AndroidUtilities.shakeViewSpring(useTelegramUIAutoTranslateView, -4);
                             }
                         }
                         listAdapter.notifyItemChanged(position);
@@ -368,9 +341,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                         return Unit.INSTANCE;
                     });
                 } else if (position == cellGroup.rows.indexOf(articleTranslationProviderRow)) {
-                    showProviderSelectionPopup(view, NaConfig.INSTANCE.getArticleTranslationProvider(), () -> {
-                        listAdapter.notifyItemChanged(position);
-                    });
+                    showProviderSelectionPopup(view, NaConfig.INSTANCE.getArticleTranslationProvider(), () -> listAdapter.notifyItemChanged(position));
                 }
             }
         });
@@ -389,16 +360,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
         // Cells: Set OnSettingChanged Callbacks
         cellGroup.callBackSettingsChanged = (key, newValue) -> {
-            if (key.equals(NaConfig.INSTANCE.getTelegramUIAutoTranslate().getKey())) {
-                boolean enabled = (Boolean) newValue;
-                if (enabled && NekoConfig.translationProvider.Int() == Translator.providerTelegram) {
-                    boolean isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
-                    boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
-                    if (isAutoTranslateEnabled && !isRealPremium) {
-                        BulletinFactory.of(this).createSimpleBulletin(R.raw.info, getString(R.string.TelegramUIAutoTranslateTips)).show();
-                    }
-                }
-            } else if (key.equals(NaConfig.INSTANCE.getPreferredTranslateTargetLang().getKey())) {
+            if (key.equals(NaConfig.INSTANCE.getPreferredTranslateTargetLang().getKey())) {
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translateToLangRow));
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translateInputToLangRow));
             } else if (key.equals(NaConfig.INSTANCE.getEnableSeparateArticleTranslator().getKey())) {
@@ -460,7 +422,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     }
 
     private class ListAdapter extends RecyclerListView.SelectionAdapter {
-        private Context mContext;
+        private final Context mContext;
 
         public ListAdapter(Context context) {
             mContext = context;
@@ -491,12 +453,11 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             AbstractConfigCell a = cellGroup.rows.get(position);
             if (a != null) {
                 if (a instanceof ConfigCellCustom) {
-                    if (holder.itemView instanceof TextSettingsCell) {
-                        TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
+                    if (holder.itemView instanceof TextSettingsCell textCell) {
                         if (position == cellGroup.rows.indexOf(translationProviderRow)) {
                             textCell.setTextAndValue(getString(R.string.TranslationProvider), getProviderName(NekoConfig.translationProvider.Int()), true);
                         } else if (position == cellGroup.rows.indexOf(translateToLangRow)) {
@@ -513,8 +474,9 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
             }
         }
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = null;
             switch (viewType) {
                 case CellGroup.ITEM_TYPE_DIVIDER:
@@ -547,7 +509,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         }
     }
 
-    private class TemperatureSeekBar extends FrameLayout {
+    private static class TemperatureSeekBar extends FrameLayout {
 
         private final SeekBarView sizeBar;
         private final TextPaint textPaint;
@@ -562,17 +524,10 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
             sizeBar = new SeekBarView(context);
             sizeBar.setReportChanges(true);
-            sizeBar.setDelegate(new SeekBarView.SeekBarViewDelegate() {
-                @Override
-                public void onSeekBarDrag(boolean stop, float progress) {
-                    float value = Math.round(progress * 20) / 10f;
-                    NaConfig.INSTANCE.getLlmTemperature().setConfigFloat(value);
-                    invalidate();
-                }
-
-                @Override
-                public void onSeekBarPressed(boolean pressed) {
-                }
+            sizeBar.setDelegate((stop, progress) -> {
+                float value = Math.round(progress * 20) / 10f;
+                NaConfig.INSTANCE.getLlmTemperature().setConfigFloat(value);
+                invalidate();
             });
             float currentValue = NaConfig.INSTANCE.getLlmTemperature().Float();
             sizeBar.setProgress(currentValue / 2f);
@@ -582,7 +537,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         @Override
         protected void onDraw(Canvas canvas) {
             textPaint.setColor(Theme.getColor(Theme.key_windowBackgroundWhiteValueText));
-            String text = String.format("%.1f", NaConfig.INSTANCE.getLlmTemperature().Float());
+            @SuppressLint("DefaultLocale") String text = String.format("%.1f", NaConfig.INSTANCE.getLlmTemperature().Float());
             canvas.drawText(text, getMeasuredWidth() - AndroidUtilities.dp(39), AndroidUtilities.dp(28), textPaint);
         }
 
@@ -600,6 +555,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onResume() {
         super.onResume();

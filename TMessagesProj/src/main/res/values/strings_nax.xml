@@ -79,7 +79,6 @@
     <string name="TranslatorModePopup">Pop-up</string>
     <string name="Translated">Translated</string>
     <string name="ProviderRealMicrosoftTranslator">Microsoft Translator</string>
-    <string name="TelegramUIAutoTranslateTips">Telegram API translation for Translate Entire Chats requires a valid Telegram Premium</string>
     <string name="TranslatorSettings">Translator</string>
     <string name="SettingsOnly">Just in settings</string>
     <string name="ChatsOnly">Just in chats</string>
