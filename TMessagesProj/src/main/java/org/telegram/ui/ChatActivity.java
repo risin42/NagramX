@@ -30973,7 +30973,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 if (messageObject != null || docsWithMessages) {
                                     boolean td;
                                     if (messageObject != null) {
-                                        td = messageObject.messageOwner.translated;
+                                        td = messageObject.messageOwner.translated || messageObject.translated;
                                     } else {
                                         td = selectedObjectGroup.messages.get(0).messageOwner.translated;
                                     }
