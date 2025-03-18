@@ -40017,22 +40017,22 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     File finalLocFile = locFile;
                     NekoSettingsActivity.importSettings(getParentActivity(), finalLocFile);
                 } else {
-                boolean handled = false;
-                if (message.canPreviewDocument()) {
-                    PhotoViewer.getInstance().setParentActivity(ChatActivity.this, themeDelegate);
-                    PhotoViewer.getInstance().openPhoto(message, ChatActivity.this, message.type != 0 ? dialog_id : 0, message.type != 0 ? mergeDialogId : 0, message.type != 0 ? getTopicId() : 0, photoViewerProvider);
-                    handled = true;
-                }
-                if (!handled) {
-                    try {
-                        AndroidUtilities.openForView(message, getParentActivity(), themeDelegate, false);
-                    } catch (Exception e) {
-                        FileLog.e(e);
-                        alertUserOpenError(message);
+                    boolean handled = false;
+                    if (message.canPreviewDocument()) {
+                        PhotoViewer.getInstance().setParentActivity(ChatActivity.this, themeDelegate);
+                        PhotoViewer.getInstance().openPhoto(message, ChatActivity.this, message.type != 0 ? dialog_id : 0, message.type != 0 ? mergeDialogId : 0, message.type != 0 ? getTopicId() : 0, photoViewerProvider);
+                        handled = true;
+                    }
+                    if (!handled) {
+                        try {
+                            AndroidUtilities.openForView(message, getParentActivity(), themeDelegate, false);
+                        } catch (Exception e) {
+                            FileLog.e(e);
+                            alertUserOpenError(message);
+                        }
                     }
                 }
             }
-        }
         }
 
         @Override
