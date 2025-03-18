@@ -1,5 +1,7 @@
 package tw.nekomimi.nekogram.settings;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -11,6 +13,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.net.Uri;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
@@ -31,7 +34,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SendMessagesHelper;
@@ -40,10 +42,12 @@ import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.BasePermissionsActivity;
 import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextSettingsCell;
+import org.telegram.ui.Components.ChatAttachAlert;
 import org.telegram.ui.Components.FilledTabsView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
@@ -53,9 +57,13 @@ import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.PeerColorActivity;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 import kotlin.text.StringsKt;
@@ -388,9 +396,13 @@ public class NekoSettingsActivity extends BaseFragment {
                 } else if (position == datacenterStatusRow) {
                     presentFragment(new DatacenterActivity(0));
                 } else if (position == importSettingsRow) {
-                    DocumentSelectActivity activity = getDocumentSelectActivity(getParentActivity());
-                    if (activity != null) {
-                        presentFragment(activity);
+                    if (Build.VERSION.SDK_INT >= 33) {
+                        openFilePicker();
+                    } else {
+                        DocumentSelectActivity activity = getDocumentSelectActivity(getParentActivity());
+                        if (activity != null) {
+                            presentFragment(activity);
+                        }
                     }
                 } else if (position == exportSettingsRow) {
                     backupSettings();
@@ -560,7 +572,7 @@ public class NekoSettingsActivity extends BaseFragment {
     private DocumentSelectActivity getDocumentSelectActivity(Activity parent) {
         try {
             if (Build.VERSION.SDK_INT >= 23 && parent.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                parent.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
+                parent.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, BasePermissionsActivity.REQUEST_CODE_EXTERNAL_STORAGE);
                 return null;
             }
         } catch (Throwable ignore) {
@@ -649,6 +661,46 @@ public class NekoSettingsActivity extends BaseFragment {
             editor.commit();
         }
 
+    }
+
+    private void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("application/json");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(intent, 21);
+        } catch (android.content.ActivityNotFoundException ex) {
+            AlertUtil.showSimpleAlert(getParentActivity(), ex);
+        }
+    }
+
+    @Override
+    public void onActivityResultFragment(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 21 && resultCode == Activity.RESULT_OK && data != null) {
+            Uri uri = data.getData();
+            if (uri != null) {
+                File cacheDir = AndroidUtilities.getCacheDir();
+                String tempFile = UUID.randomUUID().toString().replace("-", "") + ".nekox-settings.json";
+                File file = new File(cacheDir.getPath(), tempFile);
+                try {
+                    final InputStream inputStream = ApplicationLoader.applicationContext.getContentResolver().openInputStream(uri);
+                    if (inputStream != null) {
+                        OutputStream outputStream = new FileOutputStream(file);
+                        final byte[] buffer = new byte[4 * 1024];
+                        int read;
+                        while ((read = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, read);
+                        }
+                        inputStream.close();
+                        outputStream.flush();
+                        outputStream.close();
+                        importSettings(getParentActivity(), file);
+                    }
+                } catch (Exception ignore) {
+                }
+            }
+            super.onActivityResultFragment(requestCode, resultCode, data);
+        }
     }
 
 }

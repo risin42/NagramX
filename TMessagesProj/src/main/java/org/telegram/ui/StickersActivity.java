@@ -16,8 +16,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Build;
-import android.graphics.drawable.Drawable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -43,23 +43,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.collection.LongSparseArray;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.ListUpdateCallback;
-import androidx.recyclerview.widget.RecyclerView;
-
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.DocumentObject;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.ImageLocation;
-import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MediaDataController;
 import org.telegram.messenger.MessageObject;
@@ -108,14 +96,17 @@ import org.telegram.ui.Components.TrendingStickersLayout;
 import org.telegram.ui.Components.URLSpanNoUnderline;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -343,31 +334,35 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                     exportStickers();
                 } else if (id == menu_import) {
                     try {
-                        if (Build.VERSION.SDK_INT >= 23 && getParentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            getParentActivity().requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
-                            return;
+                        if (Build.VERSION.SDK_INT >= 33) {
+                            openFilePicker();
+                        } else {
+                            if (Build.VERSION.SDK_INT >= 23 && getParentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                getParentActivity().requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, BasePermissionsActivity.REQUEST_CODE_EXTERNAL_STORAGE);
+                                return;
+                            }
+                            DocumentSelectActivity fragment = new DocumentSelectActivity(false);
+                            fragment.setMaxSelectedFiles(1);
+                            fragment.setAllowPhoto(false);
+                            fragment.setDelegate(new DocumentSelectActivity.DocumentSelectActivityDelegate() {
+                                @Override
+                                public void didSelectFiles(DocumentSelectActivity activity, ArrayList<String> files, String caption, boolean notify, int scheduleDate) {
+                                    activity.finishFragment();
+                                    processStickersFile(new File(files.get(0)), false);
+                                }
+
+                                @Override
+                                public void didSelectPhotos(ArrayList<SendMessagesHelper.SendingMediaInfo> photos, boolean notify, int scheduleDate) {
+                                }
+
+                                @Override
+                                public void startDocumentSelectActivity() {
+                                }
+                            });
+                            presentFragment(fragment);
                         }
                     } catch (Throwable ignore) {
                     }
-                    DocumentSelectActivity fragment = new DocumentSelectActivity(false);
-                    fragment.setMaxSelectedFiles(1);
-                    fragment.setAllowPhoto(false);
-                    fragment.setDelegate(new DocumentSelectActivity.DocumentSelectActivityDelegate() {
-                        @Override
-                        public void didSelectFiles(DocumentSelectActivity activity, ArrayList<String> files, String caption, boolean notify, int scheduleDate) {
-                            activity.finishFragment();
-                            processStickersFile(new File(files.get(0)), false);
-                        }
-
-                        @Override
-                        public void didSelectPhotos(ArrayList<SendMessagesHelper.SendingMediaInfo> photos, boolean notify, int scheduleDate) {
-                        }
-
-                        @Override
-                        public void startDocumentSelectActivity() {
-                        }
-                    });
-                    presentFragment(fragment);
                 }
             }
         });
@@ -1915,5 +1910,45 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
         }
 
         return themeDescriptions;
+    }
+
+    private void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("application/json");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(intent, 21);
+        } catch (android.content.ActivityNotFoundException ex) {
+            AlertUtil.showSimpleAlert(getParentActivity(), ex);
+        }
+    }
+
+    @Override
+    public void onActivityResultFragment(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 21 && resultCode == Activity.RESULT_OK && data != null) {
+            Uri uri = data.getData();
+            if (uri != null) {
+                File cacheDir = AndroidUtilities.getCacheDir();
+                String tempFile = UUID.randomUUID().toString().replace("-", "") + ".nekox-stickers.json";
+                File file = new File(cacheDir.getPath(), tempFile);
+                try {
+                    final InputStream inputStream = ApplicationLoader.applicationContext.getContentResolver().openInputStream(uri);
+                    if (inputStream != null) {
+                        OutputStream outputStream = new FileOutputStream(file);
+                        final byte[] buffer = new byte[4 * 1024];
+                        int read;
+                        while ((read = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, read);
+                        }
+                        inputStream.close();
+                        outputStream.flush();
+                        outputStream.close();
+                        processStickersFile(file, false);
+                    }
+                } catch (Exception ignore) {
+                }
+            }
+            super.onActivityResultFragment(requestCode, resultCode, data);
+        }
     }
 }
