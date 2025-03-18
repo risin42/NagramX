@@ -52004,11 +52004,11 @@ public class TLRPC {
         public String api_hash;
         public String bot_auth_token;
 
-        public TLObject deserializeResponse(AbstractSerializedData stream, int constructor, boolean exception) {
+        public TLObject deserializeResponse(InputSerializedData  stream, int constructor, boolean exception) {
             return TL_auth_authorization.TLdeserialize(stream, constructor, exception);
         }
 
-        public void serializeToStream(AbstractSerializedData stream) {
+        public void serializeToStream(OutputSerializedData  stream) {
             stream.writeInt32(constructor);
             stream.writeInt32(flags);
             stream.writeInt32(api_id);
