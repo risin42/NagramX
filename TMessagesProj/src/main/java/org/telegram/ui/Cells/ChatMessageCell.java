@@ -16408,7 +16408,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             }
             ((SpannableStringBuilder) timeString).append(" | ").append(String.valueOf(messageObject.messageOwner.id));
         }
-        if (messageObject.messageOwner != null && messageObject.messageOwner.translated) {
+        boolean isManualTranslated = MessagesController.getInstance(currentAccount).getTranslateController().isManualTranslated(messageObject);
+        boolean isReplaceMode = NaConfig.INSTANCE.getTranslatorMode().Int() == 1;
+        if (messageObject.messageOwner != null && (messageObject.messageOwner.translated || (isManualTranslated && isReplaceMode))) {
             if (!(timeString instanceof SpannableStringBuilder)) {
                 timeString = new SpannableStringBuilder(timeString);
             }

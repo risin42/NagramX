@@ -77,7 +77,7 @@
     <string name="TranslatorModeAppend">Append</string>
     <string name="TranslatorModeInline">Replace</string>
     <string name="TranslatorModePopup">Pop-up</string>
-    <string name="Translated">Translated</string>
+    <string name="Translated">translated</string>
     <string name="ProviderRealMicrosoftTranslator">Microsoft Translator</string>
     <string name="TranslatorSettings">Translator</string>
     <string name="SettingsOnly">Just in settings</string>
