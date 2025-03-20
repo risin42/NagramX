@@ -1476,7 +1476,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
     private Path mediaSpoilerPath = new Path();
     private float[] mediaSpoilerRadii = new float[8];
-    private SpoilerEffect mediaSpoilerEffect = new SpoilerEffect();
+    @Nullable
+    private SpoilerEffect mediaSpoilerEffect;
     private float mediaSpoilerRevealProgress;
     private float mediaSpoilerRevealX;
     private float mediaSpoilerRevealY;
@@ -1495,7 +1496,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     private StaticLayout unlockLayout;
     private int unlockTextWidth;
     private String currentUnlockString;
-    private SpoilerEffect unlockSpoilerEffect = new SpoilerEffect();
+    @Nullable
+    private SpoilerEffect unlockSpoilerEffect;
     private Path unlockSpoilerPath = new Path();
     private float[] unlockSpoilerRadii = new float[8];
 
@@ -10149,6 +10151,13 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 setPadding(0, starsPriceTopPadding, 0, 0);
             }
             oldPollButtons.clear();
+
+            if (mediaSpoilerEffect != null && !(needReplyImage && currentMessageObject != null && currentMessageObject.hasValidReplyMessageObject() && currentMessageObject.replyMessageObject.hasMediaSpoilers())) {
+                mediaSpoilerEffect = null;
+            }
+            if (unlockSpoilerEffect != null && unlockLayout == null) {
+                unlockSpoilerEffect = null;
+            }
         }
         if (messageIdChanged) {
             currentUrl = null;
@@ -13205,17 +13214,14 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     public void drawBlurredPhotoParticles(Canvas canvas) {
-        if (mediaSpoilerEffect2 != null) {
-            canvas.translate(photoImage.getImageX(), photoImage.getImageY());
-            mediaSpoilerEffect2.draw(canvas, this, (int) photoImage.getImageWidth(), (int) photoImage.getImageHeight(), photoImage.getAlpha(), drawingToBitmap);
-            invalidate();
-        } else {
-            int sColor = Color.WHITE;
-            mediaSpoilerEffect.setColor(ColorUtils.setAlphaComponent(sColor, (int) (Color.alpha(sColor) * 0.325f * photoImage.getAlpha())));
-            mediaSpoilerEffect.setBounds((int) photoImage.getImageX(), (int) photoImage.getImageY(), (int) photoImage.getImageX2(), (int) photoImage.getImageY2());
-            mediaSpoilerEffect.draw(canvas);
-            invalidate();
+        if (mediaSpoilerEffect2 == null) {
+            return;
         }
+        canvas.save();
+        canvas.translate(photoImage.getImageX(), photoImage.getImageY());
+        mediaSpoilerEffect2.draw(canvas, this, (int) photoImage.getImageWidth(), (int) photoImage.getImageHeight(), photoImage.getAlpha(), drawingToBitmap);
+        canvas.restore();
+        invalidate();
     }
 
     private float getUseTranscribeButtonProgress() {
@@ -16424,7 +16430,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         }
         final long starsPrice = currentMessageObject.getDialogId() < 0 ? getStarsPrice() : 0;
         if (starsPrice > 0) {
-            SpannableStringBuilder starsString = new SpannableStringBuilder("⭐️" + AndroidUtilities.formatWholeNumber((int) starsPrice, 0) + ", ");
+            SpannableStringBuilder starsString = new SpannableStringBuilder("⭐️" + AndroidUtilities.formatWholeNumber((int) starsPrice, 0) + " ");
             starsString.append(currentTimeString);
             currentTimeString = StarsIntroActivity.replaceStars(starsString, 0.8f, null, 0, dp(-.33f), 0.94f);
         }
@@ -18636,9 +18642,10 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             !botButtons.isEmpty() ||
             drawSideButton != 0 ||
             starsPriceText != null && (currentPosition == null || (currentPosition.flags & MessageObject.POSITION_FLAG_TOP) != 0 && (currentPosition.flags & MessageObject.POSITION_FLAG_LEFT) != 0) ||
-            drawNameLayout && nameLayout != null && currentNameStatusDrawable != null && currentNameStatusDrawable.getDrawable() != null ||
+            drawNameLayout && nameLayout != null && currentNameEmojiStatusDrawable != null && !currentNameEmojiStatusDrawable.isEmpty() ||
             animatedEmojiStack != null && !animatedEmojiStack.holders.isEmpty() ||
             drawTopic && topicButton != null && (currentPosition == null || currentPosition.minY == 0 && currentPosition.minX == 0) ||
+            currentNameStatusDrawable != null && !currentNameStatusDrawable.isEmpty() ||
             currentMessagesGroup == null &&
                 (transitionParams.animateReplaceCaptionLayout && transitionParams.animateChangeProgress != 1f || transitionParams.animateChangeProgress != 1.0f && transitionParams.animateMessageText) &&
                 transitionParams.animateOutAnimateEmoji != null && !transitionParams.animateOutAnimateEmoji.holders.isEmpty()
@@ -20112,6 +20119,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                         canvas.clipPath(mediaSpoilerPath);
 
                         int sColor = Color.WHITE;
+                        if (mediaSpoilerEffect == null) {
+                            mediaSpoilerEffect = new SpoilerEffect();
+                        }
                         mediaSpoilerEffect.setColor(ColorUtils.setAlphaComponent(sColor, (int) (Color.alpha(sColor) * 0.325f * replyImageReceiver.getAlpha())));
                         mediaSpoilerEffect.setBounds((int) replyImageReceiver.getImageX(), (int) replyImageReceiver.getImageY(), (int) replyImageReceiver.getImageX2(), (int) replyImageReceiver.getImageY2());
                         mediaSpoilerEffect.draw(canvas);
@@ -21446,6 +21456,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
             int sColor = Color.WHITE;
             if (mediaSpoilerEffect2 == null) {
+                if (unlockSpoilerEffect == null) {
+                    unlockSpoilerEffect = new SpoilerEffect();
+                }
                 unlockSpoilerEffect.setColor(ColorUtils.setAlphaComponent(sColor, (int) (Color.alpha(sColor) * 0.325f)));
                 unlockSpoilerEffect.setBounds((int) photoImage.getImageX(), (int) photoImage.getImageY(), (int) photoImage.getImageX2(), (int) photoImage.getImageY2());
                 unlockSpoilerEffect.draw(canvas);
