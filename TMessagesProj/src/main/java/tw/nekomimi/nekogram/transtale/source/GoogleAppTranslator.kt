@@ -10,6 +10,7 @@ import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.transtale.HTMLKeeper
 import tw.nekomimi.nekogram.transtale.TransUtils
 import tw.nekomimi.nekogram.transtale.Translator
+import xyz.nextalone.nagram.NaConfig
 
 object GoogleAppTranslator : Translator {
 
@@ -19,6 +20,15 @@ object GoogleAppTranslator : Translator {
         query: String,
         entities: ArrayList<TLRPC.MessageEntity>
     ): TLRPC.TL_textWithEntities {
+
+        if (NaConfig.googleTranslateExp.Bool()) {
+            return GoogleTranslator.doTranslate(
+                from,
+                to,
+                query,
+                entities
+            )
+        }
 
         if (StrUtil.isNotBlank(NekoConfig.googleCloudTranslateKey.String())) return GoogleCloudTranslator.doTranslate(
             from,

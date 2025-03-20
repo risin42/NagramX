@@ -69,6 +69,8 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell useTelegramUIAutoTranslateRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getTelegramUIAutoTranslate()));
     private final AbstractConfigCell keepMarkdownRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getTranslatorKeepMarkdown()));
     private final AbstractConfigCell dividerOptions = cellGroup.appendCell(new ConfigCellDivider());
+
+    // Translation
     private final AbstractConfigCell headerTranslation = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.Translate)));
     private final AbstractConfigCell translationProviderRow = cellGroup.appendCell(new ConfigCellCustom(NekoConfig.translationProvider.getKey(), CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell translatorModeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getTranslatorMode(),
@@ -140,10 +142,15 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell temperatureValueRow = cellGroup.appendCell(new ConfigCellCustom(getString(R.string.LlmTemperature), ConfigCellCustom.CUSTOM_ITEM_Temperature, true));
     private final AbstractConfigCell dividerAITranslatorSettings = cellGroup.appendCell(new ConfigCellDivider());
 
+    // article translation
     private final AbstractConfigCell headerArticleTranslation = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.InstantViewTranslation)));
     private final AbstractConfigCell enableSeparateArticleTranslatorRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSeparateArticleTranslator()));
     private final AbstractConfigCell articleTranslationProviderRow = cellGroup.appendCell(new ConfigCellCustom("ArticleTranslationProvider", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell dividerArticleTranslation = cellGroup.appendCell(new ConfigCellDivider());
+
+    private final AbstractConfigCell headerExperimental = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.Experimental)));
+    private final AbstractConfigCell googleTranslateExpRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getGoogleTranslateExp()));
+    private final AbstractConfigCell dividerExperimental = cellGroup.appendCell(new ConfigCellDivider());
 
     private ListAdapter listAdapter;
     private int oldLlmProvider;

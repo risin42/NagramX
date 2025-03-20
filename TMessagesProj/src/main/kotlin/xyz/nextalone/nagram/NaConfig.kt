@@ -998,6 +998,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var googleTranslateExp =
+        addConfig(
+            "GoogleTranslateExp",
+            ConfigItem.configTypeBool,
+            true
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

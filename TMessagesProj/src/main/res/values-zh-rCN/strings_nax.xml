@@ -86,4 +86,5 @@
     <string name="SaveDeletedMessageForBotUser">保存机器人消息</string>
     <string name="TranslatorKeepMarkdown">保留格式</string>
     <string name="TranslatorOptions">选项</string>
+    <string name="GoogleTranslateExp">使用新版谷歌翻译</string>
 </resources>
