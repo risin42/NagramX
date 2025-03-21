@@ -24985,7 +24985,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     changed = true;
                 }
             }
-            if ((edited || ayuDeleted) && !lastDrawingEdited && timeLayout != null) {
+            if ((((edited || ayuDeleted) && !lastDrawingEdited) || (currentMessageObject.translated && !lastTranslated)) && timeLayout != null) {
                 String customStr = NaConfig.INSTANCE.getCustomEditedMessage().String();
                 String customStrFin = customStr.equals("") ? getString(R.string.EditedMessage) : customStr;
                 String deletedStr = NaConfig.INSTANCE.getCustomDeletedMark().String();
@@ -25022,7 +25022,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     changed = true;
                 }
                 accessibilityText = null;
-            } else if (!(edited || ayuDeleted) && lastDrawingEdited && timeLayout != null) {
+            } else if (((!(edited || ayuDeleted) && lastDrawingEdited) || (!currentMessageObject.translated && lastTranslated)) && timeLayout != null) {
                 animateTimeLayout = lastTimeLayout;
                 animateEditedWidthDiff = timeWidth - lastTimeWidth;
                 animateEditedEnter = true;

@@ -24145,12 +24145,16 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (messageObject == null || messageObject.messageOwner == null) {
             return false;
         }
+
         boolean updated = false;
+        ArrayList<Integer> lazyUpdaterList = new ArrayList<>(); // thanks to OctoGram
+
         for (MessageObject pinnedMessageObject : pinnedMessageObjects.values()) {
             if (pinnedMessageObject != null && pinnedMessageObject.getId() == messageObject.getId()) {
                 pinnedMessageObject.messageOwner.translatedText = messageObject.messageOwner.translatedText;
                 pinnedMessageObject.messageOwner.translatedToLanguage = messageObject.messageOwner.translatedToLanguage;
                 if (pinnedMessageObject.updateTranslation(true)) {
+                    lazyUpdaterList.add(pinnedMessageObject.getId());
                     updatePinnedMessageView(true, 1);
                     updated = true;
                 }
@@ -24169,6 +24173,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     continue;
                 }
                 boolean update = false;
+                if (lazyUpdaterList.contains(cellMessageObject.getId())) {
+                    update = true;
+                }
                 if (cellMessageObject.getId() == messageObject.getId()) {
                     cellMessageObject.messageOwner.translatedText = messageObject.messageOwner.translatedText;
                     cellMessageObject.messageOwner.translatedToLanguage = messageObject.messageOwner.translatedToLanguage;
@@ -24186,6 +24193,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         MessageObject groupMessageObject = group.messages.get(j);
                         if (groupMessageObject != null && groupMessageObject.updateTranslation(false)) {
                             update = true;
+                            lazyUpdaterList.add(groupMessageObject.getId());
                         }
                     }
                     groupChecked.add(group.groupId);
@@ -24194,6 +24202,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     cellMessageObject.replyMessageObject.messageOwner.translatedText = messageObject.messageOwner.translatedText;
                     cellMessageObject.replyMessageObject.messageOwner.translatedToLanguage = messageObject.messageOwner.translatedToLanguage;
                     if (cellMessageObject.replyMessageObject.updateTranslation(false)) {
+                        lazyUpdaterList.add(cellMessageObject.replyMessageObject.getId());
                         update = true;
                     }
                 }
