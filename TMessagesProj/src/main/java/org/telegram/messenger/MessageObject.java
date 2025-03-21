@@ -3489,6 +3489,7 @@ public class MessageObject {
             return replyUpdated || true;
         } else if (messageOwner != null && (force || translated)) {
             translated = false;
+            messageOwner.translated = translated;
             applyNewText(messageOwner.message);
             generateCaption();
             return replyUpdated || true;

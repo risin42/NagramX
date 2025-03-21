@@ -16408,13 +16408,13 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             }
             ((SpannableStringBuilder) timeString).append(" | ").append(String.valueOf(messageObject.messageOwner.id));
         }
-        boolean isManualTranslated = MessagesController.getInstance(currentAccount).getTranslateController().isManualTranslated(messageObject);
-        boolean isReplaceMode = NaConfig.INSTANCE.getTranslatorMode().Int() == 1;
-        if (messageObject.messageOwner != null && (messageObject.messageOwner.translated || (isManualTranslated && isReplaceMode))) {
-            if (!(timeString instanceof SpannableStringBuilder)) {
-                timeString = new SpannableStringBuilder(timeString);
+        if (!MessagesController.getInstance(currentAccount).getTranslateController().isTranslatingDialog(messageObject.getDialogId())) {
+            if (messageObject.translated || messageObject.messageOwner.translated){
+                if (!(timeString instanceof SpannableStringBuilder)) {
+                    timeString = new SpannableStringBuilder(timeString);
+                }
+                ((SpannableStringBuilder) timeString).append(" | ").append(LocaleController.getString(R.string.Translated));
             }
-            ((SpannableStringBuilder) timeString).append(" | ").append(LocaleController.getString(R.string.Translated));
         }
         if (messageObject.isAnyKindOfSticker() && NaConfig.INSTANCE.getRealHideTimeForSticker().Bool()) {
             timeString = "";
