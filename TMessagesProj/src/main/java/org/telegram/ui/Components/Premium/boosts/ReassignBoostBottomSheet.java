@@ -350,7 +350,7 @@ public class ReassignBoostBottomSheet extends BottomSheetWithRecyclerListView {
                 String replacer = "%3$s";
                 SpannableStringBuilder text = AndroidUtilities.replaceTags(LocaleController.formatPluralString("BoostingReassignBoostTextPluralWithLink", BoostRepository.boostsPerSentGift(), chat == null ? "" : chat.title, replacer));
                 SpannableStringBuilder link = AndroidUtilities.replaceSingleTag(
-                        getString("BoostingReassignBoostTextLink", R.string.BoostingReassignBoostTextLink),
+                        getString(R.string.BoostingReassignBoostTextLink),
                         Theme.key_chat_messageLinkIn, REPLACING_TAG_TYPE_LINKBOLD,
                         () -> {
                             bottomSheet.dismiss();

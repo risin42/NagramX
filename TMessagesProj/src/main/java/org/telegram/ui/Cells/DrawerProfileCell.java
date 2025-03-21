@@ -832,7 +832,7 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
         } else if (!TextUtils.isEmpty(user.username)) {
             phoneTextView.setText("@" + user.username);
         } else {
-            phoneTextView.setText(LocaleController.getString("MobileHidden", R.string.MobileHidden));
+            phoneTextView.setText(LocaleController.getString(R.string.MobileHidden));
         }
         AvatarDrawable avatarDrawable = new AvatarDrawable(user);
         avatarDrawable.setColor(Theme.getColor(Theme.key_avatar_backgroundInProfileBlue));

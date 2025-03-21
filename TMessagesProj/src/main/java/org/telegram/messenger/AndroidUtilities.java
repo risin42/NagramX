@@ -4527,19 +4527,19 @@ public class AndroidUtilities {
             String detail = null;
             if (a == 0) {
                 text = address;
-                detail = getString("UseProxyAddress", R.string.UseProxyAddress);
+                detail = getString(R.string.UseProxyAddress);
             } else if (a == 1) {
                 text = "" + port;
-                detail = getString("UseProxyPort", R.string.UseProxyPort);
+                detail = getString(R.string.UseProxyPort);
             } else if (a == 2) {
                 text = secret;
-                detail = getString("UseProxySecret", R.string.UseProxySecret);
+                detail = getString(R.string.UseProxySecret);
             } else if (a == 3) {
                 text = user;
-                detail = getString("UseProxyUsername", R.string.UseProxyUsername);
+                detail = getString(R.string.UseProxyUsername);
             } else if (a == 4) {
                 text = password;
-                detail = getString("UseProxyPassword", R.string.UseProxyPassword);
+                detail = getString(R.string.UseProxyPassword);
             } else if (a == 5) {
                 text = getString(R.string.ProxyBottomSheetChecking);
                 detail = getString(R.string.ProxyStatus);
@@ -4664,7 +4664,7 @@ public class AndroidUtilities {
             dismissRunnable.run();
         });
 
-        pickerBottomLayout.middleButtonTextView.setText(LocaleController.getString("Save", R.string.Save).toUpperCase());
+        pickerBottomLayout.middleButtonTextView.setText(LocaleController.getString(R.string.Save).toUpperCase());
         pickerBottomLayout.middleButton.setVisibility(View.VISIBLE);
         pickerBottomLayout.middleButton.setOnClickListener((it) -> {
             int p = Utilities.parseInt(port);

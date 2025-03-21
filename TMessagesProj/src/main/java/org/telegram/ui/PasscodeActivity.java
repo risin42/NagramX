@@ -341,7 +341,7 @@ public class PasscodeActivity extends BaseFragment implements NotificationCenter
                             if (value == 0) {
                                 return LocaleController.getString(R.string.AutoLockDisabled);
                             } else if (value == 1) {
-                                return LocaleController.getString("AutoLockImmediately", R.string.AutoLockImmediately);
+                                return LocaleController.getString(R.string.AutoLockImmediately);
                             } else if (value == 2) {
                                 return LocaleController.formatString("AutoLockInTime", R.string.AutoLockInTime, LocaleController.formatPluralString("Minutes", 1));
                             } else if (value == 3) {

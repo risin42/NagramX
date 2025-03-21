@@ -2378,29 +2378,29 @@ public class AlertsCreator {
                 });
             }
             textView.setText(LocaleController.formatString("DeleteFewChatsTitle", R.string.DeleteFewChatsTitle, LocaleController.formatPluralString("ChatsSelected", count)));
-            messageTextView.setText(LocaleController.getString("AreYouSureDeleteFewChats", R.string.AreYouSureDeleteFewChats));
+            messageTextView.setText(LocaleController.getString(R.string.AreYouSureDeleteFewChats));
         } else {
             if (canClearCacheCount != 0) {
                 textView.setText(LocaleController.formatString("ClearCacheFewChatsTitle", R.string.ClearCacheFewChatsTitle, LocaleController.formatPluralString("ChatsSelectedClearCache", count)));
-                messageTextView.setText(LocaleController.getString("AreYouSureClearHistoryCacheFewChats", R.string.AreYouSureClearHistoryCacheFewChats));
+                messageTextView.setText(LocaleController.getString(R.string.AreYouSureClearHistoryCacheFewChats));
             } else {
                 textView.setText(LocaleController.formatString("ClearFewChatsTitle", R.string.ClearFewChatsTitle, LocaleController.formatPluralString("ChatsSelectedClear", count)));
-                messageTextView.setText(LocaleController.getString("AreYouSureClearHistoryFewChats", R.string.AreYouSureClearHistoryFewChats));
+                messageTextView.setText(LocaleController.getString(R.string.AreYouSureClearHistoryFewChats));
             }
         }
 
         frameLayout.addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, 24, 11, 24, 0));
         frameLayout.addView(messageTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, 24, 57, 24, 1));
 
-        String actionText = canDeleteHistory ? LocaleController.getString("Delete", R.string.Delete)
-                : canClearCacheCount != 0 ? LocaleController.getString("ClearHistoryCache", R.string.ClearHistoryCache)
-                : LocaleController.getString("ClearHistory", R.string.ClearHistory);
+        String actionText = canDeleteHistory ? LocaleController.getString(R.string.Delete)
+                : canClearCacheCount != 0 ? LocaleController.getString(R.string.ClearHistoryCache)
+                : LocaleController.getString(R.string.ClearHistory);
         builder.setPositiveButton(actionText, (dialogInterface, i) -> {
             if (onProcessRunnable != null) {
                 onProcessRunnable.run(deleteForAll[0]);
             }
         });
-        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+        builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
         AlertDialog alertDialog = builder.create();
         fragment.showDialog(alertDialog);
         TextView button = (TextView) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);

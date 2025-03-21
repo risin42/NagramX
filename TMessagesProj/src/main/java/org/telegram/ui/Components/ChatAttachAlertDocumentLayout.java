@@ -998,7 +998,7 @@ public class ChatAttachAlertDocumentLayout extends ChatAttachAlert.AttachAlertLa
                 item.file = file;
                 if (file.isDirectory()) {
                     item.icon = R.drawable.files_folder;
-                    item.subtitle = LocaleController.getString("Folder", R.string.Folder);
+                    item.subtitle = LocaleController.getString(R.string.Folder);
                 } else {
                     String fname = file.getName();
                     String[] sp = fname.split("\\.");

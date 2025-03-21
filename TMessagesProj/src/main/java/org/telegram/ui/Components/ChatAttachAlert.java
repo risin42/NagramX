@@ -2273,7 +2273,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
         mediaPreviewTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         mediaPreviewTextView.setTypeface(AndroidUtilities.bold());
         mediaPreviewTextView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-        mediaPreviewTextView.setText(getString("AttachMediaPreview", R.string.AttachMediaPreview));
+        mediaPreviewTextView.setText(getString(R.string.AttachMediaPreview));
         mediaPreviewView.setAlpha(0);
 
         mediaPreviewView.addView(mediaPreviewTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL));
@@ -2716,7 +2716,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                 super.extendActionMode(actionMode, menu);
             }
         };
-        commentTextView.setHint(getString("AddCaption", R.string.AddCaption));
+        commentTextView.setHint(getString(R.string.AddCaption));
         commentTextView.onResume();
         commentTextView.getEditText().addTextChangedListener(new TextWatcher() {
 
@@ -2935,7 +2935,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
         topCommentTextView.getEditText().setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.LEFT | Gravity.CENTER_VERTICAL, 48, 0, 36, 0));
         topCommentTextView.getEditText().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
         topCommentTextView.getEmojiButton().setLayoutParams(LayoutHelper.createFrame(40, 40, Gravity.BOTTOM | Gravity.LEFT, 0, 0, 0, 0));
-        topCommentTextView.setHint(getString("AddCaption", R.string.AddCaption));
+        topCommentTextView.setHint(getString(R.string.AddCaption));
         topCommentContainer.addView(topCommentTextView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.FILL));
         topCommentContainer.setAlpha(0.0f);
         topCommentContainer.setVisibility(View.GONE);
@@ -3666,7 +3666,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
         new AlertDialog.Builder(getContext())
                 .setTitle(getString(R.string.BotRemoveFromMenuTitle))
                 .setMessage(AndroidUtilities.replaceTags(attachMenuBot != null ? description : LocaleController.formatString("BotRemoveInlineFromMenu", R.string.BotRemoveInlineFromMenu, botName)))
-                .setPositiveButton(getString("OK", R.string.OK), (dialogInterface, i) -> {
+                .setPositiveButton(getString(R.string.OK), (dialogInterface, i) -> {
                     if (attachMenuBot != null) {
                         TLRPC.TL_messages_toggleBotInAttachMenu req = new TLRPC.TL_messages_toggleBotInAttachMenu();
                         req.bot = MessagesController.getInstance(currentAccount).getInputUser(currentUser);
@@ -3681,7 +3681,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                         MediaDataController.getInstance(currentAccount).removeInline(currentUser.id);
                     }
                 })
-                .setNegativeButton(getString("Cancel", R.string.Cancel), null)
+                .setNegativeButton(getString(R.string.Cancel), null)
                 .show();
     }
 
@@ -5245,7 +5245,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
             MediaController.loadGalleryPhotosAlbums(0);
         }
         currentAttachLayout.onOpenAnimationEnd();
-        AndroidUtilities.makeAccessibilityAnnouncement(getString("AccDescrAttachButton", R.string.AccDescrAttachButton));
+        AndroidUtilities.makeAccessibilityAnnouncement(getString(R.string.AccDescrAttachButton));
         openTransitionFinished = true;
         if (!videosEnabled && !photosEnabled) {
             checkCanRemoveRestrictionsByBoosts();
@@ -5357,7 +5357,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
         isEmojiPicker = true;
         buttonsRecyclerView.setVisibility(View.GONE);
         shadow.setVisibility(View.GONE);
-        selectedTextView.setText(LocaleController.getString("ChoosePhotoOrVideo", R.string.ChoosePhotoOrVideo));
+        selectedTextView.setText(LocaleController.getString(R.string.ChoosePhotoOrVideo));
     }
 
     public boolean storyLocationPickerFileIsVideo;
@@ -5461,22 +5461,22 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                 case VIEW_TYPE_BUTTON:
                     AttachButton attachButton = (AttachButton) holder.itemView;
                     if (position == galleryButton) {
-                        attachButton.setTextAndIcon(1, getString("ChatGallery", R.string.ChatGallery), Theme.chat_attachButtonDrawables[0], Theme.key_chat_attachGalleryBackground, Theme.key_chat_attachGalleryText);
+                        attachButton.setTextAndIcon(1, getString(R.string.ChatGallery), Theme.chat_attachButtonDrawables[0], Theme.key_chat_attachGalleryBackground, Theme.key_chat_attachGalleryText);
                         attachButton.setTag(1);
                     } else if (position == documentButton) {
-                        attachButton.setTextAndIcon(4, getString("ChatDocument", R.string.ChatDocument), Theme.chat_attachButtonDrawables[2], Theme.key_chat_attachFileBackground, Theme.key_chat_attachFileText);
+                        attachButton.setTextAndIcon(4, getString(R.string.ChatDocument), Theme.chat_attachButtonDrawables[2], Theme.key_chat_attachFileBackground, Theme.key_chat_attachFileText);
                         attachButton.setTag(4);
                     } else if (position == locationButton) {
-                        attachButton.setTextAndIcon(6, getString("ChatLocation", R.string.ChatLocation), Theme.chat_attachButtonDrawables[4], Theme.key_chat_attachLocationBackground, Theme.key_chat_attachLocationText);
+                        attachButton.setTextAndIcon(6, getString(R.string.ChatLocation), Theme.chat_attachButtonDrawables[4], Theme.key_chat_attachLocationBackground, Theme.key_chat_attachLocationText);
                         attachButton.setTag(6);
                     } else if (position == musicButton) {
-                        attachButton.setTextAndIcon(3, getString("AttachMusic", R.string.AttachMusic), Theme.chat_attachButtonDrawables[1], Theme.key_chat_attachAudioBackground, Theme.key_chat_attachAudioText);
+                        attachButton.setTextAndIcon(3, getString(R.string.AttachMusic), Theme.chat_attachButtonDrawables[1], Theme.key_chat_attachAudioBackground, Theme.key_chat_attachAudioText);
                         attachButton.setTag(3);
                     } else if (position == pollButton) {
-                        attachButton.setTextAndIcon(9, getString("Poll", R.string.Poll), Theme.chat_attachButtonDrawables[5], Theme.key_chat_attachPollBackground, Theme.key_chat_attachPollText);
+                        attachButton.setTextAndIcon(9, getString(R.string.Poll), Theme.chat_attachButtonDrawables[5], Theme.key_chat_attachPollBackground, Theme.key_chat_attachPollText);
                         attachButton.setTag(9);
                     } else if (position == contactButton) {
-                        attachButton.setTextAndIcon(5, getString("AttachContact", R.string.AttachContact), Theme.chat_attachButtonDrawables[3], Theme.key_chat_attachContactBackground, Theme.key_chat_attachContactText);
+                        attachButton.setTextAndIcon(5, getString(R.string.AttachContact), Theme.chat_attachButtonDrawables[3], Theme.key_chat_attachContactBackground, Theme.key_chat_attachContactText);
                         attachButton.setTag(5);
                     } else if (position == quickRepliesButton) {
                         attachButton.setTextAndIcon(11, getString(R.string.AttachQuickReplies), getContext().getResources().getDrawable(R.drawable.ic_ab_reply).mutate(), Theme.key_chat_attachContactBackground, Theme.key_chat_attachContactText);
@@ -5757,13 +5757,13 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
             confirmationAlertShown = true;
             AlertDialog dialog =
                 new AlertDialog.Builder(baseFragment.getParentActivity(), parentThemeDelegate)
-                    .setTitle(LocaleController.getString("DiscardSelectionAlertTitle", R.string.DiscardSelectionAlertTitle))
-                    .setMessage(LocaleController.getString("DiscardSelectionAlertMessage", R.string.DiscardSelectionAlertMessage))
-                    .setPositiveButton(LocaleController.getString("PassportDiscard", R.string.PassportDiscard), (dialogInterface, i) -> {
+                    .setTitle(LocaleController.getString(R.string.DiscardSelectionAlertTitle))
+                    .setMessage(LocaleController.getString(R.string.DiscardSelectionAlertMessage))
+                    .setPositiveButton(LocaleController.getString(R.string.PassportDiscard), (dialogInterface, i) -> {
                         allowPassConfirmationAlert = true;
                         dismiss();
                     })
-                    .setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null)
+                    .setNegativeButton(LocaleController.getString(R.string.Cancel), null)
                     .setOnCancelListener(di -> {
                         if (appearSpringAnimation != null) {
                             appearSpringAnimation.cancel();

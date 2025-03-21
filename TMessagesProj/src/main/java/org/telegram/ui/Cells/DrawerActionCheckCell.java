@@ -222,6 +222,6 @@ public class DrawerActionCheckCell extends FrameLayout {
         info.setClassName("android.widget.Switch");
         info.setCheckable(true);
         info.setChecked(checkBox.isChecked());
-        info.setContentDescription(checkBox.isChecked() ? LocaleController.getString("NotificationsOn", R.string.NotificationsOn) : LocaleController.getString("NotificationsOff", R.string.NotificationsOff));
+        info.setContentDescription(checkBox.isChecked() ? LocaleController.getString(R.string.NotificationsOn) : LocaleController.getString(R.string.NotificationsOff));
     }
 }

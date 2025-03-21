@@ -93,7 +93,7 @@ public class BotCommandsMenuView extends View {
         backDrawable.setRoundCap();
         backgroundDrawable = Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(16), Color.TRANSPARENT, Theme.getColor(Theme.key_featuredStickers_addButtonPressed));
         backgroundDrawable.setCallback(this);
-        setContentDescription(getString("AccDescrBotMenu", R.string.AccDescrBotMenu));
+        setContentDescription(getString(R.string.AccDescrBotMenu));
     }
 
     public void setDrawBackgroundDrawable(boolean drawBackgroundDrawable) {

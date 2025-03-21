@@ -78,7 +78,7 @@ public class PhotoAttachPermissionCell extends FrameLayout {
         } else {
             imageView.setImageResource(R.drawable.msg_openin);
             imageView2.setVisibility(GONE);
-            textView.setText(LocaleController.getString("OpenInExternalApp", R.string.OpenInExternalApp));
+            textView.setText(LocaleController.getString(R.string.OpenInExternalApp));
 
             imageView.setLayoutParams(LayoutHelper.createFrame(44, 44, Gravity.CENTER, 0, 0, 2, 27));
         }

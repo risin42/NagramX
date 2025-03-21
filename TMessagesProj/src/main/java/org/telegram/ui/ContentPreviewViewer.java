@@ -541,14 +541,14 @@ public class ContentPreviewViewer {
                         icons.add(R.drawable.msg_delete);
                         actions.add(5);
                     }
-                    items.add(LocaleController.getString("SaveToGallery", R.string.SaveToGallery));
+                    items.add(LocaleController.getString(R.string.SaveToGallery));
                     icons.add(R.drawable.msg_gallery);
                     actions.add(nkbtn_stickerdl);
                     if (NaConfig.INSTANCE.getShowCopyPhoto().Bool()) {
-                        items.add(LocaleController.getString("CopyPhotoAsSticker", R.string.CopyPhotoAsSticker));
+                        items.add(LocaleController.getString(R.string.CopyPhotoAsSticker));
                         icons.add(R.drawable.msg_copy);
                         actions.add(nkbtn_sticker_copy);
-                        items.add(LocaleController.getString("CopyPhoto", R.string.CopyPhoto));
+                        items.add(LocaleController.getString(R.string.CopyPhoto));
                         icons.add(R.drawable.msg_copy);
                         actions.add(nkbtn_sticker_copy_png);
                     }
@@ -622,11 +622,11 @@ public class ContentPreviewViewer {
                             MessageHelper.getInstance(currentAccount).saveStickerToGallery(parentActivity, currentDocument);
                         } else if (actions.get(which) == nkbtn_sticker_copy) {
                             MessageHelper.getInstance(currentAccount).addStickerToClipboard(currentDocument, () -> {
-                                BulletinFactory.global().createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                                BulletinFactory.global().createCopyBulletin(LocaleController.getString(R.string.PhotoCopied)).show();
                             });
                         } else if (actions.get(which) == nkbtn_sticker_copy_png) {
                             MessageHelper.getInstance(currentAccount).addStickerToClipboardAsPNG(currentDocument, () -> {
-                                BulletinFactory.global().createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                                BulletinFactory.global().createCopyBulletin(LocaleController.getString(R.string.PhotoCopied)).show();
                             });
                         } else if (actions.get(which) == 7) {
                             delegate.editSticker(currentDocument);

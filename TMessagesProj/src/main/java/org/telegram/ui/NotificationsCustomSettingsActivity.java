@@ -295,7 +295,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
 
     private String getSound() {
         final SharedPreferences prefs = getNotificationsSettings();
-        String value = getString("SoundDefault", R.string.SoundDefault);
+        String value = getString(R.string.SoundDefault);
         long documentId;
         switch (currentType) {
             case TYPE_PRIVATE:
@@ -323,14 +323,14 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
         if (documentId != 0) {
             TLRPC.Document document = getMediaDataController().ringtoneDataStore.getDocument(documentId);
             if (document == null) {
-                return getString("CustomSound", R.string.CustomSound);
+                return getString(R.string.CustomSound);
             } else {
                 return NotificationsSoundActivity.trimTitle(document, FileLoader.getDocumentFileName(document));
             }
         } else if (value.equals("NoSound")) {
-            return getString("NoSound", R.string.NoSound);
+            return getString(R.string.NoSound);
         } else if (value.equals("Default")) {
-            return getString("SoundDefault", R.string.SoundDefault);
+            return getString(R.string.SoundDefault);
         }
         return value;
     }
@@ -356,9 +356,9 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setAllowOverlayTitle(true);
         if (currentType == -1) {
-            actionBar.setTitle(getString("NotificationsExceptions", R.string.NotificationsExceptions));
+            actionBar.setTitle(getString(R.string.NotificationsExceptions));
         } else {
-            actionBar.setTitle(getString("Notifications", R.string.Notifications));
+            actionBar.setTitle(getString(R.string.Notifications));
         }
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
@@ -382,7 +382,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                     searchAdapter.searchDialogs(null);
                     searching = false;
                     searchWas = false;
-                    emptyView.setText(getString("NoExceptions", R.string.NoExceptions));
+                    emptyView.setText(getString(R.string.NoExceptions));
                     listView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                     listView.setFastScrollVisible(true);
@@ -399,7 +399,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                     if (text.length() != 0) {
                         searchWas = true;
                         if (listView != null) {
-                            emptyView.setText(getString("NoResult", R.string.NoResult));
+                            emptyView.setText(getString(R.string.NoResult));
                             emptyView.showProgress();
                             listView.setAdapter(searchAdapter);
                             searchAdapter.notifyDataSetChanged();
@@ -410,7 +410,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                     searchAdapter.searchDialogs(text);
                 }
             });
-            searchItem.setSearchFieldHint(getString("Search", R.string.Search));
+            searchItem.setSearchFieldHint(getString(R.string.Search));
         }
 
         searchAdapter = new SearchAdapter(context);
@@ -421,7 +421,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
 
         emptyView = new EmptyTextProgressView(context);
         emptyView.setTextSize(18);
-        emptyView.setText(getString("NoExceptions", R.string.NoExceptions));
+        emptyView.setText(getString(R.string.NoExceptions));
         emptyView.showTextView();
         frameLayout.addView(emptyView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
@@ -469,7 +469,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                     .addIf(exception.notify > 0 || exception.auto, R.drawable.msg_unmute, getString(R.string.NotificationsStoryUnmute), false, () -> {
                         updateMute(exception, view, position, false, false);
                     })
-                    .addIf(!exception.auto, R.drawable.msg_delete, getString("DeleteException", R.string.DeleteException), true, () -> {
+                    .addIf(!exception.auto, R.drawable.msg_delete, getString(R.string.DeleteException), true, () -> {
                         deleteException(exception, view, position);
                     })
                     .show();
@@ -522,7 +522,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                         actionBar.closeSearchField();
                         updateMute(exception, view, -1, newException, false);
                     })
-                    .addIf(!newException && !exception.auto, R.drawable.msg_delete, getString("DeleteException", R.string.DeleteException), true, () -> {
+                    .addIf(!newException && !exception.auto, R.drawable.msg_delete, getString(R.string.DeleteException), true, () -> {
                         deleteException(exception, view, position);
                     })
                     .show();
@@ -751,9 +751,9 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                 presentFragment(activity);
             } else if (item.id == 7) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-                builder.setTitle(getString("NotificationsDeleteAllExceptionTitle", R.string.NotificationsDeleteAllExceptionTitle));
-                builder.setMessage(getString("NotificationsDeleteAllExceptionAlert", R.string.NotificationsDeleteAllExceptionAlert));
-                builder.setPositiveButton(getString("Delete", R.string.Delete), (dialogInterface, i) -> {
+                builder.setTitle(getString(R.string.NotificationsDeleteAllExceptionTitle));
+                builder.setMessage(getString(R.string.NotificationsDeleteAllExceptionAlert));
+                builder.setPositiveButton(getString(R.string.Delete), (dialogInterface, i) -> {
                     SharedPreferences preferences = getNotificationsSettings();
                     SharedPreferences.Editor editor = preferences.edit();
                     for (int a = 0, N = exceptions.size(); a < N; a++) {
@@ -780,7 +780,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                     updateRows(true);
                     getNotificationCenter().postNotificationName(NotificationCenter.notificationsSettingsUpdated);
                 });
-                builder.setNegativeButton(getString("Cancel", R.string.Cancel), null);
+                builder.setNegativeButton(getString(R.string.Cancel), null);
                 AlertDialog alertDialog = builder.create();
                 showDialog(alertDialog);
                 TextView button = (TextView) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -841,7 +841,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                         if (position >= 0 && position < items.size()) {
                             items.get(position).color = getLedColor();
                         }
-                        ((TextColorCell) view).setTextAndColor(getString("LedColor", R.string.LedColor), getLedColor(), true);
+                        ((TextColorCell) view).setTextAndColor(getString(R.string.LedColor), getLedColor(), true);
                     } else {
                         updateRows(true);
                     }
@@ -855,7 +855,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                         if (position >= 0 && position < items.size()) {
                             items.get(position).text2 = getPopupOption();
                         }
-                        ((TextSettingsCell) view).setTextAndValue(getString("PopupNotification", R.string.PopupNotification), getPopupOption(), true, ((TextSettingsCell) view).needDivider);
+                        ((TextSettingsCell) view).setTextAndValue(getString(R.string.PopupNotification), getPopupOption(), true, ((TextSettingsCell) view).needDivider);
                     } else {
                         updateRows(true);
                     }
@@ -882,7 +882,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                         if (position >= 0 && position < items.size()) {
                             items.get(position).text2 = value;
                         }
-                        ((TextSettingsCell) view).setTextAndValue(getString("Vibrate", R.string.Vibrate), value, true, true);
+                        ((TextSettingsCell) view).setTextAndValue(getString(R.string.Vibrate), value, true, true);
                     } else {
                         updateRows(true);
                     }
@@ -896,7 +896,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                         if (position >= 0 && position < items.size()) {
                             items.get(position).text2 = getPriorityOption();
                         }
-                        ((TextSettingsCell) view).setTextAndValue(getString("NotificationsImportance", R.string.NotificationsImportance), getPriorityOption(), true, ((TextSettingsCell) view).needDivider);
+                        ((TextSettingsCell) view).setTextAndValue(getString(R.string.NotificationsImportance), getPriorityOption(), true, ((TextSettingsCell) view).needDivider);
                     } else {
                         updateRows(true);
                     }
@@ -1420,11 +1420,11 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                 items.add(ItemInner.asCheck(0, getString(R.string.MessagePreview), enabled));
             }
 
-            items.add(ItemInner.asSetting(3, getString("Sound", R.string.Sound), getSound()));
+            items.add(ItemInner.asSetting(3, getString(R.string.Sound), getSound()));
 
             if (expanded) {
 
-                items.add(ItemInner.asColor(getString("LedColor", R.string.LedColor), getLedColor()));
+                items.add(ItemInner.asColor(getString(R.string.LedColor), getLedColor()));
 
                 int vibrate = 0;
                 switch (currentType) {
@@ -1445,14 +1445,14 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                         vibrate = prefs.getInt("vibrate_react", 0);
                         break;
                 }
-                items.add(ItemInner.asSetting(1, getString("Vibrate", R.string.Vibrate), getString(vibrateLabels[Utilities.clamp(vibrate, vibrateLabels.length - 1, 0)])));
+                items.add(ItemInner.asSetting(1, getString(R.string.Vibrate), getString(vibrateLabels[Utilities.clamp(vibrate, vibrateLabels.length - 1, 0)])));
 
                 if (currentType == TYPE_PRIVATE || currentType == TYPE_GROUP) {
-                    items.add(ItemInner.asSetting(2, getString("PopupNotification", R.string.PopupNotification), getPopupOption()));
+                    items.add(ItemInner.asSetting(2, getString(R.string.PopupNotification), getPopupOption()));
                 }
 
                 if (Build.VERSION.SDK_INT >= 21) {
-                    items.add(ItemInner.asSetting(4, getString("NotificationsImportance", R.string.NotificationsImportance), getPriorityOption()));
+                    items.add(ItemInner.asSetting(4, getString(R.string.NotificationsImportance), getPriorityOption()));
                 }
 
                 items.add(ItemInner.asExpand(getString(R.string.NotifyLessOptions), false));
@@ -1465,7 +1465,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
         }
         if (currentType != TYPE_REACTIONS_MESSAGES && currentType != TYPE_REACTIONS_STORIES) {
             if (currentType != -1) {
-                items.add(ItemInner.asButton(6, R.drawable.msg_contact_add, getString("NotificationsAddAnException", R.string.NotificationsAddAnException)));
+                items.add(ItemInner.asButton(6, R.drawable.msg_contact_add, getString(R.string.NotificationsAddAnException)));
             }
             exceptionsStart = items.size() - 1;
             if (autoExceptions != null && showAutoExceptions) {
@@ -1483,7 +1483,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                 items.add(ItemInner.asShadow(-3, null));
             }
             if (exceptions != null && !exceptions.isEmpty()) {
-                items.add(ItemInner.asButton(7, 0, getString("NotificationsDeleteAllException", R.string.NotificationsDeleteAllException)));
+                items.add(ItemInner.asButton(7, 0, getString(R.string.NotificationsDeleteAllException)));
             }
         } else {
             exceptionsStart = -1;
@@ -1513,7 +1513,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                 Ringtone rng = RingtoneManager.getRingtone(getParentActivity(), ringtone);
                 if (rng != null) {
                     if (ringtone.equals(Settings.System.DEFAULT_NOTIFICATION_URI)) {
-                        name = getString("SoundDefault", R.string.SoundDefault);
+                        name = getString(R.string.SoundDefault);
                     } else {
                         name = rng.getTitle(getParentActivity());
                     }
@@ -1799,14 +1799,14 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
                         position -= searchResult.size() + 1;
                         ArrayList<TLObject> globalSearch = searchAdapterHelper.getGlobalSearch();
                         TLObject object = globalSearch.get(position);
-                        cell.setData(object, null, getString("NotificationsOn", R.string.NotificationsOn), 0, position != globalSearch.size() - 1);
+                        cell.setData(object, null, getString(R.string.NotificationsOn), 0, position != globalSearch.size() - 1);
                         cell.setAddButtonVisible(true);
                     }
                     break;
                 }
                 case 1: {
                     GraySectionCell cell = (GraySectionCell) holder.itemView;
-                    cell.setText(getString("AddToExceptions", R.string.AddToExceptions));
+                    cell.setText(getString(R.string.AddToExceptions));
                     break;
                 }
             }

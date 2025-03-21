@@ -563,8 +563,8 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
                     title += authorization.ip + " - " + authorization.region + " " + authorization.country;
 
                     if (!authorization.current) {
-                        builder.addTitle(LocaleController.getString("TerminateSessionText", R.string.TerminateSessionText), title);
-                        builder.addItem(LocaleController.getString("Terminate", R.string.Terminate), R.drawable.baseline_delete_forever_24, true, __ -> {
+                        builder.addTitle(LocaleController.getString(R.string.TerminateSessionText), title);
+                        builder.addItem(LocaleController.getString(R.string.Terminate), R.drawable.baseline_delete_forever_24, true, __ -> {
                             TLRPC.TL_account_resetAuthorization req = new TLRPC.TL_account_resetAuthorization();
                             req.hash = authorization.hash;
                             ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
@@ -588,7 +588,7 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
                     builder.addCancelItem();
 
                     String finalTitle = title;
-                    builder.addItem(LocaleController.getString("Copy", R.string.Copy), R.drawable.baseline_content_copy_24, __ -> {
+                    builder.addItem(LocaleController.getString(R.string.Copy), R.drawable.baseline_content_copy_24, __ -> {
                         AlertUtil.copyAndAlert(finalTitle);
                         return Unit.INSTANCE;
                     });

@@ -387,10 +387,10 @@ public class ProxyListActivity extends BaseFragment implements NotificationCente
         // na: action bar menu
         ActionBarMenu menu = actionBar.createMenu();
         otherItem = menu.addItem(na_menu_other, R.drawable.ic_ab_other);
-        otherItem.setContentDescription(LocaleController.getString("AccDescrMoreOptions", R.string.AccDescrMoreOptions));
-        otherItem.addSubItem(na_menu_add_input_telegram, LocaleController.getString("AddProxyTelegram", R.string.AddProxyTelegram)).setOnClickListener((v) -> presentFragment(new ProxySettingsActivity()));
-        otherItem.addSubItem(na_menu_add_import_from_clipboard, LocaleController.getString("ImportProxyFromClipboard", R.string.ImportProxyFromClipboard)).setOnClickListener((v) -> ProxyUtil.importFromClipboard(getParentActivity()));
-        otherItem.addSubItem(na_menu_retest_ping, LocaleController.getString("RetestPing", R.string.RetestPing)).setOnClickListener((v) -> {
+        otherItem.setContentDescription(LocaleController.getString(R.string.AccDescrMoreOptions));
+        otherItem.addSubItem(na_menu_add_input_telegram, LocaleController.getString(R.string.AddProxyTelegram)).setOnClickListener((v) -> presentFragment(new ProxySettingsActivity()));
+        otherItem.addSubItem(na_menu_add_import_from_clipboard, LocaleController.getString(R.string.ImportProxyFromClipboard)).setOnClickListener((v) -> ProxyUtil.importFromClipboard(getParentActivity()));
+        otherItem.addSubItem(na_menu_retest_ping, LocaleController.getString(R.string.RetestPing)).setOnClickListener((v) -> {
             checkProxyList(true);
             for (int a = proxyStartRow; a < proxyEndRow; a++) {
                 RecyclerListView.Holder holder = (RecyclerListView.Holder) listView.findViewHolderForAdapterPosition(a);
@@ -400,18 +400,18 @@ public class ProxyListActivity extends BaseFragment implements NotificationCente
                 }
             }
         });
-        otherItem.addSubItem(na_menu_delete_all, LocaleController.getString("DeleteAllServer", R.string.DeleteAllServer)).setOnClickListener((v) -> AlertUtil.showConfirm(getParentActivity(),
-                LocaleController.getString("DeleteAllServer", R.string.DeleteAllServer),
-                R.drawable.baseline_delete_24, LocaleController.getString("Delete", R.string.Delete),
+        otherItem.addSubItem(na_menu_delete_all, LocaleController.getString(R.string.DeleteAllServer)).setOnClickListener((v) -> AlertUtil.showConfirm(getParentActivity(),
+                LocaleController.getString(R.string.DeleteAllServer),
+                R.drawable.baseline_delete_24, LocaleController.getString(R.string.Delete),
                 true, () -> {
                     SharedConfig.deleteAllProxy();
                     updateRows(true);
                 })
         );
-        otherItem.addSubItem(na_menu_delete_unavailable, LocaleController.getString("DeleteUnavailableServer", R.string.DeleteUnavailableServer)).setOnClickListener((v) -> {
+        otherItem.addSubItem(na_menu_delete_unavailable, LocaleController.getString(R.string.DeleteUnavailableServer)).setOnClickListener((v) -> {
             AlertUtil.showConfirm(getParentActivity(),
-                    LocaleController.getString("DeleteUnavailableServer", R.string.DeleteUnavailableServer),
-                    R.drawable.baseline_delete_24, LocaleController.getString("Delete", R.string.Delete),
+                    LocaleController.getString(R.string.DeleteUnavailableServer),
+                    R.drawable.baseline_delete_24, LocaleController.getString(R.string.Delete),
                     true, () -> {
                         for (SharedConfig.ProxyInfo info : SharedConfig.getProxyList()) {
                             if (info.checking) {

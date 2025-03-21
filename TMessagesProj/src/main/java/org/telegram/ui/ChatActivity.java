@@ -4370,7 +4370,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 allowShowPinned = false;
             }
             if (allowShowPinned) {
-                headerItem.lazilyAddSubItem(nkheaderbtn_show_pinned, R.drawable.msg_pin, LocaleController.getString("PinnedMessage", R.string.PinnedMessage));
+                headerItem.lazilyAddSubItem(nkheaderbtn_show_pinned, R.drawable.msg_pin, LocaleController.getString(R.string.PinnedMessage));
             }
             if (ChatObject.isBoostSupported(currentChat) && (getUserConfig().isPremium() || ChatObject.isBoosted(chatInfo) || ChatObject.hasAdminRights(currentChat))) {
                 RLottieDrawable drawable = new RLottieDrawable(R.raw.boosts, "" + R.raw.boosts, dp(24), dp(24));
@@ -4386,10 +4386,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 String text;
                 int draw;
                 if (!currentChat.megagroup) {
-                    text = LocaleController.getString("LinkedGroupChat", R.string.LinkedGroupChat);
+                    text = LocaleController.getString(R.string.LinkedGroupChat);
                     draw = R.drawable.msg_discussion;
                 } else {
-                    text = LocaleController.getString("LinkedChannelChat", R.string.LinkedChannelChat);
+                    text = LocaleController.getString(R.string.LinkedChannelChat);
                     draw = R.drawable.msg_channel;
                 }
                 headerItem.lazilyAddSubItem(nkheaderbtn_linked_chat, draw, text);
@@ -4403,7 +4403,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 timeItem2 = headerItem.lazilyAddSubItem(chat_enc_timer, R.drawable.msg_autodelete, LocaleController.getString(R.string.SetTimer));
             }
             if (currentChat != null && !isTopic) {
-                viewAsTopics = headerItem.lazilyAddSubItem(view_as_topics, R.drawable.msg_topics, LocaleController.getString("TopicViewAsTopics", R.string.TopicViewAsTopics));
+                viewAsTopics = headerItem.lazilyAddSubItem(view_as_topics, R.drawable.msg_topics, LocaleController.getString(R.string.TopicViewAsTopics));
             }
             if (themeDelegate.isThemeChangeAvailable(true)) {
                 headerItem.lazilyAddSubItem(change_colors, R.drawable.msg_background, LocaleController.getString(R.string.SetWallpapers));
@@ -4416,16 +4416,16 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             boolean addedSettings = false;
             if (!isTopic) {
-                toTheBeginning = headerItem.lazilyAddSubItem(to_the_beginning, R.drawable.ic_upward, LocaleController.getString("ToTheBeginning", R.string.ToTheBeginning));
-                toTheMessage = headerItem.lazilyAddSubItem(to_the_message, R.drawable.msg_go_up, LocaleController.getString("ToTheMessage", R.string.ToTheMessage));
-                hideTitleItem = headerItem.lazilyAddSubItem(nkheaderbtn_hide_title, R.drawable.hide_title, LocaleController.getString("HideTitle", R.string.HideTitle));
+                toTheBeginning = headerItem.lazilyAddSubItem(to_the_beginning, R.drawable.ic_upward, LocaleController.getString(R.string.ToTheBeginning));
+                toTheMessage = headerItem.lazilyAddSubItem(to_the_message, R.drawable.msg_go_up, LocaleController.getString(R.string.ToTheMessage));
+                hideTitleItem = headerItem.lazilyAddSubItem(nkheaderbtn_hide_title, R.drawable.hide_title, LocaleController.getString(R.string.HideTitle));
                 headerItem.lazilyAddSubItem(nkbtn_clearDeleted, R.drawable.msg_clearcache, LocaleController.getString(R.string.ClearDeleted));
                 if (ChatObject.isMegagroup(currentChat) || currentChat != null && !ChatObject.isChannel(currentChat)) {
-                    headerItem.lazilyAddSubItem(nkheaderbtn_zibi, R.drawable.msg_delete, LocaleController.getString("DeleteAllFromSelf", R.string.DeleteAllFromSelf));
+                    headerItem.lazilyAddSubItem(nkheaderbtn_zibi, R.drawable.msg_delete, LocaleController.getString(R.string.DeleteAllFromSelf));
                 }
 
                 if (currentChat != null && !ChatObject.isChannel(currentChat) && currentChat.creator) {
-                    headerItem.lazilyAddSubItem(nkheaderbtn_upgrade, R.drawable.ic_upward, LocaleController.getString("UpgradeGroup", R.string.UpgradeGroup));
+                    headerItem.lazilyAddSubItem(nkheaderbtn_upgrade, R.drawable.ic_upward, LocaleController.getString(R.string.UpgradeGroup));
                 }
                 if (ChatObject.isChannel(currentChat) && !currentChat.creator) {
                     if (!ChatObject.isNotInChat(currentChat)) {
@@ -10087,34 +10087,34 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (currentEncryptedChat == null || !noforward) {
             final boolean isSavedMessages = getDialogId() == getUserConfig().getClientUserId() && (chatMode == 0 || chatMode == MODE_SAVED);
             if (NaConfig.INSTANCE.getShowNoQuoteForward().Bool()) {
-                actionModeOtherItem.addSubItem(nkbtn_forward_noquote, R.drawable.msg_forward_noquote, LocaleController.getString("NoQuoteForward", R.string.NoQuoteForward));
+                actionModeOtherItem.addSubItem(nkbtn_forward_noquote, R.drawable.msg_forward_noquote, LocaleController.getString(R.string.NoQuoteForward));
             }
             if (isSavedMessages) {
                 actionModeViews.add(actionMode.addItemWithWidth(tag_message, R.drawable.menu_tag_edit, AndroidUtilities.dp(54), LocaleController.getString(R.string.AccDescrTagMessage)));
             }
-            actionModeOtherItem.addSubItem(star, R.drawable.msg_fave, LocaleController.getString("AddToFavorites", R.string.AddToFavorites));
-            actionModeOtherItem.addSubItem(save_to, R.drawable.msg_download, LocaleController.getString("SaveToMusic", R.string.SaveToMusic));
+            actionModeOtherItem.addSubItem(star, R.drawable.msg_fave, LocaleController.getString(R.string.AddToFavorites));
+            actionModeOtherItem.addSubItem(save_to, R.drawable.msg_download, LocaleController.getString(R.string.SaveToMusic));
         }
 
-        actionModeOtherItem.addSubItem(nkbtn_translate, R.drawable.ic_translate, LocaleController.getString("Translate", R.string.Translate));
+        actionModeOtherItem.addSubItem(nkbtn_translate, R.drawable.ic_translate, LocaleController.getString(R.string.Translate));
         if (NekoConfig.showShareMessages.Bool()) {
-            actionModeOtherItem.addSubItem(nkbtn_sharemessage, R.drawable.msg_shareout, LocaleController.getString("ShareMessages", R.string.ShareMessages));
+            actionModeOtherItem.addSubItem(nkbtn_sharemessage, R.drawable.msg_shareout, LocaleController.getString(R.string.ShareMessages));
         }
-        actionModeOtherItem.addSubItem(nkbtn_unpin, R.drawable.msg_unpin, LocaleController.getString("UnpinMessage", R.string.UnpinMessage));
+        actionModeOtherItem.addSubItem(nkbtn_unpin, R.drawable.msg_unpin, LocaleController.getString(R.string.UnpinMessage));
         if (!noforward) {
-            actionModeOtherItem.addSubItem(nkbtn_savemessage, R.drawable.menu_saved, LocaleController.getString("AddToSavedMessages", R.string.AddToSavedMessages));
+            actionModeOtherItem.addSubItem(nkbtn_savemessage, R.drawable.menu_saved, LocaleController.getString(R.string.AddToSavedMessages));
         }
         if (!noforward && NekoConfig.showRepeat.Bool()) {
-            actionModeOtherItem.addSubItem(nkbtn_repeat, R.drawable.msg_repeat, LocaleController.getString("Repeat", R.string.Repeat));
+            actionModeOtherItem.addSubItem(nkbtn_repeat, R.drawable.msg_repeat, LocaleController.getString(R.string.Repeat));
         }
         if (!noforward && NaConfig.INSTANCE.getShowRepeatAsCopy().Bool()) {
-            actionModeOtherItem.addSubItem(nkbtn_repeatascopy, R.drawable.msg_repeat, LocaleController.getString("RepeatAsCopy", R.string.RepeatAsCopy));
+            actionModeOtherItem.addSubItem(nkbtn_repeatascopy, R.drawable.msg_repeat, LocaleController.getString(R.string.RepeatAsCopy));
         }
         if (NekoConfig.showMessageHide.Bool()) {
-            actionModeOtherItem.addSubItem(nkbtn_hide, R.drawable.msg_disable, LocaleController.getString("Hide", R.string.Hide));
+            actionModeOtherItem.addSubItem(nkbtn_hide, R.drawable.msg_disable, LocaleController.getString(R.string.Hide));
         }
         if (NekoConfig.showMessageDetails.Bool()) {
-            actionModeOtherItem.addSubItem(nkbtn_detail,R.drawable.msg_info,LocaleController.getString("MessageDetails", R.string.MessageDetails));
+            actionModeOtherItem.addSubItem(nkbtn_detail,R.drawable.msg_info,LocaleController.getString(R.string.MessageDetails));
         }
 
         actionMode.setItemVisibility(nkactionbarbtn_reply, ChatObject.canSendMessages(currentChat) && (selectedMessagesIds[0].size() + selectedMessagesIds[1].size() == 1) && NaConfig.INSTANCE.getActionBarButtonReply().Bool() ? View.VISIBLE : View.GONE);
@@ -19014,7 +19014,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
                 if (starItem != null) {
 //                    starItem.setIcon(hasUnfavedSelected ? R.drawable.msg_fave : R.drawable.msg_unfave);
-                    starItem.setText(hasUnfavedSelected ? LocaleController.getString("AddToFavorites", R.string.AddToFavorites) : LocaleController.getString("DeleteFromFavorites", R.string.DeleteFromFavorites));
+                    starItem.setText(hasUnfavedSelected ? LocaleController.getString(R.string.AddToFavorites) : LocaleController.getString(R.string.DeleteFromFavorites));
                 }
                 final int newEditVisibility = !hasSelectedAyuDeletedMessage && canEditMessagesCount == 1 && selectedCount == 1 && NaConfig.INSTANCE.getActionBarButtonEdit().Bool() ? View.VISIBLE : View.GONE;
                 createBottomMessagesActionButtons();
@@ -19700,8 +19700,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         if (!file.exists()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), themeDelegate);
-            builder.setTitle(getString("AppName", R.string.AppName));
-            builder.setPositiveButton(getString("OK", R.string.OK), null);
+            builder.setTitle(getString(R.string.AppName));
+            builder.setPositiveButton(getString(R.string.OK), null);
             boolean alreadyDownloading = object != null && object.isVideo() && FileLoader.getInstance(object.currentAccount).isLoadingFile(object.getFileName());
             if (alreadyDownloading) {
                 builder.setMessage(getString(R.string.PleaseStreamDownload));
@@ -30600,7 +30600,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             icons.add(R.drawable.msg_edit);
                         }
 //                        if (selectedObject != null && selectedObject.contentType == 0 && (messageText != null && messageText.length() > 0 && !selectedObject.isAnimatedEmoji() && !selectedObject.isDice()) && MessagesController.getGlobalMainSettings().getBoolean("translate_button", false)) {
-//                            items.add(LocaleController.getString("TranslateMessage", R.string.TranslateMessage));
+//                            items.add(LocaleController.getString(R.string.TranslateMessage));
 //                            options.add(29);
 //                            icons.add(R.drawable.msg_translate);
 //                        }
@@ -30684,7 +30684,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         } else if (isThreadChat() && chatMode != MODE_SCHEDULED && currentChat != null) {
                             options.add(nkbtn_view_in_chat);
                             icons.add(R.drawable.msg_viewreplies);
-                            items.add(LocaleController.getString("ViewInChat", R.string.ViewInChat));
+                            items.add(LocaleController.getString(R.string.ViewInChat));
                         }
                         if (!selectedObject.isSponsored() && chatMode != MODE_SCHEDULED && ChatObject.isChannel(currentChat) && selectedObject.getDialogId() != mergeDialogId && !isAyuDeleted) {
                             items.add(LocaleController.getString(R.string.CopyLink));
@@ -30692,7 +30692,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             icons.add(R.drawable.msg_link);
                         }
                         if (!selectedObject.isSponsored() && chatMode != MODE_SCHEDULED && currentUser != null && selectedObject.getDialogId() != mergeDialogId) {
-                            items.add(LocaleController.getString("CopyLink", R.string.CopyLink));
+                            items.add(LocaleController.getString(R.string.CopyLink));
                             options.add(nkbtn_copy_link_in_pm);
                             icons.add(R.drawable.msg_link);
                         }
@@ -30772,10 +30772,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                         options.add(OPTION_SAVE_TO_GALLERY);
                                         icons.add(R.drawable.msg_gallery);
                                         if (NaConfig.INSTANCE.getShowCopyPhoto().Bool()){
-                                            items.add(LocaleController.getString("CopyPhoto", R.string.CopyPhoto));
+                                            items.add(LocaleController.getString(R.string.CopyPhoto));
                                             options.add(OPTION_COPY_PHOTO);
                                             icons.add(R.drawable.msg_copy);
-                                            items.add(LocaleController.getString("CopyPhotoAsSticker", R.string.CopyPhotoAsSticker));
+                                            items.add(LocaleController.getString(R.string.CopyPhotoAsSticker));
                                             options.add(OPTION_COPY_PHOTO_AS_STICKER);
                                             icons.add(R.drawable.msg_copy);
                                         }
@@ -30897,7 +30897,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             }
                         } else if (type == 9) {
                             if (!selectedObject.isAnimatedSticker()) {
-                                items.add(LocaleController.getString("SaveToGallery", R.string.SaveToGallery));
+                                items.add(LocaleController.getString(R.string.SaveToGallery));
                                 options.add(nkbtn_stickerdl);
                                 icons.add(R.drawable.msg_gallery);
                             }
@@ -30924,32 +30924,32 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         }
                         if (chatMode != MODE_SCHEDULED && !selectedObject.needDrawBluredPreview() && !selectedObject.isLiveLocation() && selectedObject.type != 16) {
                             if (!noforwards && NaConfig.INSTANCE.getShowNoQuoteForward().Bool()) {
-                                items.add(LocaleController.getString("NoQuoteForward", R.string.NoQuoteForward));
+                                items.add(LocaleController.getString(R.string.NoQuoteForward));
                                 options.add(nkbtn_forward_noquote);
                                 icons.add(R.drawable.msg_forward_noquote);
                             }
                         }
                         if (chatMode != MODE_SCHEDULED) {
                             if (NaConfig.INSTANCE.getShowSetReminder().Bool()) {
-                                items.add(LocaleController.getString("SetReminder", R.string.SetReminder));
+                                items.add(LocaleController.getString(R.string.SetReminder));
                                 options.add(nkbtn_setReminder);
                                 icons.add(R.drawable.msg_calendar2);
                             }
                             if (!UserObject.isUserSelf(currentUser) && NekoConfig.showAddToSavedMessages.Bool()) {
                                 if (!noforwards) {
-                                    items.add(LocaleController.getString("AddToSavedMessages", R.string.AddToSavedMessages));
+                                    items.add(LocaleController.getString(R.string.AddToSavedMessages));
                                     options.add(nkbtn_savemessage);
                                     icons.add(R.drawable.msg_saved);
                                 }
                             }
                             boolean allowRepeat = currentUser != null || (currentChat != null && ChatObject.canSendMessages(currentChat));
                             if (allowRepeat && !noforwards && NekoConfig.showRepeat.Bool()) {
-                                    items.add(LocaleController.getString("Repeat", R.string.Repeat));
+                                    items.add(LocaleController.getString(R.string.Repeat));
                                     options.add(nkbtn_repeat);
                                     icons.add(R.drawable.msg_repeat);
                             }
                             if (allowRepeat && !isAyuDeleted && (NaConfig.INSTANCE.getShowRepeatAsCopy().Bool() || (NekoConfig.showRepeat.Bool() && noforwards))){
-                                items.add(LocaleController.getString("RepeatAsCopy", R.string.RepeatAsCopy));
+                                items.add(LocaleController.getString(R.string.RepeatAsCopy));
                                 options.add(nkbtn_repeatascopy);
                                 icons.add(R.drawable.msg_repeat);
                             }
@@ -30958,13 +30958,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             boolean allowViewHistory = currentChat != null && chatMode == 0 && !currentChat.broadcast && !(threadMessageObjects != null && threadMessageObjects.contains(message));
 
                             if (NekoConfig.showDeleteDownloadedFile.Bool() && TelegramUtil.messageObjectIsFile(type, selectedObject)) {
-                                items.add(LocaleController.getString("DeleteDownloadedFile", R.string.DeleteDownloadedFile));
+                                items.add(LocaleController.getString(R.string.DeleteDownloadedFile));
                                 options.add(nkbtn_deldlcache);
                                 icons.add(R.drawable.msg_clear);
                             }
 
                             if (allowViewHistory && NekoConfig.showViewHistory.Bool()) {
-                                items.add(LocaleController.getString("ViewUserHistory", R.string.ViewHistory));
+                                items.add(LocaleController.getString(R.string.ViewHistory));
                                 options.add(nkbtn_view_history);
                                 icons.add(R.drawable.menu_recent);
                             }
@@ -30986,26 +30986,26 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                     } else {
                                         td = selectedObjectGroup.messages.get(0).messageOwner.translated;
                                     }
-                                    items.add(td ? LocaleController.getString("UndoTranslate", R.string.UndoTranslate) : LocaleController.getString("Translate", R.string.Translate));
+                                    items.add(td ? LocaleController.getString(R.string.UndoTranslate) : LocaleController.getString(R.string.Translate));
                                     options.add(nkbtn_translate);
                                     icons.add(R.drawable.msg_translate);
                                 }
                             }
                             if (NekoConfig.showShareMessages.Bool()) {
                                 if (messageObject != null || docsWithMessages) {
-                                    items.add(LocaleController.getString("ShareMessages", R.string.ShareMessages));
+                                    items.add(LocaleController.getString(R.string.ShareMessages));
                                     options.add(nkbtn_sharemessage);
                                     icons.add(R.drawable.msg_shareout);
                                 }
                             }
                         }
                         if (NekoConfig.showMessageDetails.Bool()) {
-                            items.add(LocaleController.getString("MessageDetails", R.string.MessageDetails));
+                            items.add(LocaleController.getString(R.string.MessageDetails));
                             options.add(nkbtn_detail);
                             icons.add(R.drawable.msg_info);
                         }
                         if (NekoConfig.showMessageHide.Bool()) {
-                            items.add(LocaleController.getString("Hide", R.string.Hide));
+                            items.add(LocaleController.getString(R.string.Hide));
                             options.add(nkbtn_hide);
                             icons.add(R.drawable.msg_disable);
                         }
@@ -31096,7 +31096,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         } else if (isThreadChat() && !isTopic && chatMode != MODE_SCHEDULED && currentChat != null) {
                             options.add(nkbtn_view_in_chat);
                             icons.add(R.drawable.msg_viewreplies);
-                            items.add(LocaleController.getString("ViewInChat", R.string.ViewInChat));
+                            items.add(LocaleController.getString(R.string.ViewInChat));
                         }
                         if (selectedObject != null && selectedObject.messageOwner != null && selectedObject.messageOwner.action == null && currentChat != null && currentChat.forum && !isTopic && selectedObject.messageOwner != null && selectedObject.messageOwner.reply_to != null && selectedObject.messageOwner.reply_to.forum_topic) {
                             items.add(LocaleController.getString(R.string.ViewInTopic));
@@ -31130,10 +31130,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 options.add(OPTION_SAVE_TO_GALLERY);
                                 icons.add(R.drawable.msg_gallery);
                                 if (NaConfig.INSTANCE.getShowCopyPhoto().Bool()){
-                                    items.add(LocaleController.getString("CopyPhoto", R.string.CopyPhoto));
+                                    items.add(LocaleController.getString(R.string.CopyPhoto));
                                     options.add(OPTION_COPY_PHOTO);
                                     icons.add(R.drawable.msg_copy);
-                                    items.add(LocaleController.getString("CopyPhotoAsSticker", R.string.CopyPhotoAsSticker));
+                                    items.add(LocaleController.getString(R.string.CopyPhotoAsSticker));
                                     options.add(OPTION_COPY_PHOTO_AS_STICKER);
                                     icons.add(R.drawable.msg_copy);
                                 }
@@ -31147,7 +31147,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             options.add(OPTION_APPLY_LOCALIZATION_OR_THEME);
                             icons.add(R.drawable.msg_theme);
                         } else if (type == 21) {
-                            items.add(LocaleController.getString("ImportProxyList", R.string.ImportProxyList));
+                            items.add(LocaleController.getString(R.string.ImportProxyList));
                             options.add(5);
                             icons.add(R.drawable.msg2_proxy_on);
                         } else if (type == 7) {
@@ -31194,13 +31194,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 } else {
                                     td = selectedObjectGroup.messages.get(0).messageOwner.translated;
                                 }
-                                items.add(td ? LocaleController.getString("UndoTranslate", R.string.UndoTranslate) : LocaleController.getString("Translate", R.string.Translate));
+                                items.add(td ? LocaleController.getString(R.string.UndoTranslate) : LocaleController.getString(R.string.Translate));
                                 options.add(nkbtn_translate);
                                 icons.add(R.drawable.msg_translate);
                             }
                         }
                         if (NekoConfig.showMessageHide.Bool()) {
-                            items.add(LocaleController.getString("Hide", R.string.Hide));
+                            items.add(LocaleController.getString(R.string.Hide));
                             options.add(204);
                             icons.add(R.drawable.msg_disable);
                         }
@@ -31237,13 +31237,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             }
 
                             if (canEditAdmin && NekoConfig.showAdminActions.Bool()) {
-                                items.add(editingAdmin ? LocaleController.getString("EditAdminRights", R.string.EditAdminRights) : LocaleController.getString("SetAsAdmin", R.string.SetAsAdmin));
+                                items.add(editingAdmin ? LocaleController.getString(R.string.EditAdminRights) : LocaleController.getString(R.string.SetAsAdmin));
                                 icons.add(R.drawable.profile_admin);
                                 options.add(nkbtn_editAdmin);
                                 selectedParticipant = participant;
                             }
                             if (canRestrict && NekoConfig.showChangePermissions.Bool()) {
-                                items.add(LocaleController.getString("ChangePermissions", R.string.ChangePermissions));
+                                items.add(LocaleController.getString(R.string.ChangePermissions));
                                 icons.add(R.drawable.msg_permissions);
                                 options.add(nkbtn_editPermission);
                                 selectedParticipant = participant;
@@ -33394,16 +33394,16 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
                         File finalLocFile1 = locFile;
                         AlertUtil.showConfirm(getParentActivity(),
-                                LocaleController.getString("ImportProxyList", R.string.ImportProxyList),
-                                R.drawable.menu_secret, LocaleController.getString("Import", R.string.Import),
+                                LocaleController.getString(R.string.ImportProxyList),
+                                R.drawable.menu_secret, LocaleController.getString(R.string.Import),
                                 false, () -> {});
 
                     } else if (locFile.getName().toLowerCase().endsWith(".nekox-stickers.json")) {
 
                         File finalLocFile = locFile;
                         AlertUtil.showConfirm(getParentActivity(),
-                                LocaleController.getString("ImportStickersList", R.string.ImportStickersList),
-                                R.drawable.msg_sticker, LocaleController.getString("Import", R.string.Import),
+                                LocaleController.getString(R.string.ImportStickersList),
+                                R.drawable.msg_sticker, LocaleController.getString(R.string.Import),
                                 false, () -> {
                                     presentFragment(new StickersActivity(finalLocFile));
                                 });
@@ -33432,11 +33432,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 progressDialog.dismiss();
                                 if (finalSuccess && finalEmojiPackBase != null) {
                                     if (finalEmojiPackBase.getPackId().equals(EmojiHelper.getInstance().getEmojiPack())) {
-                                        BulletinFactory.of(ChatActivity.this).createErrorBulletin(LocaleController.getString("EmojiSetAlreadyApplied", R.string.EmojiSetAlreadyApplied), themeDelegate).show();
+                                        BulletinFactory.of(ChatActivity.this).createErrorBulletin(LocaleController.getString(R.string.EmojiSetAlreadyApplied), themeDelegate).show();
                                     } else {
                                         EmojiHelper.EmojiSetBulletinLayout bulletinLayout = new EmojiHelper.EmojiSetBulletinLayout(
                                                 getParentActivity(),
-                                                LocaleController.getString("EmojiSetApplied", R.string.EmojiSetApplied),
+                                                LocaleController.getString(R.string.EmojiSetApplied),
                                                 LocaleController.formatString("EmojiSetAppliedInfo", R.string.EmojiSetAppliedInfo, finalEmojiPackBase.getPackName()),
                                                 finalEmojiPackBase,
                                                 themeDelegate
@@ -33446,7 +33446,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                         EmojiHelper.reloadEmoji();
                                     }
                                 } else {
-                                    BulletinFactory.of(ChatActivity.this).createErrorBulletin(LocaleController.getString("InvalidCustomEmojiTypeface", R.string.InvalidCustomEmojiTypeface), themeDelegate).show();
+                                    BulletinFactory.of(ChatActivity.this).createErrorBulletin(LocaleController.getString(R.string.InvalidCustomEmojiTypeface), themeDelegate).show();
                                 }
                             });
                         });
@@ -34033,7 +34033,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             case OPTION_COPY_PHOTO:{
                 MessageHelper.INSTANCE.addMessageToClipboard(selectedObject, () -> {
                     if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
-                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString(R.string.PhotoCopied)).show();
                     }
                 });
                 break;
@@ -34041,7 +34041,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             case OPTION_COPY_PHOTO_AS_STICKER:{
                 MessageHelper.INSTANCE.addMessageToClipboardAsSticker(selectedObject, () -> {
                     if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
-                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString(R.string.PhotoCopied)).show();
                     }
                 });
                 break;
@@ -35802,7 +35802,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         LocaleController.getString(R.string.ShareQRCode),
                         LocaleController.getString(R.string.ShareMessages)
                 };
-//                builder.setItems(noforwards ? new CharSequence[] {LocaleController.getString("Open", R.string.Open)} : new CharSequence[]{LocaleController.getString("Open", R.string.Open), LocaleController.getString("Copy", R.string.Copy)}, (dialog, which) -> {
+//                builder.setItems(noforwards ? new CharSequence[] {LocaleController.getString(R.string.Open)} : new CharSequence[]{LocaleController.getString(R.string.Open), LocaleController.getString(R.string.Copy)}, (dialog, which) -> {
                 builder.setItems(items, (dialog, which) -> {
                     if (which == 0) {
                         if (str.startsWith("video?")) {
@@ -35872,7 +35872,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
                             shareIntent.setType("text/plain");
                             shareIntent.putExtra(Intent.EXTRA_TEXT, urlFinal);
-                            Intent chooserIntent = Intent.createChooser(shareIntent, LocaleController.getString("ShareFile", R.string.ShareFile));
+                            Intent chooserIntent = Intent.createChooser(shareIntent, LocaleController.getString(R.string.ShareFile));
                             chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             ApplicationLoader.applicationContext.startActivity(chooserIntent);
                         }
@@ -39150,10 +39150,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 BottomSheet.Builder builder = new BottomSheet.Builder(getParentActivity(), false, themeDelegate);
                 builder.setTitle(button.text);
                 builder.setItems(new CharSequence[]{
-                        LocaleController.getString("Copy", R.string.Copy),
-                        button.data != null ? LocaleController.getString("CopyCallback", R.string.CopyCallback) : null,
-                        button.query != null ? LocaleController.getString("CopyInlineQuery", R.string.CopyInlineQuery) : null,
-                        button.user_id != 0 ? LocaleController.getString("CopyID", R.string.CopyID) : null}, (dialog, which) -> {
+                        LocaleController.getString(R.string.Copy),
+                        button.data != null ? LocaleController.getString(R.string.CopyCallback) : null,
+                        button.query != null ? LocaleController.getString(R.string.CopyInlineQuery) : null,
+                        button.user_id != 0 ? LocaleController.getString(R.string.CopyID) : null}, (dialog, which) -> {
                     if (which == 0) {
                         AndroidUtilities.addToClipboard(button.text);
                     } else if (which == 1) {
@@ -40012,14 +40012,14 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else if (message.getDocumentName().toLowerCase().endsWith(".nekox.json")) {
                     File finalLocFile = locFile;
                     AlertUtil.showConfirm(getParentActivity(),
-                            LocaleController.getString("ImportProxyList", R.string.ImportProxyList),
-                            R.drawable.menu_secret, LocaleController.getString("Import", R.string.Import),
+                            LocaleController.getString(R.string.ImportProxyList),
+                            R.drawable.menu_secret, LocaleController.getString(R.string.Import),
                             false, () -> {});
                 } else if (message.getDocumentName().toLowerCase().endsWith(".nekox-stickers.json")) {
                     File finalLocFile = locFile;
                     AlertUtil.showConfirm(getParentActivity(),
-                            LocaleController.getString("ImportStickersList", R.string.ImportStickersList),
-                            R.drawable.msg_sticker, LocaleController.getString("Import", R.string.Import), false, () -> {
+                            LocaleController.getString(R.string.ImportStickersList),
+                            R.drawable.msg_sticker, LocaleController.getString(R.string.Import), false, () -> {
                                 presentFragment(new StickersActivity(finalLocFile));
                             });
                 } else if (message.getDocumentName().toLowerCase().endsWith(".nekox-settings.json")) {
@@ -41510,14 +41510,14 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             AlertDialog.Builder builder2 = new AlertDialog.Builder(getParentActivity());
             builder2.setTitle(LocaleController.getString(R.string.NagramX));
             builder2.setMessage(LocaleController.formatString("AdminWillBeRemoved", R.string.AdminWillBeRemoved, ContactsController.formatName(user.first_name, user.last_name)));
-            builder2.setPositiveButton(LocaleController.getString("OK", R.string.OK), (dialog, which) -> {
+            builder2.setPositiveButton(LocaleController.getString(R.string.OK), (dialog, which) -> {
                 if (channelParticipant != null) {
                     openRightsEdit(action, user, participant, channelParticipant.admin_rights, channelParticipant.banned_rights, channelParticipant.rank, editingAdmin);
                 } else {
                     openRightsEdit(action, user, participant, null, null, "", editingAdmin);
                 }
             });
-            builder2.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+            builder2.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
             showDialog(builder2.create());
         } else {
             if (channelParticipant != null) {
@@ -42789,18 +42789,18 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 //            textView.setSingleLine(true);
 //            textView.setGravity((LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.CENTER_VERTICAL);
 //            textView.setEllipsize(TextUtils.TruncateAt.END);
-//            textView.setText(LocaleController.getString("DeleteAllFromSelf", R.string.DeleteAllFromSelf));
+//            textView.setText(LocaleController.getString(R.string.DeleteAllFromSelf));
 //
 //            frameLayout.addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, (LocaleController.isRTL ? 21 : 76), 11, (LocaleController.isRTL ? 76 : 21), 0));
 //            frameLayout.addView(messageTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, 24, 57, 24, 9));
-//            messageTextView.setText(AndroidUtilities.replaceTags(LocaleController.getString("DeleteAllFromSelfAlert", R.string.DeleteAllFromSelfAlert)));
-//            builder.setPositiveButton(LocaleController.getString("DeleteAll", R.string.DeleteAll), (dialogInterface, i) -> {
+//            messageTextView.setText(AndroidUtilities.replaceTags(LocaleController.getString(R.string.DeleteAllFromSelfAlert)));
+//            builder.setPositiveButton(LocaleController.getString(R.string.DeleteAll), (dialogInterface, i) -> {
 //                if (ChatObject.isChannel(currentChat) && currentChat.megagroup && ChatObject.canUserDoAction(currentChat, ChatObject.ACTION_DELETE_MESSAGES)) {
 //                    getMessagesController().deleteUserChannelHistory(currentChat, UserConfig.getInstance(currentAccount).getCurrentUser(), null, 0);
 //                }
 //                getMessageHelper().deleteUserChannelHistoryWithSearch(getParentActivity(), dialog_id, UserConfig.getInstance(currentAccount).getCurrentUser());
 //            });
-//            builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+//            builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
 //            AlertDialog alertDialog = builder.create();
 //            showDialog(alertDialog);
 //            TextView button = (TextView) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -42830,14 +42830,14 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         } else if (id == nkheaderbtn_upgrade) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-            builder.setMessage(LocaleController.getString("ConvertGroupAlert", R.string.ConvertGroupAlert));
-            builder.setTitle(LocaleController.getString("ConvertGroupAlertWarning", R.string.ConvertGroupAlertWarning));
-            builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), (dialogInterface, i) -> getMessagesController().convertToMegaGroup(getParentActivity(), currentChat.id, ChatActivity.this, chatNew -> {
+            builder.setMessage(LocaleController.getString(R.string.ConvertGroupAlert));
+            builder.setTitle(LocaleController.getString(R.string.ConvertGroupAlertWarning));
+            builder.setPositiveButton(LocaleController.getString(R.string.OK), (dialogInterface, i) -> getMessagesController().convertToMegaGroup(getParentActivity(), currentChat.id, ChatActivity.this, chatNew -> {
                 if (chatNew != 0) {
                     getMessagesController().toggleChannelInvitesHistory(chatNew, false);
                 }
             }));
-            builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+            builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
             showDialog(builder.create());
         } else if (id == nkheaderbtn_show_pinned) {
             SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
@@ -42933,7 +42933,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
                 builder.setTitle(LocaleController.getString("DeleteDownloadedFile"));
                 builder.setMessage(LocaleController.getString("DeleteDownloadedFileConfirm"));
-                builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), (dialogInterface, i) -> {
+                builder.setPositiveButton(LocaleController.getString(R.string.OK), (dialogInterface, i) -> {
                     if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT <= 28 || BuildVars.NO_SCOPED_STORAGE) && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         getParentActivity().requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4);
                         return;
@@ -43053,7 +43053,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             case nkbtn_sticker_copy: {
                 getMessageHelper().addStickerToClipboard(selectedObject.getDocument(), () -> {
                     if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
-                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString(R.string.PhotoCopied)).show();
                     }
                 });
                 break;
@@ -43061,7 +43061,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             case nkbtn_sticker_copy_png: {
                 getMessageHelper().addStickerToClipboardAsPNG(selectedObject.getDocument(), () -> {
                     if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
-                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString(R.string.PhotoCopied)).show();
                     }
                 });
                 break;
@@ -43205,16 +43205,16 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setTitle(LocaleController.getString("Repeat", R.string.Repeat));
-        builder.setMessage(LocaleController.getString("repeatConfirmText", R.string.repeatConfirmText));
-        builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), (dialogInterface, i) -> {
+        builder.setTitle(LocaleController.getString(R.string.Repeat));
+        builder.setMessage(LocaleController.getString(R.string.repeatConfirmText));
+        builder.setPositiveButton(LocaleController.getString(R.string.OK), (dialogInterface, i) -> {
             if (isRepeatasCopy) {
                 doRepeatMessage(isLongClick, messages, true);
             } else {
                 doRepeatMessage(isLongClick, messages, false);
             }
         });
-        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+        builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
         showDialog(builder.create());
     }
 
@@ -43252,7 +43252,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
     public void setScrollToMessage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setTitle(LocaleController.getString("InputMessageId", R.string.InputMessageId));
+        builder.setTitle(LocaleController.getString(R.string.InputMessageId));
         final EditTextBoldCursor editText = new EditTextBoldCursor(getParentActivity()) {
             @Override
             protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -43273,7 +43273,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         builder.setView(editText);
 
-        builder.setPositiveButton(LocaleController.getString("OK", R.string.OK),
+        builder.setPositiveButton(LocaleController.getString(R.string.OK),
                 (dialogInterface, i) -> {
                     try {
                         if (Integer.parseInt(editText.getText().toString()) > 0) {
@@ -43282,7 +43282,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     } catch (NumberFormatException ignored) {
                     }
                 });
-        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+        builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
         builder.setOnDismissListener(dialog -> {
             chatActivityEnterView.getEditField().clearFocus();
         });

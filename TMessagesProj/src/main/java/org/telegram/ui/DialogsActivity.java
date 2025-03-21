@@ -3131,7 +3131,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         }
 
         scanItem = menu.addItem(nekox_scanqr, R.drawable.msg_qrcode);
-        scanItem.setContentDescription(LocaleController.getString("ScanQRCode", R.string.ScanQRCode));
+        scanItem.setContentDescription(LocaleController.getString(R.string.ScanQRCode));
         scanItem.setVisibility(View.GONE);
 
         searchItem = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true, false).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
@@ -11921,11 +11921,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         });
 
         ActionBarMenuSubItem showSendersNameView = new ActionBarMenuSubItem(parentActivity, true, true, false, resourcesProvider);
-        showSendersNameView.setTextAndIcon(LocaleController.getString("ShowSendersName", R.string.ShowSendersName), 0);
+        showSendersNameView.setTextAndIcon(LocaleController.getString(R.string.ShowSendersName), 0);
         showSendersNameView.setChecked(!ChatActivity.noForwardQuote);
 
         ActionBarMenuSubItem hideSendersNameView = new ActionBarMenuSubItem(parentActivity, true, false, true, resourcesProvider);
-        hideSendersNameView.setTextAndIcon(LocaleController.getString("HideSendersName", R.string.HideSendersName), 0);
+        hideSendersNameView.setTextAndIcon(LocaleController.getString(R.string.HideSendersName), 0);
         hideSendersNameView.setChecked(ChatActivity.noForwardQuote);
         showSendersNameView.setOnClickListener(e -> {
             if (ChatActivity.noForwardQuote) {

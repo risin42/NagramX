@@ -597,12 +597,12 @@ public class PremiumPreviewBottomSheet extends BottomSheetWithRecyclerListView i
                 case 5:
                     TextInfoCell cell = new TextInfoCell(context, resourcesProvider);
                     cell.setBackground(true);
-                    String terms1 = getString("GiftPremiumPrivacyPolicyAndTerms", R.string.GiftPremiumPrivacyPolicyAndTerms);
+                    String terms1 = getString(R.string.GiftPremiumPrivacyPolicyAndTerms);
                     SpannableStringBuilder stringBuilder1 = AndroidUtilities.replaceSingleTag(
                             terms1,
                             Theme.key_chat_messageLinkIn, 0,
                             () -> Browser.openUrl(fragment.getParentActivity(), LocaleController.getString(R.string.TermsOfServiceUrl)));
-                    String terms2 = getString("GiftPremiumPrivacyPolicy", R.string.GiftPremiumPrivacyPolicy);
+                    String terms2 = getString(R.string.GiftPremiumPrivacyPolicy);
                     SpannableStringBuilder stringBuilder2 = AndroidUtilities.replaceSingleTag(
                             terms2,
                             Theme.key_chat_messageLinkIn, 0,

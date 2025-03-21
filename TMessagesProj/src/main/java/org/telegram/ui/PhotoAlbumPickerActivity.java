@@ -489,7 +489,7 @@ public class PhotoAlbumPickerActivity extends BaseFragment implements Notificati
                     int num = a;
                     itemCells[a] = new ActionBarMenuSubItem(getParentActivity(), a == 0, a == 2);
                     if (num == 0) {
-                        itemCells[a].setTextAndIcon(LocaleController.getString("Translate", R.string.Translate), R.drawable.ic_translate);
+                        itemCells[a].setTextAndIcon(LocaleController.getString(R.string.Translate), R.drawable.ic_translate);
                     } else if (num == 1) {
                         if (UserObject.isUserSelf(user)) {
                             itemCells[a].setTextAndIcon(LocaleController.getString(R.string.SetReminder), R.drawable.msg_calendar2);

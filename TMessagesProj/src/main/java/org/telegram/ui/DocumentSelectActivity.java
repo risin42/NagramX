@@ -273,7 +273,7 @@ public class DocumentSelectActivity extends BaseFragment {
         actionBar.setItemsBackgroundColor(Theme.getColor(Theme.key_dialogButtonSelector), false);
         actionBar.setBackButtonDrawable(new BackDrawable(false));
         actionBar.setAllowOverlayTitle(true);
-        actionBar.setTitle(LocaleController.getString("SelectFile", R.string.SelectFile));
+        actionBar.setTitle(LocaleController.getString(R.string.SelectFile));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -317,15 +317,15 @@ public class DocumentSelectActivity extends BaseFragment {
                 searchAdapter.search(editText.getText().toString());
             }
         });
-        searchItem.setSearchFieldHint(LocaleController.getString("Search", R.string.Search));
-        searchItem.setContentDescription(LocaleController.getString("Search", R.string.Search));
+        searchItem.setSearchFieldHint(LocaleController.getString(R.string.Search));
+        searchItem.setContentDescription(LocaleController.getString(R.string.Search));
         EditTextBoldCursor editText = searchItem.getSearchField();
         editText.setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
         editText.setCursorColor(Theme.getColor(Theme.key_dialogTextBlack));
         editText.setHintTextColor(Theme.getColor(Theme.key_chat_messagePanelHint));
 
         sortItem = menu.addItem(sort_button, sortByName ? R.drawable.contacts_sort_time : R.drawable.contacts_sort_name);
-        sortItem.setContentDescription(LocaleController.getString("AccDescrContactSorting", R.string.AccDescrContactSorting));
+        sortItem.setContentDescription(LocaleController.getString(R.string.AccDescrContactSorting));
 
         selectedFiles.clear();
 
@@ -619,7 +619,7 @@ public class DocumentSelectActivity extends BaseFragment {
         InputFilter[] inputFilters = new InputFilter[1];
         inputFilters[0] = new InputFilter.LengthFilter(MessagesController.getInstance(UserConfig.selectedAccount).maxCaptionLength);
         commentTextView.setFilters(inputFilters);
-        commentTextView.setHint(LocaleController.getString("AddCaption", R.string.AddCaption));
+        commentTextView.setHint(LocaleController.getString(R.string.AddCaption));
         commentTextView.onResume();
         editText = commentTextView.getEditText();
         editText.setMaxLines(1);
@@ -634,7 +634,7 @@ public class DocumentSelectActivity extends BaseFragment {
         writeButtonContainer.setScaleX(0.2f);
         writeButtonContainer.setScaleY(0.2f);
         writeButtonContainer.setAlpha(0.0f);
-        writeButtonContainer.setContentDescription(LocaleController.getString("Send", R.string.Send));
+        writeButtonContainer.setContentDescription(LocaleController.getString(R.string.Send));
         sizeNotifierFrameLayout.addView(writeButtonContainer, LayoutHelper.createFrame(60, 60, Gravity.RIGHT | Gravity.BOTTOM, 0, 0, 12, 10));
 
         writeButton = new ImageView(context);
@@ -721,15 +721,15 @@ public class DocumentSelectActivity extends BaseFragment {
                     int num = a;
                     itemCells[a] = new ActionBarMenuSubItem(getParentActivity(), a == 0, a == 2);
                     if (num == 0) {
-                        itemCells[a].setTextAndIcon(LocaleController.getString("Translate", R.string.Translate), R.drawable.ic_translate);
+                        itemCells[a].setTextAndIcon(LocaleController.getString(R.string.Translate), R.drawable.ic_translate);
                     } else if (num == 1) {
                         if (UserObject.isUserSelf(user)) {
-                            itemCells[a].setTextAndIcon(LocaleController.getString("SetReminder", R.string.SetReminder), R.drawable.menu_date);
+                            itemCells[a].setTextAndIcon(LocaleController.getString(R.string.SetReminder), R.drawable.menu_date);
                         } else {
-                            itemCells[a].setTextAndIcon(LocaleController.getString("ScheduleMessage", R.string.ScheduleMessage), R.drawable.menu_date);
+                            itemCells[a].setTextAndIcon(LocaleController.getString(R.string.ScheduleMessage), R.drawable.menu_date);
                         }
                     } else if (num == 2) {
-                        itemCells[a].setTextAndIcon(LocaleController.getString("SendWithoutSound", R.string.SendWithoutSound), R.drawable.input_notify_off);
+                        itemCells[a].setTextAndIcon(LocaleController.getString(R.string.SendWithoutSound), R.drawable.input_notify_off);
                     }
                     itemCells[a].setMinimumWidth(AndroidUtilities.dp(196));
 
@@ -893,7 +893,7 @@ public class DocumentSelectActivity extends BaseFragment {
             add = false;
         } else {
             if (!item.file.canRead()) {
-                showErrorBox(LocaleController.getString("AccessError", R.string.AccessError));
+                showErrorBox(LocaleController.getString(R.string.AccessError));
                 return false;
             }
             if (canSelectOnlyImageFiles && item.thumb == null) {
@@ -1243,7 +1243,7 @@ public class DocumentSelectActivity extends BaseFragment {
                     return true;
                 }
             }
-            showErrorBox(LocaleController.getString("AccessError", R.string.AccessError));
+            showErrorBox(LocaleController.getString(R.string.AccessError));
             return false;
         }
         File[] files;
@@ -1254,7 +1254,7 @@ public class DocumentSelectActivity extends BaseFragment {
             return false;
         }
         if (files == null) {
-            showErrorBox(LocaleController.getString("UnknownError", R.string.UnknownError));
+            showErrorBox(LocaleController.getString(R.string.UnknownError));
             return false;
         }
         currentDir = dir;
@@ -1269,7 +1269,7 @@ public class DocumentSelectActivity extends BaseFragment {
             item.file = file;
             if (file.isDirectory()) {
                 item.icon = R.drawable.files_folder;
-                item.subtitle = LocaleController.getString("Folder", R.string.Folder);
+                item.subtitle = LocaleController.getString(R.string.Folder);
             } else {
                 hasFiles = true;
                 String fname = file.getName();
@@ -1288,12 +1288,12 @@ public class DocumentSelectActivity extends BaseFragment {
         if (history.size() > 0) {
             HistoryEntry entry = history.get(history.size() - 1);
             if (entry.dir == null) {
-                item.subtitle = LocaleController.getString("Folder", R.string.Folder);
+                item.subtitle = LocaleController.getString(R.string.Folder);
             } else {
                 item.subtitle = entry.dir.toString();
             }
         } else {
-            item.subtitle = LocaleController.getString("Folder", R.string.Folder);
+            item.subtitle = LocaleController.getString(R.string.Folder);
         }
         item.icon = R.drawable.files_folder;
         item.file = null;
@@ -1310,7 +1310,7 @@ public class DocumentSelectActivity extends BaseFragment {
         if (getParentActivity() == null) {
             return;
         }
-        new AlertDialog.Builder(getParentActivity()).setTitle(LocaleController.getString(R.string.NagramX)).setMessage(error).setPositiveButton(LocaleController.getString("OK", R.string.OK), null).show();
+        new AlertDialog.Builder(getParentActivity()).setTitle(LocaleController.getString(R.string.NagramX)).setMessage(error).setPositiveButton(LocaleController.getString(R.string.OK), null).show();
     }
 
     @SuppressLint("NewApi")
@@ -1326,13 +1326,13 @@ public class DocumentSelectActivity extends BaseFragment {
         if (defaultPathState.equals(Environment.MEDIA_MOUNTED) || defaultPathState.equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
             ListItem ext = new ListItem();
             if (Environment.isExternalStorageRemovable()) {
-                ext.title = LocaleController.getString("SdCard", R.string.SdCard);
+                ext.title = LocaleController.getString(R.string.SdCard);
                 ext.icon = R.drawable.files_internal;
-                ext.subtitle = LocaleController.getString("ExternalFolderInfo", R.string.ExternalFolderInfo);
+                ext.subtitle = LocaleController.getString(R.string.ExternalFolderInfo);
             } else {
-                ext.title = LocaleController.getString("InternalStorage", R.string.InternalStorage);
+                ext.title = LocaleController.getString(R.string.InternalStorage);
                 ext.icon = R.drawable.files_storage;
-                ext.subtitle = LocaleController.getString("InternalFolderInfo", R.string.InternalFolderInfo);
+                ext.subtitle = LocaleController.getString(R.string.InternalFolderInfo);
             }
             ext.file = Environment.getExternalStorageDirectory();
             items.add(ext);
@@ -1369,11 +1369,11 @@ public class DocumentSelectActivity extends BaseFragment {
                             try {
                                 ListItem item = new ListItem();
                                 if (path.toLowerCase().contains("sd")) {
-                                    item.title = LocaleController.getString("SdCard", R.string.SdCard);
+                                    item.title = LocaleController.getString(R.string.SdCard);
                                 } else {
-                                    item.title = LocaleController.getString("ExternalStorage", R.string.ExternalStorage);
+                                    item.title = LocaleController.getString(R.string.ExternalStorage);
                                 }
-                                item.subtitle = LocaleController.getString("ExternalFolderInfo", R.string.ExternalFolderInfo);
+                                item.subtitle = LocaleController.getString(R.string.ExternalFolderInfo);
                                 item.icon = R.drawable.files_internal;
                                 item.file = new File(path);
                                 items.add(item);
@@ -1399,7 +1399,7 @@ public class DocumentSelectActivity extends BaseFragment {
         /*
 
         fs.title = "/";
-        fs.subtitle = LocaleController.getString("SystemRoot", R.string.SystemRoot);
+        fs.subtitle = LocaleController.getString(R.string.SystemRoot);
         fs.icon = R.drawable.files_folder;
         fs.file = new File("/");
         items.add(fs);
@@ -1413,7 +1413,7 @@ public class DocumentSelectActivity extends BaseFragment {
             if (telegramPath.exists()) {
                 fs = new ListItem();
                 fs.title = "Telegram";
-                fs.subtitle = LocaleController.getString("AppFolderInfo", R.string.AppFolderInfo);
+                fs.subtitle = LocaleController.getString(R.string.AppFolderInfo);
                 fs.icon = R.drawable.files_folder;
                 fs.file = telegramPath;
                 items.add(fs);
@@ -1425,8 +1425,8 @@ public class DocumentSelectActivity extends BaseFragment {
         if (allowPhoto) {
 
             fs = new ListItem();
-            fs.title = LocaleController.getString("Gallery", R.string.Gallery);
-            fs.subtitle = LocaleController.getString("GalleryInfo", R.string.GalleryInfo);
+            fs.title = LocaleController.getString(R.string.Gallery);
+            fs.subtitle = LocaleController.getString(R.string.GalleryInfo);
             fs.icon = R.drawable.files_gallery;
             fs.file = null;
             items.add(fs);
@@ -1435,8 +1435,8 @@ public class DocumentSelectActivity extends BaseFragment {
 
         if (allowMusic) {
             fs = new ListItem();
-            fs.title = LocaleController.getString("AttachMusic", R.string.AttachMusic);
-            fs.subtitle = LocaleController.getString("MusicInfo", R.string.MusicInfo);
+            fs.title = LocaleController.getString(R.string.AttachMusic);
+            fs.subtitle = LocaleController.getString(R.string.MusicInfo);
             fs.icon = R.drawable.files_music;
             fs.file = null;
             items.add(fs);
@@ -1517,7 +1517,7 @@ public class DocumentSelectActivity extends BaseFragment {
             switch (viewType) {
                 case 0:
                     HeaderCell headerCell = new HeaderCell(mContext);
-                    headerCell.setText(LocaleController.getString("RecentFiles", R.string.RecentFiles));
+                    headerCell.setText(LocaleController.getString(R.string.RecentFiles));
                     view = headerCell;
                     break;
                 case 1:

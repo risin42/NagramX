@@ -212,7 +212,7 @@ public class WebActionBar extends FrameLayout {
             if (menuType == ArticleViewer.PageLayout.TYPE_ARTICLE) {
                 o.add(R.drawable.msg_openin, getString(R.string.OpenInExternalApp), click.run(open_item));
                 if (trans) {
-                    o.add(R.drawable.photo_undo, getString("UndoTranslate", R.string.UndoTranslate), click.run(trans_item));
+                    o.add(R.drawable.photo_undo, getString(R.string.UndoTranslate), click.run(trans_item));
                 } else {
                     o.add(R.drawable.ic_translate, getString(R.string.Translate), click.run(trans_item));
                 }
@@ -257,7 +257,7 @@ public class WebActionBar extends FrameLayout {
             isMenuShown = true;
         });
         menuButton.setBackground(menuButtonSelector = Theme.createSelectorDrawable(Theme.ACTION_BAR_WHITE_SELECTOR_COLOR));
-        menuButton.setContentDescription(getString("AccDescrMoreOptions", R.string.AccDescrMoreOptions));
+        menuButton.setContentDescription(getString(R.string.AccDescrMoreOptions));
         rightmenu.addView(menuButton, LayoutHelper.createLinear(54, 56));
 
         searchEditText = new EditTextBoldCursor(context) {

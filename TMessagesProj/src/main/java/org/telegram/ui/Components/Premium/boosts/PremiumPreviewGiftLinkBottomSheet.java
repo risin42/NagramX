@@ -77,12 +77,12 @@ public class PremiumPreviewGiftLinkBottomSheet extends PremiumPreviewBottomSheet
         subtitleView.setLineSpacing(AndroidUtilities.dp(2), 1f);
         ((ViewGroup.MarginLayoutParams) subtitleView.getLayoutParams()).bottomMargin = dp(14);
         ((ViewGroup.MarginLayoutParams) subtitleView.getLayoutParams()).topMargin = dp(12);
-        String subTitleText = getString("GiftPremiumAboutThisLink", R.string.GiftPremiumAboutThisLink);
+        String subTitleText = getString(R.string.GiftPremiumAboutThisLink);
         SpannableStringBuilder subTitleWithLink = AndroidUtilities.replaceSingleTag(
                 subTitleText,
                 Theme.key_chat_messageLinkIn, 0,
                 this::share);
-        subtitleView.setText(AndroidUtilities.replaceCharSequence("%1$s", subTitleWithLink, replaceTags(getString("GiftPremiumAboutThisLinkEnd", R.string.GiftPremiumAboutThisLinkEnd))));
+        subtitleView.setText(AndroidUtilities.replaceCharSequence("%1$s", subTitleWithLink, replaceTags(getString(R.string.GiftPremiumAboutThisLinkEnd))));
     }
 
     private void share() {

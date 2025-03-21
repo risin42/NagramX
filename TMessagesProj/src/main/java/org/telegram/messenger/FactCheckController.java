@@ -515,7 +515,7 @@ public class FactCheckController {
 
             dialogInterface.dismiss();
         });
-        builder.setNegativeButton(getString("Cancel", R.string.Cancel), (dialogInterface, i) -> {
+        builder.setNegativeButton(getString(R.string.Cancel), (dialogInterface, i) -> {
             dialogInterface.dismiss();
         });
         if (adaptive) {

@@ -525,15 +525,15 @@ public class BackButtonMenu {
                     thumb = user.photo.strippedBitmap;
                 }
                 if (pDialog.activity == ChatActivity.class && UserObject.isUserSelf(user)) {
-                    name = LocaleController.getString("SavedMessages", R.string.SavedMessages);
+                    name = LocaleController.getString(R.string.SavedMessages);
                     avatarDrawable.setAvatarType(AvatarDrawable.AVATAR_TYPE_SAVED);
                     imageView.setImageDrawable(avatarDrawable);
                 } else if (UserObject.isReplyUser(user)) {
-                    name = LocaleController.getString("RepliesTitle", R.string.RepliesTitle);
+                    name = LocaleController.getString(R.string.RepliesTitle);
                     avatarDrawable.setAvatarType(AvatarDrawable.AVATAR_TYPE_REPLIES);
                     imageView.setImageDrawable(avatarDrawable);
                 } else if (UserObject.isDeleted(user)) {
-                    name = LocaleController.getString("HiddenName", R.string.HiddenName);
+                    name = LocaleController.getString(R.string.HiddenName);
                     avatarDrawable.setInfo(user);
                     imageView.setImage(ImageLocation.getForUser(user, ImageLocation.TYPE_SMALL), "50_50", avatarDrawable, user);
                 } else {
