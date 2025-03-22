@@ -294,7 +294,7 @@ dependencies {
     // utilities 
     implementation "com.jakewharton:process-phoenix:2.1.2"
     implementation "org.osmdroid:osmdroid-android:6.1.20"
-    implementation "cn.hutool:hutool-core:5.7.13"
+    implementation "cn.hutool:hutool-core:5.8.36"
     implementation 'cn.hutool:hutool-http:5.7.5'
     // network
     implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.14"
