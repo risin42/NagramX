@@ -100,4 +100,5 @@
     <string name="TranslatorKeepMarkdown">Keep Markdown</string>
     <string name="TranslatorOptions">Options</string>
     <string name="GoogleTranslateExp">Use New Google Translate</string>
+    <string name="SpringAnimation">Spring Animation</string>
 </resources>

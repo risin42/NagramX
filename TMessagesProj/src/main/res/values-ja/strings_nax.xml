@@ -87,4 +87,5 @@
     <string name="TranslatorKeepMarkdown">フォーマットを維持</string>
     <string name="TranslatorOptions">オプション</string>
     <string name="GoogleTranslateExp">新しい Google 翻訳を使用</string>
+    <string name="SpringAnimation">スプリングアニメーションを使用</string>
 </resources>

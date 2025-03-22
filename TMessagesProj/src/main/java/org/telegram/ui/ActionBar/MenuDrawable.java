@@ -330,4 +330,8 @@ public class MenuDrawable extends Drawable {
     public void setMiniIcon(boolean miniIcon) {
         this.miniIcon = miniIcon;
     }
+
+    public int getIconColor() {
+        return this.iconColor;
+    }
 }

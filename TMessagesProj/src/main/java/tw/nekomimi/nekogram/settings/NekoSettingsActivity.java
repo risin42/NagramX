@@ -47,7 +47,6 @@ import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextSettingsCell;
-import org.telegram.ui.Components.ChatAttachAlert;
 import org.telegram.ui.Components.FilledTabsView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
@@ -75,6 +74,7 @@ import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.GsonUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
+import xyz.nextalone.nagram.NaConfig;
 
 public class NekoSettingsActivity extends BaseFragment {
     public static final int PAGE_TYPE = 0;
@@ -103,6 +103,10 @@ public class NekoSettingsActivity extends BaseFragment {
 
     @Override
     public View createView(Context context) {
+        if (NaConfig.INSTANCE.getSpringAnimation().Bool()) {
+            setEnableActionBarCrossfade(false);
+        }
+
         typePage = new Page(context, PAGE_TYPE);
         abountPage = new Page(context, PAGE_ABOUT);
 
@@ -702,5 +706,4 @@ public class NekoSettingsActivity extends BaseFragment {
             super.onActivityResultFragment(requestCode, resultCode, data);
         }
     }
-
 }

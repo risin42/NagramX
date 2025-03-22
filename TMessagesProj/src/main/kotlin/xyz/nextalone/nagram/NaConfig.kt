@@ -1004,6 +1004,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    var springAnimation =
+        addConfig(
+            "SpringAnimation",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

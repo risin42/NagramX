@@ -66,6 +66,7 @@ import tw.nekomimi.nekogram.helpers.CloudStorageHelper;
 import tw.nekomimi.nekogram.helpers.UserHelper;
 import tw.nekomimi.nekogram.utils.VibrateUtil;
 import tw.nekomimi.nekogram.ui.MessageHelper;
+import xyz.nextalone.nagram.NaConfig;
 
 public abstract class BaseFragment {
 
@@ -95,6 +96,8 @@ public abstract class BaseFragment {
 //    public ArrayList<BotWebViewAttachedSheet> botsStack;
 //
     public ArrayList<AttachedSheet> sheetsStack;
+
+    private boolean enableActionBarCrossfade = true;
 
     public static interface AttachedSheet {
         public View getWindowView();
@@ -275,7 +278,14 @@ public abstract class BaseFragment {
     }
 
     public boolean isActionBarCrossfadeEnabled() {
+        if (NaConfig.INSTANCE.getSpringAnimation().Bool()) {
+            return actionBar != null && actionBar.getVisibility() == View.VISIBLE && actionBar.getAlpha() != 0.0f && actionBar.getY() >= 0.0f && actionBar.getHeight() > 0.0f && !actionBar.isActionModeShowed() && enableActionBarCrossfade;
+        }
         return actionBar != null;
+    }
+
+    public void setEnableActionBarCrossfade(boolean enable) {
+        enableActionBarCrossfade = enable;
     }
 
     public INavigationLayout.BackButtonState getBackButtonState() {
