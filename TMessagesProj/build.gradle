@@ -289,7 +289,7 @@ dependencies {
     // Nagram
     implementation "androidx.viewpager:viewpager:1.0.0"
     // kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.23"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.0"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
     // utilities 
     implementation "com.jakewharton:process-phoenix:2.1.2"
