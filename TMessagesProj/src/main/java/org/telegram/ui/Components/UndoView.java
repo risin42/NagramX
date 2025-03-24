@@ -39,8 +39,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jakewharton.processphoenix.ProcessPhoenix;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Keep;
 
@@ -68,6 +66,7 @@ import org.telegram.ui.LaunchActivity;
 import java.util.ArrayList;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 
 @SuppressWarnings("FieldCanBeLocal")
 @Deprecated // use Bulletin instead
@@ -552,7 +551,7 @@ public class UndoView extends FrameLayout {
             undoImageView.setVisibility(GONE);
 
             undoTextView.setText(LocaleController.getString(R.string.ApplyTheme));
-            currentCancelRunnable = () -> ProcessPhoenix.triggerRebirth(getContext(), new Intent(getContext(), LaunchActivity.class));
+            currentCancelRunnable = () -> AppRestartHelper.triggerRebirth(getContext(), new Intent(getContext(), LaunchActivity.class));
 
         } else if (isTooltipAction()) {
             CharSequence infoText = "";

@@ -292,7 +292,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.0"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
     // utilities 
-    implementation "com.jakewharton:process-phoenix:2.1.2"
     implementation "org.osmdroid:osmdroid-android:6.1.20"
     implementation "cn.hutool:hutool-core:5.8.36"
     implementation 'cn.hutool:hutool-http:5.7.5'

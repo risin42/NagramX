@@ -1,5 +1,7 @@
 package tw.nekomimi.nekogram.helpers;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -17,14 +19,11 @@ import android.widget.TextView;
 
 import androidx.core.graphics.ColorUtils;
 
-import com.jakewharton.processphoenix.ProcessPhoenix;
-
 import org.json.JSONException;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
@@ -44,6 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
+import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
 import tw.nekomimi.nekogram.utils.GsonUtil;
 
@@ -154,7 +154,7 @@ public class CloudSettingsHelper {
                     restart.setTitle(getString(R.string.NagramX));
                     restart.setMessage(getString(R.string.RestartAppToTakeEffect));
                     restart.setPositiveButton(getString(R.string.OK), (__, ___) -> {
-                        ProcessPhoenix.triggerRebirth(context, new Intent(context, LaunchActivity.class));
+                        AppRestartHelper.triggerRebirth(context, new Intent(context, LaunchActivity.class));
                     });
                     restart.show();
                 }
