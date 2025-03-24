@@ -210,6 +210,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemSettings(), null, getString(R.string.Settings)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemNSettings(), null, getString(R.string.NekoSettings)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemQrLogin(), null, getString(R.string.ImportLogin)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDrawerItemRestartApp(), null, getString(R.string.RestartApp)));
         }}));
     }));
     private final AbstractConfigCell dividerAppearance = cellGroup.appendCell(new ConfigCellDivider());

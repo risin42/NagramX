@@ -202,4 +202,9 @@ public class NekoXConfig {
     public static void saveLastOnlineState(boolean online) {
         preferences.edit().putBoolean("last_online_state", lastOnlineState = online).apply();
     }
+
+    public static void resetSettings() {
+        NitritesKt.mkDatabase("nekox_config", true);
+        preferences = NitritesKt.openMainSharedPreference("nekox_config");
+    }
 }

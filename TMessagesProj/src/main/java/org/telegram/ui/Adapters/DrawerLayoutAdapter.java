@@ -68,6 +68,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
     public static int nkbtnSettings = 1001;
     public static int nkbtnQrLogin = 1002;
     public static int nkbtnArchivedChats = 1003;
+    public static int nkbtnRestartApp = 1004;
 
     public DrawerLayoutAdapter(Context context, SideMenultItemAnimator animator, DrawerLayoutContainer drawerLayoutContainer) {
         mContext = context;
@@ -425,9 +426,12 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
 
         boolean showNSettings = NaConfig.INSTANCE.getDrawerItemNSettings().Bool();
         boolean showQrLogin = NaConfig.INSTANCE.getDrawerItemQrLogin().Bool();
+        boolean restartApp = NaConfig.INSTANCE.getDrawerItemRestartApp().Bool();
         if (showNSettings || showQrLogin) items.add(null); // divider
         if (showNSettings) items.add(new Item(nkbtnSettings, LocaleController.getString(R.string.NekoSettings), nSettingsIcon));
         if (showQrLogin) items.add(new Item(nkbtnQrLogin, LocaleController.getString(R.string.ImportLogin), qrLoginIcon));
+        if (showNSettings || showQrLogin || restartApp) items.add(null); // divider
+        if (restartApp) items.add(new Item(nkbtnRestartApp, LocaleController.getString(R.string.RestartApp), R.drawable.msg_retry));
     }
 
     public boolean click(View view, int position) {

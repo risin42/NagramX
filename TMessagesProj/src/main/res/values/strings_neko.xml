@@ -288,7 +288,7 @@
     <string name="Win32ExecutableFiles">Win32 executable files</string>
     <string name="ArchiveFiles">Archive files</string>
     <string name="AutoLockImmediately">Immediately</string>
-    <string name="BackupSettings">Backup Settings</string>
+    <string name="BackupSettings">Export Settings</string>
     <string name="ImportSettings">Import Settings</string>
     <string name="ImportSettingsAlert">Overwrite the settings\? Importing settings from unknown sources may cause the pin to be overwritten and the app to be locked.</string>
     <string name="nekoXPaymentRemovedToast">Payment features have been removed.</string>

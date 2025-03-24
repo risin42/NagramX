@@ -66,6 +66,7 @@ import java.util.function.Function;
 
 import kotlin.text.StringsKt;
 import tw.nekomimi.nekogram.DatacenterActivity;
+import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 import tw.nekomimi.nekogram.helpers.CloudSettingsHelper;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
@@ -251,9 +252,12 @@ public class NekoSettingsActivity extends BaseFragment {
         private int experimentRow = -1;
         private int categories2Row = -1;
 
-        private int importRow = -1;
+        private int nSettingsHeaderRow = -1;
         private int importSettingsRow = -1;
         private int exportSettingsRow = -1;
+        private int resetSettingsRow = -1;
+        private int otherRow = -1;
+        private int appRestartRow = -1;
 
         private int xChannelRow = -1;
         private int channelRow = -1;
@@ -314,8 +318,10 @@ public class NekoSettingsActivity extends BaseFragment {
                     switch (holder.getItemViewType()) {
                         case VIEW_TYPE_HEADER: {
                             HeaderCell headerCell = (HeaderCell) holder.itemView;
-                            if (position == importRow) {
+                            if (position == nSettingsHeaderRow) {
                                 headerCell.setText(getString(R.string.NekoSettings));
+                            } else if (position == otherRow) {
+                                headerCell.setText(getString(R.string.Other));
                             }
                             break;
                         }
@@ -337,6 +343,14 @@ public class NekoSettingsActivity extends BaseFragment {
                                 textCell.setTextAndIcon(getString(R.string.PasscodeNeko), R.drawable.msg_permissions, true);
                             } else if (position == experimentRow) {
                                 textCell.setTextAndIcon(getString(R.string.Experimental), R.drawable.msg_fave, true);
+                            } else if (position == importSettingsRow) {
+                                textCell.setTextAndIcon(getString(R.string.ImportSettings), R.drawable.msg_photo_settings, true);
+                            } else if (position == exportSettingsRow) {
+                                textCell.setTextAndIcon(getString(R.string.BackupSettings), R.drawable.msg_instant_link, true);
+                            } else if (position == resetSettingsRow) {
+                                textCell.setTextAndIcon(getString(R.string.ResetSettings), R.drawable.msg_reset, true);
+                            } else if (position == appRestartRow) {
+                                textCell.setTextAndIcon(getString(R.string.RestartApp), R.drawable.msg_retry, true);
                             }
                             break;
                         }
@@ -354,10 +368,6 @@ public class NekoSettingsActivity extends BaseFragment {
                                 textCell.setText(getString(R.string.TransSite), true);
                             } else if (position == datacenterStatusRow) {
                                 textCell.setText(getString(R.string.DatacenterStatus), true);
-                            } else if (position == importSettingsRow) {
-                                textCell.setText(getString(R.string.ImportSettings), true);
-                            } else if (position == exportSettingsRow) {
-                                textCell.setText(getString(R.string.BackupSettings), true);
                             }
                             break;
                         }
@@ -368,9 +378,10 @@ public class NekoSettingsActivity extends BaseFragment {
                 public int getItemViewType(int position) {
                     if (position == categories2Row) {
                         return VIEW_TYPE_BOTTOM;
-                    } else if (position == importRow) {
+                    } else if (position == nSettingsHeaderRow || position == otherRow) {
                         return VIEW_TYPE_HEADER;
-                    } else if (position == chatRow || position == generalRow || position == passcodeRow || position == experimentRow || position == translatorRow) {
+                    } else if (position == chatRow || position == generalRow || position == passcodeRow || position == experimentRow || position == translatorRow ||
+                                position == importSettingsRow || position == exportSettingsRow || position == resetSettingsRow || position == appRestartRow) {
                         return VIEW_TYPE_TEXT;
                     }
                     return VIEW_TYPE_TEXT_LINK;
@@ -408,8 +419,22 @@ public class NekoSettingsActivity extends BaseFragment {
                             presentFragment(activity);
                         }
                     }
+                } else if (position == resetSettingsRow) {
+                    AlertUtil.showConfirm(getParentActivity(),
+                            getString(R.string.ResetSettingsAlert),
+                            R.drawable.msg_reset,
+                            getString(R.string.Reset),
+                            true,
+                            () -> {
+                                NekoXConfig.resetSettings();
+                                SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Activity.MODE_PRIVATE);
+                                preferences.edit().clear().commit();
+                                AppRestartHelper.triggerRebirth(context, new Intent(context, LaunchActivity.class));
+                            });
                 } else if (position == exportSettingsRow) {
                     backupSettings();
+                } else if (position == appRestartRow) {
+                    AppRestartHelper.triggerRebirth(context, new Intent(context, LaunchActivity.class));
                 }
             });
 
@@ -431,9 +456,12 @@ public class NekoSettingsActivity extends BaseFragment {
                 }
                 experimentRow = rowCount++;
                 categories2Row = rowCount++;
-                importRow = rowCount++;
+                nSettingsHeaderRow = rowCount++;
                 importSettingsRow = rowCount++;
                 exportSettingsRow = rowCount++;
+                resetSettingsRow = rowCount++;
+                otherRow = rowCount++;
+                appRestartRow = rowCount++;
             } else {
                 xChannelRow = rowCount++;
                 channelRow = rowCount++;

@@ -944,6 +944,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var drawerItemRestartApp =
+        addConfig(
+            "DrawerItemRestartApp",
+            ConfigItem.configTypeBool,
+            false
+        )
     var hideArchive =
         addConfig(
             "HideArchive",
