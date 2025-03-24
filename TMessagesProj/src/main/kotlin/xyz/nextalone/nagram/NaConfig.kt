@@ -816,7 +816,7 @@ object NaConfig {
         addConfig(
             "TranslucentDeletedMessages",
             ConfigItem.configTypeBool,
-            false
+            true
     )
     val enableSeparateArticleTranslator =
         addConfig(

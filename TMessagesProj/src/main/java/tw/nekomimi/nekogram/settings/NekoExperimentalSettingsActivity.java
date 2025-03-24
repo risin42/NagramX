@@ -394,9 +394,10 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             } else if (key.equals(NaConfig.INSTANCE.getEnableSaveDeletedMessages().getKey())) {
                 setCanNotChange();
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(messageSavingSaveMediaRow));
-            } else if (key.equals(NaConfig.INSTANCE.getEnableSaveEditsHistory().getKey())) {
-                setCanNotChange();
-                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(messageSavingSaveMediaRow));
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(saveDeletedMessageForBotsUserRow));
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(saveDeletedMessageInBotChatRow));
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translucentDeletedMessagesRow));
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useDeletedIconRow));
             } else if (key.equals(NaConfig.INSTANCE.getDisableStories().getKey())) {
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NekoConfig.localPremium.getKey())) {
@@ -718,8 +719,12 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         enabled = NekoConfig.disableChatAction.Bool();
         ((ConfigCellTextCheck) disableChoosingStickerRow).setEnabled(!enabled);
 
-        enabled = NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool() || NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool();
+        enabled = NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool();
         ((ConfigCellTextCheck) messageSavingSaveMediaRow).setEnabled(enabled);
+        ((ConfigCellTextCheck) saveDeletedMessageForBotsUserRow).setEnabled(enabled);
+        ((ConfigCellTextCheck) saveDeletedMessageInBotChatRow).setEnabled(enabled);
+        ((ConfigCellTextCheck) translucentDeletedMessagesRow).setEnabled(enabled);
+        ((ConfigCellTextCheck) useDeletedIconRow).setEnabled(enabled);
     }
 
     private void showBottomSheet() {
