@@ -299,7 +299,7 @@ dependencies {
     // network
     implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.14"
     implementation 'com.neovisionaries:nv-websocket-client:2.14'
-    implementation 'dnsjava:dnsjava:3.4.1'
+    implementation 'dnsjava:dnsjava:3.6.3'
     // db
     implementation 'org.dizitart:nitrite:4.3.0'
     implementation 'org.dizitart:nitrite-mvstore-adapter:4.3.0'
