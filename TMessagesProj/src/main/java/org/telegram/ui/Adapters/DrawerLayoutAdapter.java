@@ -430,8 +430,10 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         if (showNSettings || showQrLogin) items.add(null); // divider
         if (showNSettings) items.add(new Item(nkbtnSettings, LocaleController.getString(R.string.NekoSettings), nSettingsIcon));
         if (showQrLogin) items.add(new Item(nkbtnQrLogin, LocaleController.getString(R.string.ImportLogin), qrLoginIcon));
-        if (showNSettings || showQrLogin || restartApp) items.add(null); // divider
-        if (restartApp) items.add(new Item(nkbtnRestartApp, LocaleController.getString(R.string.RestartApp), R.drawable.msg_retry));
+        if (restartApp) {
+            items.add(null); // divider
+            items.add(new Item(nkbtnRestartApp, LocaleController.getString(R.string.RestartApp), R.drawable.msg_retry));
+        }
     }
 
     public boolean click(View view, int position) {
