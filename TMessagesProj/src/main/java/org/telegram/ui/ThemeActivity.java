@@ -916,7 +916,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
             actionBar.setOccupyStatusBar(false);
         }
         if (currentType == THEME_TYPE_THEMES_BROWSER) {
-            actionBar.setTitle(getString(R.string.BrowseThemes));
+            actionBar.setTitle(getString("BrowseThemes", R.string.BrowseThemes));
             ActionBarMenu menu = actionBar.createMenu();
             sunDrawable = new RLottieDrawable(R.raw.sun, "" + R.raw.sun, dp(28), dp(28), true, null);
             if (lastIsDarkTheme) {
@@ -927,14 +927,14 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
             sunDrawable.setPlayInDirectionOfCustomEndFrame(true);
             menuItem = menu.addItem(day_night_switch, sunDrawable);
         } else if (currentType == THEME_TYPE_BASIC) {
-            actionBar.setTitle(getString(R.string.ChatSettings));
+            actionBar.setTitle(getString("ChatSettings", R.string.ChatSettings));
             ActionBarMenu menu = actionBar.createMenu();
             menuItem = menu.addItem(0, R.drawable.ic_ab_other);
-            menuItem.setContentDescription(getString(R.string.AccDescrMoreOptions));
-            menuItem.addSubItem(share_theme, R.drawable.msg_share, getString(R.string.ShareTheme));
-            menuItem.addSubItem(edit_theme, R.drawable.msg_edit, getString(R.string.EditThemeColors));
-            menuItem.addSubItem(create_theme, R.drawable.msg_palette, getString(R.string.CreateNewThemeMenu));
-            menuItem.addSubItem(reset_settings, R.drawable.msg_reset, getString(R.string.ThemeResetToDefaults));
+            menuItem.setContentDescription(getString("AccDescrMoreOptions", R.string.AccDescrMoreOptions));
+            menuItem.addSubItem(share_theme, R.drawable.msg_share, getString("ShareTheme", R.string.ShareTheme));
+            menuItem.addSubItem(edit_theme, R.drawable.msg_edit, getString("EditThemeColors", R.string.EditThemeColors));
+            menuItem.addSubItem(create_theme, R.drawable.msg_palette, getString("CreateNewThemeMenu", R.string.CreateNewThemeMenu));
+            menuItem.addSubItem(reset_settings, R.drawable.msg_reset, getString("ThemeResetToDefaults", R.string.ThemeResetToDefaults));
 
             if (getMessagesController().getContentSettings() == null) {
                 getMessagesController().getContentSettings(settings -> {
@@ -948,7 +948,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 });
             }
         } else {
-            actionBar.setTitle(getString(R.string.AutoNightTheme));
+            actionBar.setTitle(getString("AutoNightTheme", R.string.AutoNightTheme));
         }
 
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -975,9 +975,9 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                         return;
                     }
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(getParentActivity());
-                    builder1.setTitle(getString(R.string.ThemeResetToDefaultsTitle));
-                    builder1.setMessage(getString(R.string.ThemeResetToDefaultsText));
-                    builder1.setPositiveButton(getString(R.string.Reset), (dialogInterface, i) -> {
+                    builder1.setTitle(getString("ThemeResetToDefaultsTitle", R.string.ThemeResetToDefaultsTitle));
+                    builder1.setMessage(getString("ThemeResetToDefaultsText", R.string.ThemeResetToDefaultsText));
+                    builder1.setPositiveButton(getString("Reset", R.string.Reset), (dialogInterface, i) -> {
                         boolean changed = false;
                         if (setFontSize(AndroidUtilities.isTablet() ? 18 : 16)) {
                             changed = true;
@@ -1016,7 +1016,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                             }
                         }
                     });
-                    builder1.setNegativeButton(getString(R.string.Cancel), null);
+                    builder1.setNegativeButton(getString("Cancel", R.string.Cancel), null);
                     AlertDialog alertDialog = builder1.create();
                     showDialog(alertDialog);
                     TextView button = (TextView) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -1142,9 +1142,9 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
 
                 CharSequence[] items = new CharSequence[]{
-                    getString(R.string.DistanceUnitsAutomatic),
-                    getString(R.string.DistanceUnitsKilometers),
-                    getString(R.string.DistanceUnitsMiles)
+                    getString("DistanceUnitsAutomatic", R.string.DistanceUnitsAutomatic),
+                    getString("DistanceUnitsKilometers", R.string.DistanceUnitsKilometers),
+                    getString("DistanceUnitsMiles", R.string.DistanceUnitsMiles)
                 };
 
                 for (int i = 0; i < items.length; ++i) {
@@ -1167,9 +1167,9 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 }
 
                 Dialog dialog = new AlertDialog.Builder(getParentActivity())
-                        .setTitle(getString(R.string.DistanceUnitsTitle))
+                        .setTitle(getString("DistanceUnitsTitle", R.string.DistanceUnitsTitle))
                         .setView(linearLayout)
-                        .setNegativeButton(getString(R.string.Cancel), null)
+                        .setNegativeButton(getString("Cancel", R.string.Cancel), null)
                         .create();
                 dialogRef.set(dialog);
                 showDialog(dialog);
@@ -1210,7 +1210,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 Dialog dialog = new AlertDialog.Builder(getParentActivity())
                         .setTitle(getString(R.string.SearchEngine))
                         .setView(linearLayout)
-                        .setNegativeButton(getString(R.string.Cancel), null)
+                        .setNegativeButton(getString("Cancel", R.string.Cancel), null)
                         .create();
                 dialogRef.set(dialog);
                 showDialog(dialog);
@@ -1278,7 +1278,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 Dialog dialog = new AlertDialog.Builder(getParentActivity())
                         .setTitle(getString(R.string.MicrophoneForVoiceMessages))
                         .setView(linearLayout)
-                        .setNegativeButton(getString(R.string.Cancel), null)
+                        .setNegativeButton(getString("Cancel", R.string.Cancel), null)
                         .create();
                 dialogRef.set(dialog);
                 showDialog(dialog);
@@ -1315,11 +1315,11 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                     return;
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-                builder.setTitle(getString(R.string.SortBy));
+                builder.setTitle(getString("SortBy", R.string.SortBy));
                 builder.setItems(new CharSequence[]{
-                        getString(R.string.Default),
-                        getString(R.string.SortFirstName),
-                        getString(R.string.SortLastName)
+                        getString("Default", R.string.Default),
+                        getString("SortFirstName", R.string.SortFirstName),
+                        getString("SortLastName", R.string.SortLastName)
                 }, (dialog, which) -> {
                     SharedPreferences preferences = MessagesController.getGlobalMainSettings();
                     SharedPreferences.Editor editor = preferences.edit();
@@ -1329,7 +1329,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                         listAdapter.notifyItemChanged(position);
                     }
                 });
-                builder.setNegativeButton(getString(R.string.Cancel), null);
+                builder.setNegativeButton(getString("Cancel", R.string.Cancel), null);
                 showDialog(builder.create());
             } else if (position == chatBlurRow) {
                 if (NekoConfig.forceBlurInChat.Bool()) {
@@ -1353,19 +1353,19 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                     Theme.saveAutoNightThemeConfig();
                     Theme.checkAutoNightThemeConditions(true);
                     boolean enabled = Theme.selectedAutoNightType != Theme.AUTO_NIGHT_TYPE_NONE;
-                    String value = enabled ? Theme.getCurrentNightThemeName() : getString(R.string.AutoNightThemeOff);
+                    String value = enabled ? Theme.getCurrentNightThemeName() : getString("AutoNightThemeOff", R.string.AutoNightThemeOff);
                     if (enabled) {
                         String type;
                         if (Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_SCHEDULED) {
-                            type = getString(R.string.AutoNightScheduled);
+                            type = getString("AutoNightScheduled", R.string.AutoNightScheduled);
                         } else if (Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_SYSTEM) {
-                            type = getString(R.string.AutoNightSystemDefault);
+                            type = getString("AutoNightSystemDefault", R.string.AutoNightSystemDefault);
                         } else {
-                            type = getString(R.string.AutoNightAdaptive);
+                            type = getString("AutoNightAdaptive", R.string.AutoNightAdaptive);
                         }
                         value = type + " " + value;
                     }
-                    checkCell.setTextAndValueAndIconAndCheck(getString(R.string.AutoNightTheme), value, R.drawable.msg2_night_auto, enabled, 0, false, true);
+                    checkCell.setTextAndValueAndIconAndCheck(getString("AutoNightTheme", R.string.AutoNightTheme), value, R.drawable.msg2_night_auto, enabled, 0, false, true);
                 } else {
                     presentFragment(new ThemeActivity(THEME_TYPE_NIGHT));
                 }
@@ -1435,10 +1435,10 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                     int time = hourOfDay * 60 + minute;
                     if (position == scheduleFromRow) {
                         Theme.autoNightDayStartTime = time;
-                        cell.setTextAndValue(getString(R.string.AutoNightFrom), String.format("%02d:%02d", hourOfDay, minute), true);
+                        cell.setTextAndValue(getString("AutoNightFrom", R.string.AutoNightFrom), String.format("%02d:%02d", hourOfDay, minute), true);
                     } else {
                         Theme.autoNightDayEndTime = time;
-                        cell.setTextAndValue(getString(R.string.AutoNightTo), String.format("%02d:%02d", hourOfDay, minute), true);
+                        cell.setTextAndValue(getString("AutoNightTo", R.string.AutoNightTo), String.format("%02d:%02d", hourOfDay, minute), true);
                     }
                 }, currentHour, currentMinute, true);
                 showDialog(dialog);
@@ -1486,10 +1486,10 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setTitle(getString(R.string.NewTheme));
-        builder.setMessage(getString(R.string.CreateNewThemeAlert));
-        builder.setNegativeButton(getString(R.string.Cancel), null);
-        builder.setPositiveButton(getString(R.string.CreateTheme), (dialog, which) -> AlertsCreator.createThemeCreateDialog(ThemeActivity.this, 0, null, null));
+        builder.setTitle(getString("NewTheme", R.string.NewTheme));
+        builder.setMessage(getString("CreateNewThemeAlert", R.string.CreateNewThemeAlert));
+        builder.setNegativeButton(getString("Cancel", R.string.Cancel), null);
+        builder.setPositiveButton(getString("CreateTheme", R.string.CreateTheme), (dialog, which) -> AlertsCreator.createThemeCreateDialog(ThemeActivity.this, 0, null, null));
         showDialog(builder.create());
     }
 
@@ -1551,8 +1551,8 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
                     builder.setTopAnimation(R.raw.permission_request_location, AlertsCreator.PERMISSIONS_REQUEST_TOP_ICON_SIZE, false, Theme.getColor(Theme.key_dialogTopBackground));
-                    builder.setMessage(getString(R.string.GpsDisabledAlertText));
-                    builder.setPositiveButton(getString(R.string.ConnectingToProxyEnable), (dialog, id) -> {
+                    builder.setMessage(getString("GpsDisabledAlertText", R.string.GpsDisabledAlertText));
+                    builder.setPositiveButton(getString("ConnectingToProxyEnable", R.string.ConnectingToProxyEnable), (dialog, id) -> {
                         if (getParentActivity() == null) {
                             return;
                         }
@@ -1562,7 +1562,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
 
                         }
                     });
-                    builder.setNegativeButton(getString(R.string.Cancel), null);
+                    builder.setNegativeButton(getString("Cancel", R.string.Cancel), null);
                     showDialog(builder.create());
                     return;
                 }
@@ -1619,7 +1619,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 if (listView != null) {
                     RecyclerListView.Holder holder = (RecyclerListView.Holder) listView.findViewHolderForAdapterPosition(scheduleUpdateLocationRow);
                     if (holder != null && holder.itemView instanceof TextSettingsCell) {
-                        ((TextSettingsCell) holder.itemView).setTextAndValue(getString(R.string.AutoNightUpdateLocation), Theme.autoNightCityName, false);
+                        ((TextSettingsCell) holder.itemView).setTextAndValue(getString("AutoNightUpdateLocation", R.string.AutoNightUpdateLocation), Theme.autoNightCityName, false);
                     }
                 }
             });
@@ -1759,7 +1759,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
         @Override
         public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
             super.onInitializeAccessibilityNodeInfo(info);
-            info.setText(getString(R.string.ColorPickerMainColor));
+            info.setText(getString("ColorPickerMainColor", R.string.ColorPickerMainColor));
             info.setClassName(Button.class.getName());
             info.setChecked(checked);
             info.setCheckable(true);
@@ -1819,7 +1819,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
         @Override
         public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
             super.onInitializeAccessibilityNodeInfo(info);
-            info.setText(getString(R.string.ColorPickerMainColor));
+            info.setText(getString("ColorPickerMainColor", R.string.ColorPickerMainColor));
             info.setClassName(Button.class.getName());
             info.setEnabled(true);
         }
@@ -1947,7 +1947,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 hasDelete = false;
                 items = new CharSequence[]{
                         null,
-                        getString(R.string.ExportTheme)
+                        getString("ExportTheme", R.string.ExportTheme)
                 };
                 icons = new int[]{
                         0,
@@ -1956,11 +1956,11 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
             } else {
                 hasDelete = themeInfo.info == null || !themeInfo.info.isDefault;
                 items = new CharSequence[]{
-                        getString(R.string.ShareFile),
-                        getString(R.string.ExportTheme),
-                        themeInfo.info == null || !themeInfo.info.isDefault && themeInfo.info.creator ? getString(R.string.Edit) : null,
-                        themeInfo.info != null && themeInfo.info.creator ? getString(R.string.ThemeSetUrl) : null,
-                        hasDelete ? getString(R.string.Delete) : null};
+                        getString("ShareFile", R.string.ShareFile),
+                        getString("ExportTheme", R.string.ExportTheme),
+                        themeInfo.info == null || !themeInfo.info.isDefault && themeInfo.info.creator ? getString("Edit", R.string.Edit) : null,
+                        themeInfo.info != null && themeInfo.info.creator ? getString("ThemeSetUrl", R.string.ThemeSetUrl) : null,
+                        hasDelete ? getString("Delete", R.string.Delete) : null};
                 icons = new int[]{
                         R.drawable.msg_share,
                         R.drawable.msg_shareout,
@@ -2031,7 +2031,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                         } else {
                             intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(finalFile));
                         }
-                        startActivityForResult(Intent.createChooser(intent, getString(R.string.ShareFile)), 500);
+                        startActivityForResult(Intent.createChooser(intent, getString("ShareFile", R.string.ShareFile)), 500);
                     } catch (Exception e) {
                         FileLog.e(e);
                     }
@@ -2048,16 +2048,16 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                         return;
                     }
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(getParentActivity());
-                    builder1.setTitle(getString(R.string.DeleteThemeTitle));
-                    builder1.setMessage(getString(R.string.DeleteThemeAlert));
-                    builder1.setPositiveButton(getString(R.string.Delete), (dialogInterface, i) -> {
+                    builder1.setTitle(getString("DeleteThemeTitle", R.string.DeleteThemeTitle));
+                    builder1.setMessage(getString("DeleteThemeAlert", R.string.DeleteThemeAlert));
+                    builder1.setPositiveButton(getString("Delete", R.string.Delete), (dialogInterface, i) -> {
                         MessagesController.getInstance(themeInfo.account).saveTheme(themeInfo, null, themeInfo == Theme.getCurrentNightTheme(), true);
                         if (Theme.deleteTheme(themeInfo)) {
                             parentLayout.rebuildAllFragmentViews(true, true);
                         }
                         NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.themeListUpdated);
                     });
-                    builder1.setNegativeButton(getString(R.string.Cancel), null);
+                    builder1.setNegativeButton(getString("Cancel", R.string.Cancel), null);
                     AlertDialog alertDialog = builder1.create();
                     showDialog(alertDialog);
                     TextView button = (TextView) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -2221,10 +2221,10 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                         if (accent.id >= 100 && !accent.isDefault) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
                             CharSequence[] items = new CharSequence[]{
-                                    getString(R.string.OpenInEditor),
-                                    getString(R.string.ShareTheme),
-                                    accent.info != null && accent.info.creator ? getString(R.string.ThemeSetUrl) : null,
-                                    getString(R.string.DeleteTheme)
+                                    getString("OpenInEditor", R.string.OpenInEditor),
+                                    getString("ShareTheme", R.string.ShareTheme),
+                                    accent.info != null && accent.info.creator ? getString("ThemeSetUrl", R.string.ThemeSetUrl) : null,
+                                    getString("DeleteTheme", R.string.DeleteTheme)
                             };
                             int[] icons = new int[]{
                                     R.drawable.msg_edit,
@@ -2253,15 +2253,15 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                                         return;
                                     }
                                     AlertDialog.Builder builder1 = new AlertDialog.Builder(getParentActivity());
-                                    builder1.setTitle(getString(R.string.DeleteThemeTitle));
-                                    builder1.setMessage(getString(R.string.DeleteThemeAlert));
-                                    builder1.setPositiveButton(getString(R.string.Delete), (dialogInterface, i) -> {
+                                    builder1.setTitle(getString("DeleteThemeTitle", R.string.DeleteThemeTitle));
+                                    builder1.setMessage(getString("DeleteThemeAlert", R.string.DeleteThemeAlert));
+                                    builder1.setPositiveButton(getString("Delete", R.string.Delete), (dialogInterface, i) -> {
                                         if (Theme.deleteThemeAccent(accentsAdapter.currentTheme, accent, true)) {
                                             Theme.refreshThemeColors();
                                             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.needSetDayNightTheme, Theme.getActiveTheme(), currentType == THEME_TYPE_NIGHT, null, -1);
                                         }
                                     });
-                                    builder1.setNegativeButton(getString(R.string.Cancel), null);
+                                    builder1.setNegativeButton(getString("Cancel", R.string.Cancel), null);
                                     AlertDialog alertDialog = builder1.create();
                                     showDialog(alertDialog);
                                     TextView button = (TextView) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -2342,37 +2342,37 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                     } else if (position == scheduleFromRow) {
                         int currentHour = Theme.autoNightDayStartTime / 60;
                         int currentMinute = (Theme.autoNightDayStartTime - currentHour * 60);
-                        cell.setTextAndValue(getString(R.string.AutoNightFrom), String.format("%02d:%02d", currentHour, currentMinute), true);
+                        cell.setTextAndValue(getString("AutoNightFrom", R.string.AutoNightFrom), String.format("%02d:%02d", currentHour, currentMinute), true);
                     } else if (position == scheduleToRow) {
                         int currentHour = Theme.autoNightDayEndTime / 60;
                         int currentMinute = (Theme.autoNightDayEndTime - currentHour * 60);
-                        cell.setTextAndValue(getString(R.string.AutoNightTo), String.format("%02d:%02d", currentHour, currentMinute), false);
+                        cell.setTextAndValue(getString("AutoNightTo", R.string.AutoNightTo), String.format("%02d:%02d", currentHour, currentMinute), false);
                     } else if (position == scheduleUpdateLocationRow) {
-                        cell.setTextAndValue(getString(R.string.AutoNightUpdateLocation), Theme.autoNightCityName, false);
+                        cell.setTextAndValue(getString("AutoNightUpdateLocation", R.string.AutoNightUpdateLocation), Theme.autoNightCityName, false);
                     } else if (position == contactsSortRow) {
                         String value;
                         SharedPreferences preferences = MessagesController.getGlobalMainSettings();
                         int sort = preferences.getInt("sortContactsBy", 0);
                         if (sort == 0) {
-                            value = getString(R.string.Default);
+                            value = getString("Default", R.string.Default);
                         } else if (sort == 1) {
-                            value = getString(R.string.SortFirstName);
+                            value = getString("FirstName", R.string.SortFirstName);
                         } else {
-                            value = getString(R.string.SortLastName);
+                            value = getString("LastName", R.string.SortLastName);
                         }
-                        cell.setTextAndValue(getString(R.string.SortBy), value, true);
+                        cell.setTextAndValue(getString("SortBy", R.string.SortBy), value, true);
                     } else if (position == contactsReimportRow) {
-                        cell.setText(getString(R.string.ImportContacts), true);
+                        cell.setText(getString("ImportContacts", R.string.ImportContacts), true);
                     } else if (position == distanceRow) {
                         String value;
                         if (SharedConfig.distanceSystemType == 0) {
-                            value = getString(R.string.DistanceUnitsAutomatic);
+                            value = getString("DistanceUnitsAutomatic", R.string.DistanceUnitsAutomatic);
                         } else if (SharedConfig.distanceSystemType == 1) {
-                            value = getString(R.string.DistanceUnitsKilometers);
+                            value = getString("DistanceUnitsKilometers", R.string.DistanceUnitsKilometers);
                         } else {
-                            value = getString(R.string.DistanceUnitsMiles);
+                            value = getString("DistanceUnitsMiles", R.string.DistanceUnitsMiles);
                         }
-                        cell.setTextAndValue(getString(R.string.DistanceUnits), value, updateDistance, true);
+                        cell.setTextAndValue(getString("DistanceUnits", R.string.DistanceUnits), value, updateDistance, true);
                         updateDistance = false;
                     } else if (position == searchEngineRow) {
                         cell.setTextAndValue(getString(R.string.SearchEngine), SearchEngine.getCurrent().name, updateSearchEngine, false);
@@ -2390,9 +2390,9 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                     } else if (position == scheduleLocationInfoRow) {
                         cell.setText(getLocationSunString());
                     } else if (position == swipeGestureInfoRow) {
-                        cell.setText(getString(R.string.ChatListSwipeGestureInfo));
+                        cell.setText(getString("ChatListSwipeGestureInfo", R.string.ChatListSwipeGestureInfo));
                     } else if (position == liteModeInfoRow) {
-                        cell.setText(getString(R.string.LiteModeInfo));
+                        cell.setText(getString("LiteModeInfo", R.string.LiteModeInfo));
                     } else {
                         cell.setFixedSize(12);
                         cell.setText("");
@@ -2410,48 +2410,48 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 case TYPE_THEME_TYPE: {
                     ThemeTypeCell typeCell = (ThemeTypeCell) holder.itemView;
                     if (position == nightDisabledRow) {
-                        typeCell.setValue(getString(R.string.AutoNightDisabled), Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_NONE, true);
+                        typeCell.setValue(getString("AutoNightDisabled", R.string.AutoNightDisabled), Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_NONE, true);
                     } else if (position == nightScheduledRow) {
-                        typeCell.setValue(getString(R.string.AutoNightScheduled), Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_SCHEDULED, true);
+                        typeCell.setValue(getString("AutoNightScheduled", R.string.AutoNightScheduled), Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_SCHEDULED, true);
                     } else if (position == nightAutomaticRow) {
-                        typeCell.setValue(getString(R.string.AutoNightAdaptive), Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_AUTOMATIC, nightSystemDefaultRow != -1);
+                        typeCell.setValue(getString("AutoNightAdaptive", R.string.AutoNightAdaptive), Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_AUTOMATIC, nightSystemDefaultRow != -1);
                     } else if (position == nightSystemDefaultRow) {
-                        typeCell.setValue(getString(R.string.AutoNightSystemDefault), Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_SYSTEM, false);
+                        typeCell.setValue(getString("AutoNightSystemDefault", R.string.AutoNightSystemDefault), Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_SYSTEM, false);
                     }
                     break;
                 }
                 case TYPE_HEADER: {
                     HeaderCell headerCell = (HeaderCell) holder.itemView;
                     if (position == scheduleHeaderRow) {
-                        headerCell.setText(getString(R.string.AutoNightSchedule));
+                        headerCell.setText(getString("AutoNightSchedule", R.string.AutoNightSchedule));
                     } else if (position == automaticHeaderRow) {
-                        headerCell.setText(getString(R.string.AutoNightBrightness));
+                        headerCell.setText(getString("AutoNightBrightness", R.string.AutoNightBrightness));
                     } else if (position == preferedHeaderRow) {
-                        headerCell.setText(getString(R.string.AutoNightPreferred));
+                        headerCell.setText(getString("AutoNightPreferred", R.string.AutoNightPreferred));
                     } else if (position == settingsRow) {
-                        headerCell.setText(getString(R.string.SETTINGS));
+                        headerCell.setText(getString("SETTINGS", R.string.SETTINGS));
                     } else if (position == themeHeaderRow) {
                         if (currentType == THEME_TYPE_THEMES_BROWSER) {
-                            headerCell.setText(getString(R.string.BuildMyOwnTheme));
+                            headerCell.setText(getString("BuildMyOwnTheme", R.string.BuildMyOwnTheme));
                         } else {
-                            headerCell.setText(getString(R.string.ColorTheme));
+                            headerCell.setText(getString("ColorTheme", R.string.ColorTheme));
                         }
                     } else if (position == textSizeHeaderRow) {
-                        headerCell.setText(getString(R.string.TextSizeHeader));
+                        headerCell.setText(getString("TextSizeHeader", R.string.TextSizeHeader));
                     } else if (position == chatListHeaderRow) {
-                        headerCell.setText(getString(R.string.ChatList));
+                        headerCell.setText(getString("ChatList", R.string.ChatList));
                     } else if (position == bubbleRadiusHeaderRow) {
-                        headerCell.setText(getString(R.string.BubbleRadius));
+                        headerCell.setText(getString("BubbleRadius", R.string.BubbleRadius));
                     } else if (position == swipeGestureHeaderRow) {
-                        headerCell.setText(getString(R.string.ChatListSwipeGesture));
+                        headerCell.setText(getString("ChatListSwipeGesture", R.string.ChatListSwipeGesture));
                     } else if (position == selectThemeHeaderRow) {
-                        headerCell.setText(getString(R.string.SelectTheme));
+                        headerCell.setText(getString("SelectTheme", R.string.SelectTheme));
                     } else if (position == appIconHeaderRow) {
                         headerCell.setText(getString(R.string.AppIcon));
                     } else if (position == otherHeaderRow) {
-                        headerCell.setText(getString(R.string.OtherSettings));
+                        headerCell.setText(getString("OtherSettings", R.string.OtherSettings));
                     } else if (position == mediaSoundHeaderRow) {
-                        headerCell.setText(getString(R.string.MediaAndSoundSettings));
+                        headerCell.setText(getString("MediaAndSoundSettings", R.string.MediaAndSoundSettings));
                     }
                     break;
                 }
@@ -2463,29 +2463,29 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 case TYPE_TEXT_CHECK: {
                     TextCheckCell textCheckCell = (TextCheckCell) holder.itemView;
                     if (position == scheduleLocationRow) {
-                        textCheckCell.setTextAndCheck(getString(R.string.AutoNightLocation), Theme.autoNightScheduleByLocation, true);
+                        textCheckCell.setTextAndCheck(getString("AutoNightLocation", R.string.AutoNightLocation), Theme.autoNightScheduleByLocation, true);
                     } else if (position == enableAnimationsRow) {
                         SharedPreferences preferences = MessagesController.getGlobalMainSettings();
-                        textCheckCell.setTextAndCheck(getString(R.string.EnableAnimations), preferences.getBoolean("view_animations", true), true);
+                        textCheckCell.setTextAndCheck(getString("EnableAnimations", R.string.EnableAnimations), preferences.getBoolean("view_animations", true), true);
                     } else if (position == sendByEnterRow) {
                         SharedPreferences preferences = MessagesController.getGlobalMainSettings();
-                        textCheckCell.setTextAndCheck(getString(R.string.SendByEnter), preferences.getBoolean("send_by_enter", false), true);
+                        textCheckCell.setTextAndCheck(getString("SendByEnter", R.string.SendByEnter), preferences.getBoolean("send_by_enter", false), true);
                     } else if (position == raiseToSpeakRow) {
-                        textCheckCell.setTextAndValueAndCheck(getString(R.string.RaiseToSpeak), getString(R.string.RaiseToSpeakInfo), SharedConfig.raiseToSpeak, true, true);
+                        textCheckCell.setTextAndValueAndCheck(getString("RaiseToSpeak", R.string.RaiseToSpeak), getString("RaiseToSpeakInfo", R.string.RaiseToSpeakInfo), SharedConfig.raiseToSpeak, true, true);
                     } else if (position == raiseToListenRow) {
-                        textCheckCell.setTextAndValueAndCheck(getString(R.string.RaiseToListen), getString(R.string.RaiseToListenInfo), SharedConfig.raiseToListen, true, true);
+                        textCheckCell.setTextAndValueAndCheck(getString("RaiseToListen", R.string.RaiseToListen), getString("RaiseToListenInfo", R.string.RaiseToListenInfo), SharedConfig.raiseToListen, true, true);
                     } else if (position == nextMediaTapRow) {
-                        textCheckCell.setTextAndValueAndCheck(getString(R.string.NextMediaTap), getString(R.string.NextMediaTapInfo), SharedConfig.nextMediaTap, true, true);
+                        textCheckCell.setTextAndValueAndCheck(getString("NextMediaTap", R.string.NextMediaTap), getString("NextMediaTapInfo", R.string.NextMediaTapInfo), SharedConfig.nextMediaTap, true, true);
                     } else if (position == pauseOnRecordRow) {
-                        textCheckCell.setTextAndValueAndCheck(getString(R.string.PauseMusicOnRecord), getString(R.string.PauseMusicOnRecordInfo), SharedConfig.pauseMusicOnRecord, true, true);
+                        textCheckCell.setTextAndValueAndCheck(getString(R.string.PauseMusicOnRecord), getString("PauseMusicOnRecordInfo", R.string.PauseMusicOnRecordInfo), SharedConfig.pauseMusicOnRecord, true, true);
                     } else if (position == pauseOnMediaRow) {
                         textCheckCell.setTextAndCheck(getString(R.string.PauseMusicOnMedia), SharedConfig.pauseMusicOnMedia, true);
                     } else if (position == directShareRow) {
-                        textCheckCell.setTextAndValueAndCheck(getString(R.string.DirectShare), getString(R.string.DirectShareInfo), SharedConfig.directShare, false, true);
+                        textCheckCell.setTextAndValueAndCheck(getString("DirectShare", R.string.DirectShare), getString("DirectShareInfo", R.string.DirectShareInfo), SharedConfig.directShare, false, true);
                     } else if (position == sensitiveContentRow) {
                         textCheckCell.setTextAndValueAndCheck(getString(R.string.ShowSensitiveContent), getString(R.string.ShowSensitiveContentInfo), getMessagesController().showSensitiveContent(), true, true);
                     } else if (position == chatBlurRow) {
-                        textCheckCell.setTextAndCheck(getString(R.string.BlurInChat), SharedConfig.chatBlurEnabled(), true);
+                        textCheckCell.setTextAndCheck(getString("BlurInChat", R.string.BlurInChat), SharedConfig.chatBlurEnabled(), true);
                     }
                     break;
                 }
@@ -2493,19 +2493,19 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                     NotificationsCheckCell checkCell = (NotificationsCheckCell) holder.itemView;
                     if (position == nightThemeRow) {
                         boolean enabled = Theme.selectedAutoNightType != Theme.AUTO_NIGHT_TYPE_NONE;
-                        String value = enabled ? Theme.getCurrentNightThemeName() : getString(R.string.AutoNightThemeOff);
+                        String value = enabled ? Theme.getCurrentNightThemeName() : getString("AutoNightThemeOff", R.string.AutoNightThemeOff);
                         if (enabled) {
                             String type;
                             if (Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_SCHEDULED) {
-                                type = getString(R.string.AutoNightScheduled);
+                                type = getString("AutoNightScheduled", R.string.AutoNightScheduled);
                             } else if (Theme.selectedAutoNightType == Theme.AUTO_NIGHT_TYPE_SYSTEM) {
-                                type = getString(R.string.AutoNightSystemDefault);
+                                type = getString("AutoNightSystemDefault", R.string.AutoNightSystemDefault);
                             } else {
-                                type = getString(R.string.AutoNightAdaptive);
+                                type = getString("AutoNightAdaptive", R.string.AutoNightAdaptive);
                             }
                             value = type + " " + value;
                         }
-                        checkCell.setTextAndValueAndIconAndCheck(getString(R.string.AutoNightTheme), value, R.drawable.msg2_night_auto, enabled, 0, false, true);
+                        checkCell.setTextAndValueAndIconAndCheck(getString("AutoNightTheme", R.string.AutoNightTheme), value, R.drawable.msg2_night_auto, enabled, 0, false, true);
                     } else if (position == browserRow) {
                         checkCell.setTextAndValueAndIconAndCheck(getString(R.string.InappBrowser), getString(R.string.InappBrowserInfo), R.drawable.msg2_language, SharedConfig.inappBrowser, 0, false, true);
                     }
@@ -2541,22 +2541,22 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                     } else if (position == editThemeRow) {
                         cell.setSubtitle(null);
                         cell.setColors(Theme.key_windowBackgroundWhiteBlueText4, Theme.key_windowBackgroundWhiteBlueText4);
-                        cell.setTextAndIcon(getString(R.string.EditCurrentTheme), R.drawable.msg_theme, true);
+                        cell.setTextAndIcon(getString("EditCurrentTheme", R.string.EditCurrentTheme), R.drawable.msg_theme, true);
                     } else if (position == createNewThemeRow) {
                         cell.setSubtitle(null);
                         cell.setColors(Theme.key_windowBackgroundWhiteBlueText4, Theme.key_windowBackgroundWhiteBlueText4);
-                        cell.setTextAndIcon(getString(R.string.CreateNewTheme), R.drawable.msg_colors, false);
+                        cell.setTextAndIcon(getString("CreateNewTheme", R.string.CreateNewTheme), R.drawable.msg_colors, false);
                     } else if (position == liteModeRow) {
                         cell.setColors(Theme.key_dialogIcon, Theme.key_windowBackgroundWhiteBlackText);
-                        cell.setTextAndIcon(getString(R.string.LiteMode), R.drawable.msg2_animations, true);
-                        cell.setSubtitle(getString(R.string.LiteModeInfo));
+                        cell.setTextAndIcon(getString("LiteMode", R.string.LiteMode), R.drawable.msg2_animations, true);
+                        cell.setSubtitle(getString("LiteModeInfo", R.string.LiteModeInfo));
                         cell.heightDp = 60;
                         cell.offsetFromImage = 64;
                         cell.imageLeft = 20;
                     } else if (position == stickersRow) {
                         cell.setColors(Theme.key_dialogIcon, Theme.key_windowBackgroundWhiteBlackText);
-                        cell.setTextAndIcon(getString(R.string.StickersName), R.drawable.msg2_sticker, false);
-                        cell.setSubtitle(getString(R.string.StickersNameInfo2));
+                        cell.setTextAndIcon(getString("StickersName", R.string.StickersName), R.drawable.msg2_sticker, false);
+                        cell.setSubtitle(getString("StickersNameInfo2", R.string.StickersNameInfo2));
                         cell.offsetFromImage = 64;
                         cell.heightDp = 60;
                         cell.imageLeft = 20;

@@ -492,9 +492,9 @@ public class UsersSelectActivity extends BaseFragment implements NotificationCen
         if (isInclude) {
             ActionBarMenu menu = actionBar.createMenu();
             ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
-            headerItem.setContentDescription(LocaleController.getString(R.string.AccDescrMoreOptions));
-            headerItem.addSubItem(2, R.drawable.group_admin, LocaleController.getString(R.string.CheckAllAdministrated));
-            headerItem.addSubItem(3, R.drawable.msg_viewintopic, LocaleController.getString(R.string.CheckAllForum));
+            headerItem.setContentDescription(LocaleController.getString("AccDescrMoreOptions", R.string.AccDescrMoreOptions));
+            headerItem.addSubItem(2, R.drawable.group_admin, LocaleController.getString("CheckAllAdministrated", R.string.CheckAllAdministrated));
+            headerItem.addSubItem(3, R.drawable.msg_viewintopic, LocaleController.getString("CheckAllForum", R.string.CheckAllForum));
         }
 
         fragmentView = new ViewGroup(context) {

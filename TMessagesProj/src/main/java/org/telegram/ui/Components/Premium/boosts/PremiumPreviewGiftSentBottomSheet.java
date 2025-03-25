@@ -117,7 +117,7 @@ public class PremiumPreviewGiftSentBottomSheet extends PremiumPreviewBottomSheet
         if (selectedUsers.size() == 1) {
             subtitleView.append(replaceTags(formatString("GiftPremiumGiftsSentStatusForUser", R.string.GiftPremiumGiftsSentStatusForUser, UserObject.getFirstName(selectedUsers.get(0)))));
         } else {
-            subtitleView.append(replaceTags(getString(R.string.GiftPremiumGiftsSentStatus)));
+            subtitleView.append(replaceTags(getString("GiftPremiumGiftsSentStatus", R.string.GiftPremiumGiftsSentStatus)));
         }
     }
 

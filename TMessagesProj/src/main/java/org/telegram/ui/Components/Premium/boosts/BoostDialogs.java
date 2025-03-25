@@ -82,7 +82,7 @@ public class BoostDialogs {
             String strDate = error.text.replace("PREMIUM_SUB_ACTIVE_UNTIL_", "");
             long date = Long.parseLong(strDate);
             String formattedDate = LocaleController.getInstance().getFormatterBoostExpired().format(new Date(date * 1000L));
-            String subTitleText = getString(R.string.GiftPremiumActivateErrorText);
+            String subTitleText = getString("GiftPremiumActivateErrorText", R.string.GiftPremiumActivateErrorText);
             SpannableStringBuilder subTitleWithLink = AndroidUtilities.replaceSingleTag(
                     subTitleText,
                     Theme.key_undo_cancelColor, 0,
@@ -101,8 +101,8 @@ public class BoostDialogs {
 
     private static void showBulletin(final BulletinFactory bulletinFactory, Theme.ResourcesProvider resourcesProvider, final TLRPC.Chat chat, final boolean isGiveaway) {
         AndroidUtilities.runOnUIThread(() -> bulletinFactory.createSimpleBulletin(R.raw.star_premium_2,
-                isGiveaway ? getString(R.string.BoostingGiveawayCreated)
-                        : getString(R.string.BoostingAwardsCreated),
+                isGiveaway ? getString("BoostingGiveawayCreated", R.string.BoostingGiveawayCreated)
+                        : getString("BoostingAwardsCreated", R.string.BoostingAwardsCreated),
                 AndroidUtilities.replaceSingleTag(
                         isGiveaway ? getString(ChatObject.isChannelAndNotMegaGroup(chat) ? R.string.BoostingCheckStatistic : R.string.BoostingCheckStatisticGroup) :
                                 getString(ChatObject.isChannelAndNotMegaGroup(chat) ? R.string.BoostingCheckGiftsStatistic : R.string.BoostingCheckGiftsStatisticGroup),
@@ -256,7 +256,7 @@ public class BoostDialogs {
         container.addView(titleLayout, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 22, 0, 0, 4));
 
         TextView titleView = new TextView(context);
-        titleView.setText(getString(R.string.BoostingSelectDateTime));
+        titleView.setText(getString("BoostingSelectDateTime", R.string.BoostingSelectDateTime));
         titleView.setTextColor(datePickerColors.textColor);
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
         titleView.setTypeface(AndroidUtilities.bold());
@@ -297,7 +297,7 @@ public class BoostDialogs {
         dayPicker.setTag("DAY");
         dayPicker.setFormatter(value -> {
             if (value == 0) {
-                return getString(R.string.MessageScheduleToday);
+                return getString("MessageScheduleToday", R.string.MessageScheduleToday);
             } else {
                 long date = currentTime + (long) value * 86400000L;
                 calendar.setTimeInMillis(date);
@@ -396,7 +396,7 @@ public class BoostDialogs {
         buttonTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         buttonTextView.setTypeface(AndroidUtilities.bold());
         buttonTextView.setBackground(Theme.AdaptiveRipple.filledRect(datePickerColors.buttonBackgroundColor, 8));
-        buttonTextView.setText(getString(R.string.BoostingConfirm));
+        buttonTextView.setText(getString("BoostingConfirm", R.string.BoostingConfirm));
         container.addView(buttonTextView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, Gravity.LEFT | Gravity.BOTTOM, 16, 15, 16, 16));
         buttonTextView.setOnClickListener(v -> {
             calendar.setTimeInMillis(System.currentTimeMillis() + (long) dayPicker.getValue() * 24 * 3600 * 1000);
@@ -415,26 +415,26 @@ public class BoostDialogs {
 
     public static void showUnsavedChanges(int type, Context context, Theme.ResourcesProvider resourcesProvider, Runnable onApply, Runnable onDiscard) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, resourcesProvider);
-        builder.setTitle(getString(R.string.UnsavedChanges));
+        builder.setTitle(getString("UnsavedChanges", R.string.UnsavedChanges));
         String text;
         switch (type) {
             case TYPE_USER:
-                text = getString(R.string.BoostingApplyChangesUsers);
+                text = getString("BoostingApplyChangesUsers", R.string.BoostingApplyChangesUsers);
                 break;
             case TYPE_CHANNEL:
-                text = getString(R.string.BoostingApplyChangesChannels);
+                text = getString("BoostingApplyChangesChannels", R.string.BoostingApplyChangesChannels);
                 break;
             case TYPE_COUNTRY:
-                text = getString(R.string.BoostingApplyChangesCountries);
+                text = getString("BoostingApplyChangesCountries", R.string.BoostingApplyChangesCountries);
                 break;
             default:
                 text = "";
         }
         builder.setMessage(text);
-        builder.setPositiveButton(getString(R.string.ApplyTheme), (dialogInterface, i) -> {
+        builder.setPositiveButton(getString("ApplyTheme", R.string.ApplyTheme), (dialogInterface, i) -> {
             onApply.run();
         });
-        builder.setNegativeButton(getString(R.string.Discard), (dialogInterface, i) -> {
+        builder.setNegativeButton(getString("Discard", R.string.Discard), (dialogInterface, i) -> {
             onDiscard.run();
         });
         builder.show();
@@ -453,9 +453,9 @@ public class BoostDialogs {
             int current = selected.users;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context, resourcesProvider);
-            builder.setTitle(getString(R.string.BoostingReduceQuantity));
+            builder.setTitle(getString("BoostingReduceQuantity", R.string.BoostingReduceQuantity));
             builder.setMessage(replaceTags(formatPluralString("BoostingReduceUsersTextPlural", current, downTo)));
-            builder.setPositiveButton(getString(R.string.OK), (dialogInterface, i) -> {
+            builder.setPositiveButton(getString("OK", R.string.OK), (dialogInterface, i) -> {
 
             });
             builder.show();
@@ -486,10 +486,10 @@ public class BoostDialogs {
             int current = selected.users;
             int downTo = suggestion.users;
             AlertDialog.Builder builder = new AlertDialog.Builder(context, resourcesProvider);
-            builder.setTitle(getString(R.string.BoostingReduceQuantity));
+            builder.setTitle(getString("BoostingReduceQuantity", R.string.BoostingReduceQuantity));
             builder.setMessage(replaceTags(formatPluralString("BoostingReduceQuantityTextPlural", current, months, downTo)));
-            builder.setPositiveButton(getString(R.string.Reduce), (dialogInterface, i) -> onSuccess.run(finalSuggestion));
-            builder.setNegativeButton(getString(R.string.Cancel), (dialogInterface, i) -> {
+            builder.setPositiveButton(getString("Reduce", R.string.Reduce), (dialogInterface, i) -> onSuccess.run(finalSuggestion));
+            builder.setNegativeButton(getString("Cancel", R.string.Cancel), (dialogInterface, i) -> {
 
             });
             builder.show();
@@ -508,7 +508,7 @@ public class BoostDialogs {
         final boolean isSeveralChats = giveaway.channels.size() > 1;
         final boolean isStars = (giveaway.flags & 32) != 0;
         AlertDialog.Builder builder = new AlertDialog.Builder(context, resourcesProvider);
-        builder.setTitle(getString(R.string.BoostingGiveAwayAbout));
+        builder.setTitle(getString("BoostingGiveAwayAbout", R.string.BoostingGiveAwayAbout));
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
 
         if (isStars) {
@@ -548,7 +548,7 @@ public class BoostDialogs {
                 stringBuilder.append(replaceTags(formatString("BoostingGiveawayParticipant", R.string.BoostingGiveawayParticipant, from)));
             }
         } else if (giveawayInfo.disallowed_country != null && !giveawayInfo.disallowed_country.isEmpty()) {
-            stringBuilder.append(replaceTags(getString(R.string.BoostingGiveawayNotEligibleCountry)));
+            stringBuilder.append(replaceTags(getString("BoostingGiveawayNotEligibleCountry", R.string.BoostingGiveawayNotEligibleCountry)));
         } else if (giveawayInfo.admin_disallowed_chat_id != 0) {
             TLRPC.Chat badChat = MessagesController.getInstance(UserConfig.selectedAccount).getChat(giveawayInfo.admin_disallowed_chat_id);
             String title = badChat != null ? badChat.title : "";
@@ -565,7 +565,7 @@ public class BoostDialogs {
         }
 
         builder.setMessage(stringBuilder);
-        builder.setPositiveButton(getString(R.string.OK), (dialogInterface, i) -> {
+        builder.setPositiveButton(getString("OK", R.string.OK), (dialogInterface, i) -> {
 
         });
         applyDialogStyle(builder.show(), false);
@@ -584,7 +584,7 @@ public class BoostDialogs {
         boolean isSeveralChats = giveaway.channels.size() > 1;
         final boolean isStars = (giveaway.flags & 32) != 0;
         AlertDialog.Builder builder = new AlertDialog.Builder(context, resourcesProvider);
-        builder.setTitle(getString(R.string.BoostingGiveawayEnd));
+        builder.setTitle(getString("BoostingGiveawayEnd", R.string.BoostingGiveawayEnd));
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
 
         if (isStars) {
@@ -621,7 +621,7 @@ public class BoostDialogs {
         }
 
         if (giveawayInfo.refunded) {
-            String str = getString(R.string.BoostingGiveawayCanceledByPayment);
+            String str = getString("BoostingGiveawayCanceledByPayment", R.string.BoostingGiveawayCanceledByPayment);
             TextView bottomTextView = new TextView(context);
             bottomTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             bottomTextView.setTypeface(AndroidUtilities.bold());
@@ -632,7 +632,7 @@ public class BoostDialogs {
             bottomTextView.setPadding(dp(12), dp(12), dp(12), dp(12));
             builder.addBottomView(bottomTextView);
             builder.setMessage(stringBuilder);
-            builder.setPositiveButton(getString(R.string.Close), (dialogInterface, i) -> {
+            builder.setPositiveButton(getString("Close", R.string.Close), (dialogInterface, i) -> {
 
             });
             applyDialogStyle(builder.show(), true);
@@ -644,7 +644,7 @@ public class BoostDialogs {
                 if ((giveawayInfo.flags & 16) != 0) {
 
                 } else {
-                    builder.setPositiveButton(getString(R.string.BoostingGiveawayViewPrize), (dialogInterface, i) -> {
+                    builder.setPositiveButton(getString("BoostingGiveawayViewPrize", R.string.BoostingGiveawayViewPrize), (dialogInterface, i) -> {
                         BaseFragment fragment = LaunchActivity.getLastFragment();
                         if (fragment == null) {
                             return;
@@ -652,12 +652,12 @@ public class BoostDialogs {
                         GiftInfoBottomSheet.show(fragment, giveawayInfo.gift_code_slug);
                     });
                 }
-                builder.setNegativeButton(getString(R.string.Close), (dialogInterface, i) -> {
+                builder.setNegativeButton(getString("Close", R.string.Close), (dialogInterface, i) -> {
 
                 });
             } else {
-                str = getString(R.string.BoostingGiveawayYouNotWon);
-                builder.setPositiveButton(getString(R.string.Close), (dialogInterface, i) -> {
+                str = getString("BoostingGiveawayYouNotWon", R.string.BoostingGiveawayYouNotWon);
+                builder.setPositiveButton(getString("Close", R.string.Close), (dialogInterface, i) -> {
 
                 });
             }
@@ -688,11 +688,11 @@ public class BoostDialogs {
         boolean isChannel = ChatObject.isChannelAndNotMegaGroup(chat);
         builder.setTitle(getString(isChannel ? R.string.BoostingGiveawayPrivateChannel : R.string.BoostingGiveawayPrivateGroup));
         builder.setMessage(getString(isChannel ? R.string.BoostingGiveawayPrivateChannelWarning : R.string.BoostingGiveawayPrivateGroupWarning));
-        builder.setPositiveButton(getString(R.string.Add), (dialogInterface, i) -> {
+        builder.setPositiveButton(getString("Add", R.string.Add), (dialogInterface, i) -> {
             isAddButtonClicked.set(true);
             onAccepted.run();
         });
-        builder.setNegativeButton(getString(R.string.Cancel), (dialogInterface, i) -> {
+        builder.setNegativeButton(getString("Cancel", R.string.Cancel), (dialogInterface, i) -> {
 
         });
         builder.setOnDismissListener(dialog -> {
@@ -844,11 +844,11 @@ public class BoostDialogs {
         AlertDialog.Builder builder = new AlertDialog.Builder(baseFragment.getContext(), baseFragment.getResourceProvider());
         builder.setTitle(LocaleController.getString(R.string.BoostingMoreBoostsNeeded));
         builder.setMessage(AndroidUtilities.replaceTags(LocaleController.formatPluralString("BoostingGetMoreBoostByGiftingCount", BoostRepository.boostsPerSentGift(), chat.title)));
-        builder.setNegativeButton(getString(R.string.GiftPremium), (dialogInterface, i) -> {
+        builder.setNegativeButton(getString("GiftPremium", R.string.GiftPremium), (dialogInterface, i) -> {
             bottomSheet.dismiss();
             UserSelectorBottomSheet.open();
         });
-        builder.setPositiveButton(getString(R.string.Close), (dialogInterface, i) -> {
+        builder.setPositiveButton(getString("Close", R.string.Close), (dialogInterface, i) -> {
 
         });
         builder.show();

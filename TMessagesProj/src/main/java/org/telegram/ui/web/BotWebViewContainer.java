@@ -2657,7 +2657,7 @@ public abstract class BotWebViewContainer extends FrameLayout implements Notific
     }
 
     private void unknownError(String errCode) {
-        error(getString(R.string.UnknownError) + (errCode != null ? ": " + errCode : ""));
+        error(getString("UnknownError", R.string.UnknownError) + (errCode != null ? ": " + errCode : ""));
     }
 
     private void error(String reason) {

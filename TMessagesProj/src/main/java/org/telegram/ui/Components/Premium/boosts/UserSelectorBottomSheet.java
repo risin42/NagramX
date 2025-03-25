@@ -578,7 +578,7 @@ public class UserSelectorBottomSheet extends BottomSheetWithRecyclerListView imp
     }
 
     private void showMaximumUsersToast() {
-        String text = getString(R.string.BoostingSelectUpToWarningUsers);
+        String text = getString("BoostingSelectUpToWarningUsers", R.string.BoostingSelectUpToWarningUsers);
         BulletinFactory.of(container, resourcesProvider).createSimpleBulletin(R.raw.chats_infotip, text).show(true);
         try {
             container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
@@ -628,14 +628,14 @@ public class UserSelectorBottomSheet extends BottomSheetWithRecyclerListView imp
             stringBuilder.append(getString(R.string.CallInviteMembersButton));
         } else if (selectedIds.size() == 0) {
             if (LocaleController.isRTL) {
-                stringBuilder.append(getString(R.string.GiftPremiumChooseRecipientsBtn));
+                stringBuilder.append(getString("GiftPremiumChooseRecipientsBtn", R.string.GiftPremiumChooseRecipientsBtn));
                 stringBuilder.append("d").setSpan(recipientsBtnSpaceSpan, stringBuilder.length() - 1, stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
                 stringBuilder.append("d").setSpan(recipientsBtnSpaceSpan, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                stringBuilder.append(getString(R.string.GiftPremiumChooseRecipientsBtn));
+                stringBuilder.append(getString("GiftPremiumChooseRecipientsBtn", R.string.GiftPremiumChooseRecipientsBtn));
             }
         } else {
-            stringBuilder.append(getString(R.string.GiftPremiumProceedBtn));
+            stringBuilder.append(getString("GiftPremiumProceedBtn", R.string.GiftPremiumProceedBtn));
         }
         actionButton.setCount(selectedIds.size(), true);
         actionButton.setText(stringBuilder, animated, false);

@@ -180,7 +180,7 @@ public class EditTextCaption extends EditTextBoldCursor {
             applyTextStyleToSelection(new TextStyleSpan(run));
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), resourcesProvider);
-            builder.setTitle(LocaleController.getString(R.string.CreateMono));
+            builder.setTitle(LocaleController.getString("CreateMono", R.string.CreateMono));
 
             final EditTextBoldCursor editText = new EditTextBoldCursor(getContext()) {
                 @Override
@@ -190,7 +190,7 @@ public class EditTextCaption extends EditTextBoldCursor {
             };
             editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
             editText.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
-            editText.setHintText(LocaleController.getString(R.string.CreateMonoLanguage));
+            editText.setHintText(LocaleController.getString("CreateMonoLanguage", R.string.CreateMonoLanguage));
             editText.setHeaderHintColor(getThemedColor(Theme.key_windowBackgroundWhiteBlueHeader));
             editText.setSingleLine(true);
             editText.setFocusable(true);
@@ -214,7 +214,7 @@ public class EditTextCaption extends EditTextBoldCursor {
                 end = getSelectionEnd();
             }
 
-            builder.setPositiveButton(LocaleController.getString(R.string.OK), (dialogInterface, i) -> {
+            builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), (dialogInterface, i) -> {
                 String language = editText.getText().toString();
                 Editable editable = getText();
                 CharacterStyle[] spans = editable.getSpans(start, end, CharacterStyle.class);
@@ -251,7 +251,7 @@ public class EditTextCaption extends EditTextBoldCursor {
                     delegate.onSpansChanged();
                 }
             });
-            builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+            builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
             builder.show().setOnShowListener(dialog -> {
                 editText.requestFocus();
                 AndroidUtilities.showKeyboard(editText);
@@ -350,7 +350,7 @@ public class EditTextCaption extends EditTextBoldCursor {
 
     public void makeSelectedMention() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), resourcesProvider);
-        builder.setTitle(LocaleController.getString(R.string.CreateMention));
+        builder.setTitle(LocaleController.getString("CreateMention", R.string.CreateMention));
 
         final EditTextBoldCursor editText = new EditTextBoldCursor(getContext()) {
             @Override
@@ -383,7 +383,7 @@ public class EditTextCaption extends EditTextBoldCursor {
             end = getSelectionEnd();
         }
 
-        builder.setPositiveButton(LocaleController.getString(R.string.OK), (dialogInterface, i) -> {
+        builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), (dialogInterface, i) -> {
             Editable editable = getText();
             CharacterStyle[] spans = editable.getSpans(start, end, CharacterStyle.class);
             if (spans != null && spans.length > 0) {
@@ -408,7 +408,7 @@ public class EditTextCaption extends EditTextBoldCursor {
                 delegate.onSpansChanged();
             }
         });
-        builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
         builder.show().setOnShowListener(dialog -> {
             editText.requestFocus();
             AndroidUtilities.showKeyboard(editText);

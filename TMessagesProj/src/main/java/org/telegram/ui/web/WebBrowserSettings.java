@@ -397,7 +397,7 @@ public class WebBrowserSettings extends UniversalFragment implements Notificatio
             Dialog dialog = new AlertDialog.Builder(getParentActivity())
                     .setTitle(getString(R.string.SearchEngine))
                     .setView(linearLayout)
-                    .setNegativeButton(getString(R.string.Cancel), null)
+                    .setNegativeButton(getString("Cancel", R.string.Cancel), null)
                     .create();
             dialogRef.set(dialog);
             showDialog(dialog);

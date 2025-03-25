@@ -1955,7 +1955,7 @@ public class PaintView extends SizeNotifierFrameLayoutPhoto implements IPhotoPai
                             container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                         } catch (Exception ignored) {}
                         BulletinFactory.of(container, resourcesProvider).createSimpleBulletin(R.raw.chats_infotip,
-                                getString(R.string.LimitReached),
+                                getString("LimitReached", R.string.LimitReached),
                                 LocaleController.formatPluralString("StoryReactionsWidgetLimit2", MessagesController.getInstance(currentAccount).storiesSuggestedReactionsLimitPremium)
                         ).show(true);
                         return false;
@@ -3172,10 +3172,10 @@ public class PaintView extends SizeNotifierFrameLayoutPhoto implements IPhotoPai
                 return;
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity, resourcesProvider);
-            builder.setMessage(getString(R.string.PhotoEditorDiscardAlert));
-            builder.setTitle(getString(R.string.DiscardChanges));
-            builder.setPositiveButton(getString(R.string.PassportDiscard), (dialogInterface, i) -> okRunnable.run());
-            builder.setNegativeButton(getString(R.string.Cancel), null);
+            builder.setMessage(getString("PhotoEditorDiscardAlert", R.string.PhotoEditorDiscardAlert));
+            builder.setTitle(getString("DiscardChanges", R.string.DiscardChanges));
+            builder.setPositiveButton(getString("PassportDiscard", R.string.PassportDiscard), (dialogInterface, i) -> okRunnable.run());
+            builder.setNegativeButton(getString("Cancel", R.string.Cancel), null);
             photoViewer.showAlertDialog(builder);
         } else {
             okRunnable.run();
@@ -3203,10 +3203,10 @@ public class PaintView extends SizeNotifierFrameLayoutPhoto implements IPhotoPai
                 return;
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity, resourcesProvider);
-            builder.setMessage(getString(R.string.PhotoEditorDiscardAlert));
-            builder.setTitle(getString(R.string.DiscardChanges));
-            builder.setPositiveButton(getString(R.string.PassportDiscard), (dialogInterface, i) -> okRunnable.run());
-            builder.setNegativeButton(getString(R.string.Cancel), null);
+            builder.setMessage(getString("PhotoEditorDiscardAlert", R.string.PhotoEditorDiscardAlert));
+            builder.setTitle(getString("DiscardChanges", R.string.DiscardChanges));
+            builder.setPositiveButton(getString("PassportDiscard", R.string.PassportDiscard), (dialogInterface, i) -> okRunnable.run());
+            builder.setNegativeButton(getString("Cancel", R.string.Cancel), null);
             builder.show();
         } else {
             okRunnable.run();
@@ -4035,7 +4035,7 @@ public class PaintView extends SizeNotifierFrameLayoutPhoto implements IPhotoPai
                 deleteView.setPadding(dp(14), 0, dp(14), 0);
                 deleteView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
                 deleteView.setTag(0);
-                deleteView.setText(getString(R.string.PaintDelete));
+                deleteView.setText(getString("PaintDelete", R.string.PaintDelete));
                 deleteView.setOnClickListener(v -> {
                     if (entityView instanceof RoundView) {
                         onTryDeleteRound();
@@ -4187,7 +4187,7 @@ public class PaintView extends SizeNotifierFrameLayoutPhoto implements IPhotoPai
                 duplicateView.setPadding(dp(14), 0, dp(14), 0);
                 duplicateView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
                 duplicateView.setTag(2);
-                duplicateView.setText(getString(R.string.PaintDuplicate));
+                duplicateView.setText(getString("PaintDuplicate", R.string.PaintDuplicate));
                 duplicateView.setOnClickListener(v -> {
                     duplicateEntity(entityView);
 

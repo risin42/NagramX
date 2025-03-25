@@ -312,7 +312,7 @@ public class GiveawayMessageCell {
 
         topStringBuilder.setSpan(new RelativeSizeSpan(0.4f), topStringBuilder.length() - 1, topStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        CharSequence participants = replaceTags(getString(R.string.BoostingGiveawayMsgParticipants));
+        CharSequence participants = replaceTags(getString("BoostingGiveawayMsgParticipants", R.string.BoostingGiveawayMsgParticipants));
         topStringBuilder.append(participants);
         topStringBuilder.setSpan(new RelativeSizeSpan(1.05f), subTitleBuilder.length() + 2, subTitleBuilder.length() + 2 + participants.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         topStringBuilder.append("\n");
@@ -323,7 +323,7 @@ public class GiveawayMessageCell {
             topStringBuilder.append(formatPluralString(isChannel ? "BoostingGiveawayMsgAllSubsPlural" : "BoostingGiveawayMsgAllSubsGroupPlural", giveaway.channels.size()));
         }
 
-        CharSequence dateTitle = replaceTags(getString(R.string.BoostingWinnersDate));
+        CharSequence dateTitle = replaceTags(getString("BoostingWinnersDate", R.string.BoostingWinnersDate));
         SpannableStringBuilder bottomStringBuilder = new SpannableStringBuilder(dateTitle);
         bottomStringBuilder.setSpan(new RelativeSizeSpan(1.05f), 0, dateTitle.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         Date date = new Date(giveaway.until_date * 1000L);
