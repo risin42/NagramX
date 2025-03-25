@@ -116,6 +116,7 @@ fun ChatActivity.translateMessages(
                 selectedObject.translating = false
                 selectedObject.messageOwner.translated = true
                 selectedObject.messageOwner.translatedText = null
+                selectedObject.messageOwner.translatedPoll = null
                 MessagesStorage.getInstance(currentAccount).updateMessageCustomParams(
                     selectedObject.dialogId,
                     selectedObject.messageOwner
@@ -201,6 +202,7 @@ fun ChatActivity.translateMessages(
                     }
                 } else {
                     selectedObject.messageOwner.translatedText = null
+                    selectedObject.messageOwner.translatedPoll = null
                     MessagesStorage.getInstance(currentAccount).updateMessageCustomParams(
                         selectedObject.dialogId,
                         selectedObject.messageOwner

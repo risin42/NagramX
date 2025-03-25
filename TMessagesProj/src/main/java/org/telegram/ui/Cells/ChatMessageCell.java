@@ -7903,17 +7903,12 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     messageObject.checkedVotes.clear();
                 }
                 TLRPC.TL_textWithEntities question = media.poll.question;
-                if (messageObject.translated && messageObject.messageOwner != null && messageObject.messageOwner.translatedPoll != null && messageObject.messageOwner.translatedPoll.question != null) {
+                if (messageObject.translated && messageObject.messageOwner != null && messageObject.messageOwner.translatedPoll != null && messageObject.messageOwner.translatedPoll.question != null && !messageObject.messageOwner.translatedPoll.question.text.isEmpty()) {
                     question = messageObject.messageOwner.translatedPoll.question;
                 }
                 CharSequence questionText;
-                String questionNeko;
-                if (messageObject.messageOwner.translated) {
-                    questionNeko = media.poll.translatedQuestion;
-                    if (questionNeko == null) {
-                        messageObject.messageOwner.translated = false;
-                        questionNeko = media.poll.question.text;
-                    }
+                if (messageObject.messageOwner.translated && media.poll.translatedQuestion != null && !media.poll.translatedQuestion.isEmpty()) {
+                    String questionNeko = media.poll.translatedQuestion;
                     questionText = new SpannableStringBuilder(questionNeko);
                 } else {
                     questionText = new SpannableStringBuilder(question.text);
@@ -8073,7 +8068,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     boolean translated = false;
                     if (currentMessageObject.translated && currentMessageObject.messageOwner != null && currentMessageObject.messageOwner.translatedPoll != null) {
                         for (TLRPC.PollAnswer translatedPollAnswer : currentMessageObject.messageOwner.translatedPoll.answers) {
-                            if (Arrays.equals(translatedPollAnswer.option, pollAnswer.option)) {
+                            if (Arrays.equals(translatedPollAnswer.option, pollAnswer.option) && !translatedPollAnswer.text.text.isEmpty()) {
                                 translated = true;
                                 pollAnswer = translatedPollAnswer;
                                 break;
@@ -8081,9 +8076,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                         }
                     }
                     CharSequence answerText;
-                    String answeredTextNeko;
-                    if (messageObject.messageOwner.translated) {
-                        answeredTextNeko = pollAnswer.translatedText;
+                    if (messageObject.messageOwner.translated && pollAnswer.translatedText != null && !pollAnswer.translatedText.isEmpty()) {
+                        String answeredTextNeko = pollAnswer.translatedText;
                         answerText = new SpannableStringBuilder(answeredTextNeko);
                     } else {
                         answerText = new SpannableStringBuilder(pollAnswer.text.text);

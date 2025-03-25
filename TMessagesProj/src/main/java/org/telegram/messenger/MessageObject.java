@@ -3476,7 +3476,8 @@ public class MessageObject {
             messageOwner != null &&
             (messageOwner.translatedText != null || messageOwner.translatedPoll != null) &&
             (translateController.isManualTranslated(this) ||
-            TextUtils.equals(translateController.getDialogTranslateTo(getDialogId()), messageOwner.translatedToLanguage))
+                TextUtils.equals(translateController.isManualTranslated(this) ? NekoConfig.translateToLang.String() : translateController.getDialogTranslateTo(getDialogId()), messageOwner.translatedToLanguage)
+            )
         ) {
             if (translated) {
                 return replyUpdated || false;
