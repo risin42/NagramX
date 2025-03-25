@@ -24,7 +24,6 @@
     <string name="ShowPremiumStarInChat">在消息上显示 Premium 用户标识</string>
     <string name="ShowPremiumAvatarAnimation">显示 Premium 动态头像</string>
     <string name="AlwaysSaveChatOffset">总是保存聊天记录的偏移量</string>
-    <string name="AppIconGoogle">Google</string>
     <string name="AppIconColorful">缤纷</string>
     <string name="AppIconDarkGreen">深翠</string>
     <string name="AppIconNeon">霓虹</string>
@@ -109,7 +108,6 @@
     <string name="PushServiceTypeInApp">内置</string>
     <string name="PushServiceTypeFCM">Google FCM</string>
     <string name="PushServiceTypeUnified">Unified Push</string>
-    <string name="PushServiceTypeMicroG">MicroG</string>
     <string name="PushServiceTypeInAppDialog">显示常驻通知</string>
     <string name="PushServiceTypeUnifiedGateway">Unified Push Gateway</string>
     <string name="SendMp4DocumentAsVideo">MP4 视频作为文件发送时可预览</string>

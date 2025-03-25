@@ -125,7 +125,6 @@
     <string name="forceBlurInChat">Force Enable Chat Blur</string>
     <string name="ChatBlurAlphaValue">Chat Blur Alpha</string>
     <string name="disablePremiumStickerAnimation">Disable Premium Sticker Animations</string>
-    <string name="SelectAnIcon">Choose an icon</string>
     <string name="MutualContact">Mutual contact</string>
     <string name="MutualContactDescription">This contact is a mutual contact.</string>
     <string name="DatacenterStatusAbout">Check the status of Telegram\'s **datacenters**.</string>
@@ -259,7 +258,7 @@
     <string name="ScanQRCode">Scan QR Code</string>
     <string name="NoQrFound">No QR Code found</string>
     <string name="DeveloperSettings">Developer Settings</string>
-    <string name="TransSite">Translate Platform</string>
+    <string name="TransSite">Help with Translation</string>
     <string name="ShareMessages">Share</string>
     <string name="DisableVibration">Disable Vibration</string>
     <string name="IgnoreContentRestrictions">Ignore content restrictions</string>

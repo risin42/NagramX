@@ -24,7 +24,7 @@
     <string name="ShowPremiumStarInChat">Show Premium Star in Chat</string>
     <string name="ShowPremiumAvatarAnimation">Show Premium Avatar Animation</string>
     <string name="AlwaysSaveChatOffset">Always Save Chat Offset</string>
-    <string name="AppIconGoogle">Google</string>
+    <string name="AppIconGoogle" translatable="false">Google</string>
     <string name="AppIconColorful">Colorful</string>
     <string name="AppIconDarkGreen">Dark Green</string>
     <string name="AppIconNeon">Neon</string>
@@ -57,7 +57,7 @@
     <string name="IconDecoration">Icon Decoration</string>
     <string name="NotificationIcon">Notification Icon</string>
     <string name="Official">Official</string>
-    <string name="Nagram">Nagram</string>
+    <string name="Nagram" translatable="false">Nagram</string>
     <string name="HalloWeen">HalloWeen</string>
     <string name="ShowOnlineStatus">Show Online Status</string>
     <string name="ShowOnlineStatusNotice">Show the online status of other people next to their profile photo in groups.</string>
@@ -108,9 +108,9 @@
     <string name="ShowQuickReplyInBotCommands">Show Quick Reply in Bot Commands</string>
     <string name="PushServiceType">Push Service Type</string>
     <string name="PushServiceTypeInApp">In App</string>
-    <string name="PushServiceTypeFCM">Google FCM</string>
-    <string name="PushServiceTypeUnified">Unified Push</string>
-    <string name="PushServiceTypeMicroG">MicroG</string>
+    <string name="PushServiceTypeFCM" translatable="false">Google FCM</string>
+    <string name="PushServiceTypeUnified" translatable="false">Unified Push</string>
+    <string name="PushServiceTypeMicroG" translatable="false">MicroG</string>
     <string name="PushServiceTypeInAppDialog">Show Resident Notifications</string>
     <string name="PushServiceTypeUnifiedGateway">Unified Push Gateway</string>
     <string name="SendMp4DocumentAsVideo">Send MP4 Document as Video</string>

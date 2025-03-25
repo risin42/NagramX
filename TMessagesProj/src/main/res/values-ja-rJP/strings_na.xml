@@ -24,7 +24,6 @@
     <string name="ShowPremiumStarInChat">チャットにプレミアムスターを表示</string>
     <string name="ShowPremiumAvatarAnimation">プレミアムアバターアニメーションを表示</string>
     <string name="AlwaysSaveChatOffset">常にチャットオフセットを保存</string>
-    <string name="AppIconGoogle">Google</string>
     <string name="AppIconColorful">カラフル</string>
     <string name="AppIconDarkGreen">ダークグリーン</string>
     <string name="AppIconNeon">ネオン</string>
@@ -109,7 +108,6 @@
     <string name="PushServiceTypeInApp">内蔵</string>
     <string name="PushServiceTypeFCM">Google FCM</string>
     <string name="PushServiceTypeUnified">Unified Push</string>
-    <string name="PushServiceTypeMicroG">MicroG</string>
     <string name="PushServiceTypeInAppDialog">常駐通知を表示</string>
     <string name="PushServiceTypeUnifiedGateway">Unified Push Gateway</string>
     <string name="SendMp4DocumentAsVideo">MP4 動画をファイルとして送信するときにプレビュー可能にする</string>
