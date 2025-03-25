@@ -788,7 +788,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         floatingButtonIcon.setTransformType(TransformableLoginButtonView.TRANSFORM_OPEN_ARROW);
         floatingButtonIcon.setProgress(1f);
         floatingButtonIcon.setDrawBackground(false);
-        floatingButtonContainer.setContentDescription(getString(R.string.Done));
+        floatingButtonContainer.setContentDescription(getString("Done", R.string.Done));
         floatingButtonContainer.addView(floatingButtonIcon, LayoutHelper.createFrame(Build.VERSION.SDK_INT >= 21 ? 56 : 60, Build.VERSION.SDK_INT >= 21 ? 56 : 60));
 
         floatingProgressView = new RadialProgressView(context);
@@ -1149,7 +1149,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
         builder.setTitle(title);
         builder.setMessage(text);
-        builder.setPositiveButton(getString(R.string.OK), null);
+        builder.setPositiveButton(getString("OK", R.string.OK), null);
         showDialog(builder.create());
     }
 
@@ -1218,7 +1218,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getParentActivity());
         if (banned) {
             builder.setTitle(getString(R.string.RestorePasswordNoEmailTitle));
-            builder.setMessage(getString(R.string.BannedPhoneNumber));
+            builder.setMessage(getString("BannedPhoneNumber", R.string.BannedPhoneNumber));
         } else {
             if (inputData != null && inputData.patterns != null && !inputData.patterns.isEmpty() && inputData.country != null) {
                 int patternLength = Integer.MAX_VALUE;
@@ -1240,7 +1240,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                 builder.setMessage(getString(R.string.InvalidPhoneNumber));
             }
         }
-        builder.setNeutralButton(getString(R.string.BotHelp), (dialog, which) -> {
+        builder.setNeutralButton(getString("BotHelp", R.string.BotHelp), (dialog, which) -> {
             try {
                 PackageInfo pInfo = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
                 String version = String.format(Locale.US, "%s (%d)", pInfo.versionName, pInfo.versionCode);
@@ -1259,12 +1259,12 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             } catch (Exception e) {
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(fragment.getParentActivity());
                 builder2.setTitle(getString(R.string.RestorePasswordNoEmailTitle));
-                builder2.setMessage(getString(R.string.NoMailInstalled));
-                builder2.setPositiveButton(getString(R.string.OK), null);
+                builder2.setMessage(getString("NoMailInstalled", R.string.NoMailInstalled));
+                builder2.setPositiveButton(getString("OK", R.string.OK), null);
                 fragment.showDialog(builder2.create());
             }
         });
-        builder.setPositiveButton(getString(R.string.OK), null);
+        builder.setPositiveButton(getString("OK", R.string.OK), null);
         fragment.showDialog(builder.create());
     }
 
@@ -1380,10 +1380,10 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                 return;
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-            builder.setTitle(getString(R.string.StopLoadingTitle));
-            builder.setMessage(getString(R.string.StopLoading));
-            builder.setPositiveButton(getString(R.string.WaitMore), null);
-            builder.setNegativeButton(getString(R.string.Stop), (dialogInterface, i) -> {
+            builder.setTitle(getString("StopLoadingTitle", R.string.StopLoadingTitle));
+            builder.setMessage(getString("StopLoading", R.string.StopLoading));
+            builder.setPositiveButton(getString("WaitMore", R.string.WaitMore), null);
+            builder.setNegativeButton(getString("Stop", R.string.Stop), (dialogInterface, i) -> {
                 views[currentViewNum].onCancelPressed();
                 needHideProgress(true);
             });
@@ -2470,7 +2470,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             int bottomMargin = 72;
             if (newAccount && activityMode == MODE_LOGIN) {
                 syncContactsBox = new CheckBoxCell(context, 2);
-                syncContactsBox.setText(getString(R.string.SyncContacts), "", syncContacts, false);
+                syncContactsBox.setText(getString("SyncContacts", R.string.SyncContacts), "", syncContacts, false);
                 addView(syncContactsBox, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.LEFT | Gravity.TOP, 16, 0, 16 + (LocaleController.isRTL && AndroidUtilities.isSmallScreen() ? Build.VERSION.SDK_INT >= 21 ? 56 : 60 : 0), 0));
                 bottomMargin -= 24;
                 syncContactsBox.setOnClickListener(v -> {
@@ -2481,9 +2481,9 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     syncContacts = !syncContacts;
                     cell.setChecked(syncContacts, true);
                     if (syncContacts) {
-                        BulletinFactory.of(slideViewsContainer, null).createSimpleBulletin(R.raw.contacts_sync_on, getString(R.string.SyncContactsOn)).show();
+                        BulletinFactory.of(slideViewsContainer, null).createSimpleBulletin(R.raw.contacts_sync_on, getString("SyncContactsOn", R.string.SyncContactsOn)).show();
                     } else {
-                        BulletinFactory.of(slideViewsContainer, null).createSimpleBulletin(R.raw.contacts_sync_off, getString(R.string.SyncContactsOff)).show();
+                        BulletinFactory.of(slideViewsContainer, null).createSimpleBulletin(R.raw.contacts_sync_off, getString("SyncContactsOff", R.string.SyncContactsOff)).show();
                     }
                 });
             }
@@ -2949,16 +2949,16 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                                         preferences.edit().putBoolean("firstlogin", false).commit();
                                         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
 
-                                        builder.setPositiveButton(getString(R.string.Continue), null);
+                                        builder.setPositiveButton(getString("Continue", R.string.Continue), null);
                                         int resId;
                                         if (!allowCall && (!allowCancelCall || !allowReadCallLog)) {
-                                            builder.setMessage(getString(R.string.AllowReadCallAndLog));
+                                            builder.setMessage(getString("AllowReadCallAndLog", R.string.AllowReadCallAndLog));
                                             resId = R.raw.calls_log;
                                         } else if (!allowCancelCall || !allowReadCallLog) {
-                                            builder.setMessage(getString(R.string.AllowReadCallLog));
+                                            builder.setMessage(getString("AllowReadCallLog", R.string.AllowReadCallLog));
                                             resId = R.raw.calls_log;
                                         } else {
-                                            builder.setMessage(getString(R.string.AllowReadCall));
+                                            builder.setMessage(getString("AllowReadCall", R.string.AllowReadCall));
                                             resId = R.raw.incoming_calls;
                                         }
                                         builder.setTopAnimation(resId, 46, false, Theme.getColor(Theme.key_dialogTopBackground));
@@ -3026,16 +3026,16 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                             preferences.edit().putBoolean("firstlogin", false).commit();
                             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
 
-                            builder.setPositiveButton(getString(R.string.Continue), null);
+                            builder.setPositiveButton(getString("Continue", R.string.Continue), null);
                             int resId;
                             if (!allowCall && (!allowCancelCall || !allowReadCallLog)) {
-                                builder.setMessage(getString(R.string.AllowReadCallAndLog));
+                                builder.setMessage(getString("AllowReadCallAndLog", R.string.AllowReadCallAndLog));
                                 resId = R.raw.calls_log;
                             } else if (!allowCancelCall || !allowReadCallLog) {
-                                builder.setMessage(getString(R.string.AllowReadCallLog));
+                                builder.setMessage(getString("AllowReadCallLog", R.string.AllowReadCallLog));
                                 resId = R.raw.calls_log;
                             } else {
-                                builder.setMessage(getString(R.string.AllowReadCall));
+                                builder.setMessage(getString("AllowReadCall", R.string.AllowReadCall));
                                 resId = R.raw.incoming_calls;
                             }
                             builder.setTopAnimation(resId, 46, false, Theme.getColor(Theme.key_dialogTopBackground));
@@ -3054,11 +3054,11 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             }
 
             if (countryState == COUNTRY_STATE_EMPTY) {
-                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.ChooseCountry));
+                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("ChooseCountry", R.string.ChooseCountry));
                 needHideProgress(false);
                 return;
             } else if (countryState == COUNTRY_STATE_INVALID && !BuildVars.DEBUG_VERSION) {
-                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.WrongCountry));
+                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("WrongCountry", R.string.WrongCountry));
                 needHideProgress(false);
                 return;
             }
@@ -3088,14 +3088,14 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                             final int num = a;
                             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
                             builder.setTitle(getString(R.string.AppName));
-                            builder.setMessage(getString(R.string.AccountAlreadyLoggedIn));
-                            builder.setPositiveButton(getString(R.string.AccountSwitch), (dialog, which) -> {
+                            builder.setMessage(getString("AccountAlreadyLoggedIn", R.string.AccountAlreadyLoggedIn));
+                            builder.setPositiveButton(getString("AccountSwitch", R.string.AccountSwitch), (dialog, which) -> {
                                 if (UserConfig.selectedAccount != num) {
                                     ((LaunchActivity) getParentActivity()).switchToAccount(num, false);
                                 }
                                 finishFragment();
                             });
-                            builder.setNegativeButton(getString(R.string.OK), null);
+                            builder.setNegativeButton(getString("OK", R.string.OK), null);
                             showDialog(builder.create());
                             needHideProgress(false);
                             return;
@@ -3258,7 +3258,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                                             if (error1 == null) {
                                                 TL_account.Password password = (TL_account.Password) response1;
                                                 if (!TwoStepVerificationActivity.canHandleCurrentPassword(password, true)) {
-                                                    AlertsCreator.showUpdateAppAlert(getParentActivity(), LocaleController.getString(R.string.UpdateAppAlert), true);
+                                                    AlertsCreator.showUpdateAppAlert(getParentActivity(), LocaleController.getString("UpdateAppAlert", R.string.UpdateAppAlert), true);
                                                     return;
                                                 }
                                                 Bundle bundle = new Bundle();
@@ -3278,17 +3278,17 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                                         showDoneButton(false, true);
 
                                         if (errorI.text.contains("PHONE_NUMBER_INVALID")) {
-                                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString(R.string.InvalidPhoneNumber));
+                                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString("InvalidPhoneNumber", R.string.InvalidPhoneNumber));
                                         } else if (errorI.text.contains("PHONE_CODE_EMPTY") || errorI.text.contains("PHONE_CODE_INVALID")) {
-                                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString(R.string.InvalidCode));
+                                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString("InvalidCode", R.string.InvalidCode));
                                         } else if (errorI.text.contains("PHONE_CODE_EXPIRED")) {
                                             onBackPressed(true);
                                             setPage(VIEW_PHONE_INPUT, true, null, true);
-                                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString(R.string.CodeExpired));
+                                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString("CodeExpired", R.string.CodeExpired));
                                         } else if (errorI.text.startsWith("FLOOD_WAIT")) {
-                                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString(R.string.FloodWait));
+                                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString("FloodWait", R.string.FloodWait));
                                         } else {
-                                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString(R.string.ErrorOccurred) + "\n" + errorI.text);
+                                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString("ErrorOccurred", R.string.ErrorOccurred) + "\n" + errorI.text);
                                         }
                                     }
                                 }
@@ -3308,7 +3308,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                                 if (error1 == null) {
                                     TL_account.Password password = (TL_account.Password) response1;
                                     if (!TwoStepVerificationActivity.canHandleCurrentPassword(password, true)) {
-                                        AlertsCreator.showUpdateAppAlert(getParentActivity(), getString(R.string.UpdateAppAlert), true);
+                                        AlertsCreator.showUpdateAppAlert(getParentActivity(), getString("UpdateAppAlert", R.string.UpdateAppAlert), true);
                                         return;
                                     }
                                     Bundle bundle = new Bundle();
@@ -3324,19 +3324,19 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                         } else if (error.text.contains("PHONE_NUMBER_INVALID")) {
                             needShowInvalidAlert(LoginActivity.this, phone, phoneInputData, false);
                         } else if (error.text.contains("PHONE_PASSWORD_FLOOD")) {
-                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.FloodWait));
+                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("FloodWait", R.string.FloodWait));
                         } else if (error.text.contains("PHONE_NUMBER_FLOOD")) {
-                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.PhoneNumberFlood));
+                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("PhoneNumberFlood", R.string.PhoneNumberFlood));
                         } else if (error.text.contains("PHONE_NUMBER_BANNED")) {
                                 needShowInvalidAlert(LoginActivity.this, phone, phoneInputData, true);
                         } else if (error.text.contains("PHONE_CODE_EMPTY") || error.text.contains("PHONE_CODE_INVALID")) {
-                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.InvalidCode));
+                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("InvalidCode", R.string.InvalidCode));
                         } else if (error.text.contains("PHONE_CODE_EXPIRED")) {
                             onBackPressed(true);
                             setPage(VIEW_PHONE_INPUT, true, null, true);
-                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.CodeExpired));
+                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("CodeExpired", R.string.CodeExpired));
                         } else if (error.text.startsWith("FLOOD_WAIT")) {
-                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.FloodWait));
+                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("FloodWait", R.string.FloodWait));
                         } else if (error.code != -1000) {
                             AlertsCreator.processError(currentAccount, error, LoginActivity.this, req, phoneInputData.phoneNumber);
                         }
@@ -3381,8 +3381,8 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                                         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
 
                                         builder.setTopAnimation(R.raw.incoming_calls, 46, false, Theme.getColor(Theme.key_dialogTopBackground));
-                                        builder.setPositiveButton(getString(R.string.Continue), null);
-                                        builder.setMessage(getString(R.string.AllowFillNumber));
+                                        builder.setPositiveButton(getString("Continue", R.string.Continue), null);
+                                        builder.setMessage(getString("AllowFillNumber", R.string.AllowFillNumber));
                                         permissionsShowDialog = showDialog(builder.create(), true, null);
                                         needRequestPermissions = true;
                                     } else {
@@ -3499,7 +3499,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
         @Override
         public String getHeaderName() {
-            return getString(R.string.YourPhone);
+            return getString("YourPhone", R.string.YourPhone);
         }
 
         @Override
@@ -3974,7 +3974,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                                         mailer.putExtra(Intent.EXTRA_TEXT, "Phone: " + requestPhone + "\nApp version: " + version + "\nOS version: SDK " + Build.VERSION.SDK_INT + "\nDevice Name: " + Build.MANUFACTURER + Build.MODEL + (finalNetworkOperator != null ? "\nOperator: " + finalNetworkOperator : "") + "\nLocale: " + Locale.getDefault() + "\nError: " + lastError);
                                         getContext().startActivity(Intent.createChooser(mailer, "Send email..."));
                                     } catch (Exception e) {
-                                        needShowAlert(getString(R.string.NagramX), getString(R.string.NoMailInstalled));
+                                        needShowAlert(getString(R.string.NagramX), getString("NoMailInstalled", R.string.NoMailInstalled));
                                     }
                                 })
                                 .setPositiveButton(getString(R.string.Close), null)
@@ -4168,7 +4168,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             if (currentType == AUTH_TYPE_FLASH_CALL || currentType == AUTH_TYPE_MISSED_CALL) {
                 return phone;
             } else {
-                return getString(R.string.YourCode);
+                return getString("YourCode", R.string.YourCode);
             }
         }
 
@@ -4314,16 +4314,16 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             if (currentType != AUTH_TYPE_FRAGMENT_SMS) {
                 if (currentType == AUTH_TYPE_MESSAGE) {
                     if (nextType == AUTH_TYPE_FLASH_CALL || nextType == AUTH_TYPE_CALL || nextType == AUTH_TYPE_MISSED_CALL) {
-                        problemText.setText(getString(R.string.DidNotGetTheCodePhone));
+                        problemText.setText(getString("DidNotGetTheCodePhone", R.string.DidNotGetTheCodePhone));
                     } else if (nextType == AUTH_TYPE_FRAGMENT_SMS) {
-                        problemText.setText(getString(R.string.DidNotGetTheCodeFragment));
+                        problemText.setText(getString("DidNotGetTheCodeFragment", R.string.DidNotGetTheCodeFragment));
                     } else if (nextType == 0) {
-                        problemText.setText(getString(R.string.DidNotGetTheCode));
+                        problemText.setText(getString("DidNotGetTheCode", R.string.DidNotGetTheCode));
                     } else {
-                        problemText.setText(getString(R.string.DidNotGetTheCodeSms));
+                        problemText.setText(getString("DidNotGetTheCodeSms", R.string.DidNotGetTheCodeSms));
                     }
                 } else {
-                    problemText.setText(getString(R.string.DidNotGetTheCode));
+                    problemText.setText(getString("DidNotGetTheCode", R.string.DidNotGetTheCode));
                 }
             }
 
@@ -4536,11 +4536,11 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                             destroyTimer();
                             if (nextType == AUTH_TYPE_FLASH_CALL || nextType == AUTH_TYPE_CALL || nextType == AUTH_TYPE_SMS || nextType == AUTH_TYPE_PHRASE || nextType == AUTH_TYPE_WORD || nextType == AUTH_TYPE_MISSED_CALL) {
                                 if (nextType == AUTH_TYPE_CALL) {
-                                    timeText.setText(getString(R.string.RequestCallButton));
+                                    timeText.setText(getString("RequestCallButton", R.string.RequestCallButton));
                                 } else if (nextType == AUTH_TYPE_MISSED_CALL || nextType == AUTH_TYPE_FLASH_CALL) {
-                                    timeText.setText(getString(R.string.RequestMissedCall));
+                                    timeText.setText(getString("RequestMissedCall", R.string.RequestMissedCall));
                                 } else {
-                                    timeText.setText(getString(R.string.RequestSmsButton));
+                                    timeText.setText(getString("RequestSmsButton", R.string.RequestSmsButton));
                                 }
                                 timeText.setTextColor(Theme.getColor(Theme.key_chats_actionBackground));
                                 timeText.setTag(R.id.color_key_tag, Theme.key_chats_actionBackground);
@@ -4667,18 +4667,18 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                             if (currentType != AUTH_TYPE_FLASH_CALL) {
                                 boolean isWrongCode = false;
                                 if (error.text.contains("PHONE_NUMBER_INVALID")) {
-                                    needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.InvalidPhoneNumber));
+                                    needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("InvalidPhoneNumber", R.string.InvalidPhoneNumber));
                                 } else if (error.text.contains("PHONE_CODE_EMPTY") || error.text.contains("PHONE_CODE_INVALID")) {
                                     shakeWrongCode();
                                     isWrongCode = true;
                                 } else if (error.text.contains("PHONE_CODE_EXPIRED")) {
                                     onBackPressed(true);
                                     setPage(VIEW_PHONE_INPUT, true, null, true);
-                                    needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.CodeExpired));
+                                    needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("CodeExpired", R.string.CodeExpired));
                                 } else if (error.text.startsWith("FLOOD_WAIT")) {
-                                    needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.FloodWait));
+                                    needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("FloodWait", R.string.FloodWait));
                                 } else {
-                                    needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.ErrorOccurred) + "\n" + error.text);
+                                    needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("ErrorOccurred", R.string.ErrorOccurred) + "\n" + error.text);
                                 }
 
                                 if (!isWrongCode) {
@@ -4801,7 +4801,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                                     if (error1 == null) {
                                         TL_account.Password password = (TL_account.Password) response1;
                                         if (!TwoStepVerificationActivity.canHandleCurrentPassword(password, true)) {
-                                            AlertsCreator.showUpdateAppAlert(getParentActivity(), getString(R.string.UpdateAppAlert), true);
+                                            AlertsCreator.showUpdateAppAlert(getParentActivity(), getString("UpdateAppAlert", R.string.UpdateAppAlert), true);
                                             return;
                                         }
                                         Bundle bundle = new Bundle();
@@ -4841,18 +4841,18 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                                 if (currentType != AUTH_TYPE_FLASH_CALL) {
                                     boolean isWrongCode = false;
                                     if (error.text.contains("PHONE_NUMBER_INVALID")) {
-                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.InvalidPhoneNumber));
+                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("InvalidPhoneNumber", R.string.InvalidPhoneNumber));
                                     } else if (error.text.contains("PHONE_CODE_EMPTY") || error.text.contains("PHONE_CODE_INVALID")) {
                                         shakeWrongCode();
                                         isWrongCode = true;
                                     } else if (error.text.contains("PHONE_CODE_EXPIRED")) {
                                         onBackPressed(true);
                                         setPage(VIEW_PHONE_INPUT, true, null, true);
-                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.CodeExpired));
+                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("CodeExpired", R.string.CodeExpired));
                                     } else if (error.text.startsWith("FLOOD_WAIT")) {
-                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.FloodWait));
+                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("FloodWait", R.string.FloodWait));
                                     } else {
-                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.ErrorOccurred) + "\n" + error.text);
+                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("ErrorOccurred", R.string.ErrorOccurred) + "\n" + error.text);
                                     }
 
                                     if (!isWrongCode) {
@@ -5319,7 +5319,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                                 emailPattern.setSpan(new TextStyleSpan(run), startIndex, endIndex + 1, 0);
                             }
                             builder.setMessage(AndroidUtilities.formatSpannable(getString(R.string.RestoreEmailSent), emailPattern));
-                            builder.setTitle(getString(R.string.RestoreEmailSentTitle));
+                            builder.setTitle(getString("RestoreEmailSentTitle", R.string.RestoreEmailSentTitle));
                             builder.setPositiveButton(getString(R.string.Continue), (dialogInterface, i) -> {
                                 Bundle bundle = new Bundle();
                                 bundle.putString("email_unconfirmed_pattern", res.email_pattern);
@@ -5374,7 +5374,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
         @Override
         public String getHeaderName() {
-            return getString(R.string.LoginPassword);
+            return getString("LoginPassword", R.string.LoginPassword);
         }
 
         @Override
@@ -5610,7 +5610,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
             resetAccountText = new TextView(context);
             resetAccountText.setGravity(Gravity.CENTER_HORIZONTAL);
-            resetAccountText.setText(getString(R.string.ResetAccountStatus));
+            resetAccountText.setText(getString("ResetAccountStatus", R.string.ResetAccountStatus));
             resetAccountText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             resetAccountText.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             addView(resetAccountText, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 24, 0, 0));
@@ -5636,9 +5636,9 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     return;
                 }
                 showDialog(new AlertDialog.Builder(getParentActivity())
-                        .setTitle(getString(R.string.ResetMyAccountWarning))
-                        .setMessage(getString(R.string.ResetMyAccountWarningText))
-                        .setPositiveButton(getString(R.string.ResetMyAccountWarningReset), (dialogInterface, i) -> {
+                        .setTitle(getString("ResetMyAccountWarning", R.string.ResetMyAccountWarning))
+                        .setMessage(getString("ResetMyAccountWarningText", R.string.ResetMyAccountWarningText))
+                        .setPositiveButton(getString("ResetMyAccountWarningReset", R.string.ResetMyAccountWarningReset), (dialogInterface, i) -> {
                             needShowProgress(0);
                             TL_account.deleteAccount req = new TL_account.deleteAccount();
                             req.reason = "Forgot password";
@@ -5657,14 +5657,14 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                                     setPage(VIEW_REGISTER, true, params, false);
                                 } else {
                                     if (error.text.equals("2FA_RECENT_CONFIRM")) {
-                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.ResetAccountCancelledAlert));
+                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("ResetAccountCancelledAlert", R.string.ResetAccountCancelledAlert));
                                     } else {
                                         needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), error.text);
                                     }
                                 }
                             }), ConnectionsManager.RequestFlagWithoutLogin | ConnectionsManager.RequestFlagFailOnServerErrors);
                         })
-                        .setNegativeButton(getString(R.string.Cancel), null).create());
+                        .setNegativeButton(getString("Cancel", R.string.Cancel), null).create());
             });
         }
 
@@ -5679,7 +5679,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
         @Override
         public String getHeaderName() {
-            return getString(R.string.ResetAccount);
+            return getString("ResetAccount", R.string.ResetAccount);
         }
 
         private void updateTimeText() {
@@ -5864,7 +5864,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
         @Override
         public String getHeaderName() {
-            return getString(R.string.AddEmailTitle);
+            return getString("AddEmailTitle", R.string.AddEmailTitle);
         }
 
         @Override
@@ -5951,17 +5951,17 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     } else if (error.text.contains("EMAIL_NOT_ALLOWED")) {
                         needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.EmailNotAllowed));
                     } else if (error.text.contains("PHONE_PASSWORD_FLOOD")) {
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.FloodWait));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("FloodWait", R.string.FloodWait));
                     } else if (error.text.contains("PHONE_NUMBER_FLOOD")) {
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.PhoneNumberFlood));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("PhoneNumberFlood", R.string.PhoneNumberFlood));
                     } else if (error.text.contains("PHONE_CODE_EMPTY") || error.text.contains("PHONE_CODE_INVALID")) {
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.InvalidCode));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("InvalidCode", R.string.InvalidCode));
                     } else if (error.text.contains("PHONE_CODE_EXPIRED")) {
                         onBackPressed(true);
                         setPage(VIEW_PHONE_INPUT, true, null, true);
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.CodeExpired));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("CodeExpired", R.string.CodeExpired));
                     } else if (error.text.startsWith("FLOOD_WAIT")) {
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.FloodWait));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("FloodWait", R.string.FloodWait));
                     } else if (error.code != -1000) {
                         AlertsCreator.processError(currentAccount, error, LoginActivity.this, req, requestPhone);
                     }
@@ -6141,7 +6141,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                                     if (error.text.contains("PHONE_CODE_EXPIRED")) {
                                         onBackPressed(true);
                                         setPage(VIEW_PHONE_INPUT, true, null, true);
-                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.CodeExpired));
+                                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("CodeExpired", R.string.CodeExpired));
                                     } else {
                                         AlertsCreator.processError(currentAccount, error, LoginActivity.this, req);
                                     }
@@ -6226,7 +6226,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             errorViewSwitcher.addView(resendFrameLayout);
 
             wrongCodeView = new TextView(context);
-            wrongCodeView.setText(getString(R.string.WrongCode));
+            wrongCodeView.setText(getString("WrongCode", R.string.WrongCode));
             wrongCodeView.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
             wrongCodeView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
             wrongCodeView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
@@ -6278,7 +6278,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     } else if (error.text.contains("PHONE_CODE_EXPIRED")) {
                         onBackPressed(true);
                         setPage(VIEW_PHONE_INPUT, true, null, true);
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.CodeExpired));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("CodeExpired", R.string.CodeExpired));
                     } else {
                         AlertsCreator.processError(currentAccount, error, LoginActivity.this, req);
                     }
@@ -6638,7 +6638,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                             if (error1 == null) {
                                 TL_account.Password password = (TL_account.Password) response1;
                                 if (!TwoStepVerificationActivity.canHandleCurrentPassword(password, true)) {
-                                    AlertsCreator.showUpdateAppAlert(getParentActivity(), getString(R.string.UpdateAppAlert), true);
+                                    AlertsCreator.showUpdateAppAlert(getParentActivity(), getString("UpdateAppAlert", R.string.UpdateAppAlert), true);
                                     return;
                                 }
                                 Bundle bundle = new Bundle();
@@ -6661,7 +6661,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                         if (error.text.contains("EMAIL_ADDRESS_INVALID")) {
                             needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.EmailAddressInvalid));
                         } else if (error.text.contains("PHONE_NUMBER_INVALID")) {
-                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.InvalidPhoneNumber));
+                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("InvalidPhoneNumber", R.string.InvalidPhoneNumber));
                         } else if (error.text.contains("CODE_EMPTY") || error.text.contains("CODE_INVALID") || error.text.contains("EMAIL_CODE_INVALID") || error.text.contains("PHONE_CODE_INVALID")) {
                             shakeWrongCode();
                             isWrongCode = true;
@@ -6670,11 +6670,11 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                         } else if (error.text.contains("EMAIL_VERIFY_EXPIRED")) {
                             onBackPressed(true);
                             setPage(VIEW_PHONE_INPUT, true, null, true);
-                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.CodeExpired));
+                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("CodeExpired", R.string.CodeExpired));
                         } else if (error.text.startsWith("FLOOD_WAIT")) {
-                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.FloodWait));
+                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("FloodWait", R.string.FloodWait));
                         } else {
-                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.ErrorOccurred) + "\n" + error.text);
+                            needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("ErrorOccurred", R.string.ErrorOccurred) + "\n" + error.text);
                         }
 
                         if (!isWrongCode) {
@@ -6877,8 +6877,8 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
             troubleButton.setOnClickListener(view -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity())
-                        .setTitle(getString(R.string.RestorePasswordNoEmailTitle))
-                        .setMessage(getString(R.string.RestoreEmailTroubleText))
+                        .setTitle(getString("RestorePasswordNoEmailTitle", R.string.RestorePasswordNoEmailTitle))
+                        .setMessage(getString("RestoreEmailTroubleText", R.string.RestoreEmailTroubleText))
                         .setPositiveButton(getString(R.string.OK), (dialogInterface, i) -> setPage(VIEW_PASSWORD, true, new Bundle(), true))
                         .setNegativeButton(getString(R.string.ResetAccount), (dialog, which) -> tryResetAccount(requestPhone, phoneHash, phoneCode));
                 Dialog dialog = showDialog(builder.create());
@@ -6926,7 +6926,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
         @Override
         public String getHeaderName() {
-            return getString(R.string.LoginPassword);
+            return getString("LoginPassword", R.string.LoginPassword);
         }
 
         @Override
@@ -7213,9 +7213,9 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             }
 
             if (stage == 0) {
-                confirmTextView.setText(getString(R.string.PleaseEnterNewFirstPasswordLogin));
+                confirmTextView.setText(getString("PleaseEnterNewFirstPasswordLogin", R.string.PleaseEnterNewFirstPasswordLogin));
             } else {
-                confirmTextView.setText(getString(R.string.PasswordHintTextLogin));
+                confirmTextView.setText(getString("PasswordHintTextLogin", R.string.PasswordHintTextLogin));
             }
 
             cancelButton = new TextView(context);
@@ -7269,7 +7269,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
         @Override
         public String getHeaderName() {
-            return getString(R.string.NewPassword);
+            return getString("NewPassword", R.string.NewPassword);
         }
 
         @Override
@@ -7500,29 +7500,29 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                 return;
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-            builder.setTitle(getString(R.string.TermsOfService));
+            builder.setTitle(getString("TermsOfService", R.string.TermsOfService));
 
             if (needAccept) {
-                builder.setPositiveButton(getString(R.string.Accept), (dialog, which) -> {
+                builder.setPositiveButton(getString("Accept", R.string.Accept), (dialog, which) -> {
                     currentTermsOfService.popup = false;
                     onNextPressed(null);
                 });
-                builder.setNegativeButton(getString(R.string.Decline), (dialog, which) -> {
+                builder.setNegativeButton(getString("Decline", R.string.Decline), (dialog, which) -> {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(getParentActivity());
-                    builder1.setTitle(getString(R.string.TermsOfService));
-                    builder1.setMessage(getString(R.string.TosDecline));
-                    builder1.setPositiveButton(getString(R.string.SignUp), (dialog1, which1) -> {
+                    builder1.setTitle(getString("TermsOfService", R.string.TermsOfService));
+                    builder1.setMessage(getString("TosDecline", R.string.TosDecline));
+                    builder1.setPositiveButton(getString("SignUp", R.string.SignUp), (dialog1, which1) -> {
                         currentTermsOfService.popup = false;
                         onNextPressed(null);
                     });
-                    builder1.setNegativeButton(getString(R.string.Decline), (dialog12, which12) -> {
+                    builder1.setNegativeButton(getString("Decline", R.string.Decline), (dialog12, which12) -> {
                         onBackPressed(true);
                         setPage(VIEW_PHONE_INPUT, true, null, true);
                     });
                     showDialog(builder1.create());
                 });
             } else {
-                builder.setPositiveButton(getString(R.string.OK), null);
+                builder.setPositiveButton(getString("OK", R.string.OK), null);
             }
 
             SpannableStringBuilder text = new SpannableStringBuilder(currentTermsOfService.text);
@@ -7690,7 +7690,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             addView(titleTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 8, 12, 8, 0));
 
             descriptionTextView = new TextView(context);
-            descriptionTextView.setText(getString(R.string.RegisterText2));
+            descriptionTextView.setText(getString("RegisterText2", R.string.RegisterText2));
             descriptionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
             descriptionTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             descriptionTextView.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
@@ -7751,7 +7751,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             buildEditTextLayout(AndroidUtilities.isSmallScreen());
 
             wrongNumber = new TextView(context);
-            wrongNumber.setText(getString(R.string.CancelRegistration));
+            wrongNumber.setText(getString("CancelRegistration", R.string.CancelRegistration));
             wrongNumber.setGravity((LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.CENTER_HORIZONTAL);
             wrongNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             wrongNumber.setLineSpacing(AndroidUtilities.dp(2), 1.0f);
@@ -7776,7 +7776,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             privacyLayout.addView(privacyView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? 56 : 60, Gravity.LEFT | Gravity.BOTTOM, 14, 0, 70, 32));
             VerticalPositionAutoAnimator.attach(privacyView);
 
-            String str = getString(R.string.TermsOfServiceLogin);
+            String str = getString("TermsOfServiceLogin", R.string.TermsOfServiceLogin);
             SpannableStringBuilder text = new SpannableStringBuilder(str);
             int index1 = str.indexOf('*');
             int index2 = str.lastIndexOf('*');
@@ -7908,13 +7908,13 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             if (!force) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
                 builder.setTitle(getString(R.string.Warning));
-                builder.setMessage(getString(R.string.AreYouSureRegistration));
-                builder.setNegativeButton(getString(R.string.Stop), (dialogInterface, i) -> {
+                builder.setMessage(getString("AreYouSureRegistration", R.string.AreYouSureRegistration));
+                builder.setNegativeButton(getString("Stop", R.string.Stop), (dialogInterface, i) -> {
                     onBackPressed(true);
                     setPage(VIEW_PHONE_INPUT, true, null, true);
                     hidePrivacyView();
                 });
-                builder.setPositiveButton(getString(R.string.Continue), null);
+                builder.setPositiveButton(getString("Continue", R.string.Continue), null);
                 showDialog(builder.create());
                 return false;
             }
@@ -7926,7 +7926,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
         @Override
         public String getHeaderName() {
-            return getString(R.string.YourName);
+            return getString("YourName", R.string.YourName);
         }
 
         @Override
@@ -8013,17 +8013,17 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                 } else {
                     needHideProgress(false);
                     if (error.text.contains("PHONE_NUMBER_INVALID")) {
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.InvalidPhoneNumber));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("InvalidPhoneNumber", R.string.InvalidPhoneNumber));
                     } else if (error.text.contains("PHONE_CODE_EMPTY") || error.text.contains("PHONE_CODE_INVALID")) {
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.InvalidCode));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("InvalidCode", R.string.InvalidCode));
                     } else if (error.text.contains("PHONE_CODE_EXPIRED")) {
                         onBackPressed(true);
                         setPage(VIEW_PHONE_INPUT, true, null, true);
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.CodeExpired));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("CodeExpired", R.string.CodeExpired));
                     } else if (error.text.contains("FIRSTNAME_INVALID")) {
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.InvalidFirstName));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("InvalidFirstName", R.string.InvalidFirstName));
                     } else if (error.text.contains("LASTNAME_INVALID")) {
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.InvalidLastName));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("InvalidLastName", R.string.InvalidLastName));
                     } else {
                         needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), error.text);
                     }
@@ -8251,9 +8251,9 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setMessage(getString(R.string.ResetMyAccountWarningText));
-        builder.setTitle(getString(R.string.ResetMyAccountWarning));
-        builder.setPositiveButton(getString(R.string.ResetMyAccountWarningReset), (dialogInterface, i) -> {
+        builder.setMessage(getString("ResetMyAccountWarningText", R.string.ResetMyAccountWarningText));
+        builder.setTitle(getString("ResetMyAccountWarning", R.string.ResetMyAccountWarning));
+        builder.setPositiveButton(getString("ResetMyAccountWarningReset", R.string.ResetMyAccountWarningReset), (dialogInterface, i) -> {
             needShowProgress(0);
             TL_account.deleteAccount req = new TL_account.deleteAccount();
             req.reason = "Forgot password";
@@ -8271,7 +8271,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     setPage(VIEW_REGISTER, true, params, false);
                 } else {
                     if (error.text.equals("2FA_RECENT_CONFIRM")) {
-                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.ResetAccountCancelledAlert));
+                        needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("ResetAccountCancelledAlert", R.string.ResetAccountCancelledAlert));
                     } else if (error.text.startsWith("2FA_CONFIRM_WAIT_")) {
                         Bundle params = new Bundle();
                         params.putString("phoneFormated", requestPhone);
@@ -8286,7 +8286,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                 }
             }), ConnectionsManager.RequestFlagWithoutLogin | ConnectionsManager.RequestFlagFailOnServerErrors);
         });
-        builder.setNegativeButton(getString(R.string.Cancel), null);
+        builder.setNegativeButton(getString("Cancel", R.string.Cancel), null);
         showDialog(builder.create());
     }
 
@@ -8600,7 +8600,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
     private void doBotLogin(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(LocaleController.getString(R.string.BotLogin));
+        builder.setTitle(LocaleController.getString("BotLogin", R.string.BotLogin));
 
         final EditTextBoldCursor editText = new EditTextBoldCursor(context) {
             @Override
@@ -8610,7 +8610,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         };
         editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         editText.setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
-        editText.setHintText(LocaleController.getString(R.string.BotToken));
+        editText.setHintText(LocaleController.getString("BotToken", R.string.BotToken));
         editText.setHeaderHintColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlueHeader));
         editText.setSingleLine(true);
         editText.setFocusable(true);
@@ -8633,14 +8633,14 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         }
         builder.setView(layout);
 
-        builder.setPositiveButton(LocaleController.getString(R.string.OK), (dialogInterface, i) -> {
+        builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), (dialogInterface, i) -> {
             if (getParentActivity() == null) {
                 return;
             }
             String token = editText.getText().toString();
 
             if (token.length() == 0) {
-                needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString(R.string.InvalidAccessToken));
+                needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString("InvalidAccessToken", R.string.InvalidAccessToken));
                 return;
             }
 
@@ -8661,9 +8661,9 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     }
                     if (error.text != null) {
                         if (error.text.contains("ACCESS_TOKEN_INVALID")) {
-                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString(R.string.InvalidAccessToken));
+                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString("InvalidAccessToken", R.string.InvalidAccessToken));
                         } else if (error.text.startsWith("FLOOD_WAIT")) {
-                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString(R.string.FloodWait));
+                            needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString("FloodWait", R.string.FloodWait));
                         } else if (error.code != -1000) {
                             needShowAlert(LocaleController.getString(R.string.NagramX), error.code + ": " + error.text);
                         }
@@ -8673,7 +8673,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             }), ConnectionsManager.RequestFlagFailOnServerErrors | ConnectionsManager.RequestFlagWithoutLogin | ConnectionsManager.RequestFlagTryDifferentDc | ConnectionsManager.RequestFlagEnableUnauthorized);
             needShowProgress(reqId);
         });
-        builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+        builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
         builder.show().setOnShowListener(dialog -> {
             editText.requestFocus();
             AndroidUtilities.showKeyboard(editText);
@@ -9071,7 +9071,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
         @Override
         public String getHeaderName() {
-            return getString(R.string.NewPassword);
+            return getString("NewPassword", R.string.NewPassword);
         }
 
         @Override
@@ -9252,7 +9252,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                             if (error1 == null) {
                                 TL_account.Password password = (TL_account.Password) response1;
                                 if (!TwoStepVerificationActivity.canHandleCurrentPassword(password, true)) {
-                                    AlertsCreator.showUpdateAppAlert(getParentActivity(), getString(R.string.UpdateAppAlert), true);
+                                    AlertsCreator.showUpdateAppAlert(getParentActivity(), getString("UpdateAppAlert", R.string.UpdateAppAlert), true);
                                     return;
                                 }
                                 Bundle bundle = new Bundle();
@@ -9279,18 +9279,18 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                         if (currentType != AUTH_TYPE_FLASH_CALL) {
                             boolean isWrongCode = false;
                             if (error.text.contains("PHONE_NUMBER_INVALID")) {
-                                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.InvalidPhoneNumber));
+                                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("InvalidPhoneNumber", R.string.InvalidPhoneNumber));
                             } else if (error.text.contains("PHONE_CODE_EMPTY") || error.text.contains("PHONE_CODE_INVALID")) {
                                 onInputError(false);
                                 isWrongCode = true;
                             } else if (error.text.contains("PHONE_CODE_EXPIRED")) {
                                 onBackPressed(true);
                                 setPage(VIEW_PHONE_INPUT, true, null, true);
-                                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.CodeExpired));
+                                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("CodeExpired", R.string.CodeExpired));
                             } else if (error.text.startsWith("FLOOD_WAIT")) {
-                                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.FloodWait));
+                                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("FloodWait", R.string.FloodWait));
                             } else {
-                                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString(R.string.ErrorOccurred) + "\n" + error.text);
+                                needShowAlert(getString(R.string.RestorePasswordNoEmailTitle), getString("ErrorOccurred", R.string.ErrorOccurred) + "\n" + error.text);
                             }
 
                             if (isWrongCode) {
@@ -9686,7 +9686,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                 if (error1 == null) {
                     TL_account.Password password = (TL_account.Password) response1;
                     if (!TwoStepVerificationActivity.canHandleCurrentPassword(password, true)) {
-                        AlertsCreator.showUpdateAppAlert(getParentActivity(), LocaleController.getString(R.string.UpdateAppAlert), true);
+                        AlertsCreator.showUpdateAppAlert(getParentActivity(), LocaleController.getString("UpdateAppAlert", R.string.UpdateAppAlert), true);
                         return;
                     }
                     Bundle bundle = new Bundle();
@@ -9724,10 +9724,10 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         AtomicInteger targetApi = new AtomicInteger(-1);
         BottomBuilder builder = new BottomBuilder(getParentActivity());
         EditText[] inputs = new EditText[2];
-        builder.addTitle(LocaleController.getString(R.string.CustomApi),
+        builder.addTitle(LocaleController.getString("CustomApi", R.string.CustomApi),
                 true,
-                LocaleController.getString(R.string.UseCustomApiNotice));
-        builder.addRadioItem(LocaleController.getString(R.string.CustomApiNo), NekoXConfig.customApi == 0, (cell) -> {
+                LocaleController.getString("UseCustomApiNotice", R.string.UseCustomApiNotice));
+        builder.addRadioItem(LocaleController.getString("CustomApiNo", R.string.CustomApiNo), NekoXConfig.customApi == 0, (cell) -> {
             targetApi.set(0);
             builder.doRadioCheck(cell);
             for (EditText input : inputs) {
@@ -9735,7 +9735,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             }
             return Unit.INSTANCE;
         });
-        builder.addRadioItem(LocaleController.getString(R.string.CustomApiOfficial), NekoXConfig.customApi == 1, (cell) -> {
+        builder.addRadioItem(LocaleController.getString("CustomApiOfficial", R.string.CustomApiOfficial), NekoXConfig.customApi == 1, (cell) -> {
             targetApi.set(1);
             builder.doRadioCheck(cell);
             for (EditText input : inputs) {
@@ -9743,7 +9743,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             }
             return Unit.INSTANCE;
         });
-        builder.addRadioItem(LocaleController.getString(R.string.CustomApiTGX), NekoXConfig.customApi == 2, (cell) -> {
+        builder.addRadioItem(LocaleController.getString("CustomApiTGX", R.string.CustomApiTGX), NekoXConfig.customApi == 2, (cell) -> {
             targetApi.set(2);
             builder.doRadioCheck(cell);
             for (EditText input : inputs) {
@@ -9751,7 +9751,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             }
             return Unit.INSTANCE;
         });
-        builder.addRadioItem(LocaleController.getString(R.string.CustomApiInput), NekoXConfig.customApi > 2, (cell) -> {
+        builder.addRadioItem(LocaleController.getString("CustomApiInput", R.string.CustomApiInput), NekoXConfig.customApi > 2, (cell) -> {
             targetApi.set(3);
             builder.doRadioCheck(cell);
             for (EditText input : inputs) {
@@ -9809,7 +9809,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             }
         }
         builder.addCancelButton();
-        builder.addButton(LocaleController.getString(R.string.Set), (it) -> {
+        builder.addButton(LocaleController.getString("Set", R.string.Set), (it) -> {
             int target = targetApi.get();
             if (target > 2) {
                 if (NekoXConfig.customAppId == 0) {

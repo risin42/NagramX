@@ -128,7 +128,7 @@ public class StorageUsageView extends FrameLayout {
         calculatingTextView = new TextView(context);
         calculatingTextView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
 
-        String calculatingString = LocaleController.getString(R.string.CalculatingSize);
+        String calculatingString = LocaleController.getString("CalculatingSize",R.string.CalculatingSize);
         int indexOfDots = calculatingString.indexOf("...");
         if (indexOfDots >= 0) {
             SpannableString spannableString = new SpannableString(calculatingString);

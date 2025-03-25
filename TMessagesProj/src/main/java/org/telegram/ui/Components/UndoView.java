@@ -533,7 +533,7 @@ public class UndoView extends FrameLayout {
         infoTextView.setMovementMethod(null);
 
         if (currentAction == ACTION_NEED_RESTART) {
-            infoTextView.setText(LocaleController.getString(R.string.RestartAppToTakeEffect));
+            infoTextView.setText(LocaleController.getString("RestartAppToTakeEffect", R.string.RestartAppToTakeEffect));
 
             layoutParams.leftMargin = AndroidUtilities.dp(58);
             layoutParams.topMargin = AndroidUtilities.dp(13);

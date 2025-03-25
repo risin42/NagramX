@@ -404,7 +404,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
 //        items.add(new Item(7, LocaleController.getString(R.string.InviteFriends), inviteIcon));
 //        items.add(new Item(13, LocaleController.getString(R.string.TelegramFeatures), helpIcon));
         if (NekoConfig.useProxyItem.Bool() && (!NekoConfig.hideProxyByDefault.Bool() || SharedConfig.isProxyEnabled())) {
-            items.add(new CheckItem(13, LocaleController.getString(R.string.Proxy), R.drawable.msg_policy, SharedConfig::isProxyEnabled, () -> {
+            items.add(new CheckItem(13, LocaleController.getString("Proxy", R.string.Proxy), R.drawable.msg_policy, SharedConfig::isProxyEnabled, () -> {
                 SharedConfig.setProxyEnable(!SharedConfig.isProxyEnabled());
                 return true;
             }));
@@ -412,9 +412,9 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
 
         if (NekoXConfig.disableStatusUpdate && UserConfig.getInstance(UserConfig.selectedAccount).isClientActivated() && !UserConfig.getInstance(UserConfig.selectedAccount).getCurrentUser().bot) {
             boolean online = NekoXConfig.lastOnlineState;
-            String message = online ? StrUtil.upperFirst(LocaleController.getString(R.string.Online)) : LocaleController.getString(R.string.VoipOfflineTitle);
+            String message = online ? StrUtil.upperFirst(LocaleController.getString("Online", R.string.Online)) : LocaleController.getString("VoipOfflineTitle", R.string.VoipOfflineTitle);
             if (NekoXConfig.keepOnlineStatus) {
-                message += " (" + LocaleController.getString(R.string.Locked) + ")";
+                message += " (" + LocaleController.getString("Locked", R.string.Locked) + ")";
             }
             items.add(new CheckItem(14, message, R.drawable.msg_view_file, () -> online, () -> {
                 MessagesController controller = MessagesController.getInstance(UserConfig.selectedAccount);

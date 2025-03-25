@@ -95,7 +95,7 @@ public class MemberRequestCell extends FrameLayout {
         banButton.setGravity((LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.CENTER_VERTICAL);
         banButton.setMaxLines(1);
         banButton.setPadding(btnPadding, 0, btnPadding, 0);
-        banButton.setText(LocaleController.getString(R.string.KickFromGroup));
+        banButton.setText(LocaleController.getString("KickFromGroup", R.string.KickFromGroup));
         banButton.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText));
         banButton.setTextSize(14);
         banButton.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));

@@ -1360,7 +1360,7 @@ public class LocaleController {
 
     public static String getCurrentLanguageName() {
         LocaleInfo localeInfo = getInstance().currentLocaleInfo;
-        return localeInfo == null || TextUtils.isEmpty(localeInfo.name) ? getString(R.string.LanguageName) : localeInfo.name;
+        return localeInfo == null || TextUtils.isEmpty(localeInfo.name) ? getString("LanguageName", R.string.LanguageName) : localeInfo.name;
     }
 
     private String getStringInternal(String key, int res) {
@@ -2109,7 +2109,7 @@ public class LocaleController {
             if (dateDay == day && year == dateYear) {
                 return getInstance().getFormatterDay().format(new Date(date));
             } else if (dateDay + 1 == day && year == dateYear) {
-                return getString(R.string.Yesterday);
+                return getString("Yesterday", R.string.Yesterday);
             } else if (Math.abs(System.currentTimeMillis() - date) < 31536000000L) {
                 return getInstance().getFormatterDayMonth().format(new Date(date));
             } else {
@@ -2808,27 +2808,27 @@ public class LocaleController {
                 if (isOnline != null) {
                     isOnline[0] = true;
                 }
-                return getString(R.string.Online);
+                return getString("Online", R.string.Online);
             }
         }
         if (user == null || user.status == null || user.status.expires == 0 || UserObject.isDeleted(user) || user instanceof TLRPC.TL_userEmpty) {
-            return getString(R.string.ALongTimeAgo);
+            return getString("ALongTimeAgo", R.string.ALongTimeAgo);
         } else {
             int currentTime = ConnectionsManager.getInstance(currentAccount).getCurrentTime();
             if (user.status.expires > currentTime) {
                 if (isOnline != null) {
                     isOnline[0] = true;
                 }
-                return getString(R.string.Online);
+                return getString("Online", R.string.Online);
             } else {
                 if (user.status.expires == -1) {
-                    return getString(R.string.Invisible);
+                    return getString("Invisible", R.string.Invisible);
                 } else if (user.status.expires == -100 || user.status.expires == -1000) {
-                    return getString(R.string.Lately);
+                    return getString("Lately", R.string.Lately);
                 } else if (user.status.expires == -101 || user.status.expires == -1001) {
-                    return getString(R.string.WithinAWeek);
+                    return getString("WithinAWeek", R.string.WithinAWeek);
                 } else if (user.status.expires == -102 || user.status.expires == -1002) {
-                    return getString(R.string.WithinAMonth);
+                    return getString("WithinAMonth", R.string.WithinAMonth);
                 } else {
                     return formatDateOnline(user.status.expires, madeShorter);
                 }

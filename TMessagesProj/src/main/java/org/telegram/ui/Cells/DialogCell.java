@@ -5340,7 +5340,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         } else if (fromChat != null && fromChat.title != null) {
             return AndroidUtilities.escape(fromChat.title.replace("\n", ""));
         } else {
-            return LocaleController.getString(R.string.HiddenName);
+            return LocaleController.getString("HiddenName", R.string.HiddenName);
         }
     }
 

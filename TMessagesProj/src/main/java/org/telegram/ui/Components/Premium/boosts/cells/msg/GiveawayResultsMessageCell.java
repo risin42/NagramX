@@ -305,7 +305,7 @@ public class GiveawayResultsMessageCell {
         int giftSize = AndroidUtilities.dp(90);
         int maxWidth = AndroidUtilities.dp(230);
 
-        CharSequence winnersSelected = replaceTags(getString(R.string.BoostingGiveawayResultsMsgWinnersSelected));
+        CharSequence winnersSelected = replaceTags(getString("BoostingGiveawayResultsMsgWinnersSelected", R.string.BoostingGiveawayResultsMsgWinnersSelected));
         SpannableStringBuilder titleStringBuilder = new SpannableStringBuilder(winnersSelected);
         titleStringBuilder.setSpan(new RelativeSizeSpan(1.05f), 0, winnersSelected.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
