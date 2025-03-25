@@ -405,7 +405,7 @@ public class NekoSettingsActivity extends BaseFragment {
                 } else if (position == channelTipsRow) {
                     MessagesController.getInstance(currentAccount).openByUserName("NagramTips", NekoSettingsActivity.this, 1);
                 } else if (position == translationRow) {
-                    Browser.openUrl(getParentActivity(), "https://xtaolabs.crowdin.com/nagram");
+                    Browser.openUrl(getParentActivity(), "https://crowdin.com/project/NagramX");
                 } else if (position == sourceCodeRow) {
                     Browser.openUrl(getParentActivity(), "https://github.com/risin42/NagramX");
                 } else if (position == datacenterStatusRow) {
@@ -467,7 +467,7 @@ public class NekoSettingsActivity extends BaseFragment {
                 channelRow = rowCount++;
                 channelTipsRow = rowCount++;
                 sourceCodeRow = rowCount++;
-                // translationRow = rowCount++;
+                translationRow = rowCount++;
                 datacenterStatusRow = rowCount++;
             }
         }

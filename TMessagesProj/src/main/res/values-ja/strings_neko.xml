@@ -254,7 +254,7 @@
     <string name="ScanQRCode">QR コードをスキャン</string>
     <string name="NoQrFound">QR コードが見つかりません</string>
     <string name="DeveloperSettings">開発者設定</string>
-    <string name="TransSite">プラットフォームを翻訳</string>
+    <string name="TransSite">翻訳者になろう</string>
     <string name="DisableVibration">バイブを無効にする</string>
     <string name="IgnoreContentRestrictions">コンテンツ制限を無視します</string>
     <string name="SendCommentAfterForward">転送後にコメントを送信する</string>
