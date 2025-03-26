@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
+import org.telegram.messenger.TranslateController;
 import org.telegram.tgnet.TLRPC
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.cc.CCConverter
@@ -134,6 +135,48 @@ interface Translator {
             }
         }
 
+        @JvmStatic
+        fun translatePoll(
+            to: Locale = NekoConfig.translateToLang.String()?.code2Locale
+                ?: LocaleController.getInstance().currentLocale,
+            query: TranslateController.PollText,
+            translateCallBack: TranslateCallBack3
+        ) {
+
+            UIUtil.runOnIoDispatcher {
+                runCatching {
+                    var translatedPoll = TranslateController.PollText()
+                    if (query.question != null) {
+                        translatedPoll.question = translateBase(
+                            to, query.question.text, ArrayList(), NekoConfig.translationProvider.Int()
+                        )
+                    }
+                    for (answer in query.answers) {
+                        var translatedAnswer = TLRPC.TL_pollAnswer()
+                        translatedAnswer.text = translateBase(
+                            to, answer.text.text, ArrayList(), NekoConfig.translationProvider.Int()
+                        )
+                        translatedAnswer.option = answer.option
+                        translatedPoll.answers.add(translatedAnswer)
+                    }
+                    if (query.solution != null) {
+                        translatedPoll.solution = translateBase(
+                            to, query.solution.text, ArrayList(), NekoConfig.translationProvider.Int()
+                        )
+                    }
+
+                    UIUtil.runOnUIThread(Runnable { translateCallBack.onSuccess(translatedPoll) })
+                }.onFailure {
+                    UIUtil.runOnUIThread(Runnable {
+                        translateCallBack.onFailed(
+                            it is UnsupportedOperationException,
+                            it.message ?: it.javaClass.simpleName
+                        )
+                    })
+                }
+            }
+        }
+ 
         @Throws(Exception::class)
         suspend fun translateArticle(query: String) = translateArticle(
             NekoConfig.translateToLang.String()?.code2Locale
@@ -326,6 +369,11 @@ interface Translator {
 
         interface TranslateCallBack2 {
             fun onSuccess(finalText: TLRPC.TL_textWithEntities)
+            fun onFailed(unsupported: Boolean, message: String)
+        }
+
+        interface TranslateCallBack3 {
+            fun onSuccess(pollText: TranslateController.PollText)
             fun onFailed(unsupported: Boolean, message: String)
         }
     }

@@ -60,7 +60,7 @@ fun ChatActivity.translateMessages(
             controller.removeAsManualTranslate(messageObject)
             messageObject.translating = false
             messageObject.messageOwner.translated = false
-            if (messageObject.isPoll || translatorMode == TRANSLATE_MODE_APPEND) {
+            if (translatorMode == TRANSLATE_MODE_APPEND) {
                 AndroidUtilities.runOnUIThread {
                     messageHelper.resetMessageContent(dialogId, messageObject)
                 }
@@ -75,8 +75,9 @@ fun ChatActivity.translateMessages(
     // translation for this message is already available in that case
     } else if (
                 translatorMode == TRANSLATE_MODE_REPLACE &&
-                messages.all { it.messageOwner.translatedText?.text?.isNotEmpty() == true } &&
-                messages.all { it.messageOwner.translatedToLanguage == target.language }
+                messages.all { it.messageOwner.translatedToLanguage == target.language } &&
+                (messages.all { it.messageOwner.translatedText?.text?.isNotEmpty() == true } ||
+                messages.all { it.messageOwner.translatedPoll?.question?.text?.isNotEmpty() == true })
             ) {
                 messages.forEach { messageObject ->
                     controller.removeAsTranslatingItem(messageObject)
@@ -111,7 +112,7 @@ fun ChatActivity.translateMessages(
                 controller.removeAsTranslatingItem(selectedObject)
                 selectedObject.translating = false
                 return@forEachIndexed
-            } else if (state == 2 && (selectedObject.isPoll || translatorMode == TRANSLATE_MODE_APPEND)) {
+            } else if (state == 2 && (translatorMode == TRANSLATE_MODE_APPEND)) {
                 controller.removeAsTranslatingItem(selectedObject)
                 selectedObject.translating = false
                 selectedObject.messageOwner.translated = true

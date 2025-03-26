@@ -818,6 +818,8 @@ public class TranslateController extends BaseController {
             return;
         }
 
+        long dialogId = message.getDialogId();
+
         // --- NagramX Start ---
         if (shouldSkipTranslation(message.messageOwner.message)) {
             return;
@@ -844,11 +846,11 @@ public class TranslateController extends BaseController {
                             loadingTranslations.remove(message.getId());
                         }
                         if (unsupported) {
+                            toggleTranslatingDialog(dialogId, false);
                             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert2) + " " + error);
-                        // } else {
-                        //     NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert1));
+                        } else {
+                            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert1) + " " + error);
                         }
-                        Log.e(NAX, "Failed to translate message: " + error);
                         callback.run(message.getId(), null, language);
                     });
                 }
@@ -856,8 +858,6 @@ public class TranslateController extends BaseController {
             return;
         }
         // --- NagramX End ---
-
-        long dialogId = message.getDialogId();
 
         PendingTranslation pendingTranslation;
         synchronized (this) {
@@ -993,6 +993,48 @@ public class TranslateController extends BaseController {
         }
 
         long dialogId = message.getDialogId();
+
+        // --- NagramX Start ---
+        if (NekoConfig.translationProvider.Int() != Translator.providerTelegram) {
+            final TLRPC.MessageMedia media = MessageObject.getMedia(message);
+            if (!(media instanceof TLRPC.TL_messageMediaPoll)) {
+                return;
+            }
+            final TLRPC.TL_messageMediaPoll mediaPoll = (TLRPC.TL_messageMediaPoll) media;
+            final PollText pollText = PollText.fromPoll(mediaPoll);
+
+            synchronized (this) {
+                loadingTranslations.add(message.getId());
+            }
+
+            Translator.translatePoll(TranslatorKt.getCode2Locale(language), pollText, new Translator.Companion.TranslateCallBack3() {
+                @Override
+                public void onSuccess(@NonNull PollText poll) {
+                    synchronized (TranslateController.this) {
+                        loadingTranslations.remove(message.getId());
+                    }
+                    callback.run(message.getId(), poll, language);
+                }
+
+                @Override
+                public void onFailed(boolean unsupported, @NonNull String error) {
+                    AndroidUtilities.runOnUIThread(() -> {
+                        synchronized (TranslateController.this) {
+                            loadingTranslations.remove(message.getId());
+                        }
+                        if (unsupported) {
+                            toggleTranslatingDialog(dialogId, false);
+                            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert2) + " " + error);
+                        } else {
+                            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert1) + " " + error);
+                        }
+                        callback.run(message.getId(), null, language);
+                    });
+                }
+            });
+            return;
+        }
+        // --- NagramX End ---
 
         PendingPollTranslation pendingTranslation;
         synchronized (this) {

@@ -7908,8 +7908,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 }
                 CharSequence questionText;
                 if (messageObject.messageOwner.translated && media.poll.translatedQuestion != null && !media.poll.translatedQuestion.isEmpty()) {
-                    String questionNeko = media.poll.translatedQuestion;
-                    questionText = new SpannableStringBuilder(questionNeko);
+                    questionText = new SpannableStringBuilder(media.poll.translatedQuestion);
                 } else {
                     questionText = new SpannableStringBuilder(question.text);
                 }
@@ -8077,8 +8076,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     }
                     CharSequence answerText;
                     if (messageObject.messageOwner.translated && pollAnswer.translatedText != null && !pollAnswer.translatedText.isEmpty()) {
-                        String answeredTextNeko = pollAnswer.translatedText;
-                        answerText = new SpannableStringBuilder(answeredTextNeko);
+                        answerText = new SpannableStringBuilder(pollAnswer.translatedText);
                     } else {
                         answerText = new SpannableStringBuilder(pollAnswer.text.text);
                     }
