@@ -16,6 +16,7 @@ import org.telegram.messenger.MessageObject
 import org.telegram.messenger.MessagesController
 import org.telegram.messenger.MessagesStorage
 import org.telegram.messenger.NotificationCenter
+import org.telegram.messenger.TranslateController
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ChatActivity
 import tw.nekomimi.nekogram.NekoConfig
@@ -135,7 +136,7 @@ fun ChatActivity.translateMessages(
                     runCatching {
                         question = Translator.translate(target, pool.question.text)
                     }.onFailure { e ->
-                        handleTranslationError(parentActivity, e) {
+                        handleTranslationError(parentActivity, e, controller, selectedObject) {
                             translateMessages(target, messages)
                         }
                         return@trans
@@ -148,7 +149,7 @@ fun ChatActivity.translateMessages(
                         runCatching {
                             answer = Translator.translate(target, it.text.text)
                         }.onFailure { e ->
-                            handleTranslationError(parentActivity, e) {
+                            handleTranslationError(parentActivity, e, controller, selectedObject) {
                                 translateMessages(target, messages)
                             }
                             return@trans
@@ -163,20 +164,10 @@ fun ChatActivity.translateMessages(
                             selectedObject.messageOwner.message,
                             selectedObject.messageOwner.entities
                         )
-                    }.onFailure {
-                        val parentActivity = parentActivity
-                        if (parentActivity != null) {
-                            AlertUtil.showTransFailedDialog(
-                                parentActivity,
-                                it is UnsupportedOperationException,
-                                it.message ?: it.javaClass.simpleName
-                            ) {
-                                translateMessages(target, messages)
-                            }
+                    }.onFailure { e ->
+                        handleTranslationError(parentActivity, e, controller, selectedObject) {
+                            translateMessages(target, messages)
                         }
-                        controller.removeAsTranslatingItem(selectedObject)
-                        controller.removeAsManualTranslate(selectedObject)
-                        selectedObject.translating = false
                         return@trans
                     }
                     selectedObject.messageOwner.translatedMessage =
@@ -255,8 +246,16 @@ fun MessageObject.checkDatabaseForTranslation(locale: Locale, translatorMode: In
 }
 
 private fun handleTranslationError(
-    parentActivity: Context?, throwable: Throwable, retryAction: () -> Unit
+    parentActivity: Context?,
+    throwable: Throwable,
+    controller: TranslateController,
+    messageObject: MessageObject,
+    retryAction: () -> Unit
 ) {
+    controller.removeAsTranslatingItem(messageObject)
+    controller.removeAsManualTranslate(messageObject)
+    messageObject.translating = false
+
     if (parentActivity != null) {
         AlertUtil.showTransFailedDialog(
             parentActivity,
