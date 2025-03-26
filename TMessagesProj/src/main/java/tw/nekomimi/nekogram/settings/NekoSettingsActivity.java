@@ -344,7 +344,7 @@ public class NekoSettingsActivity extends BaseFragment {
                             } else if (position == experimentRow) {
                                 textCell.setTextAndIcon(getString(R.string.Experimental), R.drawable.msg_fave, true);
                             } else if (position == importSettingsRow) {
-                                textCell.setTextAndIcon(getString(R.string.ImportSettings), R.drawable.msg_photo_settings, true);
+                                textCell.setTextAndIcon(getString(R.string.ImportSettings), R.drawable.msg_download_settings, true);
                             } else if (position == exportSettingsRow) {
                                 textCell.setTextAndIcon(getString(R.string.BackupSettings), R.drawable.msg_instant_link, true);
                             } else if (position == resetSettingsRow) {
