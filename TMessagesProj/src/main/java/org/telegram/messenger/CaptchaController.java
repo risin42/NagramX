@@ -2,10 +2,10 @@ package org.telegram.messenger;
 
 import android.app.Activity;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.recaptcha.Recaptcha;
-import com.google.android.recaptcha.RecaptchaAction;
-import com.google.android.recaptcha.RecaptchaTasksClient;
+// import com.google.android.gms.tasks.OnSuccessListener;
+// import com.google.android.recaptcha.Recaptcha;
+// import com.google.android.recaptcha.RecaptchaAction;
+// import com.google.android.recaptcha.RecaptchaTasksClient;
 
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.ui.LaunchActivity;
@@ -64,13 +64,13 @@ public class CaptchaController {
         final Request finalRequest = r;
 
         final Activity activity = AndroidUtilities.getActivity();
-        if (activity == null) {
+        if (true || activity == null) {
             FileLog.e("CaptchaController: no activity found");
             finalRequest.done("RECAPTCHA_FAILED_NO_ACTIVITY");
             return;
         }
 
-        Recaptcha.getTasksClient(activity.getApplication(), key_id)
+        /*Recaptcha.getTasksClient(activity.getApplication(), key_id)
             .addOnSuccessListener(client -> {
                 client.executeTask(getAction(action))
                     .addOnSuccessListener(token -> {
@@ -89,10 +89,10 @@ public class CaptchaController {
             .addOnFailureListener(e -> {
                 FileLog.e("CaptchaController: getTasksClient failure", e);
                 finalRequest.done("RECAPTCHA_FAILED_GETCLIENT_EXCEPTION_" + formatException(e));
-            });
+            });*/
     }
 
-    private static RecaptchaAction getAction(String action) {
+    /*private static RecaptchaAction getAction(String action) {
         switch (action) {
             case "login":
             case "LOGIN":
@@ -103,7 +103,7 @@ public class CaptchaController {
             default:
                 return RecaptchaAction.custom(action);
         }
-    }
+    }*/
 
     private static String formatException(Exception e) {
         if (e == null) return "NULL";
