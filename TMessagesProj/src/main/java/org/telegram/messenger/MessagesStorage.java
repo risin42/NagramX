@@ -15,6 +15,7 @@ import static org.telegram.messenger.MessagesController.LOAD_FORWARD;
 import static org.telegram.messenger.MessagesController.LOAD_FROM_UNREAD;
 
 import android.appwidget.AppWidgetManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.text.SpannableStringBuilder;
@@ -50,6 +51,7 @@ import org.telegram.ui.Components.Reactions.ReactionsLayoutInBubble;
 import org.telegram.ui.Components.VideoPlayer;
 import org.telegram.ui.DialogsActivity;
 import org.telegram.ui.EditWidgetActivity;
+import org.telegram.ui.LaunchActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -70,6 +72,7 @@ import java.util.function.Consumer;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 import tw.nekomimi.nekogram.transtale.TranslateDb;
 import xyz.nextalone.nagram.NaConfig;
 import com.radolyn.ayugram.messages.AyuMessagesController;
@@ -1384,6 +1387,10 @@ public class MessagesStorage extends BaseController {
     }
 
     public void clearLocalDatabase() {
+        clearLocalDatabase(false);
+    }
+
+    public void clearLocalDatabase(boolean restart) {
         storageQueue.postRunnable(() -> {
             SQLiteCursor cursor = null;
             SQLitePreparedStatement state5 = null;
@@ -1516,6 +1523,12 @@ public class MessagesStorage extends BaseController {
                     cursor.dispose();
                 }
                 reset();
+                // NagramX
+                if (restart) {
+                    AndroidUtilities.runOnUIThread(() -> {
+                        AppRestartHelper.triggerRebirth(ApplicationLoader.applicationContext, new Intent(ApplicationLoader.applicationContext, LaunchActivity.class));
+                    });
+                }
             }
         });
     }

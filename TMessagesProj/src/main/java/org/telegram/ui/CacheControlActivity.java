@@ -1711,7 +1711,7 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
             if (fullReset) {
                 getMessagesStorage().fullReset();
             } else {
-                getMessagesStorage().clearLocalDatabase();
+                getMessagesStorage().clearLocalDatabase(true);
             }
         });
         AlertDialog alertDialog = builder.create();

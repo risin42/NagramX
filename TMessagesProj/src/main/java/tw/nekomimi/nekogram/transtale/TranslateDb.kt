@@ -84,6 +84,7 @@ class TranslateDb(val code: String) {
                     .forEach { it.drop() }
 
             repo.clear()
+            mkDatabase("translate_caches", true)
 
         }
 
