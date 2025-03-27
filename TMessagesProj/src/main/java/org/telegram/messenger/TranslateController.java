@@ -848,9 +848,9 @@ public class TranslateController extends BaseController {
                         if (unsupported) {
                             toggleTranslatingDialog(dialogId, false);
                             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert2) + " " + error);
-                        } else {
+                        }/* else {
                             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert1) + " " + error);
-                        }
+                        }*/
                         callback.run(message.getId(), null, language);
                     });
                 }
@@ -1025,9 +1025,9 @@ public class TranslateController extends BaseController {
                         if (unsupported) {
                             toggleTranslatingDialog(dialogId, false);
                             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert2) + " " + error);
-                        } else {
+                        }/* else {
                             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert1) + " " + error);
-                        }
+                        }*/
                         callback.run(message.getId(), null, language);
                     });
                 }
