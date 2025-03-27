@@ -9059,7 +9059,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         }
 
-        if (getDialogId() == getUserConfig().getClientUserId() && (getUserConfig().isPremium() && NekoConfig.disableTrending.Bool())) {
+        if (getDialogId() == getUserConfig().getClientUserId() && getUserConfig().isPremium()) {
             actionBarSearchTags = new SearchTagsList(context, ChatActivity.this, contentView, currentAccount, getSavedDialogId(), themeDelegate, true) {
                 @Override
                 protected boolean setFilter(ReactionsLayoutInBubble.VisibleReaction reaction) {
