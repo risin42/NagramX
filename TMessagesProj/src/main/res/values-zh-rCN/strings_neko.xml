@@ -292,7 +292,6 @@
     <string name="repeatConfirm">复读前确认</string>
     <string name="repeatConfirmText">确定要复读这条消息？</string>
     <string name="valuesLargeAvatarInDrawer">Telegram 默认\n使用头像作为背景\n使用大只头像作为背景</string>
-    <string name="hideSponsoredMessage">隐藏赞助消息</string>
     <string name="DisableInstantCamera">禁用相机即时预览</string>
     <string name="showSeconds">以秒为单位显示时间戳</string>
     <string name="rememberAllBackMessages">记住所有已点击的回复</string>

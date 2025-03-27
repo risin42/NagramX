@@ -300,7 +300,6 @@
     <string name="repeatConfirm">Ask Before Repost</string>
     <string name="repeatConfirmText">Are you sure you want to Repost?</string>
     <string name="valuesLargeAvatarInDrawer">Telegram Default\nAvatar as background\nBig avatar as background</string>
-    <string name="hideSponsoredMessage">Hide Sponsored Messages</string>
     <string name="rememberAllBackMessages">Remember All Clicked Replies</string>
     <string name="DisableInstantCamera">Disable Instant Camera</string>
     <string name="showSeconds">Show Timestamp in Seconds</string>

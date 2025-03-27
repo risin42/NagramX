@@ -20166,8 +20166,6 @@ public class MessagesController extends BaseController implements NotificationCe
                             message.entities = sponsoredMessage.entities;
                             message.flags |= 128;
                         }
-                        if (NekoConfig.hideSponsoredMessage.Bool())
-                            message.hide = true;
                         message.peer_id = getPeer(dialogId);
                         message.flags |= 256;
                         message.date = getConnectionsManager().getCurrentTime();
