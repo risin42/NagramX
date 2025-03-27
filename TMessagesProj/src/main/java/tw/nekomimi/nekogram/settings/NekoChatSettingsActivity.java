@@ -126,11 +126,9 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDefaultDeleteMenuDeleteAll()));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDefaultDeleteMenuDoActionsInCommonGroups()));
         }}));
-    }));
-    private final AbstractConfigCell customEditedMessageRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomEditedMessage(), "", null));
-    private final AbstractConfigCell customDeletedMarkRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomDeletedMark(), "", null));
+    })); 
     private final AbstractConfigCell useEditedIconRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getUseEditedIcon()));
-    private final AbstractConfigCell useDeletedIconRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getUseDeletedIcon()));
+    private final AbstractConfigCell customEditedMessageRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomEditedMessage(), "", null));
     private final AbstractConfigCell dateOfForwardMsgRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDateOfForwardedMsg()));
     private final AbstractConfigCell showMessageIDRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowMessageID()));
     private final AbstractConfigCell showPremiumStarInChatRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowPremiumStarInChat()));
@@ -239,6 +237,9 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private UndoView tooltip;
 
     public NekoChatSettingsActivity() {
+        if (NaConfig.INSTANCE.getUseEditedIcon().Bool()) {
+            cellGroup.rows.remove(customEditedMessageRow);
+        }
         addRowsToMap(cellGroup);
     }
 
@@ -385,6 +386,20 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             } else if (key.equals(NekoConfig.labelChannelUser.getKey())) {
                 setCanNotChange();
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(channelAliasRow));
+            } else if (key.equals(NaConfig.INSTANCE.getUseEditedIcon().getKey())) {
+                if ((boolean) newValue) {
+                    if (cellGroup.rows.contains(customEditedMessageRow)) {
+                        final int index = cellGroup.rows.indexOf(customEditedMessageRow);
+                        cellGroup.rows.remove(customEditedMessageRow);
+                        listAdapter.notifyItemRemoved(index);
+                    }
+                } else {
+                    if (!cellGroup.rows.contains(customEditedMessageRow)) {
+                        final int index = cellGroup.rows.indexOf(useEditedIconRow) + 1;
+                        cellGroup.rows.add(index, customEditedMessageRow);
+                        listAdapter.notifyItemInserted(index);
+                    }
+                }
             }
         };
 
