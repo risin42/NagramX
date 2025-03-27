@@ -95,6 +95,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell useMediaStreamInVoipRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useMediaStreamInVoip));
     private final AbstractConfigCell saveToChatSubfolderRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSaveToChatSubfolder()));
     private final AbstractConfigCell springAnimationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimation()));
+    private final AbstractConfigCell springAnimationCrossfadeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimationCrossfade()));
     private final AbstractConfigCell customAudioBitrateRow = cellGroup.appendCell(new ConfigCellCustom("CustomAudioBitrate", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell dividerExperimental = cellGroup.appendCell(new ConfigCellDivider());
 
@@ -192,6 +193,9 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         }
         if (!NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().Bool()) {
             cellGroup.rows.remove(saveDeletedMessageInBotChatRow);
+        }
+        if (!NaConfig.INSTANCE.getSpringAnimation().Bool()) {
+            cellGroup.rows.remove(springAnimationCrossfadeRow);
         }
         addRowsToMap(cellGroup);
     }
@@ -432,6 +436,19 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                     }
                 }
             } else if (key.equals(NaConfig.INSTANCE.getSpringAnimation().getKey())) {
+                 if (!(boolean) newValue) {
+                    if (cellGroup.rows.contains(springAnimationCrossfadeRow)) {
+                        final int index = cellGroup.rows.indexOf(springAnimationCrossfadeRow);
+                        cellGroup.rows.remove(springAnimationCrossfadeRow);
+                        listAdapter.notifyItemRemoved(index);
+                    }
+                } else {
+                    if (!cellGroup.rows.contains(springAnimationCrossfadeRow)) {
+                        final int index = cellGroup.rows.indexOf(springAnimationRow) + 1;
+                        cellGroup.rows.add(index, springAnimationCrossfadeRow);
+                        listAdapter.notifyItemInserted(index);
+                    }
+                }
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             }
         };

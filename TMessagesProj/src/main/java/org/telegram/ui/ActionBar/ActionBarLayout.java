@@ -91,7 +91,7 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
 
     // --- Spring Animation ---
     private static final boolean USE_SPRING_ANIMATION = NaConfig.INSTANCE.getSpringAnimation().Bool();
-    private static final boolean USE_ACTIONBAR_CROSSFADE = USE_SPRING_ANIMATION;
+    private static final boolean USE_ACTIONBAR_CROSSFADE = NaConfig.INSTANCE.getSpringAnimationCrossfade().Bool();
     private static final float SPRING_STIFFNESS = 1000f;
     private static final float SPRING_MULTIPLIER = 1000f;
     private static final float SPRING_DAMPING_RATIO = 1f;

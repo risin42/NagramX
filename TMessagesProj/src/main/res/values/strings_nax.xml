@@ -101,6 +101,7 @@
     <string name="TranslatorOptions">Options</string>
     <string name="GoogleTranslateExp">Use New Google Translate</string>
     <string name="SpringAnimation">Spring Animation</string>
+    <string name="SpringAnimationCrossfade">Animated Action Bar</string>
     <string name="Other">Other</string>
     <string name="RestartApp">Restart App</string>
     <string name="ResetSettings">Reset Settings</string>

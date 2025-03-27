@@ -1016,6 +1016,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var springAnimationCrossfade =
+        addConfig(
+            "SpringAnimationCrossfade",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

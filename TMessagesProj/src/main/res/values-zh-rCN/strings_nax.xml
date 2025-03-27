@@ -88,6 +88,7 @@
     <string name="TranslatorOptions">选项</string>
     <string name="GoogleTranslateExp">使用新版谷歌翻译</string>
     <string name="SpringAnimation">Spring 过渡动画</string>
+    <string name="SpringAnimationCrossfade">动态操作栏</string>
     <string name="Other">其他</string>
     <string name="RestartApp">重启应用</string>
     <string name="ResetSettings">重置设置</string>
