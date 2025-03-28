@@ -4,7 +4,7 @@
     <string name="ForceCopy">強制コピー</string>
     <string name="CombineMessage">メッセージを結合</string>
     <string name="TextStyle">テキストスタイル</string>
-    <string name="NoiseSuppressAndVoiceEnhance">ノイズ抑制と音声強調</string>
+    <string name="NoiseSuppressAndVoiceEnhance">ノイズ抑制と音声強化</string>
     <string name="RepeatAsCopy">引用なしでリポスト</string>
     <string name="DoubleTapAction">ダブルタップ操作</string>
     <string name="SendReactions">リアクションを送信</string>
@@ -106,10 +106,7 @@
     <string name="ShowQuickReplyInBotCommands">ボットコマンドでクイック返信を表示</string>
     <string name="PushServiceType">通知プッシュサービス</string>
     <string name="PushServiceTypeInApp">内蔵</string>
-    <string name="PushServiceTypeFCM">Google FCM</string>
-    <string name="PushServiceTypeUnified">Unified Push</string>
     <string name="PushServiceTypeInAppDialog">常駐通知を表示</string>
-    <string name="PushServiceTypeUnifiedGateway">Unified Push Gateway</string>
     <string name="SendMp4DocumentAsVideo">MP4 動画をファイルとして送信するときにプレビュー可能にする</string>
     <string name="StickersChooseShortNameForStickerPack">パックの短い名前を選択してください</string>
     <string name="StickersCopyStickerSet">ステッカーパック全体をコピー</string>
@@ -131,8 +128,8 @@
     <string name="RegexFiltersAddDescription">ウェブサイト <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> を使用して、正規表現を完全にテストできます。プレーンテキストを使用することもできますが、括弧をエスケープすることを忘れないでください。</string>
     <string name="RegexFiltersAddError">構文エラー</string>
     <string name="ShowTimeHint">メッセージ時間をクリックして詳細を表示</string>
-    <string name="SearchHashtagDefaultPageChannel">チャンネルでデフォルトのハッシュタグ検索ページ</string>
-    <string name="SearchHashtagDefaultPageChat">チャットでデフォルトのハッシュタグ検索ページ</string>
+    <string name="SearchHashtagDefaultPageChannel">チャンネルでのハッシュタグ検索ページ</string>
+    <string name="SearchHashtagDefaultPageChat">チャットでのハッシュタグ検索ページ</string>
     <string name="OpenUrlOutBotWebViewRegex">URL 正規表現で、ボットウェブビューを回避してリンクを開く</string>
     <string name="LocaleToDBC">インターフェーステキストに半角記号を使用</string>
     <string name="EnablePanguOnReceiving">受信時に Pangu を有効にする</string>

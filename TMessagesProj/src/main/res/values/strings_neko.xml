@@ -84,7 +84,7 @@
     <string name="IgnoreBlockedAbout">You\'ll no longer see messages from blocked users in groups.</string>
     <string name="SourceCode">Source Code</string>
     <string name="ResetStickerSize">Reset sticker size</string>
-    <string name="RestartAppToTakeEffect">Restart the app to take effect.</string>
+    <string name="RestartAppToTakeEffect">Restart app to apply changes.</string>
     <string name="DisableAppBarShadow">Disable Title Bar Shadow</string>
     <string name="MediaPreview">Media Preview in Chat List</string>
     <string name="AutoPauseVideo">Auto Pause Video</string>
@@ -96,7 +96,6 @@
     <string name="DarkenAvatarBackground">Darken Background</string>
     <string name="ProviderDeepLTranslate">DeepL Translate</string>
     <string name="ProviderMicrosoftTranslator">Bing Translator</string>
-    <string name="pressTitleToOpenAllChats">Press title to open \"All Chats\" tab</string>
     <string name="DontSendGreetingSticker">Don\'t Send Greeting Sticker</string>
     <string name="TakeGIFasVideo">Take GIF as Video</string>
     <string name="UseMediaStreamInVoip">Use Media Stream in VoIP</string>
