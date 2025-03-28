@@ -434,20 +434,7 @@ public class ChatUsersActivity extends BaseFragment implements NotificationCente
                 }
             }
 
-            if (info != null && info.paid_messages_available && ChatObject.canUserDoAction(currentChat, ChatObject.ACTION_BLOCK_USERS) && (ChatObject.isChannel(currentChat) || currentChat != null && currentChat.creator)) {
-                if (participantsDivider2Row == -1) {
-                    participantsDivider2Row = rowCount++;
-                }
-                payRow = rowCount++;
-                payInfoRow = rowCount++;
-                if (enablePrice) {
-                    priceHeaderRow = rowCount++;
-                    priceRow = rowCount++;
-                    priceInfoRow = rowCount++;
-                }
-            }
-
-            if (!ChatObject.isChannel(currentChat) && currentChat.creator || currentChat.megagroup && !currentChat.gigagroup && ChatObject.canBlockUsers(currentChat)) {
+            if (!ChatObject.isChannel(currentChat) && currentChat.creator || currentChat.megagroup && !currentChat.gigagroup /* && ChatObject.canBlockUsers(currentChat) */) {
                 if (participantsDivider2Row == -1) {
                     participantsDivider2Row = rowCount++;
                 }
