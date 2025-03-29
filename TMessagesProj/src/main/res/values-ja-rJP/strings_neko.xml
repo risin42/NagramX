@@ -310,7 +310,6 @@
     <string name="ConvertGroupAlertWarning">注意</string>
     <string name="ConvertGroupAlert">スーパーグループにするとグループには戻せません。</string>
     <string name="SharedPhotosAndVideos">写真と動画</string>
-    <string name="StickersAndMasks">ステッカーとマスク</string>
     <string name="UnofficialApp">非公式アプリ</string>
     <string name="FileUploadLimit">ファイルサイズの上限は %1$s です</string>
     <string name="NoFilesInfo">このフォルダは空です。</string>

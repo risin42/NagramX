@@ -309,7 +309,6 @@
     <string name="ConvertGroupAlertWarning">Aviso</string>
     <string name="ConvertGroupAlert">Esta ação é irreversível. Não é possível voltar um supergrupo para um grupo normal.</string>
     <string name="SharedPhotosAndVideos">Fotos e vídeos</string>
-    <string name="StickersAndMasks">Stickers e Máscaras</string>
     <string name="UnofficialApp">aplicativo não oficial</string>
     <string name="FileUploadLimit">O tamanho do arquivo não deve ser maior que %1$s</string>
     <string name="NoFilesInfo">Esta pasta está vazia.</string>

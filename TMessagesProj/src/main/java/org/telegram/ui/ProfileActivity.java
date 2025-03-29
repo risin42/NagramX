@@ -4231,8 +4231,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 presentFragment(new DataSettingsActivity());
             } else if (position == chatRow) {
                 presentFragment(new ThemeActivity(ThemeActivity.THEME_TYPE_BASIC));
-            } else if (position == stickersRow) {
-                presentFragment(new StickersActivity(MediaDataController.TYPE_IMAGE));
             } else if (position == filtersRow) {
                 presentFragment(new FiltersSetupActivity());
             } else if (position == stickersRow) {
@@ -12509,7 +12507,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     } else if (position == filtersRow) {
                         textCell.setTextAndIcon(LocaleController.getString(R.string.Filters), R.drawable.msg2_folder, true);
                     } else if (position == stickersRow) {
-                        textCell.setTextAndIcon(LocaleController.getString(R.string.StickersAndMasks), R.drawable.msg_sticker, true);
+                        textCell.setTextAndIcon(LocaleController.getString(R.string.StickersName), R.drawable.msg_sticker, true);
                     } else if (position == nekoRow) {
                         textCell.setTextAndIcon(LocaleController.getString(R.string.NekoSettings), R.drawable.msg_settings, true);
                     } else if (position == filtersRow) {
