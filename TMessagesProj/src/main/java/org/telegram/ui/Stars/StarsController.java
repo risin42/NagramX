@@ -518,7 +518,48 @@ public class StarsController {
     }
 
     public Runnable pay(MessageObject messageObject, Runnable whenShown) {
-        return null;
+        final Context context = LaunchActivity.instance != null ? LaunchActivity.instance : ApplicationLoader.applicationContext;
+        final Theme.ResourcesProvider resourcesProvider = getResourceProvider();
+
+        if (messageObject == null || context == null) {
+            return null;
+        }
+
+//        if (!(MessageObject.getMedia(messageObject) instanceof TLRPC.TL_messageMediaInvoice)) {
+//            return;
+//        }
+
+        long did = messageObject.getDialogId();
+        int msg_id = messageObject.getId();
+//        if (messageObject.messageOwner != null && messageObject.messageOwner.fwd_from != null && messageObject.messageOwner.fwd_from.from_id != null) {
+//            did = DialogObject.getPeerDialogId(messageObject.messageOwner.fwd_from.from_id);
+//        }
+
+        TLRPC.TL_inputInvoiceMessage inputInvoice = new TLRPC.TL_inputInvoiceMessage();
+        inputInvoice.peer = MessagesController.getInstance(currentAccount).getInputPeer(did);
+        inputInvoice.msg_id = msg_id;
+
+        TLRPC.TL_payments_getPaymentForm req = new TLRPC.TL_payments_getPaymentForm();
+        final JSONObject themeParams = BotWebViewSheet.makeThemeParams(resourcesProvider);
+        if (themeParams != null) {
+            req.theme_params = new TLRPC.TL_dataJSON();
+            req.theme_params.data = themeParams.toString();
+            req.flags |= 1;
+        }
+        req.invoice = inputInvoice;
+
+        final int reqId = ConnectionsManager.getInstance(currentAccount).sendRequest(req, (res, err) -> AndroidUtilities.runOnUIThread(() -> {
+            if (res instanceof TLRPC.TL_payments_paymentFormStars) {
+                openPaymentForm(messageObject, inputInvoice, (TLRPC.TL_payments_paymentFormStars) res, whenShown, null);
+            } else {
+                bulletinError(err, "NO_PAYMENT_FORM");
+            }
+            if (whenShown != null) {
+                whenShown.run();
+            }
+        }));
+
+        return () -> ConnectionsManager.getInstance(currentAccount).cancelRequest(reqId, true);
     }
 
     private boolean paymentFormOpened;
