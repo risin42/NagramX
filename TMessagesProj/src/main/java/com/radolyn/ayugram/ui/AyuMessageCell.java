@@ -9,12 +9,15 @@
 
 package com.radolyn.ayugram.ui;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
+
 import com.radolyn.ayugram.database.entities.EditedMessage;
+
 import org.telegram.messenger.AndroidUtilities;
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Cells.ChatMessageCell;

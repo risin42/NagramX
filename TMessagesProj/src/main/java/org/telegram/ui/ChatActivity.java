@@ -37653,7 +37653,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
                 MessageObject message = messages.get(position - messagesStartRow);
                 View view = holder.itemView;
-                if (message != null && message.messageOwner != null && message.messageOwner.media_unread && message.messageOwner.mentioned) {
+                if (message != null && message.messageOwner != null && message.messageOwner.media_unread && message.messageOwner.mentioned && !message.messageOwner.ayuDeleted) {
                     if (!inPreviewMode && chatMode == 0) {
                         if (!message.isVoice() && !message.isRoundVideo()) {
                             newMentionsCount--;

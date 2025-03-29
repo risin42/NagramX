@@ -9,17 +9,16 @@
 
 package com.radolyn.ayugram;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
+import static org.telegram.messenger.Utilities.random;
+
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.provider.Settings.Secure;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
+
 import androidx.core.util.Pair;
+
 import com.google.android.exoplayer2.util.Log;
+
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildVars;
@@ -30,8 +29,6 @@ import org.telegram.tgnet.TLRPC;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import static org.telegram.messenger.Utilities.random;
 
 public class AyuUtils {
     private static final String NAX = "AyuUtils";
@@ -183,19 +180,8 @@ public class AyuUtils {
         return ApplicationLoader.applicationContext.getPackageName();
     }
 
-    @SuppressLint("HardwareIds")
-    public static String getDeviceIdentifier() {
-        return Secure.getString(ApplicationLoader.applicationContext.getContentResolver(), Secure.ANDROID_ID);
-    }
-
     public static String getDeviceName() {
         return Build.MANUFACTURER + " " + Build.MODEL;
-    }
-
-    public static void killApplication(Activity activity) {
-        activity.finishAndRemoveTask();
-        int pid = android.os.Process.myPid();
-        android.os.Process.killProcess(pid);
     }
 
     public static int getMinRealId(ArrayList<MessageObject> messages) {
@@ -207,84 +193,5 @@ public class AyuUtils {
         }
 
         return Integer.MAX_VALUE; // no questions
-    }
-
-    public static void shiftEntities(ArrayList<TLRPC.MessageEntity> entities, int offset) {
-        if (entities == null || entities.isEmpty()) {
-            return;
-        }
-
-        for (var entity : entities) {
-            entity.offset += offset;
-        }
-    }
-
-    public static CharSequence shortify(CharSequence text, int maxLength) {
-        if (TextUtils.isEmpty(text) || text.length() <= maxLength) {
-            return text;
-        }
-
-        return text.subSequence(0, maxLength - 1) + "…";
-    }
-
-    public static void blurify(MessageObject messageObject) {
-        if (messageObject == null || messageObject.messageOwner == null) {
-            return;
-        }
-
-        if (!TextUtils.isEmpty(messageObject.messageOwner.message)) {
-            var entity = new TLRPC.TL_messageEntitySpoiler();
-            entity.offset = 0;
-            entity.length = messageObject.messageOwner.message.length();
-            messageObject.messageOwner.entities.add(entity);
-        }
-
-        if (messageObject.messageOwner.media != null) {
-            messageObject.messageOwner.media.spoiler = true;
-        }
-    }
-
-    // public static CharSequence htmlToString(String text) {
-    //     Spannable htmlParsed;
-    //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-    //         htmlParsed = new SpannableString(Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY));
-    //     } else {
-    //         htmlParsed = new SpannableString(Html.fromHtml(text));
-    //     }
-
-    //     return LocaleUtils.formatWithURLs(htmlParsed);
-    // }
-
-    public static boolean isMediaDownloadable(MessageObject message, boolean toGalleryOnly) {
-        if (message == null || message.messageOwner == null || message.messageOwner.media == null) {
-            return false;
-        }
-
-        if (message.messageOwner.media.photo instanceof TLRPC.TL_photoEmpty) {
-            return false;
-        }
-
-        if (message.messageOwner.media.document instanceof TLRPC.TL_documentEmpty) {
-            return false;
-        }
-
-        if (MessageObject.isMediaEmpty(message.messageOwner)) {
-            return false;
-        }
-
-        boolean res = message.isSecretMedia() ||
-                message.isGif() ||
-                message.isNewGif() ||
-                message.isRoundVideo() ||
-                message.isVideo() ||
-                message.isPhoto();
-
-        if (toGalleryOnly || res) {
-            return res;
-        }
-
-        return message.isDocument() ||
-                message.isMusic() ||
-                message.isVoice();
     }
 }

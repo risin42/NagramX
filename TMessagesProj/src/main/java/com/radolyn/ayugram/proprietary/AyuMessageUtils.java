@@ -1,23 +1,16 @@
 package com.radolyn.ayugram.proprietary;
 
 import android.text.TextUtils;
+
 import androidx.core.util.Pair;
+
 import com.google.android.exoplayer2.util.Log;
-// import com.radolyn.ayugram.AyuConfig;
 import com.radolyn.ayugram.AyuUtils;
 import com.radolyn.ayugram.database.entities.AyuMessageBase;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.messages.AyuSavePreferences;
 import com.radolyn.ayugram.utils.AyuFileLocation;
-import java.util.Collection;
-import java.util.function.Function;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
+
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.DialogObject;
@@ -29,10 +22,18 @@ import org.telegram.messenger.secretmedia.EncryptedFileInputStream;
 import org.telegram.tgnet.NativeByteBuffer;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
-import org.telegram.tgnet.TLRPC.MessageReplyHeader;
-import org.telegram.tgnet.TLRPC.TL_messageReplyHeader;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.function.Function;
+
 import xyz.nextalone.nagram.NaConfig;
 
+/** @noinspection rawtypes*/
+@SuppressWarnings("unchecked")
 public abstract class AyuMessageUtils {
     private static final String NAX = "AyuMessageUtils";
 
@@ -46,7 +47,7 @@ public abstract class AyuMessageUtils {
             nativeByteBuffer.rewind();
             ArrayList arrayList = new ArrayList();
             while (nativeByteBuffer.buffer.position() < nativeByteBuffer.buffer.limit()) {
-                TLObject tLObject = (TLObject) function.apply(nativeByteBuffer);
+                TLObject tLObject = function.apply(nativeByteBuffer);
                 if (tLObject != null) {
                     arrayList.add(tLObject);
                 }
@@ -82,8 +83,8 @@ public abstract class AyuMessageUtils {
         tLRPC$Message.edit_hide = (2097152 & i2) != 0;
         tLRPC$Message.pinned = (16777216 & i2) != 0;
         tLRPC$Message.noforwards = false;
-        // tLRPC$Message.ayuNoforwards = (67108864 & i2) != 0;
-        // tLRPC$Message.topic_start = (i2 & 134217728) != 0;
+//        tLRPC$Message.ayuNoforwards = (67108864 & i2) != 0;
+//        tLRPC$Message.topic_start = (i2 & 134217728) != 0;
         tLRPC$Message.edit_date = ayuMessageBase.editDate;
         tLRPC$Message.views = ayuMessageBase.views;
         if ((i4 & 4) != 0) {
@@ -99,37 +100,27 @@ public abstract class AyuMessageUtils {
             tLRPC$MessageFwdHeader.post_author = ayuMessageBase.fwdPostAuthor;
         }
         if ((tLRPC$Message.flags & 8) != 0) {
-            // TLRPC.TL_messageReplyHeader tLRPC$TL_messageReplyHeader = new TLRPC.TL_messageReplyHeader();
-            // tLRPC$Message.reply_to = tLRPC$TL_messageReplyHeader;
-            // tLRPC$TL_messageReplyHeader.flags = ayuMessageBase.replyFlags;
-            // tLRPC$TL_messageReplyHeader.reply_to_msg_id = ayuMessageBase.replyMessageId;
-            // tLRPC$TL_messageReplyHeader.reply_to_peer_id = messagesController.getPeer(ayuMessageBase.replyPeerId);
-            // TLRPC.TL_messageReplyHeader tLRPC$TL_messageReplyHeader2 = tLRPC$Message.reply_to;
-            // tLRPC$TL_messageReplyHeader2.reply_to_top_id = ayuMessageBase.replyTopId;
-            // tLRPC$TL_messageReplyHeader2.forum_topic = ayuMessageBase.replyForumTopic;
-            MessageReplyHeader replyHeader = tLRPC$Message.reply_to;
-            if (replyHeader instanceof TL_messageReplyHeader) { // Check the instance
-                TL_messageReplyHeader tLRPC$TL_messageReplyHeader2 = (TL_messageReplyHeader) replyHeader;
-                // ... access fields of tLRPC$TL_messageReplyHeader2
-                tLRPC$TL_messageReplyHeader2.flags = ayuMessageBase.replyFlags;
-                tLRPC$TL_messageReplyHeader2.reply_to_msg_id = ayuMessageBase.replyMessageId;
-                tLRPC$TL_messageReplyHeader2.reply_to_peer_id = messagesController.getPeer(ayuMessageBase.replyPeerId);
-                tLRPC$TL_messageReplyHeader2.reply_to_top_id = ayuMessageBase.replyTopId;
-                tLRPC$TL_messageReplyHeader2.forum_topic = ayuMessageBase.replyForumTopic;
-    
-            } else if (replyHeader instanceof TLRPC.TL_messageReplyStoryHeader) {
-                // Handle TL_messageReplyStoryHeader
+            TLRPC.MessageReplyHeader messageReplyHeader = new TLRPC.TL_messageReplyHeader();
+            tLRPC$Message.reply_to = messageReplyHeader;
+            messageReplyHeader.flags = ayuMessageBase.replyFlags;
+            messageReplyHeader.reply_to_msg_id = ayuMessageBase.replyMessageId;
+            if (ayuMessageBase.replyPeerId != 0) {
+                messageReplyHeader.reply_to_peer_id = messagesController.getPeer(ayuMessageBase.replyPeerId);
             }
+            TLRPC.MessageReplyHeader messageReplyHeader2 = tLRPC$Message.reply_to;
+            messageReplyHeader2.reply_to_top_id = ayuMessageBase.replyTopId;
+            messageReplyHeader2.forum_topic = ayuMessageBase.replyForumTopic;
+
         }
         tLRPC$Message.message = ayuMessageBase.text;
         tLRPC$Message.entities = deserializeMultiple(
-            ayuMessageBase.textEntities,
-            (NativeByteBuffer nativeByteBuffer) ->
-                TLRPC.MessageEntity.TLdeserialize(
-                    nativeByteBuffer,
-                    nativeByteBuffer.readInt32(false),
-                    false
-                )
+                ayuMessageBase.textEntities,
+                (NativeByteBuffer nativeByteBuffer) ->
+                        TLRPC.MessageEntity.TLdeserialize(
+                                nativeByteBuffer,
+                                nativeByteBuffer.readInt32(false),
+                                false
+                        )
         );
     }
 
@@ -155,25 +146,14 @@ public abstract class AyuMessageUtils {
             ayuMessageBase.fwdDate = tLRPC$MessageFwdHeader2.date;
             ayuMessageBase.fwdPostAuthor = tLRPC$MessageFwdHeader2.post_author;
         }
-        // TLRPC.TL_messageReplyHeader tLRPC$TL_messageReplyHeader = message.reply_to;
-        // if (tLRPC$TL_messageReplyHeader != null) {
-        //     ayuMessageBase.replyFlags = tLRPC$TL_messageReplyHeader.flags;
-        //     ayuMessageBase.replyMessageId = tLRPC$TL_messageReplyHeader.reply_to_msg_id;
-        //     ayuMessageBase.replyPeerId = MessageObject.getPeerId(tLRPC$TL_messageReplyHeader.reply_to_peer_id);
-        //     TLRPC.TL_messageReplyHeader tLRPC$TL_messageReplyHeader2 = message.reply_to;
-        //     ayuMessageBase.replyTopId = tLRPC$TL_messageReplyHeader2.reply_to_top_id;
-        //     ayuMessageBase.replyForumTopic = tLRPC$TL_messageReplyHeader2.forum_topic;
-        // }
-        MessageReplyHeader tLRPC$TL_messageReplyHeader = message.reply_to;
-        if (tLRPC$TL_messageReplyHeader != null) {
-            ayuMessageBase.replyFlags = tLRPC$TL_messageReplyHeader.flags;
-            ayuMessageBase.replyMessageId = tLRPC$TL_messageReplyHeader.reply_to_msg_id;
-            if (tLRPC$TL_messageReplyHeader.reply_to_peer_id != null) {
-                ayuMessageBase.replyPeerId = MessageObject.getPeerId(tLRPC$TL_messageReplyHeader.reply_to_peer_id);
-            }
-            ayuMessageBase.replyTopId = tLRPC$TL_messageReplyHeader.reply_to_top_id;
-            ayuMessageBase.replyForumTopic = tLRPC$TL_messageReplyHeader.forum_topic;
-
+        TLRPC.MessageReplyHeader messageReplyHeader = message.reply_to;
+        if (messageReplyHeader != null) {
+            ayuMessageBase.replyFlags = messageReplyHeader.flags;
+            ayuMessageBase.replyMessageId = messageReplyHeader.reply_to_msg_id;
+            ayuMessageBase.replyPeerId = MessageObject.getPeerId(messageReplyHeader.reply_to_peer_id);
+            TLRPC.MessageReplyHeader messageReplyHeader2 = message.reply_to;
+            ayuMessageBase.replyTopId = messageReplyHeader2.reply_to_top_id;
+            ayuMessageBase.replyForumTopic = messageReplyHeader2.forum_topic;
         }
         ayuMessageBase.entityCreateDate = ayuSavePreferences.getRequestCatchTime();
         ayuMessageBase.text = message.message;
@@ -220,8 +200,8 @@ public abstract class AyuMessageUtils {
                     tLRPC$Photo.date = i2;
                     TLRPC.TL_photoSize tLRPC$TL_photoSize = new TLRPC.TL_photoSize();
                     tLRPC$TL_photoSize.size = (int) file.length();
-                    tLRPC$TL_photoSize.w = ((Integer) extractImageSizeFromName.first).intValue();
-                    tLRPC$TL_photoSize.h = ((Integer) extractImageSizeFromName.second).intValue();
+                    tLRPC$TL_photoSize.w = (Integer) extractImageSizeFromName.first;
+                    tLRPC$TL_photoSize.h = (Integer) extractImageSizeFromName.second;
                     tLRPC$TL_photoSize.type = "y";
                     tLRPC$TL_photoSize.location = new AyuFileLocation(str);
                     tLRPC$Message.media.photo.sizes.add(tLRPC$TL_photoSize);
@@ -239,28 +219,27 @@ public abstract class AyuMessageUtils {
                     TLRPC.Document tLRPC$Document2 = tLRPC$Message.media.document;
                     tLRPC$Document2.mime_type = ayuMessageBase.mimeType;
                     tLRPC$Document2.attributes = deserializeMultiple(
-                        ayuMessageBase.documentAttributesSerialized,
-                        (NativeByteBuffer nativeByteBuffer) ->
-                            TLRPC.DocumentAttribute.TLdeserialize(
-                                nativeByteBuffer,
-                                nativeByteBuffer.readInt32(false),
-                                false
-                            )
+                            ayuMessageBase.documentAttributesSerialized,
+                            (NativeByteBuffer nativeByteBuffer) ->
+                                    TLRPC.DocumentAttribute.TLdeserialize(
+                                            nativeByteBuffer,
+                                            nativeByteBuffer.readInt32(false),
+                                            false
+                                    )
                     );
-                    Iterator it = deserializeMultiple(
-                        ayuMessageBase.thumbsSerialized,
-                        (NativeByteBuffer nativeByteBuffer) ->
-                            TLRPC.PhotoSize.TLdeserialize(
-                                0L,
-                                0L,
-                                0L,
-                                nativeByteBuffer,
-                                nativeByteBuffer.readInt32(false),
-                                false
-                            )
-                    ).iterator();
-                    while (it.hasNext()) {
-                        TLRPC.PhotoSize tLRPC$PhotoSize = (TLRPC.PhotoSize) it.next();
+                    for (Object o : deserializeMultiple(
+                            ayuMessageBase.thumbsSerialized,
+                            (NativeByteBuffer nativeByteBuffer) ->
+                                    TLRPC.PhotoSize.TLdeserialize(
+                                            0L,
+                                            0L,
+                                            0L,
+                                            nativeByteBuffer,
+                                            nativeByteBuffer.readInt32(false),
+                                            false
+                                    )
+                    )) {
+                        TLRPC.PhotoSize tLRPC$PhotoSize = (TLRPC.PhotoSize) o;
                         if (tLRPC$PhotoSize != null) {
                             if ((tLRPC$PhotoSize instanceof TLRPC.TL_photoSize) && !TextUtils.isEmpty(ayuMessageBase.hqThumbPath) && ((bArr = tLRPC$PhotoSize.bytes) == null || bArr.length == 0)) {
                                 tLRPC$PhotoSize.location = new AyuFileLocation(ayuMessageBase.hqThumbPath);
@@ -378,7 +357,8 @@ public abstract class AyuMessageUtils {
         if (file3.exists()) {
             File internalCacheDir = FileLoader.getInternalCacheDir();
             File file4 = new File(internalCacheDir, file3.getName() + ".key");
-            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "key file " + file4.getAbsolutePath() + " exists " + file4.exists());
+            if (BuildVars.LOGS_ENABLED)
+                Log.d(NAX, "key file " + file4.getAbsolutePath() + " exists " + file4.exists());
             if (file4.exists()) {
                 try {
                     EncryptedFileInputStream encryptedFileInputStream = new EncryptedFileInputStream(file3, file4);
@@ -413,20 +393,13 @@ public abstract class AyuMessageUtils {
     }
 
     public static byte[] serializeMultiple(ArrayList arrayList) {
-        // if (arrayList == null || arrayList.size() == 0 || !AyuConfig.saveFormatting) {
-        if (arrayList == null || arrayList.size() == 0) {
+        if (arrayList == null || arrayList.isEmpty()) {
             return "".getBytes();
         }
         try {
-            NativeByteBuffer nativeByteBuffer = new NativeByteBuffer(arrayList.stream().mapToInt(new ToIntFunction() { // from class: com.radolyn.ayugram.proprietary.AyuMessageUtils$$ExternalSyntheticLambda0
-                @Override // java.util.function.ToIntFunction
-                public final int applyAsInt(Object obj) {
-                    return ((TLObject) obj).getObjectSize();
-                }
-            }).sum());
-            Iterator it = arrayList.iterator();
-            while (it.hasNext()) {
-                ((TLObject) it.next()).serializeToStream(nativeByteBuffer);
+            NativeByteBuffer nativeByteBuffer = new NativeByteBuffer(arrayList.stream().mapToInt(obj -> ((TLObject) obj).getObjectSize()).sum());
+            for (Object o : arrayList) {
+                ((TLObject) o).serializeToStream(nativeByteBuffer);
             }
             nativeByteBuffer.reuse();
             nativeByteBuffer.rewind();
@@ -444,7 +417,7 @@ public abstract class AyuMessageUtils {
             if (DialogObject.isUserDialog(ayuSavePreferences.getDialogId())) {
                 return NaConfig.INSTANCE.getSaveMediaInPrivateChats().Bool();
             }
-            TLRPC.Chat chat = MessagesController.getInstance(ayuSavePreferences.getAccountId()).getChat(Long.valueOf(Math.abs(ayuSavePreferences.getDialogId())));
+            TLRPC.Chat chat = MessagesController.getInstance(ayuSavePreferences.getAccountId()).getChat(Math.abs(ayuSavePreferences.getDialogId()));
             if (chat == null) {
                 Log.d(NAX, "chat is null so saving media just in case");
                 return true;

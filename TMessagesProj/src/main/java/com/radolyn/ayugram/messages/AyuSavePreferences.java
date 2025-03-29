@@ -55,6 +55,37 @@ public class AyuSavePreferences {
         this.requestCatchTime = (int) (System.currentTimeMillis() / 1000);
     }
 
+    public static boolean saveDeletedMessageFor(int accountId, long dialogId) {
+        return saveDeletedMessageFor(accountId, dialogId, null);
+    }
+
+    public static boolean saveDeletedMessageFor(int accountId, long dialogId, MessageObject messageObject) {
+        if (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.from_id != null) {
+            return saveDeletedMessageFor(accountId, dialogId, messageObject.messageOwner.from_id.user_id);
+        }
+        return saveDeletedMessageFor(accountId, dialogId, 0);
+    }
+
+    public static boolean saveDeletedMessageFor(int accountId, long dialogId, long userId) {
+        if (!NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+            return false;
+        }
+
+        if (userId != 0) {
+            var fromUser = MessagesController.getInstance(accountId).getUser(userId);
+            if (fromUser != null && fromUser.bot && !NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().Bool()) {
+                return false;
+            }
+        }
+
+        var user = MessagesController.getInstance(accountId).getUser(Math.abs(dialogId));
+        if (user == null) {
+            return true;
+        }
+
+        return !user.bot || NaConfig.INSTANCE.getSaveDeletedMessageForBot().Bool();
+    }
+
     public TLRPC.Message getMessage() {
         return message;
     }
@@ -96,36 +127,5 @@ public class AyuSavePreferences {
             return 0;
         }
         return message.from_id.user_id;
-    }
-
-    public static boolean saveDeletedMessageFor(int accountId, long dialogId) {
-        return saveDeletedMessageFor(accountId, dialogId, null);
-    }
-
-    public static boolean saveDeletedMessageFor(int accountId, long dialogId, MessageObject messageObject) {
-        if (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.from_id != null) {
-            return saveDeletedMessageFor(accountId, dialogId, messageObject.messageOwner.from_id.user_id);
-        }
-        return saveDeletedMessageFor(accountId, dialogId, 0);
-    }
-
-    public static boolean saveDeletedMessageFor(int accountId, long dialogId, long userId) {
-        if (!NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
-            return false;
-        }
-
-        if (userId != 0) {
-            var fromUser = MessagesController.getInstance(accountId).getUser(userId);
-            if (fromUser != null && fromUser.bot && !NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().Bool()) {
-                return false;
-            }
-        }
-
-        var user = MessagesController.getInstance(accountId).getUser(Math.abs(dialogId));
-        if (user == null) {
-            return true;
-        }
-
-        return !user.bot || NaConfig.INSTANCE.getSaveDeletedMessageForBot().Bool();
     }
 }

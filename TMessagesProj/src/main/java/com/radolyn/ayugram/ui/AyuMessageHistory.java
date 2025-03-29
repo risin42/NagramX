@@ -9,17 +9,27 @@
 
 package com.radolyn.ayugram.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.database.entities.EditedMessage;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.proprietary.AyuMessageUtils;
-import org.telegram.messenger.*;
+
+import org.telegram.messenger.FileLoader;
+import org.telegram.messenger.LocaleController;
+import org.telegram.messenger.MessageObject;
+import org.telegram.messenger.NotificationCenter;
+import org.telegram.messenger.R;
+import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -89,8 +99,7 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
         listView = new RecyclerListView(context);
         listView.setItemAnimator(null);
         listView.setLayoutAnimation(null);
-        LinearLayoutManager layoutManager;
-        listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
+        listView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
                 return false;
@@ -98,15 +107,9 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
         });
         listView.setVerticalScrollBarEnabled(true);
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-        ListAdapter adapter;
-        listView.setAdapter(adapter = new AyuMessageHistory.ListAdapter(context, currentAccount));
+        listView.setAdapter(new ListAdapter(context, currentAccount));
 
         return fragmentView;
-    }
-
-    @Override
-    public ArrayList<ThemeDescription> getThemeDescriptions() {
-        return new ArrayList<>();
     }
 
     @Override
@@ -118,6 +121,7 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
         return true;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
         if (id == AyuConstants.MESSAGE_EDITED_NOTIFICATION) {
@@ -126,6 +130,7 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
 
             if (dialogId == messageObject.messageOwner.dialog_id && messageId == messageObject.messageOwner.id) {
                 updateHistory();
+                assert listView.getAdapter() != null;
                 listView.getAdapter().notifyDataSetChanged();
             }
         }
@@ -141,7 +146,7 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
     private class ListAdapter extends RecyclerListView.SelectionAdapter {
 
         private final Context context;
-        private int currentAccount;
+        private final int currentAccount;
 
         public ListAdapter(Context context, int currentAccount) {
             this.context = context;
@@ -158,8 +163,9 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
             return rowCount;
         }
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             if (viewType == 1) {
                 view = new AyuMessageCell(context, currentAccount, getParentActivity(), AyuMessageHistory.this);
