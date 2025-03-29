@@ -37,25 +37,22 @@ import java.util.List;
 import tw.nekomimi.nekogram.utils.FileUtil;
 
 public class AyuMessagesController {
-    private static final String NAX = "AyuMessagesController";
-
     public static final String attachmentsSubfolder = "Saved Attachments";
     public static final File attachmentsPath = new File(
             new File(
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AyuConstants.APP_NAME),
             attachmentsSubfolder
     );
+    private static final String NAX = "AyuMessagesController";
     private static AyuMessagesController instance;
     private final EditedMessageDao editedMessageDao;
     private final DeletedMessageDao deletedMessageDao;
-
     private AyuMessagesController() {
         initializeAttachmentsFolder();
 
         editedMessageDao = AyuData.getEditedMessageDao();
         deletedMessageDao = AyuData.getDeletedMessageDao();
     }
-
     private static void initializeAttachmentsFolder() {
         if (!attachmentsPath.exists()) {
             attachmentsPath.mkdirs();
@@ -66,14 +63,12 @@ public class AyuMessagesController {
             }
         }
     }
-
     public static AyuMessagesController getInstance() {
         if (instance == null) {
             instance = new AyuMessagesController();
         }
         return instance;
     }
-
     public void onMessageEdited(AyuSavePreferences prefs, TLRPC.Message newMessage) {
         try {
             onMessageEditedInner(prefs, newMessage, false);
@@ -82,7 +77,6 @@ public class AyuMessagesController {
             FileLog.e("onMessageEdited", e);
         }
     }
-
     public void onMessageEditedForce(AyuSavePreferences prefs) {
         try {
             onMessageEditedInner(prefs, prefs.getMessage(), true);
@@ -91,25 +85,10 @@ public class AyuMessagesController {
             FileLog.e("onMessageEditedForce", e);
         }
     }
-
     private void onMessageEditedInner(AyuSavePreferences prefs, TLRPC.Message newMessage, boolean force) {
-        // if (!AyuConfig.saveEditedMessageFor(prefs.getAccountId(), prefs.getDialogId())) {
-        //     return;
-        // }
-
         var oldMessage = prefs.getMessage();
 
-        boolean sameMedia = oldMessage.media == newMessage.media ||
-                (oldMessage.media != null && newMessage.media != null && oldMessage.media.getClass() == newMessage.media.getClass());
-        if (oldMessage.media instanceof TLRPC.TL_messageMediaPhoto && newMessage.media instanceof TLRPC.TL_messageMediaPhoto && oldMessage.media.photo != null && newMessage.media.photo != null) {
-            sameMedia = oldMessage.media.photo.id == newMessage.media.photo.id;
-        } else if (oldMessage.media instanceof TLRPC.TL_messageMediaDocument && newMessage.media instanceof TLRPC.TL_messageMediaDocument && oldMessage.media.document != null && newMessage.media.document != null) {
-            sameMedia = oldMessage.media.document.id == newMessage.media.document.id;
-        }
-
-        if (force) {
-            sameMedia = false;
-        }
+        boolean sameMedia = isSameMedia(newMessage, force, oldMessage);
 
         if (sameMedia && TextUtils.equals(oldMessage.message, newMessage.message)) {
             return;
@@ -136,6 +115,21 @@ public class AyuMessagesController {
         });
     }
 
+    private static boolean isSameMedia(TLRPC.Message newMessage, boolean force, TLRPC.Message oldMessage) {
+        boolean sameMedia = oldMessage.media == newMessage.media ||
+                (oldMessage.media != null && newMessage.media != null && oldMessage.media.getClass() == newMessage.media.getClass());
+        if (oldMessage.media instanceof TLRPC.TL_messageMediaPhoto && newMessage.media instanceof TLRPC.TL_messageMediaPhoto && oldMessage.media.photo != null && newMessage.media.photo != null) {
+            sameMedia = oldMessage.media.photo.id == newMessage.media.photo.id;
+        } else if (oldMessage.media instanceof TLRPC.TL_messageMediaDocument && newMessage.media instanceof TLRPC.TL_messageMediaDocument && oldMessage.media.document != null && newMessage.media.document != null) {
+            sameMedia = oldMessage.media.document.id == newMessage.media.document.id;
+        }
+
+        if (force) {
+            sameMedia = false;
+        }
+        return sameMedia;
+    }
+
     public void onMessageDeleted(AyuSavePreferences prefs) {
         if (prefs.getMessage() == null) {
             if (BuildVars.LOGS_ENABLED) Log.d(NAX, "null msg ?");
@@ -151,9 +145,9 @@ public class AyuMessagesController {
     }
 
     private void onMessageDeletedInner(AyuSavePreferences prefs) {
-         if (!AyuSavePreferences.saveDeletedMessageFor(prefs.getAccountId(), prefs.getDialogId(), prefs.getFromUserId())) {
-             return;
-         }
+        if (!AyuSavePreferences.saveDeletedMessageFor(prefs.getAccountId(), prefs.getDialogId(), prefs.getFromUserId())) {
+            return;
+        }
 
         if (deletedMessageDao.exists(prefs.getUserId(), prefs.getDialogId(), prefs.getTopicId(), prefs.getMessageId())) {
             return;
@@ -167,7 +161,8 @@ public class AyuMessagesController {
 
         var msg = prefs.getMessage();
 
-        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "saving message " + prefs.getMessageId() + " for " + prefs.getDialogId() + " with topic " + prefs.getTopicId());
+        if (BuildVars.LOGS_ENABLED)
+            Log.d(NAX, "saving message " + prefs.getMessageId() + " for " + prefs.getDialogId() + " with topic " + prefs.getTopicId());
 
         AyuMessageUtils.map(prefs, deletedMessage);
         AyuMessageUtils.mapMedia(prefs, deletedMessage, true);
@@ -252,14 +247,14 @@ public class AyuMessagesController {
             }
         }
     }
- 
+
     public void deleteCurrent(long dialogId, long mergeDialogId, Runnable callback) {
         List<DeletedMessageFull> messages = deletedMessageDao.getMessagesByDialog(dialogId);
         ArrayList<Integer> messageIds = new ArrayList<>();
         for (DeletedMessageFull message : messages) {
             messageIds.add(message.message.messageId);
         }
-        
+
         if (mergeDialogId != 0) {
             List<DeletedMessageFull> mergeMessages = deletedMessageDao.getMessagesByDialog(mergeDialogId);
             messages.addAll(mergeMessages);
@@ -271,7 +266,7 @@ public class AyuMessagesController {
         // Delete messages and their edit history from database
         deletedMessageDao.delete(dialogId);
         editedMessageDao.deleteByDialogIdAndMessageIds(dialogId, messageIds);
-        
+
         if (mergeDialogId != 0) {
             deletedMessageDao.delete(mergeDialogId);
             editedMessageDao.deleteByDialogIdAndMessageIds(mergeDialogId, messageIds);

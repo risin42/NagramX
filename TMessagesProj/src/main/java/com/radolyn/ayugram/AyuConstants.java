@@ -9,25 +9,8 @@
 
 package com.radolyn.ayugram;
 
-import org.telegram.messenger.BuildVars;
-
 public class AyuConstants {
-    public static final long[] OFFICIAL_CHANNELS = {
-            // 1905581924, // @ayugramchat
-            // 1794457129, // @ayugram1338
-            // 1434550607, // @radolyn
-    };
-    public static final long[] DEVS = {
-            // 139303278, // @alexeyzavar
-            // 778327202, // @sharapagorg
-            // 963494570, // @Zanko_no_tachi
-            // 238292700, // @MaxPlays
-            // 1795176335, // @radolyn_services
-    };
 
-    public static final int DOCUMENT_TYPE_NONE = 0;
-    public static final int DOCUMENT_TYPE_PHOTO = 1;
-    public static final int DOCUMENT_TYPE_STICKER = 2;
     public static final int DOCUMENT_TYPE_FILE = 3;
 
     public static final int OPTION_HISTORY = 1338_01;
