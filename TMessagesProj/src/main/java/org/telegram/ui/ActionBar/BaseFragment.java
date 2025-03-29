@@ -97,8 +97,6 @@ public abstract class BaseFragment {
 //
     public ArrayList<AttachedSheet> sheetsStack;
 
-    private boolean enableActionBarCrossfade = true;
-
     public static interface AttachedSheet {
         public View getWindowView();
         public boolean isShown();
@@ -279,13 +277,12 @@ public abstract class BaseFragment {
 
     public boolean isActionBarCrossfadeEnabled() {
         if (NaConfig.INSTANCE.getSpringAnimation().Bool()) {
-            return actionBar != null && actionBar.getVisibility() == View.VISIBLE && actionBar.getAlpha() != 0.0f && actionBar.getY() >= 0.0f && actionBar.getHeight() > 0.0f && !actionBar.isActionModeShowed() && enableActionBarCrossfade;
+            if (getLastStoryViewer() != null && getLastStoryViewer().attachedToParent()) {
+                return false;
+            }
+            return actionBar != null && !actionBar.isActionModeShowed();
         }
         return actionBar != null;
-    }
-
-    public void setEnableActionBarCrossfade(boolean enable) {
-        enableActionBarCrossfade = enable;
     }
 
     public INavigationLayout.BackButtonState getBackButtonState() {

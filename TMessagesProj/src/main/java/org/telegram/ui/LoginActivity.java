@@ -10165,4 +10165,9 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         });
         builder.show();
     }
+
+    @Override
+    public boolean isActionBarCrossfadeEnabled() {
+        return false;
+    }
 }
