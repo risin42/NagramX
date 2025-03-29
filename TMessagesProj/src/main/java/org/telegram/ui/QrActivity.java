@@ -1727,4 +1727,10 @@ public class QrActivity extends BaseFragment {
 
         void onItemSelected(EmojiThemes theme, int position);
     }
+
+    @Override
+    public boolean isActionBarCrossfadeEnabled() {
+        return false;
+    }
+
 }

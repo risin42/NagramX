@@ -104,10 +104,6 @@ public class NekoSettingsActivity extends BaseFragment {
 
     @Override
     public View createView(Context context) {
-        if (NaConfig.INSTANCE.getSpringAnimation().Bool()) {
-            setEnableActionBarCrossfade(false);
-        }
-
         typePage = new Page(context, PAGE_TYPE);
         abountPage = new Page(context, PAGE_ABOUT);
 
@@ -733,5 +729,10 @@ public class NekoSettingsActivity extends BaseFragment {
             }
             super.onActivityResultFragment(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public boolean isActionBarCrossfadeEnabled() {
+        return false;
     }
 }

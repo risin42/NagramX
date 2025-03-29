@@ -830,7 +830,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
                 canvas.clipRect(0, -getY() + getActionBarTop() + getActionBarFullHeight(), getMeasuredWidth(), getMeasuredHeight());
                 if (slideFragmentProgress != 1f) {
-                    if (slideFragmentLite) {
+                    if (slideFragmentLite || NaConfig.INSTANCE.getSpringAnimation().Bool()) {
                         canvas.translate((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress), 0);
                     } else {
                         final float s = 1f - 0.05f * (1f - slideFragmentProgress);
@@ -842,7 +842,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 canvas.restore();
             } else if (child == actionBar && slideFragmentProgress != 1f) {
                 canvas.save();
-                if (slideFragmentLite) {
+                if (slideFragmentLite || NaConfig.INSTANCE.getSpringAnimation().Bool()) {
                     canvas.translate((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress), 0);
                 } else {
                     float s = 1f - 0.05f * (1f - slideFragmentProgress);
@@ -1049,7 +1049,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 canvas.save();
                 canvas.translate(fragmentContextView.getX(), fragmentContextView.getY());
                 if (slideFragmentProgress != 1f) {
-                    if (slideFragmentLite) {
+                    if (slideFragmentLite || NaConfig.INSTANCE.getSpringAnimation().Bool()) {
                         canvas.translate((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress), 0);
                     } else {
                         final float s = 1f - 0.05f * (1f - slideFragmentProgress);
@@ -12739,7 +12739,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             fragmentView.invalidate();
         }
 
-        if (slideFragmentLite) {
+        if (slideFragmentLite || NaConfig.INSTANCE.getSpringAnimation().Bool()) {
             if (filterTabsView != null) {
                 filterTabsView.getListView().setTranslationX((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress));
                 filterTabsView.invalidate();
@@ -13579,5 +13579,10 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 updateDialogsHint();
             }
         }, 0);
+    }
+
+    @Override
+    public boolean isActionBarCrossfadeEnabled() {
+        return super.isActionBarCrossfadeEnabled() && actionBar.getTranslationY() == 0 && !rightSlidingDialogContainer.isOpenned;
     }
 }
