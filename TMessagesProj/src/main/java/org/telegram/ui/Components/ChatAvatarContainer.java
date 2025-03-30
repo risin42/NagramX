@@ -63,6 +63,8 @@ import org.telegram.ui.TopicsFragment;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import xyz.nextalone.nagram.NaConfig;
+
 public class ChatAvatarContainer extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
 
     public boolean allowDrawStories;
@@ -968,7 +970,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
     }
 
     private void setTypingAnimation(boolean start) {
-        if (subtitleTextView == null || isCentered()) return;
+        if (subtitleTextView == null) return;
         if (start) {
             try {
                 int type = MessagesController.getInstance(currentAccount).getPrintingStringType(parentFragment.getDialogId(), parentFragment.getThreadId());
@@ -979,7 +981,9 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
                 } else {
                     subtitleTextView.replaceTextWithDrawable(null, null);
                     statusDrawables[type].setColor(getThemedColor(Theme.key_chat_status));
-                    subtitleTextView.setLeftDrawable(statusDrawables[type]);
+                    if (!NaConfig.INSTANCE.getCenterActionBarTitle().Bool() && NaConfig.INSTANCE.getCenterActionBarTitleType().Int() != 2){
+                        subtitleTextView.setLeftDrawable(statusDrawables[type]);
+                    }
                 }
                 currentTypingDrawable = statusDrawables[type];
                 for (int a = 0; a < statusDrawables.length; a++) {
