@@ -93,4 +93,5 @@
     <string name="RestartApp">アプリを再起動</string>
     <string name="ResetSettings">設定をリセット</string>
     <string name="ResetSettingsAlert">「N-設定」をリセットしますか？</string>
+    <string name="DontAutoPlayNextVoice">次のボイスメッセージを自動再生しない</string>
 </resources>

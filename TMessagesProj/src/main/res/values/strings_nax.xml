@@ -106,4 +106,5 @@
     <string name="RestartApp">Restart App</string>
     <string name="ResetSettings">Reset Settings</string>
     <string name="ResetSettingsAlert">Are you sure you want to reset all N-Settings?</string>
+    <string name="DontAutoPlayNextVoice">Don\'t Auto Play Next Voice Message</string>
 </resources>

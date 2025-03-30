@@ -93,4 +93,5 @@
     <string name="RestartApp">重启应用</string>
     <string name="ResetSettings">重置设置</string>
     <string name="ResetSettingsAlert">您确定要重置「N-设置」为初始状态吗？</string>
+    <string name="DontAutoPlayNextVoice">禁用自动播放下一条语音消息</string>
 </resources>

@@ -1016,6 +1016,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var dontAutoPlayNextVoice =
+        addConfig(
+            "DontAutoPlayNextVoice",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {
