@@ -279,7 +279,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.3.0'
     implementation "com.googlecode.mp4parser:isoparser:1.0.6"
     implementation 'com.google.mlkit:language-id:17.0.6' // 16.1.1 // Na: add for auto translate
-    implementation "com.google.code.gson:gson:2.11.0"
+    implementation "com.google.code.gson:gson:2.12.1"
     implementation 'com.google.guava:guava:31.1-android'
     implementation 'com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1'
     implementation 'com.google.android.gms:play-services-mlkit-image-labeling:16.0.8'
