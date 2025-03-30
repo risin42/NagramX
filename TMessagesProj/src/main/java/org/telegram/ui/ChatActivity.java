@@ -329,7 +329,6 @@ import com.radolyn.ayugram.messages.AyuSavePreferences;
 import com.radolyn.ayugram.proprietary.AyuHistoryHook;
 import com.radolyn.ayugram.ui.DummyView;
 import com.radolyn.ayugram.utils.AyuState;
-// import com.radolyn.ayugram.utils.AyuGhostUtils;
 import com.radolyn.ayugram.ui.AyuMessageHistory;
 
 @SuppressWarnings("unchecked")
@@ -14881,7 +14880,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                     nameText = AndroidUtilities.replaceCharSequence("%s", LocaleController.getString(R.string.ReplyTo), name == null ? "" : name);
                 }
-                nameText = MessageHelper.INSTANCE.zalgoFilter(nameText);
                 nameText = Emoji.replaceEmoji(nameText, replyNameTextView.getPaint().getFontMetricsInt(), false);
                 replyNameTextView.setText(nameText);
                 replyIconImageView.setContentDescription(LocaleController.getString(R.string.AccDescrReplying));
@@ -28037,7 +28035,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     if (user != null) {
                         nameTextView.setText(ContactsController.formatName(user.first_name, user.last_name));
                     } else if (chat != null) {
-                        nameTextView.setText(MessageHelper.INSTANCE.zalgoFilter(chat.title));
+                        nameTextView.setText(chat.title);
                     }
                 } else {
                     if (pinnedMessageObject.isInvoice() &&
