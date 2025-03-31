@@ -39,7 +39,7 @@
     <string name="labelChannelUser">Etiqueta Usuários de Canal</string>
     <string name="CustomChannelLabel">Etiqueta de Canal Personalizado</string>
     <string name="AlwaysShowDownloadIcon">Sempre Mostrar Ícone de Download</string>
-    <string name="QuickToggleAnonymous">Alternar rápido anonimamente</string>
+    <string name="QuickToggleAnonymous">Alternar Rápido o Anônimo</string>
     <string name="QuickToggleAnonymousNotice">Se você é proprietário do grupo.</string>
     <string name="RealHideTimeForSticker">Ocultar Horário nos Stickers</string>
     <string name="HideTitle">Ocultar Título</string>
@@ -49,7 +49,7 @@
     <string name="SendAsEmoji">Enviar como emoji</string>
     <string name="CustomArtworkApi">API Artwork Personalizada</string>
     <string name="CustomEditedMessage">Marca Editada Personalizada</string>
-    <string name="FakeHighPerformanceDevice">Tratar como dispositivo de alto desempenho</string>
+    <string name="FakeHighPerformanceDevice">Falsificar como Dispositivo de Alto Desempenho</string>
     <string name="DisableEmojiDrawLimit">Desativar Limite de Desenho de Emoji</string>
     <string name="IconDecoration">Decoração do Ícone</string>
     <string name="NotificationIcon">Ícone de Notificação</string>
@@ -62,7 +62,7 @@
     <string name="ShowFullAbout">Sempre Expandir Descrição do Chat</string>
     <string name="HideMessageSeenTooltip">Ocultar Confirmações de Leitura</string>
     <string name="TypeMessageHintUseGroupName">Usar Nome do Grupo como Texto de Sugestão</string>
-    <string name="HideBotButtonInInputField">Ocultar botão do Bot no campo de entrada</string>
+    <string name="HideBotButtonInInputField">Ocultar Botão do Bot no Campo de Entrada</string>
     <string name="ShowSendAsUnderMessageHint">Mostrar remetente sob a sugestão da mensagem</string>
     <string name="CheckAllForum">Adicionar fórum</string>
     <string name="DecorationNone">Nenhum</string>
@@ -101,7 +101,7 @@
     <string name="DisableDialogsFloatingButton">Ocultar Botão Flutuante</string>
     <string name="DisableFlagSecure">Desativar FLAG_SEGURE</string>
     <string name="CenterActionBarTitleType">Usar Título Centralizado</string>
-    <string name="ShowQuickReplyInBotCommands">Mostrar resposta rápida em comandos do Bot</string>
+    <string name="ShowQuickReplyInBotCommands">Mostrar Resposta Rápida nos Comandos do Bot</string>
     <string name="PushServiceType">Tipo de Serviço Push</string>
     <string name="PushServiceTypeInApp">No Aplicativo</string>
     <string name="PushServiceTypeInAppDialog">Mostrar Notificações Residentes</string>
@@ -110,8 +110,8 @@
     <string name="StickersChooseShortNameForStickerPack">Escolha um nome curto para seu pacote.</string>
     <string name="StickersCopyStickerSet">Copiar Conjunto de Sticker</string>
     <string name="DisableChannelMuteButton">Ocultar barra inferior nos canais</string>
-    <string name="DisablePreviewVideoSoundShortcut">Desativar Não Silenciar Vídeos com Botões de Volume</string>
-    <string name="DisablePreviewVideoSoundShortcutNotice">Impedir a tecla de volume de ativar a visualização do som de vídeo.</string>
+    <string name="DisablePreviewVideoSoundShortcut">Desativar Desmutar Vídeos com os Botões de Volume</string>
+    <string name="DisablePreviewVideoSoundShortcutNotice">Impedir que a tecla de volume ative o som de pré-visualização de vídeo.</string>
     <string name="DisableAutoWebLogin">Desativar login automático na Web</string>
     <string name="PreviewSendPhoto">Enviar Foto</string>
     <string name="PreviewSendVideo">Enviar Vídeo</string>
@@ -126,7 +126,7 @@
     <string name="RegexFiltersEdit">Editar filtro</string>
     <string name="RegexFiltersAddDescription">Você pode usar o site <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> para testar totalmente a sua expressão regular. Você também pode usar texto simples, mas não se esqueça de escapar de colchetes.</string>
     <string name="RegexFiltersAddError">Erro de sintaxe Regex</string>
-    <string name="ShowTimeHint">Clique na Hora da Mensagem para Mostrar Detalhes</string>
+    <string name="ShowTimeHint">Clique no Horário da Mensagem para Mostrar Detalhes</string>
     <string name="SearchHashtagDefaultPageChannel">Página de busca de hashtag padrão nos canais</string>
     <string name="SearchHashtagDefaultPageChat">Página de busca de Hashtag padrão nos Chats</string>
     <string name="OpenUrlOutBotWebViewRegex">URL Regex para abrir Links do Bot WebView</string>
@@ -138,8 +138,8 @@
     <string name="SendWithoutPangu">Enviar sem Pangu</string>
     <string name="DefaultHlsVideoQuality">Qualidade padrão do vídeo HLS</string>
     <string name="DisableBotOpenButton">Desativar Botão de Abrir do Bot</string>
-    <string name="CustomTitleUserName">Usar Nome de Usuário como Título</string>
-    <string name="EnhancedVideoBitrate">Bitrate de Vídeo Compartilhado Melhorado</string>
+    <string name="CustomTitleUserName">Usar Apelido do Usuário como Título</string>
+    <string name="EnhancedVideoBitrate">Taxa de Bits de Vídeo Compartilhado Aprimorada</string>
     <string name="SaveToChatSubfolder">Salvar Anexos por Nome do Chat</string>
     <string name="ActionBarButtons">Botões da Barra de Ação</string>
 </resources>

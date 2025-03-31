@@ -3,7 +3,7 @@
     <string name="XChannel">Canal Nagram X</string>
     <string name="EnableSaveDeletedMessages">Salvar Mensagens Excluídas</string>
     <string name="DeletedMessage">excluído</string>
-    <string name="EnableSaveEditsHistory">Salvar histórico de edições</string>
+    <string name="EnableSaveEditsHistory">Salvar Histórico de Edições</string>
     <string name="EditsHistoryMenuText">Histórico de edições</string>
     <string name="DeleteKeepLocally">Manter localmente</string>
     <string name="ClearMessageDatabase">Limpar Banco de Dados de Mensagens</string>
@@ -27,8 +27,8 @@
     <string name="LlmProviderXAIKey">chave API xAI</string>
     <string name="LlmSystemPrompt">Prompt do Sistema</string>
     <string name="LlmSystemPromptNotice">Define o papel e comportamento da AI.\n\nEste prompt define o tom, a personalidade e as limitações para a IA. Considere descrever que tipo de assistente a IA deve ser.\n\nPode ser deixado vazio.</string>
-    <string name="LlmUserPrompt">Prompt de Usuário</string>
-    <string name="LlmUserPromptNotice">Use @text como um marcador de posição para a mensagem original, e @toLang para o idioma de destino (opcional). U\n\nExemplo: \'Traduzir @text para @toLang sem qualquer explicação.\'\n\nDeixar este em branco usará o prompt padrão.</string>
+    <string name="LlmUserPrompt">Prompt do Usuário</string>
+    <string name="LlmUserPromptNotice">Use @text como um marcador de posição para a mensagem original, e @toLang para o idioma de destino (opcional).\n\nExemplo: \'Traduza @text para @toLang sem explicações.\'\n\nDeixar este campo em branco utilizará o prompt padrão.</string>
     <string name="LlmTemperature">Temperatura</string>
     <string name="AITranslatorSettings">IA Tradutor</string>
     <string name="TranslucentDeletedMessages">Mensagens Excluídas Translúcidas</string>
@@ -60,7 +60,7 @@
     <string name="MessageSavingSaveMediaInPublicGroups">... em Grupos Públicos</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">... em Grupos Privados</string>
     <string name="TelegramUIAutoTranslate">Traduzir Chats Inteiros</string>
-    <string name="TranslatorMode">Comportamento Manual de Tradução</string>
+    <string name="TranslatorMode">Comportamento de Tradução Manual</string>
     <string name="TranslatorModeAppend">Anexar</string>
     <string name="TranslatorModeInline">Substituir</string>
     <string name="TranslatorModePopup">Pop-up</string>
@@ -82,7 +82,7 @@
     <string name="UseDeletedIcon">Mostrar ícone ao invés de \"deletado\"</string>
     <string name="UseEditedIcon">Mostrar ícone ao invés de \"editado\"</string>
     <string name="SilentMessageByDefault">Enviar Mensagens Silenciosamente por Padrão</string>
-    <string name="FolderNameAsTitle">Usar o Nome da Pasta como Título</string>
+    <string name="FolderNameAsTitle">Usar Nome da Pasta como Título</string>
     <string name="SaveDeletedMessageForBotUser">Salvar Mensagens do Bot</string>
     <string name="TranslatorKeepMarkdown">Manter Markdown</string>
     <string name="TranslatorOptions">Opções</string>
@@ -93,5 +93,5 @@
     <string name="RestartApp">Reiniciar Aplicativo</string>
     <string name="ResetSettings">Redefinir Configurações</string>
     <string name="ResetSettingsAlert">Tem certeza de que deseja redefinir todas as N-Configurações?</string>
-    <string name="DontAutoPlayNextVoice">Não reproduzir automaticamente a próxima mensagem de voz</string>
+    <string name="DontAutoPlayNextVoice">Não Reproduzir Automaticamente a Próxima Mensagem de Voz</string>
 </resources>

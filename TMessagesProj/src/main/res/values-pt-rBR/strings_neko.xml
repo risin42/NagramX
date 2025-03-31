@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">N-Configurações</string>
-    <string name="IPv6">Conectando através do IPv6</string>
+    <string name="IPv6">Conectar através do IPv6</string>
     <string name="MessageMenu">Menu de Mensagem</string>
     <string name="HidePhone">Ocultar número de telefone</string>
     <string name="DeleteAllFromSelf">Excluir Minhas Mensagens</string>
@@ -67,7 +67,7 @@
     <string name="UserRestrictionsSendGifs">Enviar GIFs</string>
     <string name="CheckAllAdministrated">Adicionar administrado</string>
     <string name="RearVideoMessages">Câmera traseira em Mensagens de Vídeo</string>
-    <string name="HideAllTab">Ocultar aba \"Todos os Chats\"</string>
+    <string name="HideAllTab">Ocultar a pasta \"Todos os Chats\"</string>
     <string name="HideAllTabAbout">Pressione longamente o título na lista de chats para exibir Todos os Chats.</string>
     <string name="TabTitleType">Mostrar nas abas</string>
     <string name="TabTitleTypeText">Títulos</string>
@@ -96,6 +96,7 @@
     <string name="DarkenAvatarBackground">Escurecer Fundo</string>
     <string name="ProviderDeepLTranslate">DeepL Tradutor</string>
     <string name="ProviderMicrosoftTranslator">Bing Tradutor</string>
+    <string name="pressTitleToOpenAllChats">Pressione o título para abrir a aba \"Todos os Chats\"</string>
     <string name="DontSendGreetingSticker">Não envie Sticker de saudação</string>
     <string name="TakeGIFasVideo">Tratar GIF como vídeo</string>
     <string name="UseMediaStreamInVoip">Use o Stream de Mídia no VoIP</string>
@@ -104,7 +105,7 @@
     <string name="useSystemDNS">Usar DNS do sistema</string>
     <string name="customDoH">DoH Personalizado</string>
     <string name="customGroupVoipAudioBitrate">Taxa de bits de áudio VoIP do grupo</string>
-    <string name="maxRecentStickerCount">Máximo de stickers recentes</string>
+    <string name="maxRecentStickerCount">Máximo de Stickers Recentes</string>
     <string name="disableSwipeToNextChannel">Desativar Deslizar para o Próximo Canal</string>
     <string name="disableChoosingSticker">Enviar digitando em vez de escolhendo sticker</string>
     <string name="disableRemoteEmojiInteractions">Desativar interações de emoji remotamente</string>
@@ -127,7 +128,7 @@
     <string name="MutualContact">Contato comum</string>
     <string name="MutualContactDescription">Este é um contato em comum.</string>
     <string name="DatacenterStatusAbout">Verifique o status dos **datacenters** do Telegram.</string>
-    <string name="DatacenterStatus">Status do Datacenter</string>
+    <string name="DatacenterStatus">Datacenter Status</string>
     <string name="enhancedFileLoader">Aumentar Velocidade de Upload e Download</string>
     <string name="mapDriftingFixForGoogleMaps">Corrigir Google Maps Drifting na China</string>
     <string name="useOSMDroidMap">Usar Mapa OSMDroid</string>
@@ -209,7 +210,7 @@
     <string name="ChangeTranslateProvider">Mudar provedor</string>
     <string name="GoogleCloudTransKeyNotice">Se você configurar uma chave de tradução do Google Cloud, a API de tradução em nuvem será chamada em vez de enviar um formulário falso para a versão web ao traduzir (mais rápido, estável e economizando tráfego).</string>
     <string name="TransToLang">Idioma de Destino</string>
-    <string name="TransInputToLang">Pré-Enviar Idioma de Tradução</string>
+    <string name="TransInputToLang">Idioma de Tradução Pré-Envio</string>
     <string name="More">Mais</string>
     <string name="ShowIdAndDc">Mostrar ID / DC no perfil</string>
     <string name="UseDefaultTheme">Usar o tema padrão *</string>
@@ -226,7 +227,7 @@
     <string name="DisableSystemAccount">Desativar Conta do Sistema</string>
     <string name="FilterMenu">Menu de Filtro de Diálogos</string>
     <string name="DisableProxyWhenVpnEnabled">Desativar Proxy quando a VPN estiver ativada</string>
-    <string name="UseProxyItem">Mostrar proxy na gaveta</string>
+    <string name="UseProxyItem">Mostrar Proxy na Gaveta</string>
     <string name="HideProxyByDefault">Ocultar configurações do Proxy</string>
     <string name="SkipOpenLinkConfirm">Pular confirmação de abertura de link</string>
     <string name="DeleteAllInChatAlert">Aviso! Isso irá **excluir todas as mensagens** neste chat para **todos** os participantes.</string>
