@@ -158,7 +158,6 @@ public class ActionBarMenuItem extends FrameLayout {
 
     public interface ActionBarSubMenuItemDelegate {
         void onShowSubMenu();
-
         void onHideSubMenu();
     }
 
@@ -260,7 +259,7 @@ public class ActionBarMenuItem extends FrameLayout {
             iconView.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
             addView(iconView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
             if (iconColor != 0) {
-                iconView.setColorFilter(new PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN));
+                iconView.setColorFilter(new PorterDuffColorFilter(iconColor, PorterDuff.Mode.MULTIPLY));
             }
         }
     }
@@ -325,7 +324,7 @@ public class ActionBarMenuItem extends FrameLayout {
                     View child = popupLayout.getItemAt(a);
                     child.getHitRect(rect);
                     Object tag = child.getTag();
-                    if (tag instanceof Integer) {
+                    if (tag instanceof Integer && (Integer) tag < 100) {
                         if (!rect.contains((int) x, (int) y)) {
                             child.setPressed(false);
                             child.setSelected(false);
@@ -381,13 +380,13 @@ public class ActionBarMenuItem extends FrameLayout {
 
     public void setIconColor(int color) {
         if (iconView != null) {
-            iconView.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+            iconView.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
         }
         if (textView != null) {
             textView.setTextColor(color);
         }
         if (clearButton != null) {
-            clearButton.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+            clearButton.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
         }
     }
 
@@ -672,7 +671,7 @@ public class ActionBarMenuItem extends FrameLayout {
     }
 
     public void redrawPopup(int color) {
-        if (popupLayout != null) {
+        if (popupLayout != null && popupLayout.getBackgroundColor() != color) {
             popupLayout.setBackgroundColor(color);
             if (popupWindow != null && popupWindow.isShowing()) {
                 popupLayout.invalidate();
@@ -905,6 +904,7 @@ public class ActionBarMenuItem extends FrameLayout {
         return searchContainer != null && searchContainer.getVisibility() == VISIBLE;
     }
 
+    AnimatorSet searchContainerAnimator;
 
     public boolean toggleSearch(boolean openKeyboard) {
         checkCreateSearchField();
@@ -921,8 +921,41 @@ public class ActionBarMenuItem extends FrameLayout {
                 return true;
             }
         }
-        if (searchContainer.getVisibility() == VISIBLE) {
-            searchContainer.setVisibility(GONE);
+        ArrayList<View> menuIcons = new ArrayList<>();
+        for (int i = 0; i < parentMenu.getChildCount(); i++) {
+            View view = parentMenu.getChildAt(i);
+            if (view instanceof ActionBarMenuItem) {
+                View iconView = ((ActionBarMenuItem) view).getIconView();
+                if (iconView != null) {
+                    menuIcons.add(iconView);
+                }
+            }
+        }
+
+        if (searchContainer.getTag() != null) {
+            searchContainer.setTag(null);
+            if (searchContainerAnimator != null) {
+                searchContainerAnimator.removeAllListeners();
+                searchContainerAnimator.cancel();
+            }
+            searchContainerAnimator = new AnimatorSet();
+            searchContainerAnimator.playTogether(ObjectAnimator.ofFloat(searchContainer, View.ALPHA, searchContainer.getAlpha(), 0f));
+            for (int i = 0; i < menuIcons.size(); i++) {
+                menuIcons.get(i).setAlpha(0f);
+                searchContainerAnimator.playTogether(ObjectAnimator.ofFloat(menuIcons.get(i), View.ALPHA, menuIcons.get(i).getAlpha(), 1f));
+            }
+            searchContainerAnimator.setDuration(150);
+            searchContainerAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    searchContainer.setAlpha(0);
+                    for (int i = 0; i < menuIcons.size(); i++) {
+                        menuIcons.get(i).setAlpha(1f);
+                    }
+                    searchContainer.setVisibility(View.GONE);
+                }
+            });
+            searchContainerAnimator.start();
 
             searchField.clearFocus();
             setVisibility(VISIBLE);
@@ -947,7 +980,27 @@ public class ActionBarMenuItem extends FrameLayout {
             return false;
         } else {
             searchContainer.setVisibility(VISIBLE);
+            searchContainer.setAlpha(0);
+            if (searchContainerAnimator != null) {
+                searchContainerAnimator.removeAllListeners();
+                searchContainerAnimator.cancel();
+            }
+            searchContainerAnimator = new AnimatorSet();
+            searchContainerAnimator.playTogether(ObjectAnimator.ofFloat(searchContainer, View.ALPHA, searchContainer.getAlpha(), 1f));
+            for (int i = 0; i < menuIcons.size(); i++) {
+                searchContainerAnimator.playTogether(ObjectAnimator.ofFloat(menuIcons.get(i), View.ALPHA, menuIcons.get(i).getAlpha(), 0f));
+            }
+            searchContainerAnimator.setDuration(150);
+            searchContainerAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
                     searchContainer.setAlpha(1f);
+                    for (int i = 0; i < menuIcons.size(); i++) {
+                        menuIcons.get(i).setAlpha(0f);
+                    }
+                }
+            });
+            searchContainerAnimator.start();
             setVisibility(GONE);
             clearSearchFilters();
             searchField.setText("");
@@ -974,7 +1027,6 @@ public class ActionBarMenuItem extends FrameLayout {
         onFiltersChanged();
         searchField.hideActionMode();
     }
-
     public void addSearchFilter(FiltersView.MediaFilterData filter) {
         currentSearchFilters.add(filter);
         if (searchContainer.getTag() != null) {
@@ -1002,36 +1054,35 @@ public class ActionBarMenuItem extends FrameLayout {
             ChangeBounds changeBounds = new ChangeBounds();
             changeBounds.setDuration(150);
             transition.addTransition(new Visibility() {
-                @Override
-                public Animator onAppear(ViewGroup sceneRoot, View view, TransitionValues startValues, TransitionValues endValues) {
-                    if (view instanceof SearchFilterView) {
-                        AnimatorSet set = new AnimatorSet();
-                        set.playTogether(
-                                ObjectAnimator.ofFloat(view, View.ALPHA, 0, 1f),
-                                ObjectAnimator.ofFloat(view, View.SCALE_X, 0.5f, 1f),
-                                ObjectAnimator.ofFloat(view, View.SCALE_Y, 0.5f, 1f)
-                        );
-                        set.setInterpolator(CubicBezierInterpolator.DEFAULT);
-                        return set;
-                    }
-                    return ObjectAnimator.ofFloat(view, View.ALPHA, 0, 1f);
-                }
-
-                @Override
-                public Animator onDisappear(ViewGroup sceneRoot, View view, TransitionValues startValues, TransitionValues endValues) {
-                    if (view instanceof SearchFilterView) {
-                        AnimatorSet set = new AnimatorSet();
-                        set.playTogether(
-                                ObjectAnimator.ofFloat(view, View.ALPHA, view.getAlpha(), 0f),
-                                ObjectAnimator.ofFloat(view, View.SCALE_X, view.getScaleX(), 0.5f),
-                                ObjectAnimator.ofFloat(view, View.SCALE_Y, view.getScaleX(), 0.5f)
-                        );
-                        set.setInterpolator(CubicBezierInterpolator.DEFAULT);
-                        return set;
-                    }
-                    return ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0);
-                }
-            }.setDuration(150)).addTransition(changeBounds);
+                        @Override
+                        public Animator onAppear(ViewGroup sceneRoot, View view, TransitionValues startValues, TransitionValues endValues) {
+                            if (view instanceof SearchFilterView) {
+                                AnimatorSet set = new AnimatorSet();
+                                set.playTogether(
+                                        ObjectAnimator.ofFloat(view, View.ALPHA, 0, 1f),
+                                        ObjectAnimator.ofFloat(view, View.SCALE_X, 0.5f, 1f),
+                                        ObjectAnimator.ofFloat(view, View.SCALE_Y, 0.5f, 1f)
+                                );
+                                set.setInterpolator(CubicBezierInterpolator.DEFAULT);
+                                return set;
+                            }
+                            return ObjectAnimator.ofFloat(view, View.ALPHA, 0, 1f);
+                        }
+                        @Override
+                        public Animator onDisappear(ViewGroup sceneRoot, View view, TransitionValues startValues, TransitionValues endValues) {
+                            if (view instanceof SearchFilterView) {
+                                AnimatorSet set = new AnimatorSet();
+                                set.playTogether(
+                                        ObjectAnimator.ofFloat(view, View.ALPHA, view.getAlpha(), 0f),
+                                        ObjectAnimator.ofFloat(view, View.SCALE_X,  view.getScaleX(), 0.5f),
+                                        ObjectAnimator.ofFloat(view, View.SCALE_Y,  view.getScaleX(), 0.5f)
+                                );
+                                set.setInterpolator(CubicBezierInterpolator.DEFAULT);
+                                return set;
+                            }
+                            return ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0);
+                        }
+                    }.setDuration(150)).addTransition(changeBounds);
             transition.setOrdering(TransitionSet.ORDERING_TOGETHER);
             transition.setInterpolator(CubicBezierInterpolator.EASE_OUT);
             transition.addListener(new Transition.TransitionListener() {

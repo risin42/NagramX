@@ -24,9 +24,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
-import androidx.annotation.Keep;
-import androidx.core.view.ViewCompat;
-import androidx.core.widget.ScrollerCompat;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -249,7 +246,7 @@ public class ActionBarPopupWindow extends PopupWindow {
             };
             linearLayout.setOrientation(LinearLayout.VERTICAL);
             if (scrollView != null) {
-                scrollView.addView(linearLayout, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                scrollView.addView(linearLayout, new ScrollView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             } else if (swipeBackLayout != null) {
                 swipeBackLayout.addView(linearLayout, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, shownFromBottom ? Gravity.BOTTOM : Gravity.TOP));
             } else {
@@ -285,7 +282,7 @@ public class ActionBarPopupWindow extends PopupWindow {
 
         public void setBackgroundColor(int color) {
             if (backgroundColor != color && backgroundDrawable != null) {
-                backgroundDrawable.setColorFilter(new PorterDuffColorFilter(backgroundColor = color, PorterDuff.Mode.SRC_IN));
+                backgroundDrawable.setColorFilter(new PorterDuffColorFilter(backgroundColor = color, PorterDuff.Mode.MULTIPLY));
             }
         }
 
@@ -918,12 +915,6 @@ public class ActionBarPopupWindow extends PopupWindow {
             content.setPivotX(content.getMeasuredWidth());
             content.setPivotY(0);
             int count = content.getItemsCount();
-            int height = AndroidUtilities.displayMetrics.heightPixels;
-            int item = content.getItemAt(0).getMeasuredHeight();
-            if (item > 0) {
-                int maxItems = height / item;
-                if (count > maxItems) count = maxItems;
-            }
             content.positions.clear();
             int visibleCount = 0;
             for (int a = 0; a < count; a++) {
@@ -950,7 +941,6 @@ public class ActionBarPopupWindow extends PopupWindow {
                     ObjectAnimator.ofFloat(content, "backScaleY", 0.0f, finalScaleY),
                     ObjectAnimator.ofInt(content, "backAlpha", 0, 255));
             windowAnimatorSet.setDuration(150 + 16 * visibleCount);
-            int finalCount = count;
             windowAnimatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
