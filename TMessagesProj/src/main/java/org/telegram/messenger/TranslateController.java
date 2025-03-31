@@ -1425,6 +1425,44 @@ public class TranslateController extends BaseController {
 
         translatingStories.add(key);
 
+        // --- NagramX Start ---
+        if (NekoConfig.translateToLang.String() == null) {
+            return;
+        }
+
+        if (NekoConfig.translationProvider.Int() != Translator.providerTelegram) {
+            Translator.translate(storyItem.caption, storyItem.entities, new Translator.Companion.TranslateCallBack2() {
+                @Override
+                public void onSuccess(@NonNull TLRPC.TL_textWithEntities finalText) {
+                    storyItem.translatedLng = NekoConfig.translateToLang.String();
+                    storyItem.translatedText = finalText;
+                    getMessagesController().getStoriesController().getStoriesStorage().putStoryInternal(storyItem.dialogId, storyItem);
+                    translatingStories.remove(key);
+                    if (done != null) {
+                        done.run();
+                    }
+                }
+
+                @Override
+                public void onFailed(boolean unsupported, @NonNull String error) {
+                    AndroidUtilities.runOnUIThread(() -> {
+                        if (unsupported) {
+                            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert2) + " " + error);
+                        }
+                        storyItem.translatedLng = NekoConfig.translateToLang.String();
+                        storyItem.translatedText = null;
+                        getMessagesController().getStoriesController().getStoriesStorage().putStoryInternal(storyItem.dialogId, storyItem);
+                        translatingStories.remove(key);
+                        if (done != null) {
+                            done.run();
+                        }
+                    });
+                }
+            });
+            return;
+        }
+        // --- NagramX End ---
+
         TLRPC.TL_messages_translateText req = new TLRPC.TL_messages_translateText();
         req.flags |= 2;
         final TLRPC.TL_textWithEntities text = new TLRPC.TL_textWithEntities();
@@ -1558,6 +1596,46 @@ public class TranslateController extends BaseController {
         }
 
         translatingPhotos.add(key);
+
+        // --- NagramX Start ---
+        if (NekoConfig.translateToLang.String() == null) {
+            return;
+        }
+
+        if (NekoConfig.translationProvider.Int() != Translator.providerTelegram) {
+            final long start = System.currentTimeMillis();
+            Translator.translate(messageObject.messageOwner.message, messageObject.messageOwner.entities, new Translator.Companion.TranslateCallBack2() {
+                @Override
+                public void onSuccess(@NonNull TLRPC.TL_textWithEntities finalText) {
+                    messageObject.messageOwner.translatedToLanguage = NekoConfig.translateToLang.String();
+                    messageObject.messageOwner.translatedText = finalText;
+                    getMessagesStorage().updateMessageCustomParams(key.dialogId, messageObject.messageOwner);
+                    AndroidUtilities.runOnUIThread (() -> NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.messageTranslated, messageObject));
+                    translatingPhotos.remove(key);
+                    if (done != null) {
+                        AndroidUtilities.runOnUIThread(done, Math.max(0, 400L - (System.currentTimeMillis() - start)));
+                    }
+                }
+
+                @Override
+                public void onFailed(boolean unsupported, @NonNull String error) {
+                    AndroidUtilities.runOnUIThread(() -> {
+                        if (unsupported) {
+                            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert2) + " " + error);
+                        }
+                        messageObject.messageOwner.translatedToLanguage = NekoConfig.translateToLang.String();
+                        messageObject.messageOwner.translatedText = null;
+                        getMessagesStorage().updateMessageCustomParams(key.dialogId, messageObject.messageOwner);
+                        translatingPhotos.remove(key);
+                        if (done != null) {
+                            AndroidUtilities.runOnUIThread(done, Math.max(0, 400L - (System.currentTimeMillis() - start)));
+                        }
+                    });
+                }
+            });
+            return;
+        }
+        // --- NagramX End ---
 
         TLRPC.TL_messages_translateText req = new TLRPC.TL_messages_translateText();
         req.flags |= 2;

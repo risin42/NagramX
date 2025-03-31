@@ -76,7 +76,7 @@ fun ChatActivity.translateMessages(
     // translation for this message is already available in that case
     } else if (
                 translatorMode == TRANSLATE_MODE_REPLACE &&
-                messages.all { it.messageOwner.translatedToLanguage == target.language } &&
+                messages.all { it.messageOwner.translatedToLanguage == NekoConfig.translateToLang.String() } &&
                 (messages.all { it.messageOwner.translatedText?.text?.isNotEmpty() == true } ||
                 messages.all { it.messageOwner.translatedPoll?.question?.text?.isNotEmpty() == true })
             ) {
@@ -179,7 +179,7 @@ fun ChatActivity.translateMessages(
                 }
                 controller.removeAsTranslatingItem(selectedObject)
                 selectedObject.messageOwner.translated = true
-                selectedObject.messageOwner.translatedToLanguage = target.language
+                selectedObject.messageOwner.translatedToLanguage = NekoConfig.translateToLang.String()
 
                 if (selectedObject.messageOwner.translatedText != null && translatorMode == TRANSLATE_MODE_REPLACE) {
                     MessagesStorage.getInstance(currentAccount).updateMessageCustomParams(
