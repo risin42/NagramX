@@ -14770,15 +14770,8 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                 galleryGap.setVisibility(View.VISIBLE);
                 menuItem.showSubItem(gallery_menu_share);
                 menuItem.showSubItem(gallery_menu_scan);
-                if (noforwards) {
-                    menuItem.hideSubItem(gallery_menu_send_forward);
-                    menuItem.hideSubItem(gallery_menu_send_noquote);
-                } else {
-                    if (centerTitle) {
-                        menuItem.showSubItem(gallery_menu_send_forward);
-                    }
-                    menuItem.showSubItem(gallery_menu_send_noquote);
-                }
+                menuItem.setSubItemVisibility(gallery_menu_send_forward, !noforwards && centerTitle);
+                menuItem.setSubItemVisibility(gallery_menu_send_noquote, !noforwards);
             }
             groupedPhotosListView.fillList();
         } else if (!secureDocuments.isEmpty()) {
