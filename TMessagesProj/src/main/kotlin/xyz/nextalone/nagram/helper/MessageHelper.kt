@@ -147,6 +147,34 @@ object MessageHelper {
         }
     }
 
+    fun zalgoFilter(
+        text: String
+    ): String {
+        return zalgoFilter(text as CharSequence).toString()
+    }
+
+    fun zalgoFilter(
+        text: CharSequence?
+    ): CharSequence {
+        return if (text == null) {
+            ""
+        } else if (NaConfig.zalgoFilter.Bool() && text.matches(
+                ".*\\p{Mn}{4}.*".toRegex()
+            )
+        ) {
+            text.replace(
+                "(?i)([aeiouy]̈)|[̀-ͯ҉]".toRegex(),
+                ""
+            )
+                .replace(
+                    "[\\p{Mn}]".toRegex(),
+                    ""
+                )
+        } else {
+            text
+        }
+    }
+
     @JvmStatic
     fun getDCLocation(dc: Int): String {
         return when (dc) {

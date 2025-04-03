@@ -36,6 +36,8 @@
     <string name="DisableGlobalSearch">グローバル検索を無効にする</string>
     <string name="InputMessageId">メッセージ ID を入力</string>
     <string name="ToTheMessage">メッセージに移動</string>
+    <string name="ZalgoFilter">「Zalgo」文字をフィルタリング</string>
+    <string name="ZalgoFilterNotice">ニックネームやメッセージの「Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓」文字はフィルタリングされます。</string>
     <string name="labelChannelUser">チャンネルユーザーをラベル付け</string>
     <string name="CustomChannelLabel">カスタムチャンネルユーザーのラベル</string>
     <string name="AlwaysShowDownloadIcon">常にダウンロードアイコンを表示</string>

@@ -44,6 +44,7 @@ import androidx.core.graphics.ColorUtils;
 
 import top.qwq2333.nullgram.utils.StringUtils;
 import xyz.nextalone.nagram.NaConfig;
+import xyz.nextalone.nagram.helper.MessageHelper;
 import xyz.nextalone.nagram.ui.syntaxhighlight.SyntaxHighlight;
 
 import org.telegram.PhoneFormat.PhoneFormat;
@@ -5261,6 +5262,7 @@ public class MessageObject {
                 } else {
                     messageText = messageOwner.message;
                 }
+                messageText = MessageHelper.INSTANCE.zalgoFilter(messageText);
             }
         }
 

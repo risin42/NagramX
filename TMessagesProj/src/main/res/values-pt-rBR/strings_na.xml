@@ -36,6 +36,8 @@
     <string name="DisableGlobalSearch">Desativar Pesquisa Global</string>
     <string name="InputMessageId">Inserir ID da Mensagem</string>
     <string name="ToTheMessage">Ir Para</string>
+    <string name="ZalgoFilter">Filtrar Símbolos \"Zalgo\"</string>
+    <string name="ZalgoFilterNotice">Todos os símbolos “Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓” em alcunhas ou mensagens serão removidos.</string>
     <string name="labelChannelUser">Etiqueta Usuários de Canal</string>
     <string name="CustomChannelLabel">Etiqueta de Canal Personalizado</string>
     <string name="AlwaysShowDownloadIcon">Sempre Mostrar Ícone de Download</string>

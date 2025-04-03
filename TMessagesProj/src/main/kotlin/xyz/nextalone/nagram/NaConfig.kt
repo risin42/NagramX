@@ -208,6 +208,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val zalgoFilter =
+        addConfig(
+            "ZalgoFilter",
+            ConfigItem.configTypeBool,
+            false
+        )
     val customChannelLabel =
         addConfig(
             "CustomChannelLabel",

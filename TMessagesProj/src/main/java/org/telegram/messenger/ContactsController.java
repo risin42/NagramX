@@ -52,6 +52,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import xyz.nextalone.nagram.helper.MessageHelper;
+
+import androidx.collection.LongSparseArray;
 
 public class ContactsController extends BaseController {
 
@@ -3069,7 +3072,7 @@ public class ContactsController extends BaseController {
                 result.append(firstName);
             }
         }
-        return result.toString();
+        return MessageHelper.INSTANCE.zalgoFilter(result.toString());
     }
 
     private class PhoneBookContact {
