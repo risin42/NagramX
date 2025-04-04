@@ -29,9 +29,9 @@
     <string name="LlmSystemPromptNotice">YZ\'nin rolünü ve davranışını tanımlayın.\n\nBu bilgi istemi YZ için tonu, kişiliği ve sınırlamaları belirler. YZ\'nin ne tür bir asistan olması gerektiğini tanımlamayı düşünün.\n\nBoş bırakılabilir.</string>
     <string name="LlmUserPrompt">Kullanıcı İstemi</string>
     <string name="LlmUserPromptNotice">Orijinal mesaj için yer tutucu olarak @text ve hedef dil için @toLang kullanın (isteğe bağlı).\n\nÖrnek: \'@text\'i herhangi bir açıklama yapmadan @toLang\'e çevir.\"\n\nBunu boş bırakırsanız varsayılan istem kullanılır.</string>
-    <string name="LlmTemperature">Sıcaklık</string>
+    <string name="LlmTemperature">Tutarlılık</string>
     <string name="AITranslatorSettings">Yapay Zeka Çevirmeni</string>
-    <string name="TranslucentDeletedMessages">Yarı Saydam Silinmiş Mesajlar</string>
+    <string name="TranslucentDeletedMessages">Silinmiş Mesajları Soluklaştır</string>
     <string name="ArticleTranslationProvider">Makale Çeviri Sağlayıcısı</string>
     <string name="EnableSeparateArticleTranslator">Makale için Farklı Bir Sağlayıcı Kullanın</string>
     <string name="DisableCrashlyticsCollection">Firebase Crashlytics\'i devre dışı bırakma</string>
@@ -65,23 +65,23 @@
     <string name="TranslatorModeInline">Değiştir</string>
     <string name="TranslatorModePopup">Pencerede Oynat</string>
     <string name="Translated">tercüme edildi</string>
-    <string name="ProviderRealMicrosoftTranslator">Microsoft Tercüman</string>
-    <string name="TranslatorSettings">Tercüman</string>
+    <string name="ProviderRealMicrosoftTranslator">Microsoft Çeviri</string>
+    <string name="TranslatorSettings">Çeviri Ayarları</string>
     <string name="SettingsOnly">Sadece ayarlarda</string>
     <string name="ChatsOnly">Sadece sohbetlerde</string>
     <string name="InstantViewTranslation">Anlık Görünüm</string>
-    <string name="SaveDeletedMessageForBot">Bot Sohbetlerinde Kaydet</string>
+    <string name="SaveDeletedMessageForBot">Bot Sohbetlerinide Kaydet</string>
     <string name="DrawerElements">Çekmece Elemanları</string>
     <string name="HideArchive">Sohbet Listesinden \"Arşivlenmiş Sohbetleri\" Kaldırın</string>
-    <string name="HideChannelSilentBroadcast">Sessiz Yayın Anahtarını Gizle</string>
-    <string name="ConfirmAllLinks">Satır İçi Bağlantıları Açmadan Önce Sorun</string>
+    <string name="HideChannelSilentBroadcast">Sessize Al Düğmesini Gizle</string>
+    <string name="ConfirmAllLinks">Satır İçi Bağlantıları Açmadan Önce Sor</string>
     <string name="ConfirmAllLinksDescription">Bot satır içi düğmelerine t.me bağlantıları gibi Telegram dahili bağlantılarını dahil etme.</string>
     <string name="TranslatorMinimizedChannel">Çevirmen çubuğu bu kanal için en aza indirilmiştir.</string>
     <string name="TranslatorMinimizedGroup">Çevirmen çubuğu bu grup için en aza indirilmiştir.</string>
     <string name="TranslatorMinimized">Çevirmen çubuğu bu sohbet için en aza indirilmiştir.</string>
     <string name="UseDeletedIcon">\"Silindi\" Yerine Simge Göster</string>
     <string name="UseEditedIcon">\"Düzenlendi\" Yerine Simge Göster</string>
-    <string name="SilentMessageByDefault">Mesajları Varsayılan Olarak Sessiz Gönderme</string>
+    <string name="SilentMessageByDefault">Mesajları Sessiz Gönder Her Zaman</string>
     <string name="FolderNameAsTitle">Klasör Adını Başlık Olarak Kullanın</string>
     <string name="SaveDeletedMessageForBotUser">Bot Mesajlarını Kaydet</string>
     <string name="TranslatorKeepMarkdown">Biçimlendirmeyi Koru</string>
@@ -94,4 +94,5 @@
     <string name="ResetSettings">Ayarları Sıfırla</string>
     <string name="ResetSettingsAlert">Tüm N-Ayarlarını sıfırlamak istediğinizden emin misiniz?</string>
     <string name="DontAutoPlayNextVoice">Sonraki Sesli Mesajı Otomatik Oynatma</string>
+    <string name="SaveToChatSubfolder">Ekleri Sohbet Adına Göre Kaydet</string>
 </resources>

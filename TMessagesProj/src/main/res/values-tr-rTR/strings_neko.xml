@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">N-Ayarları</string>
-    <string name="IPv6">IPv6 üzerinden bağlanma</string>
-    <string name="MessageMenu">Mesaj Menüsü</string>
+    <string name="IPv6">IPv6 Aracılığıyla Bağlanmayı Dene</string>
+    <string name="MessageMenu">Mesaj Menü Düğmeleri</string>
     <string name="HidePhone">Telefon Numarasını Gizle</string>
     <string name="DeleteAllFromSelf">Mesajlarımı Sil</string>
     <string name="DeleteAllFromSelfAlert">Uyarı! Bu, **tüm** katılımcılar için bu sohbette sizden gelen tüm mesajları **silecektir.</string>
@@ -12,14 +12,14 @@
     <string name="DeleteAllFromSelfDone">Tüm mesajlarınız silindi</string>
     <string name="BotLogin">Bot Girişi</string>
     <string name="InvalidAccessToken">Geçersiz erişim belirteci</string>
-    <string name="IgnoreBlocked">Engellenen Kullanıcılardan Gelen Mesajları Gizleme</string>
+    <string name="IgnoreBlocked">Engellenen Kullanıcılardan Gelen Mesajları Gizle</string>
     <string name="Connection">Bağlantılar</string>
     <string name="NameOrder">İsim Sırası</string>
     <string name="FirstLast">Ad Soyad</string>
     <string name="LastFirst">Soyad Ad</string>
     <string name="TypefaceUseDefault">Sistem Yazı Tipini Kullan</string>
     <string name="NoQuoteForward">Alıntılamadan İlet</string>
-    <string name="Repeat">Yeniden gönder</string>
+    <string name="Repeat">Alıntıla</string>
     <string name="AddToSavedMessages">Kaydet</string>
     <string name="CreateMention">Bahsetme Oluştur</string>
     <string name="TransparentStatusBar">Şeffaf Durum Çubuğu</string>
@@ -34,15 +34,15 @@
     <string name="Snowflakes">Kar Taneleri</string>
     <string name="Fireworks">Havai Fişekler</string>
     <string name="DeleteDownloadedFile">İndirilenleri Sil</string>
-    <string name="TestBackend">Arka Ucu Test Et</string>
+    <string name="TestBackend">Test Sunucusunu Kullan</string>
     <string name="HideProxySponsorChannel">Proxy Sponsor Kanalını Gizle</string>
     <string name="ViewHistory">Tarih</string>
     <string name="Nya">Miyav!</string>
     <string name="SensitiveDisableFiltering">Hassas İçerik Filtrelemesini Devre Dışı Bırak</string>
     <string name="SensitiveAbout">Hassas medyayı tüm cihazlarınızdaki genel kanallarda görüntüleyin.</string>
     <string name="StickerSize">Çıkartma Boyutu</string>
-    <string name="StickerSizeDialogMessageBigOne">Büyük bir tane</string>
-    <string name="StickerSizeDialogMessageSmallOne">Küçük bir tane</string>
+    <string name="StickerSizeDialogMessageBigOne">Büyü Görünüşü</string>
+    <string name="StickerSizeDialogMessageSmallOne">Küçük Görünüşü</string>
     <string name="StickerSizeDialogMessageReplyTo">Miyav</string>
     <string name="StickerSizeDialogName">Duang</string>
     <string name="Experimental">Deneysel</string>
@@ -57,7 +57,7 @@
     <string name="TranslateApiUnsupported">Seçtiğiniz çeviri sağlayıcısı sizin dilinizi desteklemiyor.</string>
     <string name="ProviderLingocloud">LingoCloud Çeviri</string>
     <string name="UndoTranslate">Çeviriyi gizle</string>
-    <string name="DisablePhotoViewerSideAction">Dokunarak Fotoğrafları Çevirmeyi Devre Dışı Bırakma</string>
+    <string name="DisablePhotoViewerSideAction">Dokunarak Fotoğraflarda Gezmeyi Devre Dışı Bırak</string>
     <string name="BotToken">Erişim Anahtarı</string>
     <string name="UnlimitedPinnedDialogs">Sınırsız Sabitlenmiş Sohbetler</string>
     <string name="UnlimitedPinnedDialogsAbout">Senkronizasyonlarını kapatarak sohbetleri sınırsız sabitleyin.</string>
@@ -66,20 +66,20 @@
     <string name="UserRestrictionsSendStickers2">Çıkartma Gönder</string>
     <string name="UserRestrictionsSendGifs">GIF\'ler Gönder</string>
     <string name="CheckAllAdministrated">Yönetilen grup ve kanalları ekle</string>
-    <string name="RearVideoMessages">Video Mesajlarında Arka Kamera</string>
+    <string name="RearVideoMessages">Video Mesajlarda Arka Kamerayı Kullan</string>
     <string name="HideAllTab">\"Tüm Sohbetler\" Sekmesini Gizle</string>
     <string name="HideAllTabAbout">Tüm Sohbetler\'i göstermek için sohbet listesindeki başlığa uzun basın.</string>
     <string name="TabTitleType">Sekmelerde Göster</string>
     <string name="TabTitleTypeText">Başlıklar</string>
     <string name="TabTitleTypeIcon">Emojiler</string>
-    <string name="TabTitleTypeMix">Başlıklı ifadeler</string>
-    <string name="ConfirmAVMessage">Görüntülü/Sesli Mesaj Göndermeden Önce Sorun</string>
-    <string name="AskBeforeCalling">Aramadan Önce Sorun</string>
+    <string name="TabTitleTypeMix">Başlık ve Emoji</string>
+    <string name="ConfirmAVMessage">Görüntülü/Sesli Mesaj Göndermeden Önce Sor</string>
+    <string name="AskBeforeCalling">Aramadan Önce Sor</string>
     <string name="ConfirmCall">Aramayı onaylayın</string>
     <string name="CallTo">**%1$s** aransın mı?</string>
     <string name="DisableNumberRounding">Sayı Yuvarlamayı Devre Dışı Bırak</string>
     <string name="Categories">Kategoriler</string>
-    <string name="OfficialChannel">Nagram X Kanalı</string>
+    <string name="OfficialChannel">Nagram Kanalı</string>
     <string name="About">Hakkında</string>
     <string name="IgnoreBlockedAbout">Artık gruplarda, engellediğiniz kullanıcılardan gelen mesajları görmeyeceksiniz.</string>
     <string name="SourceCode">Kaynak Kodu</string>
@@ -92,22 +92,22 @@
     <string name="DisableProximityEvents">Yakınlık Olaylarını Devre Dışı Bırak</string>
     <string name="SelectBetween">Aralık Seçin</string>
     <string name="AvatarAsBackground">Profil fotoğrafını arka plan olarak kullan</string>
-    <string name="BlurAvatarBackground">Arka Plan Bulanıklaştırma</string>
+    <string name="BlurAvatarBackground">Arka Planı Bulanıklaştır</string>
     <string name="DarkenAvatarBackground">Arka planı koyulaştır</string>
     <string name="ProviderDeepLTranslate">DeepL Çeviri</string>
     <string name="ProviderMicrosoftTranslator">Bing Çevirmen</string>
     <string name="pressTitleToOpenAllChats">\"Tüm Sohbetler\" sekmesini açmak için başlığa basın</string>
-    <string name="DontSendGreetingSticker">Tebrik Çıkartması Göndermeyin</string>
+    <string name="DontSendGreetingSticker">Kişileriniz Yeni Katılınca Çıkartma Görünmesin</string>
     <string name="TakeGIFasVideo">GIF\'i Video Olarak Al</string>
     <string name="UseMediaStreamInVoip">VoIP\'de Medya Akışını Kullan</string>
-    <string name="HideTimeForSticker">Çıkartmalarda Zaman ve Okuma Makbuzlarını Gizleyin</string>
+    <string name="HideTimeForSticker">Çıkartmalarda Zamanı ve Okundu Tiklerini Gizleyin</string>
     <string name="hideGroupSticker">Grup Etiketini Gizle</string>
     <string name="useSystemDNS">Sistem DNS\'sini Kullanın</string>
     <string name="customDoH">Özel DoH</string>
     <string name="customGroupVoipAudioBitrate">Grup VoIP Ses Bit Hızı</string>
     <string name="maxRecentStickerCount">Son Çıkartmalar Sayısı</string>
     <string name="disableSwipeToNextChannel">Sonraki Kanala Kaydırmayı Devre Dışı Bırak</string>
-    <string name="disableChoosingSticker">Etiket Seçmek Yerine Yazarak Gönderin</string>
+    <string name="disableChoosingSticker">Çıkartma Seçmek Yerine Yazarak Gönderin</string>
     <string name="disableRemoteEmojiInteractions">Uzaktan Emoji Etkileşimlerini Devre Dışı Bırakma</string>
     <string name="hideSendAsChannel">Kanal Olarak Gönder\'i Gizle</string>
     <string name="showSpoilersDirectly">Spoiler Mesajlarını Doğrudan Göster</string>
@@ -130,7 +130,7 @@
     <string name="DatacenterStatusAbout">Telegram\'ın **Veri Merkezi** durumunu kontrol edin.</string>
     <string name="DatacenterStatus">Veri Merkezi Durumu</string>
     <string name="enhancedFileLoader">Yükleme ve İndirme Hızını Artırın</string>
-    <string name="mapDriftingFixForGoogleMaps">Çin\'de Google Haritalar\'ın Sürüklenmesini Düzeltme</string>
+    <string name="mapDriftingFixForGoogleMaps">Çin\'de Google Haritalarda Sapmayı Düzelt</string>
     <string name="useOSMDroidMap">OSMDroid Haritasını Kullanın</string>
     <string name="UnknownNekoSettingsOption">Böyle bir Nagram X Ayar seçeneği yoktur.</string>
     <string name="PasscodeNeeded">Önce parola kilidini etkinleştirmeniz gerekir</string>
@@ -210,7 +210,7 @@
     <string name="ChangeTranslateProvider">Sağlayıcıyı Değiştir</string>
     <string name="GoogleCloudTransKeyNotice">Eğer bir Google Cloud Translation Anahtarı ayarlarsanız, web sürümüne sahte bir form göndermek yerine Cloud Translation API\'ını kullanarak (daha hızlı, kararlı ve internet trafiğinizden tasarruf ederek) çeviri yaparsınız.</string>
     <string name="TransToLang">Şu dile çevir</string>
-    <string name="TransInputToLang">Gönderme Öncesi Dile Çevir</string>
+    <string name="TransInputToLang">Gönderme Öncesi Hedef Dile Çevir</string>
     <string name="More">Daha fazlası</string>
     <string name="ShowIdAndDc">Profil\'de Kimliği / Veri Merkezini Göster</string>
     <string name="UseDefaultTheme">Varsayılan Temayı Kullan *</string>
@@ -290,17 +290,17 @@
     <string name="DeleteDownloadedFileExternal">Harici dosya atlandı.</string>
     <string name="useCustomEmoji">Özel emoji paketi kullan</string>
     <string name="useCustomEmojiInvalid">Geçerli bir emoji paketi değil.</string>
-    <string name="repeatConfirm">Yeniden Göndermeden Önce Sor</string>
-    <string name="repeatConfirmText">Tekrar Gönderme yapmak istediğinize emin misiniz?</string>
-    <string name="valuesLargeAvatarInDrawer">Telegram Varsayılanı
-\nProfil resmini arkaplanda kullan
-\nBüyük profil resmini arkaplanda kullan</string>
-    <string name="rememberAllBackMessages">Tıklanan Tüm Yanıtları Hatırla</string>
+    <string name="repeatConfirm">Alıntılamadan Önce Sor</string>
+    <string name="repeatConfirmText">Alıntı yapmak istediğinize emin misiniz?</string>
+    <string name="valuesLargeAvatarInDrawer">Varsayılan
+\nProfili Kullan
+\nProfili Büyük Kullan</string>
+    <string name="rememberAllBackMessages">Önceki Tüm Yanıtları Hatırla</string>
     <string name="DisableInstantCamera">Anlık Kamerayı Devre Dışı Bırak</string>
     <string name="showSeconds">Zaman Damgasını Saniyeyle Göster</string>
     <string name="Name">Ad</string>
     <string name="channelAlias">Kanal Takma Adı</string>
-    <string name="ChannelAliasDetails">Kanal kullanıcılarını özel bir adla etiketleyin. Kanal profili menüsünde takma ad ayarlamayı etkinleştirin.</string>
+    <string name="ChannelAliasDetails">Kanal kullanıcılarını özel lakapla etiketleyin. Kanal profili menüsünde takma ad ayarlamayı etkinleştirin.</string>
     <string name="setChannelAliasName">Takma Ad Ayarla</string>
     <string name="StickerSettings">Çıkartmalar</string>
     <string name="ConfirmSettings">Onaylamalar</string>
