@@ -141,6 +141,5 @@
     <string name="DisableBotOpenButton">ボットの開くボタンを非表示</string>
     <string name="CustomTitleUserName">ユーザー名をカスタムタイトルに使用</string>
     <string name="EnhancedVideoBitrate">アップロード動画の品質を向上</string>
-    <string name="SaveToChatSubfolder">チャット別にファイルを保存</string>
     <string name="ActionBarButtons">ツールバーボタン</string>
 </resources>

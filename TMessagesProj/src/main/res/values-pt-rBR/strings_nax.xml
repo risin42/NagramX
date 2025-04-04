@@ -94,4 +94,5 @@
     <string name="ResetSettings">Redefinir Configurações</string>
     <string name="ResetSettingsAlert">Tem certeza de que deseja redefinir todas as N-Configurações?</string>
     <string name="DontAutoPlayNextVoice">Não Reproduzir Automaticamente a Próxima Mensagem de Voz</string>
+    <string name="SaveToChatSubfolder">Salvar Anexos por Nome do Chat</string>
 </resources>

@@ -140,6 +140,5 @@
     <string name="DisableBotOpenButton">Bot Aç Düğmesini Devre Dışı Bırak</string>
     <string name="CustomTitleUserName">Kullanıcı Takma Adını Başlık Olarak Kullanma</string>
     <string name="EnhancedVideoBitrate">Paylaşırken Video Bit Hızını İyileştir</string>
-    <string name="SaveToChatSubfolder">Ekleri Sohbet Adına Göre Kaydetme</string>
     <string name="ActionBarButtons">Eylem Çubuğu Düğmeleri</string>
 </resources>

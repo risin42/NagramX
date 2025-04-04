@@ -107,4 +107,10 @@
     <string name="ResetSettings">Reset Settings</string>
     <string name="ResetSettingsAlert">Are you sure you want to reset all N-Settings?</string>
     <string name="DontAutoPlayNextVoice">Don\'t Auto Play Next Voice Message</string>
+    <string name="SaveToChatSubfolder">Save Attachments by Chat Name</string>
+    <string name="MessageColoredBackground">Colorful Message Backgrounds</string>
+    <string name="ColoredBackgroundNotice">Background color and emojis for replies, quotes, and link previews.</string>
+    <string name="ChatMenu">Chat Menu</string>
+    <string name="MediaViewerMenu">Media Viewer Menu</string>
+    <string name="MenuAndButtons">Menu and Buttons</string>
 </resources>

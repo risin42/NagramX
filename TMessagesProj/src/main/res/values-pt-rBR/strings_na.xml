@@ -142,6 +142,5 @@
     <string name="DisableBotOpenButton">Desativar Botão de Abrir do Bot</string>
     <string name="CustomTitleUserName">Usar Apelido do Usuário como Título</string>
     <string name="EnhancedVideoBitrate">Taxa de Bits de Vídeo Compartilhado Aprimorada</string>
-    <string name="SaveToChatSubfolder">Salvar Anexos por Nome do Chat</string>
     <string name="ActionBarButtons">Botões da Barra de Ação</string>
 </resources>

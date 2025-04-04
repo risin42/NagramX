@@ -1028,6 +1028,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var messageColoredBackground =
+        addConfig(
+            "MessageColoredBackground",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

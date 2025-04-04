@@ -94,4 +94,10 @@
     <string name="ResetSettings">重置设置</string>
     <string name="ResetSettingsAlert">您确定要重置「N-设置」为初始状态吗？</string>
     <string name="DontAutoPlayNextVoice">禁用自动播放下一条语音消息</string>
+    <string name="SaveToChatSubfolder">按聊天名称保存附件</string>
+    <string name="MessageColoredBackground">多彩消息背景</string>
+    <string name="ColoredBackgroundNotice">回复，引用，链接预览的背景色和 Emoji。</string>
+    <string name="ChatMenu">聊天菜单</string>
+    <string name="MediaViewerMenu">媒体查看器菜单</string>
+    <string name="MenuAndButtons">菜单和按钮</string>
 </resources>

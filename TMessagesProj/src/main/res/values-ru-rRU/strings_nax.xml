@@ -95,6 +95,4 @@
     <string name="ResetSettingsAlert">Вы уверены, что хотите сбросить все «Настройки N»?</string>
     <string name="DontAutoPlayNextVoice">Не воспроизводить следующее голосовое сообщение автоматически</string>
     <string name="SaveToChatSubfolder">Сохранять вложения по названию чатов</string>
-    <string name="DisableColoredBackground">Отключить цветной фон в сообщениях</string>
-    <string name="DisableColoredBackgroundNotice">Это отключит цвет фона для предпросмотра ответов, кавычек и ссылок.</string>
 </resources>

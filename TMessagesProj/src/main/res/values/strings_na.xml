@@ -148,6 +148,5 @@
     <string name="DisableBotOpenButton">Disable Bot Open Button</string>
     <string name="CustomTitleUserName">Use User Nickname as Title</string>
     <string name="EnhancedVideoBitrate">Enhanced Shared Video Bitrate</string>
-    <string name="SaveToChatSubfolder">Save Attachments by Chat Name</string>
     <string name="ActionBarButtons">Action Bar Buttons</string>
 </resources>
