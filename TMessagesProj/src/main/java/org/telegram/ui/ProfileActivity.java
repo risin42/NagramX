@@ -2209,6 +2209,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             applyBulletin = null;
             AndroidUtilities.runOnUIThread(runnable);
         }
+        Bulletin.removeDelegate(this);
     }
 
     @Override
