@@ -1034,6 +1034,72 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var chatMenuItemLinkedChat=
+        addConfig(
+            "ChatMenuItemLinkedChat",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var chatMenuItemToBeginning =
+        addConfig(
+            "ChatMenuItemToBeginning",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var chatMenuItemGoToMessage =
+        addConfig(
+            "ChatMenuItemGoToMessage",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var chatMenuItemHideTitle =
+        addConfig(
+            "ChatMenuItemHideTitle",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var chatMenuItemClearDeleted =
+        addConfig(
+            "ChatMenuItemClearDeleted",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var chatMenuItemDeleteOwnMessages =
+        addConfig(
+            "ChatMenuItemDeleteOwnMessages",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var mediaViewerMenuItemForward =
+        addConfig(
+            "MediaViewerMenuItemForward",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var mediaViewerMenuItemNoQuoteForward =
+        addConfig(
+            "MediaViewerMenuItemNoQuoteForward",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var mediaViewerMenuItemCopyPhoto =
+        addConfig(
+            "MediaViewerMenuItemCopyPhoto",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var mediaViewerMenuItemSetProfilePhoto =
+        addConfig(
+            "MediaViewerMenuItemSetProfilePhoto",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var mediaViewerMenuItemScanQRCode =
+        addConfig(
+            "MediaViewerMenuItemScanQRCode",
+            ConfigItem.configTypeBool,
+            true
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

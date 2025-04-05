@@ -110,7 +110,7 @@
     <string name="PushServiceTypeInApp">In App</string>
     <string name="PushServiceTypeFCM" translatable="false">Google FCM</string>
     <string name="PushServiceTypeUnified" translatable="false">Unified Push</string>
-    <string name="PushServiceTypeMicroG" translatable="false">MicroG</string>
+    <string name="PushServiceTypeMicroG" translatable="false">microG</string>
     <string name="PushServiceTypeInAppDialog">Show Resident Notifications</string>
     <string name="PushServiceTypeUnifiedGateway">Unified Push Gateway</string>
     <string name="SendMp4DocumentAsVideo">Send MP4 Document as Video</string>

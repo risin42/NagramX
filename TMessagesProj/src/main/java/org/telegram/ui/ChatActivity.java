@@ -4392,13 +4392,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 String text;
                 int draw;
                 if (!currentChat.megagroup) {
-                    text = LocaleController.getString("LinkedGroupChat", R.string.LinkedGroupChat);
+                    text = LocaleController.getString(R.string.LinkedGroupChat);
                     draw = R.drawable.msg_discussion;
                 } else {
-                    text = LocaleController.getString("LinkedChannelChat", R.string.LinkedChannelChat);
+                    text = LocaleController.getString(R.string.LinkedChannelChat);
                     draw = R.drawable.msg_channel;
                 }
-                headerItem.lazilyAddSubItem(nkheaderbtn_linked_chat, draw, text);
+                if (NaConfig.INSTANCE.getChatMenuItemLinkedChat().Bool()) headerItem.lazilyAddSubItem(nkheaderbtn_linked_chat, draw, text);
             }
 
             if (currentUser != null && currentUser.id != UserObject.VERIFY && currentUser.id != UserObject.REPLY_BOT) {
@@ -4422,12 +4422,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             boolean addedSettings = false;
             if (!isTopic) {
-                toTheBeginning = headerItem.lazilyAddSubItem(to_the_beginning, R.drawable.ic_upward, LocaleController.getString("ToTheBeginning", R.string.ToTheBeginning));
-                toTheMessage = headerItem.lazilyAddSubItem(to_the_message, R.drawable.msg_go_up, LocaleController.getString("ToTheMessage", R.string.ToTheMessage));
-                hideTitleItem = headerItem.lazilyAddSubItem(nkheaderbtn_hide_title, R.drawable.hide_title, LocaleController.getString("HideTitle", R.string.HideTitle));
-                headerItem.lazilyAddSubItem(nkbtn_clearDeleted, R.drawable.msg_clearcache, LocaleController.getString(R.string.ClearDeleted));
-                if (ChatObject.isMegagroup(currentChat) || currentChat != null && !ChatObject.isChannel(currentChat)) {
-                    headerItem.lazilyAddSubItem(nkheaderbtn_zibi, R.drawable.msg_delete, LocaleController.getString("DeleteAllFromSelf", R.string.DeleteAllFromSelf));
+                if (NaConfig.INSTANCE.getChatMenuItemToBeginning().Bool()) headerItem.lazilyAddSubItem(to_the_beginning, R.drawable.ic_upward, LocaleController.getString(R.string.ToTheBeginning));
+                if (NaConfig.INSTANCE.getChatMenuItemGoToMessage().Bool()) headerItem.lazilyAddSubItem(to_the_message, R.drawable.msg_go_up, LocaleController.getString(R.string.ToTheMessage));
+                hideTitleItem = NaConfig.INSTANCE.getChatMenuItemHideTitle().Bool() ? headerItem.lazilyAddSubItem(nkheaderbtn_hide_title, R.drawable.hide_title, LocaleController.getString(R.string.HideTitle)) : null;
+                if (NaConfig.INSTANCE.getChatMenuItemClearDeleted().Bool()) headerItem.lazilyAddSubItem(nkbtn_clearDeleted, R.drawable.msg_clearcache, LocaleController.getString(R.string.ClearDeleted));
+                if (NaConfig.INSTANCE.getChatMenuItemDeleteOwnMessages().Bool() && (ChatObject.isMegagroup(currentChat) || currentChat != null && !ChatObject.isChannel(currentChat))) {
+                    headerItem.lazilyAddSubItem(nkheaderbtn_zibi, R.drawable.msg_delete, LocaleController.getString(R.string.DeleteAllFromSelf));
                 }
 
                 if (currentChat != null && !ChatObject.isChannel(currentChat) && currentChat.creator) {
@@ -42998,7 +42998,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     avatarImageView.setVisibility(android.view.View.GONE);
                 }
             }
-            hideTitleItem.setVisibility(android.view.View.GONE);
+            if (hideTitleItem != null) hideTitleItem.setVisibility(android.view.View.GONE);
         } else if (id == nkbtn_detail) {
             presentFragment(new MessageDetailsActivity(getSelectedMessages().get(0)));
         } else if (id == nkbtn_sharemessage) {
