@@ -17,7 +17,7 @@ import android.os.Build;
 @SuppressWarnings("ConstantConditions")
 public class BuildVars {
 
-    public static final boolean IS_BILLING_UNAVAILABLE = true;
+    public static final boolean IS_BILLING_UNAVAILABLE = false;
     public static boolean DEBUG_VERSION = BuildConfig.BUILD_TYPE.equals("debug");
     public static boolean DEBUG_PRIVATE_VERSION = DEBUG_VERSION;
     public static boolean LOGS_ENABLED = DEBUG_PRIVATE_VERSION;
@@ -25,10 +25,10 @@ public class BuildVars {
     public static boolean NO_SCOPED_STORAGE = Build.VERSION.SDK_INT <= 29;
 
     // SafetyNet key for Google Identity SDK, set it to empty to disable
-    public static String SAFETYNET_KEY = "";
+    public static String SAFETYNET_KEY = "AIzaSyDqt8P-7F7CPCseMkOiVRgb1LY8RN1bvH8";
     public static int BUILD_VERSION; // generated
     public static String BUILD_VERSION_STRING;
-    public static String GITHUB_RELEASE_URL = "https://t.me/NagramX";
+    public static String GITHUB_RELEASE_URL = "https://github.com/risin42/NagramX/releases";
 
     public static int OFFICAL_APP_ID = 4;
     public static String OFFICAL_APP_HASH = "014b35b6184100b085b0d0572f9b5103";

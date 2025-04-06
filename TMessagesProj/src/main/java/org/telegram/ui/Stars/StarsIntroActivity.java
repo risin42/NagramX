@@ -50,7 +50,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -2727,7 +2726,6 @@ public class StarsIntroActivity extends GradientHeaderActivity implements Notifi
         private final int BUTTON_EXPAND = -1;
 
         public void fillItems(ArrayList<UItem> items, UniversalAdapter adapter) {
-            Toast.makeText(getContext(), LocaleController.getString(R.string.nekoXPaymentRemovedToast), Toast.LENGTH_LONG).show();
             items.add(UItem.asCustom(headerView));
             items.add(UItem.asHeader(getString(R.string.TelegramStarsChoose)));
             int stars = 1;

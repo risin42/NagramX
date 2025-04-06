@@ -284,6 +284,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1'
     implementation 'com.google.android.gms:play-services-mlkit-image-labeling:16.0.8'
     // implementation 'com.google.android.recaptcha:recaptcha:18.4.0'
+    // payment
+    implementation 'com.google.android.gms:play-services-wallet:19.1.0'
+    implementation 'com.stripe:stripe-android:2.0.2'
+    implementation 'com.android.billingclient:billing:6.0.1'
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.5" // 1.1.5
 
     // Nagram

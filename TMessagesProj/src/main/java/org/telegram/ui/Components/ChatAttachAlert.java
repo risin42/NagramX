@@ -66,7 +66,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
@@ -123,6 +122,7 @@ import org.telegram.ui.GradientClip;
 import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.MessageSendPreview;
 import org.telegram.ui.PassportActivity;
+import org.telegram.ui.PaymentFormActivity;
 import org.telegram.ui.PhotoPickerActivity;
 import org.telegram.ui.PhotoPickerSearchActivity;
 import org.telegram.ui.PhotoViewer;
@@ -275,7 +275,42 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
 
                     @Override
                     public void onWebAppOpenInvoice(TLRPC.InputInvoice inputInvoice, String slug, TLObject response) {
-                        Toast.makeText(getContext(), LocaleController.getString(R.string.nekoXPaymentRemovedToast), Toast.LENGTH_LONG).show();
+                        BaseFragment parentFragment = baseFragment;
+                        PaymentFormActivity paymentFormActivity = null;
+                        if (response instanceof TLRPC.TL_payments_paymentFormStars) {
+                            final AlertDialog progressDialog = new AlertDialog(getContext(), AlertDialog.ALERT_TYPE_SPINNER);
+                            progressDialog.showDelayed(150);
+                            StarsController.getInstance(currentAccount).openPaymentForm(null, inputInvoice, (TLRPC.TL_payments_paymentFormStars) response, () -> {
+                                progressDialog.dismiss();
+                            }, status -> {
+                                webViewLayout.getWebViewContainer().onInvoiceStatusUpdate(slug, status);
+                            });
+                            AndroidUtilities.hideKeyboard(webViewLayout);
+                            return;
+                        } else if (response instanceof TLRPC.PaymentForm) {
+                            TLRPC.PaymentForm form = (TLRPC.PaymentForm) response;
+                            MessagesController.getInstance(currentAccount).putUsers(form.users, false);
+                            paymentFormActivity = new PaymentFormActivity(form, slug, parentFragment);
+                        } else if (response instanceof TLRPC.PaymentReceipt) {
+                            paymentFormActivity = new PaymentFormActivity((TLRPC.PaymentReceipt) response);
+                        }
+
+                        if (paymentFormActivity != null) {
+                            webViewLayout.scrollToTop();
+
+                            AndroidUtilities.hideKeyboard(webViewLayout);
+                            OverlayActionBarLayoutDialog overlayActionBarLayoutDialog = new OverlayActionBarLayoutDialog(parentFragment.getParentActivity(), resourcesProvider);
+                            overlayActionBarLayoutDialog.show();
+                            paymentFormActivity.setPaymentFormCallback(status -> {
+                                if (status != PaymentFormActivity.InvoiceStatus.PENDING) {
+                                    overlayActionBarLayoutDialog.dismiss();
+                                }
+
+                                webViewLayout.getWebViewContainer().onInvoiceStatusUpdate(slug, status.name().toLowerCase(Locale.ROOT));
+                            });
+                            paymentFormActivity.setResourcesProvider(resourcesProvider);
+                            overlayActionBarLayoutDialog.addFragment(paymentFormActivity);
+                        }
                     }
 
                     @Override

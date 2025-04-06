@@ -24,7 +24,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 
-import com.google.zxing.common.detector.MathUtils;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.ProductDetails;
 
 import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.AndroidUtilities;
@@ -642,7 +644,66 @@ public class SendGiftSheet extends BottomSheetWithRecyclerListView implements No
                     BoostDialogs.showToastError(getContext(), error);
                 });
             }
-            return;
+        } else if (option instanceof TLRPC.TL_premiumGiftOption) {
+            final TLRPC.TL_premiumGiftOption o = (TLRPC.TL_premiumGiftOption) option;
+            if ("XTR".equalsIgnoreCase(o.currency)) {
+                StarsController.getInstance(currentAccount).buyPremiumGift(dialogId, o, getMessage(), (status, err) -> {
+                    if (status) {
+                        if (closeParentSheet != null) {
+                            closeParentSheet.run();
+                        }
+                        AndroidUtilities.hideKeyboard(messageEdit);
+                        dismiss();
+
+                        AndroidUtilities.runOnUIThread(() -> PremiumPreviewGiftSentBottomSheet.show(new ArrayList<>(Arrays.asList(user))), 250);
+                    } else if (!TextUtils.isEmpty(err)) {
+                        BulletinFactory.of(topBulletinContainer, resourcesProvider)
+                            .createSimpleBulletin(R.raw.error, LocaleController.formatString(R.string.UnknownErrorCode, err))
+                            .show();
+                    }
+                    button.setLoading(false);
+                });
+            } else if (BuildVars.useInvoiceBilling()) {
+                final LaunchActivity activity = LaunchActivity.instance;
+                if (activity != null) {
+                    Uri uri = Uri.parse(o.bot_url);
+                    if (uri.getHost().equals("t.me")) {
+                        if (!uri.getPath().startsWith("/$") && !uri.getPath().startsWith("/invoice/")) {
+                            activity.setNavigateToPremiumBot(true);
+                        } else {
+                            activity.setNavigateToPremiumGiftCallback(() -> onGiftSuccess(false));
+                        }
+                    }
+                    Browser.openUrl(activity, premiumTier.giftOption.bot_url);
+                    dismiss();
+                }
+            } else {
+                if (BillingController.getInstance().isReady() && premiumTier.googlePlayProductDetails != null) {
+                    TLRPC.TL_inputStorePaymentGiftPremium giftPremium = new TLRPC.TL_inputStorePaymentGiftPremium();
+                    giftPremium.user_id = MessagesController.getInstance(currentAccount).getInputUser(user);
+                    ProductDetails.OneTimePurchaseOfferDetails offerDetails = premiumTier.googlePlayProductDetails.getOneTimePurchaseOfferDetails();
+                    giftPremium.currency = offerDetails.getPriceCurrencyCode();
+                    giftPremium.amount = (long) ((offerDetails.getPriceAmountMicros() / Math.pow(10, 6)) * Math.pow(10, BillingController.getInstance().getCurrencyExp(giftPremium.currency)));
+
+                    BillingController.getInstance().addResultListener(premiumTier.giftOption.store_product, billingResult -> {
+                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                            AndroidUtilities.runOnUIThread(() -> onGiftSuccess(true));
+                        }
+                    });
+
+                    TLRPC.TL_payments_canPurchaseStore req = new TLRPC.TL_payments_canPurchaseStore();
+                    req.purpose = giftPremium;
+                    ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
+                        if (response instanceof TLRPC.TL_boolTrue) {
+                            BillingController.getInstance().launchBillingFlow(getBaseFragment().getParentActivity(), AccountInstance.getInstance(currentAccount), giftPremium, Collections.singletonList(BillingFlowParams.ProductDetailsParams.newBuilder()
+                                    .setProductDetails(premiumTier.googlePlayProductDetails)
+                                    .build()));
+                        } else if (error != null) {
+                            AlertsCreator.processError(currentAccount, error, getBaseFragment(), req);
+                        }
+                    }));
+                }
+            }
         }
     }
 

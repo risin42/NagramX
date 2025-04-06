@@ -9,15 +9,12 @@ import android.graphics.Canvas;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
@@ -39,7 +36,6 @@ import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.FireworksOverlay;
 import org.telegram.ui.Components.LayoutHelper;
-import org.telegram.ui.Components.Premium.PremiumNotAvailableBottomSheet;
 import org.telegram.ui.Components.Premium.PremiumPreviewBottomSheet;
 import org.telegram.ui.Components.Premium.boosts.adapters.BoostAdapter;
 import org.telegram.ui.Components.Premium.boosts.cells.ActionBtnCell;
@@ -249,14 +245,6 @@ public class BoostViaGiftsBottomSheet extends BottomSheetWithRecyclerListView im
         updateRows(false, false);
         actionBtn = new ActionBtnCell(getContext(), resourcesProvider);
         actionBtn.setOnClickListener(v -> {
-
-            // ---- nagram start ----
-            if (BuildVars.IS_BILLING_UNAVAILABLE) {
-                fragment.showDialog(new PremiumNotAvailableBottomSheet(fragment));
-                return;
-            }
-            // ---- nagram end ----
-
             if (actionBtn.isLoading()) {
                 return;
             }
@@ -379,7 +367,13 @@ public class BoostViaGiftsBottomSheet extends BottomSheetWithRecyclerListView im
                         boolean onlyNewSubscribers = selectedParticipantsType == ParticipantsTypeCell.TYPE_NEW;
                         int dateInt = BoostRepository.prepareServerDate(selectedEndDate);
                         actionBtn.updateLoading(true);
-                        Toast.makeText(ApplicationLoader.applicationContext, R.string.nekoXPaymentRemovedToast, Toast.LENGTH_SHORT).show();
+                        BoostRepository.payGiveAway(selectedChats, selectedCountries, option, currentChat, dateInt, onlyNewSubscribers, fragment, isShowWinnersSelected, isAdditionalPrizeSelected, additionalPrize, result -> {
+                            dismiss();
+                            AndroidUtilities.runOnUIThread(() -> NotificationCenter.getInstance(UserConfig.selectedAccount).postNotificationName(NotificationCenter.boostByChannelCreated, currentChat, true), 220);
+                        }, error -> {
+                            actionBtn.updateLoading(false);
+                            BoostDialogs.showToastError(getContext(), error);
+                        });
                         break;
                     }
                 }

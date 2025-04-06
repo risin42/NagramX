@@ -697,13 +697,13 @@ public class MessagesController extends BaseController implements NotificationCe
     public boolean starsLocked;
 
     public boolean starsPurchaseAvailable() {
-        return false;
+        return !starsLocked;
     }
     public boolean premiumFeaturesBlocked() {
         return premiumLocked && !getUserConfig().isPremium();
     }
     public boolean premiumPurchaseBlocked() {
-        return true;
+        return premiumLocked;
     }
 
     public List<String> directPaymentsCurrency = new ArrayList<>();

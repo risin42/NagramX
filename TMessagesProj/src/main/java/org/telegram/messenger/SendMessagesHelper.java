@@ -79,6 +79,7 @@ import org.telegram.ui.Components.Point;
 import org.telegram.ui.Components.Premium.LimitReachedBottomSheet;
 import org.telegram.ui.Components.Reactions.ReactionsLayoutInBubble;
 import org.telegram.ui.Components.Reactions.ReactionsUtils;
+import org.telegram.ui.PaymentFormActivity;
 import org.telegram.ui.Stories.MessageMediaStoryFull;
 import org.telegram.ui.TwoStepVerificationActivity;
 import org.telegram.ui.TwoStepVerificationSetupActivity;
@@ -3441,7 +3442,21 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                         AlertsCreator.showOpenUrlAlert(parentFragment, button.url, false, true);
                     }
                 } else if (button instanceof TLRPC.TL_keyboardButtonBuy) {
-                    Toast.makeText(ApplicationLoader.applicationContext, R.string.nekoXPaymentRemovedToast, Toast.LENGTH_SHORT).show();
+                    if (response instanceof TLRPC.TL_payments_paymentFormStars) {
+                        TLRPC.InputInvoice inputInvoice = ((TLRPC.TL_payments_getPaymentForm) request[0]).invoice;
+                        StarsController.getInstance(currentAccount).openPaymentForm(messageObject, inputInvoice, (TLRPC.TL_payments_paymentFormStars) response, () -> {
+                            waitingForCallback.remove(key);
+                            finalKeys.remove(key);
+                        }, status -> {});
+                    } else if (response instanceof TLRPC.PaymentForm) {
+                        final TLRPC.PaymentForm form = (TLRPC.PaymentForm) response;
+                        getMessagesController().putUsers(form.users, false);
+                        parentFragment.presentFragment(new PaymentFormActivity(form, messageObject, parentFragment));
+                    } else if (response instanceof TLRPC.TL_payments_paymentReceiptStars) {
+                        StarsIntroActivity.showTransactionSheet(LaunchActivity.instance != null ? LaunchActivity.instance : ApplicationLoader.applicationContext, false, currentAccount, (TLRPC.TL_payments_paymentReceiptStars) response, null);
+                    } else if (response instanceof TLRPC.PaymentReceipt) {
+                        parentFragment.presentFragment(new PaymentFormActivity((TLRPC.PaymentReceipt) response));
+                    }
                 } else {
                     TLRPC.TL_messages_botCallbackAnswer res = (TLRPC.TL_messages_botCallbackAnswer) response;
                     if (!cacheFinal && res.cache_time != 0 && !button.requires_password) {

@@ -4431,7 +4431,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             } else if (position == businessRow) {
                 presentFragment(new PremiumPreviewFragment(PremiumPreviewFragment.FEATURES_BUSINESS, "settings"));
             } else if (position == premiumGiftingRow) {
-                showDialog(new PremiumNotAvailableBottomSheet(this));
+                UserSelectorBottomSheet.open(0, BirthdayController.getInstance(currentAccount).getState());
             } else if (position == botPermissionLocation) {
                 if (botLocation != null) {
                     botLocation.setGranted(!botLocation.granted(), () -> {
@@ -4786,9 +4786,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                 int currentClass = SharedConfig.getDevicePerformanceClass();
                                 int trueClass = SharedConfig.measureDevicePerformanceClass();
                                 builder2.setItems(new CharSequence[] {
-                                        AndroidUtilities.replaceTags((currentClass == SharedConfig.PERFORMANCE_CLASS_HIGH ? "**HIGH**" : "HIGH") + (trueClass == SharedConfig.PERFORMANCE_CLASS_HIGH ? " (measured)" : "")),
-                                        AndroidUtilities.replaceTags((currentClass == SharedConfig.PERFORMANCE_CLASS_AVERAGE ? "**AVERAGE**" : "AVERAGE") + (trueClass == SharedConfig.PERFORMANCE_CLASS_AVERAGE ? " (measured)" : "")),
-                                        AndroidUtilities.replaceTags((currentClass == SharedConfig.PERFORMANCE_CLASS_LOW ? "**LOW**" : "LOW") + (trueClass == SharedConfig.PERFORMANCE_CLASS_LOW ? " (measured)" : ""))
+                                    AndroidUtilities.replaceTags((currentClass == SharedConfig.PERFORMANCE_CLASS_HIGH ? "**HIGH**" : "HIGH") + (trueClass == SharedConfig.PERFORMANCE_CLASS_HIGH ? " (measured)" : "")),
+                                    AndroidUtilities.replaceTags((currentClass == SharedConfig.PERFORMANCE_CLASS_AVERAGE ? "**AVERAGE**" : "AVERAGE") + (trueClass == SharedConfig.PERFORMANCE_CLASS_AVERAGE ? " (measured)" : "")),
+                                    AndroidUtilities.replaceTags((currentClass == SharedConfig.PERFORMANCE_CLASS_LOW ? "**LOW**" : "LOW") + (trueClass == SharedConfig.PERFORMANCE_CLASS_LOW ? " (measured)" : ""))
                                 }, (dialog2, which2) -> {
                                     int newClass = 2 - which2;
                                     if (newClass == trueClass) {

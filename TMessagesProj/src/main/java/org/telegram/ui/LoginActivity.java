@@ -99,12 +99,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 
-// import com.android.billingclient.api.BillingClient;
-// import com.android.billingclient.api.BillingFlowParams;
-// import com.android.billingclient.api.ProductDetails;
-// import com.android.billingclient.api.Purchase;
-// import com.android.billingclient.api.QueryProductDetailsParams;
-// import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.ProductDetails;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.QueryProductDetailsParams;
+//import com.google.android.gms.auth.api.signin.GoogleSignIn;
 //import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 //import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 //import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -115,7 +115,6 @@ import androidx.core.graphics.ColorUtils;
 //import com.google.android.play.core.integrity.IntegrityManagerFactory;
 //import com.google.android.play.core.integrity.IntegrityTokenRequest;
 //import com.google.android.play.core.integrity.IntegrityTokenResponse;
-import com.googlecode.mp4parser.boxes.apple.AppleNameBox;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -267,8 +266,8 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             VIEW_CODE_EMAIL = 14,
             VIEW_CODE_FRAGMENT_SMS = 15,
             VIEW_CODE_WORD = 16,
-            VIEW_CODE_PHRASE = 17;
-            // VIEW_PAY = 18;
+            VIEW_CODE_PHRASE = 17,
+            VIEW_PAY = 18;
 
     public final static int COUNTRY_STATE_NOT_SET_OR_VALID = 0,
             COUNTRY_STATE_EMPTY = 1,
@@ -315,8 +314,8 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             VIEW_CODE_EMAIL,
             VIEW_CODE_FRAGMENT_SMS,
             VIEW_CODE_WORD,
-            VIEW_CODE_PHRASE
-            // VIEW_PAY
+            VIEW_CODE_PHRASE,
+            VIEW_PAY
     })
     private @interface ViewNumber {}
 
@@ -329,7 +328,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
     @ViewNumber
     private int currentViewNum;
-    private final SlideView[] views = new SlideView[18];
+    private final SlideView[] views = new SlideView[19];
     private CustomPhoneKeyboardView keyboardView;
     private ValueAnimator keyboardAnimator;
 
@@ -684,12 +683,11 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         views[VIEW_CODE_FRAGMENT_SMS] = new LoginActivitySmsView(context, AUTH_TYPE_FRAGMENT_SMS);
         views[VIEW_CODE_WORD] = new LoginActivityPhraseView(context, AUTH_TYPE_WORD);
         views[VIEW_CODE_PHRASE] = new LoginActivityPhraseView(context, AUTH_TYPE_PHRASE);
-        // views[VIEW_PAY] = new LoginPayView();
+        views[VIEW_PAY] = new LoginPayView(context);
 
         for (int a = 0; a < views.length; a++) {
             views[a].setVisibility(a == 0 ? View.VISIBLE : View.GONE);
-            // final boolean needsTopMargin = a != VIEW_PAY;
-            final boolean needsTopMargin = true;
+            final boolean needsTopMargin = a != VIEW_PAY;
             slideViewsContainer.addView(views[a], LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER, AndroidUtilities.isTablet() ? 26 : 18, needsTopMargin ? 30 : 0, AndroidUtilities.isTablet() ? 26 : 18, 0));
         }
 
@@ -1862,12 +1860,10 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
     private boolean isRequestingFirebaseSms;
     private void fillNextCodeParams(Bundle params, TLRPC.auth_SentCode res, boolean animate) {
         if (res instanceof TLRPC.TL_auth_sentCodePaymentRequired) {
-            /*
             final TLRPC.TL_auth_sentCodePaymentRequired auth = (TLRPC.TL_auth_sentCodePaymentRequired) res;
             params.putString("product", auth.store_product);
             params.putString("phoneHash", auth.phone_code_hash);
             setPage(VIEW_PAY, true, params, true);
-            */
             return;
         }
         if (res.type instanceof TLRPC.TL_auth_sentCodeTypeFirebaseSms && !res.type.verifiedFirebase && !isRequestingFirebaseSms) {
@@ -8728,7 +8724,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             }
             String token = editText.getText().toString();
 
-            if (token.length() == 0) {
+            if (token.isEmpty()) {
                 needShowAlert(LocaleController.getString(R.string.NagramX), LocaleController.getString("InvalidAccessToken", R.string.InvalidAccessToken));
                 return;
             }
@@ -8746,7 +8742,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     onAuthSuccess(res);
                 } else {
                     if (error.code == 401) {
-                        ConnectionsManager.native_cleanUp(currentAccount, true);
+                        ConnectionsManager.getInstance(currentAccount).cleanup(true);
                     }
                     if (error.text != null) {
                         if (error.text.contains("ACCESS_TOKEN_INVALID")) {
@@ -9670,8 +9666,8 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         }
     }
 
-    public class LoginPayView {
-        /*
+    public class LoginPayView extends SlideView {
+
         private StarParticlesView starParticlesView;
         private ButtonWithCounterView button;
 
@@ -9915,7 +9911,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     fetch.run();
                 }
             }
-        }*/
+        }
     }
 
     @Override
