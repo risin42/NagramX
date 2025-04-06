@@ -95,4 +95,9 @@
     <string name="ResetSettingsAlert">Tem certeza de que deseja redefinir todas as N-Configurações?</string>
     <string name="DontAutoPlayNextVoice">Não Reproduzir Automaticamente a Próxima Mensagem de Voz</string>
     <string name="SaveToChatSubfolder">Salvar Anexos por Nome do Chat</string>
+    <string name="MessageColoredBackground">Fundos Coloridos para Mensagens</string>
+    <string name="ColoredBackgroundNotice">Cor de fundo e emojis para respostas, citações e visualizações de links.</string>
+    <string name="ChatMenu">Menu de Chat</string>
+    <string name="MediaViewerMenu">Menu do Visualizador de Mídia</string>
+    <string name="MenuAndButtons">Menu e Botões</string>
 </resources>

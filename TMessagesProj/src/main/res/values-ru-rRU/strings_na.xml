@@ -24,7 +24,7 @@
     <string name="ShowPremiumStarInChat">Показывать значок Premium-подписчиков в чатах</string>
     <string name="ShowPremiumAvatarAnimation">Показывать анимацию Premium-аватаров</string>
     <string name="AlwaysSaveChatOffset">Всегда сохранять смещение чатов</string>
-    <string name="AppIconColorful">Цветная</string>
+    <string name="AppIconColorful">Красочная</string>
     <string name="AppIconDarkGreen">Тёмно-зелёная</string>
     <string name="AppIconNeon">Неон</string>
     <string name="AppIconNiello">Ниелло</string>
@@ -36,8 +36,10 @@
     <string name="DisableGlobalSearch">Отключить глобальный поиск</string>
     <string name="InputMessageId">Введите ID сообщения</string>
     <string name="ToTheMessage">К сообщению</string>
-    <string name="labelChannelUser">Помечать пользователей канала</string>
-    <string name="CustomChannelLabel">Пользовательская метка канала</string>
+    <string name="ZalgoFilter">Фильтровать символы «Zalgo»</string>
+    <string name="ZalgoFilterNotice">Все символы «Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓» в никнеймах и сообщениях будут удалены.</string>
+    <string name="labelChannelUser">Помечать пользователей каналов</string>
+    <string name="CustomChannelLabel">Пользовательская метка каналов</string>
     <string name="AlwaysShowDownloadIcon">Всегда показывать значок загрузки</string>
     <string name="QuickToggleAnonymous">Быстрое переключение анонимности</string>
     <string name="QuickToggleAnonymousNotice">Если вы владелец группы.</string>

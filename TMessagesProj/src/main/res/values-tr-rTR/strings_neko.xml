@@ -57,7 +57,7 @@
     <string name="TranslateApiUnsupported">Seçtiğiniz çeviri sağlayıcısı sizin dilinizi desteklemiyor.</string>
     <string name="ProviderLingocloud">LingoCloud Çeviri</string>
     <string name="UndoTranslate">Çeviriyi gizle</string>
-    <string name="DisablePhotoViewerSideAction">Dokunarak Fotoğraflarda Gezmeyi Devre Dışı Bırak</string>
+    <string name="DisablePhotoViewerSideAction">Fotoğraf Kenarına Dokunmayı Devre Dışı Bırak</string>
     <string name="BotToken">Erişim Anahtarı</string>
     <string name="UnlimitedPinnedDialogs">Sınırsız Sabitlenmiş Sohbetler</string>
     <string name="UnlimitedPinnedDialogsAbout">Senkronizasyonlarını kapatarak sohbetleri sınırsız sabitleyin.</string>
@@ -106,9 +106,9 @@
     <string name="customDoH">Özel DoH</string>
     <string name="customGroupVoipAudioBitrate">Grup VoIP Ses Bit Hızı</string>
     <string name="maxRecentStickerCount">Son Çıkartmalar Sayısı</string>
-    <string name="disableSwipeToNextChannel">Sonraki Kanala Kaydırmayı Devre Dışı Bırak</string>
+    <string name="disableSwipeToNextChannel">Sonraki Kanala Atlamayı Devre Dışı Bırak</string>
     <string name="disableChoosingSticker">Çıkartma Seçmek Yerine Yazarak Gönderin</string>
-    <string name="disableRemoteEmojiInteractions">Uzaktan Emoji Etkileşimlerini Devre Dışı Bırakma</string>
+    <string name="disableRemoteEmojiInteractions">Uzaktan Emoji Etkileşimlerini Devre Dışı Bırak</string>
     <string name="hideSendAsChannel">Kanal Olarak Gönder\'i Gizle</string>
     <string name="showSpoilersDirectly">Spoiler Mesajlarını Doğrudan Göster</string>
     <string name="SaveToDownloadCount_zero">%1$d dosya indirilenler klasörüne kaydediliyor</string>

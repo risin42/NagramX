@@ -34,7 +34,7 @@
     <string name="TranslucentDeletedMessages">Silinmiş Mesajları Soluklaştır</string>
     <string name="ArticleTranslationProvider">Makale Çeviri Sağlayıcısı</string>
     <string name="EnableSeparateArticleTranslator">Makale için Farklı Bir Sağlayıcı Kullanın</string>
-    <string name="DisableCrashlyticsCollection">Firebase Crashlytics\'i devre dışı bırakma</string>
+    <string name="DisableCrashlyticsCollection">Firebase Crashlytics\'i devre dışı bırak</string>
     <string name="ShowStickersRowToplevel">Çıkartmaları Ana Ayarlarda Göster</string>
     <string name="HideShareButtonInChannel">Yanda \"Paylaş\" Düğmesini Gizle</string>
     <string name="DeleteCloudBackup">Bulut verilerini temizleyin</string>
@@ -95,4 +95,9 @@
     <string name="ResetSettingsAlert">Tüm N-Ayarlarını sıfırlamak istediğinizden emin misiniz?</string>
     <string name="DontAutoPlayNextVoice">Sonraki Sesli Mesajı Otomatik Oynatma</string>
     <string name="SaveToChatSubfolder">Ekleri Sohbet Adına Göre Kaydet</string>
+    <string name="MessageColoredBackground">Renkli Mesaj Arkaplanları</string>
+    <string name="ColoredBackgroundNotice">Yanıtlar, alıntılar ve bağlantı önizlemeleri için arka plan rengi ve emojiler.</string>
+    <string name="ChatMenu">Sohbette Tıklayınca Gösterilecekler</string>
+    <string name="MediaViewerMenu">Medyalardayken Gösterilecekler</string>
+    <string name="MenuAndButtons">Menü ve Düğmeler</string>
 </resources>

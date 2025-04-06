@@ -36,6 +36,8 @@
     <string name="DisableGlobalSearch">Global Aramayı Devre Dışı Bırak</string>
     <string name="InputMessageId">Mesaj Kimliğini Girin</string>
     <string name="ToTheMessage">Git</string>
+    <string name="ZalgoFilter">\"Zalgo\" Sembollerini Filtrele</string>
+    <string name="ZalgoFilterNotice">Takma adlardaki veya mesajlardaki tüm \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" sembolleri kaldırılacaktır.</string>
     <string name="labelChannelUser">Kanal Kullanıcılarının Etiketi</string>
     <string name="CustomChannelLabel">Özel Kanal Etiketi</string>
     <string name="AlwaysShowDownloadIcon">İndirme Simgesini Her Zaman Göster</string>
@@ -110,7 +112,7 @@
     <string name="StickersChooseShortNameForStickerPack">Paketiniz için kısa bir isim seçin.</string>
     <string name="StickersCopyStickerSet">Kopyala Çıkartma Setini</string>
     <string name="DisableChannelMuteButton">Kanallarda Alt Çubuğu Gizle</string>
-    <string name="DisablePreviewVideoSoundShortcut">Ses Düğmeleriyle Videoların Sesini Açmayı Devre Dışı Bırak</string>
+    <string name="DisablePreviewVideoSoundShortcut">Ses Düğmeleri Videoların Sesini Açmasın</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Ses tuşu video mesajın sesini açmasını engelle.</string>
     <string name="DisableAutoWebLogin">Otomatik Web Girişini Devre Dışı Bırak</string>
     <string name="PreviewSendPhoto">Fotoğraf Gönder</string>

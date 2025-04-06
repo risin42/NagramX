@@ -59,7 +59,7 @@
     <string name="HalloWeen">HalloWeen</string>
     <string name="ShowOnlineStatus">Mostrar Status Online</string>
     <string name="ShowOnlineStatusNotice">Mostrar o estado online das outras pessoas ao lado de suas fotos de perfil nos grupos.</string>
-    <string name="ShowRecentOnlineStatus">Mostrar o Estado Online Recente</string>
+    <string name="ShowRecentOnlineStatus">Mostrar Status Online Recente</string>
     <string name="DoActionsInCommonGroups">Aplicado em grupos comuns</string>
     <string name="ShowFullAbout">Sempre Expandir Descrição do Chat</string>
     <string name="HideMessageSeenTooltip">Ocultar Confirmações de Leitura</string>
