@@ -100,4 +100,5 @@
     <string name="ChatMenu">チャットメニュー</string>
     <string name="MediaViewerMenu">メディアビューアーメニュー</string>
     <string name="MenuAndButtons">メニューとボタン</string>
+    <string name="ColoredAdminTitle">色付きの管理者タイトル</string>
 </resources>

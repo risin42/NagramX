@@ -1100,6 +1100,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    var coloredAdminTitle =
+        addConfig(
+            "ColoredAdminTitle",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

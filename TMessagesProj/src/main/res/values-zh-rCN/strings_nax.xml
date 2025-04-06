@@ -100,4 +100,5 @@
     <string name="ChatMenu">聊天菜单</string>
     <string name="MediaViewerMenu">媒体查看器菜单</string>
     <string name="MenuAndButtons">菜单和按钮</string>
+    <string name="ColoredAdminTitle">着色管理员头衔</string>
 </resources>

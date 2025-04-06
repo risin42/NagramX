@@ -113,4 +113,5 @@
     <string name="ChatMenu">Chat Menu</string>
     <string name="MediaViewerMenu">Media Viewer Menu</string>
     <string name="MenuAndButtons">Menu and Buttons</string>
+    <string name="ColoredAdminTitle">Colored Admin Title</string>
 </resources>
