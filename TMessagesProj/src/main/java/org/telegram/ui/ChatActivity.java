@@ -28809,7 +28809,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
                 addToContactsButton.setTag(null);
                 addToContactsButton.setVisibility(View.VISIBLE);
-            } else if (showShare && !user.self) {
+            } else if (showShare && !user.self && !NaConfig.INSTANCE.getDoNotShareMyPhoneNumber().Bool()) {
                 createTopPanel();
                 if (topChatPanelView == null) {
                     return;
