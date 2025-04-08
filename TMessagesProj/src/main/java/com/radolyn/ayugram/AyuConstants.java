@@ -9,6 +9,8 @@
 
 package com.radolyn.ayugram;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class AyuConstants {
 
     public static final int DOCUMENT_TYPE_FILE = 3;
@@ -21,5 +23,5 @@ public class AyuConstants {
 
     public static String AYU_DATABASE = "ayu-data";
 
-    public static String APP_NAME = "Nagram";
+    public static String APP_NAME = NekoConfig.customSavePath.String();
 }
