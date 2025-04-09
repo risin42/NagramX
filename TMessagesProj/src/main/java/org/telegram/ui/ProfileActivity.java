@@ -11018,7 +11018,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         editItemVisible = true;
                     }
                 } else {
-                    if (ChatObject.hasAdminRights(chat) || chat.megagroup) {
+                    if (true || ChatObject.hasAdminRights(chat) || chat.megagroup) { // NagramX: allow change chat name without admin rights
                         editItemVisible = true;
                     }
                 }

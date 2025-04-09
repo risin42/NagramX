@@ -112,9 +112,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.utils.VibrateUtil;
 
 public class ChatEditActivity extends BaseFragment implements ImageUpdater.ImageUpdaterDelegate, NotificationCenter.NotificationCenterDelegate {
@@ -210,6 +212,8 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
     private boolean donePressed;
 
     private final static int done_button = 1;
+
+    private final static int fake_done_button = 100;
 
     private int realAdminCount = 0;
 
@@ -513,6 +517,8 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
                     }
                 } else if (id == done_button) {
                     processDone();
+                } else if (id == fake_done_button) {
+                    setChatNameOverride();
                 }
             }
         });
@@ -1057,7 +1063,9 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         if (currentUser != null || ChatObject.canChangeChatInfo(currentChat) || /*signCell != null ||*/ historyCell != null) {
             doneButton = menu.addItemWithWidth(done_button, R.drawable.ic_ab_done, dp(56));
             doneButton.setContentDescription(getString("Done", R.string.Done));
-        }
+        } else if (currentUser == null && !ChatObject.canChangeChatInfo(currentChat)) {
+            menu.addItemWithWidth(fake_done_button, R.drawable.ic_ab_done, dp(56));
+        }   
 
         if (locationCell != null || /*signCell != null ||*/ historyCell != null || typeCell != null || linkedCell != null || forumsCell != null) {
             settingsSectionCell = new TextInfoPrivacyCell(context);
@@ -1084,6 +1092,9 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         if (currentChat != null) {
             blockCell = new TextCell(context);
             blockCell.setBackground(Theme.getSelectorDrawable(false));
+            if (ChatObject.isChannelAndNotMegaGroup(currentChat) && (!ChatObject.hasAdminRights(currentChat))) {
+                blockCell.setVisibility(View.GONE);
+            }
 //            blockCell.setVisibility(ChatObject.isChannel(currentChat) || currentChat.creator || ChatObject.hasAdminRights(currentChat) && ChatObject.canChangeChatInfo(currentChat) ? View.VISIBLE : View.GONE);
             blockCell.setOnClickListener(v -> {
                 Bundle args = new Bundle();
@@ -1118,6 +1129,9 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
 
             adminCell = new TextCell(context);
             adminCell.setBackground(Theme.getSelectorDrawable(false));
+            if (ChatObject.isChannelAndNotMegaGroup(currentChat) && (!ChatObject.hasAdminRights(currentChat))) {
+                adminCell.setVisibility(View.GONE);
+            }
             adminCell.setOnClickListener(v -> {
                 Bundle args = new Bundle();
                 args.putLong("chat_id", chatId);
@@ -1129,6 +1143,9 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
 
             membersCell = new TextCell(context);
             membersCell.setBackgroundDrawable(Theme.getSelectorDrawable(false));
+            if (ChatObject.isChannelAndNotMegaGroup(currentChat) && (!ChatObject.hasAdminRights(currentChat))) {
+                membersCell.setVisibility(View.GONE);
+            }
             membersCell.setOnClickListener(v -> {
                 Bundle args = new Bundle();
                 args.putLong("chat_id", chatId);
@@ -1166,6 +1183,9 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
                 statsAndBoosts = new TextCell(context);
                 statsAndBoosts.setTextAndIcon(getString(R.string.StatisticsAndBoosts), R.drawable.msg_stats, true);
                 statsAndBoosts.setBackground(Theme.getSelectorDrawable(false));
+                if (ChatObject.isChannelAndNotMegaGroup(currentChat) && (!ChatObject.hasAdminRights(currentChat))) {
+                    statsAndBoosts.setVisibility(View.GONE);
+                }
                 statsAndBoosts.setOnClickListener(v -> {
                     presentFragment(StatisticActivity.create(currentChat, false));
                 });
@@ -1199,7 +1219,7 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
             if (channelAffiliateProgramsCell != null) {
                 infoContainer.addView(channelAffiliateProgramsCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             }
-            if (channelAffiliateProgramsCell != null && getMessagesController().starrefConnectAllowed && ChatObject.isChannelAndNotMegaGroup(currentChat)) {
+            if (channelAffiliateProgramsCell != null && getMessagesController().starrefConnectAllowed && ChatObject.isChannelAndNotMegaGroup(currentChat) && ChatObject.hasAdminRights(currentChat)) {
                 channelAffiliateProgramsCell.setVisibility(View.VISIBLE);
             }
             if (logCell != null) {
@@ -1513,7 +1533,7 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         if (PhotoViewer.hasInstance() && PhotoViewer.getInstance().isVisible()) {
             PhotoViewer.getInstance().checkCurrentImageVisibility();
         }
-        if (channelAffiliateProgramsCell != null && getMessagesController().starrefConnectAllowed && ChatObject.isChannelAndNotMegaGroup(currentChat)) {
+        if (channelAffiliateProgramsCell != null && getMessagesController().starrefConnectAllowed && ChatObject.isChannelAndNotMegaGroup(currentChat) && ChatObject.hasAdminRights(currentChat)) {
             channelAffiliateProgramsCell.setVisibility(View.VISIBLE);
         }
     }
@@ -2035,7 +2055,7 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
             availableReactions = info.available_reactions;
             preloadedReactions.clear();
             preloadedReactions.addAll(ReactionsUtils.startPreloadReactions(currentChat, info));
-            if (channelAffiliateProgramsCell != null && getMessagesController().starrefConnectAllowed && ChatObject.isChannelAndNotMegaGroup(currentChat)) {
+            if (channelAffiliateProgramsCell != null && getMessagesController().starrefConnectAllowed && ChatObject.isChannelAndNotMegaGroup(currentChat) && ChatObject.hasAdminRights(currentChat)) {
                 channelAffiliateProgramsCell.setVisibility(View.VISIBLE);
             }
         }
@@ -2457,5 +2477,30 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         }
 
         return themeDescriptions;
+    }
+
+    // NagramX: custom chat name
+    private void setChatNameOverride() {
+        if (currentChat != null && nameTextView != null) {
+            String nameText = nameTextView.getText().toString().trim();
+            if (!currentChat.title.equals(nameText)) {
+                if (TextUtils.isEmpty(nameText)) {
+                    ChatNameHelper.clearChatNameOverride(currentChat.id);
+                    getMessagesController().loadFullChat(currentChat.id, 0, true);
+                } else {
+                    ChatNameHelper.setChatNameOverride(currentChat.id, nameText);
+                    currentChat.title = nameText;
+                }
+            }
+            AndroidUtilities.runOnUIThread(() -> {
+                getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_CHAT_NAME);
+                getNotificationCenter().postNotificationName(NotificationCenter.dialogFiltersUpdated);
+                getNotificationCenter().postNotificationName(NotificationCenter.dialogsNeedReload);
+            });
+            finishFragment();
+            try {
+                Objects.requireNonNull(LaunchActivity.getLastFragment()).getFragmentView().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+            } catch (Exception ignored) {}
+        }
     }
 }

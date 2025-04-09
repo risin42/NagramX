@@ -127,6 +127,7 @@ import java.util.stream.Collectors;
 import cn.hutool.core.thread.ThreadUtil;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
+import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.UIUtil;
 import xyz.nextalone.nagram.NaConfig;
@@ -200,6 +201,8 @@ public class MessagesController extends BaseController implements NotificationCe
     public long giveawayCountriesMax = 10;
     public long giveawayBoostsPerPremium = 4;
     public long boostsPerSentGift = 3;
+
+    public static ConcurrentHashMap<Long, String> overrideNameCache = new ConcurrentHashMap<>(); // custom chat name
 
     public static TLRPC.Peer getPeerFromInputPeer(TLRPC.InputPeer peer) {
         if (peer.chat_id != 0) {
@@ -6666,6 +6669,19 @@ public class MessagesController extends BaseController implements NotificationCe
             }
         }
         updateEmojiStatusUntilUpdate(-chat.id, chat.emoji_status);
+
+        // --- NagramX Start ---
+        if (ChatObject.isChannel(chat)) {
+            String name = overrideNameCache.computeIfAbsent(chat.id, k -> {
+                String fetchedName = ChatNameHelper.getChatNameOverride(k);
+                return (fetchedName != null) ? fetchedName : "";
+            });
+            if (!name.isEmpty()) {
+                chat.title = name;
+            }
+        }
+        // --- NagramX End ---
+
         if (chat.min) {
             if (oldChat != null) {
                 if (!fromCache) {
