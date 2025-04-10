@@ -263,6 +263,7 @@ public class NekoSettingsActivity extends BaseFragment {
         private int datacenterStatusRow = -1;
         private int actionBarHeight;
 
+        @SuppressLint("ApplySharedPref")
         public Page(Context context, int type) {
             super(context);
             this.type = type;
@@ -422,9 +423,8 @@ public class NekoSettingsActivity extends BaseFragment {
                             getString(R.string.Reset),
                             true,
                             () -> {
-                                NekoXConfig.resetSettings();
-                                SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Activity.MODE_PRIVATE);
-                                preferences.edit().clear().commit();
+                                ApplicationLoader.applicationContext.getSharedPreferences("nekox_config", Activity.MODE_PRIVATE).edit().clear().commit();
+                                ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Activity.MODE_PRIVATE).edit().clear().commit();
                                 AppRestartHelper.triggerRebirth(context, new Intent(context, LaunchActivity.class));
                             });
                 } else if (position == exportSettingsRow) {

@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
+apply plugin: "io.objectbox"
 
 repositories {
     maven {
@@ -303,16 +304,13 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.14"
     implementation 'com.neovisionaries:nv-websocket-client:2.14'
     implementation 'dnsjava:dnsjava:3.4.1'
-    // db
-    implementation 'org.dizitart:nitrite:4.3.0'
-    implementation 'org.dizitart:nitrite-mvstore-adapter:4.3.0'
     // add for emoji
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
     // add for UnifiedPush
     implementation 'com.github.UnifiedPush:android-connector:2.3.1'
     // NagramX: add for save deleted messages
-    implementation "androidx.room:room-runtime:2.6.1"
-    annotationProcessor "androidx.room:room-compiler:2.6.1"
+    implementation "androidx.room:room-runtime:2.7.0"
+    kapt "androidx.room:room-compiler:2.7.0"
     // add for keep formatting in translations
     implementation "org.apache.commons:commons-text:1.10.0"
 

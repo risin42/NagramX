@@ -1,8 +1,9 @@
 package tw.nekomimi.nekogram;
 
+import static org.telegram.messenger.LocaleController.getString;
+
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 
@@ -12,7 +13,6 @@ import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import tw.nekomimi.nekogram.database.NitritesKt;
 import xyz.nextalone.nagram.NaConfig;
 
 public class NekoXConfig {
@@ -48,7 +47,7 @@ public class NekoXConfig {
     public static boolean loadSystemEmojiFailed = false;
     private static Typeface systemEmojiTypeface;
 
-    public static SharedPreferences preferences = NitritesKt.openMainSharedPreference("nekox_config");
+    public static SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nekox_config", Context.MODE_PRIVATE);
 
     public static boolean developerMode = preferences.getBoolean("developer_mode", true);
 
@@ -201,10 +200,5 @@ public class NekoXConfig {
 
     public static void saveLastOnlineState(boolean online) {
         preferences.edit().putBoolean("last_online_state", lastOnlineState = online).apply();
-    }
-
-    public static void resetSettings() {
-        NitritesKt.mkDatabase("nekox_config", true);
-        preferences = NitritesKt.openMainSharedPreference("nekox_config");
     }
 }
