@@ -29681,11 +29681,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                     if (num < 0 || num >= messages.size()) {
                                         continue;
                                     }
-                                MessageObject messageObject2 = messages.get(num);
-                                if (messageObject2 == null || messageObject2.getId() == 0) {
-                                    continue;
-                                }
-                                if ((!messageObject2.isOut() || messageObject2.messageOwner.from_scheduled) && messageObject != null && messageObject.isUnread()) {
+                                    MessageObject messageObject2 = messages.get(num);
+                                    if (messageObject2 == null || messageObject2.getId() == 0) {
+                                        continue;
+                                    }
+                                    if ((!messageObject2.isOut() || messageObject2.messageOwner.from_scheduled) && messageObject != null && messageObject.isUnread()) {
                                         ignore = true;
                                         messageId = 0;
                                     }
