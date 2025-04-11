@@ -33,21 +33,9 @@ You can grab the latest versions in these two ways:
   - Save attachments by chat name
   - Send messages silently by default
   - Use folder name as title
-
-- **Cleanup & Optimization**
-  - Removed integrity checks ```jni/integrity```
-  - Removed Sentry Analytics
-  - Removed in-app updates
-  - Removed payment functionality
-  - Removed channel follow pop-ups
-  - Other minor optimizations and cleanup
-
-- **Fixes**
-  - Google Maps
-  - DeepL Translator
-  - Bing Translator
-  - Disable auto download for exe and archive files
-  - Other minor fixes
+  - Spring Animations
+  - Disable message background color and emojis
+  - Custom chat name
 
 ----
 
