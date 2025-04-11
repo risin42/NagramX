@@ -20588,169 +20588,171 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
 
             // --- AyuGram history hook start
-            final String NAX = "AyuHistoryHookMain";
+            if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+                final String NAX = "AyuHistoryHookMain";
 
-            var dialogId = getDialogId();
-            var topicId = getTopicId();
+                var dialogId = getDialogId();
+                var topicId = getTopicId();
 
-            boolean isReplyChatComment = isReplyChatComment();
-            boolean isThreadChat = isThreadChat();
-            boolean isChannelComment = (isReplyChatComment || (isThreadChat && !isTopic));
+                boolean isReplyChatComment = isReplyChatComment();
+                boolean isThreadChat = isThreadChat();
+                boolean isChannelComment = (isReplyChatComment || (isThreadChat && !isTopic));
 
-            int minVal = isSecretChat() ? Integer.MAX_VALUE : 0;
-            int maxVal = isSecretChat() ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+                int minVal = isSecretChat() ? Integer.MAX_VALUE : 0;
+                int maxVal = isSecretChat() ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
-            long startId = minVal; // top message (startId < endId)
-            // ...deleted messages
-            long endId = minVal; // bottom message
+                long startId = minVal; // top message (startId < endId)
+                // ...deleted messages
+                long endId = minVal; // bottom message
 
-            var limit = 500;
+                var limit = 500;
 
-            var msgIds = AyuHistoryHook.getMinAndMaxIds(messArr);
+                var msgIds = AyuHistoryHook.getMinAndMaxIds(messArr);
 
-            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messages.size: " + messages.size());
-            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messArr.size: " + messArr.size());
+                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messages.size: " + messages.size());
+                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messArr.size: " + messArr.size());
 
-            if (!DialogObject.isEncryptedDialog(dialogId)) {
-                if (!messArr.isEmpty()) {
-                    int msg1 = msgIds.first; // smaller
-                    int msg2 = msgIds.second; // bigger
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "msgIds.first: "+ msgIds.first + ", " + "msgIds.second: " + msgIds.second);
+                if (!DialogObject.isEncryptedDialog(dialogId)) {
+                    if (!messArr.isEmpty()) {
+                        int msg1 = msgIds.first; // smaller
+                        int msg2 = msgIds.second; // bigger
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "msgIds.first: "+ msgIds.first + ", " + "msgIds.second: " + msgIds.second);
 
-                    startId = Math.min(msg1, msg2);
-                    endId = Math.max(msg1, msg2);
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "startId: " + startId + ", " + "endId: " + endId);
+                        startId = Math.min(msg1, msg2);
+                        endId = Math.max(msg1, msg2);
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "startId: " + startId + ", " + "endId: " + endId);
 
-                    var dialog = getMessagesController().getDialog(dialogId);
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "dialog: " + dialog);
+                        var dialog = getMessagesController().getDialog(dialogId);
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "dialog: " + dialog);
 
-                    TLRPC.TL_forumTopic topic = null;
-                    if (isTopic) {
-                        topic = getMessagesController().getTopicsController().findTopic(getCurrentChatInfo().id, getTopicId());
-                    }
+                        TLRPC.TL_forumTopic topic = null;
+                        if (isTopic) {
+                            topic = getMessagesController().getTopicsController().findTopic(getCurrentChatInfo().id, getTopicId());
+                        }
 
-                    // todo: check if these's any messages between current loaded and newly loaded
-                    // like, we know their ids, so why not
-                    var minMaxRes = getMessagesStorage().getMinAndMaxForDialog(dialogId);
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "minMaxRes.first: " + minMaxRes.first);
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "minMaxRes.second: " + minMaxRes.second);
-                    if (BuildVars.LOGS_ENABLED && dialog != null) Log.d(NAX, "dialog.top_message: " + dialog.top_message);
+                        // todo: check if these's any messages between current loaded and newly loaded
+                        // like, we know their ids, so why not
+                        var minMaxRes = getMessagesStorage().getMinAndMaxForDialog(dialogId);
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "minMaxRes.first: " + minMaxRes.first);
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "minMaxRes.second: " + minMaxRes.second);
+                        if (BuildVars.LOGS_ENABLED && dialog != null) Log.d(NAX, "dialog.top_message: " + dialog.top_message);
 
-                    // empty user dialog, so load as much as we can
-                    if (dialog != null && DialogObject.isUserDialog(dialogId) && (startId == endId && endId == dialog.top_message) && messArr.size() <= 1) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a1");
-                        startId = minVal;
-                        endId = maxVal;
-                    }
-                    // deleted messages loading in comments
-                    else if (isChannelComment) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a2");
-                        startId = threadMaxOutboxReadId == 0 ? minVal : threadMessageId;
-                        endId = threadMaxOutboxReadId == 0 ? minVal : threadMaxOutboxReadId;
-                    }
-                    // allows loading messages that are under bottom messages
-                    else if (dialog != null && (dialog.top_message == endId || (minMaxRes.second == endId && dialog.top_message <= minMaxRes.second)) || topic != null && topic.top_message == endId) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a3");
-                        // startId is the smallest in the current batch
-                        endId = maxVal;
-                    } 
-                    // TL_messageService
-                    else if (messArr.size() == 1 && messArr.get(0).messageOwner instanceof TLRPC.TL_messageService) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a4");
-                        startId = minVal;
-                        endId = AyuUtils.getMinRealId(messages);
-                    }
-                    // allows loading messages that are uppermore than the dialog
-                    else if (messArr.size() < count && !isCache && (load_type == 2 || load_type == 1) && !messArr.isEmpty()) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a5");
-                        startId = minVal;
-                        endId = Math.min(msg1, msg2);
+                        // empty user dialog, so load as much as we can
+                        if (dialog != null && DialogObject.isUserDialog(dialogId) && (startId == endId && endId == dialog.top_message) && messArr.size() <= 1) {
+                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a1");
+                            startId = minVal;
+                            endId = maxVal;
+                        }
+                        // deleted messages loading in comments
+                        else if (isChannelComment) {
+                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a2");
+                            startId = threadMaxOutboxReadId == 0 ? minVal : threadMessageId;
+                            endId = threadMaxOutboxReadId == 0 ? minVal : threadMaxOutboxReadId;
+                        }
+                        // allows loading messages that are under bottom messages
+                        else if (dialog != null && (dialog.top_message == endId || (minMaxRes.second == endId && dialog.top_message <= minMaxRes.second)) || topic != null && topic.top_message == endId) {
+                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a3");
+                            // startId is the smallest in the current batch
+                            endId = maxVal;
+                        }
+                        // TL_messageService
+                        else if (messArr.size() == 1 && messArr.get(0).messageOwner instanceof TLRPC.TL_messageService) {
+                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a4");
+                            startId = minVal;
+                            endId = AyuUtils.getMinRealId(messages);
+                        }
+                        // allows loading messages that are uppermore than the dialog
+                        else if (messArr.size() < count && !isCache && (load_type == 2 || load_type == 1) && !messArr.isEmpty()) {
+                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a5");
+                            startId = minVal;
+                            endId = Math.min(msg1, msg2);
+                        }
+                    } else {
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messArr isEmpty");
+                        if (!messages.isEmpty() && load_type != 1) { // for loading uppermore // NagramX: load_type != 1
+                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b1");
+                            startId = minVal;
+                            endId = AyuUtils.getMinRealId(messages);
+                        }
+                        // empty(new) user dialog, so load as much as we can
+                        else if (DialogObject.isUserDialog(dialogId)) {
+                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b2");
+                            startId = minVal;
+                            endId = maxVal;
+                        }
+                        if (isCache) {
+                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b3");
+                            startId = minVal;
+                            endId = minVal;
+                        }
                     }
                 } else {
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messArr isEmpty");
-                    if (!messages.isEmpty() && load_type != 1) { // for loading uppermore // NagramX: load_type != 1
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b1");
-                        startId = minVal;
-                        endId = AyuUtils.getMinRealId(messages);
-                    }
-                    // empty(new) user dialog, so load as much as we can
-                    else if (DialogObject.isUserDialog(dialogId)) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b2");
+                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "isEncryptedDialog");
+                    // works for secret chats only, because they're all cached
+                    var secretRes = getMessagesStorage().getMinAndMaxForDialog(dialogId);
+                    int secretStartId = secretRes.second; // bigger
+                    int secretEndId = secretRes.first; // smaller
+
+                    int msg1 = msgIds.second; // bigger
+                    int msg2 = msgIds.first; // smaller
+
+                    if (Math.abs(secretStartId - secretEndId) == 1 || (secretStartId == msg1 && secretEndId == msg2)) { // empty dialog, so load as much as we can
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c1");
                         startId = minVal;
                         endId = maxVal;
-                    }
-                    if (isCache) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b3");
+                    } else if (secretStartId == msg1) { // loaded up to top
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c2");
                         startId = minVal;
-                        endId = minVal;
+                        endId = msg2;
+                    } else if (secretEndId == msg2) { // loaded up to bottom
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c3");
+                        startId = msg1;
+                        endId = maxVal;
+                    } else { // just between some messages
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c4");
+                        startId = msg1;
+                        endId = msg2;
+                    }
+                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "secretStartId: " + secretStartId + ", secretEndId: " + secretEndId);
+                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "msg1: " + msg1 + ", msg2: " + msg2);
+                }
+
+                if (startId > endId) {
+                    var t = startId;
+                    startId = endId;
+                    endId = t;
+                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (startId > endId) -> " + "startId: " + startId + ", " + "endId: " + endId);
+                }
+
+                if (BuildVars.LOGS_ENABLED) Log.d(NAX,
+                        "messArr: " + messArr.size()
+                                + " , startId: " + startId
+                                + " , endId: " + endId
+                                + " , count: " + count
+                                + " , load_type: " + load_type
+                                + " , isCache: " + isCache
+                                + " , isEnd: " + isEnd
+                                + " , endReached[0]: " + endReached[0]
+                                + " , threadMaxInboxReadId: " + threadMaxInboxReadId
+                                + " , threadMaxOutboxReadId: " + threadMaxOutboxReadId
+                                + " , replyMaxReadId: " + replyMaxReadId
+                                + " , threadMessageId: " + threadMessageId
+                                + " , replyOriginalMessageId: " + replyOriginalMessageId
+                                + " , isComments: " + isComments
+                                + " , isReplyChatComment: " + isReplyChatComment
+                                + " , isThreadChat: " + isThreadChat
+                                + " , isTopic: " + isTopic
+                );
+                if (!isChannelComment && !isInScheduleMode() && chatMode != MODE_PINNED && (startId != minVal || endId != minVal)) {
+                    var needToReset = messArr.size() == count;
+                    AyuHistoryHook.doHook(currentAccount, messArr, messagesDict, startId, endId, dialogId, limit, topicId, isSecretChat(), load_type, isChannelComment, threadMessageId, isTopic);
+                    if (needToReset) {
+                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (needToReset) -> " + "count = messArr.size(): " + count);
+                        count = messArr.size();
                     }
                 }
-            } else {
-                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "isEncryptedDialog");
-                // works for secret chats only, because they're all cached
-                var secretRes = getMessagesStorage().getMinAndMaxForDialog(dialogId);
-                int secretStartId = secretRes.second; // bigger
-                int secretEndId = secretRes.first; // smaller
-
-                int msg1 = msgIds.second; // bigger
-                int msg2 = msgIds.first; // smaller
-
-                if (Math.abs(secretStartId - secretEndId) == 1 || (secretStartId == msg1 && secretEndId == msg2)) { // empty dialog, so load as much as we can
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c1");
-                    startId = minVal;
-                    endId = maxVal;
-                } else if (secretStartId == msg1) { // loaded up to top
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c2");
-                    startId = minVal;
-                    endId = msg2;
-                } else if (secretEndId == msg2) { // loaded up to bottom
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c3");
-                    startId = msg1;
-                    endId = maxVal;
-                } else { // just between some messages
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c4");
-                    startId = msg1;
-                    endId = msg2;
-                }
-                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "secretStartId: " + secretStartId + ", secretEndId: " + secretEndId);
-                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "msg1: " + msg1 + ", msg2: " + msg2);
+                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "history hook end");
             }
-
-            if (startId > endId) {
-                var t = startId;
-                startId = endId;
-                endId = t;
-                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (startId > endId) -> " + "startId: " + startId + ", " + "endId: " + endId);
-            }
-
-            if (BuildVars.LOGS_ENABLED) Log.d(NAX,
-                    "messArr: " + messArr.size()
-                    + " , startId: " + startId
-                    + " , endId: " + endId
-                    + " , count: " + count
-                    + " , load_type: " + load_type
-                    + " , isCache: " + isCache
-                    + " , isEnd: " + isEnd
-                    + " , endReached[0]: " + endReached[0]
-                    + " , threadMaxInboxReadId: " + threadMaxInboxReadId
-                    + " , threadMaxOutboxReadId: " + threadMaxOutboxReadId
-                    + " , replyMaxReadId: " + replyMaxReadId
-                    + " , threadMessageId: " + threadMessageId
-                    + " , replyOriginalMessageId: " + replyOriginalMessageId
-                    + " , isComments: " + isComments
-                    + " , isReplyChatComment: " + isReplyChatComment
-                    + " , isThreadChat: " + isThreadChat
-                    + " , isTopic: " + isTopic
-            );
-            if (!isChannelComment && !isInScheduleMode() && chatMode != MODE_PINNED && (startId != minVal || endId != minVal)) {
-                var needToReset = messArr.size() == count;
-                AyuHistoryHook.doHook(currentAccount, messArr, messagesDict, startId, endId, dialogId, limit, topicId, isSecretChat(), load_type, isChannelComment, threadMessageId, isTopic);
-                if (needToReset) {
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (needToReset) -> " + "count = messArr.size(): " + count);
-                    count = messArr.size();
-                }
-            }
-            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "history hook end");
             // --- AyuGram history hook end
 
             for (int a = 0; a < messArr.size(); a++) {
@@ -24113,7 +24115,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             updateGreetInfo();
         }
         // --- AyuGram hook (ayuDeleted)
-        if (id == AyuConstants.MESSAGES_DELETED_NOTIFICATION) {
+        else if (id == AyuConstants.MESSAGES_DELETED_NOTIFICATION) {
             long dialogId = (Long) args[0];
             if (getDialogId() != dialogId && (ChatObject.isChannel(currentChat) || dialogId != 0)) {
                 return;
@@ -31363,10 +31365,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
 
             // --- AyuGram menu
-            if (message != null
-                    && message.messageOwner.from_id != null
-                    && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
-                    && AyuMessagesController.getInstance().hasAnyRevisions(getAccountInstance().getUserConfig().getClientUserId(), dialog_id, message.messageOwner.id)
+            if (
+                NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool()
+                && message != null
+                && message.messageOwner.from_id != null
+                && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
+                && AyuMessagesController.getInstance().hasAnyRevisions(getAccountInstance().getUserConfig().getClientUserId(), dialog_id, message.messageOwner.id)
             ) {
                 var idx = options.size() - 1;
 

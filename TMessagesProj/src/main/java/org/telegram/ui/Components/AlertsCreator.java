@@ -6582,26 +6582,27 @@ public class AlertsCreator {
 
         // --- AyuGram hook
         final boolean[] keepLocally = {false};
+        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+            if (ayuFrameLayout == null) {
+                ayuFrameLayout = new FrameLayout(activity);
+                builder.setView(ayuFrameLayout);
+                builder.setCustomViewOffset(9);
+            }
 
-        if (ayuFrameLayout == null) {
-            ayuFrameLayout = new FrameLayout(activity);
-            builder.setView(ayuFrameLayout);
-            builder.setCustomViewOffset(9);
+            CheckBoxCell cell = new CheckBoxCell(activity, 1, resourcesProvider);
+            cell.setBackgroundDrawable(Theme.getSelectorDrawable(false));
+            cell.setText(LocaleController.getString(R.string.DeleteKeepLocally), "", false, false);
+            cell.setTag(4);
+
+            cell.setPadding(LocaleController.isRTL ? AndroidUtilities.dp(16) : AndroidUtilities.dp(8), 0, LocaleController.isRTL ? AndroidUtilities.dp(8) : AndroidUtilities.dp(16), 0);
+            ayuFrameLayout.addView(cell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.TOP | Gravity.LEFT, 0, 48 * ayuFrameLayout.getChildCount(), 0, 0));
+
+            cell.setOnClickListener(v -> {
+                CheckBoxCell cell1 = (CheckBoxCell) v;
+                keepLocally[0] = !keepLocally[0];
+                cell1.setChecked(keepLocally[0], true);
+            });
         }
-
-        CheckBoxCell cell = new CheckBoxCell(activity, 1, resourcesProvider);
-        cell.setBackgroundDrawable(Theme.getSelectorDrawable(false));
-        cell.setText(LocaleController.getString(R.string.DeleteKeepLocally), "", false, false);
-        cell.setTag(4);
-
-        cell.setPadding(LocaleController.isRTL ? AndroidUtilities.dp(16) : AndroidUtilities.dp(8), 0, LocaleController.isRTL ? AndroidUtilities.dp(8) : AndroidUtilities.dp(16), 0);
-        ayuFrameLayout.addView(cell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.TOP | Gravity.LEFT, 0, 48 * ayuFrameLayout.getChildCount(), 0, 0));
-
-        cell.setOnClickListener(v -> {
-            CheckBoxCell cell1 = (CheckBoxCell) v;
-            keepLocally[0] = !keepLocally[0];
-            cell1.setChecked(keepLocally[0], true);
-        });
         // --- AyuGram hook
 
         AlertDialog.OnButtonClickListener deleteAction = (dialogInterface, i) -> {
@@ -6657,11 +6658,13 @@ public class AlertsCreator {
                     thisDialogId = mergeDialogId;
                 }
                 // --- AyuGram hook
-                ArrayList<Integer> finalIds = ids;
-                AndroidUtilities.runOnUIThread(() -> {
-                    // invalidating views
-                    NotificationCenter.getInstance(currentAccount).postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogId, finalIds);
-                });
+                if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+                    ArrayList<Integer> finalIds = ids;
+                    AndroidUtilities.runOnUIThread(() -> {
+                        // invalidating views
+                        NotificationCenter.getInstance(currentAccount).postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogId, finalIds);
+                    });
+                }
                 // --- AyuGram hook
                 MessagesController.getInstance(currentAccount).deleteMessages(ids, random_ids, encryptedChat, thisDialogId, topicId, deleteForAll[0], mode);
             } else {
@@ -6690,11 +6693,13 @@ public class AlertsCreator {
                         }
                     }
                     // --- AyuGram hook
-                    ArrayList<Integer> finalIds = ids;
-                    AndroidUtilities.runOnUIThread(() -> {
-                        // invalidating views
-                        NotificationCenter.getInstance(currentAccount).postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogId, finalIds);
-                    });
+                    if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+                        ArrayList<Integer> finalIds = ids;
+                        AndroidUtilities.runOnUIThread(() -> {
+                            // invalidating views
+                            NotificationCenter.getInstance(currentAccount).postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogId, finalIds);
+                        });
+                    }
                     // --- AyuGram hook
                     MessagesController.getInstance(currentAccount).deleteMessages(ids, random_ids, encryptedChat, (a == 1 && mergeDialogId != 0) ? mergeDialogId : thisDialogId, topicId, deleteForAll[0], mode);
                     selectedMessages[a].clear();
