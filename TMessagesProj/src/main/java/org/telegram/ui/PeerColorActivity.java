@@ -1418,7 +1418,7 @@ public class PeerColorActivity extends BaseFragment implements NotificationCente
                     me.color.flags &=~ 2;
                     me.color.background_emoji_id = 0;
                 }
-                getConnectionsManager().sendRequest(req, null);
+                if (getUserConfig().isRealPremium()) getConnectionsManager().sendRequest(req, null);
             }
             if (profilePage.selectedColor != UserObject.getProfileColorId(me) || profilePage.selectedEmoji != UserObject.getProfileEmojiId(me)) {
                 applyingProfile = true;
@@ -1443,7 +1443,7 @@ public class PeerColorActivity extends BaseFragment implements NotificationCente
                     me.profile_color.flags &=~ 2;
                     me.profile_color.background_emoji_id = 0;
                 }
-                getConnectionsManager().sendRequest(req, null);
+                if (getUserConfig().isRealPremium()) getConnectionsManager().sendRequest(req, null);
             }
             if (!eq(me.emoji_status, profilePage.selectedEmojiCollectible) && (profilePage.selectedEmojiCollectible != null || DialogObject.isEmojiStatusCollectible(me.emoji_status))) {
                 TLRPC.EmojiStatus new_emoji_status = new TLRPC.TL_emojiStatusEmpty();
