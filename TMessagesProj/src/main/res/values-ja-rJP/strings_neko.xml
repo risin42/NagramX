@@ -96,7 +96,6 @@
     <string name="DarkenAvatarBackground">アバターを暗くする</string>
     <string name="ProviderDeepLTranslate">DeepL 翻訳</string>
     <string name="ProviderMicrosoftTranslator">Bing 翻訳</string>
-    <string name="pressTitleToOpenAllChats">タイトルを長押しして「すべてのチャット」を開く</string>
     <string name="DontSendGreetingSticker">挨拶ステッカーを送信しない</string>
     <string name="TakeGIFasVideo">GIF をビデオとして表示</string>
     <string name="UseMediaStreamInVoip">通話でメディアストリームを使用</string>
@@ -205,7 +204,6 @@
     <string name="LinkedChannelChat">リンクされたチャンネル</string>
     <string name="DevModeTitle">**あなたの Telegram アカウントが BAN される可能性があります**</string>
     <string name="DevModeNotice">開発者機能の不適切な使用については、一切責任を負いかねます。</string>
-    <string name="PlaceHolder">プレースホルダー - 無効にしてください</string>
     <string name="CustomBackend">カスタムバックエンド</string>
     <string name="ChangeTranslateProvider">プロバイダを変更</string>
     <string name="GoogleCloudTransKeyNotice">Google Cloud Trans Key を設定すると、翻訳時に偽のフォームをウェブバージョンに送信する代わりにクラウド翻訳APIが呼び出されます（高速で安定しており、トラフィックの節約になります）</string>

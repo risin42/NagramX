@@ -40,7 +40,7 @@
     <string name="ZalgoFilterNotice">Все символы «Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓» в никнеймах и сообщениях будут удалены.</string>
     <string name="labelChannelUser">Помечать пользователей каналов</string>
     <string name="CustomChannelLabel">Пользовательская метка каналов</string>
-    <string name="AlwaysShowDownloadIcon">Всегда показывать значок загрузки</string>
+    <string name="AlwaysShowDownloadIcon">Всегда показывать значок «Загрузки»</string>
     <string name="QuickToggleAnonymous">Быстрое переключение анонимности</string>
     <string name="QuickToggleAnonymousNotice">Если вы владелец группы.</string>
     <string name="RealHideTimeForSticker">Скрыть время на стикерах</string>
@@ -108,7 +108,7 @@
     <string name="PushServiceTypeInApp">В приложении</string>
     <string name="PushServiceTypeInAppDialog">Показывать постоянное уведомление</string>
     <string name="PushServiceTypeUnifiedGateway">Шлюз Unified Push</string>
-    <string name="SendMp4DocumentAsVideo">Отправлять MP4 без сжатия как видео</string>
+    <string name="SendMp4DocumentAsVideo">Отправлять MP4 «без сжатия» как видео</string>
     <string name="StickersChooseShortNameForStickerPack">Выберите короткое имя для вашего набора.</string>
     <string name="StickersCopyStickerSet">Копировать набор стикеров</string>
     <string name="DisableChannelMuteButton">Скрыть нижнюю панель в каналах</string>
@@ -128,7 +128,7 @@
     <string name="RegexFiltersEdit">Изменить фильтр</string>
     <string name="RegexFiltersAddDescription">Вы можете использовать сайт <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> для проверки регулярного выражения. Вы также можете использовать простой текст, но не забывайте экранировать скобки.</string>
     <string name="RegexFiltersAddError">Синтаксическая ошибка регулярного выражения</string>
-    <string name="ShowTimeHint">Показывать подробную информацию при нажатии на время сообщения</string>
+    <string name="ShowTimeHint">Показывать подробности при нажатии на время сообщения</string>
     <string name="SearchHashtagDefaultPageChannel">Страница поиска по хэштегам в каналах по умолчанию</string>
     <string name="SearchHashtagDefaultPageChat">Страница поиска по хэштегам в чатах по умолчанию</string>
     <string name="OpenUrlOutBotWebViewRegex">URL regex для открытия ссылок вне веб-бота</string>

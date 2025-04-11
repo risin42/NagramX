@@ -35,7 +35,7 @@
     <string name="ArticleTranslationProvider">Сервис перевода статей</string>
     <string name="EnableSeparateArticleTranslator">Использовать другой сервис для статей</string>
     <string name="DisableCrashlyticsCollection">Отключить Firebase Crashlytics</string>
-    <string name="ShowStickersRowToplevel">Показывать «Стикеры и маски» в основных настройках</string>
+    <string name="ShowStickersRowToplevel">Показывать «Стикеры и эмодзи» в основных настройках</string>
     <string name="HideShareButtonInChannel">Скрыть боковую кнопку «Поделиться»</string>
     <string name="DeleteCloudBackup">Очистить облачные данные</string>
     <string name="DeleteCloudBackupFailed">Не удалось очистить облачные данные</string>
@@ -70,7 +70,7 @@
     <string name="SettingsOnly">Только в настройках</string>
     <string name="ChatsOnly">Только в чатах</string>
     <string name="InstantViewTranslation">Мгновенный просмотр</string>
-    <string name="SaveDeletedMessageForBot">Сохранять в чатах с ботом</string>
+    <string name="SaveDeletedMessageForBot">Сохранять в чатах с ботами</string>
     <string name="DrawerElements">Элементы бокового меню</string>
     <string name="HideArchive">Удалить архивные чаты из списка чатов</string>
     <string name="HideChannelSilentBroadcast">Скрыть переключатель бесшумной трансляции</string>
@@ -95,9 +95,10 @@
     <string name="ResetSettingsAlert">Вы уверены, что хотите сбросить все «Настройки N»?</string>
     <string name="DontAutoPlayNextVoice">Не воспроизводить следующее голосовое сообщение автоматически</string>
     <string name="SaveToChatSubfolder">Сохранять вложения по названию чатов</string>
-    <string name="MessageColoredBackground">Цветные фоны сообщений</string>
+    <string name="MessageColoredBackground">Красочные фоны сообщений</string>
     <string name="ColoredBackgroundNotice">Цвет фона и эмодзи для ответов, цитат и предварительного просмотра ссылок.</string>
     <string name="ChatMenu">Меню чатов</string>
     <string name="MediaViewerMenu">Меню просмотра медиа</string>
     <string name="MenuAndButtons">Меню и кнопки</string>
+    <string name="ColoredAdminTitle">Цветные подписи должностей администраторов</string>
 </resources>

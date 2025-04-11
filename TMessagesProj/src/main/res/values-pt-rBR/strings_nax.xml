@@ -100,4 +100,5 @@
     <string name="ChatMenu">Menu de Chat</string>
     <string name="MediaViewerMenu">Menu do Visualizador de Mídia</string>
     <string name="MenuAndButtons">Menu e Botões</string>
+    <string name="ColoredAdminTitle">Título de Administrador Colorido</string>
 </resources>

@@ -96,7 +96,6 @@
     <string name="DarkenAvatarBackground">Затемнить фон</string>
     <string name="ProviderDeepLTranslate">DeepL</string>
     <string name="ProviderMicrosoftTranslator">Bing</string>
-    <string name="pressTitleToOpenAllChats">Нажмите на заголовок, чтобы открыть вкладку «Все чаты»</string>
     <string name="DontSendGreetingSticker">Не отправлять приветственный стикер</string>
     <string name="TakeGIFasVideo">Воспринимать GIF как видео</string>
     <string name="UseMediaStreamInVoip">Использовать медиапоток в VoIP</string>
@@ -206,7 +205,6 @@
     <string name="LinkedChannelChat">Привязанный канал</string>
     <string name="DevModeTitle">** Ваш аккаунт может быть заблокирован **</string>
     <string name="DevModeNotice">Мы не несём ответственности за использование функций разработчика.</string>
-    <string name="PlaceHolder">Бесполезное уведомление - пожалуйста, отключите</string>
     <string name="CustomBackend">Выбрать DC</string>
     <string name="ChangeTranslateProvider">Изменить сервис перевода</string>
     <string name="ProviderYandexTranslate">Яндекс</string>
@@ -230,8 +228,8 @@
     <string name="DisableSystemAccount">Скрыть аккаунт в системе</string>
     <string name="FilterMenu">Меню фильтра диалогов</string>
     <string name="DisableProxyWhenVpnEnabled">Отключать прокси если включён VPN</string>
-    <string name="UseProxyItem">Показывать прокси в боковом меню</string>
-    <string name="HideProxyByDefault">Скрыть настройки прокси</string>
+    <string name="UseProxyItem">Показывать «Настройки прокси» в боковом меню</string>
+    <string name="HideProxyByDefault">Скрыть «Настройки прокси»</string>
     <string name="SkipOpenLinkConfirm">Открывать ссылки без подтверждения</string>
     <string name="DeleteAllInChatAlert">Внимание! Это **удалит все сообщения** в этом чате для **всех**.</string>
     <string name="UnblockAll">Разблокировать всех</string>

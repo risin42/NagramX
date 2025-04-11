@@ -206,7 +206,6 @@
     <string name="LinkedChannelChat">链接的频道</string>
     <string name="DevModeTitle">**您的电报账号可能被封禁**</string>
     <string name="DevModeNotice">对于开发者功能的任何不当使用，我们概不负责。</string>
-    <string name="PlaceHolder">占位符 - 请禁用</string>
     <string name="CustomBackend">自定义后端</string>
     <string name="ChangeTranslateProvider">修改翻译源</string>
     <string name="ProviderYandexTranslate">Yandex.翻译</string>

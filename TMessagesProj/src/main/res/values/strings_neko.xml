@@ -208,7 +208,6 @@
     <string name="LinkedChannelChat">Linked Channel</string>
     <string name="DevModeTitle">**Your Telegram account may be banned**</string>
     <string name="DevModeNotice">We are not responsible for any improper use of developer features.</string>
-    <string name="PlaceHolder">Placeholder - Please Disable</string>
     <string name="CustomBackend">Custom Backend</string>
     <string name="ChangeTranslateProvider">Change Provider</string>
     <string name="ProviderYandexTranslate">Yandex.Translate</string>

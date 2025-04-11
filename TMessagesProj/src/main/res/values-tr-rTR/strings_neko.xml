@@ -96,7 +96,6 @@
     <string name="DarkenAvatarBackground">Arka planı koyulaştır</string>
     <string name="ProviderDeepLTranslate">DeepL Çeviri</string>
     <string name="ProviderMicrosoftTranslator">Bing Çevirmen</string>
-    <string name="pressTitleToOpenAllChats">\"Tüm Sohbetler\" sekmesini açmak için başlığa basın</string>
     <string name="DontSendGreetingSticker">Kişileriniz Yeni Katılınca Çıkartma Görünmesin</string>
     <string name="TakeGIFasVideo">GIF\'i Video Olarak Al</string>
     <string name="UseMediaStreamInVoip">VoIP\'de Medya Akışını Kullan</string>
@@ -205,7 +204,6 @@
     <string name="LinkedChannelChat">Bağlantılı Kanal</string>
     <string name="DevModeTitle">**Telegram hesabınız yasaklanabilir**</string>
     <string name="DevModeNotice">Geliştirici özelliklerinin uygunsuz kullanımından sorumlu değiliz.</string>
-    <string name="PlaceHolder">Yer Tutucu - Lütfen Devre Dışı Bırakın</string>
     <string name="CustomBackend">Özel arka-uç</string>
     <string name="ChangeTranslateProvider">Sağlayıcıyı Değiştir</string>
     <string name="GoogleCloudTransKeyNotice">Eğer bir Google Cloud Translation Anahtarı ayarlarsanız, web sürümüne sahte bir form göndermek yerine Cloud Translation API\'ını kullanarak (daha hızlı, kararlı ve internet trafiğinizden tasarruf ederek) çeviri yaparsınız.</string>

@@ -96,7 +96,6 @@
     <string name="DarkenAvatarBackground">Escurecer Fundo</string>
     <string name="ProviderDeepLTranslate">DeepL Tradutor</string>
     <string name="ProviderMicrosoftTranslator">Bing Tradutor</string>
-    <string name="pressTitleToOpenAllChats">Pressione o título para abrir a aba \"Todos os Chats\"</string>
     <string name="DontSendGreetingSticker">Não envie Sticker de saudação</string>
     <string name="TakeGIFasVideo">Tratar GIF como vídeo</string>
     <string name="UseMediaStreamInVoip">Use o Stream de Mídia no VoIP</string>
@@ -205,7 +204,6 @@
     <string name="LinkedChannelChat">Canal vinculado</string>
     <string name="DevModeTitle">**Sua conta do Telegram pode ser banida**</string>
     <string name="DevModeNotice">Não somos responsáveis por qualquer uso indevido dos recursos para desenvolvedores.</string>
-    <string name="PlaceHolder">Espaço reservado - Por favor desative</string>
     <string name="CustomBackend">Back-end personalizado</string>
     <string name="ChangeTranslateProvider">Mudar provedor</string>
     <string name="GoogleCloudTransKeyNotice">Se você configurar uma chave de tradução do Google Cloud, a API de tradução em nuvem será chamada em vez de enviar um formulário falso para a versão web ao traduzir (mais rápido, estável e economizando tráfego).</string>
