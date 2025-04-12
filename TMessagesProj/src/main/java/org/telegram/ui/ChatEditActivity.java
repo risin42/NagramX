@@ -1775,7 +1775,13 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
             } else {
                 builder.setMessage(getString("GroupSettingsChangedAlert", R.string.GroupSettingsChangedAlert));
             }
-            builder.setPositiveButton(getString("ApplyTheme", R.string.ApplyTheme), (dialogInterface, i) -> processDone());
+            builder.setPositiveButton(getString("ApplyTheme", R.string.ApplyTheme), (dialogInterface, i) -> {
+                if (ChatObject.hasAdminRights(currentChat)) {
+                    processDone();
+                } else {
+                    setChatNameOverride();
+                }
+            });
             builder.setNegativeButton(getString("PassportDiscard", R.string.PassportDiscard), (dialog, which) -> finishFragment());
             showDialog(builder.create());
             return false;
