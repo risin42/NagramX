@@ -146,23 +146,23 @@ public class SenderSelectPopup extends ActionBarPopupWindow {
 
         List<TLRPC.TL_sendAsPeer> peers = sendAsPeers.peers;
 
-        if (NaConfig.INSTANCE.getQuickToggleAnonymous().Bool()) {
-            var chat = messagesController.getChat(chatFull.id);
-            if (chat != null && ChatObject.isMegagroup(chat) && chat.creator) {
-                if (peers.stream().noneMatch(peer -> peer.peer.channel_id == chat.id)) {
-                    peers.add(peers.size() >= 1 ? 1 : 0, new TLRPC.TL_sendAsPeer() {{
-                        peer = new TLRPC.TL_peerChannel() {{ channel_id = chat.id; }};
-                    }});
-                }
+        // QuickToggleAnonymous Start
+        final TLRPC.Chat chat = chatFull == null ? null : MessagesController.getInstance(currentAccount).getChat(chatFull.id);
+        if (ChatObject.isMegagroup(chat) && chat.creator) {
+            if (peers.stream().noneMatch(peer -> peer.peer.channel_id == chat.id)) {
+                peers.add(!peers.isEmpty() ? 1 : 0, new TLRPC.TL_sendAsPeer() {{
+                    peer = new TLRPC.TL_peerChannel() {{ channel_id = chat.id; }};
+                }});
+            }
 
-                var selfId = UserConfig.getInstance(UserConfig.selectedAccount).getCurrentUser().id;
-                if (peers.stream().noneMatch(peer -> peer.peer.user_id == selfId)) {
-                    peers.add(peers.size() >= 1 ? 1 : 0, new TLRPC.TL_sendAsPeer() {{
-                        peer = new TLRPC.TL_peerUser() {{ user_id = selfId; }};
-                    }});
-                }
+            var selfId = UserConfig.getInstance(UserConfig.selectedAccount).getCurrentUser().id;
+            if (peers.stream().noneMatch(peer -> peer.peer.user_id == selfId)) {
+                peers.add(!peers.isEmpty() ? 1 : 0, new TLRPC.TL_sendAsPeer() {{
+                    peer = new TLRPC.TL_peerUser() {{ user_id = selfId; }};
+                }});
             }
         }
+        // QuickToggleAnonymous End
 
         recyclerView = new RecyclerListView(context);
         layoutManager = new LinearLayoutManager(context);
@@ -246,7 +246,7 @@ public class SenderSelectPopup extends ActionBarPopupWindow {
             if (clicked) {
                 return;
             }
-            if (peerObj.premium_required && !UserConfig.getInstance(UserConfig.selectedAccount).isPremium()) {
+            if (peerObj.premium_required && !UserConfig.getInstance(UserConfig.selectedAccount).isRealPremium()) {
                 if (!NekoConfig.disableVibration.Bool()) {
                     try {
                         view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
@@ -302,7 +302,7 @@ public class SenderSelectPopup extends ActionBarPopupWindow {
                     windowManager.addView(bulletinContainer, params);
                 }
 
-                final TLRPC.Chat chat = chatFull == null ? null : MessagesController.getInstance(currentAccount).getChat(chatFull.id);
+//                final TLRPC.Chat chat = chatFull == null ? null : MessagesController.getInstance(currentAccount).getChat(chatFull.id);
                 final boolean toChannel = ChatObject.isChannelAndNotMegaGroup(chat);
                 Bulletin bulletin = Bulletin.make(bulletinContainer, new SelectSendAsPremiumHintBulletinLayout(context, parentFragment.themeDelegate, toChannel, () -> {
                     if (parentFragment != null) {

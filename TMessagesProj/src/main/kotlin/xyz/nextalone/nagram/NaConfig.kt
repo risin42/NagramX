@@ -226,12 +226,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val quickToggleAnonymous =
-        addConfig(
-            "QuickToggleAnonymous",
-            ConfigItem.configTypeBool,
-            false
-        )
     val realHideTimeForSticker =
         addConfig(
             "RealHideTimeForSticker",
