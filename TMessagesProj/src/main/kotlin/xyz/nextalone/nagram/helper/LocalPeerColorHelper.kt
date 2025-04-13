@@ -2,6 +2,7 @@ package xyz.nextalone.nagram.helper
 
 import com.google.gson.Gson
 import org.telegram.tgnet.TLRPC
+import tw.nekomimi.nekogram.NekoConfig
 import xyz.nextalone.nagram.NaConfig
 
 
@@ -19,7 +20,7 @@ object LocalPeerColorHelper {
 
     @JvmStatic
     fun getColorId(user: TLRPC.User): Int? {
-        if (!NaConfig.useLocalQuoteColor.Bool()) return null
+        if (!NekoConfig.localPremium.Bool()) return null
         init()
         if (user.self && data != null) {
             return data!!.colorId
@@ -29,7 +30,7 @@ object LocalPeerColorHelper {
 
     @JvmStatic
     fun getEmojiId(user: TLRPC.User?): Long? {
-        if (!NaConfig.useLocalQuoteColor.Bool()) return null
+        if (!NekoConfig.localPremium.Bool()) return null
         init()
         if (user != null && user.self && data != null) {
             return data!!.emojiId
@@ -39,7 +40,7 @@ object LocalPeerColorHelper {
 
     @JvmStatic
     fun getProfileColorId(user: TLRPC.User): Int? {
-        if (!NaConfig.useLocalQuoteColor.Bool()) return null
+        if (!NekoConfig.localPremium.Bool()) return null
         init()
         if (user.self && data != null) {
             return data!!.profileColorId
@@ -49,7 +50,7 @@ object LocalPeerColorHelper {
 
     @JvmStatic
     fun getProfileEmojiId(user: TLRPC.User?): Long? {
-        if (!NaConfig.useLocalQuoteColor.Bool()) return null
+        if (!NekoConfig.localPremium.Bool()) return null
         init()
         if (user != null && user.self && data != null) {
             return data!!.profileEmojiId
@@ -69,7 +70,7 @@ object LocalPeerColorHelper {
 
     @JvmStatic
     fun apply(colorId: Int, emojiId: Long, profileColorId: Int, profileEmojiId: Long) {
-        if (!NaConfig.useLocalQuoteColor.Bool()) return
+        if (!NekoConfig.localPremium.Bool()) return
         var localData = data
         if (localData == null) {
             localData = LocalQuoteColorData(colorId, emojiId, profileColorId, profileEmojiId)

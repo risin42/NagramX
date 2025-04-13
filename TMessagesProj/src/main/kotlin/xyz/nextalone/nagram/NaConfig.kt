@@ -398,12 +398,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val useLocalQuoteColor =
-        addConfig(
-            "UseLocalQuoteColor",
-            ConfigItem.configTypeBool,
-            false
-        )
     val useLocalQuoteColorData =
         addConfig(
             "useLocalQuoteColorData",
