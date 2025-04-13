@@ -86,7 +86,7 @@
     <string name="ResetStickerSize">Размер стикеров по умолчанию</string>
     <string name="RestartAppToTakeEffect">Перезапустите приложение.</string>
     <string name="DisableAppBarShadow">Отключить тень заголовка</string>
-    <string name="MediaPreview">Предварительный просмотр медиа в списке чатов</string>
+    <string name="MediaPreview">Предпросмотр медиа в списке чатов</string>
     <string name="AutoPauseVideo">Останавливать видео</string>
     <string name="AutoPauseVideoAbout">При блокировке экрана или сворачивании приложения.</string>
     <string name="DisableProximityEvents">Отключить датчик приближения</string>
@@ -119,7 +119,7 @@
     <string name="disableNotificationBubbles">Отключить всплывающие уведомления</string>
     <string name="ReactionsDisabled">Отключить</string>
     <string name="customSavePath">Путь хранения загрузок</string>
-    <string name="customSavePathHint">Оставьте пустым, чтобы сохранять в «Загрузки» напрямую</string>
+    <string name="customSavePathHint">Оставьте пустым, чтобы сохранять напрямую в «Загрузки»</string>
     <string name="channelLabel">канал</string>
     <string name="forceBlurInChat">Принудительное размытие чатов</string>
     <string name="ChatBlurAlphaValue">Размытие чатов (Альфа)</string>
@@ -216,7 +216,7 @@
     <string name="ShowIdAndDc">Показывать ID и DC в профиле</string>
     <string name="UseDefaultTheme">Использовать тему по умолчанию *</string>
     <string name="DisableChatAction">Не отправлять «печатает»</string>
-    <string name="IgnoreMutedCount">Скрыть количество непрочитанных приглушённых сообщений в папках</string>
+    <string name="IgnoreMutedCount">Скрыть количество непрочитанных приглушённых в папках</string>
     <string name="DialogsSettings">Настройки чатов</string>
     <string name="SortMenu">Сортировать чаты</string>
     <string name="SortByUnread">Сначала непрочитанные</string>
@@ -253,7 +253,7 @@
     <string name="ScanQRCode">Сканировать QR-код</string>
     <string name="NoQrFound">QR-код не обнаружен</string>
     <string name="DeveloperSettings">Настройки разработчика</string>
-    <string name="TransSite">Платформа перевода</string>
+    <string name="TransSite">Платформа переводов</string>
     <string name="ShareMessages">Поделиться</string>
     <string name="DisableVibration">Отключить вибрацию</string>
     <string name="IgnoreContentRestrictions">Игнорировать ограничения контента</string>
@@ -277,7 +277,7 @@
     <string name="TextReplace">Заменить на</string>
     <string name="ReplaceRegex">Используйте регулярные выражения</string>
     <string name="DisableTrending">Отключить тренды</string>
-    <string name="AutoDownload">Отключить автозагрузку</string>
+    <string name="AutoDownload">Отключение автозагрузки</string>
     <string name="Win32ExecutableFiles">Исполняемые файлы Win32</string>
     <string name="ArchiveFiles">Архивы</string>
     <string name="AutoLockImmediately">Немедленно</string>
@@ -285,7 +285,7 @@
     <string name="ImportSettings">Импорт настроек</string>
     <string name="ImportSettingsAlert">Перезаписать настройки? Импорт настроек из ненадежных источников может привести к блокировке приложения.</string>
     <string name="nekoXPaymentRemovedToast">Функции оплаты были удалены.</string>
-    <string name="unreadBadgeOnBackButton">Количество непрочитанных сообщений на кнопке «Назад»</string>
+    <string name="unreadBadgeOnBackButton">Количество непрочитанных на кнопке «Назад»</string>
     <string name="DeleteDownloadedFileConfirm">Удалить загруженный файл?</string>
     <string name="DeleteDownloadedFileSucceed">Удалено</string>
     <string name="DeleteDownloadedFileExternal">Внешний файл пропущен.</string>

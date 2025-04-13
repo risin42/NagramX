@@ -4,7 +4,7 @@
     <string name="ForceCopy">強制コピー</string>
     <string name="CombineMessage">メッセージを結合</string>
     <string name="TextStyle">テキストスタイル</string>
-    <string name="NoiseSuppressAndVoiceEnhance">ノイズ抑制と音声強化</string>
+    <string name="NoiseSuppressAndVoiceEnhance">ノイズ抑制と音声強調</string>
     <string name="RepeatAsCopy">引用なしでリポスト</string>
     <string name="DoubleTapAction">ダブルタップ操作</string>
     <string name="SendReactions">リアクションを送信</string>
@@ -41,8 +41,6 @@
     <string name="labelChannelUser">チャンネルユーザーをラベル付け</string>
     <string name="CustomChannelLabel">カスタムチャンネルユーザーのラベル</string>
     <string name="AlwaysShowDownloadIcon">常にダウンロードアイコンを表示</string>
-    <string name="QuickToggleAnonymous">匿名発言をすばやく切り替え</string>
-    <string name="QuickToggleAnonymousNotice">グループの所有者である場合。</string>
     <string name="RealHideTimeForSticker">ステッカーの送信時間を非表示</string>
     <string name="HideTitle">タイトルを非表示</string>
     <string name="IgnoreFolderCount">フォルダタブで未読数を非表示</string>
@@ -77,7 +75,6 @@
     <string name="DisableStories">ストーリー機能を無効にする</string>
     <string name="DisableSendReadStories">ストーリーをこっそり見る</string>
     <string name="HideFilterMuteAll">長押しメニューの「すべてミュート」を非表示</string>
-    <string name="UseLocalQuoteColor">ローカル配色</string>
     <string name="ShowSquareAvatar">正方形のアバター</string>
     <string name="DisableCustomWallpaperUser">チャットのカスタム壁紙を無効にする</string>
     <string name="DisableCustomWallpaperChannel">チャンネルのカスタム壁紙を無効にする</string>

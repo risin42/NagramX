@@ -41,8 +41,6 @@
     <string name="labelChannelUser">标记频道身份发言用户</string>
     <string name="CustomChannelLabel">自定义频道标记</string>
     <string name="AlwaysShowDownloadIcon">始终显示下载图标</string>
-    <string name="QuickToggleAnonymous">快速切换匿名发言</string>
-    <string name="QuickToggleAnonymousNotice">如果你是群组的所有者的话。</string>
     <string name="RealHideTimeForSticker">隐藏贴纸发送时间</string>
     <string name="HideTitle">隐藏标题和头像</string>
     <string name="IgnoreFolderCount">忽略文件夹标签上的未读计数</string>
@@ -77,7 +75,6 @@
     <string name="DisableStories">禁用动态功能</string>
     <string name="DisableSendReadStories">偷偷看动态</string>
     <string name="HideFilterMuteAll">隐藏长按菜单中的\"全部静音\"</string>
-    <string name="UseLocalQuoteColor">本地名称颜色</string>
     <string name="ShowSquareAvatar">方形头像</string>
     <string name="DisableCustomWallpaperUser">禁用私聊的自定义背景</string>
     <string name="DisableCustomWallpaperChannel">禁用频道的自定义背景</string>

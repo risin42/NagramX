@@ -101,4 +101,6 @@
     <string name="MediaViewerMenu">Menu do Visualizador de Mídia</string>
     <string name="MenuAndButtons">Menu e Botões</string>
     <string name="ColoredAdminTitle">Título de Administrador Colorido</string>
+    <string name="Settings">Configurações</string>
+    <string name="AccountSettings">Configurações da Conta</string>
 </resources>

@@ -9,6 +9,8 @@
 
 package tw.nekomimi.nekogram.ui;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.view.View;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.R;
@@ -60,13 +62,13 @@ public class RegexFilterPopup {
     private static ActionBarPopupWindow.ActionBarPopupWindowLayout createPopupLayout(ActionBarPopupWindow.ActionBarPopupWindowLayout layout, ActionBarPopupWindow popupWindow, RegexFiltersSettingActivity fragment, int filterIdx) {
         layout.setFitItems(true);
 
-        var editBtn = ActionBarMenuItem.addItem(layout, R.drawable.msg_edit, "Edit", false, fragment.getResourceProvider());
+        var editBtn = ActionBarMenuItem.addItem(layout, R.drawable.msg_edit, getString(R.string.Edit), false, fragment.getResourceProvider());
         editBtn.setOnClickListener(view -> {
             fragment.presentFragment(new RegexFilterEditActivity(filterIdx));
             popupWindow.dismiss();
         });
 
-        var deleteBtn = ActionBarMenuItem.addItem(layout, R.drawable.msg_delete, "Delete", false, fragment.getResourceProvider());
+        var deleteBtn = ActionBarMenuItem.addItem(layout, R.drawable.msg_delete, getString(R.string.Delete), false, fragment.getResourceProvider());
         deleteBtn.setOnClickListener(view -> {
             var filters = AyuFilter.getRegexFilters();
             if (filterIdx >= 0 && filterIdx < filters.size()) {

@@ -41,8 +41,6 @@
     <string name="labelChannelUser">Etiqueta Usuários de Canal</string>
     <string name="CustomChannelLabel">Etiqueta de Canal Personalizado</string>
     <string name="AlwaysShowDownloadIcon">Sempre Mostrar Ícone de Download</string>
-    <string name="QuickToggleAnonymous">Alternar Rápido o Anônimo</string>
-    <string name="QuickToggleAnonymousNotice">Se você é proprietário do grupo.</string>
     <string name="RealHideTimeForSticker">Ocultar Horário nos Stickers</string>
     <string name="HideTitle">Ocultar Título</string>
     <string name="IgnoreFolderCount">Ocultar Contagem Não Lida nas Pasta</string>
@@ -77,7 +75,6 @@
     <string name="DisableStories">Desativar Stories</string>
     <string name="DisableSendReadStories">Não visualizar Stories</string>
     <string name="HideFilterMuteAll">Ocultar \"Silenciar tudo\" no Menu de Toque Longo</string>
-    <string name="UseLocalQuoteColor">Cor da Cotação Local</string>
     <string name="ShowSquareAvatar">Avatar Quadrado</string>
     <string name="DisableCustomWallpaperUser">Desativar Papel de parede personalizado do Usuário</string>
     <string name="DisableCustomWallpaperChannel">Desativar papel de parede personalizado do canal</string>

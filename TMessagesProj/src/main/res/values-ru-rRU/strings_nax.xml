@@ -16,7 +16,7 @@
     <string name="LlmApiKey">Ключ API</string>
     <string name="LlmModelName">Модель</string>
     <string name="LlmApiUrlNotice">Базовый URL API для конечных точек, совместимых с OpenAI, таких как Gemini, xAI (Grok), Groq, Mistral, DeepSeek и т. д.\n\nЕсли оставить это поле пустым, по умолчанию будет использоваться конечная точка, совместимая с Gemini OpenAI.</string>
-    <string name="LlmApiKeyNotice">Ключ API будет использоваться для отправки запросов на URL API.\n\nВведите несколько ключей, разделённых запятыми (например, key1, key2, key3).\nЕсли вы предоставите несколько ключей, они будут использоваться по очереди.</string>
+    <string name="LlmApiKeyNotice">Ключ API будет использоваться для отправки запросов на URL API.\n\nВведите несколько ключей, разделённых запятыми (например: key1, key2, key3).\nЕсли вы предоставите несколько ключей, они будут использоваться по очереди.</string>
     <string name="LlmModelNameNotice">Если оставить это поле пустым, по умолчанию будет использоваться `gemini-2.0-flash`.\n\nДля более быстрого отклика рассмотрите меньшие модели, такие как gpt-4o-mini или gemini-flash.</string>
     <string name="LlmProviderPreset">Поставщик модели</string>
     <string name="LlmProviderCustom">Пользовательский</string>
@@ -42,7 +42,7 @@
     <string name="DeleteCloudBackupSuccess">Облачные данные очищены</string>
     <string name="CloudConfigNoBackupToDelete">Нет данных для очистки</string>
     <string name="PreferredTranslateTargetLang">Пользовательский список языков</string>
-    <string name="PreferredTranslateTargetLangExample">например, ja, zh_cn, zh_tw</string>
+    <string name="PreferredTranslateTargetLangExample">Например: ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Предпочитаемые языки</string>
     <string name="ClearDeleted">Очистить удалённые</string>
     <string name="ClearDeletedAlertMessage">Вы уверены, что хотите очистить все удалённые сообщения в этом чате?</string>
@@ -87,7 +87,7 @@
     <string name="TranslatorKeepMarkdown">Сохранять разметку</string>
     <string name="TranslatorOptions">Параметры</string>
     <string name="GoogleTranslateExp">Использовать новый Google Переводчик</string>
-    <string name="SpringAnimation">Spring-анимация</string>
+    <string name="SpringAnimation">Spring-анимации</string>
     <string name="SpringAnimationCrossfade">Анимированная панель действий</string>
     <string name="Other">Другое</string>
     <string name="RestartApp">Перезапустить приложение</string>
@@ -101,4 +101,6 @@
     <string name="MediaViewerMenu">Меню просмотра медиа</string>
     <string name="MenuAndButtons">Меню и кнопки</string>
     <string name="ColoredAdminTitle">Цветные подписи должностей администраторов</string>
+    <string name="Settings">Настройки</string>
+    <string name="AccountSettings">Настройки аккаунта</string>
 </resources>

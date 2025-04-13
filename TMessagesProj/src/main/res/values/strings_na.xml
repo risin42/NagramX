@@ -6,7 +6,7 @@
     <string name="TextStyle">Text Style</string>
     <string name="NoiseSuppressAndVoiceEnhance">Voice Enhancements</string>
     <string name="RepeatAsCopy">Repost as Copy</string>
-    <string name="DoubleTapAction">Double Tap Action</string>
+    <string name="DoubleTapAction">Double Tap Actions</string>
     <string name="SendReactions">Send Reactions</string>
     <string name="ShowReactions">Show Reactions</string>
     <string name="CustomTitle">Custom Title</string>
@@ -42,8 +42,6 @@
     <string name="labelChannelUser">Label Channel Users</string>
     <string name="CustomChannelLabel">Custom Channel Label</string>
     <string name="AlwaysShowDownloadIcon">Always Show Download Icon</string>
-    <string name="QuickToggleAnonymous">Quick Toggle Anonymous</string>
-    <string name="QuickToggleAnonymousNotice">If you\'re owner of the group.</string>
     <string name="RealHideTimeForSticker">Hide Time on Stickers</string>
     <string name="HideTitle">Hide Title</string>
     <string name="IgnoreFolderCount">Hide Unread Count on Folders</string>
@@ -79,7 +77,6 @@
     <string name="DisableStories">Disable Stories</string>
     <string name="DisableSendReadStories">Don\'t Read Stories</string>
     <string name="HideFilterMuteAll">Hide \"Mute All\" in Long Press Menu</string>
-    <string name="UseLocalQuoteColor">Local Quote Color</string>
     <string name="ShowSquareAvatar">Square Avatar</string>
     <string name="DisableCustomWallpaperUser">Disable User Custom Wallpaper</string>
     <string name="DisableCustomWallpaperChannel">Disable Channel Custom Wallpaper</string>

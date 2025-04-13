@@ -101,4 +101,12 @@
     <string name="MediaViewerMenu">メディアビューアーメニュー</string>
     <string name="MenuAndButtons">メニューとボタン</string>
     <string name="ColoredAdminTitle">色付きの管理者タイトル</string>
+    <string name="SendPhotoResolution">写真の解像度</string>
+    <string name="Settings">設定</string>
+    <string name="AccountSettings">アカウント設定</string>
+    <string name="HideReactions">リアクションを非表示</string>
+    <string name="DoubleTapIncoming">受信メッセージ</string>
+    <string name="DoubleTapOutgoing">送信メッセージ</string>
+    <string name="TgBrowserOpenFail">内蔵ブラウザは利用できません</string>
+    <string name="TgBrowserOpenFail_Desc">内蔵ブラウザが無効化されているため、選択した操作は利用できません。</string>
 </resources>

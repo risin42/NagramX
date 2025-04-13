@@ -41,11 +41,9 @@
     <string name="labelChannelUser">Помечать пользователей каналов</string>
     <string name="CustomChannelLabel">Пользовательская метка каналов</string>
     <string name="AlwaysShowDownloadIcon">Всегда показывать значок «Загрузки»</string>
-    <string name="QuickToggleAnonymous">Быстрое переключение анонимности</string>
-    <string name="QuickToggleAnonymousNotice">Если вы владелец группы.</string>
     <string name="RealHideTimeForSticker">Скрыть время на стикерах</string>
     <string name="HideTitle">Скрыть заголовок</string>
-    <string name="IgnoreFolderCount">Скрыть количество непрочитанных сообщений в папках</string>
+    <string name="IgnoreFolderCount">Скрыть количество непрочитанных в папках</string>
     <string name="SendWithoutMarkdown">Отправить без разметки</string>
     <string name="SaveWithoutMarkdown">Сохранить без разметки</string>
     <string name="SendAsEmoji">Отправить как эмодзи</string>
@@ -77,7 +75,6 @@
     <string name="DisableStories">Отключить истории</string>
     <string name="DisableSendReadStories">Не читать истории</string>
     <string name="HideFilterMuteAll">Скрыть «Отключить все» в меню долгого нажатия</string>
-    <string name="UseLocalQuoteColor">Локальный цвет цитаты</string>
     <string name="ShowSquareAvatar">Квадратные аватары</string>
     <string name="DisableCustomWallpaperUser">Отключить пользовательские обои</string>
     <string name="DisableCustomWallpaperChannel">Отключить пользовательские обои каналов</string>
