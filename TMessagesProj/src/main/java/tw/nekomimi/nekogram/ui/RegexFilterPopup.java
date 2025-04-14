@@ -68,9 +68,12 @@ public class RegexFilterPopup {
 
         var deleteBtn = ActionBarMenuItem.addItem(layout, R.drawable.msg_delete, "Delete", false, fragment.getResourceProvider());
         deleteBtn.setOnClickListener(view -> {
-            AyuFilter.removeFilter(filterIdx);
-            fragment.onResume();
-            popupWindow.dismiss();
+            var filters = AyuFilter.getRegexFilters();
+            if (filterIdx >= 0 && filterIdx < filters.size()) {
+                AyuFilter.removeFilter(filterIdx);
+                fragment.onResume();
+                popupWindow.dismiss();
+            }
         });
         var deleteBtnColor = Theme.getColor(Theme.key_text_RedBold);
         deleteBtn.setColors(deleteBtnColor, deleteBtnColor);
