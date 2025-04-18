@@ -97,6 +97,7 @@ import javax.microedition.khronos.egl.EGLSurface;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.utils.VibrateUtil;
+import xyz.nextalone.nagram.NaConfig;
 
 @SuppressLint("NewApi")
 public class CameraView extends FrameLayout implements TextureView.SurfaceTextureListener, CameraController.ICameraView, CameraController.ErrorCallback  {
@@ -750,6 +751,9 @@ public class CameraView extends FrameLayout implements TextureView.SurfaceTextur
                 if (SharedConfig.getDevicePerformanceClass() == SharedConfig.PERFORMANCE_CLASS_LOW) {
                     photoMaxWidth = 1280;
                     photoMaxHeight = 960;
+                } else if (NaConfig.INSTANCE.photosResolution() == 2560) {
+                    photoMaxWidth = 2560;
+                    photoMaxHeight = 1920;
                 } else {
                     photoMaxWidth = 1920;
                     photoMaxHeight = 1440;
@@ -762,6 +766,9 @@ public class CameraView extends FrameLayout implements TextureView.SurfaceTextur
                 if (SharedConfig.getDevicePerformanceClass() == SharedConfig.PERFORMANCE_CLASS_LOW) {
                     photoMaxWidth = 1280;
                     photoMaxHeight = 960;
+                } else if (NaConfig.INSTANCE.photosResolution() == 2560) {
+                    photoMaxWidth = 2560;
+                    photoMaxHeight = 1440;
                 } else {
                     photoMaxWidth = isStory ? 1280 : 1920;
                     photoMaxHeight = isStory ? 720 : 1080;

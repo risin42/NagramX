@@ -7840,7 +7840,11 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
     }
 
     public TLRPC.TL_photo generatePhotoSizes(TLRPC.TL_photo photo, String path, Uri imageUri) {
-        Bitmap bitmap = ImageLoader.loadBitmap(path, imageUri, AndroidUtilities.getPhotoSize(), AndroidUtilities.getPhotoSize(), true);
+        int maxSize = NaConfig.INSTANCE.photosResolution();
+        Bitmap bitmap = ImageLoader.loadBitmap(path, imageUri, maxSize, maxSize, true);
+        if (bitmap == null && maxSize == 2560) {
+            bitmap = ImageLoader.loadBitmap(path, imageUri, 1280, 1280, true);
+        }
         if (bitmap == null) {
             bitmap = ImageLoader.loadBitmap(path, imageUri, 800, 800, true);
         }
@@ -7851,13 +7855,15 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
         }
 
         //        ===== Nagram Hook start =====
-        size = ImageLoader.scaleAndSaveImage(bitmap, AndroidUtilities.getPhotoSizeOld(), AndroidUtilities.getPhotoSizeOld(), true, 80, false, 101, 101);
-        if (size != null) {
-            sizes.add(size);
+        if (maxSize > 1280) {
+            size = ImageLoader.scaleAndSaveImage(bitmap, AndroidUtilities.getPhotoSizeOld(), AndroidUtilities.getPhotoSizeOld(), true, 80, false, 101, 101);
+            if (size != null) {
+                sizes.add(size);
+            }
         }
         //        ===== Nagram Hook end =====
 
-        size = ImageLoader.scaleAndSaveImage(bitmap, AndroidUtilities.getPhotoSize(), AndroidUtilities.getPhotoSize(), true, 80, false, 101, 101);
+        size = ImageLoader.scaleAndSaveImage(bitmap, maxSize, maxSize, true, 80, false, 101, 101);
         if (size != null) {
             sizes.add(size);
         }
@@ -8933,7 +8939,11 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
             File bigFile = FileLoader.getInstance(accountInstance.getCurrentAccount()).getPathToAttach(bigSize, false);
             boolean bigExists = bigFile.exists();
             if (!smallExists || !bigExists) {
-                Bitmap bitmap = ImageLoader.loadBitmap(path, uri, AndroidUtilities.getPhotoSize(), AndroidUtilities.getPhotoSize(), true);
+                int maxSize = NaConfig.INSTANCE.photosResolution();
+                Bitmap bitmap = ImageLoader.loadBitmap(path, uri, maxSize, maxSize, true);
+                if (bitmap == null && maxSize == 2560) {
+                    bitmap = ImageLoader.loadBitmap(path, uri, 1280, 1280, true);
+                }
                 if (bitmap == null) {
                     bitmap = ImageLoader.loadBitmap(path, uri, 800, 800, true);
                 }

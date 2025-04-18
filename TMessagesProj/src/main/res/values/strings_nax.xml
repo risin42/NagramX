@@ -114,4 +114,5 @@
     <string name="MediaViewerMenu">Media Viewer Menu</string>
     <string name="MenuAndButtons">Menu and Buttons</string>
     <string name="ColoredAdminTitle">Colored Admin Title</string>
+    <string name="SendPhotoResolution">Photo Resolution</string>
 </resources>

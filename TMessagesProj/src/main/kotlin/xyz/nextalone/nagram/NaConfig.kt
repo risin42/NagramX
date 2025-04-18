@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Base64
+import androidx.core.net.toUri
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.BuildVars
@@ -13,7 +14,6 @@ import tw.nekomimi.nekogram.config.ConfigItem
 import tw.nekomimi.nekogram.config.ConfigItemKeyLinked
 import java.io.ByteArrayInputStream
 import java.io.ObjectInputStream
-import androidx.core.net.toUri
 
 
 object NaConfig {
@@ -1094,6 +1094,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var sendPhotoResolution =
+        addConfig(
+            "SendPhotoResolution",
+            ConfigItem.configTypeInt,
+            2
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {
@@ -1110,6 +1116,15 @@ object NaConfig {
                 preferredTranslateTargetLangList.add(lang.trim().lowercase())
             }
         }, 1000)
+    }
+
+    fun photosResolution(): Int {
+        return when (sendPhotoResolution.Int()) {
+            0 -> 800
+            1 -> 1280
+            2 -> 2560
+            else -> 1280
+        }
     }
 
     private fun addConfig(
