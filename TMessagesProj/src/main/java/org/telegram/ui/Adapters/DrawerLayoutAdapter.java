@@ -69,6 +69,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
     public static int nkbtnQrLogin = 1002;
     public static int nkbtnArchivedChats = 1003;
     public static int nkbtnRestartApp = 1004;
+    public static int nkbtnBrowser = 1005;
 
     public DrawerLayoutAdapter(Context context, SideMenultItemAnimator animator, DrawerLayoutContainer drawerLayoutContainer) {
         mContext = context;
@@ -300,9 +301,6 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         int settingsIcon;
         int inviteIcon;
         int helpIcon;
-        int nSettingsIcon = R.drawable.nagramx_notification;
-        int qrLoginIcon = R.drawable.msg_qrcode;
-        int archiveIcon = R.drawable.msg_archive;
 
         if (NaConfig.INSTANCE.getIconDecoration().Int() == 4) {
             eventType = -1;
@@ -390,7 +388,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
             items.add(null); // divider
         }
         if (NaConfig.INSTANCE.getDrawerItemArchivedChats().Bool()) { 
-            items.add(new Item(nkbtnArchivedChats, LocaleController.getString(R.string.ArchivedChats), archiveIcon));
+            items.add(new Item(nkbtnArchivedChats, LocaleController.getString(R.string.ArchivedChats), R.drawable.msg_archive));
             items.add(null);
         }
         if (NaConfig.INSTANCE.getDrawerItemNewGroup().Bool()) items.add(new Item(2, LocaleController.getString(R.string.NewGroup), newGroupIcon));
@@ -425,11 +423,13 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         }
 
         boolean showNSettings = NaConfig.INSTANCE.getDrawerItemNSettings().Bool();
+        boolean showBrowser = NaConfig.INSTANCE.getDrawerItemBrowser().Bool();
         boolean showQrLogin = NaConfig.INSTANCE.getDrawerItemQrLogin().Bool();
         boolean restartApp = NaConfig.INSTANCE.getDrawerItemRestartApp().Bool();
-        if (showNSettings || showQrLogin) items.add(null); // divider
-        if (showNSettings) items.add(new Item(nkbtnSettings, LocaleController.getString(R.string.NekoSettings), nSettingsIcon));
-        if (showQrLogin) items.add(new Item(nkbtnQrLogin, LocaleController.getString(R.string.ImportLogin), qrLoginIcon));
+        if (showNSettings || showBrowser || showQrLogin) items.add(null); // divider
+        if (showNSettings) items.add(new Item(nkbtnSettings, LocaleController.getString(R.string.NekoSettings), R.drawable.nagramx_notification));
+        if (showBrowser) items.add(new Item(nkbtnBrowser, LocaleController.getString(R.string.InappBrowser), R.drawable.web_browser));
+        if (showQrLogin) items.add(new Item(nkbtnQrLogin, LocaleController.getString(R.string.ImportLogin), R.drawable.msg_qrcode));
         if (restartApp) {
             items.add(null); // divider
             items.add(new Item(nkbtnRestartApp, LocaleController.getString(R.string.RestartApp), R.drawable.msg_retry));

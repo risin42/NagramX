@@ -944,6 +944,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var drawerItemBrowser =
+        addConfig(
+            "DrawerItemBrowser",
+            ConfigItem.configTypeBool,
+            false
+        )
     var hideArchive =
         addConfig(
             "HideArchive",

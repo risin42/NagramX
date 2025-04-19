@@ -246,6 +246,7 @@ import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 //import tw.nekomimi.nekogram.utils.MonetHelper;
+import tw.nekomimi.nekogram.utils.BrowserUtils;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import tw.nekomimi.nekogram.utils.UIUtil;
 import xyz.nextalone.nagram.NaConfig;
@@ -776,6 +777,8 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                     drawerLayoutContainer.closeDrawer(false);
                 } else if (id == DrawerLayoutAdapter.nkbtnRestartApp) {
                     AppRestartHelper.triggerRebirth(ApplicationLoader.applicationContext, new Intent(ApplicationLoader.applicationContext, LaunchActivity.class));
+                } else if (id == DrawerLayoutAdapter.nkbtnBrowser) {
+                    BrowserUtils.openBrowserHome(() -> drawerLayoutContainer.closeDrawer(true));
                 }
             }
         });

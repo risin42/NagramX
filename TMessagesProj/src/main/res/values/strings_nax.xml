@@ -118,4 +118,6 @@
     <string name="HideReactions">Hide Reactions</string>
     <string name="DoubleTapIncoming">Incoming Messages</string>
     <string name="DoubleTapOutgoing">Outgoing Messages</string>
+    <string name="TgBrowserOpenFail">In-App Browser is unavailable</string>
+    <string name="TgBrowserOpenFail_Desc">The selected operation is not available because the in-app browser has been disabled.</string>
 </resources>
