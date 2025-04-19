@@ -1100,6 +1100,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             2
         )
+    var hideReactions =
+        addConfig(
+            "HideReactions",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

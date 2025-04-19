@@ -609,10 +609,10 @@ public class MessageObject {
     }
 
     public boolean shouldDrawReactions() {
-        if (isRepostPreview) {
+        if (NaConfig.INSTANCE.getHideReactions().Bool()) {
             return false;
         }
-        return true;
+        return !isRepostPreview;
     }
 
     public boolean shouldDrawReactionsInLayout() {

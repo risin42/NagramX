@@ -115,4 +115,5 @@
     <string name="MenuAndButtons">Menu and Buttons</string>
     <string name="ColoredAdminTitle">Colored Admin Title</string>
     <string name="SendPhotoResolution">Photo Resolution</string>
+    <string name="HideReactions">Hide Reactions</string>
 </resources>
