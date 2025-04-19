@@ -1816,13 +1816,22 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             createMenu(view, true, false, x, y, false);
         }
 
+        @Override
         public boolean hasDoubleTap(View view, int position) {
             if (chatMode == MODE_QUICK_REPLIES) return false;
-            boolean allowRepeat;
-            if (NaConfig.INSTANCE.getDoubleTapAction().Int() == DoubleTap.DOUBLE_TAP_ACTION_NONE || !(view instanceof ChatMessageCell)) {
+            MessageObject message;
+            if (view instanceof ChatMessageCell) {
+                message = ((ChatMessageCell) view).getPrimaryMessageObject();
+            } else if (view instanceof ChatActionCell) {
+                message = ((ChatActionCell) view).getMessageObject();
+            } else {
                 return false;
             }
-            if (NaConfig.INSTANCE.getDoubleTapAction().Int() == DoubleTap.DOUBLE_TAP_ACTION_SEND_REACTIONS || NaConfig.INSTANCE.getDoubleTapAction().Int() == DoubleTap.DOUBLE_TAP_ACTION_SHOW_REACTIONS) {
+            var doubleTapAction = message.isOutOwner() ? NaConfig.INSTANCE.getDoubleTapActionOut().Int() : NaConfig.INSTANCE.getDoubleTapAction().Int();
+            if (doubleTapAction == DoubleTap.DOUBLE_TAP_ACTION_NONE) {
+                return false;
+            }
+            if (doubleTapAction == DoubleTap.DOUBLE_TAP_ACTION_SEND_REACTIONS || doubleTapAction == DoubleTap.DOUBLE_TAP_ACTION_SHOW_REACTIONS) {
                 String reactionStringSetting = getMediaDataController().getDoubleTapReaction();
                 TLRPC.TL_availableReaction reaction = getMediaDataController().getReactionsMap().get(reactionStringSetting);
                 if (reaction == null && (reactionStringSetting == null || !reactionStringSetting.startsWith("animated_"))) {
@@ -1835,18 +1844,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (!available) {
                     return false;
                 }
-                MessageObject messageObject;
-                if (view instanceof ChatMessageCell) {
-                    messageObject = ((ChatMessageCell) view).getPrimaryMessageObject();
-                } else if (view instanceof ChatActionCell) {
-                    messageObject = ((ChatActionCell) view).getMessageObject();
-                } else {
+                return message != null && !message.isDateObject && !message.isSending() && message.canSetReaction() && !message.isEditing() && !actionBar.isActionModeShowed() && !isSecretChat() && !isInScheduleMode() && !message.isSponsored() && !message.messageOwner.ayuDeleted;
+            } else {
+                if (!(view instanceof ChatMessageCell)) {
                     return false;
                 }
-                return messageObject != null && !messageObject.isDateObject && !messageObject.isSending() && messageObject.canSetReaction() && !messageObject.isEditing() && !actionBar.isActionModeShowed() && !isSecretChat() && !isInScheduleMode() && !messageObject.isSponsored() && !messageObject.messageOwner.ayuDeleted;
-            } else {
-                var cell = (ChatMessageCell) view;
-                var message = cell.getMessageObject();
                 selectedObject = message;
                 selectedObjectGroup = getValidGroupedMessage(message);
                 var noforwards = getMessagesController().isChatNoForwards(currentChat) || message.messageOwner.noforwards;
@@ -1871,7 +1873,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                     allowEdit = captionsCount < 2;
                 }
-                switch (NaConfig.INSTANCE.getDoubleTapAction().Int()) {
+                boolean allowRepeat;
+                switch (doubleTapAction) {
                     case DoubleTap.DOUBLE_TAP_ACTION_TRANSLATE:
                         MessageObject messageObject = getMessageForTranslate();
                         if (messageObject != null) {
@@ -1899,24 +1902,25 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
         @Override
         public void onDoubleTap(View view, int position, float x, float y) {
-            if (NaConfig.INSTANCE.getDoubleTapAction().Int() == DoubleTap.DOUBLE_TAP_ACTION_NONE) {
+            if (getParentActivity() == null || isSecretChat() || isInScheduleMode() || isInPreviewMode() || chatMode == MODE_QUICK_REPLIES) {
                 return;
             }
-            if (!(view instanceof ChatMessageCell) || getParentActivity() == null || isSecretChat() || isInScheduleMode() || isInPreviewMode() || chatMode == MODE_QUICK_REPLIES) {
-                return;
-            }
-            if (NaConfig.INSTANCE.getDoubleTapAction().Int() == DoubleTap.DOUBLE_TAP_ACTION_SEND_REACTIONS) {
-                MessageObject messageObject;
-                if (view instanceof ChatMessageCell) {
-                    messageObject = ((ChatMessageCell) view).getPrimaryMessageObject();
-                } else if (view instanceof ChatActionCell) {
-                    messageObject = ((ChatActionCell) view).getMessageObject();
-                    if (messageObject.isDateObject) {
-                        return;
-                    }
-                } else {
+            MessageObject messageObject;
+            if (view instanceof ChatMessageCell) {
+                messageObject = ((ChatMessageCell) view).getPrimaryMessageObject();
+            } else if (view instanceof ChatActionCell) {
+                messageObject = ((ChatActionCell) view).getMessageObject();
+                if (messageObject.isDateObject) {
                     return;
                 }
+            } else {
+                return;
+            }
+            var doubleTapAction = messageObject.isOutOwner() ? NaConfig.INSTANCE.getDoubleTapActionOut().Int() : NaConfig.INSTANCE.getDoubleTapAction().Int();
+            if (doubleTapAction == DoubleTap.DOUBLE_TAP_ACTION_NONE) {
+                return;
+            }
+            if (doubleTapAction == DoubleTap.DOUBLE_TAP_ACTION_SEND_REACTIONS) {
                 if (messageObject.isSecretMedia() || !messageObject.canSetReaction() || messageObject.isExpiredStory() || messageObject.type == MessageObject.TYPE_JOINED_CHANNEL) {
                     return;
                 }
@@ -1945,14 +1949,15 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                     selectReaction(view, messageObject, null, null, x, y, ReactionsLayoutInBubble.VisibleReaction.fromEmojicon(reaction), true, false, false, false);
                 }
-            } else if (NaConfig.INSTANCE.getDoubleTapAction().Int() == DoubleTap.DOUBLE_TAP_ACTION_SHOW_REACTIONS) {
+            } else if (doubleTapAction == DoubleTap.DOUBLE_TAP_ACTION_SHOW_REACTIONS) {
                 createMenu(view, true, false, x, y, true, false, true);
             } else {
-                var cell = (ChatMessageCell) view;
-                var message = cell.getMessageObject();
-                selectedObject = message;
-                selectedObjectGroup = getValidGroupedMessage(message);
-                switch (NaConfig.INSTANCE.getDoubleTapAction().Int()) {
+                if (!(view instanceof ChatMessageCell)) {
+                    return;
+                }
+                selectedObject = messageObject;
+                selectedObjectGroup = getValidGroupedMessage(messageObject);
+                switch (doubleTapAction) {
                     case DoubleTap.DOUBLE_TAP_ACTION_TRANSLATE:
                         MessageTransKt.translateMessages(ChatActivity.this);
                         break;

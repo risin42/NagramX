@@ -116,4 +116,6 @@
     <string name="ColoredAdminTitle">Colored Admin Title</string>
     <string name="SendPhotoResolution">Photo Resolution</string>
     <string name="HideReactions">Hide Reactions</string>
+    <string name="DoubleTapIncoming">Incoming Messages</string>
+    <string name="DoubleTapOutgoing">Outgoing Messages</string>
 </resources>
