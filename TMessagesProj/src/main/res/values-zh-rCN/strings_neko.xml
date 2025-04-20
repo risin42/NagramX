@@ -204,8 +204,6 @@
     <string name="CustomApiInput">手动输入</string>
     <string name="LinkedGroupChat">链接的群组</string>
     <string name="LinkedChannelChat">链接的频道</string>
-    <string name="DevModeTitle">**您的电报账号可能被封禁**</string>
-    <string name="DevModeNotice">对于开发者功能的任何不当使用，我们概不负责。</string>
     <string name="CustomBackend">自定义后端</string>
     <string name="ChangeTranslateProvider">修改翻译源</string>
     <string name="ProviderYandexTranslate">Yandex.翻译</string>
@@ -216,7 +214,6 @@
     <string name="More">更多</string>
     <string name="ShowIdAndDc">在个人资料中显示 ID/ DC</string>
     <string name="UseDefaultTheme">使用默认主题 *</string>
-    <string name="DisableChatAction">不要发送我的输入状态</string>
     <string name="IgnoreMutedCount">忽略文件夹标签上静音的未读计数</string>
     <string name="DialogsSettings">聊天列表</string>
     <string name="SortMenu">聊天列表排序</string>

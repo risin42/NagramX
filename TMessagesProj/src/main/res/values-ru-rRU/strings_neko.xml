@@ -203,8 +203,6 @@
     <string name="CustomApiInput">Ввести вручную</string>
     <string name="LinkedGroupChat">Привязанная группа</string>
     <string name="LinkedChannelChat">Привязанный канал</string>
-    <string name="DevModeTitle">** Ваш аккаунт может быть заблокирован **</string>
-    <string name="DevModeNotice">Мы не несём ответственности за использование функций разработчика.</string>
     <string name="CustomBackend">Выбрать DC</string>
     <string name="ChangeTranslateProvider">Изменить сервис перевода</string>
     <string name="ProviderYandexTranslate">Яндекс</string>
@@ -215,7 +213,6 @@
     <string name="More">Ещё</string>
     <string name="ShowIdAndDc">Показывать ID и DC в профиле</string>
     <string name="UseDefaultTheme">Использовать тему по умолчанию *</string>
-    <string name="DisableChatAction">Не отправлять «печатает»</string>
     <string name="IgnoreMutedCount">Скрыть количество непрочитанных приглушённых в папках</string>
     <string name="DialogsSettings">Настройки чатов</string>
     <string name="SortMenu">Сортировать чаты</string>

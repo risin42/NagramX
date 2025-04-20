@@ -202,8 +202,6 @@
     <string name="CustomApiInput">Manuel giriş</string>
     <string name="LinkedGroupChat">Bağlı Grup</string>
     <string name="LinkedChannelChat">Bağlı Kanal</string>
-    <string name="DevModeTitle">**Telegram hesabınız yasaklanabilir**</string>
-    <string name="DevModeNotice">Geliştirici özelliklerinin yanlış kullanımından sorumlu değiliz.</string>
     <string name="CustomBackend">Özel Arka Uç</string>
     <string name="ChangeTranslateProvider">Sağlayıcıyı Değiştir</string>
     <string name="GoogleCloudTransKeyNotice">Google Cloud Çeviri Anahtarı ayarlarsanız, çeviri yaparken web sürümüne sahte form göndermek yerine bulut çeviri API\'si çağrılacaktır (daha hızlı, kararlı ve trafik tasarrufu sağlar).</string>
@@ -212,7 +210,6 @@
     <string name="More">Daha Fazla</string>
     <string name="ShowIdAndDc">Profilde ID / DC Göster</string>
     <string name="UseDefaultTheme">Varsayılan temayı kullan *</string>
-    <string name="DisableChatAction">\"Yazıyor...\" bilgisini gizle</string>
     <string name="IgnoreMutedCount">Klasörlerde Sessize Alınmış Okunmamış Sayısını Gizle</string>
     <string name="DialogsSettings">Sohbetler</string>
     <string name="SortMenu">Sohbetleri Sırala</string>

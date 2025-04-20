@@ -91,7 +91,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell mapPreviewRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NekoConfig.mapPreviewProvider,
             new String[]{
                     getString(R.string.MapPreviewProviderTelegram),
-                    getString(R.string.MapPreviewProviderYandex),
+                    getString(R.string.MapPreviewProviderYandexNax),
                     getString(R.string.MapPreviewProviderNobody)
             }, null));
     private final AbstractConfigCell dividerMap = cellGroup.appendCell(new ConfigCellDivider());

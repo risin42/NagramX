@@ -94,7 +94,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                     }
             )
     );
-    private final AbstractConfigCell googleCloudTranslateKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.googleCloudTranslateKey, (view, position) -> customDialog_BottomInputString(position, NekoConfig.googleCloudTranslateKey, getString(R.string.GoogleCloudTransKeyNotice), "Key"), getString(R.string.None), true));
+    private final AbstractConfigCell googleCloudTranslateKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.googleCloudTranslateKey, (view, position) -> customDialog_BottomInputString(position, NekoConfig.googleCloudTranslateKey, getString(R.string.GoogleCloudTransKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true));
 
     private final AbstractConfigCell dividerTranslation = cellGroup.appendCell(new ConfigCellDivider());
 
@@ -115,19 +115,19 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
     {
         llmProviderConfigMap.put(0, List.of(  // Custom
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true),
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiUrl(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiUrl(), getString(R.string.LlmApiUrlNotice), "e.g. https://api.openai.com/v1"), getString(R.string.LlmApiUrlDefault)),
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmModelName(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmModelName(), getString(R.string.LlmModelNameNotice), "e.g. gpt-4o-mini"), getString(R.string.LlmModelNameDefault))));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true),
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiUrl(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiUrl(), getString(R.string.LlmApiUrlNotice), getString(R.string.LlmApiUrlHint)), getString(R.string.LlmApiUrlDefault)),
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmModelName(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmModelName(), getString(R.string.LlmModelNameNotice), getString(R.string.LlmModelNameHint)), getString(R.string.LlmModelNameDefault))));
         llmProviderConfigMap.put(1, List.of( // OpenAI
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderOpenAIKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderOpenAIKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true)));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderOpenAIKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderOpenAIKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true)));
         llmProviderConfigMap.put(2, List.of( // Gemini
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGeminiKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderGeminiKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true)));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGeminiKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderGeminiKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true)));
         llmProviderConfigMap.put(3, List.of( // Groq
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGroqKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderGroqKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true)));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGroqKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderGroqKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true)));
         llmProviderConfigMap.put(4, List.of( // DeepSeek
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true)));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true)));
         llmProviderConfigMap.put(5, List.of( // xAI
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderXAIKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderXAIKey(), getString(R.string.LlmApiKeyNotice), "Key"), getString(R.string.None), true)));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderXAIKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderXAIKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true)));
 
         int llmProviderPreset = NaConfig.INSTANCE.getLlmProviderPreset().Int();
         if (llmProviderConfigMap.containsKey(llmProviderPreset)) {
@@ -136,7 +136,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         }
     }
 
-    private final AbstractConfigCell llmSystemPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmSystemPrompt(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmSystemPrompt(), getString(R.string.LlmSystemPromptNotice), "You are a helpful assistant."), getString(R.string.None)));
+    private final AbstractConfigCell llmSystemPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmSystemPrompt(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmSystemPrompt(), getString(R.string.LlmSystemPromptNotice), getString(R.string.LlmSystemPromptHint)), getString(R.string.None)));
     private final AbstractConfigCell llmUserPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmUserPrompt(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmUserPrompt(), getString(R.string.LlmUserPromptNotice), ""), getString(R.string.None)));
     private final AbstractConfigCell header_temperature = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.LlmTemperature)));
     private final AbstractConfigCell temperatureValueRow = cellGroup.appendCell(new ConfigCellCustom(getString(R.string.LlmTemperature), ConfigCellCustom.CUSTOM_ITEM_Temperature, true));

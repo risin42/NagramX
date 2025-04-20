@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/Settings"/>
+    <PreferenceCategory android:title="@string/SettingsNax"/>
     <PreferenceScreen android:key="account_settings"
-        android:title="@string/AccountSettings"
+        android:title="@string/AccountSettingsNax"
         android:summary="">
         <intent android:action="org.telegram.messenger.OPEN_ACCOUNT"
             android:targetPackage="nu.gpu.nagram"

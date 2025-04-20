@@ -73,7 +73,6 @@
     <string name="DefaultDeleteMenu">Меню удаления по умолчанию</string>
     <string name="DisableSuggestionView">Отключить предложение настройки профиля</string>
     <string name="DisableStories">Отключить истории</string>
-    <string name="DisableSendReadStories">Не читать истории</string>
     <string name="HideFilterMuteAll">Скрыть «Отключить все» в меню долгого нажатия</string>
     <string name="ShowSquareAvatar">Квадратные аватары</string>
     <string name="DisableCustomWallpaperUser">Отключить пользовательские обои</string>

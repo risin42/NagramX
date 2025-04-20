@@ -73,7 +73,6 @@
     <string name="DefaultDeleteMenu">Varsayılan Silme Menüsü</string>
     <string name="DisableSuggestionView">Profil Ayarları Önerilerini Devre Dışı Bırak</string>
     <string name="DisableStories">Hikayeleri Devre Dışı Bırak</string>
-    <string name="DisableSendReadStories">Hikayeleri gördüğümü gizle</string>
     <string name="HideFilterMuteAll">Uzun Basma Menüsünde \"Tümünü Sessize Al\"ı Gizle</string>
     <string name="ShowSquareAvatar">Kare Avatar Göster</string>
     <string name="DisableCustomWallpaperUser">Kullanıcı Özel Duvar Kağıdını Devre Dışı Bırak</string>

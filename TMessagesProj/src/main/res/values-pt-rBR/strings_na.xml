@@ -73,7 +73,6 @@
     <string name="DefaultDeleteMenu">Menu de exclusão padrão</string>
     <string name="DisableSuggestionView">Desativar sugestão de configurações de perfil</string>
     <string name="DisableStories">Desativar Stories</string>
-    <string name="DisableSendReadStories">Não visualizar Stories</string>
     <string name="HideFilterMuteAll">Ocultar \"Silenciar tudo\" no Menu de Toque Longo</string>
     <string name="ShowSquareAvatar">Avatar Quadrado</string>
     <string name="DisableCustomWallpaperUser">Desativar Papel de parede personalizado do Usuário</string>

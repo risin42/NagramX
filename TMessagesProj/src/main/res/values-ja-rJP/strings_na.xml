@@ -73,7 +73,6 @@
     <string name="DefaultDeleteMenu">デフォルトの削除メニュー</string>
     <string name="DisableSuggestionView">電話番号変更の提案を無効にする</string>
     <string name="DisableStories">ストーリー機能を無効にする</string>
-    <string name="DisableSendReadStories">ストーリーをこっそり見る</string>
     <string name="HideFilterMuteAll">長押しメニューの「すべてミュート」を非表示</string>
     <string name="ShowSquareAvatar">正方形のアバター</string>
     <string name="DisableCustomWallpaperUser">チャットのカスタム壁紙を無効にする</string>

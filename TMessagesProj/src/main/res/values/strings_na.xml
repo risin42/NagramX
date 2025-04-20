@@ -75,7 +75,6 @@
     <string name="DefaultDeleteMenu">Default Delete Menu</string>
     <string name="DisableSuggestionView">Disable Profile Settings Suggestion</string>
     <string name="DisableStories">Disable Stories</string>
-    <string name="DisableSendReadStories">Don\'t Read Stories</string>
     <string name="HideFilterMuteAll">Hide \"Mute All\" in Long Press Menu</string>
     <string name="ShowSquareAvatar">Square Avatar</string>
     <string name="DisableCustomWallpaperUser">Disable User Custom Wallpaper</string>

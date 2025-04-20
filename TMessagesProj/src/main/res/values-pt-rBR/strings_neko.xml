@@ -202,8 +202,6 @@
     <string name="CustomApiInput">Entrada manual</string>
     <string name="LinkedGroupChat">Grupo vinculado</string>
     <string name="LinkedChannelChat">Canal vinculado</string>
-    <string name="DevModeTitle">**Sua conta do Telegram pode ser banida**</string>
-    <string name="DevModeNotice">Não somos responsáveis por qualquer uso indevido dos recursos para desenvolvedores.</string>
     <string name="CustomBackend">Back-end personalizado</string>
     <string name="ChangeTranslateProvider">Mudar provedor</string>
     <string name="GoogleCloudTransKeyNotice">Se você configurar uma chave de tradução do Google Cloud, a API de tradução em nuvem será chamada em vez de enviar um formulário falso para a versão web ao traduzir (mais rápido, estável e economizando tráfego).</string>
@@ -212,7 +210,6 @@
     <string name="More">Mais</string>
     <string name="ShowIdAndDc">Mostrar ID / DC no perfil</string>
     <string name="UseDefaultTheme">Usar o tema padrão *</string>
-    <string name="DisableChatAction">Ocultar Digitando</string>
     <string name="IgnoreMutedCount">Ocultar número de mensagens não lidas de chats silenciados nas pastas</string>
     <string name="DialogsSettings">Diálogos</string>
     <string name="SortMenu">Ordenar Chats</string>

@@ -206,8 +206,6 @@
     <string name="CustomApiInput">Manual input</string>
     <string name="LinkedGroupChat">Linked Group</string>
     <string name="LinkedChannelChat">Linked Channel</string>
-    <string name="DevModeTitle">**Your Telegram account may be banned**</string>
-    <string name="DevModeNotice">We are not responsible for any improper use of developer features.</string>
     <string name="CustomBackend">Custom Backend</string>
     <string name="ChangeTranslateProvider">Change Provider</string>
     <string name="ProviderYandexTranslate">Yandex.Translate</string>
@@ -218,7 +216,6 @@
     <string name="More">More</string>
     <string name="ShowIdAndDc">Show ID / DC in Profile</string>
     <string name="UseDefaultTheme">Use default theme *</string>
-    <string name="DisableChatAction">Don\'t Send Typing</string>
     <string name="IgnoreMutedCount">Hide Muted Unread Count on Folders</string>
     <string name="DialogsSettings">Dialogs</string>
     <string name="SortMenu">Sort Chats</string>

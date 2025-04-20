@@ -8,17 +8,19 @@
     <string name="EditsHistoryMenuText">Edits History</string>
     <string name="DeleteKeepLocally">Keep locally</string>
     <string name="ClearMessageDatabase">Clear Message Database</string>
-    <string name="ClearMessageDatabaseNotification">Message Database cleared</string>
+    <string name="ClearMessageDatabaseNotification">Message database cleared.</string>
     <string name="CustomDeletedMark">Custom Deleted Mark</string>
     <string name="HidePremiumSection">Hide Premium in Settings</string>
     <string name="HideHelpSection">Hide Help in Settings</string>
     <string name="ProviderLLMTranslator">AI Translator</string>
     <string name="LlmApiUrl">API URL</string>
+    <string name="LlmApiUrlHint">e.g. https://api.openai.com/v1</string>
     <string name="LlmApiKey">API Key</string>
     <string name="LlmModelName">Model</string>
+    <string name="LlmModelNameHint">e.g. gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">API base URL for OpenAI-compatible endpoints such as Gemini, xAI (Grok), Groq, Mistral, DeepSeek, etc.\n\nLeaving this blank will default to the Gemini OpenAI-compatible endpoint.</string>
     <string name="LlmApiKeyNotice">The API Key will be used to send requests to the API URL.\n\nEnter multiple keys separated by commas (e.g., key1, key2, key3).\nIf you provide multiple keys, they will be used in rotation.</string>
-    <string name="LlmModelNameNotice">Leaving this blank will default to `gemini-2.0-flash`.\n\nFor faster responses, consider smaller models like gpt-4o-mini or gemini-flash.</string>
+    <string name="LlmModelNameNotice">Leaving this blank will default to `gemini-2.0-flash`.\n\nFor faster responses, consider smaller models like gpt-4.1-nano or gemini-flash.</string>
     <string name="LlmApiUrlDefault" translatable="false">https://generativelanguage.googleapis.com/v1beta/openai</string>
     <string name="LlmModelNameDefault" translatable="false">gemini-2.0-flash</string>
     <string name="LlmProviderOpenAIModel" translatable="false">gpt-4.1-nano</string>
@@ -39,6 +41,7 @@
     <string name="LlmProviderDeepSeekKey">DeepSeek API Key</string>
     <string name="LlmProviderXAIKey">xAI API Key</string>
     <string name="LlmSystemPrompt">System Prompt</string>
+    <string name="LlmSystemPromptHint">You are a helpful assistant.</string>
     <string name="LlmSystemPromptNotice">Define the AI\'s role and behavior.\n\nThis prompt sets the tone, personality, and limitations for the AI. Consider describing what type of assistant the AI should be.\n\nCan be left empty.</string>
     <string name="LlmUserPrompt">User Prompt</string>
     <string name="LlmUserPromptNotice">Use @text as a placeholder for the original message, and @toLang for the target language (optional).\n\nExample: \'Translate @text to @toLang without any explanation.\'\n\nLeaving this blank will use the default prompt.</string>
@@ -115,9 +118,12 @@
     <string name="MenuAndButtons">Menu and Buttons</string>
     <string name="ColoredAdminTitle">Colored Admin Title</string>
     <string name="SendPhotoResolution">Photo Resolution</string>
+    <string name="SettingsNax">Settings</string>
+    <string name="AccountSettingsNax">Account Settings</string>
     <string name="HideReactions">Hide Reactions</string>
     <string name="DoubleTapIncoming">Incoming Messages</string>
     <string name="DoubleTapOutgoing">Outgoing Messages</string>
     <string name="TgBrowserOpenFail">In-App Browser is unavailable</string>
     <string name="TgBrowserOpenFail_Desc">The selected operation is not available because the in-app browser has been disabled.</string>
+    <string name="MapPreviewProviderYandexNax">Yandex</string>
 </resources>
