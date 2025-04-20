@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.SpannableStringBuilder;
@@ -1068,7 +1069,7 @@ public class LocaleController {
             }
         }
         editor.putString("unofficial", stringBuilder.toString());
-        editor.commit();
+        editor.apply();
     }
 
     public boolean deleteLanguage(LocaleInfo localeInfo, int currentAccount) {
@@ -1286,7 +1287,7 @@ public class LocaleController {
                 SharedPreferences preferences = MessagesController.getGlobalMainSettings();
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("language", localeInfo.getKey());
-                editor.commit();
+                editor.apply();
             }
             if (pathToFile == null) {
                 localeValues.clear();
@@ -1378,6 +1379,7 @@ public class LocaleController {
             }
             if (value == null) {
                 try {
+                    fixContextLocale(currentLocale);
                     value = ApplicationLoader.applicationContext.getString(res);
                 } catch (Exception e) {
                     if (fallbackRes != 0) {
@@ -2987,7 +2989,7 @@ public class LocaleController {
                         SharedPreferences preferences = MessagesController.getGlobalMainSettings();
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putString("language", localeInfo.getKey());
-                        editor.commit();
+                        editor.apply();
 
                         localeValues = valuesToSet;
                         currentLocale = newLocale;
@@ -4210,5 +4212,36 @@ public class LocaleController {
             FileLog.e(e);
         }
         return null;
+    }
+
+    public static Locale getContextLocale() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return ApplicationLoader.applicationContext.getResources().getConfiguration().getLocales().get(0);
+        } else {
+            return ApplicationLoader.applicationContext.getResources().getConfiguration().locale;
+        }
+    }
+
+    public void fixContextLocale(Locale locale) {
+        try {
+            Locale currentEffectiveLocale = getContextLocale();
+            if (currentEffectiveLocale != null && currentEffectiveLocale.equals(locale)) {
+                return;
+            }
+            changingConfiguration = true;
+            Resources resources = ApplicationLoader.applicationContext.getResources();
+            Configuration config = resources.getConfiguration();
+            Locale.setDefault(locale);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                config.setLocale(locale);
+            } else {
+                config.locale = locale;
+            }
+            resources.updateConfiguration(config, resources.getDisplayMetrics());
+            changingConfiguration = false;
+        } catch (Exception e) {
+            FileLog.e(e);
+            changingConfiguration = false;
+        }
     }
 }
