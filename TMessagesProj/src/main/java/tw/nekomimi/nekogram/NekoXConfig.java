@@ -13,7 +13,6 @@ import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
-import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
@@ -49,12 +48,7 @@ public class NekoXConfig {
 
     public static SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nekox_config", Context.MODE_PRIVATE);
 
-    public static boolean developerMode = preferences.getBoolean("developer_mode", true);
-
     public static boolean disableFlagSecure = NaConfig.INSTANCE.getDisableFlagSecure().Bool();
-
-    public static boolean disableStatusUpdate = preferences.getBoolean("disable_status_update", false);
-    public static boolean keepOnlineStatus = preferences.getBoolean("keepOnlineStatus", false);
 
     public static int customApi = preferences.getInt("custom_api", 0);
     public static int customAppId = preferences.getInt("custom_app_id", 0);
@@ -94,16 +88,6 @@ public class NekoXConfig {
                 .putInt("custom_app_id", customAppId)
                 .putString("custom_app_hash", customAppHash)
                 .apply();
-    }
-
-    public static void toggleDisableStatusUpdate() {
-        preferences.edit().putBoolean("disable_status_update", disableStatusUpdate = !disableStatusUpdate).apply();
-        NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.updateUserStatus, (Object) null);
-    }
-
-    public static void toggleKeepOnlineStatus() {
-        preferences.edit().putBoolean("keepOnlineStatus", keepOnlineStatus = !keepOnlineStatus).apply();
-        NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.updateUserStatus, (Object) null);
     }
 
     public static boolean isDeveloper() {
@@ -194,11 +178,5 @@ public class NekoXConfig {
 
     public static String getChannelAlias(long channelID) {
         return preferences.getString(NekoConfig.channelAliasPrefix + channelID, null);
-    }
-
-    public static boolean lastOnlineState = preferences.getBoolean("last_online_state", true);
-
-    public static void saveLastOnlineState(boolean online) {
-        preferences.edit().putBoolean("last_online_state", lastOnlineState = online).apply();
     }
 }

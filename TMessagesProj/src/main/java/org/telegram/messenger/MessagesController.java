@@ -126,7 +126,6 @@ import java.util.stream.Collectors;
 
 import cn.hutool.core.thread.ThreadUtil;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.UIUtil;
@@ -399,11 +398,6 @@ public class MessagesController extends BaseController implements NotificationCe
     private int statusRequest;
     private int statusSettingState;
     private boolean offlineSent;
-
-    public boolean isOnline() {
-        return !offlineSent;
-    }
-
     private String uploadingAvatar;
 
     private HashMap<String, Object> uploadingThemes = new HashMap<>();
@@ -9903,30 +9897,6 @@ public class MessagesController extends BaseController implements NotificationCe
         });
     }
 
-    public void updateStatus(boolean online) {
-
-        statusSettingState = online ? 2 : 1;
-
-        if (statusRequest != 0) {
-            getConnectionsManager().cancelRequest(statusRequest, true);
-        }
-
-        offlineSent = !online;
-        AndroidUtilities.runOnUIThread(() -> NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.updateUserStatus, (Object) null));
-
-        TL_account.updateStatus req = new TL_account.updateStatus();
-        req.offline = !online;
-        statusRequest = getConnectionsManager().sendRequest(req, (response, error) -> {
-            if (error == null) {
-                lastStatusUpdateTime = System.currentTimeMillis();
-                statusSettingState = 0;
-            } else {
-                AlertUtil.showToast(error);
-            }
-            statusRequest = 0;
-        });
-    }
-
     public void updateTimerProc() {
         long currentTime = System.currentTimeMillis();
 
@@ -9944,25 +9914,20 @@ public class MessagesController extends BaseController implements NotificationCe
                             getConnectionsManager().cancelRequest(statusRequest, true);
                         }
 
-                        if (NekoXConfig.disableStatusUpdate) {
-                            lastStatusUpdateTime = System.currentTimeMillis();
-                            statusSettingState = 0;
-                        } else {
-                            TL_account.updateStatus req = new TL_account.updateStatus();
-                            req.offline = false;
-                            statusRequest = getConnectionsManager().sendRequest(req, (response, error) -> {
-                                if (error == null) {
-                                    lastStatusUpdateTime = System.currentTimeMillis();
-                                    offlineSent = false;
-                                    statusSettingState = 0;
-                                } else {
-                                    if (lastStatusUpdateTime != 0) {
-                                        lastStatusUpdateTime += 5000;
-                                    }
+                        TL_account.updateStatus req = new TL_account.updateStatus();
+                        req.offline = false;
+                        statusRequest = getConnectionsManager().sendRequest(req, (response, error) -> {
+                            if (error == null) {
+                                lastStatusUpdateTime = System.currentTimeMillis();
+                                offlineSent = false;
+                                statusSettingState = 0;
+                            } else {
+                                if (lastStatusUpdateTime != 0) {
+                                    lastStatusUpdateTime += 5000;
                                 }
-                                statusRequest = 0;
-                            });
-                        }
+                            }
+                            statusRequest = 0;
+                        });
                     }
                 }
             } else if (statusSettingState != 2 && !offlineSent && Math.abs(System.currentTimeMillis() - getConnectionsManager().getPauseTime()) >= 2000) {
@@ -9970,22 +9935,18 @@ public class MessagesController extends BaseController implements NotificationCe
                 if (statusRequest != 0) {
                     getConnectionsManager().cancelRequest(statusRequest, true);
                 }
-                if (NekoXConfig.disableStatusUpdate) {
-                    statusRequest = 0;
-                } else {
-                    TL_account.updateStatus req = new TL_account.updateStatus();
-                    req.offline = true;
-                    statusRequest = getConnectionsManager().sendRequest(req, (response, error) -> {
-                        if (error == null) {
-                            offlineSent = true;
-                        } else {
-                            if (lastStatusUpdateTime != 0) {
-                                lastStatusUpdateTime += 5000;
-                            }
+                TL_account.updateStatus req = new TL_account.updateStatus();
+                req.offline = true;
+                statusRequest = getConnectionsManager().sendRequest(req, (response, error) -> {
+                    if (error == null) {
+                        offlineSent = true;
+                    } else {
+                        if (lastStatusUpdateTime != 0) {
+                            lastStatusUpdateTime += 5000;
                         }
-                        statusRequest = 0;
-                    });
-                }
+                    }
+                    statusRequest = 0;
+                });
             }
 
             if (updatesQueueChannels.size() != 0) {
@@ -18693,14 +18654,7 @@ public class MessagesController extends BaseController implements NotificationCe
                         toDbUser.status = update.status;
                         dbUsersStatus.add(toDbUser);
                         if (update.user_id == getUserConfig().getClientUserId()) {
-                            boolean offline = !(update.status instanceof TLRPC.TL_userStatusOnline);
                             getNotificationsController().setLastOnlineFromOtherDevice(update.status.expires);
-                            if (NekoXConfig.keepOnlineStatus && offline != offlineSent) {
-                                getMessagesController().updateStatus(offline);
-                            } else {
-                                offlineSent = offline;
-                            }
-                            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.updateUserStatus, update);
                         }
                     } else if (baseUpdate instanceof TLRPC.TL_updatePeerWallpaper) {
                         TLRPC.TL_updatePeerWallpaper update = (TLRPC.TL_updatePeerWallpaper) baseUpdate;

@@ -615,9 +615,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 if (id == 13) {
                     presentFragment(new ProxyListActivity());
                     drawerLayoutContainer.closeDrawer(false);
-                } else if (id == 14) {
-                    NekoXConfig.toggleKeepOnlineStatus();
-                    drawerLayoutAdapter.notifyDataSetChanged();
                 } else if (!UserConfig.hasPremiumOnAccounts()) {
                     if (actionBarLayout.getFragmentStack().size() > 0) {
                         BaseFragment fragment = actionBarLayout.getFragmentStack().get(0);
@@ -937,7 +934,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         NotificationCenter.getInstance(currentAccount).addObserver(this, NotificationCenter.currentUserPremiumStatusChanged);
 
         NotificationCenter.getGlobalInstance().addObserver(drawerLayoutAdapter, NotificationCenter.proxySettingsChanged);
-        NotificationCenter.getGlobalInstance().addObserver(drawerLayoutAdapter, NotificationCenter.updateUserStatus);
 
         LiteMode.addOnPowerSaverAppliedListener(this::onPowerSaver);
         if (actionBarLayout.getFragmentStack().isEmpty() && (layersActionBarLayout == null || layersActionBarLayout.getFragmentStack().isEmpty())) {
@@ -1613,7 +1609,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             showTosActivity(account, UserConfig.getInstance(account).unacceptedTermsOfService);
         }
         updateCurrentConnectionState(currentAccount);
-        NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.updateUserStatus, (Object) null);
 
         switchingAccount = false;
     }
@@ -6485,8 +6480,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
         // NekoX
         NotificationCenter.getGlobalInstance().removeObserver(drawerLayoutAdapter, NotificationCenter.proxySettingsChanged);
-        NotificationCenter.getGlobalInstance().removeObserver(drawerLayoutAdapter, NotificationCenter.updateUserStatus);
-
 
         LiteMode.removeOnPowerSaverAppliedListener(this::onPowerSaver);
     }

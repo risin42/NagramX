@@ -9,18 +9,14 @@
 package org.telegram.ui.Adapters;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import androidx.annotation.Keep;
-import androidx.recyclerview.widget.RecyclerView;
-
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MediaDataController;
 import org.telegram.messenger.MessagesController;
@@ -30,13 +26,10 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.DrawerLayoutContainer;
-import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.DividerCell;
 import org.telegram.ui.Cells.DrawerActionCell;
 import org.telegram.ui.Cells.DrawerActionCheckCell;
-import org.telegram.ui.Cells.DividerCell;
-import org.telegram.ui.Cells.DrawerActionCell;
 import org.telegram.ui.Cells.DrawerAddCell;
 import org.telegram.ui.Cells.DrawerProfileCell;
 import org.telegram.ui.Cells.DrawerUserCell;
@@ -47,10 +40,8 @@ import org.telegram.ui.Components.SideMenultItemAnimator;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import cn.hutool.core.util.StrUtil;
 import kotlin.jvm.functions.Function0;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -126,16 +117,9 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
 
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
-        if (id == NotificationCenter.updateUserStatus) {
-            if (args[0] != null) {
-                TLRPC.TL_updateUserStatus update = (TLRPC.TL_updateUserStatus) args[0];
-                long selectedUserId = UserConfig.getInstance(UserConfig.selectedAccount).getClientUserId();
-                if (update.user_id != selectedUserId) {
-                    return;
-                }
-            }
+        if (id == NotificationCenter.proxySettingsChanged) {
+            notifyDataSetChanged();
         }
-        notifyDataSetChanged();
     }
 
     @Override
@@ -404,20 +388,6 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         if (NekoConfig.useProxyItem.Bool() && (!NekoConfig.hideProxyByDefault.Bool() || SharedConfig.isProxyEnabled())) {
             items.add(new CheckItem(13, LocaleController.getString("Proxy", R.string.Proxy), R.drawable.msg_policy, SharedConfig::isProxyEnabled, () -> {
                 SharedConfig.setProxyEnable(!SharedConfig.isProxyEnabled());
-                return true;
-            }));
-        }
-
-        if (NekoXConfig.disableStatusUpdate && UserConfig.getInstance(UserConfig.selectedAccount).isClientActivated() && !UserConfig.getInstance(UserConfig.selectedAccount).getCurrentUser().bot) {
-            boolean online = NekoXConfig.lastOnlineState;
-            String message = online ? StrUtil.upperFirst(LocaleController.getString("Online", R.string.Online)) : LocaleController.getString("VoipOfflineTitle", R.string.VoipOfflineTitle);
-            if (NekoXConfig.keepOnlineStatus) {
-                message += " (" + LocaleController.getString("Locked", R.string.Locked) + ")";
-            }
-            items.add(new CheckItem(14, message, R.drawable.msg_view_file, () -> online, () -> {
-                MessagesController controller = MessagesController.getInstance(UserConfig.selectedAccount);
-                controller.updateStatus(!online);
-                NekoXConfig.saveLastOnlineState(!online);
                 return true;
             }));
         }

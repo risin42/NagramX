@@ -337,7 +337,6 @@ import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.DatacenterActivity;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
-import tw.nekomimi.nekogram.settings.NekoXSettingActivity;
 import tw.nekomimi.nekogram.parts.DialogTransKt;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -4412,17 +4411,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     return Unit.INSTANCE;
                 });
 
-                builder.addItem(LocaleController.getString(R.string.DeveloperSettings), R.drawable.baseline_developer_mode_24, (it) -> {
-                    BottomBuilder devBuilder = new BottomBuilder(ProfileActivity.this.getParentActivity());
-                    devBuilder.addTitle(LocaleController.getString(R.string.DevModeTitle), LocaleController.getString(R.string.DevModeNotice));
-                    devBuilder.addItem(LocaleController.getString(R.string.Continue), R.drawable.baseline_warning_24, true, (__) -> {
-                        ProfileActivity.this.presentFragment(new NekoXSettingActivity());
-                        return Unit.INSTANCE;
-                    });
-                    devBuilder.addCancelItem();
-                    devBuilder.show();
-                    return Unit.INSTANCE;
-                });
                 builder.show();
             } else if (position == premiumRow) {
                 presentFragment(new PremiumPreviewFragment("settings"));
