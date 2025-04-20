@@ -101,6 +101,13 @@
     <string name="MediaViewerMenu">Меню просмотра медиа</string>
     <string name="MenuAndButtons">Меню и кнопки</string>
     <string name="ColoredAdminTitle">Цветные подписи должностей администраторов</string>
+    <string name="SendPhotoResolution">Разрешение фото</string>
     <string name="Settings">Настройки</string>
     <string name="AccountSettings">Настройки аккаунта</string>
+    <string name="HideReactions">Скрыть реакции</string>
+    <string name="DoubleTapIncoming">Входящие сообщения</string>
+    <string name="DoubleTapOutgoing">Исходящие сообщения</string>
+    <string name="TgBrowserOpenFail">Встроенный браузер недоступен</string>
+    <string name="TgBrowserOpenFail_Desc">Выбранная операция недоступна, поскольку встроенный браузер отключён.</string>
+    <string name="MapPreviewProviderYandex">Яндекс</string>
 </resources>

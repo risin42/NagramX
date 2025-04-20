@@ -15,7 +15,7 @@
     <string name="LlmApiUrl">URL da API</string>
     <string name="LlmApiKey">Chave API</string>
     <string name="LlmModelName">Modelo</string>
-    <string name="LlmApiUrlNotice">URL base da API para endpoints compatíveis com OpenIA, tais como Gemini, xAI (Grok), Groq, Mistral, DeepSeek, etc.\n\nDeixar em branco irá por padrão para o ponto final compatível com Gemini OpenAI.</string>
+    <string name="LlmApiUrlNotice">URL base da API para endpoints compatíveis com OpenAI, como Gemini, xAI (Grok), Groq, Mistral, DeepSeek, etc.\n\nDeixar este campo em branco utilizará, por padrão, o endpoint compatível com OpenAI do Gemini.</string>
     <string name="LlmApiKeyNotice">A chave de API será usada para enviar solicitações para a URL da API.\n\nInsira várias chaves separadas por vírgulas (e.., chave1, chave2, chave3).\nSe você fornecer várias chaves, elas serão utilizadas na rotação.</string>
     <string name="LlmModelNameNotice">Deixar em branco o padrão será `gemini-2.0-flash`.\n\nPara respostas mais rápidas, considere modelos menores como gpt-4o-mini ou gemini-flash.</string>
     <string name="LlmProviderPreset">Provedor do Modelo</string>
@@ -101,6 +101,13 @@
     <string name="MediaViewerMenu">Menu do Visualizador de Mídia</string>
     <string name="MenuAndButtons">Menu e Botões</string>
     <string name="ColoredAdminTitle">Título de Administrador Colorido</string>
+    <string name="SendPhotoResolution">Resolução da Foto</string>
     <string name="Settings">Configurações</string>
     <string name="AccountSettings">Configurações da Conta</string>
+    <string name="HideReactions">Ocultar Reações</string>
+    <string name="DoubleTapIncoming">Mensagens Recebidas</string>
+    <string name="DoubleTapOutgoing">Mensagens Enviadas</string>
+    <string name="TgBrowserOpenFail">O Navegador Interno está indisponível</string>
+    <string name="TgBrowserOpenFail_Desc">A operação selecionada não está disponível porque o navegador interno foi desativado.</string>
+    <string name="MapPreviewProviderYandex">Yandex</string>
 </resources>

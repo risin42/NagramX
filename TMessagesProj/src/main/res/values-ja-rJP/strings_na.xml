@@ -118,7 +118,7 @@
     <string name="UnblockDeletedWarn">**すべての削除済みアカウント**のブロックを解除してもよろしいですか？</string>
     <string name="RegexFilters">メッセージフィルター</string>
     <string name="RegexFiltersHeader">メッセージフィルター</string>
-    <string name="RegexFiltersEnableInChats">プライベートチャットでメッセージフィルターを有効にする</string>
+    <string name="RegexFiltersEnableInChats">プライベートチャットで有効にする</string>
     <string name="RegexFiltersCaseInsensitive">大文字と小文字を区別しない</string>
     <string name="RegexFiltersAdd">正規表現を追加</string>
     <string name="RegexFiltersEdit">正規表現を編集</string>

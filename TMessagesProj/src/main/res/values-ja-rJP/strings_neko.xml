@@ -33,7 +33,7 @@
     <string name="Valentine">バレンタインデー</string>
     <string name="Snowflakes">雪</string>
     <string name="Fireworks">花火</string>
-    <string name="DeleteDownloadedFile">キャッシュされたファイルを削除</string>
+    <string name="DeleteDownloadedFile">ダウンロード済を削除</string>
     <string name="TestBackend">バックエンドサーバーをテスト</string>
     <string name="HideProxySponsorChannel">プロキシスポンサーチャンネルを非表示</string>
     <string name="ViewHistory">履歴</string>

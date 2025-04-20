@@ -212,7 +212,7 @@
     <string name="More">Daha Fazla</string>
     <string name="ShowIdAndDc">Profilde ID / DC Göster</string>
     <string name="UseDefaultTheme">Varsayılan temayı kullan *</string>
-    <string name="DisableChatAction">Yazıyor Gönderme</string>
+    <string name="DisableChatAction">\"Yazıyor...\" bilgisini gizle</string>
     <string name="IgnoreMutedCount">Klasörlerde Sessize Alınmış Okunmamış Sayısını Gizle</string>
     <string name="DialogsSettings">Sohbetler</string>
     <string name="SortMenu">Sohbetleri Sırala</string>

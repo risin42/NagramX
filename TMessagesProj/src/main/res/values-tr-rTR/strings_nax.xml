@@ -11,7 +11,7 @@
     <string name="CustomDeletedMark">Özel Silinmiş İşareti</string>
     <string name="HidePremiumSection">Ayarlarda Premium Bölümünü Gizle</string>
     <string name="HideHelpSection">Ayarlarda Yardım Bölümünü Gizle</string>
-    <string name="ProviderLLMTranslator">Yapay Zeka Çevirmeni</string>
+    <string name="ProviderLLMTranslator">AI Çevirmeni Ayarla</string>
     <string name="LlmApiUrl">API URL\'si</string>
     <string name="LlmApiKey">API Anahtarı</string>
     <string name="LlmModelName">Model</string>
@@ -104,4 +104,10 @@
     <string name="SendPhotoResolution">Fotoğraf Çözünürlüğü</string>
     <string name="Settings">Ayarlar</string>
     <string name="AccountSettings">Hesap Ayarları</string>
+    <string name="HideReactions">Tepkileri Gizle</string>
+    <string name="DoubleTapIncoming">Gelen Mesajlar İçin</string>
+    <string name="DoubleTapOutgoing">Giden Mesajlar İçin</string>
+    <string name="TgBrowserOpenFail">Uygulama İçi Tarayıcı kullanılamıyor</string>
+    <string name="TgBrowserOpenFail_Desc">Seçili işlem mevcut değil çünkü uygulama içi tarayıcı devre dışı bırakılmış.</string>
+    <string name="MapPreviewProviderYandex">Yandex</string>
 </resources>
