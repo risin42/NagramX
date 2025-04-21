@@ -392,12 +392,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    val disableSendReadStories =
-        addConfig(
-            "DisableSendReadStories",
-            ConfigItem.configTypeBool,
-            true
-        )
     val hideFilterMuteAll =
         addConfig(
             "HideFilterMuteAll",

@@ -1,24 +1,34 @@
 package tw.nekomimi.nekogram;
 
+import static tw.nekomimi.nekogram.config.ConfigItem.configTypeBool;
+import static tw.nekomimi.nekogram.config.ConfigItem.configTypeFloat;
+import static tw.nekomimi.nekogram.config.ConfigItem.configTypeInt;
+import static tw.nekomimi.nekogram.config.ConfigItem.configTypeLong;
+import static tw.nekomimi.nekogram.config.ConfigItem.configTypeMapIntInt;
+import static tw.nekomimi.nekogram.config.ConfigItem.configTypeSetInt;
+import static tw.nekomimi.nekogram.config.ConfigItem.configTypeString;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Base64;
+import android.util.Pair;
+
+import com.radolyn.ayugram.utils.AyuGhostUtils;
 
 import org.telegram.messenger.ApplicationLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import android.util.Base64;
-
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import tw.nekomimi.nekogram.config.ConfigItem;
 import tw.nekomimi.nekogram.helpers.CloudSettingsHelper;
-
-import static tw.nekomimi.nekogram.config.ConfigItem.*;
 
 @SuppressLint("ApplySharedPref")
 public class NekoConfig {
@@ -32,6 +42,7 @@ public class NekoConfig {
     public static final ArrayList<DatacenterInfo> datacenterInfos = new ArrayList<>(5);
 
     // Configs
+    public static ConfigItem configMigrated = addConfig("ConfigMigrated", configTypeBool, false);
     public static ConfigItem largeAvatarInDrawer = addConfig("AvatarAsBackground", configTypeInt, 0); // 0:TG Default 1:NekoX Default 2:Large Avatar
     public static ConfigItem unreadBadgeOnBackButton = addConfig("unreadBadgeOnBackButton", configTypeBool, false);
     public static ConfigItem useCustomEmoji = addConfig("useCustomEmoji", configTypeBool, false);
@@ -79,7 +90,6 @@ public class NekoConfig {
     public static ConfigItem rearVideoMessages = addConfig("RearVideoMessages", configTypeBool, false);
     public static ConfigItem hideAllTab = addConfig("HideAllTab", configTypeBool, false);
 
-    public static ConfigItem disableChatAction = addConfig("DisableChatAction", configTypeBool, false);
     public static ConfigItem sortByUnread = addConfig("sort_by_unread", configTypeBool, false);
     public static ConfigItem sortByUnmuted = addConfig("sort_by_unmuted", configTypeBool, true);
     public static ConfigItem sortByUser = addConfig("sort_by_user", configTypeBool, true);
@@ -171,8 +181,26 @@ public class NekoConfig {
 
     public static ConfigItem localeToDBC = addConfig("LocaleToDBC", configTypeBool, false);
 
+    // --- Ghost Mode ---
+    public static ConfigItem sendReadMessagePackets = addConfig("sendReadMessagePackets", configTypeBool, true);
+    public static ConfigItem sendReadStoriesPackets = addConfig("sendReadStoriesPackets", configTypeBool, true);
+    public static ConfigItem sendOnlinePackets = addConfig("sendOnlinePackets", configTypeBool, true);
+    public static ConfigItem sendUploadProgress = addConfig("sendUploadProgress", configTypeBool, true);
+    public static ConfigItem sendOfflinePacketAfterOnline = addConfig("sendOfflinePacketAfterOnline", configTypeBool, false);
+    public static ConfigItem markReadAfterSend = addConfig("markReadAfterSend", configTypeBool, true);
+    public static ConfigItem showGhostInDrawer = addConfig("showGhostInDrawer", configTypeBool, false);
+
+    // --- Locked Status ---
+    public static ConfigItem sendReadMessagePacketsLocked = addConfig("sendReadMessagePacketsLocked", configTypeBool, false);
+    public static ConfigItem sendReadStoriesPacketsLocked = addConfig("sendReadStoriesPacketsLocked", configTypeBool, false);
+    public static ConfigItem sendOnlinePacketsLocked = addConfig("sendOnlinePacketsLocked", configTypeBool, false);
+    public static ConfigItem sendUploadProgressLocked = addConfig("sendUploadProgressLocked", configTypeBool, false);
+    public static ConfigItem sendOfflinePacketAfterOnlineLocked = addConfig("sendOfflinePacketAfterOnlineLocked", configTypeBool, false);
+    // --- Ghost Mode ---
+
     static {
         loadConfig(false);
+        checkMigration();
     }
 
     public static ConfigItem addConfig(String k, int t, Object d) {
@@ -260,4 +288,62 @@ public class NekoConfig {
     public static boolean fixDriftingForGoogleMaps() {
         return !useOSMDroidMap.Bool() && mapDriftingFixForGoogleMaps.Bool();
     }
+
+    public static void checkMigration() {
+        if (!configMigrated.Bool()) {
+            configMigrated.setConfigBool(true);
+
+            if (preferences.contains("DisableChatAction")) {
+                sendUploadProgress.setConfigBool(!preferences.getBoolean("DisableChatAction", true));
+            }
+            if (preferences.contains("DisableSendReadStories")) {
+                sendReadStoriesPackets.setConfigBool(!preferences.getBoolean("DisableSendReadStories", true));
+            }
+        }
+    }
+
+    // --- Ghost Mode ---
+    public static boolean isGhostModeActive() {
+        for (Pair<ConfigItem, ConfigItem> pair : ghostToggleItems) {
+            ConfigItem item = pair.first;
+            ConfigItem lockedItem = pair.second;
+            if (!lockedItem.Bool()) {
+                boolean currentValue = item.Bool();
+                boolean isGhostState = (item == sendOfflinePacketAfterOnline) == currentValue;
+
+                if (!isGhostState) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static void setGhostMode(boolean enabled) {
+        for (Pair<ConfigItem, ConfigItem> pair : ghostToggleItems) {
+            ConfigItem item = pair.first;
+            ConfigItem lockedItem = pair.second;
+            if (!lockedItem.Bool()) {
+                boolean targetValue = (item == sendOfflinePacketAfterOnline) == enabled;
+                item.setConfigBool(targetValue);
+            }
+        }
+    }
+
+    public static void toggleGhostMode() {
+        boolean newState = !isGhostModeActive();
+        setGhostMode(newState);
+
+        boolean sendOnlineNow = !newState && !sendOfflinePacketAfterOnlineLocked.Bool() && sendOfflinePacketAfterOnline.Bool();
+        AyuGhostUtils.performStatusRequest(sendOnlineNow);
+    }
+
+    private static final List<Pair<ConfigItem, ConfigItem>> ghostToggleItems = Arrays.asList(
+            new Pair<>(sendReadMessagePackets, sendReadMessagePacketsLocked),
+            new Pair<>(sendReadStoriesPackets, sendReadStoriesPacketsLocked),
+            new Pair<>(sendOnlinePackets, sendOnlinePacketsLocked),
+            new Pair<>(sendUploadProgress, sendUploadProgressLocked),
+            new Pair<>(sendOfflinePacketAfterOnline, sendOfflinePacketAfterOnlineLocked)
+    );
+    // --- Ghost Mode ---
 }

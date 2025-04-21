@@ -240,6 +240,7 @@ import tw.nekomimi.nekogram.helpers.MonetHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
 import tw.nekomimi.nekogram.helpers.remote.PagePreviewRulesHelper;
+import tw.nekomimi.nekogram.settings.GhostModeActivity;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
@@ -776,6 +777,14 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                     AppRestartHelper.triggerRebirth(ApplicationLoader.applicationContext, new Intent(ApplicationLoader.applicationContext, LaunchActivity.class));
                 } else if (id == DrawerLayoutAdapter.nkbtnBrowser) {
                     BrowserUtils.openBrowserHome(() -> drawerLayoutContainer.closeDrawer(true));
+                } else if (id == DrawerLayoutAdapter.nkbtnGhostMode) {
+                    var msg = NekoConfig.isGhostModeActive()
+                            ? LocaleController.getString(R.string.GhostModeDisabled)
+                            : LocaleController.getString(R.string.GhostModeEnabled);
+                    NekoConfig.toggleGhostMode();
+                    BulletinFactory.of(getLastFragment()).createSuccessBulletin(msg).show();
+                    drawerLayoutContainer.closeDrawer(false);
+                    NotificationCenter.getInstance(UserConfig.selectedAccount).postNotificationName(NotificationCenter.mainUserInfoChanged);
                 }
             }
         });
@@ -892,6 +901,10 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 TLRPC.TL_attachMenuBot attachMenuBot = drawerLayoutAdapter.getAttachMenuBot(position);
                 if (attachMenuBot != null) {
                     BotWebViewSheet.deleteBot(currentAccount, attachMenuBot.bot_id, null);
+                    return true;
+                } else if (id == DrawerLayoutAdapter.nkbtnGhostMode) {
+                    presentFragment(new GhostModeActivity());
+                    drawerLayoutContainer.closeDrawer(false);
                     return true;
                 }
             }

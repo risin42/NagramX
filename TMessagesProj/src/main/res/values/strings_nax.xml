@@ -97,7 +97,7 @@
     <string name="TranslatorMinimized">Translator bar has been minimized for this chat.</string>
     <string name="UseDeletedIcon">Show Icon Instead of \"deleted\"</string>
     <string name="UseEditedIcon">Show Icon Instead of \"edited\"</string>
-    <string name="SilentMessageByDefault">Send Messages Silently by Default</string>
+    <string name="SilentMessageByDefault">Send without Sound</string>
     <string name="FolderNameAsTitle">Use Folder Name as Title</string>
     <string name="SaveDeletedMessageForBotUser">Save Bot Messages</string>
     <string name="TranslatorKeepMarkdown">Keep Markdown</string>
@@ -126,4 +126,20 @@
     <string name="TgBrowserOpenFail">In-App Browser is unavailable</string>
     <string name="TgBrowserOpenFail_Desc">The selected operation is not available because the in-app browser has been disabled.</string>
     <string name="MapPreviewProviderYandexNax">Yandex</string>
+    <string name="GhostMode">Ghost Mode</string>
+    <string name="GhostEssentialsHeader">Ghost essentials</string>
+    <string name="EnableGhostMode">Enable Ghost</string>
+    <string name="DisableGhostMode">Disable Ghost</string>
+    <string name="GhostModeEnabled">Ghost mode turned on</string>
+    <string name="GhostModeDisabled">Ghost mode turned off</string>
+    <string name="GhostModeInDrawer">Show in Drawer</string>
+    <string name="DontSendReadMessagePackets">Don\'t Read Messages</string>
+    <string name="DontReadStoriesPackets">Don\'t Read Stories</string>
+    <string name="DontSendOnlinePackets">Don\'t Send Online</string>
+    <string name="DontSendUploadProgress">Don\'t Send Typing</string>
+    <string name="SendOfflinePacketAfterOnline">Go Offline Automatically</string>
+    <string name="MarkReadAfterSend">Read on Interact</string>
+    <string name="GhostModeNotice">Long tap on any option to prevent it from changing on toggling Ghost Mode.</string>
+    <string name="MarkReadAfterSendNotice">Automatically reads message when you send a new one or tap a reaction.</string>
+    <string name="sendWithoutSoundRowNotice">Automatically sends outgoing messages without sound.</string>
 </resources>

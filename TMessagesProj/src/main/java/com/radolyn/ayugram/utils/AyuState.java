@@ -10,13 +10,13 @@
 package com.radolyn.ayugram.utils;
 
 import android.util.LongSparseArray;
-// import com.radolyn.ayugram.AyuConfig;
 
 import java.util.ArrayList;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class AyuState {
     private static final AyuStateVariable allowReadPacket = new AyuStateVariable();
-    private static final AyuStateVariable automaticallyScheduled = new AyuStateVariable();
     private static final AyuStateVariable hideSelection = new AyuStateVariable();
     private static final LongSparseArray<ArrayList<Integer>> deletePermitted = new LongSparseArray<>();
 
@@ -26,17 +26,7 @@ public class AyuState {
     }
 
     public static boolean getAllowReadPacket() {
-        // return AyuConfig.sendReadPackets || allowReadPacket.process();
-        return true;
-    }
-
-    public static void setAutomaticallyScheduled(boolean val, int resetAfter) {
-        automaticallyScheduled.val = val;
-        automaticallyScheduled.resetAfter = resetAfter;
-    }
-
-    public static boolean getAutomaticallyScheduled() {
-        return automaticallyScheduled.process();
+        return NekoConfig.sendReadMessagePackets.Bool() || allowReadPacket.process();
     }
 
     public static void setHideSelection(boolean val, int resetAfter) {

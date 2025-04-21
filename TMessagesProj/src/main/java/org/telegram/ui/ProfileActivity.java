@@ -10210,7 +10210,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         fallbackImage.setImage(ImageLocation.getForPhoto(smallSize, getUserInfo().fallback_photo), "50_50", (Drawable) null, 0, null, UserConfig.getInstance(currentAccount).getCurrentUser(), 0);
                     }
                 } else {
-                    newString2 = LocaleController.getString(R.string.Online);
+                    if (!NekoConfig.sendOnlinePackets.Bool() || NekoConfig.sendOfflinePacketAfterOnline.Bool()) {
+                        newString2 = LocaleController.getString(R.string.VoipOfflineTitle);
+                    } else {
+                        newString2 = LocaleController.getString(R.string.Online);
+                    }
                 }
             } else if (user.id == UserObject.VERIFY) {
                 newString2 = LocaleController.getString(R.string.VerifyCodesNotifications);

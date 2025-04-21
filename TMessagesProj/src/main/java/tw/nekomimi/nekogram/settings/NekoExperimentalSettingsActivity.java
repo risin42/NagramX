@@ -45,6 +45,7 @@ import org.telegram.ui.Cells.NotificationsCheckCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCheckBoxCell;
 import org.telegram.ui.Cells.TextCheckCell;
+import org.telegram.ui.Cells.TextCheckCell2;
 import org.telegram.ui.Cells.TextDetailSettingsCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
 import org.telegram.ui.Cells.TextSettingsCell;
@@ -103,6 +104,9 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
     // Ayu
     private final AbstractConfigCell headerAyuMoments = cellGroup.appendCell(new ConfigCellHeader("AyuMoments"));
+    private final AbstractConfigCell GhostModeRow = cellGroup.appendCell(new ConfigCellText("GhostMode", () -> {
+        presentFragment(new GhostModeActivity());
+    }));
     private final AbstractConfigCell enableSaveDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveDeletedMessages()));
     private final AbstractConfigCell enableSaveEditsHistoryRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveEditsHistory()));
     private final AbstractConfigCell messageSavingSaveMediaRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getMessageSavingSaveMedia(), getString(R.string.MessageSavingSaveMediaHint)));
@@ -138,7 +142,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell hideProxySponsorChannelRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.hideProxySponsorChannel));
     private final AbstractConfigCell ignoreBlockedRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.ignoreBlocked, getString(R.string.IgnoreBlockedAbout)));
     private final AbstractConfigCell regexFiltersEnabledRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getRegexFiltersEnabled(), getString(R.string.RegexFiltersNotice)));
-    private final AbstractConfigCell disableChatActionRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableChatAction));
     private final AbstractConfigCell disableChoosingStickerRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableChoosingSticker));
     private final AbstractConfigCell disableScreenshotDetectionRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableScreenshotDetection()));
     private final AbstractConfigCell customArtworkApiRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomArtworkApi(), "", null));
@@ -157,7 +160,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     // Story
     private final AbstractConfigCell headerStory = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.Story)));
     private final AbstractConfigCell disableStoriesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableStories()));
-    private final AbstractConfigCell disableSendReadStoriesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableSendReadStories()));
     private final AbstractConfigCell dividerStory = cellGroup.appendCell(new ConfigCellDivider());
 
     // Sticker Cache
@@ -392,9 +394,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getDisableFlagSecure().getKey())) {
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
-            } else if (key.equals(NekoConfig.disableChatAction.getKey())) {
-                setCanNotChange();
-                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(disableChoosingStickerRow));
             } else if (key.equals(NaConfig.INSTANCE.getEnableSaveDeletedMessages().getKey())) {
                 setCanNotChange();
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(messageSavingSaveMediaRow));
@@ -740,9 +739,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
     private void setCanNotChange() {
         boolean enabled;
-
-        enabled = NekoConfig.disableChatAction.Bool();
-        ((ConfigCellTextCheck) disableChoosingStickerRow).setEnabled(!enabled);
 
         enabled = NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool();
         ((ConfigCellTextCheck) messageSavingSaveMediaRow).setEnabled(enabled);

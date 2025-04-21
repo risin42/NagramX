@@ -13042,9 +13042,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private void openScheduledMessages() {
-        if (AyuState.getAutomaticallyScheduled()) {
-            return;
-        }
         openScheduledMessages(0, false);
     }
     private void openScheduledMessages(int fromMessageId, boolean showConvertToast) {
@@ -14411,7 +14408,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         int result = getSendMessagesHelper().sendMessage(arrayList, dialog_id, fromMyName, hideCaption, notify, scheduleDate, getThreadMessage(), -1, payStars);
         AlertsCreator.showSendMediaAlert(result, this, themeDelegate);
-        if (result != 0 || AyuState.getAutomaticallyScheduled()) {
+        if (result != 0) {
             AndroidUtilities.runOnUIThread(() -> {
                 waitingForSendingMessageLoad = false;
                 hideFieldPanel(true);

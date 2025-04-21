@@ -25,6 +25,8 @@ import com.google.android.gms.tasks.Task;
 // import com.google.android.play.core.integrity.IntegrityTokenResponse;
 //import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
+import com.radolyn.ayugram.utils.AyuGhostUtils;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.messenger.AccountInstance;
@@ -151,6 +153,8 @@ public class ConnectionsManager extends BaseController {
     };
 
     private boolean forceTryIpV6;
+
+    private AyuGhostUtils ghostModeHandler;
 
     static {
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
@@ -365,10 +369,23 @@ public class ConnectionsManager extends BaseController {
         return requestToken;
     }
 
-    private void sendRequestInternal(TLObject object, RequestDelegate onComplete, RequestDelegateTimestamp onCompleteTimestamp, QuickAckDelegate onQuickAck, WriteToSocketDelegate onWriteToSocket, int flags, int datacenterId, int connectionType, boolean immediate, int requestToken) {
+    private void sendRequestInternal(TLObject object, RequestDelegate onCompleteOrig, RequestDelegateTimestamp onCompleteTimestamp, QuickAckDelegate onQuickAck, WriteToSocketDelegate onWriteToSocket, int flags, int datacenterId, int connectionType, boolean immediate, int requestToken) {
         if (BuildVars.LOGS_ENABLED) {
             FileLog.d("send request " + object + " with token = " + requestToken);
         }
+
+        // --- Ghost Mode ---
+        if (ghostModeHandler == null) {
+             ghostModeHandler = new AyuGhostUtils();
+        }
+        AyuGhostUtils.InterceptResult interceptResult = ghostModeHandler.interceptRequest(object, onCompleteOrig);
+        if (interceptResult.blockRequest) {
+            if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Request " + object.getClass().getSimpleName() + " blocked by handler.");
+            return;
+        }
+        final var onComplete = interceptResult.effectiveOnComplete;
+        // --- Ghost Mode ---
+
         try {
             NativeByteBuffer buffer = new NativeByteBuffer(object.getObjectSize());
             object.serializeToStream(buffer);
