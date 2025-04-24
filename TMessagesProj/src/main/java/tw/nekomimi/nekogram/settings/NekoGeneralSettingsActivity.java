@@ -421,12 +421,18 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                     NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(true);
                     ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabledAndUpdateState(true);
                     if (!enabled) {
-                        editor.putBoolean("pushService", !enabled);
-                        editor.putBoolean("pushConnection", !enabled);
+                        editor.putBoolean("pushService", true);
+                        editor.putBoolean("pushConnection", true);
                         editor.apply();
                     }
+                    ApplicationLoader.startPushService();
+                } else {
+                    NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(false);
+                    ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabledAndUpdateState(false);
+                    AndroidUtilities.runOnUIThread(() -> {
+                        context.stopService(new Intent(context, NotificationsService.class));
+                    });
                 }
-                ApplicationLoader.startPushService();
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(pushServiceTypeInAppDialogRow));
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getPushServiceTypeInAppDialog().getKey())) {
