@@ -75,12 +75,12 @@ fun ChatActivity.translateMessages(
         return
     // translation for this message is already available in that case
     } else if (
-                translatorMode == TRANSLATE_MODE_REPLACE &&
-                messages.all { it.messageOwner.translatedToLanguage == NekoConfig.translateToLang.String() } &&
-                (messages.all { it.messageOwner.translatedText?.text?.isNotEmpty() == true } ||
-                messages.all { it.messageOwner.translatedPoll?.question?.text?.isNotEmpty() == true })
-            ) {
-                messages.forEach { messageObject ->
+            translatorMode == TRANSLATE_MODE_REPLACE &&
+            (messages.any { it.messageOwner.translatedText?.text?.isNotEmpty() == true } ||
+            messages.any { it.messageOwner.translatedPoll?.question?.text?.isNotEmpty() == true })
+        ) {
+            messages.forEach { messageObject ->
+                if (messageObject.messageOwner.translatedToLanguage == target.toLanguageTag()) {
                     controller.removeAsTranslatingItem(messageObject)
                     controller.addAsManualTranslate(messageObject)
                     messageObject.translating = false
@@ -92,22 +92,27 @@ fun ChatActivity.translateMessages(
                             .postNotificationName(NotificationCenter.messageTranslated, messageObject)
                     }
                 }
-                return
-    } else {
-        messages.forEach { messageObject ->
-            controller.addAsTranslatingItem(messageObject)
-            controller.addAsManualTranslate(messageObject)
-            messageObject.translating = true
-            NotificationCenter.getInstance(currentAccount)
-                .postNotificationName(NotificationCenter.messageTranslating, messageObject)
-        }
+            }
+    }
+
+    val messagesToTranslate = messages.filter { !it.translating && !it.messageOwner.translated }
+    if (messagesToTranslate.isEmpty()) {
+        return
+    }
+
+    messagesToTranslate.forEach { messageObject ->
+        controller.addAsTranslatingItem(messageObject)
+        controller.addAsManualTranslate(messageObject)
+        messageObject.translating = true
+        NotificationCenter.getInstance(currentAccount)
+            .postNotificationName(NotificationCenter.messageTranslating, messageObject)
     }
 
     val deferred = LinkedList<Deferred<Unit>>()
     val transPool = newFixedThreadPoolContext(5, "Message Trans Pool")
 
     GlobalScope.launch(Dispatchers.IO) {
-        messages.forEachIndexed { _, selectedObject ->
+        messagesToTranslate.forEachIndexed { _, selectedObject ->
             val state = selectedObject.checkDatabaseForTranslation(target, translatorMode)
             if (state == 1) {
                 controller.removeAsTranslatingItem(selectedObject)
@@ -137,7 +142,7 @@ fun ChatActivity.translateMessages(
                         question = Translator.translate(target, pool.question.text)
                     }.onFailure { e ->
                         handleTranslationError(parentActivity, e, controller, selectedObject) {
-                            translateMessages(target, messages)
+                            translateMessages(target, messagesToTranslate)
                         }
                         return@trans
                     }
@@ -150,7 +155,7 @@ fun ChatActivity.translateMessages(
                             answer = Translator.translate(target, it.text.text)
                         }.onFailure { e ->
                             handleTranslationError(parentActivity, e, controller, selectedObject) {
-                                translateMessages(target, messages)
+                                translateMessages(target, messagesToTranslate)
                             }
                             return@trans
                         }
@@ -166,7 +171,7 @@ fun ChatActivity.translateMessages(
                         )
                     }.onFailure { e ->
                         handleTranslationError(parentActivity, e, controller, selectedObject) {
-                            translateMessages(target, messages)
+                            translateMessages(target, messagesToTranslate)
                         }
                         return@trans
                     }
@@ -179,7 +184,7 @@ fun ChatActivity.translateMessages(
                 }
                 controller.removeAsTranslatingItem(selectedObject)
                 selectedObject.messageOwner.translated = true
-                selectedObject.messageOwner.translatedToLanguage = NekoConfig.translateToLang.String()
+                selectedObject.messageOwner.translatedToLanguage = target.toLanguageTag()
 
                 if (selectedObject.messageOwner.translatedText != null && translatorMode == TRANSLATE_MODE_REPLACE) {
                     MessagesStorage.getInstance(currentAccount).updateMessageCustomParams(
@@ -209,7 +214,7 @@ fun ChatActivity.translateMessages(
         transPool.cancel()
         transPool.close()
     }
-    messages.forEach { messageObject ->
+    messagesToTranslate.forEach { messageObject ->
         messageObject.translating = false
     }
 }

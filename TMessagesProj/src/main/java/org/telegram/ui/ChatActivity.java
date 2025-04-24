@@ -1849,8 +1849,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (!(view instanceof ChatMessageCell)) {
                     return false;
                 }
-                selectedObject = message;
-                selectedObjectGroup = getValidGroupedMessage(message);
+                selectedObjectGroup = getValidGroupedMessage(selectedObject = ((ChatMessageCell) view).getMessageObject());
                 var noforwards = getMessagesController().isChatNoForwards(currentChat) || message.messageOwner.noforwards;
                 var isAyuDeleted = message.messageOwner.ayuDeleted;
                 boolean allowChatActions = chatMode != MODE_SCHEDULED && (threadMessageObjects == null || !threadMessageObjects.contains(message)) &&
@@ -1955,8 +1954,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (!(view instanceof ChatMessageCell)) {
                     return;
                 }
-                selectedObject = messageObject;
-                selectedObjectGroup = getValidGroupedMessage(messageObject);
+                selectedObjectGroup = getValidGroupedMessage(selectedObject = ((ChatMessageCell) view).getMessageObject());
                 switch (doubleTapAction) {
                     case DoubleTap.DOUBLE_TAP_ACTION_TRANSLATE:
                         MessageTransKt.translateMessages(ChatActivity.this);
