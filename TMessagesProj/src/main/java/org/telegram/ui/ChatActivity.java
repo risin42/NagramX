@@ -34095,6 +34095,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             if (error == null) {
                                 TLRPC.Updates updates = (TLRPC.Updates) response;
                                 getMessagesController().processUpdates(updates, false);
+                                for (int i = 0; i < req.id.size(); i++) {
+                                    AyuState.permitDeleteMessage(dialog_id, req.id.get(i));
+                                }
                                 AndroidUtilities.runOnUIThread(() -> NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.messagesDeleted, req.id, getUserConfig().getClientUserId() == dialog_id ? 0 : -dialog_id, true, true));
                             } else if (error.text != null) {
                                 AndroidUtilities.runOnUIThread(() -> {
