@@ -125,6 +125,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell chatMenuRow = cellGroup.appendCell(new ConfigCellSelectBox("ChatMenu", null, null, () -> {
         if (getParentActivity() == null) return;
         showDialog(showConfigMenuAlert(getParentActivity(), "ChatMenu", new ArrayList<>() {{
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getChatMenuItemBoostGroup(), null, getString(R.string.BoostingBoostGroupMenu)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getChatMenuItemLinkedChat(), null, getString(R.string.LinkedGroupChat)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getChatMenuItemToBeginning(), null, getString(R.string.ToTheBeginning)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getChatMenuItemGoToMessage(), null, getString(R.string.ToTheMessage)));

@@ -1034,6 +1034,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var chatMenuItemBoostGroup=
+        addConfig(
+            "ChatMenuItemBoostGroup",
+            ConfigItem.configTypeBool,
+            true
+        )
     var chatMenuItemLinkedChat=
         addConfig(
             "ChatMenuItemLinkedChat",
