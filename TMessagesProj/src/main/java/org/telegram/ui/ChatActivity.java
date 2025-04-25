@@ -43330,59 +43330,52 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         }
         if (!NekoConfig.repeatConfirm.Bool()) {
-            if (isRepeatasCopy) {
-                doRepeatMessage(isLongClick, messages, true);
-                return;
-            } else {
-                doRepeatMessage(isLongClick, messages, false);
-                return;
-            }
+            doRepeatMessage(isLongClick, messages, isRepeatasCopy);
+            return;
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
         builder.setTitle(LocaleController.getString("Repeat", R.string.Repeat));
         builder.setMessage(LocaleController.getString("repeatConfirmText", R.string.repeatConfirmText));
         builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), (dialogInterface, i) -> {
-            if (isRepeatasCopy) {
-                doRepeatMessage(isLongClick, messages, true);
-            } else {
-                doRepeatMessage(isLongClick, messages, false);
-            }
+            doRepeatMessage(isLongClick, messages, isRepeatasCopy);
         });
         builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
         showDialog(builder.create());
     }
 
     private void doRepeatMessage(boolean isLongClick, ArrayList<MessageObject> messages, boolean isRepeatAsCopy) {
-        if (selectedObject != null && selectedObject.messageOwner != null && (isLongClick || (isThreadChat() && !isTopic) || getMessagesController().isChatNoForwards(currentChat))) {
+        boolean noforwards = getMessagesController().isChatNoForwards(currentChat);
+        if (selectedObject == null && noforwards && !messages.isEmpty()) {
+            selectedObject = messages.get(0);
+        }
+        if (selectedObject != null && selectedObject.messageOwner != null && (isLongClick || (isThreadChat() && !isTopic) || noforwards)) {
             // If selected message contains `replyTo`:
             // When longClick it will reply to the `replyMessage` of selectedMessage
             // When not LongClick but in a threadchat: reply to the Thread
             MessageObject replyTo = selectedObject.replyMessageObject != null ? isLongClick ? selectedObject.replyMessageObject : getThreadMessage() : getThreadMessage();
-            if (selectedObject.type == 0 || selectedObject.isAnimatedEmoji() || getMessageCaption(selectedObject, selectedObjectGroup) != null) {
-                CharSequence caption = getMessageCaption(selectedObject, selectedObjectGroup);
-                if (caption == null) {
-                    caption = getMessageContent(selectedObject, 0, false);
-                }
-                if (!TextUtils.isEmpty(caption)) {
+            if (replyTo != null || noforwards) {
+                if (selectedObject.type == 0 || selectedObject.isAnimatedEmoji() || getMessageCaption(selectedObject, selectedObjectGroup) != null) {
+                    CharSequence caption = getMessageCaption(selectedObject, selectedObjectGroup);
+                    if (caption == null) {
+                        caption = getMessageContent(selectedObject, 0, false);
+                    }
+                    if (!TextUtils.isEmpty(caption)) {
+                        SendMessagesHelper.getInstance(currentAccount)
+                                .sendMessage(caption.toString(), dialog_id, replyTo,
+                                        getThreadMessage(), null,
+                                        false, selectedObject.messageOwner.entities, null, null,
+                                        true, 0, null, false);
+                    }
+                } else if ((selectedObject.isSticker() || selectedObject.isAnimatedSticker()) && selectedObject.getDocument() != null) {
                     SendMessagesHelper.getInstance(currentAccount)
-                            .sendMessage(caption.toString(), dialog_id, replyTo,
-                                    getThreadMessage(), null,
-                                    false, selectedObject.messageOwner.entities, null, null,
-                                    true, 0, null, false);
+                            .sendSticker(selectedObject.getDocument(), null, dialog_id, replyTo, getThreadMessage(), null, replyingQuote, null, true, 0, false, null, quickReplyShortcut, getQuickReplyId());
                 }
-            } else if ((selectedObject.isSticker() || selectedObject.isAnimatedSticker()) && selectedObject.getDocument() != null) {
-                SendMessagesHelper.getInstance(currentAccount)
-                        .sendSticker(selectedObject.getDocument(), null, dialog_id, replyTo, getThreadMessage(), null, replyingQuote, null, true, 0, false, null, quickReplyShortcut, getQuickReplyId());
+                return;
             }
-            return;
         }
 
-        if (isRepeatAsCopy) {
-            forwardMessages(messages, true, false, true, 0, 0);
-        } else {
-            forwardMessages(messages, false, false, true, 0, 0);
-        }
+        forwardMessages(messages, isLongClick || isRepeatAsCopy, false, true, 0, 0);
     }
 
     public void setScrollToMessage() {
