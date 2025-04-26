@@ -1,7 +1,5 @@
 # Nagram X
 
-[中文](/README_zh-CN.md)
-
 A variant of [Nagram](https://github.com/NextAlone/Nagram) with additional features.
 
 ## Download
@@ -15,6 +13,7 @@ You can grab the latest versions in these two ways:
 - **Additional Features**
   - Save Deleted Messages
   - Save Edits History
+  - Ghost Mode
   - AI Translator
   - Hide the Premium and Help sections in settings
   - Hide side share button
@@ -36,6 +35,7 @@ You can grab the latest versions in these two ways:
   - Spring Animations
   - Disable message background color and emojis
   - Custom chat name
+  - Hide Reactions
 
 ----
 
@@ -181,7 +181,7 @@ Build:
 7. Build with Gradle:
 
    ```shell
-   ./gradlew assemble<Release/Debug>
+   ./gradlew assemble<Release/Staging/Debug>
    ```
 
 ----
