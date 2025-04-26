@@ -117,6 +117,7 @@ import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MediaDataController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
+import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SendMessagesHelper;
@@ -217,6 +218,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Stack;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 import tw.nekomimi.nekogram.NekoConfig;
@@ -16660,6 +16662,23 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 currentChat = fromChat;
             } else if (currentMessageObject.messageOwner.post) {
                 currentChat = messagesController.getChat(currentMessageObject.messageOwner.peer_id.channel_id);
+            }
+            if (currentUser == null && currentMessageObject.messageOwner.ayuDeleted) {
+                long userId = currentMessageObject.messageOwner.from_id.user_id;
+                final MessagesStorage messagesStorage = MessagesStorage.getInstance(currentAccount);
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                messagesStorage.getStorageQueue().postRunnable(() -> {
+                    currentUser = messagesStorage.getUser(userId);
+                    countDownLatch.countDown();
+                });
+                try {
+                    countDownLatch.await();
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+                if (currentUser != null) {
+                    messagesController.putUser(currentUser, true);
+                }
             }
         }
     }
