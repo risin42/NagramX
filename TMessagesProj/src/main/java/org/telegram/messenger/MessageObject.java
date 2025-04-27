@@ -10163,7 +10163,8 @@ public class MessageObject {
     public boolean canDeleteMessage(boolean inScheduleMode, TLRPC.Chat chat) {
         return (
             isStory() && messageOwner != null && messageOwner.dialog_id == UserConfig.getInstance(currentAccount).getClientUserId() ||
-            eventId == 0 && sponsoredId == null && canDeleteMessage(currentAccount, inScheduleMode, messageOwner, chat)
+            eventId == 0 && sponsoredId == null && canDeleteMessage(currentAccount, inScheduleMode, messageOwner, chat) ||
+            messageOwner != null && messageOwner.ayuDeleted
         );
     }
 

@@ -6334,6 +6334,19 @@ public class AlertsCreator {
 
         // --- AyuGram hook
         FrameLayout ayuFrameLayout = null;
+        boolean hasAyuDeletedMessages = false;
+        if (selectedMessage != null) {
+            hasAyuDeletedMessages = selectedMessage.messageOwner != null && selectedMessage.messageOwner.ayuDeleted;
+        } else {
+            for (SparseArray<MessageObject> message : selectedMessages) {
+                for (int j = 0; j < message.size(); ++j) {
+                    MessageObject msg = message.valueAt(j);
+                    if (msg != null && msg.messageOwner != null && msg.messageOwner.ayuDeleted) {
+                        hasAyuDeletedMessages = true;
+                    }
+                }
+            }
+        }
         // --- AyuGram hook
 
         long dialogId;
@@ -6410,6 +6423,7 @@ public class AlertsCreator {
             }
 
             long clientUserId = UserConfig.getInstance(currentAccount).getClientUserId();
+            boolean finalHasAyuDeletedMessages = hasAyuDeletedMessages;
             ArrayList<TLObject> actionParticipants = messages
                     .stream()
                     .mapToLong(MessageObject::getFromChatId)
@@ -6423,6 +6437,9 @@ public class AlertsCreator {
                     })
                     .filter(Objects::nonNull)
                     .filter(userOrChat -> {
+                        if (finalHasAyuDeletedMessages) {
+                            return false;
+                        }
                         if (userOrChat instanceof TLRPC.User) {
                             TLRPC.User user1 = (TLRPC.User) userOrChat;
                             return user1.id != clientUserId;
@@ -6562,6 +6579,7 @@ public class AlertsCreator {
                 cell.setBackgroundDrawable(Theme.getSelectorDrawable(false));
                 deleteForAll[0] = true;
                 if (canDeleteInbox) {
+                    cell.setVisibility(hasAyuDeletedMessages ? View.GONE : View.VISIBLE);
                     cell.setText(LocaleController.formatString("DeleteMessagesOptionAlso", R.string.DeleteMessagesOptionAlso, UserObject.getFirstName(user)), "", true, false);
                 } else if (chat != null && (hasNotOut || myMessagesCount == count)) {
                     cell.setText(LocaleController.getString(R.string.DeleteForAll), "", true, false);
@@ -6592,6 +6610,7 @@ public class AlertsCreator {
             CheckBoxCell cell = new CheckBoxCell(activity, 1, resourcesProvider);
             cell.setBackgroundDrawable(Theme.getSelectorDrawable(false));
             cell.setText(LocaleController.getString(R.string.DeleteKeepLocally), "", false, false);
+            cell.setVisibility(hasAyuDeletedMessages ? View.GONE : View.VISIBLE);
             cell.setTag(4);
 
             cell.setPadding(LocaleController.isRTL ? AndroidUtilities.dp(16) : AndroidUtilities.dp(8), 0, LocaleController.isRTL ? AndroidUtilities.dp(8) : AndroidUtilities.dp(16), 0);
