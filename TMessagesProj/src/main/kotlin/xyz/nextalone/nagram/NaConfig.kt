@@ -302,7 +302,7 @@ object NaConfig {
         addConfig(
             "ShowFullAbout",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val hideMessageSeenTooltip =
         addConfig(
@@ -555,7 +555,7 @@ object NaConfig {
         addConfig(
             "RegexFiltersEnableInChats",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val showTimeHint =
         addConfig(
@@ -1008,13 +1008,13 @@ object NaConfig {
         addConfig(
             "SpringAnimation",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     var springAnimationCrossfade =
         addConfig(
             "SpringAnimationCrossfade",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     var dontAutoPlayNextVoice =
         addConfig(
@@ -1026,15 +1026,15 @@ object NaConfig {
         addConfig(
             "MessageColoredBackground",
             ConfigItem.configTypeBool,
-            false
+            true
         )
-    var chatMenuItemBoostGroup=
+    var chatMenuItemBoostGroup =
         addConfig(
             "ChatMenuItemBoostGroup",
             ConfigItem.configTypeBool,
             true
         )
-    var chatMenuItemLinkedChat=
+    var chatMenuItemLinkedChat =
         addConfig(
             "ChatMenuItemLinkedChat",
             ConfigItem.configTypeBool,
