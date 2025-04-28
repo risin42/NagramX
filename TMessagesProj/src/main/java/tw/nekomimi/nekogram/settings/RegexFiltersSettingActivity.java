@@ -64,6 +64,8 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
         rowCount += filters.size();
         if (!filters.isEmpty()) {
             filtersDividerRow = rowCount++;
+        } else {
+            filtersDividerRow = -1;
         }
 
         addFilterBtnRow = rowCount++;
@@ -125,7 +127,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
     }
 
     @Override
-    public BaseListAdapter createAdapter(Context context) {
+    protected BaseListAdapter createAdapter(Context context) {
         return new ListAdapter(context);
     }
 
