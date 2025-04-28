@@ -1,18 +1,27 @@
 package tw.nekomimi.nekogram.settings;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.style.DynamicDrawableSpan;
+import android.text.style.ImageSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,9 +37,11 @@ import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Cells.TextDetailSettingsCell;
 import org.telegram.ui.Cells.TextSettingsCell;
+import org.telegram.ui.Components.AnimatedEmojiDrawable;
 import org.telegram.ui.Components.BlurredRecyclerView;
 import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.LayoutHelper;
+import org.telegram.ui.Components.Premium.PremiumGradient;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.SeekBarView;
 
@@ -145,8 +156,10 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
     private ListAdapter listAdapter;
     private int oldLlmProvider;
+    private final boolean isAutoTranslateEnabled;
 
     public NekoTranslatorSettingsActivity() {
+        isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
         oldLlmProvider = NaConfig.INSTANCE.getLlmProviderPreset().Int();
         rebuildRowsForLlmProvider(oldLlmProvider);
         addRowsToMap(cellGroup);
@@ -322,6 +335,9 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                                 View useTelegramUIAutoTranslateView = ((ConfigCellTextCheck) useTelegramUIAutoTranslateRow).cell;
                                 AndroidUtilities.shakeViewSpring(useTelegramUIAutoTranslateView, -4);
                             }
+                        } else {
+                            NaConfig.INSTANCE.getTelegramUIAutoTranslate().setConfigBool(isAutoTranslateEnabled);
+                            listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useTelegramUIAutoTranslateRow));
                         }
                         listAdapter.notifyItemChanged(position);
                     });
@@ -447,7 +463,15 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 if (a instanceof ConfigCellCustom) {
                     if (holder.itemView instanceof TextSettingsCell textCell) {
                         if (position == cellGroup.rows.indexOf(translationProviderRow)) {
-                            textCell.setTextAndValue(getString(R.string.TranslationProvider), getProviderName(NekoConfig.translationProvider.Int()), true);
+                            if (NekoConfig.translationProvider.Int() == Translator.providerTelegram) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                    textCell.setTextAndValue(getString(R.string.TranslationProvider), addPremiumStar(getProviderName(NekoConfig.translationProvider.Int())), true);
+                                } else {
+                                    textCell.setTextAndValue(getString(R.string.TranslationProvider), getProviderName(NekoConfig.translationProvider.Int()), true);
+                                }
+                            } else {
+                                textCell.setTextAndValue(getString(R.string.TranslationProvider), getProviderName(NekoConfig.translationProvider.Int()), true);
+                            }
                         } else if (position == cellGroup.rows.indexOf(translateToLangRow)) {
                             textCell.setTextAndValue(getString(R.string.TransToLang), NekoXConfig.formatLang(NekoConfig.translateToLang.String()), true);
                         } else if (position == cellGroup.rows.indexOf(translateInputToLangRow)) {
@@ -608,5 +632,17 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         cellGroup.appendCell(headerExperimental);
         cellGroup.appendCell(googleTranslateExpRow);
         cellGroup.appendCell(dividerExperimental);
+    }
+
+    private SpannableString premiumStar;
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private CharSequence addPremiumStar(String text) {
+        if (premiumStar == null) {
+            premiumStar = new SpannableString("★");
+            Drawable drawable = new AnimatedEmojiDrawable.WrapSizeDrawable(PremiumGradient.getInstance().premiumStarMenuDrawable, dp(18), dp(18));
+            drawable.setBounds(0, 0, dp(18), dp(18));
+            premiumStar.setSpan(new ImageSpan(drawable, DynamicDrawableSpan.ALIGN_CENTER), 0, premiumStar.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+        return new SpannableStringBuilder(text).append("  ").append(premiumStar);
     }
 }

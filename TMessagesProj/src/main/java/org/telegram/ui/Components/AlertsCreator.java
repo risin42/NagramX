@@ -6764,7 +6764,7 @@ public class AlertsCreator {
                 builder.setMessage(AndroidUtilities.replaceTags(LocaleController.formatString("DeleteMessagesText", R.string.DeleteMessagesText, LocaleController.formatPluralString("messages", myMessagesCount), UserObject.getFirstName(user))));
             }
         } else {
-            if (chat != null && chat.megagroup && !scheduled) {
+            if (chat != null && chat.megagroup && !scheduled && !hasAyuDeletedMessages) {
                 if (count == 1) {
                     builder.setMessage(LocaleController.getString(R.string.AreYouSureDeleteSingleMessageMega));
                 } else {

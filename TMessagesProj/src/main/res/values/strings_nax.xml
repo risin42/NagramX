@@ -141,5 +141,5 @@
     <string name="MarkReadAfterSend">Read on Interact</string>
     <string name="GhostModeNotice">Long tap on any option to prevent it from changing on toggling Ghost Mode.</string>
     <string name="MarkReadAfterSendNotice">Automatically reads message when you send a new one or tap a reaction.</string>
-    <string name="sendWithoutSoundRowNotice">Automatically sends outgoing messages without sound.</string>
+    <string name="SendWithoutSoundRowNotice">Automatically sends outgoing messages without sound.</string>
 </resources>

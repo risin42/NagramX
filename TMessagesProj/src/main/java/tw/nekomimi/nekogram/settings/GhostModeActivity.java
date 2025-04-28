@@ -264,7 +264,7 @@ public class GhostModeActivity extends BaseNekoSettingsActivity {
                     } else if (position == markReadAfterSendNoticeRow) {
                         cell.setText(getString(R.string.MarkReadAfterSendNotice));
                     } else if (position == sendWithoutSoundNoticeRow) {
-                        cell.setText(getString(R.string.sendWithoutSoundRowNotice));
+                        cell.setText(getString(R.string.SendWithoutSoundRowNotice));
                     }
                     break;
                 case TYPE_CHECK2:

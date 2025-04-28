@@ -61,7 +61,7 @@ fun ChatActivity.translateMessages(
             controller.removeAsManualTranslate(messageObject)
             messageObject.translating = false
             messageObject.messageOwner.translated = false
-            if (translatorMode == TRANSLATE_MODE_APPEND) {
+            if (translatorMode == TRANSLATE_MODE_APPEND || messageObject.isPoll) {
                 AndroidUtilities.runOnUIThread {
                     messageHelper.resetMessageContent(dialogId, messageObject)
                 }
@@ -118,7 +118,7 @@ fun ChatActivity.translateMessages(
                 controller.removeAsTranslatingItem(selectedObject)
                 selectedObject.translating = false
                 return@forEachIndexed
-            } else if (state == 2 && (translatorMode == TRANSLATE_MODE_APPEND)) {
+            } else if (state == 2 && ((translatorMode == TRANSLATE_MODE_APPEND) || selectedObject.isPoll)) {
                 controller.removeAsTranslatingItem(selectedObject)
                 selectedObject.translating = false
                 selectedObject.messageOwner.translated = true

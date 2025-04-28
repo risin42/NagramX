@@ -649,10 +649,10 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
             } else {
                 if (currentUser.id == UserConfig.getInstance(currentAccount).getClientUserId() || currentUser.status != null && currentUser.status.expires > ConnectionsManager.getInstance(currentAccount).getCurrentTime() || MessagesController.getInstance(currentAccount).onlinePrivacy.containsKey(currentUser.id)) {
                     statusTextView.setTextColor(statusOnlineColor);
-                    if (!NekoConfig.sendOnlinePackets.Bool() || NekoConfig.sendOfflinePacketAfterOnline.Bool()) {
+                    statusTextView.setText(getString(R.string.Online));
+                    if (currentUser.id == UserConfig.getInstance(currentAccount).getClientUserId() && (!NekoConfig.sendOnlinePackets.Bool() || NekoConfig.sendOfflinePacketAfterOnline.Bool())) {
+                        statusTextView.setTextColor(statusColor);
                         statusTextView.setText(getString(R.string.VoipOfflineTitle));
-                    } else {
-                        statusTextView.setText(getString(R.string.Online));
                     }
                 } else {
                     statusTextView.setTextColor(statusColor);
