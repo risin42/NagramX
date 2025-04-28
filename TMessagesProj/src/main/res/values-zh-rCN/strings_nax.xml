@@ -126,4 +126,5 @@
     <string name="GhostModeNotice">长按任何选项以防止其在切换隐身模式时发生变化。</string>
     <string name="MarkReadAfterSendNotice">当你发送新消息或点击反应时，自动将消息标记为已读。</string>
     <string name="sendWithoutSoundRowNotice">对方将不会收到声音提醒。</string>
+    <string name="GhostReadMessage">标记已读</string>
 </resources>

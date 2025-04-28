@@ -329,7 +329,7 @@ import com.radolyn.ayugram.messages.AyuSavePreferences;
 import com.radolyn.ayugram.proprietary.AyuHistoryHook;
 import com.radolyn.ayugram.ui.DummyView;
 import com.radolyn.ayugram.utils.AyuState;
-// import com.radolyn.ayugram.utils.AyuGhostUtils;
+import com.radolyn.ayugram.utils.AyuGhostUtils;
 import com.radolyn.ayugram.ui.AyuMessageHistory;
 
 @SuppressWarnings("unchecked")
@@ -31386,6 +31386,16 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 options.add(idx, AyuConstants.OPTION_TTL);
                 icons.add(idx, R.drawable.msg_autodelete);
             }
+
+            if (!NekoConfig.sendReadMessagePackets.Bool() && !isAyuDeleted
+                    && message != null
+                    && message.messageOwner.from_id != null
+                    && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
+            ) {
+                items.add(LocaleController.getString(R.string.GhostReadMessage));
+                options.add(AyuConstants.OPTION_READ_MESSAGE);
+                icons.add(R.drawable.msg_view_file);
+            }
             // --- AyuGram menu
 
             if (options.isEmpty() && optionsView == null) {
@@ -33320,6 +33330,14 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         switch (option) {
             case AyuConstants.OPTION_HISTORY:
                 presentFragment(new AyuMessageHistory(selectedObject));
+                break;
+            case AyuConstants.OPTION_TTL:
+                AyuState.setAllowReadPacket(true, 1);
+                sendSecretMessageRead(selectedObject, true);
+                break;
+            case AyuConstants.OPTION_READ_MESSAGE:
+                AyuGhostUtils.markReadOnServer(selectedObject.messageOwner.id, getMessagesController().getInputPeer(selectedObject.messageOwner.peer_id));
+                BotWebViewVibrationEffect.SELECTION_CHANGE.vibrate();
                 break;
             case OPTION_RETRY: {
                 final MessageObject object = selectedObject;

@@ -126,4 +126,5 @@
     <string name="GhostModeNotice">オプションを長押しすると、ゴーストモード切り替え時に設定が保持されます。</string>
     <string name="MarkReadAfterSendNotice">新規メッセージ送信時またはリアクション時に、自動的に既読にします。</string>
     <string name="sendWithoutSoundRowNotice">メッセージは相手に通知音なしで送信されます。</string>
+    <string name="GhostReadMessage">既読をつける</string>
 </resources>

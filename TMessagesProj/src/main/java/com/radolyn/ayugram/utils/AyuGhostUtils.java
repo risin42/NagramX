@@ -2,6 +2,7 @@ package com.radolyn.ayugram.utils;
 
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
@@ -17,7 +18,6 @@ import tw.nekomimi.nekogram.NekoConfig;
 public class AyuGhostUtils {
 
     private static final int OFFLINE_DELAY_MS = 1000;
-    private static final int currentAccount = UserConfig.selectedAccount;
 
     public static Long getDialogId(TLRPC.InputPeer peer) {
         long dialogId;
@@ -36,11 +36,37 @@ public class AyuGhostUtils {
         return -peer.channel_id;
     }
 
+    public static void markReadOnServer(int messageId, TLRPC.InputPeer peer) {
+        TLObject req;
+        if (peer instanceof TLRPC.TL_inputPeerChannel) {
+            TLRPC.TL_channels_readHistory request = new TLRPC.TL_channels_readHistory();
+            request.channel = MessagesController.getInputChannel(peer);
+            request.max_id = messageId;
+            req = request;
+        } else {
+            TLRPC.TL_messages_readHistory request = new TLRPC.TL_messages_readHistory();
+            request.peer = peer;
+            request.max_id = messageId;
+            req = request;
+        }
+
+        AyuState.setAllowReadPacket(true, 1);
+        ConnectionsManager.getInstance(UserConfig.selectedAccount).sendRequest(req, (response, error) -> {
+            if (error == null) {
+                if (response instanceof TLRPC.TL_messages_affectedMessages res) {
+                    MessagesController.getInstance(UserConfig.selectedAccount).processNewDifferenceParams(-1, res.pts, -1, res.pts_count);
+                }
+                // Go offline after sending
+                Utilities.globalQueue.postRunnable(() -> performStatusRequest(true), OFFLINE_DELAY_MS);
+            }
+        });
+    }
+
     public static void performStatusRequest(Boolean offline) {
         TL_account.updateStatus offlineRequest = new TL_account.updateStatus();
         offlineRequest.offline = offline;
 
-        ConnectionsManager.getInstance(currentAccount).sendRequest(offlineRequest, (response, error) -> {
+        ConnectionsManager.getInstance(UserConfig.selectedAccount).sendRequest(offlineRequest, (response, error) -> {
             if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Status request completed.");
         });
     }
@@ -92,18 +118,16 @@ public class AyuGhostUtils {
                     if (onCompleteOrig != null) {
                         Utilities.stageQueue.postRunnable(() -> onCompleteOrig.run(response, error));
                     }
-                    Utilities.stageQueue.postRunnable(() -> {
-                        MessagesStorage.getInstance(currentAccount).getDialogMaxMessageId(dialogId, maxId -> {
-                            TLRPC.TL_messages_readHistory request = new TLRPC.TL_messages_readHistory();
-                            request.peer = peer;
-                            request.max_id = maxId;
+                    Utilities.stageQueue.postRunnable(() -> MessagesStorage.getInstance(UserConfig.selectedAccount).getDialogMaxMessageId(dialogId, maxId -> {
+                        TLRPC.TL_messages_readHistory request = new TLRPC.TL_messages_readHistory();
+                        request.peer = peer;
+                        request.max_id = maxId;
 
-                            AyuState.setAllowReadPacket(true, 1);
-                            ConnectionsManager.getInstance(currentAccount).sendRequest(request, (a1, a2) -> {
-                                if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Read-after-send request completed.");
-                            });
+                        AyuState.setAllowReadPacket(true, 1);
+                        ConnectionsManager.getInstance(UserConfig.selectedAccount).sendRequest(request, (a1, a2) -> {
+                            if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Read-after-send request completed.");
                         });
-                    });
+                    }));
                 };
             }
         }
@@ -120,9 +144,7 @@ public class AyuGhostUtils {
                 }
 
                 if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Scheduling delayed offline status update.");
-                Utilities.globalQueue.postRunnable(() -> {
-                    performStatusRequest(true);
-                }, OFFLINE_DELAY_MS);
+                Utilities.globalQueue.postRunnable(() -> performStatusRequest(true), OFFLINE_DELAY_MS);
             };
         }
         return onCompleteOrig;
