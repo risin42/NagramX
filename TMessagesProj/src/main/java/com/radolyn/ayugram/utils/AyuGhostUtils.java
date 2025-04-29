@@ -36,7 +36,19 @@ public class AyuGhostUtils {
         return -peer.channel_id;
     }
 
-    public static void markReadOnServer(int messageId, TLRPC.InputPeer peer) {
+    public static ConnectionsManager getConnectionsManager() {
+        return ConnectionsManager.getInstance(UserConfig.selectedAccount);
+    }
+
+    public static MessagesController getMessagesController() {
+        return MessagesController.getInstance(UserConfig.selectedAccount);
+    }
+
+    public static MessagesStorage getMessagesStorage() {
+        return MessagesStorage.getInstance(UserConfig.selectedAccount);
+    }
+
+    public static void markReadOnServer(int messageId, TLRPC.InputPeer peer, boolean internal) {
         TLObject req;
         if (peer instanceof TLRPC.TL_inputPeerChannel) {
             TLRPC.TL_channels_readHistory request = new TLRPC.TL_channels_readHistory();
@@ -51,13 +63,16 @@ public class AyuGhostUtils {
         }
 
         AyuState.setAllowReadPacket(true, 1);
-        ConnectionsManager.getInstance(UserConfig.selectedAccount).sendRequest(req, (response, error) -> {
+        getConnectionsManager().sendRequest(req, (response, error) -> {
             if (error == null) {
                 if (response instanceof TLRPC.TL_messages_affectedMessages res) {
-                    MessagesController.getInstance(UserConfig.selectedAccount).processNewDifferenceParams(-1, res.pts, -1, res.pts_count);
+                    getMessagesController().processNewDifferenceParams(-1, res.pts, -1, res.pts_count);
                 }
+                if (BuildVars.LOGS_ENABLED && internal) FileLog.d("GhostMode: Read-after-send request completed.");
                 // Go offline after sending
-                Utilities.globalQueue.postRunnable(() -> performStatusRequest(true), OFFLINE_DELAY_MS);
+                if (NekoConfig.sendOfflinePacketAfterOnline.Bool() && !internal) {
+                    Utilities.globalQueue.postRunnable(() -> performStatusRequest(true), OFFLINE_DELAY_MS);
+                }
             }
         });
     }
@@ -66,12 +81,12 @@ public class AyuGhostUtils {
         TL_account.updateStatus offlineRequest = new TL_account.updateStatus();
         offlineRequest.offline = offline;
 
-        ConnectionsManager.getInstance(UserConfig.selectedAccount).sendRequest(offlineRequest, (response, error) -> {
+        getConnectionsManager().sendRequest(offlineRequest, (response, error) -> {
             if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Status request completed.");
         });
     }
 
-    public InterceptResult interceptRequest(TLObject object, RequestDelegate onCompleteOrig) {
+    public static InterceptResult interceptRequest(TLObject object, RequestDelegate onCompleteOrig) {
         // Block typing if disabled
         if (!NekoConfig.sendUploadProgress.Bool() && (object instanceof TLRPC.TL_messages_setTyping || object instanceof TLRPC.TL_messages_setEncryptedTyping)) {
             if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Blocking typing status request.");
@@ -98,43 +113,30 @@ public class AyuGhostUtils {
         }
 
         // Handle Mark read after sending
-        RequestDelegate effectiveOnComplete = handleReadAfterSend(object, onCompleteOrig);
+        handleReadAfterSend(object);
 
         // Go offline after sending
-        effectiveOnComplete = handleOfflineAfterSend(object, effectiveOnComplete);
+        RequestDelegate effectiveOnComplete = handleOfflineAfterSend(object, onCompleteOrig);
 
         return InterceptResult.Proceed(effectiveOnComplete);
     }
 
-    private RequestDelegate handleReadAfterSend(TLObject object, RequestDelegate onCompleteOrig) {
+    private static void handleReadAfterSend(TLObject object) {
         if (NekoConfig.markReadAfterSend.Bool() && !NekoConfig.sendReadMessagePackets.Bool()) {
             TLRPC.InputPeer peer = extractPeerFromSendObject(object);
 
             if (peer != null) {
-                if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Wrapping callback for read-after-send.");
                 var dialogId = AyuGhostUtils.getDialogId(peer);
-
-                return (response, error) -> {
-                    if (onCompleteOrig != null) {
-                        Utilities.stageQueue.postRunnable(() -> onCompleteOrig.run(response, error));
-                    }
-                    Utilities.stageQueue.postRunnable(() -> MessagesStorage.getInstance(UserConfig.selectedAccount).getDialogMaxMessageId(dialogId, maxId -> {
-                        TLRPC.TL_messages_readHistory request = new TLRPC.TL_messages_readHistory();
-                        request.peer = peer;
-                        request.max_id = maxId;
-
-                        AyuState.setAllowReadPacket(true, 1);
-                        ConnectionsManager.getInstance(UserConfig.selectedAccount).sendRequest(request, (a1, a2) -> {
-                            if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Read-after-send request completed.");
-                        });
-                    }));
-                };
+                getMessagesStorage().getStorageQueue().postRunnable(() ->
+                    getMessagesStorage().getDialogMaxMessageId(dialogId, maxId ->
+                        markReadOnServer(maxId, peer, true)
+                    )
+                );
             }
         }
-        return onCompleteOrig;
     }
 
-    private RequestDelegate handleOfflineAfterSend(TLObject object, RequestDelegate onCompleteOrig) {
+    private static RequestDelegate handleOfflineAfterSend(TLObject object, RequestDelegate onCompleteOrig) {
         if (NekoConfig.sendOfflinePacketAfterOnline.Bool() && isMessageSendRequest(object)) {
             if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Wrapping callback for offline-after-send.");
 
@@ -150,7 +152,7 @@ public class AyuGhostUtils {
         return onCompleteOrig;
     }
 
-    private void sendFakeReadResponse(RequestDelegate onCompleteOrig) {
+    private static void sendFakeReadResponse(RequestDelegate onCompleteOrig) {
         var fakeRes = new TLRPC.TL_messages_affectedMessages();
         fakeRes.pts = -1;
         fakeRes.pts_count = 0;
@@ -165,7 +167,7 @@ public class AyuGhostUtils {
         });
     }
 
-    private TLRPC.InputPeer extractPeerFromSendObject(TLObject object) {
+    private static TLRPC.InputPeer extractPeerFromSendObject(TLObject object) {
         if (object instanceof TLRPC.TL_messages_sendMessage) {
             return ((TLRPC.TL_messages_sendMessage) object).peer;
         } else if (object instanceof TLRPC.TL_messages_sendMedia) {
@@ -176,7 +178,7 @@ public class AyuGhostUtils {
         return null;
     }
 
-    private boolean isReadMessageRequest(TLObject object) {
+    private static boolean isReadMessageRequest(TLObject object) {
         return object instanceof TLRPC.TL_messages_readHistory ||
                 object instanceof TLRPC.TL_messages_readEncryptedHistory ||
                 object instanceof TLRPC.TL_messages_readDiscussion ||
@@ -185,12 +187,12 @@ public class AyuGhostUtils {
                 object instanceof TLRPC.TL_channels_readMessageContents;
     }
 
-    private boolean isReadStoriesRequest(TLObject object) {
+    private static boolean isReadStoriesRequest(TLObject object) {
         return object instanceof TL_stories.TL_stories_readStories ||
                 object instanceof TL_stories.TL_stories_incrementStoryViews;
     }
 
-    private boolean isMessageSendRequest(TLObject object) {
+    private static boolean isMessageSendRequest(TLObject object) {
         return object instanceof TLRPC.TL_messages_sendMessage ||
                 object instanceof TLRPC.TL_messages_sendMedia ||
                 object instanceof TLRPC.TL_messages_sendMultiMedia;

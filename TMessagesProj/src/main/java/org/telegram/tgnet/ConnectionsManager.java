@@ -154,8 +154,6 @@ public class ConnectionsManager extends BaseController {
 
     private boolean forceTryIpV6;
 
-    private AyuGhostUtils ghostModeHandler;
-
     static {
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
         threadPoolExecutor.allowCoreThreadTimeOut(true);
@@ -375,10 +373,7 @@ public class ConnectionsManager extends BaseController {
         }
 
         // --- Ghost Mode ---
-        if (ghostModeHandler == null) {
-             ghostModeHandler = new AyuGhostUtils();
-        }
-        AyuGhostUtils.InterceptResult interceptResult = ghostModeHandler.interceptRequest(object, onCompleteOrig);
+        AyuGhostUtils.InterceptResult interceptResult = AyuGhostUtils.interceptRequest(object, onCompleteOrig);
         if (interceptResult.blockRequest) {
             if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Request " + object.getClass().getSimpleName() + " blocked by handler.");
             return;

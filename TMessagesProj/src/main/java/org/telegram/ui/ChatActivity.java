@@ -33336,7 +33336,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 sendSecretMessageRead(selectedObject, true);
                 break;
             case AyuConstants.OPTION_READ_MESSAGE:
-                AyuGhostUtils.markReadOnServer(selectedObject.messageOwner.id, getMessagesController().getInputPeer(selectedObject.messageOwner.peer_id));
+                AyuGhostUtils.markReadOnServer(selectedObject.messageOwner.id, getMessagesController().getInputPeer(selectedObject.messageOwner.peer_id), false);
                 BotWebViewVibrationEffect.SELECTION_CHANGE.vibrate();
                 break;
             case OPTION_RETRY: {
