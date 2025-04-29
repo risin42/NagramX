@@ -47,6 +47,7 @@ import androidx.annotation.UiThread;
 import androidx.collection.LongSparseArray;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
 
+import com.radolyn.ayugram.utils.AyuGhostUtils;
 import com.radolyn.ayugram.utils.AyuState;
 
 import org.json.JSONObject;
@@ -106,6 +107,7 @@ import java.util.zip.ZipInputStream;
 
 import kotlin.Pair;
 import top.qwq2333.nullgram.utils.StringUtils;
+import tw.nekomimi.nekogram.NekoConfig;
 import xyz.nextalone.nagram.NaConfig;
 
 public class SendMessagesHelper extends BaseController implements NotificationCenter.NotificationCenterDelegate {
@@ -3333,6 +3335,11 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
             req.flags |= 2;
             req.big = true;
         }
+        // --- Ghost Mode ---
+        if (req.msg_id != 0 && NekoConfig.markReadAfterSend.Bool() && !NekoConfig.sendReadMessagePackets.Bool()) {
+            AyuGhostUtils.markReadOnServer(req.msg_id, req.peer, false);
+        }
+        // --- Ghost Mode ---
         getConnectionsManager().sendRequest(req, (response, error) -> {
             if (response != null) {
                 getMessagesController().processUpdates((TLRPC.Updates) response, false);
