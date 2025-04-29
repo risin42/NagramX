@@ -8858,6 +8858,7 @@ public class MessagesController extends BaseController implements NotificationCe
         }
 
         // --- AyuGram hook
+        int ayuDeletedMessagesCount = 0;
         if (!scheduled && NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
             if (DialogObject.isEncryptedDialog(dialogId) && messages != null && !messages.isEmpty()) { // process TTL messages from secrets
                 for (int a = 0; a < messages.size(); a++) {
@@ -8916,7 +8917,10 @@ public class MessagesController extends BaseController implements NotificationCe
 
                 for (var msgId : messages) {
                     if (AyuState.isDeletePermitted(dialogId, msgId)) {
-                        ayuMessagesController.delete(userId, dialogId, msgId);
+                        if (ayuMessagesController.getMessage(userId, dialogId, msgId) != null) {
+                            ayuMessagesController.delete(userId, dialogId, msgId);
+                            ayuDeletedMessagesCount++;
+                        }
                     }
                 }
             }
@@ -8972,6 +8976,11 @@ public class MessagesController extends BaseController implements NotificationCe
             }
         }
         if (cacheOnly) {
+            return;
+        }
+
+       // nax: do not send request if deleting ayuDeleted messages
+        if (messages != null && messages.size() == ayuDeletedMessagesCount) {
             return;
         }
 
