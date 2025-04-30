@@ -3768,7 +3768,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                     if (str.length() != 0) {
                         SendMessagesHelper.getInstance(currentAccount)
-                                .sendMessage(str.toString(), dialog_id, replyTo, getThreadMessage(), null, false, null, null, null, true, 0, null, false);
+                                .sendMessage(str.toString(), dialog_id, replyTo, getThreadMessage(), null, false, null, null, null, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, null, false);
                         MessagesController.getInstance(currentAccount).deleteMessages(toDeleteMessagesIds, null, null, dialog_id, 0, true, MODE_DEFAULT);
                     }
                     clearSelectionMode();
@@ -19889,7 +19889,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private void sendUriAsDocument(Uri uri) {
-        sendUriAsDocument(uri, true, 0);
+        sendUriAsDocument(uri, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
     }
     private void sendUriAsDocument(Uri uri, boolean notify, int schedule_date) {
         if (uri == null) {
@@ -38617,7 +38617,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 arrayList.add(messageObject);
             }
 
-            int result = SendMessagesHelper.getInstance(currentAccount).sendMessage(arrayList, did, false, false, true, 0, null, -1, 0);
+            int result = SendMessagesHelper.getInstance(currentAccount).sendMessage(arrayList, did, false, false, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, null, -1, 0);
             AlertsCreator.showSendMediaAlert(result, ChatActivity.this, null);
             if (result != 0) {
                 return null;

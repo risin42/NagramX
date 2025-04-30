@@ -2775,7 +2775,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                                     }
                                     delegate.toggleVideoRecordingPause();
                                     AlertsCreator.ensurePaidMessageConfirmation(currentAccount, dialog_id, 1, payStars -> {
-                                        sendMessageInternal(true, 0, payStars, false);
+                                        sendMessageInternal(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, payStars, false);
                                     });
                                     return true;
                                 }
@@ -2802,7 +2802,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                                         }
                                     }
                                     AlertsCreator.ensurePaidMessageConfirmation(currentAccount, dialog_id, 1, payStars -> {
-                                        sendMessageInternal(true, 0, payStars, false);
+                                        sendMessageInternal(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, payStars, false);
                                     });
                                     return true;
                                 }
@@ -2899,7 +2899,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                                     }
                                     delegate.toggleVideoRecordingPause();
                                     AlertsCreator.ensurePaidMessageConfirmation(currentAccount, dialog_id, 1, payStars -> {
-                                        sendMessageInternal(true, 0, payStars, false);
+                                        sendMessageInternal(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, payStars, false);
                                     });
                                     return true;
                                 }
@@ -2919,7 +2919,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                                         slideText.setEnabled(false);
                                     }
                                     AlertsCreator.ensurePaidMessageConfirmation(currentAccount, dialog_id, 1, payStars -> {
-                                        sendMessageInternal(true, 0, payStars, false);
+                                        sendMessageInternal(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, payStars, false);
                                     });
                                     return true;
                                 }
@@ -4688,7 +4688,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
         if (isInScheduleMode() || parentFragment != null && parentFragment.getChatMode() == ChatActivity.MODE_QUICK_REPLIES) {
             return false;
         }
-
+        boolean sendWithoutSoundNax = NaConfig.INSTANCE.getSilentMessageByDefault().Bool();
         if (isStories || (messageEditText == null || TextUtils.isEmpty(messageEditText.getText())) && parentFragment != null && parentFragment.messagePreviewParams != null && parentFragment.messagePreviewParams.forwardMessages != null && parentFragment.messagePreviewParams.forwardMessages.messages != null && !parentFragment.messagePreviewParams.forwardMessages.messages.isEmpty()) {
 
             boolean self = parentFragment != null && UserObject.isUserSelf(parentFragment.getCurrentUser());
@@ -4758,13 +4758,13 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 }
                 if (sendWithoutSoundButtonValue) {
                     ActionBarMenuSubItem sendWithoutSoundButton = new ActionBarMenuSubItem(getContext(), !scheduleButtonValue, true, resourcesProvider);
-                    sendWithoutSoundButton.setTextAndIcon(LocaleController.getString(R.string.SendWithoutSound), R.drawable.input_notify_off);
+                    sendWithoutSoundButton.setTextAndIcon(sendWithoutSoundNax ? getString(R.string.SendWithSound) : getString(R.string.SendWithoutSound), sendWithoutSoundNax ? R.drawable.input_notify_on : R.drawable.input_notify_off);
                     sendWithoutSoundButton.setMinimumWidth(dp(196));
                     sendWithoutSoundButton.setOnClickListener(v -> {
                         if (sendPopupWindow != null && sendPopupWindow.isShowing()) {
                             sendPopupWindow.dismiss();
                         }
-                        sendMessageInternal(false, 0, 0, true);
+                        sendMessageInternal(sendWithoutSoundNax, 0, 0, true);
                     });
                     sendPopupLayout.addView(sendWithoutSoundButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
                 }
@@ -4984,9 +4984,9 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             }
         }
         if (sendWithoutSoundButtonValue) {
-            options.add(R.drawable.input_notify_off, getString(R.string.SendWithoutSound), () -> {
+            options.add(sendWithoutSoundNax ? R.drawable.input_notify_on : R.drawable.input_notify_off, sendWithoutSoundNax ? getString(R.string.SendWithSound) : getString(R.string.SendWithoutSound), () -> {
                 sentFromPreview = System.currentTimeMillis();
-                final boolean shownDialog = sendMessageInternal(false, 0, 0, true);
+                final boolean shownDialog = sendMessageInternal(sendWithoutSoundNax, 0, 0, true);
                 if (!containsSendMessage && messageSendPreview != null) {
                     messageSendPreview.dismiss(!shownDialog);
                     messageSendPreview = null;

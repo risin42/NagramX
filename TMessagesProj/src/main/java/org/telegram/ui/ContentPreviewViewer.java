@@ -9,6 +9,7 @@
 package org.telegram.ui;
 
 import static org.telegram.messenger.AndroidUtilities.dp;
+import static org.telegram.messenger.LocaleController.getString;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
@@ -269,7 +270,6 @@ public class ContentPreviewViewer {
     public final static int CONTENT_TYPE_EMOJI = 2;
     public final static int CONTENT_TYPE_CUSTOM_STIKER = 3;
 
-    private final static int nkbtn_send_without_sound = 100;
     private final static int nkbtn_stickerdl = 110;
     private final static int nkbtn_sticker_copy = 111;
     private final static int nkbtn_sticker_copy_png = 112;
@@ -522,9 +522,10 @@ public class ContentPreviewViewer {
                         actions.add(0);
                     }
                     if (delegate.needSend(currentContentType) && !delegate.isInScheduleMode()) {
-                        items.add(LocaleController.getString(R.string.SendWithoutSound));
-                        icons.add(R.drawable.input_notify_off);
-                        actions.add(nkbtn_send_without_sound);
+                        boolean sendWithoutSoundNax = NaConfig.INSTANCE.getSilentMessageByDefault().Bool();
+                        items.add(sendWithoutSoundNax ? getString(R.string.SendWithSound) : getString(R.string.SendWithoutSound));
+                        icons.add(sendWithoutSoundNax ? R.drawable.input_notify_on : R.drawable.input_notify_off);
+                        actions.add(6);
                     }
                     if (delegate.canSchedule()) {
                         items.add(LocaleController.getString(R.string.Schedule));
@@ -595,9 +596,13 @@ public class ContentPreviewViewer {
                             return;
                         }
                         int which = (int) v.getTag();
-                        if (actions.get(which) == 0 || actions.get(which) == nkbtn_send_without_sound) {
+                        if (actions.get(which) == 0) {
                             if (delegate != null) {
-                                delegate.sendSticker(currentDocument, currentQuery, parentObject, actions.get(which) == 0, 0);
+                                delegate.sendSticker(currentDocument, currentQuery, parentObject, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
+                            }
+                        } else if (actions.get(which) == 6) {
+                            if (delegate != null) {
+                                delegate.sendSticker(currentDocument, currentQuery, parentObject, NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                             }
                         } else if (actions.get(which) == 1) {
                             if (delegate != null) {
@@ -859,8 +864,9 @@ public class ContentPreviewViewer {
                     actions.add(0);
                 }
                 if (delegate.needSend(currentContentType) && !delegate.isInScheduleMode()) {
-                    items.add(LocaleController.getString(R.string.SendWithoutSound));
-                    icons.add(R.drawable.input_notify_off);
+                    boolean sendWithoutSoundNax = NaConfig.INSTANCE.getSilentMessageByDefault().Bool();
+                    items.add(sendWithoutSoundNax ? getString(R.string.SendWithSound) : getString(R.string.SendWithoutSound));
+                    icons.add(sendWithoutSoundNax ? R.drawable.input_notify_on : R.drawable.input_notify_off);
                     actions.add(4);
                 }
                 if (delegate.canSchedule()) {
@@ -899,10 +905,10 @@ public class ContentPreviewViewer {
                         return;
                     }
                     int which = (int) v.getTag();
-                    if (actions.get(which) == 0 || actions.get(which) == nkbtn_send_without_sound) {
+                    if (actions.get(which) == 0) {
                         delegate.sendGif(currentDocument != null ? currentDocument : inlineResult, parentObject, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool() && actions.get(which) == 0, 0);
                     } else if (actions.get(which) == 4) {
-                        delegate.sendGif(currentDocument != null ? currentDocument : inlineResult, parentObject, false, 0);
+                        delegate.sendGif(currentDocument != null ? currentDocument : inlineResult, parentObject, NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                     } else if (actions.get(which) == 1) {
                         MediaDataController.getInstance(currentAccount).removeRecentGif(currentDocument);
                         delegate.gifAddedOrDeleted();

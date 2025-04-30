@@ -3086,7 +3086,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                 if (currentAttachLayout == photoLayout || currentAttachLayout == photoPreviewLayout) {
                     sendPressed(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, effectId, isCaptionAbove());
                 } else {
-                    if (!currentAttachLayout.sendSelectedItems(true, 0, effectId, isCaptionAbove())) {
+                    if (!currentAttachLayout.sendSelectedItems(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, effectId, isCaptionAbove())) {
                         allowPassConfirmationAlert = true;
                         dismiss();
                     }
@@ -3166,7 +3166,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                     if (currentAttachLayout == photoLayout || currentAttachLayout == photoPreviewLayout) {
                         shownDialog = sendPressed(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, effectId, isCaptionAbove());
                     } else {
-                        if (!currentAttachLayout.sendSelectedItems(true, 0, effectId, isCaptionAbove())) {
+                        if (!currentAttachLayout.sendSelectedItems(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, effectId, isCaptionAbove())) {
                             allowPassConfirmationAlert = true;
                             dismiss();
                         }
@@ -3477,14 +3477,15 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                 });
             }
             if (editingMessageObject == null && !self) {
-                options.add(R.drawable.input_notify_off, getString(R.string.SendWithoutSound), () -> {
+                boolean sendWithoutSoundNax = NaConfig.INSTANCE.getSilentMessageByDefault().Bool();
+                options.add(sendWithoutSoundNax ? R.drawable.input_notify_on : R.drawable.input_notify_off, sendWithoutSoundNax ? getString(R.string.SendWithSound) : getString(R.string.SendWithoutSound), () -> {
                     final long effectId = messageSendPreview != null ? messageSendPreview.getSelectedEffect() : 0;
                     writeButton.setEffect(ChatAttachAlert.this.effectId = effectId);
                     boolean shownDialog = false;
                     if (currentAttachLayout == photoLayout || currentAttachLayout == photoPreviewLayout) {
-                        shownDialog = sendPressed(false, 0, effectId, isCaptionAbove());
+                        shownDialog = sendPressed(sendWithoutSoundNax, 0, effectId, isCaptionAbove());
                     } else {
-                        if (!currentAttachLayout.sendSelectedItems(false, 0, effectId, isCaptionAbove())) {
+                        if (!currentAttachLayout.sendSelectedItems(sendWithoutSoundNax, 0, effectId, isCaptionAbove())) {
                             dismiss();
                         }
                     }

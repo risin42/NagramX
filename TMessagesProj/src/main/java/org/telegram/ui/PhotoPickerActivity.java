@@ -8,6 +8,8 @@
 
 package org.telegram.ui;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -1137,7 +1139,8 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
                                 itemCells[a].setTextAndIcon(LocaleController.getString(R.string.ScheduleMessage), R.drawable.msg_calendar2);
                             }
                         } else {
-                            itemCells[a].setTextAndIcon(LocaleController.getString(R.string.SendWithoutSound), R.drawable.input_notify_off);
+                            boolean sendWithoutSoundNax = NaConfig.INSTANCE.getSilentMessageByDefault().Bool();
+                            itemCells[a].setTextAndIcon(sendWithoutSoundNax ? getString(R.string.SendWithSound) : getString(R.string.SendWithoutSound), sendWithoutSoundNax ? R.drawable.input_notify_on : R.drawable.input_notify_off);
                         }
                         itemCells[a].setMinimumWidth(AndroidUtilities.dp(196));
 
@@ -1159,7 +1162,7 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
                             } else if (num == 1) {
                                 AlertsCreator.createScheduleDatePickerDialog(getParentActivity(), chatActivity.getDialogId(), this::sendSelectedPhotos);
                             } else if (num == 2) {
-                                sendSelectedPhotos(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
+                                sendSelectedPhotos(NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0); // sendSelectedPhotos(true, 0); ← Telegram bug
                             }
                         });
                         itemCells[a].setOnLongClickListener(v -> {

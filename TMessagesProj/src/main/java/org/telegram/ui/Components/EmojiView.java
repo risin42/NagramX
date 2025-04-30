@@ -146,6 +146,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import xyz.nextalone.nagram.NaConfig;
 
 public class EmojiView extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
 
@@ -1961,7 +1962,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                             return;
                         }
                         if (position < gifAdapter.recentItemsCount) {
-                            delegate.onGifSelected(view, recentGifs.get(position), null, "gif", true, 0);
+                            delegate.onGifSelected(view, recentGifs.get(position), null, "gif", !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                         } else {
                             int resultPos = position;
                             if (gifAdapter.recentItemsCount > 0) {
@@ -1969,14 +1970,14 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                                 resultPos--; // trending section item
                             }
                             if (resultPos >= 0 && resultPos < gifAdapter.results.size()) {
-                                delegate.onGifSelected(view, gifAdapter.results.get(resultPos), null, gifAdapter.bot, true, 0);
+                                delegate.onGifSelected(view, gifAdapter.results.get(resultPos), null, gifAdapter.bot, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                             }
                         }
                     } else if (gifGridView.getAdapter() == gifSearchAdapter) {
                         if (position < 0 || position >= gifSearchAdapter.results.size()) {
                             return;
                         }
-                        delegate.onGifSelected(view, gifSearchAdapter.results.get(position), gifSearchAdapter.lastSearchImageString, gifSearchAdapter.bot, true, 0);
+                        delegate.onGifSelected(view, gifSearchAdapter.results.get(position), gifSearchAdapter.lastSearchImageString, gifSearchAdapter.bot, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                         updateRecentGifs();
                     }
                 };
@@ -2209,7 +2210,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                     return;
                 }
                 cell.disable();
-                delegate.onStickerSelected(cell, cell.getSticker(), query, cell.getParentObject(), cell.getSendAnimationData(), true, 0);
+                delegate.onStickerSelected(cell, cell.getSticker(), query, cell.getParentObject(), cell.getSendAnimationData(), !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
             };
             stickersGridView.setOnItemClickListener(stickersOnItemClickListener);
             stickersGridView.setGlowColor(getThemedColor(Theme.key_chat_emojiPanelBackground));

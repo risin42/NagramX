@@ -1213,7 +1213,7 @@ public class StickersAlert extends BottomSheet implements NotificationCenter.Not
                 hidePreview();
                 selectedStickerPath = null;
             } else {
-                delegate.onStickerSelected(selectedSticker, null, stickerSet, null, clearsInputField, true, 0);
+                delegate.onStickerSelected(selectedSticker, null, stickerSet, null, clearsInputField, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0);
                 dismiss();
             }
         });
