@@ -80,7 +80,7 @@ fun ChatActivity.translateMessages(
             messages.any { it.messageOwner.translatedPoll?.question?.text?.isNotEmpty() == true })
         ) {
             messages.forEach { messageObject ->
-                if (messageObject.messageOwner.translatedToLanguage == target.toLanguageTag()) {
+                if (messageObject.messageOwner.translatedToLanguage.equals(target.toLanguageTag(), ignoreCase = true)) {
                     controller.removeAsTranslatingItem(messageObject)
                     controller.addAsManualTranslate(messageObject)
                     messageObject.translating = false
