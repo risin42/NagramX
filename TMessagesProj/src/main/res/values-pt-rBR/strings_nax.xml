@@ -84,7 +84,7 @@
     <string name="TranslatorMinimized">A Barra de tradução foi minimizada para este chat.</string>
     <string name="UseDeletedIcon">Mostrar ícone ao invés de \"deletado\"</string>
     <string name="UseEditedIcon">Mostrar ícone ao invés de \"editado\"</string>
-    <string name="SilentMessageByDefault">Enviar Mensagens Silenciosamente por Padrão</string>
+    <string name="SilentMessageByDefault">Enviar sem som</string>
     <string name="FolderNameAsTitle">Usar Nome da Pasta como Título</string>
     <string name="SaveDeletedMessageForBotUser">Salvar Mensagens do Bot</string>
     <string name="TranslatorKeepMarkdown">Manter Markdown</string>
@@ -114,19 +114,20 @@
     <string name="TgBrowserOpenFail_Desc">A operação selecionada não está disponível porque o navegador interno foi desativado.</string>
     <string name="MapPreviewProviderYandexNax">Yandex</string>
     <string name="GhostMode">Modo Fantasma</string>
-    <string name="GhostEssentialsHeader">Essenciais fantasma</string>
+    <string name="GhostEssentialsHeader">Funções</string>
     <string name="EnableGhostMode">Ativar Fantasma</string>
     <string name="DisableGhostMode">Desativar Fantasma</string>
     <string name="GhostModeEnabled">Modo fantasma ativado</string>
     <string name="GhostModeDisabled">Modo fantasma desativado</string>
     <string name="GhostModeInDrawer">Mostrar na Gaveta</string>
-    <string name="DontSendReadMessagePackets">Não Ler Mensagens</string>
-    <string name="DontReadStoriesPackets">Não Ler Stories</string>
-    <string name="DontSendOnlinePackets">Não Enviar Online</string>
-    <string name="DontSendUploadProgress">Não Enviar Digitando</string>
-    <string name="SendOfflinePacketAfterOnline">Ficar Offline Automaticamente</string>
+    <string name="DontSendReadMessagePackets">Não visualizar mensagens</string>
+    <string name="DontReadStoriesPackets">Não visualizar Stories</string>
+    <string name="DontSendOnlinePackets">Ocultar Online</string>
+    <string name="DontSendUploadProgress">Ocultar Digitando</string>
+    <string name="SendOfflinePacketAfterOnline">Ficar off-line automaticamente</string>
     <string name="MarkReadAfterSend">Ler ao Interagir</string>
     <string name="GhostModeNotice">Toque longo em qualquer opção para evitar que ela seja alterada ao ativar/desativar o Modo Fantasma.</string>
     <string name="MarkReadAfterSendNotice">Lê automaticamente a mensagem quando você envia uma nova ou toca em uma reação.</string>
-    <string name="sendWithoutSoundRowNotice">Envia automaticamente mensagens de saída sem som.</string>
+    <string name="SendWithoutSoundRowNotice">Envia automaticamente mensagens enviadas sem som.</string>
+    <string name="GhostReadMessage">Ler Mensagem</string>
 </resources>

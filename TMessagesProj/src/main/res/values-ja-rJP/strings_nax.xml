@@ -125,6 +125,12 @@
     <string name="MarkReadAfterSend">アクション後に既読にする</string>
     <string name="GhostModeNotice">オプションを長押しすると、ゴーストモード切り替え時に設定が保持されます。</string>
     <string name="MarkReadAfterSendNotice">新規メッセージ送信時またはリアクション時に、自動的に既読にします。</string>
-    <string name="sendWithoutSoundRowNotice">メッセージは相手に通知音なしで送信されます。</string>
+    <string name="SendWithoutSoundRowNotice">メッセージは相手に通知音なしで送信されます。</string>
     <string name="GhostReadMessage">既読をつける</string>
+    <string name="SendWithSound">通知音ありで送信</string>
+    <string name="PerformanceClass">デバイスのパフォーマンスクラス</string>
+    <string name="PerformanceClassHigh">ハイエンド</string>
+    <string name="PerformanceClassAverage">ミドルレンジ</string>
+    <string name="PerformanceClassLow">エントリー</string>
+    <string name="PerformanceClassUnknown">不明</string>
 </resources>

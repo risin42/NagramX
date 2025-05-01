@@ -49,7 +49,6 @@
     <string name="SendAsEmoji">禁用小游戏</string>
     <string name="CustomArtworkApi">自定义音乐封面 API</string>
     <string name="CustomEditedMessage">自定义已编辑消息标记</string>
-    <string name="FakeHighPerformanceDevice">伪装高性能设备</string>
     <string name="DisableEmojiDrawLimit">解除 Emoji 渲染上限</string>
     <string name="IconDecoration">图标装饰</string>
     <string name="NotificationIcon">通知图标样式</string>

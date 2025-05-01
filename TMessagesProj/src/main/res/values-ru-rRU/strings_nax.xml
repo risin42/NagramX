@@ -128,5 +128,6 @@
     <string name="MarkReadAfterSend">Отмечать прочитанным после взаимодействия</string>
     <string name="GhostModeNotice">Долгое нажатие на любую опцию предотвращает её изменение при переключении «Режима призрака».</string>
     <string name="MarkReadAfterSendNotice">Когда вы отправляете новое сообщение или нажимаете на реакцию, сообщение автоматически отмечается как прочитанное.</string>
-    <string name="sendWithoutSoundRowNotice">Автоматически отправлять исходящие сообщения без звука.</string>
+    <string name="SendWithoutSoundRowNotice">Автоматически отправлять исходящие сообщения без звука.</string>
+    <string name="GhostReadMessage">Прочитать сообщение</string>
 </resources>

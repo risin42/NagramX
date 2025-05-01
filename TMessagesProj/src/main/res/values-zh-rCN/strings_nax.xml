@@ -125,6 +125,12 @@
     <string name="MarkReadAfterSend">动作后设置已读</string>
     <string name="GhostModeNotice">长按任何选项以防止其在切换隐身模式时发生变化。</string>
     <string name="MarkReadAfterSendNotice">当你发送新消息或点击反应时，自动将消息标记为已读。</string>
-    <string name="sendWithoutSoundRowNotice">对方将不会收到声音提醒。</string>
+    <string name="SendWithoutSoundRowNotice">对方将不会收到声音提醒。</string>
     <string name="GhostReadMessage">标记已读</string>
+    <string name="SendWithSound">有声发送</string>
+    <string name="PerformanceClass">设备性能等级</string>
+    <string name="PerformanceClassHigh">高</string>
+    <string name="PerformanceClassAverage">中</string>>
+    <string name="PerformanceClassLow">低</string>
+    <string name="PerformanceClassUnknown">未知</string>
 </resources>

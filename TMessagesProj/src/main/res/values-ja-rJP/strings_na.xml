@@ -49,7 +49,6 @@
     <string name="SendAsEmoji">ミニゲームを無効にする</string>
     <string name="CustomArtworkApi">カスタムアートワーク API</string>
     <string name="CustomEditedMessage">編集ありメッセージのマーク</string>
-    <string name="FakeHighPerformanceDevice">高性能デバイスを偽装</string>
     <string name="DisableEmojiDrawLimit">絵文字のレンダリング制限を解除</string>
     <string name="IconDecoration">アイコン装飾</string>
     <string name="NotificationIcon">通知アイコンスタイル</string>
