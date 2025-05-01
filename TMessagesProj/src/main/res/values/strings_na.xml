@@ -50,7 +50,6 @@
     <string name="SendAsEmoji">Send as emoji</string>
     <string name="CustomArtworkApi">Custom Artwork API</string>
     <string name="CustomEditedMessage">Custom Edited Mark</string>
-    <string name="FakeHighPerformanceDevice">Treat as High-Performance Device</string>
     <string name="DisableEmojiDrawLimit">Disable Emoji Draw Limit</string>
     <string name="IconDecoration">Icon Decoration</string>
     <string name="NotificationIcon">Notification Icon</string>

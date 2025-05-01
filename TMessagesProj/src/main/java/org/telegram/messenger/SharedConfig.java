@@ -8,6 +8,8 @@
 
 package org.telegram.messenger;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
@@ -1781,7 +1783,19 @@ public class SharedConfig {
             return overrideDevicePerformanceClass;
         }
         if (devicePerformanceClass == -1) {
-            devicePerformanceClass = measureDevicePerformanceClass();
+            switch (NaConfig.INSTANCE.getPerformanceClass().Int()) {
+                case 1:
+                    devicePerformanceClass = PERFORMANCE_CLASS_HIGH;
+                    break;
+                case 2:
+                    devicePerformanceClass = PERFORMANCE_CLASS_AVERAGE;
+                    break;
+                case 3:
+                    devicePerformanceClass = PERFORMANCE_CLASS_LOW;
+                    break;
+                default:
+                    devicePerformanceClass = measureDevicePerformanceClass();
+            }
         }
         return devicePerformanceClass;
     }
@@ -1790,10 +1804,6 @@ public class SharedConfig {
         int androidVersion = Build.VERSION.SDK_INT;
         int cpuCount = ConnectionsManager.CPU_COUNT;
         int memoryClass = ((ActivityManager) ApplicationLoader.applicationContext.getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
-
-        if (NaConfig.INSTANCE.getFakeHighPerformanceDevice().Bool()) {
-            return PERFORMANCE_CLASS_HIGH;
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && Build.SOC_MODEL != null) {
             int hash = Build.SOC_MODEL.toUpperCase().hashCode();
@@ -1861,6 +1871,15 @@ public class SharedConfig {
             case PERFORMANCE_CLASS_LOW: return "LOW";
             default: return "UNKNOWN";
         }
+    }
+
+    public static String getPerformanceClassName(int perfClass) {
+        return switch (perfClass) {
+            case PERFORMANCE_CLASS_HIGH -> getString(R.string.PerformanceClassHigh);
+            case PERFORMANCE_CLASS_AVERAGE -> getString(R.string.PerformanceClassAverage);
+            case PERFORMANCE_CLASS_LOW -> getString(R.string.PerformanceClassLow);
+            default -> getString(R.string.PerformanceClassUnknown);
+        };
     }
 
     public static void setMediaColumnsCount(int count) {

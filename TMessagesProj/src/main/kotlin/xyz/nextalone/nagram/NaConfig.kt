@@ -262,12 +262,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val fakeHighPerformanceDevice =
-        addConfig(
-            "FakeHighPerformanceDevice",
-            ConfigItem.configTypeBool,
-            false
-        )
     val disableEmojiDrawLimit =
         addConfig(
             "DisableEmojiDrawLimit",
@@ -1117,6 +1111,12 @@ object NaConfig {
             "HideReactions",
             ConfigItem.configTypeBool,
             false
+        )
+    var performanceClass =
+        addConfig(
+            "PerformanceClass",
+            ConfigItem.configTypeInt,
+            0
         )
     val preferredTranslateTargetLangList = ArrayList<String>()
 

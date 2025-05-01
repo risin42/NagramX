@@ -144,4 +144,9 @@
     <string name="SendWithoutSoundRowNotice">Automatically sends outgoing messages without sound.</string>
     <string name="GhostReadMessage">Read Message</string>
     <string name="SendWithSound">Send with Sound</string>
+    <string name="PerformanceClass">Device Performance Class</string>
+    <string name="PerformanceClassHigh">High</string>
+    <string name="PerformanceClassAverage">Average</string>
+    <string name="PerformanceClassLow">Low</string>
+    <string name="PerformanceClassUnknown">Unknown</string>
 </resources>
