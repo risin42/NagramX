@@ -186,7 +186,7 @@ function build {
 }
 
 if (( $# == 0 )); then
-	build arm arm64
+	build arm64
 else
 	build $@
 fi
