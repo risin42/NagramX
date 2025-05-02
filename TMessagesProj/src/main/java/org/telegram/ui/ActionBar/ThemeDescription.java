@@ -250,16 +250,16 @@ public class ThemeDescription {
                     }
                 } else if (drawablesToUpdate[a] instanceof CombinedDrawable) {
                     if ((changeFlags & FLAG_BACKGROUNDFILTER) != 0) {
-                        ((CombinedDrawable) drawablesToUpdate[a]).getBackground().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                        ((CombinedDrawable) drawablesToUpdate[a]).getBackground().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                     } else {
-                        ((CombinedDrawable) drawablesToUpdate[a]).getIcon().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                        ((CombinedDrawable) drawablesToUpdate[a]).getIcon().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                     }
                 } else if (drawablesToUpdate[a] instanceof AvatarDrawable) {
                     ((AvatarDrawable) drawablesToUpdate[a]).setColor(color);
                 } else if (drawablesToUpdate[a] instanceof AnimatedArrowDrawable) {
                     ((AnimatedArrowDrawable) drawablesToUpdate[a]).setColor(color);
                 } else {
-                    drawablesToUpdate[a].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                    drawablesToUpdate[a].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                 }
             }
         }
@@ -294,7 +294,7 @@ public class ThemeDescription {
                             } else if (drawable instanceof ShapeDrawable) {
                                 ((ShapeDrawable) drawable).getPaint().setColor(color);
                             } else {
-                                drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                             }
                         }
                     }
@@ -402,10 +402,10 @@ public class ThemeDescription {
                             Theme.setSelectorDrawableColor(drawable, color, (changeFlags & FLAG_DRAWABLESELECTEDSTATE) != 0);
                         }
                     } else {
-                        ((ImageView) viewToInvalidate).setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                        ((ImageView) viewToInvalidate).setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                     }
                 } else if (viewToInvalidate instanceof BackupImageView) {
-                    //((BackupImageView) viewToInvalidate).setResourceImageColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                    //((BackupImageView) viewToInvalidate).setResourceImageColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                 } else if (viewToInvalidate instanceof SimpleTextView) {
                     SimpleTextView textView = (SimpleTextView) viewToInvalidate;
                     textView.setSideDrawablesColor(color);
@@ -414,7 +414,7 @@ public class ThemeDescription {
                     if (drawables != null) {
                         for (int a = 0; a < drawables.length; a++) {
                             if (drawables[a] != null) {
-                                drawables[a].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                drawables[a].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                             }
                         }
                     }
@@ -525,7 +525,7 @@ public class ThemeDescription {
                                 } else if (drawable instanceof StateListDrawable || Build.VERSION.SDK_INT >= 21 && drawable instanceof RippleDrawable) {
                                     Theme.setSelectorDrawableColor(drawable, color, (changeFlags & FLAG_DRAWABLESELECTEDSTATE) != 0);
                                 }
-                                drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                             }
                         }
                     } else if ((changeFlags & FLAG_CELLBACKGROUNDCOLOR) != 0) {
@@ -611,7 +611,7 @@ public class ThemeDescription {
                                         if (drawables != null) {
                                             for (int a = 0; a < drawables.length; a++) {
                                                 if (drawables[a] != null) {
-                                                    drawables[a].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                                    drawables[a].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                                                 }
                                             }
                                         }
@@ -636,23 +636,23 @@ public class ThemeDescription {
                                     Drawable drawable = imageView.getDrawable();
                                     if (drawable instanceof CombinedDrawable) {
                                         if ((changeFlags & FLAG_BACKGROUNDFILTER) != 0) {
-                                            ((CombinedDrawable) drawable).getBackground().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                            ((CombinedDrawable) drawable).getBackground().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                                         } else {
-                                            ((CombinedDrawable) drawable).getIcon().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                            ((CombinedDrawable) drawable).getIcon().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                                         }
                                     } else {
-                                        imageView.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                        imageView.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                                     }
                                 } else if (object instanceof BackupImageView) {
                                     Drawable drawable = ((BackupImageView) object).getImageReceiver().getStaticThumb();
                                     if (drawable instanceof CombinedDrawable) {
                                         if ((changeFlags & FLAG_BACKGROUNDFILTER) != 0) {
-                                            ((CombinedDrawable) drawable).getBackground().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                            ((CombinedDrawable) drawable).getBackground().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                                         } else {
-                                            ((CombinedDrawable) drawable).getIcon().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                            ((CombinedDrawable) drawable).getIcon().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                                         }
                                     } else if (drawable != null) {
-                                        drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                        drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                                     }
                                 } else if (object instanceof Drawable) {
                                     if (object instanceof LetterDrawable) {
@@ -663,16 +663,16 @@ public class ThemeDescription {
                                         }
                                     } else if (object instanceof CombinedDrawable) {
                                         if ((changeFlags & FLAG_BACKGROUNDFILTER) != 0) {
-                                            ((CombinedDrawable) object).getBackground().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                            ((CombinedDrawable) object).getBackground().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                                         } else {
-                                            ((CombinedDrawable) object).getIcon().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                            ((CombinedDrawable) object).getIcon().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                                         }
                                     } else if (object instanceof StateListDrawable || Build.VERSION.SDK_INT >= 21 && object instanceof RippleDrawable) {
                                         Theme.setSelectorDrawableColor((Drawable) object, color, (changeFlags & FLAG_DRAWABLESELECTEDSTATE) != 0);
                                     } else if (object instanceof GradientDrawable) {
                                         ((GradientDrawable) object).setColor(color);
                                     } else {
-                                        ((Drawable) object).setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                                        ((Drawable) object).setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                                     }
                                 } else if (object instanceof CheckBox) {
                                     if ((changeFlags & FLAG_CHECKBOX) != 0) {

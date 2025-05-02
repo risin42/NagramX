@@ -3052,7 +3052,7 @@ public class Theme {
         }
     };
 
-    public static int DEFALT_THEME_ACCENT_ID = 0;
+    public static int DEFALT_THEME_ACCENT_ID = 99;
     public static int selectedAutoNightType = AUTO_NIGHT_TYPE_NONE;
     public static boolean autoNightScheduleByLocation;
     public static float autoNightBrighnessThreshold = 0.25f;
@@ -5173,11 +5173,11 @@ public class Theme {
         Resources resources = context.getResources();
         Drawable defaultDrawable = resources.getDrawable(resource).mutate();
         if (defaultColor != 0) {
-            defaultDrawable.setColorFilter(new PorterDuffColorFilter(defaultColor, PorterDuff.Mode.SRC_IN));
+            defaultDrawable.setColorFilter(new PorterDuffColorFilter(defaultColor, PorterDuff.Mode.MULTIPLY));
         }
         Drawable pressedDrawable = resources.getDrawable(pressedResource).mutate();
         if (pressedColor != 0) {
-            pressedDrawable.setColorFilter(new PorterDuffColorFilter(pressedColor, PorterDuff.Mode.SRC_IN));
+            pressedDrawable.setColorFilter(new PorterDuffColorFilter(pressedColor, PorterDuff.Mode.MULTIPLY));
         }
         StateListDrawable stateListDrawable = new StateListDrawable() {
             @Override
@@ -5210,11 +5210,11 @@ public class Theme {
         Resources resources = context.getResources();
         Drawable defaultDrawable = resources.getDrawable(resource).mutate();
         if (defaultColor != 0) {
-            defaultDrawable.setColorFilter(new PorterDuffColorFilter(defaultColor, PorterDuff.Mode.SRC_IN));
+            defaultDrawable.setColorFilter(new PorterDuffColorFilter(defaultColor, PorterDuff.Mode.MULTIPLY));
         }
         Drawable pressedDrawable = resources.getDrawable(resource).mutate();
         if (pressedColor != 0) {
-            pressedDrawable.setColorFilter(new PorterDuffColorFilter(pressedColor, PorterDuff.Mode.SRC_IN));
+            pressedDrawable.setColorFilter(new PorterDuffColorFilter(pressedColor, PorterDuff.Mode.MULTIPLY));
         }
         StateListDrawable stateListDrawable = new StateListDrawable() {
             @Override
@@ -5250,9 +5250,9 @@ public class Theme {
     public static Drawable createEditTextDrawable(Context context, int color, int colorActivated) {
         Resources resources = context.getResources();
         Drawable defaultDrawable = resources.getDrawable(R.drawable.search_dark).mutate();
-        defaultDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+        defaultDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
         Drawable pressedDrawable = resources.getDrawable(R.drawable.search_dark_activated).mutate();
-        pressedDrawable.setColorFilter(new PorterDuffColorFilter(colorActivated, PorterDuff.Mode.SRC_IN));
+        pressedDrawable.setColorFilter(new PorterDuffColorFilter(colorActivated, PorterDuff.Mode.MULTIPLY));
         StateListDrawable stateListDrawable = new StateListDrawable() {
             @Override
             public boolean selectDrawable(int index) {
@@ -5339,11 +5339,11 @@ public class Theme {
         Resources resources = context.getResources();
         Drawable defaultDrawable = resources.getDrawable(resource).mutate();
         if (defaultColor != 0) {
-            defaultDrawable.setColorFilter(new PorterDuffColorFilter(defaultColor, PorterDuff.Mode.SRC_IN));
+            defaultDrawable.setColorFilter(new PorterDuffColorFilter(defaultColor, PorterDuff.Mode.MULTIPLY));
         }
         Drawable pressedDrawable = resources.getDrawable(resource).mutate();
         if (pressedColor != 0) {
-            pressedDrawable.setColorFilter(new PorterDuffColorFilter(pressedColor, PorterDuff.Mode.SRC_IN));
+            pressedDrawable.setColorFilter(new PorterDuffColorFilter(pressedColor, PorterDuff.Mode.MULTIPLY));
         }
         StateListDrawable stateListDrawable = new StateListDrawable() {
             @Override
@@ -5496,7 +5496,7 @@ public class Theme {
         if (drawable instanceof ColorDrawable) {
             ((ColorDrawable) drawable).setColor(color);
         } else {
-            drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+            drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
         }
     }
 
@@ -9607,13 +9607,13 @@ public class Theme {
         if (selected) {
             if (currentShareSelectedColorFilter == null || currentShareSelectedColorFilterColor != color) {
                 currentShareSelectedColorFilterColor = color;
-                currentShareSelectedColorFilter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
+                currentShareSelectedColorFilter = new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY);
             }
             return currentShareSelectedColorFilter;
         } else {
             if (currentShareColorFilter == null || currentShareColorFilterColor != color) {
                 currentShareColorFilterColor = color;
-                currentShareColorFilter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
+                currentShareColorFilter = new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY);
             }
             return currentShareColorFilter;
         }
@@ -9644,7 +9644,7 @@ public class Theme {
             return null;
         }
         Drawable drawable = context.getResources().getDrawable(resId).mutate();
-        drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+        drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
         return drawable;
     }
 
@@ -9852,7 +9852,7 @@ public class Theme {
         } else if (drawable instanceof ScamDrawable) {
             ((ScamDrawable) drawable).setColor(color);
         } else {
-            drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+            drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
         }
     }
 
@@ -9872,7 +9872,7 @@ public class Theme {
                 if (state instanceof ShapeDrawable) {
                     ((ShapeDrawable) state).getPaint().setColor(color);
                 } else {
-                    state.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                    state.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                 }
             } catch (Throwable ignore) {
 
@@ -9903,7 +9903,7 @@ public class Theme {
                     if (state instanceof ShapeDrawable) {
                         ((ShapeDrawable) state).getPaint().setColor(color);
                     } else {
-                        state.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                        state.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                     }
                     state = getStateDrawable(drawable, 1);
                 } else {
@@ -9912,7 +9912,7 @@ public class Theme {
                 if (state instanceof ShapeDrawable) {
                     ((ShapeDrawable) state).getPaint().setColor(color);
                 } else {
-                    state.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                    state.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                 }
             } catch (Throwable ignore) {
 
@@ -9930,7 +9930,7 @@ public class Theme {
                     if (drawable1 instanceof ShapeDrawable) {
                         ((ShapeDrawable) drawable1).getPaint().setColor(color);
                     } else {
-                        drawable1.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+                        drawable1.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
                     }
                 }
             }
