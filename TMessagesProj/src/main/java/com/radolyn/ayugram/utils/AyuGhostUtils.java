@@ -93,12 +93,6 @@ public class AyuGhostUtils {
             return InterceptResult.Blocked(onCompleteOrig);
         }
 
-        // Force offline if online status sending disabled
-        if (!NekoConfig.sendOnlinePackets.Bool() && object instanceof TL_account.updateStatus updateStatus) {
-            if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Forcing offline status in updateStatus request.");
-            updateStatus.offline = true;
-        }
-
         // Block read receipts if disabled
         if (!NekoConfig.sendReadMessagePackets.Bool() && (isReadMessageRequest(object))) {
             if (!AyuState.getAllowReadPacket()) {
@@ -110,6 +104,12 @@ public class AyuGhostUtils {
         if (!NekoConfig.sendReadStoriesPackets.Bool() && isReadStoriesRequest(object)) {
             if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Blocking story read request.");
             return InterceptResult.Blocked(onCompleteOrig);
+        }
+
+        // Force offline if online status sending disabled
+        if (!NekoConfig.sendOnlinePackets.Bool() && object instanceof TL_account.updateStatus updateStatus) {
+            if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Forcing offline status in updateStatus request.");
+            updateStatus.offline = true;
         }
 
         // Handle Mark read after sending
@@ -183,8 +183,7 @@ public class AyuGhostUtils {
                 object instanceof TLRPC.TL_messages_readEncryptedHistory ||
                 object instanceof TLRPC.TL_messages_readDiscussion ||
                 object instanceof TLRPC.TL_messages_readMessageContents ||
-                object instanceof TLRPC.TL_channels_readHistory ||
-                object instanceof TLRPC.TL_channels_readMessageContents;
+                object instanceof TLRPC.TL_channels_readHistory;
     }
 
     private static boolean isReadStoriesRequest(TLObject object) {
