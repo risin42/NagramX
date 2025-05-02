@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2017 The WebRTC project authors. All Rights Reserved.
+ *  Copyright (c) 2021 The WebRTC project authors. All Rights Reserved.
  *
  *  Use of this source code is governed by a BSD-style license
  *  that can be found in the LICENSE file in the root of the source
@@ -10,13 +10,16 @@
 
 package org.webrtc;
 
-public class OpenH264Decoder extends WrappedNativeVideoDecoder {
+public class LibaomAv1Encoder extends WrappedNativeVideoEncoder {
   @Override
-  public long createNativeVideoDecoder() {
-    return nativeCreateDecoder();
+  public long createNativeVideoEncoder() {
+    return nativeCreateEncoder();
   }
 
-  static native long nativeCreateDecoder();
+  static native long nativeCreateEncoder();
 
-  static native boolean nativeIsSupported();
+  @Override
+  public boolean isHardwareEncoder() {
+    return false;
+  }
 }
