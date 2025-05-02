@@ -130,4 +130,10 @@
     <string name="MarkReadAfterSendNotice">Когда вы отправляете новое сообщение или нажимаете на реакцию, сообщение автоматически отмечается как прочитанное.</string>
     <string name="SendWithoutSoundRowNotice">Автоматически отправлять исходящие сообщения без звука.</string>
     <string name="GhostReadMessage">Прочитать сообщение</string>
+    <string name="SendWithSound">Отправить со звуком</string>
+    <string name="PerformanceClass">Класс производительности устройства</string>
+    <string name="PerformanceClassHigh">Высокий</string>
+    <string name="PerformanceClassAverage">Средний</string>
+    <string name="PerformanceClassLow">Низкий</string>
+    <string name="PerformanceClassUnknown">Неизвестный</string>
 </resources>

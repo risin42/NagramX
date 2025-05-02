@@ -130,4 +130,10 @@
     <string name="MarkReadAfterSendNotice">Yeni bir mesaj gönderdiğinizde veya bir tepkiye dokunduğunuzda mesajı otomatik olarak okur.</string>
     <string name="SendWithoutSoundRowNotice">Giden mesajları otomatik olarak ses olmadan gönderir.</string>
     <string name="GhostReadMessage">Mesajı Oku</string>
+    <string name="SendWithSound">Sesli Gönder</string>
+    <string name="PerformanceClass">Cihaz Performans Sınıfı</string>
+    <string name="PerformanceClassHigh">Yüksek</string>
+    <string name="PerformanceClassAverage">Ortalama</string>
+    <string name="PerformanceClassLow">Düşük</string>
+    <string name="PerformanceClassUnknown">Bilinmeyen</string>
 </resources>
