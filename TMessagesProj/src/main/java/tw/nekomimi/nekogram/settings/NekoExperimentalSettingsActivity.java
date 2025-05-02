@@ -462,6 +462,8 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                         MessagesController.getInstance(a).checkPromoInfo(true);
                     }
                 }
+            } else if (key.equals(NaConfig.INSTANCE.getPerformanceClass().getKey())) {
+                tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             }
         };
 
