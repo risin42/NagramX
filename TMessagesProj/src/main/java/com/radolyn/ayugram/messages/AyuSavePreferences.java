@@ -11,8 +11,11 @@ package com.radolyn.ayugram.messages;
 
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
+import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
+
+import java.util.concurrent.CountDownLatch;
 
 import xyz.nextalone.nagram.NaConfig;
 
@@ -75,6 +78,20 @@ public class AyuSavePreferences {
             var fromUser = MessagesController.getInstance(accountId).getUser(userId);
             if (fromUser != null && fromUser.bot && !NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().Bool()) {
                 return false;
+            } else {
+                final MessagesStorage messagesStorage = MessagesStorage.getInstance(UserConfig.selectedAccount);
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                final TLRPC.User[] user = {null};
+                messagesStorage.getStorageQueue().postRunnable(() -> {
+                    user[0] = messagesStorage.getUser(userId);
+                    countDownLatch.countDown();
+                });
+                try {
+                    countDownLatch.await();
+                } catch (Exception ignored) {}
+                if (user[0] != null && user[0].bot && !NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().Bool()) {
+                    return false;
+                }
             }
         }
 
