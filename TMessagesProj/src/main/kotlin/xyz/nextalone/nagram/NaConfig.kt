@@ -36,7 +36,7 @@ object NaConfig {
         addConfig(
             "ForceCopy",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val showTextBold =
         addConfig(
@@ -852,7 +852,7 @@ object NaConfig {
         addConfig(
             "TranslatorMode",
             ConfigItem.configTypeInt,
-            0 // 0: append; 1: replace; 2: pop-up
+            1 // 0: append; 1: replace; 2: pop-up
         )
     val centerActionBarTitleType =
         addConfig(

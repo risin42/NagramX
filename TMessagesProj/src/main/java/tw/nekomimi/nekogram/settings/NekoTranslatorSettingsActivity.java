@@ -420,6 +420,20 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                     }
                 }
                 oldLlmProvider = newLlmProvider;
+            } else if (key.equals(NaConfig.INSTANCE.getGoogleTranslateExp().getKey())) {
+                if ((boolean) newValue) {
+                    if (cellGroup.rows.contains(googleCloudTranslateKeyRow)) {
+                        final int index = cellGroup.rows.indexOf(googleCloudTranslateKeyRow);
+                        cellGroup.rows.remove(googleCloudTranslateKeyRow);
+                        listAdapter.notifyItemRemoved(index);
+                    }
+                } else {
+                    if (!cellGroup.rows.contains(googleCloudTranslateKeyRow)) {
+                        final int index = cellGroup.rows.indexOf(preferredTranslateTargetLangRow) + 1;
+                        cellGroup.rows.add(index, googleCloudTranslateKeyRow);
+                        listAdapter.notifyItemInserted(index);
+                    }
+                }
             }
         };
         return fragmentView;
@@ -607,7 +621,9 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         cellGroup.appendCell(translateToLangRow);
         cellGroup.appendCell(translateInputToLangRow);
         cellGroup.appendCell(preferredTranslateTargetLangRow);
-        cellGroup.appendCell(googleCloudTranslateKeyRow);
+        if (!NaConfig.INSTANCE.getGoogleTranslateExp().Bool()) {
+            cellGroup.appendCell(googleCloudTranslateKeyRow);
+        }
         cellGroup.appendCell(dividerTranslation);
 
         cellGroup.appendCell(headerAITranslatorSettings);
