@@ -27371,7 +27371,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (isMuteUnmuteButton()) {
             bottomOverlayChat.setVisibility(View.INVISIBLE);
         }
-        showGiftButton(showGiftButton && bottomOverlayChat.getVisibility() == View.VISIBLE, animated);
+        showGiftButton(!NaConfig.INSTANCE.getHideGiftButton().Bool() && showGiftButton && bottomOverlayChat.getVisibility() == View.VISIBLE, animated);
         checkRaiseSensors();
     }
 

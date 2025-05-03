@@ -1118,6 +1118,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             0
         )
+    var hideGiftButton =
+        addConfig(
+            "HideGiftButton",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

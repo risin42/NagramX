@@ -149,4 +149,5 @@
     <string name="PerformanceClassAverage">Average</string>
     <string name="PerformanceClassLow">Low</string>
     <string name="PerformanceClassUnknown">Unknown</string>
+    <string name="HideGiftButton">Hide Gift Button</string>
 </resources>
