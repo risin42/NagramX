@@ -61,6 +61,7 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellSelectBox;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
+import tw.nekomimi.nekogram.helpers.TranscribeHelper;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
 import tw.nekomimi.nekogram.ui.PopupBuilder;
 import xyz.nextalone.nagram.NaConfig;
@@ -119,6 +120,18 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell doubleTapActionRow = cellGroup.appendCell(new ConfigCellCustom("DoubleTapIncoming", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell doubleTapActionOutRow = cellGroup.appendCell(new ConfigCellCustom("DoubleTapOutgoing", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell dividerDoubleTap = cellGroup.appendCell(new ConfigCellDivider());
+
+    // Transcribe
+    private final AbstractConfigCell headerTranscribe = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.PremiumPreviewVoiceToText)));
+    private final AbstractConfigCell transcribeProviderRow = cellGroup.appendCell(new ConfigCellSelectBox("TranscribeProviderShort", NaConfig.INSTANCE.getTranscribeProvider(), new String[]{
+            getString(R.string.TranscribeProviderAuto),
+            getString(R.string.TelegramPremium),
+            getString(R.string.TranscribeProviderWorkersAI),
+            getString(R.string.TranscribeProviderGemini),
+    }, null));
+    private final AbstractConfigCell transcribeProviderCfCredentialsRow = cellGroup.appendCell(new ConfigCellCustom("CloudflareCredentials", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
+    private final AbstractConfigCell transcribeProviderGeminiApiKeyRow = cellGroup.appendCell(new ConfigCellCustom("LlmProviderGeminiKey", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
+    private final AbstractConfigCell dividerTranscribe = cellGroup.appendCell(new ConfigCellDivider());
 
     // MenuAndButtons
     private final AbstractConfigCell headerMenuAndButtons = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.MenuAndButtons)));
@@ -406,6 +419,10 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                     builder.show();
                 } else if (position == cellGroup.rows.indexOf(emojiSetsRow)) {
                     presentFragment(new NekoEmojiSettingsActivity());
+                } else if (position == cellGroup.rows.indexOf(transcribeProviderCfCredentialsRow)) {
+                    TranscribeHelper.showCfCredentialsDialog(this);
+                } else if (position == cellGroup.rows.indexOf(transcribeProviderGeminiApiKeyRow)) {
+                    TranscribeHelper.showGeminiApiKeyDialog(this);
                 }
             }
         });
@@ -694,6 +711,10 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                             textCell.setTextAndValue(getString(R.string.DoubleTapIncoming), DoubleTap.doubleTapActionMap.get(NaConfig.INSTANCE.getDoubleTapAction().Int()), true);
                         } else if (position == cellGroup.rows.indexOf(doubleTapActionOutRow)) {
                             textCell.setTextAndValue(getString(R.string.DoubleTapOutgoing), DoubleTap.doubleTapActionMap.get(NaConfig.INSTANCE.getDoubleTapActionOut().Int()), true);
+                        } else if (position == cellGroup.rows.indexOf(transcribeProviderCfCredentialsRow)) {
+                            textCell.setTextAndValue(getString(R.string.CloudflareCredentials), "", true);
+                        } else if (position == cellGroup.rows.indexOf(transcribeProviderGeminiApiKeyRow)) {
+                            textCell.setTextAndValue(getString(R.string.LlmProviderGeminiKey), "", true);
                         }
                     } else if (view instanceof EmojiSetCell) {
                         EmojiSetCell v1 =  (EmojiSetCell) view;

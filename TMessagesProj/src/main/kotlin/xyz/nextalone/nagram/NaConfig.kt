@@ -1124,6 +1124,30 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var transcribeProvider =
+        addConfig(
+            "TranscribeProvider",
+            ConfigItem.configTypeInt,
+            0
+        )
+    var transcribeProviderCfAccountID =
+        addConfig(
+            "TranscribeProviderCfAccountID",
+            ConfigItem.configTypeString,
+            ""
+        )
+    var transcribeProviderCfApiToken =
+        addConfig(
+            "TranscribeProviderCfApiToken",
+            ConfigItem.configTypeString,
+            ""
+        )
+    var transcribeProviderGeminiApiKey =
+        addConfig(
+            "TranscribeProviderGeminiApiKey",
+            ConfigItem.configTypeString,
+            ""
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

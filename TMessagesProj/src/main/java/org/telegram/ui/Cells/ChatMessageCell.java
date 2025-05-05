@@ -98,7 +98,6 @@ import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChatMessageSharedResources;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.ContactsController;
@@ -218,7 +217,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -226,6 +224,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.helpers.TimeStringHelper;
+import tw.nekomimi.nekogram.helpers.TranscribeHelper;
 import tw.nekomimi.nekogram.utils.NeteaseEmbed;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -10959,13 +10958,14 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     ) ||
                     TranscribeButton.canTranscribeTrial(currentMessageObject) || true
                 )
-                ||
+                || TranscribeHelper.useTranscribeAI(currentAccount)
+                /*||
                 MessagesController.getInstance(currentAccount).transcribeAudioTrialWeeklyNumber <= 0 &&
                 !MessagesController.getInstance(currentAccount).premiumFeaturesBlocked() &&
                 !MessagesController.getInstance(currentAccount).didPressTranscribeButtonEnough() && !currentMessageObject.isOutOwner() && (
                     currentMessageObject.messageOwner != null && currentMessageObject.messageOwner.voiceTranscriptionForce ||
                     currentMessageObject.getDuration() >= 60
-                )
+                )*/
             ) && (
                 currentMessageObject.isVoice() && useSeekBarWaveform ||
                 currentMessageObject.isRoundVideo()
