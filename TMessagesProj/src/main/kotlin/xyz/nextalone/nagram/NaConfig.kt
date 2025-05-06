@@ -555,7 +555,7 @@ object NaConfig {
         addConfig(
             "ShowTimeHint",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val searchHashtagDefaultPageChannel =
         addConfig(
