@@ -312,22 +312,26 @@ public class ActionBar extends FrameLayout {
             if (drawable != null) {
                 SimpleTextView titleView = child == titlesContainer ? titleTextView[0] : (SimpleTextView) child;
                 if (titleView != null && titleView.getVisibility() == View.VISIBLE && titleView.getText() instanceof String) {
-                    TextPaint textPaint = titleView.getTextPaint();
-                    textPaint.getFontMetricsInt(fontMetricsInt);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        textPaint.getTextBounds(titleView.getText(), 0, 1, rect);
-                    } else {
-                        textPaint.getTextBounds(titleView.getText().toString(), 0, 1, rect);
-                    }
-                    int x = titleView.getTextStartX() + Theme.getCurrentHolidayDrawableXOffset() + (rect.width() - (drawable.getIntrinsicWidth() + Theme.getCurrentHolidayDrawableXOffset())) / 2;
-                    int y = titleView.getTextStartY() + Theme.getCurrentHolidayDrawableYOffset() + (int) Math.ceil((titleView.getTextHeight() - rect.height()) / 2.0f) + (int) (dp(8) * (1f - titlesContainer.getScaleY()));
-                    drawable.setBounds(x, y - drawable.getIntrinsicHeight(), x + drawable.getIntrinsicWidth(), y);
-                    drawable.setAlpha((int) (255 * titlesContainer.getAlpha() * titleView.getAlpha()));
-                    drawable.setColorFilter(textPaint.getColor(), PorterDuff.Mode.MULTIPLY);
-                    drawable.draw(canvas);
-                    if (overlayTitleAnimationInProgress) {
-                        child.invalidate();
-                        invalidate();
+                    CharSequence titleTextSequence = titleView.getText();
+                    String titleText = titleTextSequence == null ? "" : titleTextSequence.toString();
+                    if (!titleText.isEmpty()) {
+                        TextPaint textPaint = titleView.getTextPaint();
+                        textPaint.getFontMetricsInt(fontMetricsInt);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            textPaint.getTextBounds(titleTextSequence, 0, 1, rect);
+                        } else {
+                            textPaint.getTextBounds(titleText, 0, 1, rect);
+                        }
+                        int x = titleView.getTextStartX() + Theme.getCurrentHolidayDrawableXOffset() + (rect.width() - (drawable.getIntrinsicWidth() + Theme.getCurrentHolidayDrawableXOffset())) / 2;
+                        int y = titleView.getTextStartY() + Theme.getCurrentHolidayDrawableYOffset() + (int) Math.ceil((titleView.getTextHeight() - rect.height()) / 2.0f) + (int) (dp(8) * (1f - titlesContainer.getScaleY()));
+                        drawable.setBounds(x, y - drawable.getIntrinsicHeight(), x + drawable.getIntrinsicWidth(), y);
+                        drawable.setAlpha((int) (255 * titlesContainer.getAlpha() * titleView.getAlpha()));
+                        drawable.setColorFilter(textPaint.getColor(), PorterDuff.Mode.MULTIPLY);
+                        drawable.draw(canvas);
+                        if (overlayTitleAnimationInProgress) {
+                            child.invalidate();
+                            invalidate();
+                        }
                     }
                 }
             }
