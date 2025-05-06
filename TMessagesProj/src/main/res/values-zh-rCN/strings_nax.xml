@@ -133,4 +133,17 @@
     <string name="PerformanceClassAverage">中</string>>
     <string name="PerformanceClassLow">低</string>
     <string name="PerformanceClassUnknown">未知</string>
+    <string name="HideGiftButton">隐藏礼物按钮</string>
+    <string name="TranscribeProviderShort">提供者</string>
+    <string name="TranscribeProviderAuto">自动选择</string>
+    <string name="TranscribeProviderWorkersAI">Whisper (Workers AI)</string>
+    <string name="TranscribeProviderGemini">Gemini</string>
+    <string name="CloudflareCredentials">Cloudflare 凭据</string>
+    <string name="CloudflareCredentialsNotSet">未配置 Cloudflare 凭据。</string>
+    <string name="CloudflareAccountID">帐户 ID</string>
+    <string name="CloudflareAPIToken">API 令牌</string>
+    <string name="CloudflareCredentialsDialog">配置 Cloudflare 帐户 ID 和 API 令牌。\n**如何获取?**\n</string>
+    <string name="GeminiApiKeyNotSet">Gemini API 密钥未配置。</string>
+    <string name="GeminiApiKeyDialog">配置 Gemini API 密钥，留空将尝试使用翻译器设置中的密钥。\n**如何获取?**\n</string>
+    <string name="GeminiNotSupport">此设备不支持 Gemini。</string>
 </resources>

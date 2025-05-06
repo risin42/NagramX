@@ -136,4 +136,17 @@
     <string name="PerformanceClassAverage">Ortalama</string>
     <string name="PerformanceClassLow">Düşük</string>
     <string name="PerformanceClassUnknown">Bilinmeyen</string>
+    <string name="HideGiftButton">Hediye Düğmesini Gizle</string>
+    <string name="TranscribeProviderShort">Sağlayıcı</string>
+    <string name="TranscribeProviderAuto">Otomatik seçim</string>
+    <string name="TranscribeProviderWorkersAI">Whisper (Workers AI)</string>
+    <string name="TranscribeProviderGemini">Gemini</string>
+    <string name="CloudflareCredentials">Cloudflare Kimlik Bilgileri</string>
+    <string name="CloudflareCredentialsNotSet">Cloudflare kimlik bilgileri yapılandırılmamış.</string>
+    <string name="CloudflareAccountID">Hesap Kimliği</string>
+    <string name="CloudflareAPIToken">API Token</string>
+    <string name="CloudflareCredentialsDialog">Cloudflare Hesap Kimliği ve API Token\'ı yapılandırın.\n**Nasıl elde edilir?**\n</string>
+    <string name="GeminiApiKeyNotSet">Gemini API Anahtarı yapılandırılmamış.</string>
+    <string name="GeminiApiKeyDialog">Gemini API Anahtarını, boş bırakılırsa çevirici ayarlarındakini kullanarak yapılandırın.\n**Nasıl elde edilir?**\n</string>
+    <string name="GeminiNotSupport">Gemini bu cihazda desteklenmiyor.</string>
 </resources>

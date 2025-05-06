@@ -133,4 +133,17 @@
     <string name="PerformanceClassAverage">ミドルレンジ</string>
     <string name="PerformanceClassLow">エントリー</string>
     <string name="PerformanceClassUnknown">不明</string>
+    <string name="HideGiftButton">ギフトボタンを非表示</string>
+    <string name="TranscribeProviderShort">プロバイダ</string>
+    <string name="TranscribeProviderAuto">自動選択</string>
+    <string name="TranscribeProviderWorkersAI">Whisper (Workers AI)</string>
+    <string name="TranscribeProviderGemini">Gemini</string>
+    <string name="CloudflareCredentials">Cloudflare の認証情報</string>
+    <string name="CloudflareCredentialsNotSet">Cloudflare の認証情報が設定されていません。</string>
+    <string name="CloudflareAccountID">アカウント ID</string>
+    <string name="CloudflareAPIToken">API トークン</string>
+    <string name="CloudflareCredentialsDialog">Cloudflare アカウント ID と API トークンを設定します。\n**取得方法は？**\n</string>
+    <string name="GeminiApiKeyNotSet">Gemini API キーが設定されていません。</string>
+    <string name="GeminiApiKeyDialog">Gemini API キーを設定します。空白のままにすると、AI 翻訳の設定を使用します。\n**取得方法は？**\n</string>
+    <string name="GeminiNotSupport">このデバイスでは Gemini はサポートされていません。</string>
 </resources>

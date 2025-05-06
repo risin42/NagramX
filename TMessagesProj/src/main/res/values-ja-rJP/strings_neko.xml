@@ -84,7 +84,7 @@
     <string name="IgnoreBlockedAbout">当ユーザーからのグループメッセージは表示されなくなります。</string>
     <string name="SourceCode">ソースコード</string>
     <string name="ResetStickerSize">ステッカーサイズをリセット</string>
-    <string name="RestartAppToTakeEffect">変更を適用するにはアプリを再起動してください。</string>
+    <string name="RestartAppToTakeEffect">変更適用にはアプリを再起動。</string>
     <string name="DisableAppBarShadow">アプリバーの影を無効にする</string>
     <string name="MediaPreview">チャットリストのメディアプレビュー</string>
     <string name="AutoPauseVideo">ビデオの自動一時停止</string>
