@@ -220,6 +220,16 @@ public class TranscribeHelper {
         );
         ll.addView(editTextApiKey, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 24, 0, 24, 0));
 
+        var editTextPrompt = createAndSetupEditText(
+                context,
+                resourcesProvider,
+                NaConfig.INSTANCE.getTranscribeProviderGeminiPrompt().String(),
+                getString(R.string.TranscribeProviderGeminiPrompt),
+                EditorInfo.IME_ACTION_DONE,
+                false
+        );
+        ll.addView(editTextPrompt, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 24, 0, 24, 0));
+
         builder.setView(ll);
         builder.setNegativeButton(getString(R.string.Cancel), null);
         builder.setPositiveButton(getString(R.string.OK), null);
@@ -238,6 +248,8 @@ public class TranscribeHelper {
                 if (NaConfig.INSTANCE.getLlmProviderGeminiKey().String().isEmpty()) {
                     NaConfig.INSTANCE.getLlmProviderGeminiKey().setConfigString(apiKey == null ? "" : apiKey.toString());
                 }
+                var prompt = editTextPrompt.getText();
+                NaConfig.INSTANCE.getTranscribeProviderGeminiPrompt().setConfigString(prompt == null ? "" : prompt.toString());
                 dialog.dismiss();
             });
         }
@@ -376,8 +388,9 @@ public class TranscribeHelper {
             callback.accept(null, new Exception(getString(R.string.GeminiApiKeyNotSet)));
             return;
         }
-
+        String customPrompt = NaConfig.INSTANCE.getTranscribeProviderGeminiPrompt().String();
         final String finalApiKey = apiKey;
+        final String finalPrompt = customPrompt.isEmpty() ? GEMINI_PROMPT : customPrompt;
         executorService.submit(() -> {
             String audioPath;
             try {
@@ -400,7 +413,7 @@ public class TranscribeHelper {
                 String base64Audio = Base64.encodeToString(audioBytes, Base64.NO_WRAP);
                 GeminiRequest.InlineData inlineData = new GeminiRequest.InlineData(video ? "audio/m4a" : "audio/ogg", base64Audio);
                 GeminiRequest.Part audioPart = new GeminiRequest.Part(null, inlineData);
-                GeminiRequest.Part textPart = new GeminiRequest.Part(GEMINI_PROMPT, null);
+                GeminiRequest.Part textPart = new GeminiRequest.Part(finalPrompt, null);
                 GeminiRequest.Content content = new GeminiRequest.Content(List.of(textPart, audioPart));
                 GeminiRequest geminiRequest = new GeminiRequest(List.of(content));
                 String jsonRequest = gson.toJson(geminiRequest);
