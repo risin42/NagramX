@@ -163,4 +163,5 @@
     <string name="GeminiApiKeyDialog">Configure Gemini API Key, using the one from translator settings if left blank.\n**How to obtain?**\n</string>
     <string name="GeminiNotSupport">Gemini is not supported on this device.</string>
     <string name="ReplyInPrivate">Reply in Private Chat</string>
+    <string name="TranscribeProviderGeminiPrompt">Prompt (optional)</string>
 </resources>

@@ -1154,6 +1154,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var transcribeProviderGeminiPrompt =
+        addConfig(
+            "TranscribeProviderGeminiPrompt",
+            ConfigItem.configTypeString,
+            ""
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {
