@@ -21,8 +21,10 @@ configurations {
     compile.exclude module: "support-v4"
 }
 
-configurations.all {
+configurations.configureEach {
     exclude group: 'androidx.recyclerview', module: 'recyclerview'
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
 }
 
 def keystorePwd = null
@@ -63,7 +65,7 @@ def nativeTarget = System.getenv("NATIVE_TARGET")
 if (nativeTarget == null) nativeTarget = ""
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
     ndkVersion rootProject.ext.ndkVersion
 
     defaultConfig.applicationId = "nu.gpu.nagram"
@@ -166,7 +168,6 @@ android {
             debuggable true
             jniDebuggable true
             multiDexEnabled true
-            zipAlignEnabled true
             signingConfig signingConfigs.release
         }
 
@@ -176,7 +177,6 @@ android {
             minifyEnabled true
             shrinkResources true
             multiDexEnabled true
-            zipAlignEnabled true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             matchingFallbacks = ["release", "staging", "debug"]
             signingConfig signingConfigs.release
@@ -188,7 +188,6 @@ android {
             minifyEnabled true
             shrinkResources true
             multiDexEnabled true
-            zipAlignEnabled true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             matchingFallbacks = ["release", "staging", "debug"]
             signingConfig signingConfigs.release
@@ -237,9 +236,6 @@ android {
         if (disableCMakeRelWithDebInfo && task.name.contains("CMakeRelWithDebInfo")) {
             enabled = false
         }
-        if (task.name.contains("uploadCrashlyticsMappingFile")) {
-            enabled = true
-        }
         if (task.name.contains("buildCMakeDebug") && nagramx_build_args.contains("skip_buildCMakeDebug")) {
             task.enabled = false
         }
@@ -259,11 +255,11 @@ android {
 
 dependencies {
     // official
-    implementation 'androidx.fragment:fragment:1.2.0'
-    implementation "androidx.core:core-ktx:1.10.0" // androidx.core:core:1.10.1
+    implementation 'androidx.fragment:fragment:1.8.6' // 1.2.0
+    implementation "androidx.core:core-ktx:1.16.0" // 1.10.1
     implementation "androidx.palette:palette-ktx:1.0.0"
-    implementation "androidx.exifinterface:exifinterface:1.3.6"
-    implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
+    implementation "androidx.exifinterface:exifinterface:1.4.1" // 1.3.6
+    implementation "androidx.dynamicanimation:dynamicanimation:1.1.0" // 1.0.0
     implementation "androidx.mediarouter:mediarouter:1.7.0"
     implementation "androidx.multidex:multidex:2.0.1"
     implementation "androidx.sharetarget:sharetarget:1.2.0"
@@ -273,23 +269,31 @@ dependencies {
     compileOnly 'org.checkerframework:checker-qual:2.5.2'
     compileOnly 'org.checkerframework:checker-compat-qual:2.5.0'
     implementation "com.google.firebase:firebase-messaging:24.1.1" // 22.0.0
-    implementation "com.google.firebase:firebase-crashlytics:19.4.2"
-    implementation 'com.google.android.gms:play-services-cast-framework:21.4.0'
-    implementation 'com.google.android.gms:play-services-maps:19.1.0'
+    implementation "com.google.firebase:firebase-crashlytics:19.4.3"
+    implementation 'com.google.android.gms:play-services-cast-framework:22.0.0' // 21.4.0
+    implementation 'com.google.android.gms:play-services-maps:19.2.0' // 18.1.0
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
     implementation 'com.google.android.gms:play-services-location:21.3.0'
     implementation "com.googlecode.mp4parser:isoparser:1.0.6"
-    implementation 'com.google.mlkit:language-id:17.0.6' // 16.1.1 // Na: add for auto translate
+    implementation 'com.google.mlkit:language-id:17.0.6' // 16.1.1
     implementation "com.google.code.gson:gson:2.11.0"
-    implementation 'com.google.guava:guava:31.1-android'
+    implementation ('com.google.guava:guava:33.4.8-android') { // 31.1
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+        exclude group: 'org.checkerframework', module: 'checker-compat-qual'
+        exclude group: 'org.checkerframework', module: 'checker-qual'
+        exclude group: 'com.google.errorprone', module: 'error_prone_annotations'
+        exclude group: 'com.google.j2objc', module: 'j2objc-annotations'
+        exclude group: 'org.codehaus.mojo', module: 'animal-sniffer-annotations'
+    }
     implementation 'com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1'
     implementation 'com.google.android.gms:play-services-mlkit-image-labeling:16.0.8'
-    // implementation 'com.google.android.recaptcha:recaptcha:18.4.0'
     // payment
-    implementation 'com.google.android.gms:play-services-wallet:19.1.0'
-    implementation 'com.stripe:stripe-android:2.0.2'
-    implementation 'com.android.billingclient:billing:6.0.1'
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.5" // 1.1.5
+    implementation 'com.google.android.gms:play-services-wallet:19.4.0' // 19.1.0
+    implementation('com.stripe:stripe-android:2.0.2') {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    implementation 'com.android.billingclient:billing:7.1.1' // 6.0.1
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs_nio:2.1.5" // 1.1.5
 
     // Nagram
     implementation "androidx.viewpager:viewpager:1.1.0"
@@ -309,8 +313,8 @@ dependencies {
     // add for UnifiedPush
     implementation 'com.github.UnifiedPush:android-connector:2.3.1'
     // NagramX: add for save deleted messages
-    implementation "androidx.room:room-runtime:2.7.0"
-    kapt "androidx.room:room-compiler:2.7.0"
+    implementation "androidx.room:room-runtime:2.7.1"
+    kapt "androidx.room:room-compiler:2.7.1"
     // add for keep formatting in translations
     implementation "org.apache.commons:commons-text:1.10.0"
 
