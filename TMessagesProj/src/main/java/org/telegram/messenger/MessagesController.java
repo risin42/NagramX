@@ -8945,7 +8945,7 @@ public class MessagesController extends BaseController implements NotificationCe
                 for (var msgId : messages) {
                     if (AyuState.isDeletePermitted(dialogId, msgId)) {
                         if (ayuMessagesController.getMessage(userId, dialogId, msgId) != null) {
-                            ayuMessagesController.delete(userId, dialogId, msgId);
+                            Utilities.globalQueue.postRunnable(() -> ayuMessagesController.delete(userId, dialogId, msgId));
                             ayuDeletedMessagesCount++;
                         }
                     }
