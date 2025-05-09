@@ -883,7 +883,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
         if (currentType == MediaDataController.TYPE_IMAGE) {
             featuredRow = rowCount++;
-            masksRow = rowCount++;
+            masksRow = -1;
             if (mediaDataController.getArchivedStickersCount(currentType) != 0) {
                 boolean inserted = archivedRow == -1;
                 archivedRow = rowCount++;

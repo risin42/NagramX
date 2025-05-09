@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,6 +53,7 @@ import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.AlertsCreator;
 import org.telegram.ui.Components.BlurredRecyclerView;
 import org.telegram.ui.Components.BulletinFactory;
+import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.UndoView;
@@ -284,6 +286,14 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         listView = new BlurredRecyclerView(context);
         listView.setVerticalScrollBarEnabled(false);
         listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+
+        DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setChangeDuration(350);
+        itemAnimator.setInterpolator(CubicBezierInterpolator.EASE_OUT_QUINT);
+        itemAnimator.setDelayAnimations(false);
+        itemAnimator.setSupportsChangeAnimations(false);
+        listView.setItemAnimator(itemAnimator);
+
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
         listView.setAdapter(listAdapter);
 

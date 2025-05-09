@@ -128,7 +128,7 @@ public class NekoConfig {
     public static ConfigItem ccToLang = addConfig("opencc_to_lang", configTypeString, "");
     public static ConfigItem ccInputLang = addConfig("opencc_input_to_lang", configTypeString, "");
 
-    public static ConfigItem tabsTitleType = addConfig("TabTitleType", configTypeInt, NekoXConfig.TITLE_TYPE_TEXT);
+    public static ConfigItem tabsTitleType = addConfig("TabTitleType", configTypeInt, NekoXConfig.TITLE_TYPE_MIX);
     public static ConfigItem confirmAVMessage = addConfig("ConfirmAVMessage", configTypeBool, false);
     public static ConfigItem askBeforeCall = addConfig("AskBeforeCalling", configTypeBool, true);
     public static ConfigItem disableNumberRounding = addConfig("DisableNumberRounding", configTypeBool, false);
@@ -138,7 +138,7 @@ public class NekoConfig {
     public static ConfigItem hideProxyByDefault = addConfig("HideProxyByDefault", configTypeBool, true);
     public static ConfigItem useProxyItem = addConfig("UseProxyItem", configTypeBool, true);
 
-    public static ConfigItem disableAppBarShadow = addConfig("DisableAppBarShadow", configTypeBool, false);
+    public static ConfigItem disableAppBarShadow = addConfig("DisableAppBarShadow", configTypeBool, true);
     public static ConfigItem mediaPreview = addConfig("MediaPreview", configTypeBool, true);
 
     public static ConfigItem disableVibration = addConfig("DisableVibration", configTypeBool, false);

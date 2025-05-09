@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">N-Settings</string>
-    <string name="IPv6">Connecting through IPv6</string>
+    <string name="IPv6">Prefer IPv6</string>
     <string name="MessageMenu">Message Menu</string>
     <string name="HidePhone">Hide Phone Number</string>
     <string name="DeleteAllFromSelf">Delete My Messages</string>
