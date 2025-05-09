@@ -169,9 +169,10 @@ object LLMTranslator : Translator {
         val response = HttpUtil.createPost("$apiUrl/chat/completions")
             .header("Authorization", "Bearer $apiKey")
             .header("Content-Type", "application/json; charset=UTF-8")
-            .timeout(20000)
+            .timeout(60000)
             .body(JSONObject().apply {
                 put("model", model)
+                if (isMoE(model)) put("reasoning_effort", "none")
                 put("messages", messages)
                 put("temperature", NaConfig.llmTemperature.Float())
             }.toString())
@@ -207,6 +208,10 @@ object LLMTranslator : Translator {
             Your output MUST be strictly limited to the translated text.  Do not include any extra conversational elements, greetings, explanations or any text other than the direct translation.
             You are required to maintain all original formatting from the input text, including HTML tags, Markdown, and any other formatting symbols. Do not alter or remove any formatting.
         """.trimIndent()
+    }
+
+    private fun isMoE(model: String): Boolean {
+        return model.startsWith("gemini-2.5")
     }
 
     class RateLimitException(message: String) : Exception(message)
