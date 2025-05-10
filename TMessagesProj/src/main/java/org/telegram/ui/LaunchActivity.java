@@ -25,7 +25,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -256,6 +258,7 @@ import tw.nekomimi.nekogram.utils.ProxyUtil;
 import tw.nekomimi.nekogram.utils.UIUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.ExternalStickerCacheHelper;
+import xyz.nextalone.nagram.icons.IconsResources;
 
 public class LaunchActivity extends BasePermissionsActivity implements INavigationLayout.INavigationLayoutDelegate, NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate, PictureInPictureActivityHandler {
     public final static String EXTRA_FORCE_NOT_INTERNAL_APPS = "force_not_internal_apps";
@@ -385,6 +388,22 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
     public static LaunchActivity instance;
     private View customNavigationBar;
+
+    private IconsResources res = null;
+    private AssetManager assetManager = null;
+
+    @Override
+    public Resources getResources() {
+        if (assetManager != super.getResources().getAssets()) {
+            res = new IconsResources(super.getResources());
+            assetManager = super.getResources().getAssets();
+        }
+        return res;
+    }
+
+    public void reloadResources() {
+        res.reloadReplacements();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

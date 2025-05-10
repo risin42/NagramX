@@ -165,4 +165,6 @@
     <string name="ReplyInPrivate">Reply in Private Chat</string>
     <string name="TranscribeProviderGeminiPrompt">Prompt (optional)</string>
     <string name="HideDividers">Hide Dividers</string>
+    <string name="IconReplacements">Icon Replacements</string>
+    <string name="IconReplacementSolar">Solar Icons by @Design480</string>
 </resources>

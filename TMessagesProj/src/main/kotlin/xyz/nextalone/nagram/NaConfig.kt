@@ -1166,6 +1166,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var iconReplacements =
+        addConfig(
+            "IconReplacements",
+            ConfigItem.configTypeInt,
+            0
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {
