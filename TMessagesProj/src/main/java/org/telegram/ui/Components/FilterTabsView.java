@@ -125,11 +125,11 @@ public class FilterTabsView extends FrameLayout {
 
         public Tab(int i, String t, String emoticon, ArrayList<TLRPC.MessageEntity> entities, boolean noanimate) {
             id = i;
-            title = new SpannableStringBuilder(NekoConfig.tabsTitleType.Int() != NekoXConfig.TITLE_TYPE_ICON ? t : "");
-            title = Emoji.replaceEmoji(title, textPaint.getFontMetricsInt(), false);
-//            MessageObject.addEntitiesToText(title, entities, false, false, false, true);
-            title = MessageObject.replaceAnimatedEmoji(title, entities, textPaint.getFontMetricsInt());
             realTitle = t != null ? new SpannableStringBuilder(t) : new SpannableStringBuilder("");
+            realTitle = Emoji.replaceEmoji(realTitle, textPaint.getFontMetricsInt(), false);
+            title = new SpannableStringBuilder(NekoConfig.tabsTitleType.Int() == NekoXConfig.TITLE_TYPE_ICON ? "" : realTitle);
+//            MessageObject.addEntitiesToText(title, entities, false, false, false, true);
+            realTitle = MessageObject.replaceAnimatedEmoji(realTitle, entities, textPaint.getFontMetricsInt());
             this.noanimate = noanimate;
             this.emoticon = (i != Integer.MAX_VALUE) ? (emoticon != null ? emoticon : "") : "\uD83D\uDCAC";
         }

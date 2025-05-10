@@ -671,7 +671,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
     private Long statusDrawableGiftId;
     private AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable statusDrawable;
-    private AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable statusDrawableForFolderName;
     private DrawerProfileCell.AnimatedStatusView animatedStatusView;
     public RightSlidingDialogContainer rightSlidingDialogContainer;
 
@@ -1661,12 +1660,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             super.onAttachedToWindow();
             if (statusDrawable != null) {
                 statusDrawable.attach();
-            }
-            if (statusDrawableForFolderName != null) {
-                statusDrawableForFolderName.attach();
-            }
-            if (statusDrawableForFolderName != null) {
-                statusDrawableForFolderName.detach();
             }
         }
 
@@ -3447,7 +3440,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             (initialDialogsType == DIALOGS_TYPE_DEFAULT && !onlySelect || initialDialogsType == DIALOGS_TYPE_FORWARD) &&
             folderId == 0 && TextUtils.isEmpty(searchString)
         ) {
-            statusDrawableForFolderName = new AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable(null, dp(26));
             filterTabsView = new FilterTabsView(context) {
                 @Override
                 public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -3735,37 +3727,12 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     showDeleteAlert(getMessagesController().getDialogFilters().get(id));
                 }
 
-                // NagramX: use folder name as title
                 @Override
                 public void onTabSelected(FilterTabsView.Tab tab, boolean forward, boolean animated) {
-                    if (!selectedDialogs.isEmpty()) {
-                        return;
-                    }
-
-                    ArrayList<MessagesController.DialogFilter> filters = getMessagesController().getDialogFilters();
-                    if (filters.size() > 1) {
-                        for (int a = 0, N = filters.size(); a < N; a++) {
-                            final MessagesController.DialogFilter filter = filters.get(tab.id);
-
-                            String finalTitle = tab.realTitle.toString();
-                            String characterFilter = "[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]";
-                            String emotionless = finalTitle.replaceAll(characterFilter,"");
-
-                            long docId = MessageObject.getEmojiDocumentIdFromFolderName(filter.entities);
-                            statusDrawableForFolderName.set(docId, true);
-
-                            boolean isPremium = getUserConfig().isPremium();
-                            boolean hasPremiumEmoji = isPremium && docId != 0;
-
-                            if (NaConfig.INSTANCE.getFolderNameAsTitle().Bool()) {
-                                actionBar.setTitleAnimatedX(
-                                        tab.isDefault ? actionBarTitleNax : isPremium ? emotionless : tab.realTitle,
-                                        tab.isDefault ? statusDrawable : hasPremiumEmoji ? statusDrawableForFolderName : null,
-                                        forward,
-                                        hasPremiumEmoji ? 400 : 200
-                                );
-                            }
-                        }
+                    if (NaConfig.INSTANCE.getFolderNameAsTitle().Bool()) {
+                        actionBar.setTitleAnimatedX(tab.isDefault ? actionBarTitleNax : tab.realTitle, tab.isDefault ? statusDrawable : null, forward, 250);
+                    } else {
+                        actionBar.setTitle(actionBarTitleNax, statusDrawable);
                     }
                 }
             });
@@ -6993,9 +6960,16 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 filterTabsView.resetTabId();
 
                 // NagramX: use folder name as title
-                if (NaConfig.INSTANCE.getFolderNameAsTitle().Bool()) {
-                    actionBar.setTitleAnimatedX(actionBarTitleNax, statusDrawable, false, 200);
+                if (!actionBarTitleNax.equals(actionBar.getTitle())) {
+                    if (NaConfig.INSTANCE.getFolderNameAsTitle().Bool()) {
+                        actionBar.setTitleAnimatedX(actionBarTitleNax, statusDrawable, false, 250);
+                    } else {
+                        actionBar.setTitle(actionBarTitleNax, statusDrawable);
+                    }
                 }
+//                if (NaConfig.INSTANCE.getFolderNameAsTitle().Bool()) {
+//                    actionBar.setTitleAnimatedX(actionBarTitleNax, statusDrawable, false, 200);
+//                }
             }
             updateDrawerSwipeEnabled();
         }
