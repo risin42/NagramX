@@ -146,4 +146,10 @@
     <string name="GeminiApiKeyNotSet">Gemini API 密钥未配置。</string>
     <string name="GeminiApiKeyDialog">配置 Gemini API 密钥，留空将尝试使用翻译器设置中的密钥。\n**如何获取?**\n</string>
     <string name="GeminiNotSupport">此设备不支持 Gemini。</string>
+    <string name="TranscribeProviderGeminiPrompt">提示词（可选）</string>
+    <string name="uploadBoost">上传加速</string>
+    <string name="HideDividers">隐藏分隔线</string>
+    <string name="IconReplacements">替换图标</string>
+    <string name="IconReplacementSolar">Solar 图标</string>
+    <string name="ReplyInPrivate">在私聊中回复</string>
 </resources>

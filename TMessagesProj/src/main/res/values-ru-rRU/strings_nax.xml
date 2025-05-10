@@ -137,4 +137,16 @@
     <string name="PerformanceClassLow">Низкий</string>
     <string name="PerformanceClassUnknown">Неизвестный</string>
     <string name="HideGiftButton">Скрыть кнопку подарка</string>
+    <string name="TranscribeProviderShort">Поставщик</string>
+    <string name="TranscribeProviderAuto">Автовыбор</string>
+    <string name="TranscribeProviderWorkersAI">Whisper (Workers AI)</string>
+    <string name="TranscribeProviderGemini">Gemini</string>
+    <string name="CloudflareCredentials">Учётные данные Cloudflare</string>
+    <string name="CloudflareCredentialsNotSet">Учётные данные Cloudflare не настроены.</string>
+    <string name="CloudflareAccountID">ID аккаунта</string>
+    <string name="CloudflareAPIToken">Токен API</string>
+    <string name="CloudflareCredentialsDialog">Настройте ID аккаунта Cloudflare и токен API.\n**Как получить?**\n</string>
+    <string name="GeminiApiKeyNotSet">Ключ API Gemini не настроен.</string>
+    <string name="GeminiApiKeyDialog">Настройте ключ API Gemini. Если оставить пустым, будет использоваться ключ из настроек переводчика.\n**Как получить?**\n</string>
+    <string name="GeminiNotSupport">Gemini не поддерживается на этом устройстве.</string>
 </resources>

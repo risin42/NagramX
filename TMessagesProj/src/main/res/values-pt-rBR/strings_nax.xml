@@ -128,7 +128,7 @@
     <string name="MarkReadAfterSend">Ler ao Interagir</string>
     <string name="GhostModeNotice">Toque longo em qualquer opção para evitar que ela seja alterada ao ativar/desativar o Modo Fantasma.</string>
     <string name="MarkReadAfterSendNotice">Lê automaticamente a mensagem quando você envia uma nova ou toca em uma reação.</string>
-    <string name="SendWithoutSoundRowNotice">Envia automaticamente mensagens enviadas sem som.</string>
+    <string name="SendWithoutSoundRowNotice">Envia automaticamente mensagens sem som.</string>
     <string name="GhostReadMessage">Ler Mensagem</string>
     <string name="SendWithSound">Enviar com Som</string>
     <string name="PerformanceClass">Classe de Desempenho do Dispositivo</string>
@@ -137,4 +137,16 @@
     <string name="PerformanceClassLow">Baixo</string>
     <string name="PerformanceClassUnknown">Desconhecido</string>
     <string name="HideGiftButton">Ocultar Botão de Presente</string>
+    <string name="TranscribeProviderShort">Provedor</string>
+    <string name="TranscribeProviderAuto">Seleção automática</string>
+    <string name="TranscribeProviderWorkersAI">Whisper (Workers AI)</string>
+    <string name="TranscribeProviderGemini">Gemini</string>
+    <string name="CloudflareCredentials">Credenciais do Cloudflare</string>
+    <string name="CloudflareCredentialsNotSet">As credenciais do Cloudflare não estão configuradas.</string>
+    <string name="CloudflareAccountID">ID da Conta</string>
+    <string name="CloudflareAPIToken">API Token</string>
+    <string name="CloudflareCredentialsDialog">Configure o ID da conta e o API Token do Cloudflare.\n**Como obter?**\n</string>
+    <string name="GeminiApiKeyNotSet">A chave da API do Gemini não está configurada.</string>
+    <string name="GeminiApiKeyDialog">Configure a chave da API do Gemini, utilizando a do tradutor se deixada em branco.\n**Como obter?**\n</string>
+    <string name="GeminiNotSupport">Gemini não é suportado neste dispositivo.</string>
 </resources>

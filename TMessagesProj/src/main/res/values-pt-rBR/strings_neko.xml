@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">N-Configurações</string>
-    <string name="IPv6">Conectar através do IPv6</string>
     <string name="MessageMenu">Menu de Mensagem</string>
     <string name="HidePhone">Ocultar número de telefone</string>
     <string name="DeleteAllFromSelf">Excluir Minhas Mensagens</string>
@@ -128,7 +127,6 @@
     <string name="MutualContactDescription">Este é um contato em comum.</string>
     <string name="DatacenterStatusAbout">Verifique o status dos **datacenters** do Telegram.</string>
     <string name="DatacenterStatus">Datacenter Status</string>
-    <string name="enhancedFileLoader">Aumentar Velocidade de Upload e Download</string>
     <string name="mapDriftingFixForGoogleMaps">Corrigir Google Maps Drifting na China</string>
     <string name="useOSMDroidMap">Usar Mapa OSMDroid</string>
     <string name="UnknownNekoSettingsOption">Essa opção não existe nas configurações do Neko.</string>
@@ -157,7 +155,7 @@
     <string name="InstalledEmojiSet">Instalado</string>
     <string name="InstallingEmojiSet">Instalando…</string>
     <string name="UpdateEmojiSet">Atualizar %s</string>
-    <string name="EmojiSetHint">Isso afeta a aparência dos emojis apenas para você. Os outros os veem com base nas preferências deles.</string>
+    <string name="EmojiSetHint">Isso afeta a aparência dos emojis apenas para você. Outras pessoas os veem com base nas preferências delas.</string>
     <string name="CustomEmojiSetHint">Importar e escolher pacotes de emojis do seu armazenamento interno.</string>
     <string name="AddEmojiSet">Adicionar pacote de emoji</string>
     <string name="EmojiSetRemoved">Pacote de emojis removido.</string>

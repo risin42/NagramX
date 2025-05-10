@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">N-設定</string>
-    <string name="IPv6">IPv6 経由で接続</string>
+    <string name="IPv6">IPv6 を優先</string>
     <string name="MessageMenu">メッセージメニュー</string>
     <string name="HidePhone">電話番号を非表示</string>
     <string name="DeleteAllFromSelf">自分のメッセージを削除</string>
@@ -128,7 +128,7 @@
     <string name="MutualContactDescription">この連絡先は相互の連絡先です。</string>
     <string name="DatacenterStatusAbout">Telegram の**データセンター**の状態を確認します。</string>
     <string name="DatacenterStatus">データセンターの状態</string>
-    <string name="enhancedFileLoader">アップロードとダウンロードを高速化</string>
+    <string name="enhancedFileLoader">ダウンロード速度の高速化</string>
     <string name="mapDriftingFixForGoogleMaps">中国における Google マップのずれを修正</string>
     <string name="useOSMDroidMap">OSMDroid マップを使用</string>
     <string name="UnknownNekoSettingsOption">そのようなN-設定オプションはありません。</string>

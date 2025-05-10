@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">N-设置</string>
-    <string name="IPv6">通过 IPv6 连接</string>
+    <string name="IPv6">偏好 IPv6</string>
     <string name="MessageMenu">消息菜单</string>
     <string name="HidePhone">隐藏手机号码</string>
     <string name="DeleteAllFromSelf">删除自己所有消息</string>
@@ -128,7 +128,7 @@
     <string name="MutualContactDescription">此联系人为双向联系人。</string>
     <string name="DatacenterStatusAbout">检查 Telegram 的**数据中心**的状态。</string>
     <string name="DatacenterStatus">数据中心状态</string>
-    <string name="enhancedFileLoader">加速上传和下载</string>
+    <string name="enhancedFileLoader">下载加速</string>
     <string name="mapDriftingFixForGoogleMaps">修复 Google 地图在中国的漂移问题</string>
     <string name="useOSMDroidMap">使用 OSMDroid 地图</string>
     <string name="UnknownNekoSettingsOption">没有这样的喵设置选项。</string>

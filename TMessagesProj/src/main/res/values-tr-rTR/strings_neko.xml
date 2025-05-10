@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">N-Ayarlar</string>
-    <string name="IPv6">IPv6 Üzerinden Bağlanma</string>
     <string name="MessageMenu">Mesaj Menüsü</string>
     <string name="HidePhone">Telefon Numarasını Gizle</string>
     <string name="DeleteAllFromSelf">Mesajlarımı Sil</string>
@@ -128,7 +127,6 @@
     <string name="MutualContactDescription">Bu kişi ortak bir kişidir.</string>
     <string name="DatacenterStatusAbout">Telegram’ın **veri merkezlerinin** durumunu kontrol edin.</string>
     <string name="DatacenterStatus">Veri Merkezi Durumu</string>
-    <string name="enhancedFileLoader">Yükleme ve İndirme Hızını Artır</string>
     <string name="mapDriftingFixForGoogleMaps">Çin’de Google Haritalar Kaymasını Düzelt</string>
     <string name="useOSMDroidMap">OSMDroid Haritasını Kullan</string>
     <string name="UnknownNekoSettingsOption">Böyle bir Neko Ayarları seçeneği yok.</string>

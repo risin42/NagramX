@@ -149,4 +149,9 @@
     <string name="GeminiApiKeyNotSet">Gemini API Anahtarı yapılandırılmamış.</string>
     <string name="GeminiApiKeyDialog">Gemini API Anahtarını, boş bırakılırsa çevirici ayarlarındakini kullanarak yapılandırın.\n**Nasıl elde edilir?**\n</string>
     <string name="GeminiNotSupport">Gemini bu cihazda desteklenmiyor.</string>
+    <string name="ReplyInPrivate">Özel Sohbette Yanıtla</string>
+    <string name="TranscribeProviderGeminiPrompt">İstem (isteğe bağlı)</string>
+    <string name="HideDividers">Ayırıcıları Gizle</string>
+    <string name="IconReplacements">Simge Değişimleri</string>
+    <string name="IconReplacementSolar">\@Design480 tarafından Solar Simgeler</string>
 </resources>
