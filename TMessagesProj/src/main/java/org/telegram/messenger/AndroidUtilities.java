@@ -224,6 +224,7 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.TelegramUtil;
+import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.ColorOsHelper;
 
 public class AndroidUtilities {
@@ -2361,6 +2362,9 @@ public class AndroidUtilities {
     }
 
     public static int getShadowHeight() {
+        if (NaConfig.INSTANCE.getHideDividers().Bool()) {
+            return 0;
+        }
         if (density >= 4.0f) {
             return 3;
         } else if (density >= 2.0f) {

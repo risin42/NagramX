@@ -165,4 +165,5 @@
     <string name="ReplyInPrivate">Reply in Private Chat</string>
     <string name="TranscribeProviderGeminiPrompt">Prompt (optional)</string>
     <string name="uploadBoost">Upload Speed Boost</string>
+    <string name="HideDividers">Hide Dividers</string>
 </resources>

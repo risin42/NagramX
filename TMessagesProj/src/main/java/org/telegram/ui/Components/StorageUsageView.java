@@ -20,6 +20,8 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.voip.CellFlickerDrawable;
 
+import xyz.nextalone.nagram.NaConfig;
+
 public class StorageUsageView extends FrameLayout {
 
     private Paint paintFill = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -213,7 +215,7 @@ public class StorageUsageView extends FrameLayout {
             }
             calculatingTextView.setVisibility(View.GONE);
             if (totalSize > 0) {
-                divider.setVisibility(VISIBLE);
+                divider.setVisibility(NaConfig.INSTANCE.getHideDividers().Bool() ? GONE : VISIBLE);
                 textSettingsCell.setVisibility(VISIBLE);
                 telegramCacheTextView.setVisibility(View.VISIBLE);
                 telegramDatabaseTextView.setVisibility(GONE);
