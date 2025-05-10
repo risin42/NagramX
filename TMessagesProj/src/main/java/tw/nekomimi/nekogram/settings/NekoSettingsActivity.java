@@ -341,13 +341,13 @@ public class NekoSettingsActivity extends BaseFragment {
                             } else if (position == experimentRow) {
                                 textCell.setTextAndIcon(getString(R.string.Experimental), R.drawable.msg_fave, true);
                             } else if (position == importSettingsRow) {
-                                textCell.setTextAndIcon(getString(R.string.ImportSettings), R.drawable.msg_download_settings, true);
+                                textCell.setTextAndIcon(getString(R.string.ImportSettings), R.drawable.msg_photo_settings_solar, true);
                             } else if (position == exportSettingsRow) {
-                                textCell.setTextAndIcon(getString(R.string.BackupSettings), R.drawable.msg_instant_link, true);
+                                textCell.setTextAndIcon(getString(R.string.BackupSettings), R.drawable.msg_instant_link_solar, true);
                             } else if (position == resetSettingsRow) {
-                                textCell.setTextAndIcon(getString(R.string.ResetSettings), R.drawable.msg_reset, true);
+                                textCell.setTextAndIcon(getString(R.string.ResetSettings), R.drawable.msg_reset_solar, true);
                             } else if (position == appRestartRow) {
-                                textCell.setTextAndIcon(getString(R.string.RestartApp), R.drawable.msg_retry, true);
+                                textCell.setTextAndIcon(getString(R.string.RestartApp), R.drawable.msg_retry_solar, true);
                             }
                             break;
                         }

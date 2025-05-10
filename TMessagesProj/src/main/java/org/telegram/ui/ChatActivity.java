@@ -4430,7 +4430,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (NaConfig.INSTANCE.getChatMenuItemToBeginning().Bool()) headerItem.lazilyAddSubItem(to_the_beginning, R.drawable.ic_upward, LocaleController.getString(R.string.ToTheBeginning));
                 if (NaConfig.INSTANCE.getChatMenuItemGoToMessage().Bool()) headerItem.lazilyAddSubItem(to_the_message, R.drawable.msg_go_up, LocaleController.getString(R.string.ToTheMessage));
                 hideTitleItem = NaConfig.INSTANCE.getChatMenuItemHideTitle().Bool() ? headerItem.lazilyAddSubItem(nkheaderbtn_hide_title, R.drawable.hide_title, LocaleController.getString(R.string.HideTitle)) : null;
-                if (NaConfig.INSTANCE.getChatMenuItemClearDeleted().Bool()) headerItem.lazilyAddSubItem(nkbtn_clearDeleted, R.drawable.msg_clearcache, LocaleController.getString(R.string.ClearDeleted));
+                if (NaConfig.INSTANCE.getChatMenuItemClearDeleted().Bool()) headerItem.lazilyAddSubItem(nkbtn_clearDeleted, R.drawable.msg_clear, LocaleController.getString(R.string.ClearDeleted));
                 if (NaConfig.INSTANCE.getChatMenuItemDeleteOwnMessages().Bool() && (ChatObject.isMegagroup(currentChat) || currentChat != null && !ChatObject.isChannel(currentChat))) {
                     headerItem.lazilyAddSubItem(nkheaderbtn_zibi, R.drawable.msg_delete, LocaleController.getString(R.string.DeleteAllFromSelf));
                 }
