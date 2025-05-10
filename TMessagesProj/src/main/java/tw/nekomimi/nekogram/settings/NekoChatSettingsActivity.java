@@ -152,6 +152,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell messageMenuRow = cellGroup.appendCell(new ConfigCellSelectBox("MessageMenu", null, null, () -> {
         if (getParentActivity() == null) return;
         showDialog(showConfigMenuAlert(getParentActivity(), "MessageMenu", new ArrayList<>() {{
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowReplyInPrivate()));
             add(new ConfigCellTextCheck(NekoConfig.showDeleteDownloadedFile, null, getString(R.string.DeleteDownloadedFile)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowCopyPhoto()));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowNoQuoteForward()));

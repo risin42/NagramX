@@ -1148,6 +1148,12 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
+    var showReplyInPrivate =
+        addConfig(
+            "ReplyInPrivate",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {
