@@ -1160,6 +1160,12 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
+    var hideDividers =
+        addConfig(
+            "HideDividers",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

@@ -156,6 +156,7 @@ import java.util.concurrent.CountDownLatch;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MonetHelper;
+import xyz.nextalone.nagram.NaConfig;
 
 public class Theme {
 
@@ -9720,6 +9721,9 @@ public class Theme {
             if (index >= 0) {
                 return animatingColors.valueAt(index);
             }
+        }
+        if (NaConfig.INSTANCE.getHideDividers().Bool() && key_divider == key) {
+            return 0x00ffffff;
         }
         if (serviceBitmapShader != null && (key_chat_serviceText == key || key_chat_serviceLink == key || key_chat_serviceIcon == key
                 || key_chat_stickerReplyLine == key || key_chat_stickerReplyNameText == key || key_chat_stickerReplyMessageText == key)) {
