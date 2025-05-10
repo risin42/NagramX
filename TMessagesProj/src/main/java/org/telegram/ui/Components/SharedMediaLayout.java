@@ -3333,11 +3333,12 @@ public class SharedMediaLayout extends FrameLayout implements NotificationCenter
         }
 
         shadowLine = new View(context);
-        shadowLine.setBackgroundColor(getThemedColor(Theme.key_divider));
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1);
-        layoutParams.topMargin = customTabs() ? 0 : dp(48) - 1;
-        addView(shadowLine, layoutParams);
-
+        if (!NaConfig.INSTANCE.getHideDividers().Bool()) {
+            shadowLine.setBackgroundColor(getThemedColor(Theme.key_divider));
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1);
+            layoutParams.topMargin = customTabs() ? 0 : dp(48) - 1;
+            addView(shadowLine, layoutParams);
+        }
         updateTabs(false);
         switchToCurrentSelectedMode(false);
         if (hasMedia[0] >= 0) {

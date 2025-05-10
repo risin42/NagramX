@@ -130,7 +130,7 @@ public class ActionBar extends FrameLayout {
     private Runnable lastRunnable;
     private boolean titleOverlayShown;
     private Runnable titleActionRunnable;
-    private boolean castShadows = true;
+    private boolean castShadows = !NekoConfig.disableAppBarShadow.Bool();
 
     protected boolean isSearchFieldVisible;
     public float searchFieldVisibleAlpha;
@@ -1690,6 +1690,7 @@ public class ActionBar extends FrameLayout {
     }
 
     public void setCastShadows(boolean value) {
+        if (NekoConfig.disableAppBarShadow.Bool()) return;
         if (castShadows != value && getParent() instanceof View) {
             ((View) getParent()).invalidate();
             invalidate();

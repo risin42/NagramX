@@ -35,6 +35,8 @@ import org.telegram.ui.RestrictedLanguagesSelectActivity;
 
 import java.util.ArrayList;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class TranslateButton extends FrameLayout {
 
     private final int currentAccount;
@@ -140,7 +142,7 @@ public class TranslateButton extends FrameLayout {
                 super.dispatchDraw(canvas);
 
                 float alpha = .5f * alphaFloat.set(canScrollVertically(-1) ? 1 : 0);
-                if (alpha > 0) {
+                if (alpha > 0 && !NekoConfig.disableAppBarShadow.Bool()) {
                     if (topShadowDrawable == null) {
                         topShadowDrawable = getContext().getResources().getDrawable(R.drawable.header_shadow);
                     }
