@@ -381,6 +381,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int nkbtn_setReminder = 2029;
     private final static int nkbtn_sticker_copy = 2031;
     private final static int nkbtn_sticker_copy_png = 2032;
+    private final static int nkbtn_reply_private = 2033;
 
     // NagramX: clear deleted messages in current chat
     private final static int nkbtn_clearDeleted = 2100;
@@ -30762,6 +30763,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             options.add(OPTION_REPLY);
                             icons.add(R.drawable.menu_reply);
                         }
+                       if (NaConfig.INSTANCE.getShowReplyInPrivate().Bool() && !noforwardsOrPaidMedia && !selectedObject.isSponsored() && selectedObject.contentType == 0 && chatMode == MODE_DEFAULT && !isInsideContainer && currentChat != null && currentUser == null && selectedObject.messageOwner.peer_id.user_id == 0 && selectedObject.messageOwner.from_id.user_id > 0 && selectedObject.messageOwner.from_id.user_id != getUserConfig().getClientUserId() && !isAyuDeleted) {
+                            items.add(LocaleController.getString(R.string.ReplyInPrivate));
+                            options.add(nkbtn_reply_private);
+                            icons.add(R.drawable.menu_reply);
+                        }
                         if ((selectedObject.type == MessageObject.TYPE_TEXT || selectedObject.isDice() || selectedObject.isAnimatedEmoji() || selectedObject.isAnimatedEmojiStickers() || getMessageCaption(selectedObject, selectedObjectGroup) != null) && !noforwardsOrPaidMedia && !selectedObject.sponsoredCanReport) {
                             items.add(LocaleController.getString(R.string.Copy));
                             options.add(OPTION_COPY);
@@ -43368,6 +43374,23 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     forwardMessages(messages, false, notify, scheduleDate, getUserConfig().getClientUserId(), 0);
                     undoView.showWithAction(getUserConfig().getClientUserId(), UndoView.ACTION_FWD_MESSAGES, messages.size());
                 }, themeDelegate);
+                break;
+            }
+            case nkbtn_reply_private: {
+                Bundle args = new Bundle();
+                args.putLong("user_id", selectedObject.messageOwner.from_id.user_id);
+
+                ChatActivity chatActivity = new ChatActivity(args);
+                presentFragment(chatActivity);
+
+                if (chatActivityEnterView != null && chatActivity.chatActivityEnterView != null) {
+                    chatActivity.chatActivityEnterView.setFieldText(
+                            chatActivityEnterView.getFieldText()
+                    );
+                }
+                chatActivity.replyingQuoteGroup = getGroup(selectedObject.getGroupId());
+                chatActivity.replyingTopMessage = selectedObject;
+                chatActivity.showFieldPanelForReplyQuote(selectedObject, null);
                 break;
             }
         }
