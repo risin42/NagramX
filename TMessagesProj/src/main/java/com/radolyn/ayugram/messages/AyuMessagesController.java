@@ -38,11 +38,8 @@ import tw.nekomimi.nekogram.utils.FileUtil;
 
 public class AyuMessagesController {
     public static final String attachmentsSubfolder = "Saved Attachments";
-    public static final File attachmentsPath = new File(
-            new File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AyuConstants.APP_NAME),
-            attachmentsSubfolder
-    );
+    public static final File attachmentsPath = 
+            new File(EnvUtil.getTelegramPath(), attachmentsSubfolder);
     private static final String NAX = "AyuMessagesController";
     private static AyuMessagesController instance;
     private final EditedMessageDao editedMessageDao;
