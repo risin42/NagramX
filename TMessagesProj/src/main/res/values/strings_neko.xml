@@ -128,7 +128,7 @@
     <string name="MutualContactDescription">This contact is a mutual contact.</string>
     <string name="DatacenterStatusAbout">Check the status of Telegram\'s **datacenters**.</string>
     <string name="DatacenterStatus">Datacenter Status</string>
-    <string name="enhancedFileLoader">Boost Upload and Download Speed</string>
+    <string name="enhancedFileLoader">Download Speed Boost</string>
     <string name="mapDriftingFixForGoogleMaps">Fix Google Maps Drifting in China</string>
     <string name="useOSMDroidMap">Use OSMDroid Map</string>
     <string name="UnknownNekoSettingsOption">There is no such Neko Settings option.</string>

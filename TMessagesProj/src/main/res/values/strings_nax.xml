@@ -164,4 +164,5 @@
     <string name="GeminiNotSupport">Gemini is not supported on this device.</string>
     <string name="ReplyInPrivate">Reply in Private Chat</string>
     <string name="TranscribeProviderGeminiPrompt">Prompt (optional)</string>
+    <string name="uploadBoost">Upload Speed Boost</string>
 </resources>
