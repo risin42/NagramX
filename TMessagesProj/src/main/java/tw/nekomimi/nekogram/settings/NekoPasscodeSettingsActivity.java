@@ -1,5 +1,7 @@
 package tw.nekomimi.nekogram.settings;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.text.SpannableStringBuilder;
@@ -14,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;

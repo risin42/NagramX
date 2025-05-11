@@ -42,11 +42,6 @@ import androidx.annotation.NonNull;
 import androidx.collection.LongSparseArray;
 import androidx.core.graphics.ColorUtils;
 
-import top.qwq2333.nullgram.utils.StringUtils;
-import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.helper.MessageHelper;
-import xyz.nextalone.nagram.ui.syntaxhighlight.SyntaxHighlight;
-
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.messenger.ringtone.RingtoneDataStore;
@@ -106,15 +101,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Locale;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.hutool.core.util.StrUtil;
+import top.qwq2333.nullgram.utils.StringUtils;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
+import xyz.nextalone.nagram.NaConfig;
+import xyz.nextalone.nagram.helper.MessageHelper;
+import xyz.nextalone.nagram.ui.syntaxhighlight.SyntaxHighlight;
 
 public class MessageObject {
 
