@@ -43,7 +43,12 @@ public class LauncherIconController {
         BLUE("BlueIcon", R.color.nagram_block_round_background, R.drawable.ic_launcher_nagram_block_round_foreground, R.string.AppIconBlue),
         DARKBLUE("DarkBlueIcon", R.color.nagram_round_blue_background, R.drawable.ic_launcher_nagram_round_blue_foreground, R.string.AppIconDarkBlue),
         BLURBLUE("BlurBlueIcon", R.drawable.ic_launcher_nagram_blue_background, R.drawable.ic_launcher_nagram_blue_foreground, R.string.AppIconBlurBlue),
-        NOX("PremiumIcon", R.drawable.icon_3_background_sa, R.mipmap.icon_3_foreground_sa, R.string.AppIconPremium);
+        TELEGRAM("TelegramIcon", R.drawable.icon_background_sa, R.mipmap.icon_foreground_sa, R.string.QualityOriginal),
+        VINTAGE("VintageIcon", R.drawable.icon_6_background_sa, R.mipmap.icon_6_foreground_sa, R.string.AppIconVintage),
+        AQUA("AquaIcon", R.drawable.icon_4_background_sa, R.mipmap.icon_foreground_sa, R.string.AppIconAqua),
+        PREMIUM("PremiumIcon", R.drawable.icon_3_background_sa, R.mipmap.icon_3_foreground_sa, R.string.AppIconPremium),
+        TURBO("TurboIcon", R.drawable.icon_5_background_sa, R.mipmap.icon_5_foreground_sa, R.string.AppIconTurbo),
+        NOX("NoxIcon", R.mipmap.icon_2_background_sa, R.mipmap.icon_foreground_sa, R.string.AppIconNox);
 
         public final String key;
         public final int background;
