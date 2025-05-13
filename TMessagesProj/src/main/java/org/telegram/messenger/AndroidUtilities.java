@@ -5304,7 +5304,8 @@ public class AndroidUtilities {
         setNavigationBarColor(window, color, animated, null);
     }
 
-    public static void setNavigationBarColor(Window window, int color, boolean animated, IntColorCallback onUpdate) {
+    public static void setNavigationBarColor(Window window, int colors, boolean animated, IntColorCallback onUpdate) {
+        int color = Theme.getColor(Theme.key_windowBackgroundWhite);
         if (window == null) {
             return;
         }

@@ -428,7 +428,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
             }
             try {
-                getWindow().setNavigationBarColor(0xff000000);
+                getWindow().setNavigationBarColor(Theme.getColor(Theme.key_windowBackgroundWhite)); // getWindow().setNavigationBarColor(0xff000000);
             } catch (Throwable ignore) {
 
             }
@@ -1555,7 +1555,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 AndroidUtilities.setLightStatusBar(getWindow(), enable, forceLightStatusBar);
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && checkNavigationBar && (!useCurrentFragment || currentFragment == null || !currentFragment.isInPreviewMode())) {
-                int color = currentFragment != null && useCurrentFragment ? currentFragment.getNavigationBarColor() : Theme.getColor(Theme.key_windowBackgroundGray, null, true);
+                int color = Theme.getColor(Theme.key_windowBackgroundWhite);  // int color = currentFragment != null && useCurrentFragment ? currentFragment.getNavigationBarColor() : Theme.getColor(Theme.key_windowBackgroundGray, null, true);
                 if (actionBarLayout.getSheetFragment(false) != null) {
                     BaseFragment sheetFragment = actionBarLayout.getSheetFragment(false);
                     if (sheetFragment.sheetsStack != null) {
@@ -8693,7 +8693,8 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         return 0;
     }
 
-    public void setNavigationBarColor(int color, boolean checkButtons) {
+    public void setNavigationBarColor(int colors, boolean checkButtons) {
+        int color = Theme.getColor(Theme.key_windowBackgroundWhite);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final Window window = getWindow();
             if (customNavigationBar != null) {

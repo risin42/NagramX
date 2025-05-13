@@ -858,7 +858,7 @@ public class BotWebViewSheet extends Dialog implements NotificationCenter.Notifi
 
         dimPaint.setColor(0x40000000);
         actionBarColor = getColor(Theme.key_windowBackgroundWhite);
-        navBarColor = getColor(Theme.key_windowBackgroundGray);
+        navBarColor = getColor(Theme.key_windowBackgroundWhite); // navBarColor = getColor(Theme.key_windowBackgroundGray);
         AndroidUtilities.setNavigationBarColor(getWindow(), navBarColor, false);
         windowView = new WindowView(context);
         windowView.setDelegate((keyboardHeight, isWidthGreater) -> {
