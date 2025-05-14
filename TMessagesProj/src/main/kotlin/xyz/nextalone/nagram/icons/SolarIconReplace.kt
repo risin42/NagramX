@@ -203,7 +203,7 @@ class SolarIconReplace : BaseIconReplace() {
         R.drawable.msg_folders_private to R.drawable.msg_folders_private_solar,
         R.drawable.msg_folders_read to R.drawable.msg_folders_read_solar,
         R.drawable.msg_folders_requests to R.drawable.msg_folders_requests_solar,
-        R.drawable.msg_forward to R.drawable.msg_share_solar,
+        R.drawable.msg_forward to R.drawable.msg_share_quote_solar,
         R.drawable.msg_forward_noquote to R.drawable.msg_share_solar,
         R.drawable.msg_forward_replace to R.drawable.msg_forward_replace_solar,
         R.drawable.msg_gallery to R.drawable.msg_gallery_solar,
