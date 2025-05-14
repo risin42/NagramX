@@ -4500,41 +4500,41 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         builder.setTitle(getString("DebugMenu", R.string.DebugMenu));
                         CharSequence[] items;
                         items = new CharSequence[]{
-                                getString("DebugMenuImportContacts", R.string.DebugMenuImportContacts),
-                                getString("DebugMenuReloadContacts", R.string.DebugMenuReloadContacts),
-                                getString("DebugMenuResetContacts", R.string.DebugMenuResetContacts),
-                                getString("DebugMenuResetDialogs", R.string.DebugMenuResetDialogs),
-                                BuildVars.DEBUG_VERSION ? null : (BuildVars.LOGS_ENABLED ? getString("DebugMenuDisableLogs", R.string.DebugMenuDisableLogs) : getString("DebugMenuEnableLogs", R.string.DebugMenuEnableLogs)),
-                                SharedConfig.inappCamera ? getString("DebugMenuDisableCamera", R.string.DebugMenuDisableCamera) : getString("DebugMenuEnableCamera", R.string.DebugMenuEnableCamera),
-                                getString("DebugMenuClearMediaCache", R.string.DebugMenuClearMediaCache),
-                                getString("DebugMenuCallSettings", R.string.DebugMenuCallSettings),
-                                null,
-                                BuildVars.DEBUG_PRIVATE_VERSION || ApplicationLoader.isStandaloneBuild() ? getString(R.string.DebugMenuCheckAppUpdate) : null,
-                                getString("DebugMenuReadAllDialogs", R.string.DebugMenuReadAllDialogs),
-                                BuildVars.DEBUG_PRIVATE_VERSION ? (SharedConfig.disableVoiceAudioEffects ? "Enable voip audio effects" : "Disable voip audio effects") : null,
-                                BuildVars.DEBUG_PRIVATE_VERSION ? "Clean app update" : null,
+                                getString(R.string.DebugMenuImportContacts),
+                                getString(R.string.DebugMenuReloadContacts),
+                                getString(R.string.DebugMenuResetContacts),
+                                getString(R.string.DebugMenuResetDialogs),
+                                BuildVars.DEBUG_VERSION ? null : BuildVars.LOGS_ENABLED ? getString(R.string.DebugMenuDisableLogs) : getString(R.string.DebugMenuEnableLogs),
+                                SharedConfig.inappCamera ? getString(R.string.DebugMenuDisableCamera) : getString(R.string.DebugMenuEnableCamera),
+                                getString(R.string.DebugMenuClearMediaCache),
+                                getString(R.string.DebugMenuCallSettings),
+                                null, // toggleRoundCamera16to9 ?
+                                null, // BuildVars.DEBUG_PRIVATE_VERSION || ApplicationLoader.isStandaloneBuild() ? getString(R.string.DebugMenuCheckAppUpdate) : null,
+                                getString(R.string.DebugMenuReadAllDialogs),
+                                BuildVars.DEBUG_PRIVATE_VERSION ? SharedConfig.disableVoiceAudioEffects ? "Enable voip audio effects" : "Disable voip audio effects" : null,
+                                null, // BuildVars.DEBUG_PRIVATE_VERSION ? "Clean app update" : null,
                                 BuildVars.DEBUG_PRIVATE_VERSION ? "Reset suggestions" : null,
                                 BuildVars.DEBUG_PRIVATE_VERSION ? getString(R.string.DebugMenuClearWebViewCache) : null,
                                 getString(R.string.DebugMenuClearWebViewCookies),
-                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? getString(SharedConfig.debugWebView ? R.string.DebugMenuDisableWebViewDebug : R.string.DebugMenuEnableWebViewDebug) : null,
-                                (AndroidUtilities.isTabletInternal() && BuildVars.DEBUG_PRIVATE_VERSION) ? (SharedConfig.forceDisableTabletMode ? "Enable tablet mode" : "Disable tablet mode") : null,
+                                getString(SharedConfig.debugWebView ? R.string.DebugMenuDisableWebViewDebug : R.string.DebugMenuEnableWebViewDebug),
+                                AndroidUtilities.isTabletInternal() && BuildVars.DEBUG_PRIVATE_VERSION ? SharedConfig.forceDisableTabletMode ? "Enable tablet mode" : "Disable tablet mode" : null,
                                 BuildVars.DEBUG_PRIVATE_VERSION ? getString(SharedConfig.isFloatingDebugActive ? R.string.FloatingDebugDisable : R.string.FloatingDebugEnable) : null,
                                 BuildVars.DEBUG_PRIVATE_VERSION ? "Force remove premium suggestions" : null,
                                 BuildVars.DEBUG_PRIVATE_VERSION ? "Share device info" : null,
                                 BuildVars.DEBUG_PRIVATE_VERSION ? "Force performance class" : null,
-                                BuildVars.DEBUG_PRIVATE_VERSION && !InstantCameraView.allowBigSizeCameraDebug() ? (!SharedConfig.bigCameraForRound ? "Force big camera for round" : "Disable big camera for round") : null,
+                                BuildVars.DEBUG_PRIVATE_VERSION && !InstantCameraView.allowBigSizeCameraDebug() ? !SharedConfig.bigCameraForRound ? "Force big camera for round" : "Disable big camera for round" : null,
                                 getString(DualCameraView.dualAvailableStatic(getContext()) ? "DebugMenuDualOff" : "DebugMenuDualOn"),
-                                BuildVars.DEBUG_VERSION ? (SharedConfig.useSurfaceInStories ? "back to TextureView in stories" : "use SurfaceView in stories") : null,
-                                BuildVars.DEBUG_PRIVATE_VERSION ? (SharedConfig.photoViewerBlur ? "do not blur in photoviewer" : "blur in photoviewer") : null,
-                                !SharedConfig.payByInvoice ? "Enable Invoice Payment" : "Disable Invoice Payment",
+                                BuildVars.DEBUG_VERSION ? SharedConfig.useSurfaceInStories ? "back to TextureView in stories" : "use SurfaceView in stories" : null,
+                                BuildVars.DEBUG_PRIVATE_VERSION ? SharedConfig.photoViewerBlur ? "do not blur in photoviewer" : "blur in photoviewer" : null,
+                                !SharedConfig.payByInvoice ? getString(R.string.DebugMenuEnableInvoicePayment) : getString(R.string.DebugMenuDisableInvoicePayment),
                                 BuildVars.DEBUG_PRIVATE_VERSION ? "Update Attach Bots" : null,
-                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? (!SharedConfig.isUsingCamera2(currentAccount) ? "Use Camera 2 API" : "Use old Camera 1 API") : null,
+                                !SharedConfig.isUsingCamera2(currentAccount) ? getString(R.string.DebugMenuUseCamera2Api) : getString(R.string.DebugMenuUseOldCamera1Api),
                                 BuildVars.DEBUG_VERSION ? "Clear Mini Apps Permissions and Files" : null,
                                 BuildVars.DEBUG_PRIVATE_VERSION ? "Clear all login tokens" : null,
-                                SharedConfig.canBlurChat() && Build.VERSION.SDK_INT >= 31 ? (SharedConfig.useNewBlur ? "back to cpu blur" : "use new gpu blur") : null,
-                                SharedConfig.adaptableColorInBrowser ? "Disabled adaptive browser colors" : "Enable adaptive browser colors",
-                                SharedConfig.debugVideoQualities ? "Disable video qualities debug" : "Enable video qualities debug",
-                                "Reload app config"
+                                SharedConfig.canBlurChat() && Build.VERSION.SDK_INT >= 31 ? SharedConfig.useNewBlur ? getString(R.string.DebugMenuUseCpuBlur) : getString(R.string.DebugMenuUseNewGpuBlur) : null,
+                                SharedConfig.adaptableColorInBrowser ? getString(R.string.DebugMenuDisableAdaptableColorInBrowser) : getString(R.string.DebugMenuEnableAdaptableColorInBrowser),
+                                SharedConfig.debugVideoQualities ? getString(R.string.DebugMenuDisableVideoQualitiesDebug) : getString(R.string.DebugMenuEnableVideoQualitiesDebug),
+                                getString(R.string.DebugMenuReloadAppConfig)
                         };
 
                         builder.setItems(items, (dialog, which) -> {
@@ -4614,16 +4614,16 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                 getMessagesStorage().readAllDialogs(-1);
                             } else if (which == 11) { // Voip audio effects
                                 SharedConfig.toggleDisableVoiceAudioEffects();
-                            } else if (which == 12) { // Clean app update
-                                SharedConfig.pendingAppUpdate = null;
-                                SharedConfig.saveConfig();
-                                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.appUpdateAvailable);
+//                            } else if (which == 12) { // Clean app update
+//                                SharedConfig.pendingAppUpdate = null;
+//                                SharedConfig.saveConfig();
+//                                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.appUpdateAvailable);
                             } else if (which == 13) { // Reset suggestions
                                 Set<String> suggestions = getMessagesController().pendingSuggestions;
                                 suggestions.add("VALIDATE_PHONE_NUMBER");
                                 suggestions.add("VALIDATE_PASSWORD");
                                 getNotificationCenter().postNotificationName(NotificationCenter.newSuggestionsAvailable);
-                            } else if (which == 14) { // WebView Cache
+                            } else if (which == 14) { // Clear WebView Cache
                                 ApplicationLoader.applicationContext.deleteDatabase("webview.db");
                                 ApplicationLoader.applicationContext.deleteDatabase("webviewCache.db");
                                 WebStorage.getInstance().deleteAllData();
@@ -4631,13 +4631,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                     WebView webView = new WebView(ApplicationLoader.applicationContext);
                                     webView.clearHistory();
                                     webView.destroy();
-                                } catch (Exception e) {}
-                            } else if (which == 15) {
+                                } catch (Exception ignored) {}
+                            } else if (which == 15) { // Clear WebView cookies
                                 CookieManager cookieManager = CookieManager.getInstance();
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                    cookieManager.removeAllCookies(null);
-                                    cookieManager.flush();
-                                }
+                                cookieManager.removeAllCookies(null);
+                                cookieManager.flush();
                             } else if (which == 16) { // WebView debug
                                 SharedConfig.toggleDebugWebView();
                                 Toast.makeText(getParentActivity(), getString(SharedConfig.debugWebView ? R.string.DebugMenuWebViewDebugEnabled : R.string.DebugMenuWebViewDebugDisabled), Toast.LENGTH_SHORT).show();
@@ -4650,9 +4648,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                 activity.finishAffinity(); // Finishes all activities.
                                 activity.startActivity(intent);    // Start the launch activity
                                 System.exit(0);
-                            } else if (which == 18) {
+                            } else if (which == 18) { // Floating debug
                                 FloatingDebugController.setActive((LaunchActivity) getParentActivity(), !FloatingDebugController.isActive());
-                            } else if (which == 19) {
+                            } else if (which == 19) { // Force remove premium suggestions
                                 getMessagesController().loadAppConfig();
                                 TLRPC.TL_help_dismissSuggestion req = new TLRPC.TL_help_dismissSuggestion();
                                 req.suggestion = "VALIDATE_PHONE_NUMBER";
@@ -4665,7 +4663,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                         getMessagesController().loadAppConfig();
                                     });
                                 });
-                            } else if (which == 20) {
+                            } else if (which == 20) { // Share device info
                                 int androidVersion = Build.VERSION.SDK_INT;
                                 int cpuCount = ConnectionsManager.CPU_COUNT;
                                 int memoryClass = ((ActivityManager) ApplicationLoader.applicationContext.getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
@@ -4768,7 +4766,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                         }, 250);
                                     }
                                 });
-                            } else if (which == 21) {
+                            } else if (which == 21) { // Force performance class
                                 AlertDialog.Builder builder2 = new AlertDialog.Builder(getParentActivity(), resourcesProvider);
                                 builder2.setTitle("Force performance class");
                                 int currentClass = SharedConfig.getDevicePerformanceClass();
@@ -4787,41 +4785,41 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                 });
                                 builder2.setNegativeButton(getString("Cancel", R.string.Cancel), null);
                                 builder2.show();
-                            } else if (which == 22) {
+                            } else if (which == 22) { // Force big camera for round
                                 SharedConfig.toggleRoundCamera();
-                            } else if (which == 23) {
+                            } else if (which == 23) { // Debug dual camera
                                 boolean enabled = DualCameraView.dualAvailableStatic(getContext());
                                 MessagesController.getGlobalMainSettings().edit().putBoolean("dual_available", !enabled).apply();
                                 try {
                                     Toast.makeText(getParentActivity(), getString(!enabled ? R.string.DebugMenuDualOnToast : R.string.DebugMenuDualOffToast), Toast.LENGTH_SHORT).show();
-                                } catch (Exception e) {}
-                            } else if (which == 24) {
+                                } catch (Exception ignored) {}
+                            } else if (which == 24) { // TextureView/SurfaceView in stories"
                                 SharedConfig.toggleSurfaceInStories();
                                 for (int i = 0; i < getParentLayout().getFragmentStack().size(); i++) {
                                     getParentLayout().getFragmentStack().get(i).clearSheets();
                                 }
-                            } else if (which == 25) {
+                            } else if (which == 25) { // Blur in photo viewer
                                 SharedConfig.togglePhotoViewerBlur();
-                            } else if (which == 26) {
+                            } else if (which == 26) { // Toggle invoice payment
                                 SharedConfig.togglePaymentByInvoice();
-                            } else if (which == 27) {
+                            } else if (which == 27) { // Update Attach Bots
                                 getMediaDataController().loadAttachMenuBots(false, true);
-                            } else if (which == 28) {
+                            } else if (which == 28) { // Use Camera 2 API
                                 SharedConfig.toggleUseCamera2(currentAccount);
-                            } else if (which == 29) {
+                            } else if (which == 29) { // Clear mini Apps permissions and files
                                 BotBiometry.clear();
                                 BotLocation.clear();
                                 BotDownloads.clear();
                                 SetupEmojiStatusSheet.clear();
-                            } else if (which == 30) {
+                            } else if (which == 30) { // Clear all login tokens
                                 AuthTokensHelper.clearLogInTokens();
-                            } else if (which == 31) {
+                            } else if (which == 31) { // Back to cpu blur / use new gpu blur
                                 SharedConfig.toggleUseNewBlur();
-                            } else if (which == 32) {
+                            } else if (which == 32) { // Adaptive browser colors
                                 SharedConfig.toggleBrowserAdaptableColors();
-                            } else if (which == 33) {
+                            } else if (which == 33) { // Debug video qualities
                                 SharedConfig.toggleDebugVideoQualities();
-                            } else if (which == 34) {
+                            } else if (which == 34) { // Reload app config
                                 MessagesController.getInstance(currentAccount).loadAppConfig(true);
                             }
                         });

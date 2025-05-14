@@ -168,4 +168,15 @@
     <string name="HideDividers">Hide Dividers</string>
     <string name="IconReplacements">Icon Replacements</string>
     <string name="IconReplacementSolar">Solar Icons by @Design480</string>
+    <string name="DebugMenuEnableInvoicePayment">Enable Invoice Payment</string>
+    <string name="DebugMenuDisableInvoicePayment">Disable Invoice Payment</string>
+    <string name="DebugMenuUseCamera2Api">Use Camera 2 API</string>
+    <string name="DebugMenuUseOldCamera1Api">Use old Camera 1 API</string>
+    <string name="DebugMenuUseCpuBlur">Back to CPU Blur</string>
+    <string name="DebugMenuUseNewGpuBlur">Use New GPU Blur</string>
+    <string name="DebugMenuEnableAdaptableColorInBrowser">Enable adaptive browser colors</string>
+    <string name="DebugMenuDisableAdaptableColorInBrowser">Disable adaptive browser colors</string>
+    <string name="DebugMenuEnableVideoQualitiesDebug">Enable video qualities debug</string>
+    <string name="DebugMenuDisableVideoQualitiesDebug">Disable video qualities debug</string>
+    <string name="DebugMenuReloadAppConfig">Reload App Config</string>
 </resources>
