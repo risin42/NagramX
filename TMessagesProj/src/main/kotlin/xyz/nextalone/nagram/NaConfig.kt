@@ -615,7 +615,7 @@ object NaConfig {
         addConfig(
             "Reply",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val ActionBarButtonEdit =
         addConfig(
@@ -1171,6 +1171,24 @@ object NaConfig {
             "IconReplacements",
             ConfigItem.configTypeInt,
             0
+        )
+    var showCopyAsSticker =
+        addConfig(
+            "CopyPhotoAsSticker",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var showAddToStickers =
+        addConfig(
+            "AddToStickers",
+            ConfigItem.configTypeBool,
+            false
+        )
+    var showAddToFavorites =
+        addConfig(
+            "AddToFavorites",
+            ConfigItem.configTypeBool,
+            true
         )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
