@@ -148,23 +148,26 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell messageMenuRow = cellGroup.appendCell(new ConfigCellSelectBox("MessageMenu", null, null, () -> {
         if (getParentActivity() == null) return;
         showDialog(showConfigMenuAlert(getParentActivity(), "MessageMenu", new ArrayList<>() {{
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowReactions()));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowReplyInPrivate()));
-            add(new ConfigCellTextCheck(NekoConfig.showDeleteDownloadedFile, null, getString(R.string.DeleteDownloadedFile)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowCopyPhoto()));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowCopyAsSticker()));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowAddToStickers()));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowAddToFavorites()));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowNoQuoteForward()));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowSetReminder()));
             add(new ConfigCellTextCheck(NekoConfig.showAddToSavedMessages, null, getString(R.string.AddToSavedMessages)));
             add(new ConfigCellTextCheck(NekoConfig.showRepeat, null, getString(R.string.Repeat)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowRepeatAsCopy()));
+            add(new ConfigCellTextCheck(NekoConfig.showDeleteDownloadedFile, null, getString(R.string.DeleteDownloadedFile)));
             add(new ConfigCellTextCheck(NekoConfig.showViewHistory, null, getString(R.string.ViewHistory)));
             add(new ConfigCellTextCheck(NekoConfig.showTranslate, null, getString(R.string.Translate)));
+            add(new ConfigCellTextCheck(NekoConfig.showShareMessages, null, getString(R.string.ShareMessages)));
+            add(new ConfigCellTextCheck(NekoConfig.showMessageDetails, null, getString(R.string.MessageDetails)));
+            add(new ConfigCellTextCheck(NekoConfig.showMessageHide, null, getString(R.string.Hide)));
             add(new ConfigCellTextCheck(NekoConfig.showReport, null, getString(R.string.ReportChat)));
             add(new ConfigCellTextCheck(NekoConfig.showAdminActions, null, getString(R.string.EditAdminRights)));
             add(new ConfigCellTextCheck(NekoConfig.showChangePermissions, null, getString(R.string.ChangePermissions)));
-            add(new ConfigCellTextCheck(NekoConfig.showMessageHide, null, getString(R.string.Hide)));
-            add(new ConfigCellTextCheck(NekoConfig.showShareMessages, null, getString(R.string.ShareMessages)));
-            add(new ConfigCellTextCheck(NekoConfig.showMessageDetails, null, getString(R.string.MessageDetails)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowSetReminder()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowReactions()));
         }}));
     }));
     private final AbstractConfigCell mediaViewerMenuRow = cellGroup.appendCell(new ConfigCellSelectBox("MediaViewerMenu", null, null, () -> {
