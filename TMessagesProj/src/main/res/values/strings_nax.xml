@@ -179,4 +179,5 @@
     <string name="DebugMenuEnableVideoQualitiesDebug">Enable video qualities debug</string>
     <string name="DebugMenuDisableVideoQualitiesDebug">Disable video qualities debug</string>
     <string name="DebugMenuReloadAppConfig">Reload App Config</string>
+    <string name="TranslateMessageLLM">Translate with AI</string>
 </resources>

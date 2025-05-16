@@ -69,14 +69,14 @@ interface Translator {
         const val providerLLMTranslator = 10
 
         @Throws(Exception::class)
-        suspend fun translate(to: Locale, query: String): String {
-            val result: TLRPC.TL_textWithEntities = translateBase(to, query, ArrayList(), NekoConfig.translationProvider.Int())
+        suspend fun translate(to: Locale, query: String, provider: Int = 0): String {
+            val result: TLRPC.TL_textWithEntities = translateBase(to, query, ArrayList(), provider.takeIf { it != 0 } ?: NekoConfig.translationProvider.Int())
             return result.text.toString()
         }
 
         @Throws(Exception::class)
-        suspend fun translate(to: Locale, query: String, entities: ArrayList<TLRPC.MessageEntity>): TLRPC.TL_textWithEntities {
-            val result: TLRPC.TL_textWithEntities = translateBase(to, query, entities, NekoConfig.translationProvider.Int())
+        suspend fun translate(to: Locale, query: String, entities: ArrayList<TLRPC.MessageEntity>, provider: Int = 0): TLRPC.TL_textWithEntities {
+            val result: TLRPC.TL_textWithEntities = translateBase(to, query, entities, provider.takeIf { it != 0 } ?: NekoConfig.translationProvider.Int())
             return result
         }
 
@@ -86,12 +86,13 @@ interface Translator {
             to: Locale = NekoConfig.translateToLang.String()?.code2Locale
                 ?: LocaleController.getInstance().currentLocale,
             query: String,
+            provider: Int = 0,
             translateCallBack: TranslateCallBack
         ) {
 
             UIUtil.runOnIoDispatcher {
                 runCatching {
-                    val result: String = translate(to, query)
+                    val result: String = translate(to, query, provider.takeIf { it != 0 } ?: NekoConfig.translationProvider.Int())
 
                     UIUtil.runOnUIThread(Runnable {
                         translateCallBack.onSuccess(result)

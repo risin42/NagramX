@@ -162,6 +162,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             add(new ConfigCellTextCheck(NekoConfig.showDeleteDownloadedFile, null, getString(R.string.DeleteDownloadedFile)));
             add(new ConfigCellTextCheck(NekoConfig.showViewHistory, null, getString(R.string.ViewHistory)));
             add(new ConfigCellTextCheck(NekoConfig.showTranslate, null, getString(R.string.Translate)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTranslateMessageLLM()));
             add(new ConfigCellTextCheck(NekoConfig.showShareMessages, null, getString(R.string.ShareMessages)));
             add(new ConfigCellTextCheck(NekoConfig.showMessageDetails, null, getString(R.string.MessageDetails)));
             add(new ConfigCellTextCheck(NekoConfig.showMessageHide, null, getString(R.string.Hide)));
@@ -404,6 +405,8 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_SHOW_REACTIONS);
                     arrayList.add(getString(R.string.TranslateMessage));
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_TRANSLATE);
+                    arrayList.add(getString(R.string.TranslateMessageLLM));
+                    types.add(DoubleTap.DOUBLE_TAP_ACTION_TRANSLATE_LLM);
                     arrayList.add(getString(R.string.Reply));
                     types.add(DoubleTap.DOUBLE_TAP_ACTION_REPLY);
                     arrayList.add(getString(R.string.AddToSavedMessages));
