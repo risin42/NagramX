@@ -8,6 +8,8 @@
 
 package org.telegram.ui;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -118,6 +120,7 @@ import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.AlertsCreator;
 import org.telegram.ui.Components.AnimatedFloat;
 import org.telegram.ui.Components.BackupImageView;
+import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.CacheChart;
 import org.telegram.ui.Components.CheckBox2;
 import org.telegram.ui.Components.AlertsCreator;
@@ -150,6 +153,7 @@ import java.util.HashSet;
 import java.util.Objects;
 
 import kotlin.Unit;
+import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.utils.EnvUtil;
@@ -242,6 +246,7 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
     private static final int other_id = 2;
     private static final int clear_database_id = 3;
     private static final int reset_database_id = 4;
+    private static final int reset_chat_name_overrides_id = 1001;
     private boolean loadingDialogs;
     private NestedSizeNotifierLayout nestedSizeNotifierLayout;
 
@@ -1320,6 +1325,17 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
                     clearDatabase(false);
                 } else if (id == reset_database_id) {
                     clearDatabase(true);
+                } else if (id == reset_chat_name_overrides_id) {
+                    AlertDialog progressDialog = new AlertDialog(getContext(), AlertDialog.ALERT_TYPE_SPINNER);
+                    progressDialog.setCanCancel(false);
+                    progressDialog.show();
+                    Utilities.globalQueue.postRunnable(() -> {
+                        ChatNameHelper.clearAllChatNameOverrides();
+                        AndroidUtilities.runOnUIThread(() -> {
+                            progressDialog.dismiss();
+                            BulletinFactory.of(CacheControlActivity.this).createSimpleBulletin(R.raw.done, getString(R.string.ResetChatNameNotification)).show();
+                        });
+                    });
                 }
             }
         });
@@ -1368,6 +1384,11 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
             resetDatabaseItem.setTextColor(Theme.getColor(Theme.key_text_RedBold));
             resetDatabaseItem.setSelectorColor(Theme.multAlpha(Theme.getColor(Theme.key_text_RedRegular), .12f));
         }
+
+        ActionBarMenuSubItem resetChatNameOverridesItem = otherItem.addSubItem(reset_chat_name_overrides_id, R.drawable.msg_delete, LocaleController.getString(R.string.ResetChatNameOverrides));
+        resetChatNameOverridesItem.setIconColor(Theme.getColor(Theme.key_text_RedRegular));
+        resetChatNameOverridesItem.setTextColor(Theme.getColor(Theme.key_text_RedBold));
+        resetChatNameOverridesItem.setSelectorColor(Theme.multAlpha(Theme.getColor(Theme.key_text_RedRegular), .12f));
         updateDatabaseItemSize();
 
         listAdapter = new ListAdapter(context);

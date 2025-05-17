@@ -73,7 +73,6 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
-import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.transtale.TranslateDb;
 import xyz.nextalone.nagram.NaConfig;
 import com.radolyn.ayugram.messages.AyuMessagesController;
@@ -1399,8 +1398,6 @@ public class MessagesStorage extends BaseController {
             try {
                 // NekoX cleardatabase
                 TranslateDb.clearAll();
-                // NagramX clear chat name override
-                ChatNameHelper.clearAllChatNameOverrides();
 
                 ArrayList<Long> dialogsToCleanup = new ArrayList<>();
 
