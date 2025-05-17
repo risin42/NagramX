@@ -11,6 +11,8 @@ import java.util.LinkedHashMap;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
+import xyz.nextalone.nagram.NaConfig;
+import xyz.nextalone.nagram.TabStyle;
 
 
 public class FolderIconHelper {
@@ -123,7 +125,8 @@ public class FolderIconHelper {
     }
 
     public static int getPaddingTab() {
-        if (NekoConfig.tabsTitleType.Int() != NekoXConfig.TITLE_TYPE_ICON) {
+        if (NekoConfig.tabsTitleType.Int() != NekoXConfig.TITLE_TYPE_ICON ||
+                NaConfig.INSTANCE.getTabStyle().Int() >= TabStyle.PILLS.getValue()) {
             return AndroidUtilities.dp(32);
         }
         return AndroidUtilities.dp(16);

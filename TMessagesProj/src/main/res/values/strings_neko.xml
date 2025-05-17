@@ -71,8 +71,8 @@
     <string name="HideAllTabAbout">Long press the title in the chat list to show All Chats.</string>
     <string name="TabTitleType">Show on Tabs</string>
     <string name="TabTitleTypeText">Titles</string>
-    <string name="TabTitleTypeIcon">Emoticons</string>
-    <string name="TabTitleTypeMix">Emoticons with titles</string>
+    <string name="TabTitleTypeIcon">Icons</string>
+    <string name="TabTitleTypeMix">Icons with Titles</string>
     <string name="ConfirmAVMessage">Ask Before Sending Video/Voice Message</string>
     <string name="AskBeforeCalling">Ask Before Calling</string>
     <string name="ConfirmCall">Confirm calling</string>
