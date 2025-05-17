@@ -102,7 +102,7 @@
     <string name="CenterActionBarTitleType">Use Centered Title</string>
     <string name="ShowQuickReplyInBotCommands">Show Quick Reply in Bot Commands</string>
     <string name="PushServiceType">Push Service Type</string>
-    <string name="PushServiceTypeInApp">In App</string>
+    <string name="PushServiceTypeInApp">In-App</string>
     <string name="PushServiceTypeFCM" translatable="false">Google FCM</string>
     <string name="PushServiceTypeUnified" translatable="false">Unified Push</string>
     <string name="PushServiceTypeMicroG" translatable="false">microG</string>

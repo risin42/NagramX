@@ -6,7 +6,7 @@
     <string name="TextStyle">テキストスタイル</string>
     <string name="NoiseSuppressAndVoiceEnhance">ノイズ抑制と音声強調</string>
     <string name="RepeatAsCopy">引用なしでリポスト</string>
-    <string name="DoubleTapAction">ダブルタップ操作</string>
+    <string name="DoubleTapAction">ダブルタップの動作</string>
     <string name="SendReactions">リアクションを送信</string>
     <string name="ShowReactions">リアクションメニューを表示</string>
     <string name="CustomTitle">カスタムタイトル</string>

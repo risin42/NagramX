@@ -151,6 +151,7 @@
     <string name="GeminiNotSupport">Gemini bu cihazda desteklenmiyor.</string>
     <string name="ReplyInPrivate">Özel Sohbette Yanıtla</string>
     <string name="TranscribeProviderGeminiPrompt">İstem (isteğe bağlı)</string>
+    <string name="uploadBoost">Yükleme Hızını Artır</string>
     <string name="HideDividers">Ayırıcıları Gizle</string>
     <string name="IconReplacements">Simge Değişimleri</string>
     <string name="IconReplacementSolar">\@Design480 tarafından Solar Simgeler</string>

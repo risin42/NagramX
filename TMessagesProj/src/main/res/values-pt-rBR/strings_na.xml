@@ -37,7 +37,7 @@
     <string name="InputMessageId">Inserir ID da Mensagem</string>
     <string name="ToTheMessage">Ir Para</string>
     <string name="ZalgoFilter">Filtrar Símbolos \"Zalgo\"</string>
-    <string name="ZalgoFilterNotice">Todos os símbolos “Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓” em alcunhas ou mensagens serão removidos.</string>
+    <string name="ZalgoFilterNotice">Todos os símbolos \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" em apelidos ou mensagens serão removidos.</string>
     <string name="labelChannelUser">Etiqueta Usuários de Canal</string>
     <string name="CustomChannelLabel">Etiqueta de Canal Personalizado</string>
     <string name="AlwaysShowDownloadIcon">Sempre Mostrar Ícone de Download</string>
@@ -76,7 +76,7 @@
     <string name="ShowSquareAvatar">Avatar Quadrado</string>
     <string name="DisableCustomWallpaperUser">Desativar Papel de parede personalizado do Usuário</string>
     <string name="DisableCustomWallpaperChannel">Desativar papel de parede personalizado do canal</string>
-    <string name="CopyPhotoAsSticker">Copiar como Figurinha</string>
+    <string name="CopyPhotoAsSticker">Copiar como Sticker</string>
     <string name="ExternalStickerCache">Cache de Sticker Externo</string>
     <string name="ExternalStickerCacheHint">Para compartilhar pacotes de sticker com outros aplicativos. Clique para escolher o local de armazenamento.</string>
     <string name="ExternalStickerCacheRefresh">Atualizar Cache Externo</string>

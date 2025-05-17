@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">N-Ajustes</string>
-    <string name="IPv6">Conexión a través de IPv6</string>
+    <string name="IPv6">IPv6 preferido</string>
     <string name="MessageMenu">Menú de mensaje</string>
     <string name="HidePhone">Ocultar número de teléfono</string>
     <string name="DeleteAllFromSelf">Eliminar Mis Mensajes</string>
@@ -128,7 +128,7 @@
     <string name="MutualContactDescription">Este contacto es un contacto mutuo.</string>
     <string name="DatacenterStatusAbout">Compruebe el estado de los **datacenters** de Telegram.</string>
     <string name="DatacenterStatus">Estado del datacenter</string>
-    <string name="enhancedFileLoader">Aumentar la velocidad de subida y descarga</string>
+    <string name="enhancedFileLoader">Aumento de velocidad de descarga</string>
     <string name="mapDriftingFixForGoogleMaps">Corregir la deriva de Google Maps en China</string>
     <string name="useOSMDroidMap">Usar mapa OSMDroid</string>
     <string name="UnknownNekoSettingsOption">No existe esta opción de configuración de Neko.</string>

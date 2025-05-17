@@ -147,6 +147,12 @@
     <string name="CloudflareAPIToken">Токен API</string>
     <string name="CloudflareCredentialsDialog">Настройте ID аккаунта Cloudflare и токен API.\n**Как получить?**\n</string>
     <string name="GeminiApiKeyNotSet">Ключ API Gemini не настроен.</string>
-    <string name="GeminiApiKeyDialog">Настройте ключ API Gemini. Если оставить пустым, будет использоваться ключ из настроек переводчика.\n**Как получить?**\n</string>
+    <string name="GeminiApiKeyDialog">Настройте ключ API Gemini. Оставьте пустым, чтобы использовать ключ из настроек переводчика.\n**Как получить?**\n</string>
     <string name="GeminiNotSupport">Gemini не поддерживается на этом устройстве.</string>
+    <string name="ReplyInPrivate">Ответить в личном чате</string>
+    <string name="TranscribeProviderGeminiPrompt">Промпт (необязательно)</string>
+    <string name="uploadBoost">Увеличить скорость скачивания</string>
+    <string name="HideDividers">Скрыть разделители</string>
+    <string name="IconReplacements">Замена значков</string>
+    <string name="IconReplacementSolar">Значки Solar от @Design480</string>
 </resources>

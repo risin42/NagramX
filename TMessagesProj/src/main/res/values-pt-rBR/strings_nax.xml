@@ -11,7 +11,7 @@
     <string name="CustomDeletedMark">Marca personalizada excluída</string>
     <string name="HidePremiumSection">Ocultar Premium nas Configurações</string>
     <string name="HideHelpSection">Ocultar Ajuda nas Configurações</string>
-    <string name="ProviderLLMTranslator">AI Tradutor</string>
+    <string name="ProviderLLMTranslator">IA Tradutor</string>
     <string name="LlmApiUrl">URL da API</string>
     <string name="LlmApiUrlHint">ex. https://api.openai.com/v1</string>
     <string name="LlmApiKey">Chave API</string>
@@ -149,4 +149,10 @@
     <string name="GeminiApiKeyNotSet">A chave da API do Gemini não está configurada.</string>
     <string name="GeminiApiKeyDialog">Configure a chave da API do Gemini, utilizando a do tradutor se deixada em branco.\n**Como obter?**\n</string>
     <string name="GeminiNotSupport">Gemini não é suportado neste dispositivo.</string>
+    <string name="ReplyInPrivate">Responder em Chat Privado</string>
+    <string name="TranscribeProviderGeminiPrompt">Prompt (opcional)</string>
+    <string name="uploadBoost">Aumentar Velocidade de Upload</string>
+    <string name="HideDividers">Ocultar Divisores</string>
+    <string name="IconReplacements">Substituições de Ícones</string>
+    <string name="IconReplacementSolar">Ícones Solares por @Design480</string>
 </resources>
