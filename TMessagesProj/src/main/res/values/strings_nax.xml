@@ -180,4 +180,6 @@
     <string name="DebugMenuDisableVideoQualitiesDebug">Disable video qualities debug</string>
     <string name="DebugMenuReloadAppConfig">Reload App Config</string>
     <string name="TranslateMessageLLM">Translate with AI</string>
+    <string name="ResetChatNameOverrides">Reset Chat Name Overrides</string>
+    <string name="ResetChatNameNotification">Chat name overrides cleared.</string>
 </resources>
