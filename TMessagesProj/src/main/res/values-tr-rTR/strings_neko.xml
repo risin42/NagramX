@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">N-Ayarlar</string>
+    <string name="IPv6">IPv6\'yı Tercih Et</string>
     <string name="MessageMenu">Mesaj Menüsü</string>
     <string name="HidePhone">Telefon Numarasını Gizle</string>
     <string name="DeleteAllFromSelf">Mesajlarımı Sil</string>
@@ -70,8 +71,8 @@
     <string name="HideAllTabAbout">Tüm Sohbetleri göstermek için sohbet listesindeki başlığa uzun basın.</string>
     <string name="TabTitleType">Sekmelerde Göster</string>
     <string name="TabTitleTypeText">Başlıklar</string>
-    <string name="TabTitleTypeIcon">Emojiler</string>
-    <string name="TabTitleTypeMix">Emojiler ve başlıklar</string>
+    <string name="TabTitleTypeIcon">Simgeler</string>
+    <string name="TabTitleTypeMix">Başlıklı Simgeler</string>
     <string name="ConfirmAVMessage">Video/Sesli Mesaj Göndermeden Önce Sor</string>
     <string name="AskBeforeCalling">Aramadan Önce Sor</string>
     <string name="ConfirmCall">Aramayı Onayla</string>
@@ -127,6 +128,7 @@
     <string name="MutualContactDescription">Bu kişi ortak bir kişidir.</string>
     <string name="DatacenterStatusAbout">Telegram’ın **veri merkezlerinin** durumunu kontrol edin.</string>
     <string name="DatacenterStatus">Veri Merkezi Durumu</string>
+    <string name="enhancedFileLoader">İndirme Hızını Artır</string>
     <string name="mapDriftingFixForGoogleMaps">Çin’de Google Haritalar Kaymasını Düzelt</string>
     <string name="useOSMDroidMap">OSMDroid Haritasını Kullan</string>
     <string name="UnknownNekoSettingsOption">Böyle bir Neko Ayarları seçeneği yok.</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">N-Configurações</string>
+    <string name="IPv6">Preferir IPv6</string>
     <string name="MessageMenu">Menu de Mensagem</string>
     <string name="HidePhone">Ocultar número de telefone</string>
     <string name="DeleteAllFromSelf">Excluir Minhas Mensagens</string>
@@ -45,7 +46,7 @@
     <string name="StickerSizeDialogMessageReplyTo">Miau</string>
     <string name="StickerSizeDialogName">Duang</string>
     <string name="Experimental">Experimental</string>
-    <string name="UnlimitedFavoredStickers">Stickers favoritos ilimitados</string>
+    <string name="UnlimitedFavoredStickers">Stickers Favoritos Ilimitados</string>
     <string name="UnlimitedFavoredStickersAbout">Adicione stickers ilimitados aos favoritos. Os stickers podem não ser sincronizados com outros dispositivos.</string>
     <string name="MessageDetails">Detalhes</string>
     <string name="ExportAsJson">Exportar como JSON</string>
@@ -56,9 +57,9 @@
     <string name="TranslateApiUnsupported">O provedor de tradução que você selecionou não suporta seu idioma.</string>
     <string name="ProviderLingocloud">LingoCloud Tradutor</string>
     <string name="UndoTranslate">Ocultar Tradução</string>
-    <string name="DisablePhotoViewerSideAction">Desativar Inverter Fotos ao tocar</string>
+    <string name="DisablePhotoViewerSideAction">Desativar Virar Fotos Ao Tocar</string>
     <string name="BotToken">Token</string>
-    <string name="UnlimitedPinnedDialogs">Diálogos fixados ilimitados</string>
+    <string name="UnlimitedPinnedDialogs">Diálogos Fixados Ilimitados</string>
     <string name="UnlimitedPinnedDialogsAbout">Fixe diálogos ilimitados desativando a sincronização deles.</string>
     <string name="OpenArchiveOnPull">Abrir \"Chats Arquivados\" ao puxar para baixo</string>
     <string name="HideKeyboardOnChatScroll">Ocultar teclado ao rolar a conversa</string>
@@ -71,7 +72,7 @@
     <string name="TabTitleType">Mostrar nas abas</string>
     <string name="TabTitleTypeText">Títulos</string>
     <string name="TabTitleTypeIcon">Ícones</string>
-    <string name="TabTitleTypeMix">Ícones com títulos</string>
+    <string name="TabTitleTypeMix">Ícones com Títulos</string>
     <string name="ConfirmAVMessage">Perguntar antes de Enviar Vídeo/Mensagem de Voz</string>
     <string name="AskBeforeCalling">Perguntar antes de ligar</string>
     <string name="ConfirmCall">Confirmar ligação</string>
@@ -127,6 +128,7 @@
     <string name="MutualContactDescription">Este é um contato em comum.</string>
     <string name="DatacenterStatusAbout">Verifique o status dos **datacenters** do Telegram.</string>
     <string name="DatacenterStatus">Datacenter Status</string>
+    <string name="enhancedFileLoader">Aumentar Velocidade de Download</string>
     <string name="mapDriftingFixForGoogleMaps">Corrigir Google Maps Drifting na China</string>
     <string name="useOSMDroidMap">Usar Mapa OSMDroid</string>
     <string name="UnknownNekoSettingsOption">Essa opção não existe nas configurações do Neko.</string>
@@ -202,6 +204,7 @@
     <string name="LinkedChannelChat">Canal vinculado</string>
     <string name="CustomBackend">Back-end personalizado</string>
     <string name="ChangeTranslateProvider">Mudar provedor</string>
+    <string name="ProviderYandexTranslate">Yandex Tradutor</string>
     <string name="GoogleCloudTransKeyNotice">Se você configurar uma chave de tradução do Google Cloud, a API de tradução em nuvem será chamada em vez de enviar um formulário falso para a versão web ao traduzir (mais rápido, estável e economizando tráfego).</string>
     <string name="TransToLang">Idioma de Destino</string>
     <string name="TransInputToLang">Idioma de Tradução Pré-Envio</string>

@@ -37,7 +37,7 @@
     <string name="InputMessageId">Inserir ID da Mensagem</string>
     <string name="ToTheMessage">Ir Para</string>
     <string name="ZalgoFilter">Filtrar Símbolos \"Zalgo\"</string>
-    <string name="ZalgoFilterNotice">Todos os símbolos “Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓” em alcunhas ou mensagens serão removidos.</string>
+    <string name="ZalgoFilterNotice">Todos os símbolos \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" em apelidos ou mensagens serão removidos.</string>
     <string name="labelChannelUser">Etiqueta Usuários de Canal</string>
     <string name="CustomChannelLabel">Etiqueta de Canal Personalizado</string>
     <string name="AlwaysShowDownloadIcon">Sempre Mostrar Ícone de Download</string>
@@ -53,16 +53,16 @@
     <string name="IconDecoration">Decoração do Ícone</string>
     <string name="NotificationIcon">Ícone de Notificação</string>
     <string name="Official">Oficial</string>
-    <string name="HalloWeen">HalloWeen</string>
+    <string name="HalloWeen">Dia das Bruxas</string>
     <string name="ShowOnlineStatus">Mostrar Status Online</string>
     <string name="ShowOnlineStatusNotice">Mostrar o estado online das outras pessoas ao lado de suas fotos de perfil nos grupos.</string>
     <string name="ShowRecentOnlineStatus">Mostrar Status Online Recente</string>
     <string name="DoActionsInCommonGroups">Aplicado em grupos comuns</string>
     <string name="ShowFullAbout">Sempre Expandir Descrição do Chat</string>
     <string name="HideMessageSeenTooltip">Ocultar Confirmações de Leitura</string>
-    <string name="TypeMessageHintUseGroupName">Usar Nome do Grupo como Texto de Sugestão</string>
+    <string name="TypeMessageHintUseGroupName">Usar O Nome Do Grupo Como Dica De Preenchimento</string>
     <string name="HideBotButtonInInputField">Ocultar Botão do Bot no Campo de Entrada</string>
-    <string name="ShowSendAsUnderMessageHint">Mostrar remetente sob a sugestão da mensagem</string>
+    <string name="ShowSendAsUnderMessageHint">Mostrar O Remetente Abaixo Da Dica Da Mensagem</string>
     <string name="CheckAllForum">Adicionar fórum</string>
     <string name="DecorationNone">Nenhum</string>
     <string name="ChatDecoration">Decoração do Chat</string>
@@ -76,7 +76,7 @@
     <string name="ShowSquareAvatar">Avatar Quadrado</string>
     <string name="DisableCustomWallpaperUser">Desativar Papel de parede personalizado do Usuário</string>
     <string name="DisableCustomWallpaperChannel">Desativar papel de parede personalizado do canal</string>
-    <string name="CopyPhotoAsSticker">Copiar como Figurinha</string>
+    <string name="CopyPhotoAsSticker">Copiar como Sticker</string>
     <string name="ExternalStickerCache">Cache de Sticker Externo</string>
     <string name="ExternalStickerCacheHint">Para compartilhar pacotes de sticker com outros aplicativos. Clique para escolher o local de armazenamento.</string>
     <string name="ExternalStickerCacheRefresh">Atualizar Cache Externo</string>
@@ -121,7 +121,7 @@
     <string name="RegexFiltersCaseInsensitive">Expressões que não diferenciam maiúsculas de minúsculas</string>
     <string name="RegexFiltersAdd">Adicionar filtro</string>
     <string name="RegexFiltersEdit">Editar filtro</string>
-    <string name="RegexFiltersAddDescription">Você pode usar o site <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> para testar totalmente a sua expressão regular. Você também pode usar texto simples, mas não se esqueça de escapar de colchetes.</string>
+    <string name="RegexFiltersAddDescription">Você pode usar o site <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> para testar completamente sua expressão regular. Também é possível usar texto simples, mas não se esqueça de escapar os colchetes.</string>
     <string name="RegexFiltersAddError">Erro de sintaxe Regex</string>
     <string name="ShowTimeHint">Clique no Horário da Mensagem para Mostrar Detalhes</string>
     <string name="SearchHashtagDefaultPageChannel">Página de busca de hashtag padrão nos canais</string>

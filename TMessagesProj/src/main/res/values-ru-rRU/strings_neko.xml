@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="NekoSettings">Настройки N</string>
+    <string name="IPv6">Предпочитать IPv6</string>
     <string name="MessageMenu">Меню сообщений</string>
     <string name="HidePhone">Скрыть номер телефона</string>
     <string name="DeleteAllFromSelf">Удалить мои сообщения</string>
@@ -127,6 +128,7 @@
     <string name="MutualContactDescription">Этот контакт является взаимным контактом.</string>
     <string name="DatacenterStatusAbout">Проверьте состояние **дата-центров** Telegram.</string>
     <string name="DatacenterStatus">Состояние дата-центров</string>
+    <string name="enhancedFileLoader">Увеличить скорость загрузки</string>
     <string name="mapDriftingFixForGoogleMaps">Исправить дрейф Google Карт в Китае</string>
     <string name="useOSMDroidMap">Использовать карту OSMDroid</string>
     <string name="UnknownNekoSettingsOption">В «Настройках N» нет такой опции.</string>

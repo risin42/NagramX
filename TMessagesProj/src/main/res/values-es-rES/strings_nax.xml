@@ -136,4 +136,23 @@
     <string name="PerformanceClassAverage">Media</string>
     <string name="PerformanceClassLow">Bajo</string>
     <string name="PerformanceClassUnknown">Desconocido</string>
+    <string name="HideGiftButton">Ocultar Botón de Gif</string>
+    <string name="TranscribeProviderShort">Proveedor</string>
+    <string name="TranscribeProviderAuto">Autoseleccionar</string>
+    <string name="TranscribeProviderWorkersAI">Susurro (IA de los Trabajadores)</string>
+    <string name="TranscribeProviderGemini">Gemini</string>
+    <string name="CloudflareCredentials">Credenciales de Cloudflare</string>
+    <string name="CloudflareCredentialsNotSet">Las credenciales de Cloudflare no están configuradas.</string>
+    <string name="CloudflareAccountID">ID de cuenta</string>
+    <string name="CloudflareAPIToken">Token API</string>
+    <string name="CloudflareCredentialsDialog">Configurar ID de cuenta de Cloudflare y token de API.\n**¿Cómo obtener?**\n</string>
+    <string name="GeminiApiKeyNotSet">La clave de API de Gemini no está configurada.</string>
+    <string name="GeminiApiKeyDialog">Configurar la clave API de Gemini, usando la de la configuración del traductor si se deja en blanco.\n**¿Cómo obtener?**\n</string>
+    <string name="GeminiNotSupport">Gemini no es compatible con este dispositivo.</string>
+    <string name="ReplyInPrivate">Responder en Chat Privado</string>
+    <string name="TranscribeProviderGeminiPrompt">Prompt (opcional)</string>
+    <string name="uploadBoost">Aumento de velocidad de subida</string>
+    <string name="HideDividers">Ocultar divisores</string>
+    <string name="IconReplacements">Reemplazo de icono</string>
+    <string name="IconReplacementSolar">Iconos solares por @Design480</string>
 </resources>
