@@ -185,4 +185,5 @@
     <string name="TabStyle">Tab Style</string>
     <string name="TabStylePure">Pure</string>
     <string name="TabStylePills">Pills</string>
+    <string name="LeftBottomButtonAction">Left Button Action</string>
 </resources>
