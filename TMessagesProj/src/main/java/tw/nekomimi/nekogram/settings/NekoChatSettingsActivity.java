@@ -108,6 +108,12 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             "1280px",
             "2560px",
     }, null));
+    private final AbstractConfigCell leftButtonActionRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getLeftBottomButton(), new String[]{
+            getString(R.string.NoQuoteForward),
+            getString(R.string.Reply),
+            getString(R.string.AddToSavedMessages),
+            getString(R.string.DirectShare),
+    }, null));
     private final AbstractConfigCell defaultMonoLanguageRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getDefaultMonoLanguage(),
             null, null,
             (input) -> input.isEmpty() ? (String) NaConfig.INSTANCE.getDefaultMonoLanguage().defaultValue : input));

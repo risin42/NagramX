@@ -1232,6 +1232,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    var leftBottomButton =
+        addConfig(
+            "LeftBottomButtonAction",
+            ConfigItem.configTypeInt,
+            0
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {
