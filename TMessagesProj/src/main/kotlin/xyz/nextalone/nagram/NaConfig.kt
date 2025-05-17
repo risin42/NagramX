@@ -1202,6 +1202,36 @@ object NaConfig {
             ConfigItem.configTypeInt,
             0
         )
+    var shortcutsAdministrators =
+        addConfig(
+            "ChannelAdministrators",
+            ConfigItem.configTypeBool,
+            false
+        )
+    var shortcutsRecentActions =
+        addConfig(
+            "EventLog",
+            ConfigItem.configTypeBool,
+            false
+        )
+    var shortcutsStatistics =
+        addConfig(
+            "Statistics",
+            ConfigItem.configTypeBool,
+            false
+        )
+    var shortcutsPermissions =
+        addConfig(
+            "ChannelPermissions",
+            ConfigItem.configTypeBool,
+            false
+        )
+    var shortcutsMembers =
+        addConfig(
+            "GroupMembers",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

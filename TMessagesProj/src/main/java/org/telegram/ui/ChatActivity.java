@@ -1612,6 +1612,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int id_chat_compose_panel = 1000;
     private final static int to_the_beginning = 200;
     private final static int to_the_message = 201;
+    private final static int shortcuts_administrators = 300;
+    private final static int shortcuts_recent_actions = 301;
+    private final static int shortcuts_statistics = 302;
+    private final static int shortcuts_permissions = 303;
+    private final static int shortcuts_members = 304;
 
     RecyclerListView.OnItemLongClickListenerExtended onItemLongClickListener = new RecyclerListView.OnItemLongClickListenerExtended() {
         @Override
@@ -4348,6 +4353,34 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 });
                 muteItemGap = headerItem.lazilyAddColoredGap();
             }
+
+            if (ChatObject.hasAdminRights(currentChat)) {
+                boolean hasAtLeastOneOption = false;
+                if (NaConfig.INSTANCE.getShortcutsAdministrators().Bool()) {
+                    hasAtLeastOneOption = true;
+                    headerItem.lazilyAddSubItem(shortcuts_administrators, R.drawable.msg_admins, LocaleController.getString(R.string.ChannelAdministrators));
+                }
+                if (NaConfig.INSTANCE.getShortcutsRecentActions().Bool()) {
+                    hasAtLeastOneOption = true;
+                    headerItem.lazilyAddSubItem(shortcuts_recent_actions, R.drawable.msg_log, LocaleController.getString(R.string.EventLog));
+                }
+                if (NaConfig.INSTANCE.getShortcutsStatistics().Bool()) {
+                    hasAtLeastOneOption = true;
+                    headerItem.lazilyAddSubItem(shortcuts_statistics, R.drawable.msg_stats, LocaleController.getString(R.string.Statistics));
+                }
+                if (NaConfig.INSTANCE.getShortcutsPermissions().Bool()) {
+                    hasAtLeastOneOption = true;
+                    headerItem.lazilyAddSubItem(shortcuts_permissions, R.drawable.msg_permissions, LocaleController.getString(R.string.ChannelPermissions));
+                }
+                if (NaConfig.INSTANCE.getShortcutsMembers().Bool()) {
+                    hasAtLeastOneOption = true;
+                    headerItem.lazilyAddSubItem(shortcuts_members, R.drawable.msg_groups, LocaleController.getString(R.string.GroupMembers));
+                }
+                if (hasAtLeastOneOption) {
+                    headerItem.lazilyAddColoredGap();
+                }
+            }
+
             if (currentUser != null && chatMode != MODE_SAVED) {
                 headerItem.lazilyAddSubItem(call, R.drawable.msg_callback, LocaleController.getString(R.string.Call));
                 if (Build.VERSION.SDK_INT >= 18) {
@@ -43114,6 +43147,17 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             } catch (Exception e) {
                 AlertUtil.showToast(e);
             }
+        } else if (id == shortcuts_administrators || id == shortcuts_permissions || id == shortcuts_members) {
+            Bundle args = new Bundle();
+            args.putLong("chat_id", currentChat.id);
+            args.putInt("type", id == shortcuts_permissions ? ChatUsersActivity.TYPE_KICKED : id == shortcuts_members ? ChatUsersActivity.TYPE_USERS : ChatUsersActivity.TYPE_ADMIN);
+            ChatUsersActivity fragment = new ChatUsersActivity(args);
+            fragment.setInfo(chatInfo);
+            presentFragment(fragment);
+        } else if (id == shortcuts_recent_actions) {
+            presentFragment(new ChannelAdminLogActivity(currentChat));
+        } else if (id == shortcuts_statistics) {
+            presentFragment(StatisticActivity.create(currentChat, false));
         }
     }
 
