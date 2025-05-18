@@ -1,6 +1,9 @@
 package tw.nekomimi.nekogram.transtale.source
 
 import cn.hutool.core.util.StrUtil
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONException
 import org.json.JSONObject
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
@@ -11,39 +14,41 @@ import tw.nekomimi.nekogram.transtale.HTMLKeeper
 import tw.nekomimi.nekogram.transtale.TransUtils
 import tw.nekomimi.nekogram.transtale.Translator
 import xyz.nextalone.nagram.NaConfig
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 object GoogleAppTranslator : Translator {
 
+    private val httpClient = OkHttpClient.Builder()
+        .callTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS).build()
+
     override suspend fun doTranslate(
-        from: String,
-        to: String,
-        query: String,
-        entities: ArrayList<TLRPC.MessageEntity>
+        from: String, to: String, query: String, entities: ArrayList<TLRPC.MessageEntity>
     ): TLRPC.TL_textWithEntities {
 
         if (NaConfig.googleTranslateExp.Bool()) {
             return GoogleTranslator.doTranslate(
-                from,
-                to,
-                query,
-                entities
+                from, to, query, entities
             )
         }
 
-        if (StrUtil.isNotBlank(NekoConfig.googleCloudTranslateKey.String())) return GoogleCloudTranslator.doTranslate(
-            from,
-            to,
-            query,
-            entities
-        )
+        if (StrUtil.isNotBlank(NekoConfig.googleCloudTranslateKey.String())) {
+            return GoogleCloudTranslator.doTranslate(
+                from, to, query, entities
+            )
+        }
 
-        if (to !in targetLanguages) {
+        if (to.lowercase() !in targetLanguages.map { it.lowercase() }) {
             throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported) + " " + to)
         }
 
-        val originalText = TLRPC.TL_textWithEntities()
-        originalText.text = query
-        originalText.entities = entities
+        val originalText = TLRPC.TL_textWithEntities().apply {
+            this.text = query
+            this.entities = entities
+        }
 
         val finalString = StringBuilder()
 
@@ -59,18 +64,33 @@ object GoogleAppTranslator : Translator {
                 "&tl=" + to +
                 "&ie=UTF-8&oe=UTF-8&client=at&dt=t&otf=2"
 
-        val response = cn.hutool.http.HttpUtil
-                .createGet(url)
-                .header("User-Agent", "GoogleTranslate/6.14.0.04.343003216 (Linux; U; Android 10; Redmi K20 Pro)")
-                .execute()
+        val request = Request.Builder().url(url).header(
+            "User-Agent",
+            "GoogleTranslate/6.14.0.04.343003216 (Linux; U; Android 10; Redmi K20 Pro)"
+        ).get().build()
 
-        if (response.status != 200) {
-            error("HTTP ${response.status} : ${response.body()}")
+        val responseBodyString: String
+        try {
+            responseBodyString = httpClient.newCall(request).await().use { response ->
+                val bodyString = response.body.string()
+                if (!response.isSuccessful) {
+                    error("HTTP ${response.code} : $bodyString")
+                }
+                bodyString
+            }
+        } catch (e: IOException) {
+            error("Google Translate API request failed due to network issue: ${e.message}")
+        } catch (e: Exception) {
+            error("An unexpected error occurred during Google Translate API call: ${e.message}")
         }
 
-        val array = JSONObject(response.body()).getJSONArray("sentences")
-        for (index in 0 until array.length()) {
-            finalString.append(array.getJSONObject(index).getString("trans"))
+        try {
+            val array = JSONObject(responseBodyString).getJSONArray("sentences")
+            for (index in 0 until array.length()) {
+                finalString.append(array.getJSONObject(index).getString("trans"))
+            }
+        } catch (e: JSONException) {
+            error("Google Translate API response parsing failed: ${e.message}")
         }
 
         var finalText = TLRPC.TL_textWithEntities()

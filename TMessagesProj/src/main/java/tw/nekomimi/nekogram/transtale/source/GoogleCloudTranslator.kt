@@ -1,7 +1,10 @@
 package tw.nekomimi.nekogram.transtale.source
 
 import cn.hutool.core.util.StrUtil
-import cn.hutool.http.HttpUtil
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONException
 import org.json.JSONObject
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
@@ -10,25 +13,32 @@ import org.telegram.ui.Components.TranslateAlert2
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.transtale.HTMLKeeper
 import tw.nekomimi.nekogram.transtale.Translator
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 object GoogleCloudTranslator : Translator {
 
+    private val httpClient = OkHttpClient.Builder()
+        .callTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS).build()
+
     override suspend fun doTranslate(
-        from: String,
-        to: String,
-        query: String,
-        entities: ArrayList<TLRPC.MessageEntity>
+        from: String, to: String, query: String, entities: ArrayList<TLRPC.MessageEntity>
     ): TLRPC.TL_textWithEntities {
 
-        if (to !in targetLanguages) {
+        if (to.lowercase() !in targetLanguages.map { it.lowercase() }) {
             throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported) + " " + to)
         }
 
-        if (StrUtil.isBlank(NekoConfig.googleCloudTranslateKey.String())) error("Missing Cloud Translate Key")
+        val apiKey = NekoConfig.googleCloudTranslateKey.String()
+        if (StrUtil.isBlank(apiKey)) error("Missing Cloud Translate Key")
 
-        val originalText = TLRPC.TL_textWithEntities()
-        originalText.text = query
-        originalText.entities = entities
+        val originalText = TLRPC.TL_textWithEntities().apply {
+            this.text = query
+            this.entities = entities
+        }
 
         val finalString = StringBuilder()
 
@@ -38,31 +48,54 @@ object GoogleCloudTranslator : Translator {
             false
         ) else query
 
-        val response = HttpUtil.createPost("https://translation.googleapis.com/language/translate/v2")
-                .form("q", textToTranslate)
-                .form("target", to)
-                .form("format", "text")
-                .form("key", NekoConfig.googleCloudTranslateKey.String())
-                .apply {
-                    if (from != "auto") form("source", from)
-                }.execute()
+        val formBodyBuilder = FormBody.Builder()
+            .add("q", textToTranslate)
+            .add("target", to)
+            .add("format", "text")
+            .add("key", apiKey)
 
-        if (response.status != 200) {
-            error("HTTP ${response.status} : ${response.body()}")
+        if (from != "auto") {
+            formBodyBuilder.add("source", from)
         }
 
-        var respObj = JSONObject(response.body())
+        val requestBody = formBodyBuilder.build()
+        val request = Request.Builder().url("https://translation.googleapis.com/language/translate/v2")
+            .post(requestBody).build()
 
-        if (respObj.isNull("data")) error(respObj.toString(4))
+        val responseBodyString: String
+        try {
+            responseBodyString = httpClient.newCall(request).await().use { response ->
+                val bodyString = response.body.string()
+                if (!response.isSuccessful) {
+                    error("HTTP ${response.code} : $bodyString")
+                }
+                bodyString
+            }
+        } catch (e: IOException) {
+            error("Google Cloud Translate API request failed due to network issue: ${e.message}")
+        } catch (e: Exception) {
+            error("An unexpected error occurred during Google Cloud translation: ${e.message}")
+        }
 
-        respObj = respObj.getJSONObject("data")
+        try {
+            var respObj = JSONObject(responseBodyString)
 
-        val respArr = respObj.getJSONArray("translations")
+            if (respObj.isNull("data")) {
+                error(respObj.toString(4))
+            }
 
-        if (respArr.length() == 0) error("Empty translation result")
+            respObj = respObj.getJSONObject("data")
+            val respArr = respObj.getJSONArray("translations")
 
-        val translatedText = respArr.getJSONObject(0).getString("translatedText")
-        finalString.append(translatedText)
+            if (respArr.length() == 0) {
+                error("Empty translation result")
+            }
+
+            val translatedText = respArr.getJSONObject(0).getString("translatedText")
+            finalString.append(translatedText)
+        } catch (e: JSONException) {
+            error("Google Cloud Translate API response parsing failed: ${e.message}")
+        }
 
         var finalText = TLRPC.TL_textWithEntities()
         if (entities.isNotEmpty()) {

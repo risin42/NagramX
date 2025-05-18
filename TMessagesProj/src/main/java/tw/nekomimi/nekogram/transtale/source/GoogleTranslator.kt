@@ -1,6 +1,11 @@
 package tw.nekomimi.nekogram.transtale.source
 
-import cn.hutool.http.HttpUtil
+import androidx.core.util.component1
+import androidx.core.util.component2
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONException
 import org.json.JSONObject
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
@@ -8,25 +13,28 @@ import org.telegram.tgnet.TLRPC
 import org.telegram.ui.Components.TranslateAlert2
 import tw.nekomimi.nekogram.transtale.HTMLKeeper
 import tw.nekomimi.nekogram.transtale.Translator
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 object GoogleTranslator : Translator {
 
-    override suspend fun doTranslate(
-        from: String,
-        to: String,
-        query: String,
-        entities: ArrayList<TLRPC.MessageEntity>
-    ): TLRPC.TL_textWithEntities {
+    private val httpClient = OkHttpClient.Builder()
+        .callTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS).build()
 
+    override suspend fun doTranslate(
+        from: String, to: String, query: String, entities: ArrayList<TLRPC.MessageEntity>
+    ): TLRPC.TL_textWithEntities {
         if (to.lowercase() !in targetLanguages.map { it.lowercase() }) {
             throw UnsupportedOperationException(getString(R.string.TranslateApiUnsupported) + " " + to)
         }
 
-        val originalText = TLRPC.TL_textWithEntities()
-        originalText.text = query
-        originalText.entities = entities
-
-        val finalString = StringBuilder()
+        val originalText = TLRPC.TL_textWithEntities().apply {
+            text = query
+            this.entities = entities
+        }
 
         val textToTranslate = if (entities.isNotEmpty()) HTMLKeeper.entitiesToHtml(
             query,
@@ -34,58 +42,62 @@ object GoogleTranslator : Translator {
             false
         ) else query
 
-        val translatedText = translate(textToTranslate, from, to)
-        finalString.append(translatedText)
+        val translated = translate(textToTranslate, from, to)
 
-        var finalText = TLRPC.TL_textWithEntities()
+        val finalText: TLRPC.TL_textWithEntities
         if (entities.isNotEmpty()) {
-            val resultPair = HTMLKeeper.htmlToEntities(finalString.toString(), entities, false)
-            finalText.text = resultPair.first
-            finalText.entities = resultPair.second
-            finalText = TranslateAlert2.preprocess(originalText, finalText)
+            val (plain, newEntities) = HTMLKeeper.htmlToEntities(translated, entities, false)
+            val tempEntitiesText = TLRPC.TL_textWithEntities().apply {
+                text = plain
+                this.entities = newEntities
+            }
+            finalText = TranslateAlert2.preprocess(originalText, tempEntitiesText)
         } else {
-            finalText.text = finalString.toString()
+            finalText = TLRPC.TL_textWithEntities().apply { text = translated }
         }
 
         return finalText
     }
 
-    private fun translate(
-        textToTranslate: String,
-        from: String,
-        to: String
+    private suspend fun translate(
+        text: String, from: String, to: String
     ): String {
-        val url = "https://translate-pa.googleapis.com/v1/translate"
-        val params = mapOf(
-            "params.client" to "gtx",
-            "query.source_language" to if (from.isEmpty() || from == "auto") "auto" else from,
-            "query.target_language" to to,
-            "query.display_language" to "en-US",
-            "data_types" to "TRANSLATION",
-            "key" to "AIzaSyDLEeFI5OtFBwYBIoK_jj5m32rZK5CkCXA",
-            "query.text" to textToTranslate
-        )
+        val urlBuilder = HttpUrl.Builder().scheme("https").host("translate-pa.googleapis.com")
+            .addPathSegments("v1/translate").addQueryParameter("params.client", "gtx")
+            .addQueryParameter(
+                "query.source_language", if (from.isEmpty() || from == "auto") "auto" else from
+            ).addQueryParameter("query.target_language", to)
+            .addQueryParameter("query.display_language", "en-US")
+            .addQueryParameter("data_types", "TRANSLATION")
+            .addQueryParameter("key", "AIzaSyDLEeFI5OtFBwYBIoK_jj5m32rZK5CkCXA")
+            .addQueryParameter("query.text", text)
+        val httpUrl = urlBuilder.build()
 
-        val response = HttpUtil.createGet(url)
-            .header("Accept", "*/*")
-            .header("Accept-Encoding", "gzip, deflate, br")
-            .header("Accept-Language", "en-US,en;q=0.9")
-            .header(
+        val request: Request = Request.Builder().url(httpUrl).get().header("Accept", "*/*")
+            .header("Accept-Language", "en-US,en;q=0.9").header(
                 "User-Agent",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
-            )
-            .form(params)
-            .execute()
+            ).build()
 
-        if (response.status != 200) {
-            error("HTTP ${response.status} : ${response.body()}")
+        try {
+            val responseBodyString = httpClient.newCall(request).await().use { response ->
+                val bodyString = response.body.string()
+                if (!response.isSuccessful) {
+                    throw RuntimeException("HTTP ${response.code} : $bodyString")
+                }
+                bodyString
+            }
+
+            val json = JSONObject(responseBodyString)
+            if (json.isNull("translation")) {
+                error("Google API response missing 'translation' field: ${json.toString(2)}")
+            }
+            return json.getString("translation")
+        } catch (e: IOException) {
+            throw RuntimeException("Google API request failed due to network issue: ${e.message}", e)
+        } catch (e: JSONException) {
+            throw RuntimeException("Google API response parsing failed: ${e.message}", e)
         }
-
-        val jsonObject = JSONObject(response.body())
-        if (jsonObject.isNull("translation")) error(jsonObject.toString(4))
-        val translatedText = jsonObject.getString("translation")
-
-        return translatedText
     }
 
     private val targetLanguages = listOf(

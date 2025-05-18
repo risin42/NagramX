@@ -2,6 +2,10 @@ package tw.nekomimi.nekogram.transtale
 
 import android.view.View
 import cn.hutool.core.util.StrUtil
+import kotlinx.coroutines.suspendCancellableCoroutine
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Response
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
@@ -16,7 +20,10 @@ import tw.nekomimi.nekogram.utils.UIUtil
 import tw.nekomimi.nekogram.utils.receive
 import tw.nekomimi.nekogram.utils.receiveLazy
 import xyz.nextalone.nagram.NaConfig
+import java.io.IOException
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 val String.code2Locale: Locale by receiveLazy<String, Locale> {
     val ret: Locale = if (this.isBlank()) {
@@ -376,6 +383,29 @@ interface Translator {
         interface TranslateCallBack3 {
             fun onSuccess(pollText: TranslateController.PollText)
             fun onFailed(unsupported: Boolean, message: String)
+        }
+    }
+
+    suspend fun Call.await(): Response {
+        return suspendCancellableCoroutine { continuation ->
+            enqueue(object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    continuation.resume(response)
+                }
+
+                override fun onFailure(call: Call, e: IOException) {
+                    if (continuation.isCancelled) return
+                    continuation.resumeWithException(e)
+                }
+            })
+
+            continuation.invokeOnCancellation {
+                try {
+                    cancel()
+                } catch (_: Throwable) {
+                    // ignore cancel exception
+                }
+            }
         }
     }
 }

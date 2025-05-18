@@ -2,8 +2,11 @@ package tw.nekomimi.nekogram.transtale.source
 
 import android.util.Log
 import cn.hutool.core.util.StrUtil
-import cn.hutool.http.HttpUtil
 import kotlinx.coroutines.delay
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import org.telegram.messenger.BuildVars
@@ -14,6 +17,8 @@ import org.telegram.ui.Components.TranslateAlert2
 import tw.nekomimi.nekogram.transtale.HTMLKeeper
 import tw.nekomimi.nekogram.transtale.Translator
 import xyz.nextalone.nagram.NaConfig
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.pow
 import kotlin.random.Random
@@ -42,6 +47,13 @@ object LLMTranslator : Translator {
     private var apiKeys: List<String> = emptyList()
     private val apiKeyIndex = AtomicInteger(0)
     private var currentProvider = -1
+
+    private val httpClient = OkHttpClient.Builder()
+        .callTimeout(60, TimeUnit.SECONDS)
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
+        .build()
 
     private fun updateApiKeys() {
         val llmProvider = NaConfig.llmProviderPreset.Int()
@@ -125,12 +137,25 @@ object LLMTranslator : Translator {
 
                 if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "Rate limited, retrying in ${actualWaitTimeMillis}ms, retry count: $retryCount")
                 delay(actualWaitTimeMillis)
+            } catch (e: IOException) {
+                retryCount++
+                if (BuildVars.LOGS_ENABLED) Log.e("LLMTranslator", "Network error during LLM translation", e)
+                if (retryCount >= MAX_RETRY) {
+                    if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "Max retry count reached due to network errors, falling back to GoogleAppTranslator")
+                    return GoogleAppTranslator.doTranslate(from, to, query, entities)
+                }
+                val waitTimeMillis = BASE_WAIT * 2.0.pow(retryCount - 1).toLong()
+                delay(waitTimeMillis)
+            } catch (e: Exception) {
+                if (BuildVars.LOGS_ENABLED) Log.e("LLMTranslator", "Error during LLM translation, falling back", e)
+                return GoogleAppTranslator.doTranslate(from, to, query, entities)
             }
         }
         if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "Max retry count reached, falling back to GoogleAppTranslator")
         return GoogleAppTranslator.doTranslate(from, to, query, entities)
     }
 
+    @Throws(IOException::class, RateLimitException::class, IllegalStateException::class)
     private fun doLLMTranslate(to: String, query: String): String {
         val apiKey = getNextApiKey() ?: throw IllegalStateException("Missing LLM API Key")
         val apiKeyForLog = apiKey.takeLast(3).padStart(apiKey.length, '*')
@@ -166,32 +191,42 @@ object LLMTranslator : Translator {
         }
         if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "Requesting LLM API with model: $model, messages: $messages")
 
-        val response = HttpUtil.createPost("$apiUrl/chat/completions")
+        val requestJson = JSONObject().apply {
+            put("model", model)
+            if (isMoE(model)) put("reasoning_effort", "none")
+            put("messages", messages)
+            put("temperature", NaConfig.llmTemperature.Float())
+        }.toString()
+
+        val requestBody = requestJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+        val request = Request.Builder()
+            .url("$apiUrl/chat/completions")
             .header("Authorization", "Bearer $apiKey")
-            .header("Content-Type", "application/json; charset=UTF-8")
-            .timeout(60000)
-            .body(JSONObject().apply {
-                put("model", model)
-                if (isMoE(model)) put("reasoning_effort", "none")
-                put("messages", messages)
-                put("temperature", NaConfig.llmTemperature.Float())
-            }.toString())
-            .execute()
-        if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "LLM API response: ${response.status} : ${response.body()}")
+            .post(requestBody)
+            .build()
 
-        if (response.status == 429) {
-            throw RateLimitException("LLM API rate limit exceeded")
-        } else if (response.status != 200) {
-            error("HTTP ${response.status} : ${response.body()}")
+        httpClient.newCall(request).execute().use { response ->
+            val responseBodyString = response.body.string()
+            if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "LLM API response: ${response.code} : $responseBodyString")
+
+            if (response.code == 429) {
+                throw RateLimitException("LLM API rate limit exceeded")
+            } else if (!response.isSuccessful) {
+                throw IOException("HTTP ${response.code} : $responseBodyString")
+            }
+
+            val responseJson = JSONObject(responseBodyString)
+            val choices = responseJson.getJSONArray("choices")
+            if (choices.length() == 0) {
+                throw IOException("LLM API returned no choices")
+            }
+            val firstChoice = choices.getJSONObject(0)
+            val message = firstChoice.getJSONObject("message")
+            val content = message.getString("content")
+
+            return content
         }
-
-        val responseBody = JSONObject(response.body())
-        val choices = responseBody.getJSONArray("choices")
-        val firstChoice = choices.getJSONObject(0)
-        val message = firstChoice.getJSONObject("message")
-        val content = message.getString("content")
-
-        return content
     }
 
     private fun generatePrompt(query: String, to: String): String {
