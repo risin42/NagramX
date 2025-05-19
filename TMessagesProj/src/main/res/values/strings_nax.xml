@@ -186,4 +186,9 @@
     <string name="TabStylePure">Pure</string>
     <string name="TabStylePills">Pills</string>
     <string name="LeftBottomButtonAction">Left Button Action</string>
+    <string name="TranscribeProviderOpenAI">OpenAI-Compatible API</string>
+    <string name="OpenAiApiCredentialsDialog">Configure OpenAI-compatible API. You can refer to this **documentation**.\n</string>
+    <string name="OpenAiApiBaseUrlHint">API URL ([…]/chat/completions)</string>
+    <string name="OpenAiCredentialsNotSet">API credentials are not configured.</string>
+    <string name="ApiNotSupportedOnAndroidVersion">This API provider is not supported on your Android version (requires Android 8.0+).</string>
 </resources>

@@ -16,6 +16,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
@@ -41,6 +42,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -62,6 +65,7 @@ public class TranscribeHelper {
     public static final int TRANSCRIBE_PREMIUM = 1;
     public static final int TRANSCRIBE_WORKERSAI = 2;
     public static final int TRANSCRIBE_GEMINI = 3;
+    public static final int TRANSCRIBE_OPENAI = 4;
     private static final String GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=%s";
     private static final String GEMINI_PROMPT = """
     Your task is to create a detailed, verbatim transcription of the provided audio, formatted like closed captions for the hard of hearing. Follow these instructions strictly:
@@ -82,9 +86,11 @@ public class TranscribeHelper {
     See! I told you!
     """.trim();
 
+    private static final String OPENAI_COMPATIBLE_DEFAULT_PROMPT = GEMINI_PROMPT;
+
     public static boolean useTranscribeAI(int account) {
         int provider = NaConfig.INSTANCE.getTranscribeProvider().Int();
-        return provider == TRANSCRIBE_WORKERSAI || provider == TRANSCRIBE_GEMINI ||
+        return provider == TRANSCRIBE_WORKERSAI || provider == TRANSCRIBE_GEMINI || provider == TRANSCRIBE_OPENAI ||
                 (!UserConfig.getInstance(account).isRealPremium() && provider == TRANSCRIBE_AUTO);
     }
 
@@ -255,6 +261,87 @@ public class TranscribeHelper {
         }
     }
 
+    public static void showOpenAiCredentialsDialog(BaseFragment fragment) {
+        if (fragment == null || fragment.getParentActivity() == null) return;
+        var resourcesProvider = fragment.getResourceProvider();
+        var context = fragment.getParentActivity();
+        var builder = new AlertDialog.Builder(context, resourcesProvider);
+        builder.setTitle(getString(R.string.TranscribeProviderOpenAI));
+        builder.setMessage(AndroidUtilities.replaceSingleTag(getString(R.string.OpenAiApiCredentialsDialog),
+                -1,
+                AndroidUtilities.REPLACING_TAG_TYPE_LINKBOLD,
+                () -> {
+                    fragment.dismissCurrentDialog();
+                    Browser.openUrl(context, "https://ai.google.dev/gemini-api/docs/openai#audio-understanding");
+                },
+                resourcesProvider));
+        builder.setCustomViewOffset(0);
+
+        var ll = new LinearLayout(context);
+        ll.setOrientation(LinearLayout.VERTICAL);
+
+        var editTextApiBase = createAndSetupEditText(
+                context,
+                resourcesProvider,
+                NaConfig.INSTANCE.getTranscribeProviderOpenAiApiBase().String(),
+                getString(R.string.OpenAiApiBaseUrlHint),
+                EditorInfo.IME_ACTION_NEXT,
+                true
+        );
+        ll.addView(editTextApiBase, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 24, 0, 24, 0));
+
+        var editTextModel = createAndSetupEditText(
+                context,
+                resourcesProvider,
+                NaConfig.INSTANCE.getTranscribeProviderOpenAiModel().String(),
+                getString(R.string.LlmModelName),
+                EditorInfo.IME_ACTION_NEXT,
+                false
+        );
+        ll.addView(editTextModel, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 24, 0, 24, 0));
+
+        var editTextApiKey = createAndSetupEditText(
+                context,
+                resourcesProvider,
+                NaConfig.INSTANCE.getTranscribeProviderOpenAiApiKey().String(),
+                getString(R.string.LlmApiKey),
+                EditorInfo.IME_ACTION_DONE,
+                false
+        );
+        ll.addView(editTextApiKey, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 24, 0, 24, 0));
+
+        var editTextPrompt = createAndSetupEditText(
+                context,
+                resourcesProvider,
+                NaConfig.INSTANCE.getTranscribeProviderOpenAiPrompt().String(),
+                getString(R.string.TranscribeProviderGeminiPrompt),
+                EditorInfo.IME_ACTION_DONE,
+                false
+        );
+        ll.addView(editTextPrompt, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 24, 0, 24, 0));
+
+        builder.setView(ll);
+        builder.setNegativeButton(getString(R.string.Cancel), null);
+        builder.setPositiveButton(getString(R.string.OK), null);
+        var dialog = builder.create();
+        fragment.showDialog(dialog);
+        var button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        if (button != null) {
+            button.setOnClickListener(v -> {
+                var apiBase = editTextApiBase.getText();
+                var model = editTextModel.getText();
+                var apiKey = editTextApiKey.getText();
+                var prompt = editTextPrompt.getText();
+
+                NaConfig.INSTANCE.getTranscribeProviderOpenAiApiBase().setConfigString(apiBase == null ? "" : apiBase.toString());
+                NaConfig.INSTANCE.getTranscribeProviderOpenAiModel().setConfigString(model == null ? "" : model.toString());
+                NaConfig.INSTANCE.getTranscribeProviderOpenAiApiKey().setConfigString(apiKey == null ? "" : apiKey.toString());
+                NaConfig.INSTANCE.getTranscribeProviderOpenAiPrompt().setConfigString(prompt == null ? "" : prompt.toString());
+                dialog.dismiss();
+            });
+        }
+    }
+
     private static OkHttpClient getOkHttpClient() {
         if (okHttpClient == null) {
             var builder = new OkHttpClient.Builder();
@@ -316,24 +403,34 @@ public class TranscribeHelper {
     }
 
     public static void sendRequest(String path, boolean video, BiConsumer<String, Exception> callback) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O &&
+                (NaConfig.INSTANCE.getTranscribeProvider().Int() == TRANSCRIBE_GEMINI ||
+                NaConfig.INSTANCE.getTranscribeProvider().Int() == TRANSCRIBE_OPENAI)) {
+            callback.accept(null, new Exception(getString(R.string.ApiNotSupportedOnAndroidVersion)));
+            return;
+        }
+
         switch (NaConfig.INSTANCE.getTranscribeProvider().Int()) {
             case TRANSCRIBE_AUTO:
-                if (
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
                         (!TextUtils.isEmpty(NaConfig.INSTANCE.getTranscribeProviderGeminiApiKey().String()) ||
-                         !TextUtils.isEmpty(NaConfig.INSTANCE.getLlmProviderGeminiKey().String()))
-                ) {
+                        !TextUtils.isEmpty(NaConfig.INSTANCE.getLlmProviderGeminiKey().String()))) {
                     requestGeminiAi(path, video, callback);
-                } else {
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                        !TextUtils.isEmpty(NaConfig.INSTANCE.getTranscribeProviderOpenAiApiBase().String()) &&
+                        !TextUtils.isEmpty(NaConfig.INSTANCE.getTranscribeProviderOpenAiModel().String()) &&
+                        !TextUtils.isEmpty(NaConfig.INSTANCE.getTranscribeProviderOpenAiApiKey().String())) {
+                    requestOpenAiCompatible(path, video, callback);
+                }
+                else {
                     requestWorkersAi(path, video, callback);
                 }
                 break;
             case TRANSCRIBE_GEMINI:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    requestGeminiAi(path, video, callback);
-                } else {
-                    callback.accept(null, new Exception(getString(R.string.GeminiNotSupport)));
-                }
+                requestGeminiAi(path, video, callback);
+                break;
+            case TRANSCRIBE_OPENAI:
+                requestOpenAiCompatible(path, video, callback);
                 break;
             default:
                 requestWorkersAi(path, video, callback);
@@ -454,8 +551,7 @@ public class TranscribeHelper {
                         }
                     } else if (geminiResponse != null && geminiResponse.promptFeedback != null) {
                         callback.accept(null, new Exception("Gemini prompt feedback: " + geminiResponse.promptFeedback));
-                    }
-                    else {
+                    } else {
                         callback.accept(null, new Exception("Invalid or empty response from Gemini API: " + responseBody));
                     }
                 }
@@ -464,6 +560,109 @@ public class TranscribeHelper {
                 callback.accept(null, e);
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private static void requestOpenAiCompatible(String path, boolean video, BiConsumer<String, Exception> callback) {
+        String apiBaseUrl = NaConfig.INSTANCE.getTranscribeProviderOpenAiApiBase().String();
+        String model = NaConfig.INSTANCE.getTranscribeProviderOpenAiModel().String();
+        String apiKey = NaConfig.INSTANCE.getTranscribeProviderOpenAiApiKey().String();
+        String customPrompt = NaConfig.INSTANCE.getTranscribeProviderOpenAiPrompt().String();
+
+        if (TextUtils.isEmpty(apiBaseUrl) || TextUtils.isEmpty(model) || TextUtils.isEmpty(apiKey)) {
+            callback.accept(null, new Exception(getString(R.string.OpenAiCredentialsNotSet)));
+            return;
+        }
+
+        final String finalPrompt = TextUtils.isEmpty(customPrompt) ? OPENAI_COMPATIBLE_DEFAULT_PROMPT : customPrompt;
+        final String endpointUrl = apiBaseUrl.endsWith("/") ? apiBaseUrl + "chat/completions" : apiBaseUrl + "/chat/completions";
+
+        executorService.submit(() -> {
+            String audioPathToUse;
+            String audioFormatForApi = "wav"; // mp3 or wav
+
+            try {
+                if (video) {
+                    var audioFile = new File(path + ".m4a");
+                    try {
+                        extractAudio(path, audioFile.getAbsolutePath());
+                    } catch (IOException e) {
+                        FileLog.e("OpenAI Compatible: Audio extraction failed", e);
+                    }
+                    audioPathToUse = audioFile.exists() ? audioFile.getAbsolutePath() : path;
+                } else {
+                    audioPathToUse = path;
+                }
+
+                File audioFile = new File(audioPathToUse);
+                if (!audioFile.exists()) {
+                    throw new IOException("Audio file not found: " + audioPathToUse);
+                }
+                byte[] audioBytes = Files.readAllBytes(audioFile.toPath());
+                String base64Audio = Base64.encodeToString(audioBytes, Base64.NO_WRAP);
+
+                List<String> modalities = null;
+                if (model.toLowerCase().startsWith("gpt")) {
+                    modalities = Collections.singletonList("text");
+                }
+
+                OpenAiChatRequest.Message userMessage = getUserMessage(base64Audio, audioFormatForApi, finalPrompt);
+                OpenAiChatRequest openAiRequest = new OpenAiChatRequest(model, modalities, Collections.singletonList(userMessage));
+                String jsonRequest = gson.toJson(openAiRequest);
+
+                OkHttpClient client = getOkHttpClient();
+                MediaType JSON = MediaType.get("application/json; charset=utf-8");
+                RequestBody requestBody = RequestBody.create(jsonRequest, JSON);
+                Request request = new Request.Builder()
+                        .url(endpointUrl)
+                        .header("Authorization", "Bearer " + apiKey)
+                        .header("Content-Type", "application/json")
+                        .post(requestBody)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    String responseBody = response.body().string();
+                    if (!response.isSuccessful()) {
+                        try {
+                            OpenAiErrorResponse errorResponse = gson.fromJson(responseBody, OpenAiErrorResponse.class);
+                            if (errorResponse != null && errorResponse.error != null && !TextUtils.isEmpty(errorResponse.error.message)) {
+                                throw new IOException("OpenAI API request failed: " + response.code() + " " + response.message() + " - " + errorResponse.error.message);
+                            }
+                        } catch (Exception ignored) {}
+                        throw new IOException("OpenAI API request failed: " + response.code() + " " + response.message() + "\nBody: " + responseBody);
+                    }
+
+                    OpenAiChatResponse openAiResponse = gson.fromJson(responseBody, OpenAiChatResponse.class);
+                    if (openAiResponse != null && openAiResponse.choices != null && !openAiResponse.choices.isEmpty()) {
+                        OpenAiChatResponse.Choice firstChoice = openAiResponse.choices.get(0);
+                        if (firstChoice.message != null && !TextUtils.isEmpty(firstChoice.message.content)) {
+                            callback.accept(firstChoice.message.content.trim(), null);
+                        } else {
+                            callback.accept(null, new Exception("OpenAI response structure invalid (no message content). Finish Reason: " + firstChoice.finishReason));
+                        }
+                    } else if (openAiResponse != null && openAiResponse.error != null) {
+                        callback.accept(null, new Exception("OpenAI API Error: " + openAiResponse.error.message));
+                    } else {
+                        callback.accept(null, new Exception("Invalid or empty response from OpenAI API: " + responseBody));
+                    }
+                }
+            } catch (Exception e) {
+                FileLog.e("OpenAI compatible transcription error", e);
+                callback.accept(null, e);
+            }
+        });
+    }
+
+    private static OpenAiChatRequest.Message getUserMessage(String base64Audio, String audioFormatForApi, String finalPrompt) {
+        OpenAiChatRequest.InputAudio inputAudio = new OpenAiChatRequest.InputAudio(base64Audio, audioFormatForApi);
+        OpenAiChatRequest.ContentPart textPart = new OpenAiChatRequest.ContentPart("text", finalPrompt, null);
+        OpenAiChatRequest.ContentPart audioPart = new OpenAiChatRequest.ContentPart("input_audio", null, inputAudio);
+
+        List<OpenAiChatRequest.ContentPart> contentParts = new ArrayList<>();
+        contentParts.add(textPart);
+        contentParts.add(audioPart);
+
+        return new OpenAiChatRequest.Message("user", contentParts);
     }
 
     private static class Result {
@@ -603,6 +802,132 @@ public class TranscribeHelper {
             public String toString() {
                 return "BlockReason: " + blockReason + ", Ratings: " + safetyRatings;
             }
+        }
+    }
+
+    private static class OpenAiChatRequest {
+        @SerializedName("model")
+        @Expose
+        public String model;
+
+        @SerializedName("modalities")
+        @Expose
+        @Nullable
+        public List<String> modalities;
+
+        @SerializedName("messages")
+        @Expose
+        public List<Message> messages;
+
+        public OpenAiChatRequest(String model, @Nullable List<String> modalities, List<Message> messages) {
+            this.model = model;
+            this.modalities = modalities;
+            this.messages = messages;
+        }
+
+        public static class Message {
+            @SerializedName("role")
+            @Expose
+            public String role;
+
+            @SerializedName("content")
+            @Expose
+            public List<ContentPart> content;
+
+            public Message(String role, List<ContentPart> content) {
+                this.role = role;
+                this.content = content;
+            }
+        }
+
+        public static class ContentPart {
+            @SerializedName("type")
+            @Expose
+            public String type;
+
+            @SerializedName("text")
+            @Expose
+            public String text;
+
+            @SerializedName("input_audio")
+            @Expose
+            public InputAudio inputAudio;
+
+            public ContentPart(String type, String text, InputAudio inputAudio) {
+                this.type = type;
+                this.text = text;
+                this.inputAudio = inputAudio;
+            }
+        }
+
+        public static class InputAudio {
+            @SerializedName("data")
+            @Expose
+            public String data;
+
+            @SerializedName("format")
+            @Expose
+            public String format;
+
+            public InputAudio(String data, String format) {
+                this.data = data;
+                this.format = format;
+            }
+        }
+    }
+
+    private static class OpenAiChatResponse {
+        @SerializedName("choices")
+        @Expose
+        public List<Choice> choices;
+
+        @SerializedName("error")
+        @Expose
+        public OpenAiErrorResponse.ErrorDetails error;
+
+        public static class Choice {
+            @SerializedName("index")
+            @Expose
+            public Integer index;
+
+            @SerializedName("message")
+            @Expose
+            public ResponseMessage message;
+
+            @SerializedName("finish_reason")
+            @Expose
+            public String finishReason;
+        }
+
+        public static class ResponseMessage {
+            @SerializedName("role")
+            @Expose
+            public String role;
+
+            @SerializedName("content")
+            @Expose
+            public String content;
+        }
+    }
+
+    private static class OpenAiErrorResponse {
+        @SerializedName("error")
+        @Expose
+        public ErrorDetails error;
+
+        public static class ErrorDetails {
+            @SerializedName("message")
+            @Expose
+            public String message;
+            @SerializedName("type")
+            @Expose
+            public String type;
+            @SerializedName("param")
+            @Expose
+            public String param;
+            @SerializedName("code")
+            @Expose
+            public String code;
         }
     }
 }

@@ -132,9 +132,11 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             getString(R.string.TelegramPremium),
             getString(R.string.TranscribeProviderWorkersAI),
             getString(R.string.TranscribeProviderGemini),
+            getString(R.string.TranscribeProviderOpenAI),
     }, null));
     private final AbstractConfigCell transcribeProviderCfCredentialsRow = cellGroup.appendCell(new ConfigCellCustom("CloudflareCredentials", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell transcribeProviderGeminiApiKeyRow = cellGroup.appendCell(new ConfigCellCustom("LlmProviderGeminiKey", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
+    private final AbstractConfigCell transcribeProviderOpenAiRow = cellGroup.appendCell(new ConfigCellCustom("TranscribeProviderOpenAI", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell dividerTranscribe = cellGroup.appendCell(new ConfigCellDivider());
 
     // MenuAndButtons
@@ -307,6 +309,9 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         if (NaConfig.INSTANCE.getUseEditedIcon().Bool()) {
             cellGroup.rows.remove(customEditedMessageRow);
         }
+        if (NaConfig.INSTANCE.getTranscribeProvider().Int() != TranscribeHelper.TRANSCRIBE_OPENAI) {
+            cellGroup.rows.remove(transcribeProviderOpenAiRow);
+        }
         addRowsToMap(cellGroup);
     }
 
@@ -447,6 +452,8 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                     TranscribeHelper.showCfCredentialsDialog(this);
                 } else if (position == cellGroup.rows.indexOf(transcribeProviderGeminiApiKeyRow)) {
                     TranscribeHelper.showGeminiApiKeyDialog(this);
+                } else if (position == cellGroup.rows.indexOf(transcribeProviderOpenAiRow)) {
+                    TranscribeHelper.showOpenAiCredentialsDialog(this);
                 }
             }
         });
@@ -489,6 +496,20 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                 }
             } else if (key.equals(NaConfig.INSTANCE.getMessageColoredBackground().getKey())) {
                 stickerSizeCell.invalidate();
+            } else if (key.equals(NaConfig.INSTANCE.getTranscribeProvider().getKey())) {
+                if ((int) newValue == TranscribeHelper.TRANSCRIBE_OPENAI) {
+                    if (!cellGroup.rows.contains(transcribeProviderOpenAiRow)) {
+                        final int index = cellGroup.rows.indexOf(transcribeProviderGeminiApiKeyRow) + 1;
+                        cellGroup.rows.add(index, transcribeProviderOpenAiRow);
+                        listAdapter.notifyItemInserted(index);
+                    }
+                } else {
+                    if (cellGroup.rows.contains(transcribeProviderOpenAiRow)) {
+                        final int index = cellGroup.rows.indexOf(transcribeProviderOpenAiRow);
+                        cellGroup.rows.remove(transcribeProviderOpenAiRow);
+                        listAdapter.notifyItemRemoved(index);
+                    }
+                }
             }
         };
 
@@ -739,6 +760,8 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                             textCell.setTextAndValue(getString(R.string.CloudflareCredentials), "", true);
                         } else if (position == cellGroup.rows.indexOf(transcribeProviderGeminiApiKeyRow)) {
                             textCell.setTextAndValue(getString(R.string.LlmProviderGeminiKey), "", true);
+                        } else if (position == cellGroup.rows.indexOf(transcribeProviderOpenAiRow)) {
+                            textCell.setTextAndValue(getString(R.string.TranscribeProviderOpenAI), "", true);
                         }
                     } else if (view instanceof EmojiSetCell) {
                         EmojiSetCell v1 =  (EmojiSetCell) view;

@@ -1148,6 +1148,30 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
+    var transcribeProviderOpenAiApiBase =
+        addConfig(
+            "TranscribeProviderOpenAiApiBase",
+            ConfigItem.configTypeString,
+            ""
+        )
+    var transcribeProviderOpenAiModel =
+        addConfig(
+            "TranscribeProviderOpenAiModel",
+            ConfigItem.configTypeString,
+            ""
+        )
+    var transcribeProviderOpenAiApiKey =
+        addConfig(
+            "TranscribeProviderOpenAiApiKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    var transcribeProviderOpenAiPrompt =
+        addConfig(
+            "TranscribeProviderOpenAiPrompt",
+            ConfigItem.configTypeString,
+            ""
+        )
     var showReplyInPrivate =
         addConfig(
             "ReplyInPrivate",
