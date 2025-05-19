@@ -131,9 +131,9 @@ public class FilterTabsView extends FrameLayout {
             id = i;
             realTitle = t != null ? new SpannableStringBuilder(t) : new SpannableStringBuilder("");
             realTitle = Emoji.replaceEmoji(realTitle, textPaint.getFontMetricsInt(), false);
-            title = new SpannableStringBuilder(NekoConfig.tabsTitleType.Int() == NekoXConfig.TITLE_TYPE_ICON ? "" : realTitle);
 //            MessageObject.addEntitiesToText(title, entities, false, false, false, true);
             realTitle = MessageObject.replaceAnimatedEmoji(realTitle, entities, textPaint.getFontMetricsInt());
+            title = new SpannableStringBuilder(NekoConfig.tabsTitleType.Int() == NekoXConfig.TITLE_TYPE_ICON ? "" : realTitle);
             this.noanimate = noanimate;
             this.emoticon = (i != Integer.MAX_VALUE) ? (emoticon != null ? emoticon : "") : "\uD83D\uDCAC";
         }
