@@ -1,3 +1,4 @@
+-keep public class com.google.android.gms.* { public *; }
 -keepnames @com.google.android.gms.common.annotation.KeepName class *
 -keepclassmembernames class * {
     @com.google.android.gms.common.annotation.KeepName *;
@@ -5,6 +6,17 @@
 -keep class org.webrtc.* { *; }
 -keep class org.webrtc.audio.* { *; }
 -keep class org.webrtc.voiceengine.* { *; }
+-keep class org.telegram.messenger.* { *; }
+-keep class org.telegram.messenger.camera.* { *; }
+-keep class org.telegram.messenger.secretmedia.* { *; }
+-keep class org.telegram.messenger.support.* { *; }
+-keep class org.telegram.messenger.support.* { *; }
+-keep class org.telegram.messenger.time.* { *; }
+-keep class org.telegram.messenger.video.* { *; }
+-keep class org.telegram.messenger.voip.* { *; }
+-keep class org.telegram.SQLite.** { *; }
+-keep class org.telegram.tgnet.ConnectionsManager { *; }
+-keep class org.telegram.tgnet.NativeByteBuffer { *; }
 -keep class org.telegram.tgnet.RequestTimeDelegate { *; }
 -keep class org.telegram.tgnet.RequestDelegate { *; }
 -keep class com.google.android.exoplayer2.ext.** { *; }
@@ -13,6 +25,16 @@
 -keep class com.google.android.exoplayer2.decoder.SimpleDecoderOutputBuffer { *; }
 -keep class org.telegram.ui.Stories.recorder.FfmpegAudioWaveformLoader { *; }
 -keep class androidx.mediarouter.app.MediaRouteButton { *; }
+-keep class org.telegram.messenger.AnimatedFileDrawableStream { <methods>; }
+-keep class org.telegram.SQLite.SQLiteException { <methods>; }
+-keep class org.telegram.tgnet.ConnectionsManager { <methods>; }
+-keep class org.telegram.tgnet.NativeByteBuffer { <methods>; }
+-keep class * extends org.telegram.ui.Components.UItem$UItemFactory { public <init>(...); }
+-keepnames class org.telegram.tgnet.** extends org.telegram.tgnet.TLObject
+-keepclassmembernames,allowshrinking class org.telegram.ui.* { <fields>; }
+-keepclassmembernames,allowshrinking class org.telegram.ui.Cells.* { <fields>; }
+-keepclassmembernames,allowshrinking class org.telegram.ui.Components.* { <fields>; }
+
 -keepclassmembers class ** {
     @android.webkit.JavascriptInterface <methods>;
 }
@@ -103,25 +125,6 @@
   @com.google.gson.annotations.SerializedName <fields>;
 }
 
-# Gson uses generic type information stored in a class file when working with fields. Proguard
-# removes such information by default, so configure it to keep all of it.
--keepattributes Signature,InnerClasses,EnclosingMethod
-
--keep class org.slf4j.** { *; }
--keep class org.telegram.messenger.voip.* { *; }
--keep class org.telegram.messenger.AnimatedFileDrawableStream { <methods>; }
--keep class org.telegram.SQLite.SQLiteException { <methods>; }
--keep class org.telegram.tgnet.ConnectionsManager { <methods>; }
--keep class org.telegram.tgnet.NativeByteBuffer { <methods>; }
--keep class * extends org.telegram.ui.Components.UItem$UItemFactory { public <init>(...); }
--keepnames class org.telegram.tgnet.** extends org.telegram.tgnet.TLObject
--keepclassmembernames,allowshrinking class org.telegram.ui.* { <fields>; }
--keepclassmembernames,allowshrinking class org.telegram.ui.Cells.* { <fields>; }
--keepclassmembernames,allowshrinking class org.telegram.ui.Components.* { <fields>; }
--keepclassmembernames,allowshrinking class tw.nekomimi.nekogram.settings.AccountCell { <fields>; }
--keepclassmembernames,allowshrinking class tw.nekomimi.nekogram.settings.EmojiSetCell { <fields>; }
--keepclassmembernames,allowshrinking class tw.nekomimi.nekogram.settings.NekoChatSettingsActivity$StickerSizeCell { <fields>; }
-
 # Keep all classes of Apache Commons
 -keep class org.apache.commons.text.** { *; }
 -dontwarn org.apache.commons.text.**
@@ -171,6 +174,25 @@
     public boolean isLayoutSuppressed();
 }
 
+-keepclassmembers class org.telegram.ui.** {
+    public <init>(...);
+}
+
+-keep class org.slf4j.** { *; }
+-keepnames class * implements java.io.Serializable
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    !static !transient <fields>;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+-keepclassmembernames,allowshrinking class tw.nekomimi.nekogram.settings.AccountCell { <fields>; }
+-keepclassmembernames,allowshrinking class tw.nekomimi.nekogram.settings.EmojiSetCell { <fields>; }
+-keepclassmembernames,allowshrinking class tw.nekomimi.nekogram.settings.NekoChatSettingsActivity$StickerSizeCell { <fields>; }
+
 # https://github.com/osmdroid/osmdroid/issues/633
 -dontwarn org.osmdroid.tileprovider.modules.NetworkAvailabliltyCheck
 # Osmdroid
@@ -192,6 +214,8 @@
 -dontwarn android.support.v4.app.NotificationCompat$Builder
 
 -allowaccessmodification
+-keepattributes Signature,InnerClasses,EnclosingMethod
 -keepattributes SourceFile,LineNumberTable
+-keepattributes *Annotation*
 #-dontoptimize
 -dontobfuscate
