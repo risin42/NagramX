@@ -141,7 +141,7 @@ public class ItemOptions {
     public boolean swipeback;
 
     private ItemOptions(BaseFragment fragment, View scrimView, boolean swipeback) {
-        if (fragment.getContext() == null) {
+        if (fragment == null || fragment.getContext() == null) {
             return;
         }
 
@@ -241,7 +241,7 @@ public class ItemOptions {
         if (!condition) {
             return this;
         }
-        return add(iconResId, iconDrawable, text, Theme.key_actionBarDefaultSubmenuItemIcon, Theme.key_actionBarDefaultSubmenuItem, onClickListener);
+        return add(iconResId, iconDrawable, text, Theme.key_actionBarDefaultSubmenuItemIcon, Theme.key_actionBarDefaultSubmenuItem, null, onClickListener);
     }
 
     public ItemOptions add(CharSequence text, Runnable onClickListener) {
@@ -253,18 +253,30 @@ public class ItemOptions {
     }
 
     public ItemOptions add(int iconResId, CharSequence text, boolean isRed, Runnable onClickListener) {
-        return add(iconResId, text, isRed ? Theme.key_text_RedRegular : Theme.key_actionBarDefaultSubmenuItemIcon, isRed ? Theme.key_text_RedRegular : Theme.key_actionBarDefaultSubmenuItem, onClickListener);
+        return add(iconResId, text, isRed ? Theme.key_text_RedRegular : Theme.key_actionBarDefaultSubmenuItemIcon, isRed ? Theme.key_text_RedRegular : Theme.key_actionBarDefaultSubmenuItem, null, onClickListener);
+    }
+
+    public ItemOptions add(int iconResId, CharSequence text, boolean isRed, Runnable onLongClickListener, Runnable onClickListener) {
+        return add(iconResId, text, isRed ? Theme.key_text_RedRegular : Theme.key_actionBarDefaultSubmenuItemIcon, isRed ? Theme.key_text_RedRegular : Theme.key_actionBarDefaultSubmenuItem, onLongClickListener, onClickListener);
     }
 
     public ItemOptions add(int iconResId, CharSequence text, int color, Runnable onClickListener) {
         return add(iconResId, text, color, color, onClickListener);
     }
 
-    public ItemOptions add(int iconResId, CharSequence text, int iconColorKey, int textColorKey, Runnable onClickListener) {
-        return add(iconResId, null, text, iconColorKey, textColorKey, onClickListener);
+    public ItemOptions add(int iconResId, CharSequence text, Runnable onLongClickListener, Runnable onClickListener) {
+        return add(iconResId, text, false, onLongClickListener, onClickListener);
     }
 
-    public ItemOptions add(int iconResId, Drawable iconDrawable, CharSequence text, int iconColorKey, int textColorKey, Runnable onClickListener) {
+    public ItemOptions add(int iconResId, CharSequence text, int iconColorKey, int textColorKey, Runnable onClickListener) {
+        return add(iconResId, null, text, iconColorKey, textColorKey, null, onClickListener);
+    }
+
+    public ItemOptions add(int iconResId, CharSequence text, int iconColorKey, int textColorKey, Runnable onLongClickListener, Runnable onClickListener) {
+        return add(iconResId, null, text, iconColorKey, textColorKey, onLongClickListener, onClickListener);
+    }
+
+    public ItemOptions add(int iconResId, Drawable iconDrawable, CharSequence text, int iconColorKey, int textColorKey, Runnable onLongClickListener, Runnable onClickListener) {
         if (context == null) {
             return this;
         }
@@ -284,7 +296,14 @@ public class ItemOptions {
             if (onClickListener != null) {
                 onClickListener.run();
             }
-            if (dismissWithButtons) dismiss();
+            dismiss();
+        });
+        subItem.setOnLongClickListener(view1 -> {
+            if (onLongClickListener != null) {
+                onLongClickListener.run();
+            }
+            dismiss();
+            return true;
         });
         if (minWidthDp > 0) {
             subItem.setMinimumWidth(dp(minWidthDp));

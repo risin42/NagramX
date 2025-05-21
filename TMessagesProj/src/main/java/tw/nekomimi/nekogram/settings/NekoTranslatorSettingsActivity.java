@@ -90,7 +90,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                     getString(R.string.TranslatorModePopup),
             }, null));
     private final AbstractConfigCell translateToLangRow = cellGroup.appendCell(new ConfigCellCustom("TranslateToLang", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
-    private final AbstractConfigCell translateInputToLangRow = cellGroup.appendCell(new ConfigCellCustom("TranslateInputToLang", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell preferredTranslateTargetLangRow = cellGroup.appendCell(
             new ConfigCellTextInput(
                     getString(R.string.PreferredTranslateTargetLangName),
@@ -167,8 +166,8 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     }
 
     protected void onItemClick(View view, int position, float ignoredX, float ignoredY) {
-        if (position == cellGroup.rows.indexOf(translateToLangRow) || position == cellGroup.rows.indexOf(translateInputToLangRow)) {
-            Translator.showTargetLangSelect(view, position == cellGroup.rows.indexOf(translateInputToLangRow), (locale) -> {
+        if (position == cellGroup.rows.indexOf(translateToLangRow)) {
+            Translator.showTargetLangSelect(view, false, (locale) -> {
                 if (position == cellGroup.rows.indexOf(translateToLangRow)) {
                     NekoConfig.translateToLang.setConfigString(TranslatorKt.getLocale2code(locale));
                 } else {
@@ -353,12 +352,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                         listAdapter.notifyItemChanged(position);
                         return Unit.INSTANCE;
                     });
-                } else if (position == cellGroup.rows.indexOf(translateInputToLangRow)) {
-                    Translator.showTargetLangSelect(view, true, (locale) -> {
-                        NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
-                        listAdapter.notifyItemChanged(position);
-                        return Unit.INSTANCE;
-                    });
                 } else if (position == cellGroup.rows.indexOf(articleTranslationProviderRow)) {
                     showProviderSelectionPopup(view, NaConfig.INSTANCE.getArticleTranslationProvider(), () -> listAdapter.notifyItemChanged(position));
                 }
@@ -381,7 +374,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         cellGroup.callBackSettingsChanged = (key, newValue) -> {
             if (key.equals(NaConfig.INSTANCE.getPreferredTranslateTargetLang().getKey())) {
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translateToLangRow));
-                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(translateInputToLangRow));
             } else if (key.equals(NaConfig.INSTANCE.getEnableSeparateArticleTranslator().getKey())) {
                 if ((boolean) newValue) {
                     if (!cellGroup.rows.contains(articleTranslationProviderRow)) {
@@ -494,8 +486,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                             }
                         } else if (position == cellGroup.rows.indexOf(translateToLangRow)) {
                             textCell.setTextAndValue(getString(R.string.TransToLang), NekoXConfig.formatLang(NekoConfig.translateToLang.String()), true);
-                        } else if (position == cellGroup.rows.indexOf(translateInputToLangRow)) {
-                            textCell.setTextAndValue(getString(R.string.TransInputToLang), NekoXConfig.formatLang(NekoConfig.translateInputLang.String()), true);
                         } else if (position == cellGroup.rows.indexOf(articleTranslationProviderRow)) {
                             textCell.setTextAndValue(getString(R.string.ArticleTranslationProvider), getProviderName(NaConfig.INSTANCE.getArticleTranslationProvider().Int()), true);
                         }
@@ -625,7 +615,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         cellGroup.appendCell(translationProviderRow);
         cellGroup.appendCell(translatorModeRow);
         cellGroup.appendCell(translateToLangRow);
-        cellGroup.appendCell(translateInputToLangRow);
         cellGroup.appendCell(preferredTranslateTargetLangRow);
         if (!NaConfig.INSTANCE.getGoogleTranslateExp().Bool()) {
             cellGroup.appendCell(googleCloudTranslateKeyRow);

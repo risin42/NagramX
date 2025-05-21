@@ -1190,6 +1190,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    var showTranslateMessageLLM =
+        addConfig(
+            "TranslateMessageLLM",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

@@ -25,6 +25,8 @@ object DoubleTap {
         7
     const val DOUBLE_TAP_ACTION_EDIT =
         8
+    const val DOUBLE_TAP_ACTION_TRANSLATE_LLM =
+        9
 
     init {
         doubleTapActionMap[DOUBLE_TAP_ACTION_NONE] =
@@ -62,6 +64,10 @@ object DoubleTap {
         doubleTapActionMap[DOUBLE_TAP_ACTION_EDIT] =
             getString(
                 R.string.Edit
+            )
+        doubleTapActionMap[DOUBLE_TAP_ACTION_TRANSLATE_LLM] =
+            getString(
+                R.string.TranslateMessageLLM
             )
     }
 }
