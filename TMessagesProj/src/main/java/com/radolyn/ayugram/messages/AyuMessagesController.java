@@ -228,6 +228,13 @@ public class AyuMessagesController {
         return deletedMessageDao.getMessagesGrouped(userId, dialogId, groupedId);
     }
 
+    public List<Integer> getExistingMessageIds(long userId, long dialogId, List<Integer> messageIds) {
+        if (messageIds == null || messageIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return deletedMessageDao.getExistingMessageIds(userId, dialogId, messageIds);
+    }
+
     public void delete(long userId, long dialogId, int messageId) {
         var msg = getMessage(userId, dialogId, messageId);
         if (msg == null) {
@@ -243,6 +250,33 @@ public class AyuMessagesController {
                     p.delete();
                 } catch (Exception e) {
                     Log.e(NAX, "failed to delete file " + msg.message.mediaPath, e);
+                }
+            }
+        }
+    }
+
+    public void deleteMessages(long userId, long dialogId, List<Integer> messageIds) {
+        if (messageIds == null || messageIds.isEmpty()) {
+            return;
+        }
+
+        deletedMessageDao.deleteMessages(userId, dialogId, messageIds);
+        editedMessageDao.deleteByDialogIdAndMessageIds(dialogId, messageIds);
+
+        for (int messageId : messageIds) {
+            var msg = getMessage(userId, dialogId, messageId);
+            if (msg == null) {
+                continue;
+            }
+
+            if (!TextUtils.isEmpty(msg.message.mediaPath)) {
+                var p = new File(msg.message.mediaPath);
+                if (p.exists()) {
+                    try {
+                        p.delete();
+                    } catch (Exception e) {
+                        Log.e(NAX, "failed to delete file " + msg.message.mediaPath, e);
+                    }
                 }
             }
         }

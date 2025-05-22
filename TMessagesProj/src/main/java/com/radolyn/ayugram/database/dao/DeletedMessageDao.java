@@ -45,6 +45,10 @@ public interface DeletedMessageDao {
     @Query("SELECT * FROM deletedmessage WHERE dialogId = :dialogId")
     List<DeletedMessageFull> getMessagesByDialog(long dialogId);
 
+    @Transaction
+    @Query("SELECT messageId FROM deletedmessage WHERE userId = :userId AND dialogId = :dialogId AND messageId IN (:messageIds)")
+    List<Integer> getExistingMessageIds(long userId, long dialogId, List<Integer> messageIds);
+
     @Insert
     long insert(DeletedMessage msg);
 
@@ -59,4 +63,7 @@ public interface DeletedMessageDao {
 
     @Query("DELETE FROM deletedmessage WHERE dialogId = :dialogId")
     void delete(long dialogId);
+
+    @Query("DELETE FROM deletedmessage WHERE userId = :userId AND dialogId = :dialogId AND messageId IN (:messageIds)")
+    void deleteMessages(long userId, long dialogId, List<Integer> messageIds);
 }
