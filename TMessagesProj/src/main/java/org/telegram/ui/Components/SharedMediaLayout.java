@@ -3436,7 +3436,6 @@ public class SharedMediaLayout extends FrameLayout implements NotificationCenter
         }
     }
     private boolean hasNoforwardsMessage() {
-        if (NekoXConfig.disableFlagSecure) return false;
         boolean hasNoforwardsMessage = false;
         for (int a = 1; a >= 0; a--) {
             ArrayList<Integer> ids = new ArrayList<>();

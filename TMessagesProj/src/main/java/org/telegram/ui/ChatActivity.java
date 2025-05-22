@@ -13466,7 +13466,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private void showTextSelectionHint(MessageObject messageObject) {
-        if (getParentActivity() == null || (getMessagesController().isChatNoForwardsWithOverride(messageObject.getChatId()) || (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.noforwards && !NekoXConfig.disableFlagSecure)) || messageObject.messageOwner.ayuDeleted) {
+        if (getParentActivity() == null || getMessagesController().isChatNoForwards(messageObject.getChatId()) || (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.noforwards)) {
             return;
         }
         CharSequence text;
@@ -15343,6 +15343,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             return null;
         } else {
+            if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+                return null;
+            }
             return () -> {
                 final boolean delete = messageObject.messageOwner.ttl != 0x7FFFFFFF;
                 final int ttl = messageObject.messageOwner.ttl == 0x7FFFFFFF ? 0 : messageObject.messageOwner.ttl;
@@ -15359,6 +15362,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
     private Runnable sendSecretMediaDelete(MessageObject messageObject) {
         if (messageObject == null || messageObject.isOut() || !messageObject.isSecretMedia() || messageObject.messageOwner.ttl != 0x7FFFFFFF) {
+            return null;
+        }
+        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
             return null;
         }
         final long taskId = getMessagesController().createDeleteShowOnceTask(dialog_id, messageObject.getId());
@@ -18756,7 +18762,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 return 21;
                             }
                         }
-                        if (NekoXConfig.disableFlagSecure || messageObject.messageOwner.ttl <= 0) {
+                        if (messageObject.messageOwner.ttl <= 0) {
                             return 4;
                         }
                     }
@@ -18814,7 +18820,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (selectedMessagesIds[index].indexOfKey(messageObject.getId()) >= 0) {
                 selectedMessagesIds[index].remove(messageObject.getId());
                 if (!isReport()) {
-                    if ((messageObject.type == MessageObject.TYPE_TEXT || messageObject.isAnimatedEmoji() || messageObject.caption != null) && !(messageObject.messageOwner != null && messageObject.messageOwner.noforwards && !NekoXConfig.disableFlagSecure)) {
+                    if ((messageObject.type == MessageObject.TYPE_TEXT || messageObject.isAnimatedEmoji() || messageObject.caption != null) && !(messageObject.messageOwner != null && messageObject.messageOwner.noforwards && !NaConfig.INSTANCE.getForceCopy().Bool())) {
                         selectedMessagesCanCopyIds[index].remove(messageObject.getId());
                     }
                     if (!messageObject.isAnimatedEmoji() && (messageObject.isSticker() || messageObject.isAnimatedSticker()) && MessageObject.isStickerHasSet(messageObject.getDocument())) {
@@ -18851,7 +18857,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
                 selectedMessagesIds[index].put(messageObject.getId(), messageObject);
                 if (!isReport()) {
-                    if ((messageObject.type == MessageObject.TYPE_TEXT || messageObject.isAnimatedEmoji() || messageObject.caption != null) && !(messageObject.messageOwner != null && messageObject.messageOwner.noforwards && !NekoXConfig.disableFlagSecure)) {
+                    if ((messageObject.type == MessageObject.TYPE_TEXT || messageObject.isAnimatedEmoji() || messageObject.caption != null) && !(messageObject.messageOwner != null && messageObject.messageOwner.noforwards && !NaConfig.INSTANCE.getForceCopy().Bool())) {
                         selectedMessagesCanCopyIds[index].put(messageObject.getId(), messageObject);
                     }
                     if (!messageObject.isAnimatedEmoji() && (messageObject.isSticker() || messageObject.isAnimatedSticker()) && MessageObject.isStickerHasSet(messageObject.getDocument())) {
@@ -18996,7 +19002,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
 
                 int copyVisible = View.GONE, starVisible = View.GONE, newCopyVisible = View.GONE, newStarVisible = View.GONE;
-                boolean noforwardsOverride = noforwards && !NekoXConfig.disableFlagSecure && !NaConfig.INSTANCE.getForceCopy().Bool();
+                boolean noforwardsOverride = noforwards && !NaConfig.INSTANCE.getForceCopy().Bool();
                 if (copyItem != null) {
                     copyVisible = copyItem.getVisibility();
                     copyItem.setVisibility(!noforwardsOverride && (selectedMessagesCanCopyIds[0].size() + selectedMessagesCanCopyIds[1].size() != 0) && NaConfig.INSTANCE.getActionBarButtonCopy().Bool() ? View.VISIBLE : View.GONE);
@@ -30515,7 +30521,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         allowPin = allowPin && message.getId() > 0 && (message.messageOwner.action == null || message.messageOwner.action instanceof TLRPC.TL_messageActionEmpty) && !message.isExpiredStory() && message.type != MessageObject.TYPE_STORY_MENTION;
         boolean noforwards = getMessagesController().isChatNoForwards(currentChat) || message.messageOwner.noforwards || getDialogId() == UserObject.VERIFY;
-        boolean noforwardsOverride = noforwards && !NekoXConfig.disableFlagSecure && !NaConfig.INSTANCE.getForceCopy().Bool();
+        boolean noforwardsOverride = noforwards && !NaConfig.INSTANCE.getForceCopy().Bool();
         boolean noforwardsOrPaidMedia = noforwardsOverride || message.type == MessageObject.TYPE_PAID_MEDIA;
         boolean allowUnpin = message.getDialogId() != mergeDialogId && allowPin && (pinnedMessageObjects.containsKey(message.getId()) || groupedMessages != null && !groupedMessages.messages.isEmpty() && pinnedMessageObjects.containsKey(groupedMessages.messages.get(0).getId())) && !message.isExpiredStory();
         boolean allowEdit = message.canEditMessage(currentChat) && !chatActivityEnterView.hasAudioToSend() && message.getDialogId() != mergeDialogId && message.type != MessageObject.TYPE_STORY;
@@ -31432,28 +31438,25 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 && AyuMessagesController.getInstance().hasAnyRevisions(getAccountInstance().getUserConfig().getClientUserId(), dialog_id, message.messageOwner.id)
             ) {
                 var idx = options.size() - 1;
-
                 items.add(idx, LocaleController.getString(R.string.EditsHistoryMenuText));
                 options.add(idx, AyuConstants.OPTION_HISTORY);
                 icons.add(idx, R.drawable.msg_log);
             }
 
-            if (message != null && message.messageOwner.ttl > 0 && !isAyuDeleted) {
-                var idx = options.size() - 1;
-
-                items.add(idx, "TTL: " + LocaleController.formatTTLString(message.messageOwner.ttl));
-                options.add(idx, AyuConstants.OPTION_TTL);
-                icons.add(idx, R.drawable.msg_autodelete);
-            }
-
-            if (!NekoConfig.sendReadMessagePackets.Bool() && !isAyuDeleted
-                    && message != null
-                    && message.messageOwner.from_id != null
-                    && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
-            ) {
-                items.add(LocaleController.getString(R.string.GhostReadMessage));
-                options.add(AyuConstants.OPTION_READ_MESSAGE);
-                icons.add(R.drawable.msg_view_file);
+            if (message != null && !isAyuDeleted ) {
+                if (message.messageOwner.ttl > 0) {
+                    items.add(getString(R.string.BurnTtlMessage));
+                    options.add(AyuConstants.OPTION_TTL);
+                    icons.add(R.drawable.burn_solar);
+                }
+                if (!NekoConfig.sendReadMessagePackets.Bool()
+                        && message.messageOwner.from_id != null
+                        && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
+                ) {
+                    items.add(getString(R.string.GhostReadMessage));
+                    options.add(AyuConstants.OPTION_READ_MESSAGE);
+                    icons.add(R.drawable.msg_view_file);
+                }
             }
             // --- AyuGram menu
 
@@ -33392,7 +33395,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 break;
             case AyuConstants.OPTION_TTL:
                 AyuState.setAllowReadPacket(true, 1);
+                if (selectedObject.messageOwner.ttl == 0x7FFFFFFF) {
+                    selectedObject.messageOwner.ttl = 1;
+                }
                 sendSecretMessageRead(selectedObject, true);
+                BotWebViewVibrationEffect.SELECTION_CHANGE.vibrate();
                 break;
             case AyuConstants.OPTION_READ_MESSAGE:
                 AyuGhostUtils.markReadOnServer(selectedObject.messageOwner.id, getMessagesController().getInputPeer(selectedObject.messageOwner.peer_id), false);
@@ -36300,7 +36307,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             return;
         }
         boolean noforwards = getMessagesController().isChatNoForwards(currentChat) || (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.noforwards);
-        boolean noforwardsOverride = noforwards && !NekoXConfig.disableFlagSecure && !NaConfig.INSTANCE.getForceCopy().Bool();
+        boolean noforwardsOverride = noforwards && !NaConfig.INSTANCE.getForceCopy().Bool();
         if (url instanceof URLSpanMono) {
             if (!noforwardsOverride || getDialogId() == UserObject.VERIFY) {
                 ((URLSpanMono) url).copyToClipboard();

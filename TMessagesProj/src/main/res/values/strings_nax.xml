@@ -192,4 +192,5 @@
     <string name="OpenAiCredentialsNotSet">API credentials are not configured.</string>
     <string name="ApiNotSupportedOnAndroidVersion">This API provider is not supported on your Android version (requires Android 8.0+).</string>
     <string name="AppIconTelegramOriginal">Original</string>
+    <string name="BurnTtlMessage">Burn</string>
 </resources>

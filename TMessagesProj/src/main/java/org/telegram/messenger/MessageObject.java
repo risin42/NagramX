@@ -8639,9 +8639,6 @@ public class MessageObject {
     }
 
     public static boolean isSecretPhotoOrVideo(TLRPC.Message message) {
-        if (NekoXConfig.disableFlagSecure) {
-            return false;
-        }
         if (message instanceof TLRPC.TL_message_secret) {
             return (getMedia(message) instanceof TLRPC.TL_messageMediaPhoto || isRoundVideoMessage(message) || isVideoMessage(message)) && message.ttl > 0 && message.ttl <= 60;
         } else if (message instanceof TLRPC.TL_message) {
@@ -8651,9 +8648,6 @@ public class MessageObject {
     }
 
     public static boolean isSecretMedia(TLRPC.Message message) {
-        if (NekoXConfig.disableFlagSecure) {
-            return false;
-        }
         if (message instanceof TLRPC.TL_message_secret) {
             return (getMedia(message) instanceof TLRPC.TL_messageMediaPhoto || isRoundVideoMessage(message) || isVideoMessage(message)) && getMedia(message).ttl_seconds != 0;
         } else if (message instanceof TLRPC.TL_message) {
@@ -8663,9 +8657,6 @@ public class MessageObject {
     }
 
     public boolean needDrawBluredPreview() {
-        if (NekoXConfig.disableFlagSecure || NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
-            return false;
-        }
         if (isRepostPreview) {
             return false;
         }
@@ -8685,9 +8676,6 @@ public class MessageObject {
     }
 
     public boolean isSecretMedia() {
-        if (NekoXConfig.disableFlagSecure) {
-            return false;
-        }
         if (messageOwner instanceof TLRPC.TL_message_secret) {
             return (((getMedia(messageOwner) instanceof TLRPC.TL_messageMediaPhoto) || isGif()) && messageOwner.ttl > 0 && messageOwner.ttl <= 60 || isVoice() || isRoundVideo() || isVideo());
         } else if (messageOwner instanceof TLRPC.TL_message) {
