@@ -3431,30 +3431,6 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                 }
             }
             final boolean self = UserObject.isUserSelf(user);
-            if (chatActivity != null) {
-                final long finalDialogId = dialogId;
-                options.add(R.drawable.ic_translate, getString(R.string.Translate), () -> {
-                    if (messageSendPreview != null) {
-                        messageSendPreview.dismiss(false);
-                    }
-                    translateComment(parentFragment.getParentActivity(), TranslateDb.getChatLanguage(finalDialogId, TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String())));
-                });
-                // TODO: nekox
-//                itemCells[a].setOnLongClickListener(v -> {
-//                    if (num == 0) {
-//                        Translator.showTargetLangSelect(itemCells[num], true, (locale) -> {
-//                            if (sendPopupWindow != null && sendPopupWindow.isShowing()) {
-//                                sendPopupWindow.dismiss();
-//                            }
-//                            translateComment(parentFragment.getParentActivity(), locale);
-//                            TranslateDb.saveChatLanguage(finalDialogId, locale);
-//                            return Unit.INSTANCE;
-//                        });
-//                        return true;
-//                    }
-//                    return false;
-//                });
-            }
             if (editingMessageObject == null && ((chatActivity != null && chatActivity.canScheduleMessage()) || currentAttachLayout.canScheduleMessages())) {
                 final long finalDialogId = dialogId;
                 options.add(R.drawable.msg_calendar2, getString(self ? R.string.SetReminder : R.string.ScheduleMessage), () -> {
@@ -3522,6 +3498,61 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                     item.setSubtext(null);
                 }
                 messageSendPreview.setStars(amount);
+            }
+            if (chatActivity != null && commentTextView != null && commentTextView.getText().length() > 0) {
+                String languageText = NekoConfig.translateInputLang.String().toUpperCase();
+                StringBuilder sb = new StringBuilder();
+                sb.append(getString(R.string.TranslateMessageLLM));
+                sb.append(' ').append("(").append(languageText).append(")");
+                options.add(R.drawable.magic_stick_solar, sb,
+                        () -> {
+                            if (messageSendPreview != null) {
+                                messageSendPreview.dismiss(false);
+                                messageSendPreview = null;
+                            }
+                            Translator.showTargetLangSelect(view, true, (locale) -> {
+                                if (messageSendPreview != null && messageSendPreview.isShowing()) {
+                                    messageSendPreview.dismiss();
+                                }
+                                translateComment(parentFragment.getParentActivity(), locale, Translator.providerLLMTranslator);
+                                NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
+                                return Unit.INSTANCE;
+                            });
+                        },
+                        () -> {
+                            translateComment(parentFragment.getParentActivity(), TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()), Translator.providerLLMTranslator);
+                            if (messageSendPreview != null) {
+                                messageSendPreview.dismiss(false);
+                                messageSendPreview = null;
+                            }
+                        }
+                );
+                sb = new StringBuilder();
+                sb.append(getString(R.string.TranslateMessage));
+                sb.append(' ').append("(").append(languageText).append(")");
+                options.add(R.drawable.ic_translate, sb,
+                        () -> {
+                            if (messageSendPreview != null) {
+                                messageSendPreview.dismiss(false);
+                                messageSendPreview = null;
+                            }
+                            Translator.showTargetLangSelect(view, true, (locale) -> {
+                                if (messageSendPreview != null && messageSendPreview.isShowing()) {
+                                    messageSendPreview.dismiss();
+                                }
+                                translateComment(parentFragment.getParentActivity(), locale);
+                                NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
+                                return Unit.INSTANCE;
+                            });
+                        },
+                        () -> {
+                            translateComment(parentFragment.getParentActivity(), TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()));
+                            if (messageSendPreview != null) {
+                                messageSendPreview.dismiss(false);
+                                messageSendPreview = null;
+                            }
+                        }
+                );
             }
             options.setupSelectors();
             messageSendPreview.setItemOptions(options);
@@ -3733,12 +3764,15 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
     }
 
     private void translateComment(Context ctx, Locale target) {
+        translateComment(ctx, target, 0);
+    }
 
-
+    private void translateComment(Context ctx, Locale target, int provider) {
+        if (commentTextView == null) return;
         TranslateDb db = TranslateDb.forLocale(target);
         String origin = commentTextView.getText().toString();
 
-        if (db.contains(origin)) {
+        if (provider == 0 && db.contains(origin)) {
 
             String translated = db.query(origin);
             commentTextView.getEditText().setText(translated);
@@ -3747,7 +3781,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
 
         }
 
-        Translator.translate(target, origin, new Translator.Companion.TranslateCallBack() {
+        Translator.translate(target, origin, provider, new Translator.Companion.TranslateCallBack() {
 
             final AtomicBoolean cancel = new AtomicBoolean();
             AlertDialog status = AlertUtil.showProgress(ctx);
