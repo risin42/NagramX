@@ -178,4 +178,6 @@
     <string name="OpenAiApiBaseUrlHint">API URL ([…]/chat/completions)</string>
     <string name="OpenAiCredentialsNotSet">API 凭据未配置。</string>
     <string name="ApiNotSupportedOnAndroidVersion">此 API 提供商不支持您的 Android 版本 (需要 Android 8.0+)。</string>
+    <string name="AppIconTelegramOriginal">官方默认</string>
+    <string name="BurnTtlMessage">销毁</string>
 </resources>

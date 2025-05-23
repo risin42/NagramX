@@ -84,7 +84,7 @@
     <string name="IgnoreBlockedAbout">Você não verá mais mensagens de usuários bloqueados em grupos.</string>
     <string name="SourceCode">Código Fonte</string>
     <string name="ResetStickerSize">Redefinir tamanho do sticker</string>
-    <string name="RestartAppToTakeEffect">Reinicie o app para aplicar as alterações.</string>
+    <string name="RestartAppToTakeEffect">Reinicie o aplicativo para aplicar as alterações.</string>
     <string name="DisableAppBarShadow">Desativar Sombra da Barra de Título</string>
     <string name="MediaPreview">Pré-visualização de mídia na lista de chats</string>
     <string name="AutoPauseVideo">Pausar Vídeo Automaticamente</string>
@@ -205,6 +205,7 @@
     <string name="CustomBackend">Back-end personalizado</string>
     <string name="ChangeTranslateProvider">Mudar provedor</string>
     <string name="ProviderYandexTranslate">Yandex Tradutor</string>
+    <string name="GoogleCloudTransKey">Chave do Google Cloud Translate</string>
     <string name="GoogleCloudTransKeyNotice">Se você configurar uma chave de tradução do Google Cloud, a API de tradução em nuvem será chamada em vez de enviar um formulário falso para a versão web ao traduzir (mais rápido, estável e economizando tráfego).</string>
     <string name="TransToLang">Idioma de Destino</string>
     <string name="TransInputToLang">Idioma de Tradução Pré-Envio</string>
