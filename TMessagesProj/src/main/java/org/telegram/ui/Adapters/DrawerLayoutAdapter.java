@@ -414,7 +414,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         boolean showQrLogin = NaConfig.INSTANCE.getDrawerItemQrLogin().Bool();
         boolean restartApp = NaConfig.INSTANCE.getDrawerItemRestartApp().Bool();
         if (showNSettings || showBrowser || showQrLogin) items.add(null); // divider
-        if (showNSettings) items.add(new Item(nkbtnSettings, LocaleController.getString(R.string.NekoSettings), R.drawable.nagramx_notification));
+        if (showNSettings) items.add(new Item(nkbtnSettings, LocaleController.getString(R.string.NekoSettings), R.drawable.msg_settings_solar));
         if (showBrowser) items.add(new Item(nkbtnBrowser, LocaleController.getString(R.string.InappBrowser), R.drawable.web_browser));
         if (showQrLogin) items.add(new Item(nkbtnQrLogin, LocaleController.getString(R.string.ImportLogin), R.drawable.msg_qrcode));
         if (restartApp) {
