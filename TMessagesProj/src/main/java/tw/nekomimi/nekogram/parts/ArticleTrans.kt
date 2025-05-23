@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ArticleViewer
-import tw.nekomimi.nekogram.transtale.TranslateDb
 import tw.nekomimi.nekogram.transtale.Translator
 import tw.nekomimi.nekogram.utils.AlertUtil
 import tw.nekomimi.nekogram.utils.UIUtil
@@ -20,56 +19,42 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 fun HashSet<Any>.filterBaseTexts(): HashSet<Any> {
-
     var hasNext: Boolean
-
     do {
-
         hasNext = false
-
         HashSet(this).forEach { item ->
-
             when (item) {
-
                 is TLRPC.TL_textConcat -> {
-
                     remove(item)
                     addAll(item.texts)
-
                     hasNext = true
-
                 }
-
             }
-
         }
-
     } while (hasNext)
 
     return this
-
 }
 
 fun ArticleViewer.doTransLATE() {
-
     val status = AlertUtil.showProgress(parentActivity)
-
     status.show()
 
     val transPool = newFixedThreadPoolContext(5, "Article Trans Pool")
 
     val cancel = AtomicBoolean(false)
 
-    status.setOnCancelListener {
+    val adapter = pages[0].adapter
+    val translatedTextCache = adapter.translatedTextCache
 
+    status.setOnCancelListener {
         updateTranslateButton(false)
         cancel.set(true)
         transPool.close()
-
+        translatedTextCache.clear()
     }
 
     GlobalScope.launch(Dispatchers.IO) {
-
         val copy = HashMap(pages[0].adapter.textToBlocks)
         val array = HashSet(pages[0].adapter.textBlocks).filterBaseTexts()
 
@@ -83,11 +68,9 @@ fun ArticleViewer.doTransLATE() {
         status.uUpdate("0 / $all")
 
         array.forEach { item ->
-
             when (item) {
-
                 is TLRPC.RichText -> getText(
-                    pages[0].adapter,
+                    adapter,
                     null,
                     item,
                     item,
@@ -95,56 +78,40 @@ fun ArticleViewer.doTransLATE() {
                     1000,
                     true
                 ).takeIf { it.isNotBlank() }?.toString()
-
                 is String -> item
                 else -> null
-
             }?.also { str ->
-
                 deferreds.add(async(transPool) {
-
-                    if (TranslateDb.currentTarget().contains(str)) {
-
+                    if (translatedTextCache.containsKey(str)) {
                         status.uUpdate("${all - taskCount.get()} / $all")
-
                         if (taskCount.decrementAndGet() % 10 == 0) UIUtil.runOnUIThread(Runnable {
-
                             updatePaintSize()
-
                         })
 
                         return@async
-
                     }
-
                     runCatching {
-
                         if (cancel.get()) return@async
 
-                        Translator.translateArticle(str)
+                        val translatedResult = Translator.translateArticle(str)
+                        translatedTextCache[str] = translatedResult
 
                         status.uUpdate((all - taskCount.get()).toString() + " / " + all)
 
                         if (taskCount.decrementAndGet() % 10 == 0) UIUtil.runOnUIThread(Runnable {
-
                             updatePaintSize()
-
                         })
-
                     }.onFailure {
-
                         if (cancel.get()) return@async
 
                         if (errorCount.incrementAndGet() > 3) {
-
                             cancel.set(true)
-
                             UIUtil.runOnUIThread(Runnable {
-
                                 cancel.set(true)
                                 status.dismiss()
                                 updatePaintSize()
                                 updateTranslateButton(false)
+                                translatedTextCache.clear()
                                 AlertUtil.showTransFailedDialog(
                                     parentActivity,
                                     it is UnsupportedOperationException,
@@ -152,34 +119,21 @@ fun ArticleViewer.doTransLATE() {
                                 ) {
                                     doTransLATE()
                                 }
-
                             })
-
                         }
-
                     }
-
                 })
-
             }.also {
-
                 if (it == null) taskCount.decrementAndGet()
-
             }
-
         }
 
         deferreds.awaitAll()
         transPool.cancel()
 
         if (!cancel.get()) UIUtil.runOnUIThread {
-
             updatePaintSize()
             status.dismiss()
-
         }
-
     }
-
-
 }

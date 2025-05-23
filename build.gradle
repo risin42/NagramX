@@ -10,7 +10,6 @@ buildscript {
         classpath 'com.google.gms:google-services:4.4.2' // 4.3.15
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.10'
-        classpath "io.objectbox:objectbox-gradle-plugin:4.2.0"
     }
 }
 

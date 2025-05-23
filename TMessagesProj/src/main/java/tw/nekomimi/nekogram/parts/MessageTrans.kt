@@ -20,9 +20,9 @@ import org.telegram.messenger.TranslateController
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ChatActivity
 import tw.nekomimi.nekogram.NekoConfig
-import tw.nekomimi.nekogram.transtale.TranslateDb
 import tw.nekomimi.nekogram.transtale.Translator
 import tw.nekomimi.nekogram.transtale.code2Locale
+import tw.nekomimi.nekogram.transtale.locale2code
 import tw.nekomimi.nekogram.utils.AlertUtil
 import xyz.nextalone.nagram.NaConfig
 import java.util.LinkedList
@@ -77,7 +77,7 @@ fun ChatActivity.translateMessages(
     // translation for this message is already available in that case
     } else if (
         translatorMode == TRANSLATE_MODE_REPLACE && provider == 0 &&
-        (messages.any { it.messageOwner.translatedText?.text?.isNotEmpty() == true } || messages.any { it.messageOwner.translatedPoll?.question?.text?.isNotEmpty() == true })
+            (messages.any { it.messageOwner.translatedText?.text?.isNotEmpty() == true } || messages.any { it.messageOwner.translatedPoll?.question?.text?.isNotEmpty() == true })
     ) {
         messages.forEach { messageObject ->
             if (messageObject.messageOwner.translatedToLanguage.equals(target.toLanguageTag(), ignoreCase = true)) {
@@ -88,6 +88,22 @@ fun ChatActivity.translateMessages(
                 AndroidUtilities.runOnUIThread {
                     NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.messageTranslating, messageObject)
                     NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.messageTranslated, messageObject)
+                }
+            }
+        }
+    } else if (
+        (translatorMode == TRANSLATE_MODE_APPEND && provider == 0 &&
+                messages.any { it.messageOwner.translatedMessage?.isNotEmpty() == true }
+        ) || messages.any { isTranslatedPoll(it) }
+    ) {
+        messages.forEach { messageObject ->
+            if (messageObject.messageOwner.translatedToLanguage.equals(target.toLanguageTag(), ignoreCase = true)) {
+                controller.removeAsTranslatingItem(messageObject)
+                controller.addAsManualTranslate(messageObject)
+                messageObject.translating = false
+                messageObject.messageOwner.translated = true
+                AndroidUtilities.runOnUIThread {
+                    messageHelper.resetMessageContent(dialogId, messageObject)
                 }
             }
         }
@@ -110,55 +126,31 @@ fun ChatActivity.translateMessages(
 
     GlobalScope.launch(Dispatchers.IO) {
         messagesToTranslate.forEachIndexed { _, selectedObject ->
-            if (provider == 0) {
-                val state = selectedObject.checkDatabaseForTranslation(target, translatorMode)
-                if (state == 1) {
-                    controller.removeAsTranslatingItem(selectedObject)
-                    selectedObject.translating = false
-                    return@forEachIndexed
-                } else if (state == 2 && ((translatorMode == TRANSLATE_MODE_APPEND) || selectedObject.isPoll)) {
-                    controller.removeAsTranslatingItem(selectedObject)
-                    selectedObject.translating = false
-                    selectedObject.messageOwner.translated = true
-                    selectedObject.messageOwner.translatedText = null
-                    selectedObject.messageOwner.translatedPoll = null
-                    MessagesStorage.getInstance(currentAccount).updateMessageCustomParams(
-                        selectedObject.dialogId,
-                        selectedObject.messageOwner
-                    )
-                    withContext(Dispatchers.Main) {
-                        messageHelper.resetMessageContent(dialogId, selectedObject)
-                    }
-                    return@forEachIndexed
-                }
-            }
-
             deferred.add(async(transPool) trans@{
                 if (selectedObject.isPoll) {
                     val pool = (selectedObject.messageOwner.media as TLRPC.TL_messageMediaPoll).poll
-                    var question: String? = null
+                    var translatedQuestion: String? = null
                     runCatching {
-                        question = Translator.translate(target, pool.question.text, provider)
+                        translatedQuestion = Translator.translate(target, pool.question.text, provider)
                     }.onFailure { e ->
                         handleTranslationError(parentActivity, e, controller, selectedObject) {
                             translateMessages(target, messagesToTranslate)
                         }
                         return@trans
                     }
-                    pool.translatedQuestion =
-                        "${if (translatorMode == TRANSLATE_MODE_APPEND) pool.question.text + "\n\n--------\n\n" else ""}$question"
+                    pool.translatedQuestion = translatedQuestion
 
                     pool.answers.forEach {
-                        var answer: String? = null
+                        var translatedAnswer: String? = null
                         runCatching {
-                            answer = Translator.translate(target, it.text.text, provider)
+                            translatedAnswer = Translator.translate(target, it.text.text, provider)
                         }.onFailure { e ->
                             handleTranslationError(parentActivity, e, controller, selectedObject) {
                                 translateMessages(target, messagesToTranslate)
                             }
                             return@trans
                         }
-                        it.translatedText = answer + " | " + it.text.text
+                        it.translatedText = translatedAnswer
                     }
                 } else {
                     var result: TLRPC.TL_textWithEntities? = null
@@ -175,28 +167,26 @@ fun ChatActivity.translateMessages(
                         }
                         return@trans
                     }
-                    selectedObject.messageOwner.translatedMessage =
-                        "${if (translatorMode == TRANSLATE_MODE_APPEND) selectedObject.messageOwner.message + "\n\n--------\n\n" else ""}${result?.text}"
-
-                    if (result != null && translatorMode == TRANSLATE_MODE_REPLACE) {
+                    if (result != null) {
+                        selectedObject.messageOwner.translatedMessage = selectedObject.messageOwner.message + "\n\n--------\n\n" + result?.text
                         selectedObject.messageOwner.translatedText = result
                     }
                 }
                 controller.removeAsTranslatingItem(selectedObject)
                 selectedObject.messageOwner.translated = true
-                selectedObject.messageOwner.translatedToLanguage = target.toLanguageTag()
+                selectedObject.messageOwner.translatedToLanguage = target.locale2code.lowercase(Locale.getDefault())
 
-                if (selectedObject.messageOwner.translatedText != null && translatorMode == TRANSLATE_MODE_REPLACE) {
-                    MessagesStorage.getInstance(currentAccount).updateMessageCustomParams(
-                        selectedObject.dialogId,
-                        selectedObject.messageOwner
-                    )
+                MessagesStorage.getInstance(currentAccount).updateMessageCustomParams(
+                    selectedObject.dialogId,
+                    selectedObject.messageOwner
+                )
+
+                if (selectedObject.messageOwner.translatedText != null) {
                     AndroidUtilities.runOnUIThread {
                         NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.messageTranslated, selectedObject)
                         NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.updateInterfaces, 0)
                     }
                 } else {
-                    clearTranslated(selectedObject, currentAccount)
                     withContext(Dispatchers.Main) {
                         messageHelper.resetMessageContent(dialogId, selectedObject)
                     }
@@ -210,37 +200,6 @@ fun ChatActivity.translateMessages(
     messagesToTranslate.forEach { messageObject ->
         messageObject.translating = false
     }
-}
-
-/**
- * Checks if translations are already available in the local database for this MessageObject.
- *
- * @param locale The target locale for translation.
- * @return 0 if translations are not found in the database and translation is needed,
- *         1 if the message has no translatable text (e.g., empty message),
- *         2 if translations are successfully loaded from the database.
- */
-fun MessageObject.checkDatabaseForTranslation(locale: Locale, translatorMode: Int): Int {
-    val db = TranslateDb.forLocale(locale)
-
-    if (isPoll) {
-        val pool = (messageOwner.media as TLRPC.TL_messageMediaPoll).poll
-        val question = db.query(pool.question.text) ?: return 0
-
-        pool.translatedQuestion =
-            "${if (translatorMode == TRANSLATE_MODE_APPEND) pool.question.text + "\n\n--------\n\n" else ""}$question"
-
-        pool.answers.forEach {
-            val answer = db.query(it.text.text) ?: return 0
-            it.translatedText = it.text.text + " | " + answer
-        }
-    } else {
-        val text =
-            db.query(messageOwner.message.takeIf { !it.isNullOrBlank() } ?: return 1) ?: return 0
-        messageOwner.translatedMessage =
-            "${if (translatorMode == TRANSLATE_MODE_APPEND) messageOwner.message + "\n\n--------\n\n" else ""}$text"
-    }
-    return 2
 }
 
 private fun handleTranslationError(
@@ -265,11 +224,8 @@ private fun handleTranslationError(
     }
 }
 
-private fun clearTranslated(messageObject: MessageObject, currentAccount: Int) {
-    messageObject.messageOwner.translatedText = null
-    messageObject.messageOwner.translatedPoll = null
-    MessagesStorage.getInstance(currentAccount).updateMessageCustomParams(
-        messageObject.dialogId,
-        messageObject.messageOwner
-    )
-}
+private fun isTranslatedPoll(messageObject: MessageObject) = messageObject.isPoll &&
+    (messageObject.messageOwner.media as? TLRPC.TL_messageMediaPoll)?.poll?.let { poll ->
+        poll.translatedQuestion?.isNotEmpty() == true &&
+        poll.answers.all { it.translatedText?.isNotEmpty() == true }
+    } ?: false

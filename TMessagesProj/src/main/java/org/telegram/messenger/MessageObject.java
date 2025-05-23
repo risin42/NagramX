@@ -109,6 +109,7 @@ import java.util.regex.Pattern;
 import top.qwq2333.nullgram.utils.StringUtils;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
+import tw.nekomimi.nekogram.parts.MessageTransKt;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.MessageHelper;
 import xyz.nextalone.nagram.ui.syntaxhighlight.SyntaxHighlight;
@@ -3475,7 +3476,7 @@ public class MessageObject {
             ) &&
 //            !translateController.isTranslateDialogHidden(getDialogId()) &&
             messageOwner != null &&
-            (messageOwner.translatedText != null || messageOwner.translatedPoll != null) &&
+            (messageOwner.translatedText != null || messageOwner.translatedPoll != null || messageOwner.translatedMessage != null) &&
             (translateController.isManualTranslated(this) ||
                 TextUtils.equals(translateController.isManualTranslated(this) ? NekoConfig.translateToLang.String() : translateController.getDialogTranslateTo(getDialogId()), messageOwner.translatedToLanguage)
             )
@@ -3484,8 +3485,12 @@ public class MessageObject {
                 return replyUpdated || false;
             }
             translated = true;
-            if (messageOwner.translatedText != null) {
+            int translatorMode = NaConfig.INSTANCE.getTranslatorMode().Int();
+            if (messageOwner.translatedText != null && (translatorMode == MessageTransKt.TRANSLATE_MODE_REPLACE || translateController.isTranslatingDialog(getDialogId()))) {
                 applyNewText(messageOwner.translatedText.text);
+                generateCaption();
+            } else if (messageOwner.translatedMessage != null && !messageOwner.translatedMessage.isEmpty() && translatorMode == MessageTransKt.TRANSLATE_MODE_APPEND) {
+                applyNewText(messageOwner.translatedMessage);
                 generateCaption();
             }
             return replyUpdated || true;
@@ -6394,7 +6399,7 @@ public class MessageObject {
         } else if (hasExtendedMedia()) {
             text = messageOwner.message = messageOwner.media.description;
         }
-        if (messageOwner.translatedText != null && (captionTranslated = translated)) {
+        if (messageOwner.translatedText != null && (captionTranslated = translated) && (NaConfig.INSTANCE.getTranslatorMode().Int() == MessageTransKt.TRANSLATE_MODE_REPLACE || MessagesController.getInstance(currentAccount).getTranslateController().isTranslatingDialog(getDialogId()))) {
             text = messageOwner.translatedText.text;
             // entities = messageOwner.translatedText.entities;
             entities = reparseMessageEntities(messageOwner.translatedText.entities);
@@ -6700,8 +6705,11 @@ public class MessageObject {
                 if (messageOwner.translatedText == null) {
                     entities = null;
                 } else {
-                    // entities = messageOwner.translatedText.entities;
-                    entities = reparseMessageEntities(messageOwner.translatedText.entities);
+                    if (NaConfig.INSTANCE.getTranslatorMode().Int() == MessageTransKt.TRANSLATE_MODE_REPLACE || MessagesController.getInstance(currentAccount).getTranslateController().isTranslatingDialog(getDialogId())) {
+                        entities = reparseMessageEntities(messageOwner.translatedText.entities);
+                    } else {
+                        entities = messageOwner.entities;
+                    }
                 }
             } else {
                 entities = messageOwner.entities;

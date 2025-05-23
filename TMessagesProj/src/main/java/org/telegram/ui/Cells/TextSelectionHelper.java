@@ -69,7 +69,6 @@ import org.telegram.ui.RestrictedLanguagesSelectActivity;
 import java.util.ArrayList;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.transtale.TranslateDb;
 import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
@@ -1490,29 +1489,24 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                     }
                     String urlFinal = textS.toString();
                     Activity activity = ProxyUtil.getOwnerActivity((((View) selectedView).getContext()));
-                    TranslateDb db = TranslateDb.currentTarget();
-                    if (db.contains(urlFinal)) {
-                        AlertUtil.showCopyAlert(activity, db.query(urlFinal));
-                    } else {
-                        AlertDialog pro = AlertUtil.showProgress(activity);
-                        pro.show();
-                        Translator.translate(urlFinal, new Translator.Companion.TranslateCallBack() {
-                            @Override
-                            public void onSuccess(@NotNull String translation) {
-                                pro.dismiss();
-                                AlertUtil.showCopyAlert(activity, translation);
-                            }
+                    AlertDialog pro = AlertUtil.showProgress(activity);
+                    pro.show();
+                    Translator.translate(urlFinal, new Translator.Companion.TranslateCallBack() {
+                        @Override
+                        public void onSuccess(@NotNull String translation) {
+                            pro.dismiss();
+                            AlertUtil.showCopyAlert(activity, translation);
+                        }
 
-                            @Override
-                            public void onFailed(boolean unsupported, @NotNull String message) {
-                                pro.dismiss();
-                                AlertUtil.showTransFailedDialog(activity, unsupported, message, () -> {
-                                    pro.show();
-                                    Translator.translate(urlFinal, this);
-                                });
-                            }
-                        });
-                    }
+                        @Override
+                        public void onFailed(boolean unsupported, @NotNull String message) {
+                            pro.dismiss();
+                            AlertUtil.showTransFailedDialog(activity, unsupported, message, () -> {
+                                pro.show();
+                                Translator.translate(urlFinal, this);
+                            });
+                        }
+                    });
                     return true;
                 } else if (itemId == R.id.menu_quote) {
                     quoteText();

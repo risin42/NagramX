@@ -217,7 +217,6 @@ import top.qwq2333.nullgram.utils.StringUtils;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.cc.CCConverter;
 import tw.nekomimi.nekogram.cc.CCTarget;
-import tw.nekomimi.nekogram.transtale.TranslateDb;
 import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
@@ -4579,14 +4578,14 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             final ActionBarMenuSubItem ccCell = cell;
             final long chatId = getChatId();
             cell.setOnClickListener(v -> {
-                String ccTarget = TranslateDb.getChatCCTarget(chatId, NekoConfig.ccInputLang.String());
+                String ccTarget = NekoConfig.ccInputLang.String();
                 if (ccTarget == null || StringsKt.isBlank(ccTarget)) {
                     Translator.showCCTargetSelect(ccCell, (target) -> {
                         if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
                             menuPopupWindow.dismiss();
                         }
                         ccComment(target);
-                        TranslateDb.saveChatCCTarget(chatId, target);
+                        NekoConfig.ccInputLang.setConfigString(target);
                         return Unit.INSTANCE;
                     });
                     return;
@@ -4602,7 +4601,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                         menuPopupWindow.dismiss();
                     }
                     ccComment(target);
-                    TranslateDb.saveChatCCTarget(chatId, target);
+                    NekoConfig.ccInputLang.setConfigString(target);
                     return Unit.INSTANCE;
                 });
                 return true;
@@ -6061,19 +6060,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             text = text.subSequence(start, end);
         }
 
-        TranslateDb db = TranslateDb.forLocale(target);
         String origin = text.toString();
-
-        if (provider == 0 && db.contains(origin)) {
-            String translated = db.query(origin);
-            if (start == end) {
-                messageEditText.setText(translated);
-            } else {
-                messageEditText.getText().replace(start, end, translated);
-            }
-            return;
-        }
-
         Translator.translate(target, origin, provider, new Translator.Companion.TranslateCallBack() {
 
             final AtomicBoolean cancel = new AtomicBoolean();

@@ -1,6 +1,5 @@
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
-apply plugin: "io.objectbox"
 
 repositories {
     maven {
@@ -313,7 +312,7 @@ dependencies {
     implementation 'com.github.UnifiedPush:android-connector:2.3.1'
     // NagramX: add for save deleted messages
     implementation "androidx.room:room-runtime:2.7.1"
-    kapt "androidx.room:room-compiler:2.7.1"
+    annotationProcessor "androidx.room:room-compiler:2.7.1"
     // add for keep formatting in translations
     implementation "org.apache.commons:commons-text:1.10.0"
 

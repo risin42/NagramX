@@ -102,7 +102,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.transtale.TranslateDb;
 import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -749,7 +748,7 @@ public class DocumentSelectActivity extends BaseFragment {
                             sendPopupWindow.dismiss();
                         }
                         if (num == 0) {
-                            translateComment(TranslateDb.getChatLanguage(chatId, TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String())));
+                            translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()));
                         } else if (num == 1) {
                             AlertsCreator.createScheduleDatePickerDialog(getParentActivity(), chatActivity.getDialogId(), this::sendSelectedFiles);
                         } else if (num == 2) {
@@ -763,7 +762,7 @@ public class DocumentSelectActivity extends BaseFragment {
                                     sendPopupWindow.dismiss();
                                 }
                                 translateComment(locale);
-                                TranslateDb.saveChatLanguage(chatId, locale);
+                                NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
                                 return Unit.INSTANCE;
                             });
                             return true;
@@ -834,32 +833,17 @@ public class DocumentSelectActivity extends BaseFragment {
 
 
     private void translateComment(Locale target) {
-
-        TranslateDb db = TranslateDb.forLocale(target);
         String origin = commentTextView.getText().toString();
-
-        if (db.contains(origin)) {
-
-            String translated = db.query(origin);
-            commentTextView.getEditText().setText(translated);
-
-            return;
-
-        }
-
         Translator.translate(target, origin, new Translator.Companion.TranslateCallBack() {
 
             final AtomicBoolean cancel = new AtomicBoolean();
             AlertDialog status = AlertUtil.showProgress(getParentActivity());
 
             {
-
                 status.setOnCancelListener((__) -> {
                     cancel.set(true);
                 });
-
                 status.show();
-
             }
 
             @Override
@@ -877,9 +861,7 @@ public class DocumentSelectActivity extends BaseFragment {
                     Translator.translate(origin, this);
                 });
             }
-
         });
-
     }
 
     private boolean onItemClick(View view, ListItem item) {

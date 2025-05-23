@@ -223,14 +223,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import cn.hutool.core.util.StrUtil;
-import kotlin.Unit;
-import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.parts.ArticleTransKt;
-import tw.nekomimi.nekogram.transtale.TranslateDb;
-import tw.nekomimi.nekogram.utils.AlertUtil;
-import tw.nekomimi.nekogram.utils.ProxyUtil;
 
 public class ArticleViewer implements NotificationCenter.NotificationCenterDelegate {
 
@@ -2558,11 +2552,9 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
             return spannableStringBuilder;
         } else if (richText instanceof TLRPC.TL_textPlain) {
             String plainText = ((TLRPC.TL_textPlain) richText).text;
-            if (!noTranslate && StrUtil.isNotBlank(plainText) && pages[0].adapter.trans && TranslateDb.currentTarget().contains(plainText)) {
-                plainText = TranslateDb.currentTarget().query(plainText);
-                if (plainText == null) {
-                    plainText = ((TLRPC.TL_textPlain) richText).text + " (Not translated)";
-                }
+            var adapter = pages[0].adapter;
+            if (!noTranslate && !TextUtils.isEmpty(plainText) && adapter.trans && adapter.translatedTextCache.containsKey(plainText)) {
+                plainText = adapter.translatedTextCache.get(plainText);
             }
             return plainText;
         } else if (richText instanceof TLRPC.TL_textAnchor) {
@@ -2696,8 +2688,8 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
             return getPlainText(((TLRPC.TL_textUrl) richText).text);
         } else if (richText instanceof TLRPC.TL_textPlain) {
             String plainText = ((TLRPC.TL_textPlain) richText).text;
-            if (plainText != null && Instance != null && Instance.pages != null && Instance.pages.length > 0 && Instance.pages[0].adapter != null && Instance.pages[0].adapter.trans && TranslateDb.currentTarget().contains(plainText)) {
-                plainText = TranslateDb.currentTarget().query(plainText);
+            if (plainText != null && Instance != null && Instance.pages != null && Instance.pages.length > 0 && Instance.pages[0].adapter != null && Instance.pages[0].adapter.trans && Instance.pages[0].adapter.translatedTextCache.containsKey(plainText)) {
+                plainText = Instance.pages[0].adapter.translatedTextCache.get(plainText);
             }
             return plainText;
         } else if (richText instanceof TLRPC.TL_textAnchor) {
@@ -3009,7 +3001,7 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
 
         CharSequence text;
         if (plainText != null) {
-            text = (parentAdapter.trans && TranslateDb.currentTarget().contains(plainText.toString())) ? TranslateDb.currentTarget().query(plainText.toString()) : plainText;
+            text = (parentAdapter.trans && parentAdapter.translatedTextCache.containsKey(plainText.toString())) ? parentAdapter.translatedTextCache.get(plainText.toString()) : plainText;
         } else {
             text = getText(parentAdapter, parentView, richText, richText, parentBlock, width);
         }
@@ -5876,6 +5868,7 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
         private final boolean padding;
 
         public boolean trans;
+        public final HashMap<String, String> translatedTextCache = new HashMap<>();
 
         public WebpageAdapter(Context ctx, boolean withPadding) {
             context = ctx;

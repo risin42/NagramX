@@ -319,7 +319,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
-import tw.nekomimi.nekogram.transtale.TranslateDb;
 import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -7526,7 +7525,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     } else if (a == 4) {
                         sendPressed(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, false, true, false);
                     } else if (a == 5) {
-                        translateComment(TranslateDb.getChatLanguage(chatId, TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String())));
+                        translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()));
                     } else if (a == 6) {
                         if (placeProvider != null && !placeProvider.isPhotoChecked(currentIndex)) {
                             setPhotoChecked();
@@ -7543,7 +7542,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                                 sendPopupWindow.dismiss();
                             }
                             translateComment(locale);
-                            TranslateDb.saveChatLanguage(chatId, locale);
+                            NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
                             return Unit.INSTANCE;
                         });
                         return true;
@@ -8019,30 +8018,17 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
     }
 
     private void translateComment(Locale target) {
-
         String origin = captionEdit.getText().toString();
-
-        TranslateDb db = TranslateDb.forLocale(target);
-        if (db.contains(origin)) {
-            String translated = db.query(origin);
-            captionEdit.setText(translated);
-            return;
-
-        }
-
         Translator.translate(target, origin, new Translator.Companion.TranslateCallBack() {
 
             final AtomicBoolean cancel = new AtomicBoolean();
             AlertDialog status = AlertUtil.showProgress(parentActivity);
 
             {
-
                 status.setOnCancelListener((__) -> {
                     cancel.set(true);
                 });
-
                 status.show();
-
             }
 
             @Override
@@ -8060,9 +8046,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     Translator.translate(origin, this);
                 });
             }
-
         });
-
     }
 
 

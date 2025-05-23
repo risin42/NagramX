@@ -225,6 +225,7 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.helpers.TimeStringHelper;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
+import tw.nekomimi.nekogram.parts.MessageTransKt;
 import tw.nekomimi.nekogram.utils.NeteaseEmbed;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -7977,6 +7978,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     }
                 }
             } else if (messageObject.type == MessageObject.TYPE_POLL) {
+                if (messageObject.messageOwner == null) {
+                    return;
+                }
                 if (timerParticles == null) {
                     timerParticles = new TimerParticles();
                 }
@@ -7996,7 +8000,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     messageObject.checkedVotes.clear();
                 }
                 TLRPC.TL_textWithEntities question = media.poll.question;
-                if (messageObject.translated && messageObject.messageOwner != null && messageObject.messageOwner.translatedPoll != null && messageObject.messageOwner.translatedPoll.question != null && !messageObject.messageOwner.translatedPoll.question.text.isEmpty()) {
+                if (messageObject.translated && messageObject.messageOwner.translatedPoll != null && messageObject.messageOwner.translatedPoll.question != null && !messageObject.messageOwner.translatedPoll.question.text.isEmpty()) {
                     question = messageObject.messageOwner.translatedPoll.question;
                 }
                 CharSequence questionText;

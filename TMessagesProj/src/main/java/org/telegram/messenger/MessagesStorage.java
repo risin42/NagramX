@@ -73,7 +73,6 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
-import tw.nekomimi.nekogram.transtale.TranslateDb;
 import xyz.nextalone.nagram.NaConfig;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.messages.AyuSavePreferences;
@@ -1396,9 +1395,6 @@ public class MessagesStorage extends BaseController {
             SQLitePreparedStatement state5 = null;
             SQLitePreparedStatement state6 = null;
             try {
-                // NekoX cleardatabase
-                TranslateDb.clearAll();
-
                 ArrayList<Long> dialogsToCleanup = new ArrayList<>();
 
                 database.executeFast("DELETE FROM reaction_mentions").stepThis().dispose();

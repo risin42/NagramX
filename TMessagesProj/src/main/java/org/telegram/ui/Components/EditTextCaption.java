@@ -64,7 +64,6 @@ import java.util.Locale;
 
 import cn.hutool.core.util.StrUtil;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.transtale.TranslateDb;
 import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -294,7 +293,6 @@ public class EditTextCaption extends EditTextBoldCursor {
     }
 
     public void makeSelectedTranslate() {
-
         int start = getSelectionStart();
         int end = getSelectionEnd();
 
@@ -303,49 +301,31 @@ public class EditTextCaption extends EditTextBoldCursor {
 
         if (StrUtil.isBlank(origin)) return;
 
-        TranslateDb db = TranslateDb.currentInputTarget();
+        Locale to = TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String());
+        Translator.translate(to, text, new Translator.Companion.TranslateCallBack() {
 
-        if (db.contains(text)) {
+            AlertDialog status = AlertUtil.showProgress(getContext());
 
-            setText(replaceAt(origin, start, end, TranslateDb.currentInputTarget().query(text)));
-
-        } else {
-            Locale to;
-            Locale toDefault = TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String());
-            if (delegate != null) {
-                to = TranslateDb.getChatLanguage(delegate.getCurrentChat(), toDefault);
-            } else {
-                to = toDefault;
+            {
+                status.show();
             }
 
-            Translator.translate(to, text, new Translator.Companion.TranslateCallBack() {
+            @Override
+            public void onSuccess(@NotNull String translation) {
+                status.dismiss();
+                setText(replaceAt(origin, start, end, translation));
+            }
 
-                AlertDialog status = AlertUtil.showProgress(getContext());
-
-                {
+            @Override
+            public void onFailed(boolean unsupported, @NotNull String message) {
+                status.dismiss();
+                AlertUtil.showTransFailedDialog(getContext(), unsupported, message, () -> {
+                    status = AlertUtil.showProgress(getContext());
                     status.show();
-                }
-
-                @Override
-                public void onSuccess(@NotNull String translation) {
-                    status.dismiss();
-                    setText(replaceAt(origin, start, end, translation));
-                }
-
-                @Override
-                public void onFailed(boolean unsupported, @NotNull String message) {
-                    status.dismiss();
-                    AlertUtil.showTransFailedDialog(getContext(), unsupported, message, () -> {
-                        status = AlertUtil.showProgress(getContext());
-                        status.show();
-                        Translator.translate(text, this);
-                    });
-                }
-
-            });
-
-        }
-
+                    Translator.translate(text, this);
+                });
+            }
+        });
     }
 
     public void makeSelectedMention() {

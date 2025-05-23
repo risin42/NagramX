@@ -50,12 +50,6 @@ val Locale.locale2code by receiveLazy<Locale, String> {
 
 val LocaleController.LocaleInfo.locale by receiveLazy<LocaleController.LocaleInfo, Locale> { pluralLangCode.code2Locale }
 
-val Locale.transDb by receive<Locale, TranslateDb> {
-    TranslateDb.repo[this] ?: TranslateDb(locale2code).also { TranslateDb.repo[this] = it }
-}
-
-val String.transDbByCode by receive<String, TranslateDb> { code2Locale.transDb }
-
 interface Translator {
 
     suspend fun doTranslate(
@@ -242,9 +236,6 @@ interface Translator {
             }
 
             val result = translator.doTranslate("auto", language, query, entities)
-            val textToSave = result.text?.toString() ?: ""
-
-            to.transDb.save(query, textToSave)
 
             if (language == "zh") {
                 val countryUpperCase = country.uppercase()

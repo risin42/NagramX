@@ -142,16 +142,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.transtale.TranslateDb;
 import tw.nekomimi.nekogram.transtale.Translator;
 import tw.nekomimi.nekogram.transtale.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
-import tw.nekomimi.nekogram.utils.VibrateUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 import java.util.Objects;
@@ -3769,31 +3766,18 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
 
     private void translateComment(Context ctx, Locale target, int provider) {
         if (commentTextView == null) return;
-        TranslateDb db = TranslateDb.forLocale(target);
+
         String origin = commentTextView.getText().toString();
-
-        if (provider == 0 && db.contains(origin)) {
-
-            String translated = db.query(origin);
-            commentTextView.getEditText().setText(translated);
-
-            return;
-
-        }
-
         Translator.translate(target, origin, provider, new Translator.Companion.TranslateCallBack() {
 
             final AtomicBoolean cancel = new AtomicBoolean();
             AlertDialog status = AlertUtil.showProgress(ctx);
 
             {
-
                 status.setOnCancelListener((__) -> {
                     cancel.set(true);
                 });
-
                 status.show();
-
             }
 
             @Override
@@ -3811,9 +3795,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                     Translator.translate(origin, this);
                 });
             }
-
         });
-
     }
 
     @Override

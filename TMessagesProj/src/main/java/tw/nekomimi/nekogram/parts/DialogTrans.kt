@@ -4,7 +4,7 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import tw.nekomimi.nekogram.transtale.TranslateDb
+import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.transtale.Translator
 import tw.nekomimi.nekogram.transtale.code2Locale
 import tw.nekomimi.nekogram.utils.AlertUtil
@@ -34,21 +34,9 @@ fun startTrans(ctx: Context, text: String) {
 
     GlobalScope.launch(Dispatchers.IO) {
 
-        val target = TranslateDb.currentTarget()
-
-        if (target.contains(text)) {
-
-            dialog.uDismiss()
-
-            AlertUtil.showCopyAlert(ctx, target.query(text) ?: "")
-
-            return@launch
-
-        }
-
         runCatching {
 
-            val result = Translator.translate(target.code.code2Locale, text)
+            val result = Translator.translate(NekoConfig.translateToLang.String().code2Locale, text)
 
             if (!canceled.get()) {
 

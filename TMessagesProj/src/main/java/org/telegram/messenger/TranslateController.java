@@ -1607,7 +1607,7 @@ public class TranslateController extends BaseController {
             Translator.translate(messageObject.messageOwner.message, messageObject.messageOwner.entities, new Translator.Companion.TranslateCallBack2() {
                 @Override
                 public void onSuccess(@NonNull TLRPC.TL_textWithEntities finalText) {
-                    messageObject.messageOwner.translatedToLanguage = NekoConfig.translateToLang.String();
+                    messageObject.messageOwner.translatedToLanguage = NekoConfig.translateToLang.String().toLowerCase();
                     messageObject.messageOwner.translatedText = finalText;
                     getMessagesStorage().updateMessageCustomParams(key.dialogId, messageObject.messageOwner);
                     AndroidUtilities.runOnUIThread (() -> NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.messageTranslated, messageObject));
@@ -1623,7 +1623,7 @@ public class TranslateController extends BaseController {
                         if (unsupported) {
                             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, LocaleController.getString(R.string.TranslationFailedAlert2) + " " + error);
                         }
-                        messageObject.messageOwner.translatedToLanguage = NekoConfig.translateToLang.String();
+                        messageObject.messageOwner.translatedToLanguage = NekoConfig.translateToLang.String().toLowerCase();
                         messageObject.messageOwner.translatedText = null;
                         getMessagesStorage().updateMessageCustomParams(key.dialogId, messageObject.messageOwner);
                         translatingPhotos.remove(key);
