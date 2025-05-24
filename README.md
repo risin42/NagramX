@@ -11,21 +11,15 @@ You can grab the latest versions in these two ways:
 
 ## NagramX Changes
 - **Additional Features**
-  - Save Deleted Messages
-  - Save Edits History
-  - Ghost Mode
   - AI Translator
+  - AI Transcription
   - Hide the Premium and Help sections in settings
   - Hide side share button
   - Avoids requesting camera permission when selecting images
-  - Show Stickers row in main settings
-  - Clear Cloud Settings data
-  - Custom preferred languages in translation language selector
   - Ask before sending bot command
   - Ask before opening inline links
   - Translate Entire Chats
-  - Microsoft Translator
-  - Center title in chat
+  - Center title in chats
   - Custom drawer elements
   - Remove Archived Chats from dialog list
   - Use icons instead of "deleted"/"edited"
@@ -36,6 +30,13 @@ You can grab the latest versions in these two ways:
   - Disable message background color and emojis
   - Custom chat name
   - Hide Reactions
+  - Hide gift button
+  - Hide dividers
+  - Solar icons
+  - Tab style (Default, Pure, Pills)
+  - Admin shortcuts in chats
+  - Left button action (NoQuote forward, Reply, Save, Direct Share)
+  - And more ?
 
 ----
 
