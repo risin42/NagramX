@@ -5,6 +5,8 @@ import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.AndroidUtilities.lerp;
 import static org.telegram.ui.Components.Bulletin.DURATION_PROLONG;
 
+import static tw.nekomimi.nekogram.utils.AndroidUtil.getNavBarColor;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -858,7 +860,7 @@ public class BotWebViewSheet extends Dialog implements NotificationCenter.Notifi
 
         dimPaint.setColor(0x40000000);
         actionBarColor = getColor(Theme.key_windowBackgroundWhite);
-        navBarColor = getColor(Theme.key_windowBackgroundWhite); // navBarColor = getColor(Theme.key_windowBackgroundGray);
+        navBarColor = getColor(getNavBarColor(getColor(Theme.key_windowBackgroundGray)));
         AndroidUtilities.setNavigationBarColor(getWindow(), navBarColor, false);
         windowView = new WindowView(context);
         windowView.setDelegate((keyboardHeight, isWidthGreater) -> {

@@ -10,6 +10,8 @@ package org.telegram.messenger;
 
 import static org.telegram.messenger.LocaleController.getString;
 
+import static tw.nekomimi.nekogram.utils.AndroidUtil.getNavBarColor;
+
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -5305,7 +5307,7 @@ public class AndroidUtilities {
     }
 
     public static void setNavigationBarColor(Window window, int colors, boolean animated, IntColorCallback onUpdate) {
-        int color = Theme.getColor(Theme.key_windowBackgroundWhite);
+        int color = getNavBarColor(colors);
         if (window == null) {
             return;
         }

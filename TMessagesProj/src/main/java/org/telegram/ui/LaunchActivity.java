@@ -12,6 +12,8 @@ import static org.telegram.messenger.LocaleController.formatPluralString;
 import static org.telegram.ui.Components.Premium.LimitReachedBottomSheet.TYPE_ACCOUNTS;
 import static org.telegram.ui.Components.Premium.LimitReachedBottomSheet.TYPE_BOOSTS_FOR_USERS;
 
+import static tw.nekomimi.nekogram.utils.AndroidUtil.getNavBarColor;
+
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -428,7 +430,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
             }
             try {
-                getWindow().setNavigationBarColor(Theme.getColor(Theme.key_windowBackgroundWhite)); // getWindow().setNavigationBarColor(0xff000000);
+                getWindow().setNavigationBarColor(getNavBarColor(0xff000000));
             } catch (Throwable ignore) {
 
             }
@@ -1555,7 +1557,8 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 AndroidUtilities.setLightStatusBar(getWindow(), enable, forceLightStatusBar);
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && checkNavigationBar && (!useCurrentFragment || currentFragment == null || !currentFragment.isInPreviewMode())) {
-                int color = Theme.getColor(Theme.key_windowBackgroundWhite);  // int color = currentFragment != null && useCurrentFragment ? currentFragment.getNavigationBarColor() : Theme.getColor(Theme.key_windowBackgroundGray, null, true);
+                int colors = currentFragment != null && useCurrentFragment ? currentFragment.getNavigationBarColor() : Theme.getColor(Theme.key_windowBackgroundGray, null, true);
+                int color = getNavBarColor(colors);
                 if (actionBarLayout.getSheetFragment(false) != null) {
                     BaseFragment sheetFragment = actionBarLayout.getSheetFragment(false);
                     if (sheetFragment.sheetsStack != null) {
@@ -8694,7 +8697,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
     }
 
     public void setNavigationBarColor(int colors, boolean checkButtons) {
-        int color = Theme.getColor(Theme.key_windowBackgroundWhite);
+        int color = getNavBarColor(colors);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final Window window = getWindow();
             if (customNavigationBar != null) {
