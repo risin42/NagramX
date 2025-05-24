@@ -628,7 +628,7 @@ public class NekoSettingsActivity extends BaseFragment {
 
         AlertUtil.showConfirm(context,
                 getString(R.string.ImportSettingsAlert),
-                R.drawable.baseline_security_24,
+                R.drawable.msg_photo_settings_solar,
                 getString(R.string.Import),
                 true,
                 () -> importSettingsConfirmed(context, settingsFile));
