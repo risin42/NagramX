@@ -177,11 +177,11 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             add(new ConfigCellTextCheck(NekoConfig.showTranslate, null, getString(R.string.Translate)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTranslateMessageLLM()));
             add(new ConfigCellTextCheck(NekoConfig.showShareMessages, null, getString(R.string.ShareMessages)));
-            add(new ConfigCellTextCheck(NekoConfig.showMessageDetails, null, getString(R.string.MessageDetails)));
             add(new ConfigCellTextCheck(NekoConfig.showMessageHide, null, getString(R.string.Hide)));
             add(new ConfigCellTextCheck(NekoConfig.showReport, null, getString(R.string.ReportChat)));
             add(new ConfigCellTextCheck(NekoConfig.showAdminActions, null, getString(R.string.EditAdminRights)));
             add(new ConfigCellTextCheck(NekoConfig.showChangePermissions, null, getString(R.string.ChangePermissions)));
+            add(new ConfigCellTextCheck(NekoConfig.showMessageDetails, null, getString(R.string.MessageDetails)));
         }}));
     }));
     private final AbstractConfigCell mediaViewerMenuRow = cellGroup.appendCell(new ConfigCellSelectBox("MediaViewerMenu", null, null, () -> {

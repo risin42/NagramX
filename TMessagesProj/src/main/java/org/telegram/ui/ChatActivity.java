@@ -31139,11 +31139,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 }
                             }
                         }
-                        if (NekoConfig.showMessageDetails.Bool()) {
-                            items.add(LocaleController.getString("MessageDetails", R.string.MessageDetails));
-                            options.add(nkbtn_detail);
-                            icons.add(R.drawable.msg_info);
-                        }
                         if (NekoConfig.showMessageHide.Bool()) {
                             items.add(LocaleController.getString("Hide", R.string.Hide));
                             options.add(nkbtn_hide);
@@ -31401,6 +31396,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             }
                         }
                     }
+                }
+                if (NekoConfig.showMessageDetails.Bool()) {
+                    items.add(LocaleController.getString("MessageDetails", R.string.MessageDetails));
+                    options.add(nkbtn_detail);
+                    icons.add(R.drawable.msg_info);
                 }
             }
 
