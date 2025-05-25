@@ -167,7 +167,7 @@
     <string name="DebugMenuDisableVideoQualitiesDebug">Отключить отладку качества видео</string>
     <string name="DebugMenuReloadAppConfig">Перезагрузить конфигурацию приложения</string>
     <string name="TranslateMessageLLM">Перевести с помощью ИИ</string>
-    <string name="ResetChatNameOverrides">Сбросить изменённые названия чатов</string>
+    <string name="ResetChatNameOverrides">Сбросить названия чатов</string>
     <string name="ResetChatNameNotification">Изменённые названия чатов очищены.</string>
     <string name="TabStyle">Стиль вкладок</string>
     <string name="TabStylePure">Чистые</string>
@@ -179,4 +179,5 @@
     <string name="OpenAiCredentialsNotSet">Учётные данные API не настроены.</string>
     <string name="ApiNotSupportedOnAndroidVersion">Этот поставщик API не поддерживается на вашей версии Android (требуется Android 8.0+).</string>
     <string name="AppIconTelegramOriginal">Оригинальная</string>
+    <string name="BurnTtlMessage">Сжечь</string>
 </resources>

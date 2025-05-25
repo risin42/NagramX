@@ -45,7 +45,6 @@
     <string name="HideTitle">Başlığı Gizle</string>
     <string name="IgnoreFolderCount">Klasörlerdeki Okunmamış Sayısını Gizle</string>
     <string name="SendWithoutMarkdown">Markdown’suz Gönder</string>
-    <string name="SaveWithoutMarkdown">Markdown’suz Kaydet</string>
     <string name="SendAsEmoji">Emoji Olarak Gönder</string>
     <string name="CustomArtworkApi">Özel Artwork API</string>
     <string name="CustomEditedMessage">Özel Düzenlendi İşareti</string>

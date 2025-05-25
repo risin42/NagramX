@@ -45,7 +45,6 @@
     <string name="HideTitle">Ocultar Título</string>
     <string name="IgnoreFolderCount">Ocultar Contagem Não Lida nas Pasta</string>
     <string name="SendWithoutMarkdown">Enviar sem formatação</string>
-    <string name="SaveWithoutMarkdown">Salvar sem marcação</string>
     <string name="SendAsEmoji">Enviar como emoji</string>
     <string name="CustomArtworkApi">API Artwork Personalizada</string>
     <string name="CustomEditedMessage">Marca Editada Personalizada</string>

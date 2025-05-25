@@ -179,4 +179,5 @@
     <string name="OpenAiCredentialsNotSet">API kimlik bilgileri yapılandırılmamış.</string>
     <string name="ApiNotSupportedOnAndroidVersion">Bu API sağlayıcısı, Android sürümünüzde desteklenmiyor (Android 8.0+ gerektirir).</string>
     <string name="AppIconTelegramOriginal">Orijinal</string>
+    <string name="BurnTtlMessage">Yak</string>
 </resources>

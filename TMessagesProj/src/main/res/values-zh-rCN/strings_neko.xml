@@ -5,7 +5,7 @@
     <string name="MessageMenu">消息菜单</string>
     <string name="HidePhone">隐藏手机号码</string>
     <string name="DeleteAllFromSelf">删除自己所有消息</string>
-    <string name="DeleteAllFromSelfAlert">警告！这将为此聊天中的 **所有人** 删除 **全部你发出的消息**。</string>
+    <string name="DeleteAllFromSelfAlert">警告！这将为此聊天中的 **所有人** 删除 **你发出的所有消息**。</string>
     <string name="DeleteAllFromSelfAlertBefore">警告！这将为此聊天中的 **所有人** 删除 **全部您在%s前发出的消息**。</string>
     <string name="DeleteAllFromSelfBefore">早于...</string>
     <string name="DeleteAllFromSelfAdmin">使用管理员权限</string>
@@ -134,8 +134,8 @@
     <string name="UnknownNekoSettingsOption">没有这样的喵设置选项。</string>
     <string name="PasscodeNeeded">您必须先启用锁定码</string>
     <string name="PasscodeNeko">锁定码</string>
-    <string name="PasscodeShowInSettings">在喵设置中显示</string>
-    <string name="PasscodeShowInSettingsAbout">隐藏后，您**只能**通过链接打开此页面：</string>
+    <string name="PasscodeShowInSettings">在N-设置中显示</string>
+    <string name="PasscodeShowInSettingsAbout">隐藏后，您打开此页面**只能**通过链接：</string>
     <string name="PasscodeSet">设置锁定码</string>
     <string name="PasscodeEdit">更改锁定码</string>
     <string name="PasscodeRemove">移除锁定码</string>
@@ -157,7 +157,7 @@
     <string name="InstalledEmojiSet">已安装</string>
     <string name="InstallingEmojiSet">正在安装…</string>
     <string name="UpdateEmojiSet">更新 %s</string>
-    <string name="EmojiSetHint">这只对您影响 Emoji 的外观。其他人会根据自己的设置看到它们。</string>
+    <string name="EmojiSetHint">这只会影响您的 Emoji 外观，其他人会根据自己的设置看到它们。</string>
     <string name="CustomEmojiSetHint">从您的内部存储中导入和选择 Emoji 包。</string>
     <string name="AddEmojiSet">添加 Emoji 包</string>
     <string name="EmojiSetRemoved">Emoji 包已移除。</string>
@@ -172,7 +172,7 @@
     <string name="ClearRecentChats">清除最近聊天</string>
     <string name="ClearRecentChatAlert">您确定要清除您的最近聊天吗？</string>
     <string name="CloudConfig">云设置</string>
-    <string name="CloudConfigDesc">保存喵设置到 Telegram 云。</string>
+    <string name="CloudConfigDesc">保存N-设置到 Telegram 云。</string>
     <string name="CloudConfigSyncDate">最后同步：%s，云端：%s</string>
     <string name="CloudConfigSyncDateNever">从未</string>
     <string name="CloudConfigSync">同步到云端</string>
@@ -181,7 +181,7 @@
     <string name="CloudConfigRestoreShort">恢复</string>
     <string name="CloudConfigSyncing">正在同步...</string>
     <string name="CloudConfigAutoSync">自动同步</string>
-    <string name="CloudConfigAutoSyncDesc">修改喵设置后自动同步到云端。</string>
+    <string name="CloudConfigAutoSyncDesc">修改N-设置后自动同步到云端。</string>
     <string name="CloudConfigSyncFailed">无法将设置同步到云端</string>
     <string name="CloudConfigRestoreFailed">无法从云端恢复设置</string>
     <string name="CopyCallback">复制回调数据</string>
@@ -205,7 +205,7 @@
     <string name="LinkedGroupChat">链接的群组</string>
     <string name="LinkedChannelChat">链接的频道</string>
     <string name="CustomBackend">自定义后端</string>
-    <string name="ChangeTranslateProvider">修改翻译源</string>
+    <string name="ChangeTranslateProvider">更换翻译源</string>
     <string name="ProviderYandexTranslate">Yandex.翻译</string>
     <string name="GoogleCloudTransKey">Google Cloud 翻译密钥</string>
     <string name="GoogleCloudTransKeyNotice">如果您设置了一个 Google Cloud 密钥：云翻译 API 将被调用，而不是提交模拟表单到网页版 (更快速、稳定和节省流量)。</string>
@@ -214,14 +214,14 @@
     <string name="More">更多</string>
     <string name="ShowIdAndDc">在个人资料中显示 ID/ DC</string>
     <string name="UseDefaultTheme">使用默认主题 *</string>
-    <string name="IgnoreMutedCount">忽略文件夹标签上静音的未读计数</string>
+    <string name="IgnoreMutedCount">隐藏文件夹标签上静音的未读计数</string>
     <string name="DialogsSettings">聊天列表</string>
     <string name="SortMenu">聊天列表排序</string>
     <string name="SortByUnread">未读优先排序</string>
-    <string name="SortByUnmuted">允许通知优先排序</string>
+    <string name="SortByUnmuted">未静音优先排序</string>
     <string name="SortByUser">用户优先排序</string>
     <string name="SortByContacts">联系人优先排序</string>
-    <string name="NagramXPushService">通知服务</string>
+    <string name="NagramXPushService">推送服务</string>
     <string name="DisableUndo">禁用五秒内后悔</string>
     <string name="DisableSystemAccount">禁用系统帐户</string>
     <string name="FilterMenu">分类菜单</string>

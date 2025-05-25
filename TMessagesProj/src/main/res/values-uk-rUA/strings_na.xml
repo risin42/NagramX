@@ -9,7 +9,7 @@
     <string name="DoubleTapAction">Дія при подвійному дотику</string>
     <string name="SendReactions">Надсилати реакції</string>
     <string name="ShowReactions">Показати реакції</string>
-    <string name="CustomTitle">Своя Назва</string>
+    <string name="CustomTitle">Свій заголовок</string>
     <string name="CustomTitleHint">Залиште порожнім, щоб використовувати Nagram X</string>
     <string name="CodeSyntaxHighlight">Підсвічування синтаксису</string>
     <string name="CreateMono">Створити монопростір</string>
@@ -45,14 +45,13 @@
     <string name="HideTitle">Сховати заголовок</string>
     <string name="IgnoreFolderCount">Приховати кількість непрочитаних тек</string>
     <string name="SendWithoutMarkdown">Відправити без форматування</string>
-    <string name="SaveWithoutMarkdown">Зберегти без форматування</string>
     <string name="SendAsEmoji">Відправити як смайл</string>
-    <string name="CustomArtworkApi">Користувальницька робота в обкладинці API</string>
+    <string name="CustomArtworkApi">АРІ користувацьких музичних обкладинок</string>
     <string name="CustomEditedMessage">Підпис для видалених повідомлень</string>
     <string name="DisableEmojiDrawLimit">Вимкнути обмеження на кількість емодзі</string>
     <string name="IconDecoration">Оформлення іконки</string>
     <string name="NotificationIcon">Значок сповіщень</string>
-    <string name="Official">Офіційна</string>
+    <string name="Official">Офіційний</string>
     <string name="HalloWeen">Хелловін</string>
     <string name="ShowOnlineStatus">Показувати онлайн-статус</string>
     <string name="ShowOnlineStatusNotice">Показує онлайн-статус інших людей поруч із зображенням профілю в групах.</string>
@@ -106,8 +105,8 @@
     <string name="StickersChooseShortNameForStickerPack">Виберіть коротке ім\'я для свого набору.</string>
     <string name="StickersCopyStickerSet">Копіювати набір наліпок</string>
     <string name="DisableChannelMuteButton">Приховати нижню панель у каналах</string>
-    <string name="DisablePreviewVideoSoundShortcut">Вимкнути увімкнення звуку відео за допомогою кнопок гучності</string>
-    <string name="DisablePreviewVideoSoundShortcutNotice">Заборонити кнопкам гучності вмикати звук попереднього перегляду відео.</string>
+    <string name="DisablePreviewVideoSoundShortcut">Вимкнути вмикання звуку відео кнопками гучності</string>
+    <string name="DisablePreviewVideoSoundShortcutNotice">Не вмикати звук у прев\'ю відео кнопкою гучності</string>
     <string name="DisableAutoWebLogin">Вимкнути автоматичний вхід під час переходу до веб-версії</string>
     <string name="PreviewSendPhoto">Надіслати фото</string>
     <string name="PreviewSendVideo">Надіслати відео</string>
@@ -125,7 +124,7 @@
     <string name="ShowTimeHint">Показувати подробиці при натисканні на час повідомлення</string>
     <string name="SearchHashtagDefaultPageChannel">Сторінка пошуку хештегів за замовчуванням у каналах</string>
     <string name="SearchHashtagDefaultPageChat">Сторінка пошуку хештегів за замовчуванням у чатах</string>
-    <string name="OpenUrlOutBotWebViewRegex">Регулярний вираз URL-адреси для відкриття посилань за межами бота WebView</string>
+    <string name="OpenUrlOutBotWebViewRegex">URL Regex для відкриття посилань поза WebView</string>
     <string name="LocaleToDBC">Текст локалізації з використанням регістру DBC</string>
     <string name="EnablePanguOnReceiving">Увімкнути Pangu при отриманні</string>
     <string name="EnablePanguOnSending">Увімкнути Pangu при надсиланні</string>

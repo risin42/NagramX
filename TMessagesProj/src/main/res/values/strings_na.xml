@@ -46,7 +46,6 @@
     <string name="HideTitle">Hide Title</string>
     <string name="IgnoreFolderCount">Hide Unread Count on Folders</string>
     <string name="SendWithoutMarkdown">Send without markdown</string>
-    <string name="SaveWithoutMarkdown">Save without markdown</string>
     <string name="SendAsEmoji">Send as emoji</string>
     <string name="CustomArtworkApi">Custom Artwork API</string>
     <string name="CustomEditedMessage">Custom Edited Mark</string>

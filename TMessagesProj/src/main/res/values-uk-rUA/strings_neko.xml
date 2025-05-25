@@ -16,7 +16,7 @@
     <string name="Connection">З\'єднання</string>
     <string name="NameOrder">Порядок імен</string>
     <string name="FirstLast">Ім\'я Прізвище</string>
-    <string name="LastFirst">Прізвище, ім\'я</string>
+    <string name="LastFirst">Прізвище Ім\'я</string>
     <string name="TypefaceUseDefault">Використовувати системний шрифт</string>
     <string name="NoQuoteForward">Переслати без автора</string>
     <string name="Repeat">Повторити</string>
@@ -50,9 +50,9 @@
     <string name="UnlimitedFavoredStickersAbout">Додавайте необмежену кількість стікерів до обраного. Стікери можуть не синхронізуватися з іншими пристроями.</string>
     <string name="MessageDetails">Детальніше</string>
     <string name="ExportAsJson">Експортувати як JSON</string>
-    <string name="Translate">Перекласти</string>
+    <string name="Translate">Перекладач</string>
     <string name="TranslateFailed">Помилка сервера перекладу</string>
-    <string name="TranslationProvider">Постачальник перекладу</string>
+    <string name="TranslationProvider">Постачальник</string>
     <string name="ProviderGoogleTranslate">Google Перекладач</string>
     <string name="TranslateApiUnsupported">Провайдер перекладу, обраний вами не підтримує вашу мову.</string>
     <string name="ProviderLingocloud">LingoCloud Translate</string>
@@ -78,8 +78,10 @@
     <string name="ConfirmCall">Підтвердити виклик</string>
     <string name="CallTo">Зателефонувати до **%1$s**?</string>
     <string name="DisableNumberRounding">Вимкнути округлення чисел</string>
+    <string name="Categories">Налаштування</string>
     <string name="OfficialChannel">Канал Nagram</string>
-    <string name="IgnoreBlockedAbout">Ви більше не будете бачити повідомлення від заблокованих користувачів в групі.</string>
+    <string name="About">Про застосунок</string>
+    <string name="IgnoreBlockedAbout">Ви більше не бачитимете повідомлення від заблокованих користувачів.</string>
     <string name="SourceCode">Вихідний код</string>
     <string name="ResetStickerSize">Скинути розмір наліпки</string>
     <string name="RestartAppToTakeEffect">Перезапустіть додаток для застосування змін.</string>
@@ -89,7 +91,7 @@
     <string name="AutoPauseVideoAbout">При блокуванні екрана або згортанні програми.</string>
     <string name="DisableProximityEvents">Вимкнути датчик наближення</string>
     <string name="SelectBetween">Виберіть діапазон</string>
-    <string name="AvatarAsBackground">Фотографія профілю як фон</string>
+    <string name="AvatarAsBackground">Зображення профілю як фон</string>
     <string name="BlurAvatarBackground">Розмиття фону</string>
     <string name="DarkenAvatarBackground">Затемнення фону</string>
     <string name="ProviderDeepLTranslate">DeepL Перекладач</string>
@@ -217,6 +219,7 @@
     <string name="SortByContacts">Сортувати за контактами</string>
     <string name="NagramXPushService">Служба Push-сповіщень</string>
     <string name="DisableUndo">Приховати скасування дій</string>
+    <string name="DisableSystemAccount">Приховати акаунт у системі</string>
     <string name="FilterMenu">Меню фільтру діалогів</string>
     <string name="DisableProxyWhenVpnEnabled">Вимкнути проксі, коли увімкнено VPN</string>
     <string name="UseProxyItem">Показувати Налаштування проксі в бічному меню</string>

@@ -45,7 +45,6 @@
     <string name="HideTitle">Скрыть заголовок</string>
     <string name="IgnoreFolderCount">Скрыть количество непрочитанных в папках</string>
     <string name="SendWithoutMarkdown">Отправить без разметки</string>
-    <string name="SaveWithoutMarkdown">Сохранить без разметки</string>
     <string name="SendAsEmoji">Отправить как эмодзи</string>
     <string name="CustomArtworkApi">API пользовательских музыкальных обложек</string>
     <string name="CustomEditedMessage">Подпись для изменённых сообщений</string>

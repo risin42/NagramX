@@ -45,7 +45,6 @@
     <string name="HideTitle">タイトルを非表示</string>
     <string name="IgnoreFolderCount">フォルダタブで未読数を非表示</string>
     <string name="SendWithoutMarkdown">Markdown を無効にする</string>
-    <string name="SaveWithoutMarkdown">Markdown を無効にする</string>
     <string name="SendAsEmoji">ミニゲームを無効にする</string>
     <string name="CustomArtworkApi">カスタムアートワーク API</string>
     <string name="CustomEditedMessage">編集ありメッセージのマーク</string>
@@ -137,4 +136,8 @@
     <string name="CustomTitleUserName">ユーザー名をカスタムタイトルに使用</string>
     <string name="EnhancedVideoBitrate">アップロード動画の品質を向上</string>
     <string name="ActionBarButtons">ツールバーボタン</string>
+    <string name="VideoPlayerDecoder">ビデオデコーダー</string>
+    <string name="VideoPlayerDecoderPreferSW">SW 優先</string>
+    <string name="VideoPlayerDecoderHardware">HW のみ</string>
+    <string name="VideoPlayerDecoderPreferHW">HW 優先</string>
 </resources>
