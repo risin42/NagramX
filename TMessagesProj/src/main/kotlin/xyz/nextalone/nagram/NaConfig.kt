@@ -641,6 +641,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val playerDecoder =
+        addConfig(
+            "VideoPlayerDecoder",
+            ConfigItem.configTypeInt,
+            1
+        )
 
     // NagramX
     val enableSaveDeletedMessages =

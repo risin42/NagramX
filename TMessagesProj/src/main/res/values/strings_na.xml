@@ -143,4 +143,8 @@
     <string name="CustomTitleUserName">Use User Nickname as Title</string>
     <string name="EnhancedVideoBitrate">Enhanced Shared Video Bitrate</string>
     <string name="ActionBarButtons">Action Bar Buttons</string>
+    <string name="VideoPlayerDecoder">Video Decoder</string>
+    <string name="VideoPlayerDecoderPreferSW">Prefer SW</string>
+    <string name="VideoPlayerDecoderHardware">HW Only</string>
+    <string name="VideoPlayerDecoderPreferHW">Prefer HW</string>
 </resources>

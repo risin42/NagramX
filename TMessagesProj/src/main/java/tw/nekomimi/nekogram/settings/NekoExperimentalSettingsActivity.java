@@ -112,6 +112,11 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell springAnimationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimation()));
     private final AbstractConfigCell springAnimationCrossfadeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimationCrossfade()));
     private final AbstractConfigCell customAudioBitrateRow = cellGroup.appendCell(new ConfigCellCustom("CustomAudioBitrate", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
+    private final AbstractConfigCell playerDecoder = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getPlayerDecoder(), new String[]{
+        getString(R.string.VideoPlayerDecoderHardware),
+        getString(R.string.VideoPlayerDecoderPreferHW),
+        getString(R.string.VideoPlayerDecoderPreferSW),
+    }, null));
     private final AbstractConfigCell dividerExperimental = cellGroup.appendCell(new ConfigCellDivider());
 
     // Ayu
@@ -181,8 +186,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
     // Sticker Cache
     private final AbstractConfigCell headerExternalStickerCache = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.ExternalStickerCache)));
-    private final AbstractConfigCell externalStickerCacheRow = cellGroup.appendCell(new ConfigCellAutoTextCheck(
-            NaConfig.INSTANCE.getExternalStickerCache(), getString(R.string.ExternalStickerCacheHint), this::onExternalStickerCacheButtonClick));
+    private final AbstractConfigCell externalStickerCacheRow = cellGroup.appendCell(new ConfigCellAutoTextCheck(NaConfig.INSTANCE.getExternalStickerCache(), getString(R.string.ExternalStickerCacheHint), this::onExternalStickerCacheButtonClick));
     private final AbstractConfigCell externalStickerCacheAutoSyncRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getExternalStickerCacheAutoRefresh(), getString(R.string.ExternalStickerCacheAutoRefreshHint)));
     private final AbstractConfigCell externalStickerCacheDirNameTypeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getExternalStickerCacheDirNameType(), new String[]{ "Short name", "ID" }, null));
     private final AbstractConfigCell externalStickerCacheSyncAllRow = cellGroup.appendCell(new ConfigCellText("ExternalStickerCacheRefreshAll", ExternalStickerCacheHelper::syncAllCaches));
@@ -483,6 +487,8 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                     }
                 }
             } else if (key.equals(NaConfig.INSTANCE.getPerformanceClass().getKey())) {
+                tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
+            } else if (key.equals(NaConfig.INSTANCE.getPlayerDecoder().getKey())) {
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             }
         };

@@ -229,6 +229,14 @@ public class VideoPlayer implements Player.Listener, VideoListener, AnalyticsLis
         eglParentContext = ctx;
     }
 
+    private int getPlayerExtensionRendererMode() {
+        return switch (NaConfig.INSTANCE.getPlayerDecoder().Int()) {
+            case 0 -> DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
+            case 1 -> DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
+            default -> DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER;
+        };
+    }
+
     private void ensurePlayerCreated() {
         DefaultLoadControl loadControl;
         if (isStory) {
@@ -261,7 +269,7 @@ public class VideoPlayer implements Player.Listener, VideoListener, AnalyticsLis
             } else {
                 factory = new DefaultRenderersFactory(ApplicationLoader.applicationContext);
             }
-            factory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);
+            factory.setExtensionRendererMode(getPlayerExtensionRendererMode());
             ExoPlayer.Builder builder = new ExoPlayer.Builder(ApplicationLoader.applicationContext).setRenderersFactory(factory)
                     .setTrackSelector(trackSelector)
                     .setLoadControl(loadControl);
@@ -289,6 +297,7 @@ public class VideoPlayer implements Player.Listener, VideoListener, AnalyticsLis
         if (mixedAudio) {
             if (audioPlayer == null) {
                 audioPlayer = new ExoPlayer.Builder(ApplicationLoader.applicationContext)
+                        .setRenderersFactory(new DefaultRenderersFactory(ApplicationLoader.applicationContext).setExtensionRendererMode(getPlayerExtensionRendererMode()))
                         .setTrackSelector(trackSelector)
                         .setLoadControl(loadControl).buildSimpleExoPlayer();
                 audioPlayer.addListener(new Player.Listener() {
