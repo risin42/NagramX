@@ -113,6 +113,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import xyz.nextalone.nagram.NaConfig;
 
 public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.NotificationCenterDelegate, DownloadController.FileDownloadProgressListener {
@@ -1196,6 +1197,7 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
         optionsButton.addSubItem(1, R.drawable.msg_forward, LocaleController.getString(R.string.Forward));
         optionsButton.addSubItem(2, R.drawable.msg_shareout, LocaleController.getString(R.string.ShareFile));
         optionsButton.addSubItem(5, R.drawable.msg_download, LocaleController.getString(R.string.SaveToMusic));
+        optionsButton.addSubItem(100, R.drawable.msg_saved, LocaleController.getString(R.string.AddToSavedMessages));
         optionsButton.addSubItem(4, R.drawable.msg_message, LocaleController.getString(R.string.ShowInChat));
 
         castItemButton = new CastMediaRouteButton(context) {
@@ -1735,6 +1737,17 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
         } else if (id == 6) {
             ChromecastController.getInstance().setCurrentMediaAndCastIfNeeded(MediaController.getInstance().getCurrentChromecastMedia());
             castItemButton.performClick();
+        } else if (id == 100) {
+            final ArrayList<MessageObject> fmessages = new ArrayList<>();
+            fmessages.add(messageObject);
+            long myId = UserConfig.getInstance(currentAccount).getClientUserId();
+            Bundle args = new Bundle();
+            args.putLong("user_id", myId);
+            ChatActivity chatActivity = new ChatActivity(args);
+            ChatsHelper.getInstance(currentAccount).forwardMessages(chatActivity, fmessages, false, true, 0, myId);
+            UndoView undoView = new UndoView(getContext(), null, false, resourcesProvider);
+            containerView.addView(undoView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 0, 8, 8));
+            undoView.showWithAction(myId, UndoView.ACTION_FWD_MESSAGES, fmessages.size());
         }
     }
 
@@ -2170,15 +2183,17 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
             ) && !NaConfig.INSTANCE.getForceCopy().Bool();
             if (noforwards) {
                 optionsButton.hideSubItem(1);
+                optionsButton.hideSubItem(100);
                 optionsButton.hideSubItem(2);
                 optionsButton.hideSubItem(5);
                 optionsButton.hideSubItem(6);
                 optionsButton.setAdditionalYOffset(-dp(16));
             } else {
                 optionsButton.showSubItem(1);
+                optionsButton.showSubItem(100);
                 optionsButton.showSubItem(2);
                 optionsButton.showSubItem(5);
-                optionsButton.setAdditionalYOffset(-dp(157 + 40));
+                optionsButton.setAdditionalYOffset(-dp(157 + 40 + 48));
             }
 
             checkIfMusicDownloaded(messageObject);
