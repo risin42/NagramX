@@ -1122,46 +1122,45 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
                     });
                     sendPopupLayout.setShownFromBottom(false);
 
-                    itemCells = new ActionBarMenuSubItem[3];
-                    for (int a = 0; a < 3; a++) {
+                    itemCells = new ActionBarMenuSubItem[4];
+                    for (int a = 0; a < itemCells.length; a++) {
                         if (a == 0 && !chatActivity.canScheduleMessage() || a == 1 && UserObject.isUserSelf(user)) {
                             continue;
                         }
                         int num = a;
-                        itemCells[a] = new ActionBarMenuSubItem(getParentActivity(), a == 0, a == 2);
+                        itemCells[a] = new ActionBarMenuSubItem(getParentActivity(), a == 0, a == 3);
                         if (num == 0) {
-                            itemCells[a].setTextAndIcon(LocaleController.getString("Translate", R.string.Translate), R.drawable.ic_translate);
-                        } else if (num == 1) {
                             if (UserObject.isUserSelf(user)) {
                                 itemCells[a].setTextAndIcon(LocaleController.getString(R.string.SetReminder), R.drawable.msg_calendar2);
                             } else {
                                 itemCells[a].setTextAndIcon(LocaleController.getString(R.string.ScheduleMessage), R.drawable.msg_calendar2);
                             }
-                        } else {
+                        } else if (num == 1) {
                             boolean sendWithoutSoundNax = NaConfig.INSTANCE.getSilentMessageByDefault().Bool();
                             itemCells[a].setTextAndIcon(sendWithoutSoundNax ? getString(R.string.SendWithSound) : getString(R.string.SendWithoutSound), sendWithoutSoundNax ? R.drawable.input_notify_on : R.drawable.input_notify_off);
+                        } else if (num == 2) {
+                            String languageText = NekoConfig.translateInputLang.String().toUpperCase();
+                            String text = getString(R.string.TranslateMessageLLM) + ' ' + "(" + languageText + ")";
+                            itemCells[a].setTextAndIcon(text, R.drawable.magic_stick_solar);
+                        } else if (num == 3) {
+                            String languageText = NekoConfig.translateInputLang.String().toUpperCase();
+                            String text = getString(R.string.TranslateMessage) + ' ' + "(" + languageText + ")";
+                            itemCells[a].setTextAndIcon(text, R.drawable.ic_translate);
                         }
                         itemCells[a].setMinimumWidth(AndroidUtilities.dp(196));
 
                         sendPopupLayout.addView(itemCells[a], LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
-                        long chatId;
-                        if (chat != null) {
-                            chatId = chat.id;
-                        } else if (user != null) {
-                            chatId = user.id;
-                        } else {
-                            chatId = -1;
-                        }
+
                         itemCells[a].setOnClickListener(v -> {
                             if (sendPopupWindow != null && sendPopupWindow.isShowing()) {
                                 sendPopupWindow.dismiss();
                             }
                             if (num == 0) {
-                                translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()));
-                            } else if (num == 1) {
                                 AlertsCreator.createScheduleDatePickerDialog(getParentActivity(), chatActivity.getDialogId(), this::sendSelectedPhotos);
-                            } else if (num == 2) {
+                            } else if (num == 1) {
                                 sendSelectedPhotos(NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0); // sendSelectedPhotos(true, 0); ← Telegram bug
+                            } else if (num == 2 || num == 3) {
+                                translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()), num == 3 ? 0 : Translator.providerLLMTranslator);
                             }
                         });
                         itemCells[a].setOnLongClickListener(v -> {
@@ -1248,9 +1247,14 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
     }
 
     private void translateComment(Locale target) {
+        translateComment(target, 0);
+    }
+
+    private void translateComment(Locale target, int provider) {
+        if (commentTextView == null) return;
 
         String origin = commentTextView.getText().toString();
-        Translator.translate(target, origin, new Translator.Companion.TranslateCallBack() {
+        Translator.translate(target, origin, provider, new Translator.Companion.TranslateCallBack() {
 
             final AtomicBoolean cancel = new AtomicBoolean();
             AlertDialog status = AlertUtil.showProgress(getParentActivity());

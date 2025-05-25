@@ -7431,10 +7431,10 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
 
             final boolean canEdit = placeProvider != null && placeProvider.canEdit(currentIndex);
             final boolean canReplace = placeProvider != null && placeProvider.canReplace(currentIndex);
-            final int[] order = {5, 4, 3, 2, 0, 1, 6};
-            for (int i = 0; i < 7; i++) {
+            final int[] order = {7, 5, 4, 3, 2, 0, 1, 6};
+            for (int i = 0; i < order.length; i++) {
                 final int a = order[i];
-                if (a != 2 && a != 3 && a != 5 && a != 6 && canEdit && canReplace) {
+                if (a != 2 && a != 3 && a != 5 && a != 6 && a != 7 && canEdit && canReplace) {
                     continue;
                 }
                 if (a != 1 && canEdit && !canReplace) {
@@ -7495,21 +7495,22 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                         cell.setTextAndIcon(getString(R.string.SendAsFile), R.drawable.msg_sendfile);
                     }
                 } else if (a == 5) {
-                    cell.setTextAndIcon(LocaleController.getString("Translate", R.string.Translate), R.drawable.ic_translate);
+                    String languageText = NekoConfig.translateInputLang.String().toUpperCase();
+                    String text = getString(R.string.TranslateMessage) + ' ' + "(" + languageText + ")";
+                    cell.setTextAndIcon(text, R.drawable.ic_translate);
+                    cell.setVisibility(captionEdit != null && !captionEdit.getText().isEmpty());
                 } else if (a == 6) {
                     cell.setTextAndIcon(LocaleController.getString(spoilerEnabled ? R.string.DisablePhotoSpoiler : R.string.EnablePhotoSpoiler), spoilerEnabled ? R.drawable.msg_spoiler_off : R.drawable.msg_spoiler);
+                } else if (a == 7) {
+                    String languageText = NekoConfig.translateInputLang.String().toUpperCase();
+                    String text = getString(R.string.TranslateMessageLLM) + ' ' + "(" + languageText + ")";
+                    cell.setTextAndIcon(text, R.drawable.magic_stick_solar);
+                    cell.setVisibility(captionEdit != null && !captionEdit.getText().isEmpty());
                 }
                 cell.setMinimumWidth(dp(196));
                 cell.setColors(0xffffffff, 0xffffffff);
                 sendPopupLayout.addView(cell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
-                long chatId;
-                if (chat != null) {
-                    chatId = chat.id;
-                } else if (user != null) {
-                    chatId = user.id;
-                } else {
-                    chatId = -1;
-                }
+
                 cell.setOnClickListener(v -> {
                     if (sendPopupWindow != null && sendPopupWindow.isShowing()) {
                         sendPopupWindow.dismiss();
@@ -7533,15 +7534,17 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                         MediaController.PhotoEntry entry = (MediaController.PhotoEntry) currentObject;
                         entry.hasSpoiler = !entry.hasSpoiler;
                         if (placeProvider != null) placeProvider.spoilerPressed();
+                    } else if (a == 7) {
+                        translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()), Translator.providerLLMTranslator);
                     }
                 });
                 cell.setOnLongClickListener(v -> {
-                    if (a == 5) {
+                    if (a == 5 || a == 7) {
                         Translator.showTargetLangSelect(cell, true, (locale) -> {
                             if (sendPopupWindow != null && sendPopupWindow.isShowing()) {
                                 sendPopupWindow.dismiss();
                             }
-                            translateComment(locale);
+                            translateComment(locale, a == 5 ? 0 : Translator.providerLLMTranslator);
                             NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
                             return Unit.INSTANCE;
                         });
@@ -8018,8 +8021,14 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
     }
 
     private void translateComment(Locale target) {
+        translateComment(target, 0);
+    }
+
+    private void translateComment(Locale target, int provider) {
+        if (captionEdit == null) return;
+
         String origin = captionEdit.getText().toString();
-        Translator.translate(target, origin, new Translator.Companion.TranslateCallBack() {
+        Translator.translate(target, origin, provider, new Translator.Companion.TranslateCallBack() {
 
             final AtomicBoolean cancel = new AtomicBoolean();
             AlertDialog status = AlertUtil.showProgress(parentActivity);
@@ -8035,6 +8044,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             public void onSuccess(@NotNull String translation) {
                 status.dismiss();
                 captionEdit.setText(translation);
+                setCaption(captionEdit.getText());
             }
 
             @Override

@@ -6053,6 +6053,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
 
     private void translateComment(Locale target, int provider) {
         if (messageEditText == null) return;
+
         int start = messageEditText.getSelectionStart();
         int end = messageEditText.getSelectionEnd();
         CharSequence text = messageEditText.getText();
