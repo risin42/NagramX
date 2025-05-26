@@ -179,17 +179,4 @@ class Pangu {
         return text
     }
 
-    private fun log(text: String) {
-        println("panguTrace: $text")
-    }
-
-}
-
-internal object Test {
-    @Throws(IOException::class)
-    @JvmStatic
-    fun main(args: Array<String>) {
-        val pangu = Pangu()
-        println(pangu.spacingText("當你凝視著 https://telegra.ph/八尋ぽち-ひみチュッ-中国翻訳-無修正-DL版-06-17-3 ，bug也凝視著 https://telegra.ph/ASDF-DL版-06-17-3"))
-    }
 }
