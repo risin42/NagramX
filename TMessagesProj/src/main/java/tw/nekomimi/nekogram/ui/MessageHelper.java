@@ -1,5 +1,6 @@
 package tw.nekomimi.nekogram.ui;
 
+import static org.telegram.messenger.LocaleController.getString;
 import static tw.nekomimi.nekogram.utils.LangsKt.uDismiss;
 import static tw.nekomimi.nekogram.utils.LangsKt.uUpdate;
 
@@ -22,14 +23,12 @@ import android.widget.TextView;
 
 import org.telegram.SQLite.SQLiteCursor;
 import org.telegram.SQLite.SQLiteException;
-import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BaseController;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MediaDataController;
 import org.telegram.messenger.MessageObject;

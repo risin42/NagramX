@@ -1,8 +1,11 @@
 package tw.nekomimi.nekogram.config.cell;
 
-import androidx.recyclerview.widget.RecyclerView;
 import static org.telegram.messenger.LocaleController.getString;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.telegram.ui.Cells.TextSettingsCell;
+
 import tw.nekomimi.nekogram.config.CellGroup;
 
 public class ConfigCellText extends AbstractConfigCell implements WithKey, WithOnClick {

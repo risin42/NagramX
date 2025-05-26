@@ -1,4 +1,4 @@
-package tw.nekomimi.nekogram.transtale.source
+package tw.nekomimi.nekogram.translate.source
 
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -11,9 +11,9 @@ import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.Components.TranslateAlert2
-import tw.nekomimi.nekogram.transtale.HTMLKeeper
-import tw.nekomimi.nekogram.transtale.Translator
-import tw.nekomimi.nekogram.transtale.source.raw.DeepLTranslatorRaw
+import tw.nekomimi.nekogram.translate.HTMLKeeper
+import tw.nekomimi.nekogram.translate.Translator
+import tw.nekomimi.nekogram.translate.source.raw.DeepLTranslatorRaw
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random

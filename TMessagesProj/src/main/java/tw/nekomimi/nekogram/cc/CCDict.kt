@@ -1,8 +1,7 @@
 package tw.nekomimi.nekogram.cc
 
 import org.telegram.messenger.ApplicationLoader
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.LinkedList
 
 enum class CCDict {
     HKVariantsRevPhrases,

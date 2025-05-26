@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ArticleViewer
-import tw.nekomimi.nekogram.transtale.Translator
+import tw.nekomimi.nekogram.translate.Translator
 import tw.nekomimi.nekogram.utils.AlertUtil
 import tw.nekomimi.nekogram.utils.UIUtil
 import tw.nekomimi.nekogram.utils.uUpdate

@@ -1,12 +1,13 @@
 package tw.nekomimi.nekogram.config.cell;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.content.Context;
 import android.widget.LinearLayout;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.Theme;

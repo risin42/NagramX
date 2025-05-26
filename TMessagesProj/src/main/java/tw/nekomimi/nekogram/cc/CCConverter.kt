@@ -1,7 +1,7 @@
 package tw.nekomimi.nekogram.cc
 
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.LinkedList
+import java.util.TreeMap
 
 class CCConverter(val target: CCTarget) {
 

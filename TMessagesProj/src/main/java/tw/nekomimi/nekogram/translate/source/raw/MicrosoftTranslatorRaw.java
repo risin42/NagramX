@@ -1,13 +1,14 @@
-package tw.nekomimi.nekogram.transtale.source.raw;
+package tw.nekomimi.nekogram.translate.source.raw;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONException;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildVars;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,8 +16,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MicrosoftTranslatorRaw {
     private static final String NAX = "MicrosoftTranslatorRaw";

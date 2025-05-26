@@ -1,5 +1,6 @@
 package tw.nekomimi.nekogram.helpers;
 
+import static org.telegram.messenger.LocaleController.getString;
 import static org.telegram.ui.ProfileActivity.sendLogs;
 
 import android.app.Activity;
@@ -7,7 +8,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import org.telegram.messenger.AndroidUtilities;
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.BaseFragment;
 

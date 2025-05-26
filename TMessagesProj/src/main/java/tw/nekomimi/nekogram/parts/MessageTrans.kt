@@ -20,9 +20,9 @@ import org.telegram.messenger.TranslateController
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ChatActivity
 import tw.nekomimi.nekogram.NekoConfig
-import tw.nekomimi.nekogram.transtale.Translator
-import tw.nekomimi.nekogram.transtale.code2Locale
-import tw.nekomimi.nekogram.transtale.locale2code
+import tw.nekomimi.nekogram.translate.Translator
+import tw.nekomimi.nekogram.translate.code2Locale
+import tw.nekomimi.nekogram.translate.locale2code
 import tw.nekomimi.nekogram.utils.AlertUtil
 import xyz.nextalone.nagram.NaConfig
 import java.util.LinkedList

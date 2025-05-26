@@ -1,28 +1,20 @@
 package tw.nekomimi.nekogram.utils;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.LocaleController.getString;
-import org.telegram.messenger.R;
-import org.telegram.tgnet.TLRPC;
-import org.telegram.ui.ActionBar.AlertDialog;
-import org.telegram.ui.Components.EditTextBoldCursor;
-import org.telegram.ui.Components.NumberPicker;
-
-import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.transtale.Translator;
-import tw.nekomimi.nekogram.ui.BottomBuilder;
-import tw.nekomimi.nekogram.ui.PopupBuilder;
-
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import org.telegram.messenger.AndroidUtilities
+import org.telegram.messenger.ApplicationLoader
+import org.telegram.messenger.LocaleController.getString
+import org.telegram.messenger.R
+import org.telegram.tgnet.TLRPC
+import org.telegram.ui.ActionBar.AlertDialog
+import tw.nekomimi.nekogram.NekoConfig
+import tw.nekomimi.nekogram.translate.Translator
+import tw.nekomimi.nekogram.ui.BottomBuilder
+import tw.nekomimi.nekogram.ui.PopupBuilder
+import java.util.concurrent.atomic.AtomicReference
 
 object AlertUtil {
 

@@ -1,9 +1,10 @@
 package tw.nekomimi.nekogram.folder;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import androidx.core.util.Pair;
 
 import org.telegram.messenger.AndroidUtilities;
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
 

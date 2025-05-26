@@ -1,13 +1,15 @@
 package tw.nekomimi.nekogram.config.cell;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import androidx.recyclerview.widget.RecyclerView;
 
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.ui.Cells.TextCheckCell;
-import tw.nekomimi.nekogram.config.CellGroup;
-import tw.nekomimi.nekogram.config.ConfigItem;
 
 import java.util.function.Consumer;
+
+import tw.nekomimi.nekogram.config.CellGroup;
+import tw.nekomimi.nekogram.config.ConfigItem;
 
 public class ConfigCellAutoTextCheck extends AbstractConfigCell {
     private final ConfigItem bindConfig;

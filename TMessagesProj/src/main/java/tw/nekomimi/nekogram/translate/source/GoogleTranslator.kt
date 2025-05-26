@@ -1,4 +1,4 @@
-package tw.nekomimi.nekogram.transtale.source
+package tw.nekomimi.nekogram.translate.source
 
 import androidx.core.util.component1
 import androidx.core.util.component2
@@ -11,8 +11,8 @@ import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.Components.TranslateAlert2
-import tw.nekomimi.nekogram.transtale.HTMLKeeper
-import tw.nekomimi.nekogram.transtale.Translator
+import tw.nekomimi.nekogram.translate.HTMLKeeper
+import tw.nekomimi.nekogram.translate.Translator
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 

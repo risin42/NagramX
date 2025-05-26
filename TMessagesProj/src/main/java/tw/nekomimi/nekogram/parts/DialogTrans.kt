@@ -5,8 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import tw.nekomimi.nekogram.NekoConfig
-import tw.nekomimi.nekogram.transtale.Translator
-import tw.nekomimi.nekogram.transtale.code2Locale
+import tw.nekomimi.nekogram.translate.Translator
+import tw.nekomimi.nekogram.translate.code2Locale
 import tw.nekomimi.nekogram.utils.AlertUtil
 import tw.nekomimi.nekogram.utils.UIUtil
 import tw.nekomimi.nekogram.utils.uDismiss

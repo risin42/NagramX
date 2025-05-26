@@ -7,10 +7,17 @@ import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.MediaDataController
 import org.telegram.messenger.NotificationCenter
 import org.telegram.tgnet.ConnectionsManager
-import org.telegram.tgnet.TLRPC.*
+import org.telegram.tgnet.TLRPC.StickerSet
+import org.telegram.tgnet.TLRPC.StickerSetCovered
+import org.telegram.tgnet.TLRPC.TL_inputStickerSetShortName
+import org.telegram.tgnet.TLRPC.TL_messages_archivedStickers
+import org.telegram.tgnet.TLRPC.TL_messages_getArchivedStickers
+import org.telegram.tgnet.TLRPC.TL_messages_installStickerSet
+import org.telegram.tgnet.TLRPC.TL_messages_stickerSetInstallResultArchive
+import org.telegram.tgnet.TLRPC.TL_messages_stickerSetInstallResultSuccess
 import org.telegram.ui.ActionBar.AlertDialog
 import org.telegram.ui.ActionBar.BaseFragment
-import java.util.*
+import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicBoolean
 
 object StickersUtil {

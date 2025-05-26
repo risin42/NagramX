@@ -1,4 +1,4 @@
-package tw.nekomimi.nekogram.transtale.source
+package tw.nekomimi.nekogram.translate.source
 
 import android.text.TextUtils
 import org.telegram.messenger.FileLog
@@ -10,8 +10,8 @@ import org.telegram.tgnet.TLRPC.TL_error
 import org.telegram.tgnet.TLRPC.TL_messages_translateResult
 import org.telegram.tgnet.TLRPC.TL_messages_translateText
 import org.telegram.ui.Components.TranslateAlert2
-import tw.nekomimi.nekogram.transtale.HTMLKeeper
-import tw.nekomimi.nekogram.transtale.Translator
+import tw.nekomimi.nekogram.translate.HTMLKeeper
+import tw.nekomimi.nekogram.translate.Translator
 import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException

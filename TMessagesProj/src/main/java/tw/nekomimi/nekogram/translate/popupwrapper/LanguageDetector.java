@@ -1,4 +1,4 @@
-package tw.nekomimi.nekogram.transtale.popupwrapper;
+package tw.nekomimi.nekogram.translate.popupwrapper;
 
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;

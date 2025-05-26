@@ -6,7 +6,7 @@
  * Copyright OctoGram, 2023-2025.
  */
 
-package tw.nekomimi.nekogram.transtale;
+package tw.nekomimi.nekogram.translate;
 
 import android.graphics.Typeface;
 import android.text.Html;

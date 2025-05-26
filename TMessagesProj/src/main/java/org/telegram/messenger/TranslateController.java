@@ -36,10 +36,10 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
-import tw.nekomimi.nekogram.transtale.popupwrapper.LanguageDetector;
+import tw.nekomimi.nekogram.translate.popupwrapper.LanguageDetector;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.transtale.Translator;
-import tw.nekomimi.nekogram.transtale.TranslatorKt;
+import tw.nekomimi.nekogram.translate.Translator;
+import tw.nekomimi.nekogram.translate.TranslatorKt;
 import xyz.nextalone.nagram.NaConfig;
 
 public class TranslateController extends BaseController {

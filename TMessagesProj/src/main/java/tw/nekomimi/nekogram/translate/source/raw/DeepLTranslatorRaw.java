@@ -6,16 +6,16 @@
  * Copyright OctoGram, 2023-2025.
  */
 
-package tw.nekomimi.nekogram.transtale.source.raw;
+package tw.nekomimi.nekogram.translate.source.raw;
 
 import android.text.TextUtils;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import org.telegram.messenger.BuildVars;
 
 import java.io.ByteArrayOutputStream;

@@ -1,5 +1,7 @@
 package tw.nekomimi.nekogram.config.cell;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -7,7 +9,6 @@ import android.widget.LinearLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
-import static org.telegram.messenger.LocaleController.getString;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.Theme;
@@ -15,9 +16,9 @@ import org.telegram.ui.Cells.RadioColorCell;
 import org.telegram.ui.Cells.TextSettingsCell;
 
 import kotlin.Unit;
-import tw.nekomimi.nekogram.ui.PopupBuilder;
 import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.ConfigItem;
+import tw.nekomimi.nekogram.ui.PopupBuilder;
 
 // TextSettingsCell, select from a list
 // Can be used without select list（custom）

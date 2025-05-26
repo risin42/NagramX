@@ -1,4 +1,4 @@
-package tw.nekomimi.nekogram.transtale.source
+package tw.nekomimi.nekogram.translate.source
 
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -7,8 +7,8 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.Components.TranslateAlert2
-import tw.nekomimi.nekogram.transtale.HTMLKeeper
-import tw.nekomimi.nekogram.transtale.Translator
+import tw.nekomimi.nekogram.translate.HTMLKeeper
+import tw.nekomimi.nekogram.translate.Translator
 import java.io.IOException
 import java.util.UUID
 import java.util.concurrent.TimeUnit

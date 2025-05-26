@@ -1,4 +1,4 @@
-package tw.nekomimi.nekogram.transtale
+package tw.nekomimi.nekogram.translate
 
 import android.view.View
 import cn.hutool.core.util.StrUtil
@@ -14,10 +14,9 @@ import org.telegram.tgnet.TLRPC
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.cc.CCConverter
 import tw.nekomimi.nekogram.cc.CCTarget
-import tw.nekomimi.nekogram.transtale.source.*
+import tw.nekomimi.nekogram.translate.source.*
 import tw.nekomimi.nekogram.ui.PopupBuilder
 import tw.nekomimi.nekogram.utils.UIUtil
-import tw.nekomimi.nekogram.utils.receive
 import tw.nekomimi.nekogram.utils.receiveLazy
 import xyz.nextalone.nagram.NaConfig
 import java.io.IOException

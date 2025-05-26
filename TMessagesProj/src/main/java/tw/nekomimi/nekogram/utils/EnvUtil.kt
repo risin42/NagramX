@@ -9,7 +9,7 @@ import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.FileLog
 import tw.nekomimi.nekogram.NekoConfig
 import java.io.File
-import java.util.*
+import java.util.LinkedList
 
 object EnvUtil {
 

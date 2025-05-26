@@ -5,7 +5,11 @@ import android.content.DialogInterface
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
-import android.widget.*
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.LocaleController.getString
@@ -18,7 +22,7 @@ import org.telegram.ui.Cells.RadioButtonCell
 import org.telegram.ui.Cells.TextCell
 import org.telegram.ui.Cells.TextCheckCell
 import org.telegram.ui.Components.LayoutHelper
-import java.util.*
+import java.util.LinkedList
 
 
 class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor: Int = Theme.getColor(Theme.key_dialogBackground)) {

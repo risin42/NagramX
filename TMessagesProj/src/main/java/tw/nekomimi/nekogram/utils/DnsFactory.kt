@@ -10,11 +10,20 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.telegram.messenger.FileLog
 import org.telegram.tgnet.ConnectionsManager
-import org.xbill.DNS.*
+import org.xbill.DNS.AAAARecord
+import org.xbill.DNS.ARecord
+import org.xbill.DNS.Cache
+import org.xbill.DNS.DClass
+import org.xbill.DNS.Message
+import org.xbill.DNS.Name
+import org.xbill.DNS.Rcode
+import org.xbill.DNS.Record
+import org.xbill.DNS.SetResponse
+import org.xbill.DNS.TXTRecord
+import org.xbill.DNS.Type
 import tw.nekomimi.nekogram.NekoConfig
 import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.collections.ArrayList
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 

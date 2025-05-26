@@ -1,4 +1,4 @@
-package tw.nekomimi.nekogram.transtale;
+package tw.nekomimi.nekogram.translate;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;

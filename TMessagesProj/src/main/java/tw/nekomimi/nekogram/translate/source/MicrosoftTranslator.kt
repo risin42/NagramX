@@ -1,17 +1,17 @@
-package tw.nekomimi.nekogram.transtale.source
+package tw.nekomimi.nekogram.translate.source
 
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.Components.TranslateAlert2
-import tw.nekomimi.nekogram.transtale.HTMLKeeper
-import tw.nekomimi.nekogram.transtale.Translator
-import tw.nekomimi.nekogram.transtale.source.raw.MicrosoftTranslatorRaw
+import tw.nekomimi.nekogram.translate.HTMLKeeper
+import tw.nekomimi.nekogram.translate.Translator
+import tw.nekomimi.nekogram.translate.source.raw.BingTranslatorRaw
 import java.io.IOException
 
-object RealMicrosoftTranslator : Translator {
+object MicrosoftTranslator : Translator {
 
-    private val rawTranslator = MicrosoftTranslatorRaw()
+    private val rawTranslator = BingTranslatorRaw()
 
     override suspend fun doTranslate(
         from: String,
@@ -20,7 +20,7 @@ object RealMicrosoftTranslator : Translator {
         entities: ArrayList<TLRPC.MessageEntity>
     ): TLRPC.TL_textWithEntities {
 
-        val fromLang = if (from == "auto") "" else from
+        val fromLang = if (from == "auto") "auto-detect" else from
         val toLang = when (to) {
             "zh" -> "zh-Hans"
             "zh-CN" -> "zh-Hans"
@@ -43,6 +43,10 @@ object RealMicrosoftTranslator : Translator {
             entities,
             false
         ) else query
+
+        if (textToTranslate.length > 3000) {
+            error("Text length exceeds the limit of 3000 characters. text length: " + query.length)
+        }
 
         try {
             val translatedText = rawTranslator.translate(textToTranslate, fromLang, toLang)
