@@ -253,15 +253,6 @@
     <string name="IgnoreContentRestrictions">コンテンツ制限を無視します</string>
     <string name="SendCommentAfterForward">転送後にコメントを送信する</string>
     <string name="ImportLogin">QR コードログイン</string>
-    <string name="CCTitle">OpenCC（中国語変換）</string>
-    <string name="CCTarget">目標</string>
-    <string name="CCNo">なし</string>
-    <string name="CCTC">繁体字中国語</string>
-    <string name="CCHK">繁体字中国語（香港）</string>
-    <string name="CCTT">繁体字中国語（台湾）</string>
-    <string name="CCSC">簡体字中国語</string>
-    <string name="CCSP">簡体字中国語（中国）</string>
-    <string name="CCJP">新しい漢字（新字体）</string>
     <string name="UserRestrictionsSendGames">ゲームを送る</string>
     <string name="UserRestrictionsSendInline">インラインボット経由で送信</string>
     <string name="TabletMode">タブレットモード</string>

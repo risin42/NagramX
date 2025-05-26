@@ -253,15 +253,6 @@
     <string name="IgnoreContentRestrictions">Ігноруйте обмеження щодо контенту</string>
     <string name="SendCommentAfterForward">Надіслати коментар після пересилання</string>
     <string name="ImportLogin">Вхід за QR-кодом</string>
-    <string name="CCTitle">OpenCC (китайська конвертація)</string>
-    <string name="CCTarget">Ціль</string>
-    <string name="CCNo">Немає</string>
-    <string name="CCTC">Китайська традиційна</string>
-    <string name="CCHK">Традиційна китайська (Гонконг)</string>
-    <string name="CCTT">Традиційна китайська (Тайвань)</string>
-    <string name="CCSC">Спрощена Китайська</string>
-    <string name="CCSP">Спрощена китайська (Китай)</string>
-    <string name="CCJP">Нова японська канджі (Зіндзітайська)</string>
     <string name="UserRestrictionsSendGames">Надіслати ігри</string>
     <string name="UserRestrictionsSendInline">Надіслати через вбудованих ботів</string>
     <string name="TabletMode">Режим планшета</string>

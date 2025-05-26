@@ -12,8 +12,6 @@ import org.telegram.messenger.R
 import org.telegram.messenger.TranslateController;
 import org.telegram.tgnet.TLRPC
 import tw.nekomimi.nekogram.NekoConfig
-import tw.nekomimi.nekogram.cc.CCConverter
-import tw.nekomimi.nekogram.cc.CCTarget
 import tw.nekomimi.nekogram.translate.source.*
 import tw.nekomimi.nekogram.ui.PopupBuilder
 import tw.nekomimi.nekogram.utils.UIUtil
@@ -234,22 +232,7 @@ interface Translator {
                 else -> throw IllegalArgumentException()
             }
 
-            val result = translator.doTranslate("auto", language, query, entities)
-
-            if (language == "zh") {
-                val countryUpperCase = country.uppercase()
-                if (countryUpperCase == "CN") {
-                    val convertedText = CCConverter.get(CCTarget.SP).convert(result.text)
-                    result.text = convertedText
-                    return result
-                } else if (countryUpperCase == "TW") {
-                    val convertedText = CCConverter.get(CCTarget.TT).convert(result.text)
-                    result.text = convertedText
-                    return result
-                }
-            }
-
-            return result
+            return translator.doTranslate("auto", language, query, entities)
         }
 
         private val availableLocaleList: Array<Locale> = Locale.getAvailableLocales().also {
@@ -322,39 +305,6 @@ interface Translator {
                 } else {
                     callback(locales[index])
                 }
-            }
-
-            builder.show()
-        }
-
-        @JvmStatic
-        @JvmOverloads
-        fun showCCTargetSelect(anchor: View, input: Boolean = true, callback: (String) -> Unit) {
-
-            val builder = PopupBuilder(anchor)
-
-            builder.setItems(
-                arrayOf(
-                    if (!input) getString(R.string.CCNo) else null,
-                    getString(R.string.CCSC),
-                    getString(R.string.CCSP),
-                    getString(R.string.CCTC),
-                    getString(R.string.CCHK),
-                    getString(R.string.CCTT),
-                    getString(R.string.CCJP)
-                )
-            ) { index: Int, _ ->
-                callback(
-                    when (index) {
-                        1 -> CCTarget.SC.name
-                        2 -> CCTarget.SP.name
-                        3 -> CCTarget.TC.name
-                        4 -> CCTarget.HK.name
-                        5 -> CCTarget.TT.name
-                        6 -> CCTarget.JP.name
-                        else -> ""
-                    }
-                )
             }
 
             builder.show()

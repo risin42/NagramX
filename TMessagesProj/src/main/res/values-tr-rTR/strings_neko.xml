@@ -253,15 +253,6 @@
     <string name="IgnoreContentRestrictions">İçerik Kısıtlamalarını Yoksay</string>
     <string name="SendCommentAfterForward">Yönlendirmeden Sonra Yorum Gönder</string>
     <string name="ImportLogin">QR Girişi</string>
-    <string name="CCTitle">OpenCC (Çince Dönüştürme)</string>
-    <string name="CCTarget">Hedef</string>
-    <string name="CCNo">Yok</string>
-    <string name="CCTC">Geleneksel Çince</string>
-    <string name="CCHK">Geleneksel Çince (Hong Kong)</string>
-    <string name="CCTT">Geleneksel Çince (Tayvan)</string>
-    <string name="CCSC">Basitleştirilmiş Çince</string>
-    <string name="CCSP">Basitleştirilmiş Çince (Çin)</string>
-    <string name="CCJP">Yeni Japon Kanji (Shinjitai)</string>
     <string name="UserRestrictionsSendGames">Oyun Gönder</string>
     <string name="UserRestrictionsSendInline">Satır İçi Botlar Aracılığıyla Gönder</string>
     <string name="TabletMode">Tablet Modu</string>

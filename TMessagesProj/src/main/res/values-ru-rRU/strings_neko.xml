@@ -256,15 +256,6 @@
     <string name="IgnoreContentRestrictions">Игнорировать ограничения контента</string>
     <string name="SendCommentAfterForward">Комментарий после пересылаемого</string>
     <string name="ImportLogin">Вход по QR-коду</string>
-    <string name="CCTitle">OpenCC (китайский язык)</string>
-    <string name="CCTarget">Цель</string>
-    <string name="CCNo">Отсутствует</string>
-    <string name="CCTC">Традиционный китайский</string>
-    <string name="CCHK">Традиционный китайский (Гонконг)</string>
-    <string name="CCTT">Традиционный китайский (Тайвань)</string>
-    <string name="CCSC">Упрощённый китайский</string>
-    <string name="CCSP">Упрощённый китайский (Китай)</string>
-    <string name="CCJP">Новые японские кандзи (синдзитай)</string>
     <string name="UserRestrictionsSendGames">Отправка игр</string>
     <string name="UserRestrictionsSendInline">Отправка через ботов</string>
     <string name="TabletMode">Режим планшета</string>

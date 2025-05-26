@@ -257,15 +257,6 @@
     <string name="IgnoreContentRestrictions">忽略内容限制</string>
     <string name="SendCommentAfterForward">转发后发送评论</string>
     <string name="ImportLogin">二维码登录</string>
-    <string name="CCTitle">OpenCC (简繁转换)</string>
-    <string name="CCTarget">目标</string>
-    <string name="CCNo">无</string>
-    <string name="CCTC">繁体中文</string>
-    <string name="CCHK">香港繁体</string>
-    <string name="CCTT">台湾正体</string>
-    <string name="CCSC">简体中文</string>
-    <string name="CCSP">简体中文 (中国)</string>
-    <string name="CCJP">日文新字體</string>
     <string name="UserRestrictionsSendGames">发送游戏</string>
     <string name="UserRestrictionsSendInline">通过内联机器人发送</string>
     <string name="TabletMode">平板模式</string>

@@ -259,16 +259,6 @@
     <string name="IgnoreContentRestrictions">Ignore content restrictions</string>
     <string name="SendCommentAfterForward">Send Comment After Forwarding</string>
     <string name="ImportLogin">QR Login</string>
-    <string name="OpenCC" translatable="false">OpenCC</string>
-    <string name="CCTitle">OpenCC (Chinese Convert)</string>
-    <string name="CCTarget">Target</string>
-    <string name="CCNo">None</string>
-    <string name="CCTC">Traditional Chinese</string>
-    <string name="CCHK">Traditional Chinese (Hong Kong)</string>
-    <string name="CCTT">Traditional Chinese (Taiwan)</string>
-    <string name="CCSC">Simplified Chinese</string>
-    <string name="CCSP">Simplified Chinese (China)</string>
-    <string name="CCJP">New Japanese Kanji (Shinjitai)</string>
     <string name="UserRestrictionsSendGames">Send Games</string>
     <string name="UserRestrictionsSendInline">Send via Inline Bots</string>
     <string name="TabletMode">Tablet Mode</string>

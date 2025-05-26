@@ -215,8 +215,6 @@ import kotlin.Unit;
 import kotlin.text.StringsKt;
 import top.qwq2333.nullgram.utils.StringUtils;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.cc.CCConverter;
-import tw.nekomimi.nekogram.cc.CCTarget;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
@@ -4574,42 +4572,6 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             menuPopupLayout.addView(cell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 0, 48 * a++, 0, 0));
 
             cell = new ActionBarMenuSubItem(getContext(), false, dlps == 0);
-            cell.setTextAndIcon(LocaleController.getString(R.string.OpenCC), R.drawable.ic_translate);
-            final ActionBarMenuSubItem ccCell = cell;
-            final long chatId = getChatId();
-            cell.setOnClickListener(v -> {
-                String ccTarget = NekoConfig.ccInputLang.String();
-                if (ccTarget == null || StringsKt.isBlank(ccTarget)) {
-                    Translator.showCCTargetSelect(ccCell, (target) -> {
-                        if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
-                            menuPopupWindow.dismiss();
-                        }
-                        ccComment(target);
-                        NekoConfig.ccInputLang.setConfigString(target);
-                        return Unit.INSTANCE;
-                    });
-                    return;
-                }
-                if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
-                    menuPopupWindow.dismiss();
-                }
-                ccComment(ccTarget);
-            });
-            cell.setOnLongClickListener(v -> {
-                Translator.showCCTargetSelect(ccCell, (target) -> {
-                    if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
-                        menuPopupWindow.dismiss();
-                    }
-                    ccComment(target);
-                    NekoConfig.ccInputLang.setConfigString(target);
-                    return Unit.INSTANCE;
-                });
-                return true;
-            });
-            cell.setMinimumWidth(AndroidUtilities.dp(196));
-            menuPopupLayout.addView(cell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 0, 48 * a++, 0, 0));
-
-            cell = new ActionBarMenuSubItem(getContext(), false, dlps == 0);
             cell.setTextAndIcon(LocaleController.getString(R.string.ReplaceText), R.drawable.msg_edit);
             cell.setOnClickListener(v -> {
                 if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
@@ -6096,27 +6058,6 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
 
         });
 
-    }
-
-    private void ccComment(String target) {
-        if (messageEditText == null) return;
-        int start = messageEditText.getSelectionStart();
-        int end = messageEditText.getSelectionEnd();
-        CharSequence text = messageEditText.getText();
-        if (start != end) {
-            text = text.subSequence(start, end);
-        }
-        AlertDialog progress = AlertUtil.showProgress(parentActivity);
-        progress.show();
-        String finalText = text.toString();
-        UIUtil.runOnIoDispatcher(() -> {
-            String ccText = CCConverter.get(CCTarget.valueOf(target)).convert(finalText);
-            UIUtil.runOnUIThread(() -> {
-                progress.dismiss();
-                if (start == end) messageEditText.setText(ccText);
-                else messageEditText.getText().replace(start, end, ccText);
-            });
-        });
     }
 
     private void showReplace() {

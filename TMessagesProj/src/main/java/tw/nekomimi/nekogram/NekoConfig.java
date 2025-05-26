@@ -125,9 +125,6 @@ public class NekoConfig {
 
     public static ConfigItem disableNotificationBubbles = addConfig("disableNotificationBubbles", configTypeBool, false);
 
-    public static ConfigItem ccToLang = addConfig("opencc_to_lang", configTypeString, "");
-    public static ConfigItem ccInputLang = addConfig("opencc_input_to_lang", configTypeString, "");
-
     public static ConfigItem tabsTitleType = addConfig("TabTitleType", configTypeInt, NekoXConfig.TITLE_TYPE_MIX);
     public static ConfigItem confirmAVMessage = addConfig("ConfirmAVMessage", configTypeBool, false);
     public static ConfigItem askBeforeCall = addConfig("AskBeforeCalling", configTypeBool, true);
