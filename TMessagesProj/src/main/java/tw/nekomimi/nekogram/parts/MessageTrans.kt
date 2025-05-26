@@ -109,7 +109,7 @@ fun ChatActivity.translateMessages(
         }
     }
 
-    val messagesToTranslate = messages.filter { !it.translating && !it.messageOwner.translated }
+    val messagesToTranslate = messages.filter { !it.translating && !it.messageOwner.translated && (it.isPoll || it.messageOwner.message.isNotEmpty()) }
     if (messagesToTranslate.isEmpty()) {
         return
     }
