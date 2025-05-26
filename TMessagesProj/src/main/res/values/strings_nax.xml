@@ -193,4 +193,6 @@
     <string name="ApiNotSupportedOnAndroidVersion">This API provider is not supported on your Android version (requires Android 8.0+).</string>
     <string name="AppIconTelegramOriginal">Original</string>
     <string name="BurnTtlMessage">Burn</string>
+    <string name="StreamMkvNax">Show MKV as Video</string>
+    <string name="StreamAllVideoNax">Stream All Videos</string>
 </resources>
