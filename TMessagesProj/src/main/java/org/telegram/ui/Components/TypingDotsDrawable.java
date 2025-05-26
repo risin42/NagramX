@@ -115,9 +115,10 @@ public class TypingDotsDrawable extends StatusDrawable {
             paint = currentPaint;
         }
 
-        canvas.drawCircle(AndroidUtilities.dp(3), y, scales[0] * AndroidUtilities.density, paint);
-        canvas.drawCircle(AndroidUtilities.dp(9), y, scales[1] * AndroidUtilities.density, paint);
-        canvas.drawCircle(AndroidUtilities.dp(15), y, scales[2] * AndroidUtilities.density, paint);
+        int startX = getBounds().left;
+        canvas.drawCircle(startX+AndroidUtilities.dp(3), y, scales[0] * AndroidUtilities.density, paint);
+        canvas.drawCircle(startX+AndroidUtilities.dp(9), y, scales[1] * AndroidUtilities.density, paint);
+        canvas.drawCircle(startX+AndroidUtilities.dp(15), y, scales[2] * AndroidUtilities.density, paint);
         checkUpdate();
     }
 

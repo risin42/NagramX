@@ -80,6 +80,7 @@ public class SendingFileDrawable extends StatusDrawable {
                 paint.setAlpha(255);
             }
             float side = AndroidUtilities.dp(5) * a + AndroidUtilities.dp(5) * progress;
+            side += getBounds().left;
             canvas.drawLine(side, AndroidUtilities.dp(isChat ? 3 : 4), side + AndroidUtilities.dp(4), AndroidUtilities.dp(isChat ? 7 : 8), paint);
             canvas.drawLine(side, AndroidUtilities.dp(isChat ? 11 : 12), side + AndroidUtilities.dp(4), AndroidUtilities.dp(isChat ? 7 : 8), paint);
         }

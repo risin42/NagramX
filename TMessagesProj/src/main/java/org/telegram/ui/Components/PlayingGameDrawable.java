@@ -84,7 +84,7 @@ public class PlayingGameDrawable extends StatusDrawable {
         }
 
         paint.setColor(Theme.getColor(isDialogScreen ? Theme.key_chats_actionMessage : Theme.key_chat_status, resourcesProvider));
-        rect.set(0, y, size, y + size);
+        rect.set(getBounds().left, y, getBounds().left + size, y + size);
         int rad;
         if (progress < 0.5f) {
             rad = (int) (35 * (1.0f - progress / 0.5f));
@@ -93,6 +93,7 @@ public class PlayingGameDrawable extends StatusDrawable {
         }
         for (int a = 0; a < 3; a++) {
             float x = a * AndroidUtilities.dp(5) + AndroidUtilities.dp(9.2f) - AndroidUtilities.dp(5) * progress;
+            x += getBounds().left;
             if (a == 2) {
                 paint.setAlpha(Math.min(255, (int) (255 * progress / 0.5f)));
             } else if (a == 0) {
@@ -109,7 +110,7 @@ public class PlayingGameDrawable extends StatusDrawable {
         paint.setAlpha(255);
         canvas.drawArc(rect, rad, 360 - rad * 2, true, paint);
         paint.setColor(Theme.getColor(isDialogScreen ? Theme.key_windowBackgroundWhite : Theme.key_actionBarDefault));
-        canvas.drawCircle(AndroidUtilities.dp(4), y + size / 2 - AndroidUtilities.dp(2), AndroidUtilities.dp(1), paint);
+        canvas.drawCircle(getBounds().left + AndroidUtilities.dp(4), y + size / 2 - AndroidUtilities.dp(2), AndroidUtilities.dp(1), paint);
 
         checkUpdate();
     }

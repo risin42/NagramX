@@ -262,8 +262,8 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
         titleTextView.setGravity(isCentered() ? Gravity.CENTER_HORIZONTAL : Gravity.LEFT);
         titleTextView.setTypeface(AndroidUtilities.bold());
         titleTextView.setLeftDrawableTopPadding(-dp(1.3f));
-        titleTextView.setCanHideRightDrawable(false);
-        //titleTextView.setRightDrawableOutside(true);
+        // titleTextView.setCanHideRightDrawable(false);
+        // titleTextView.setRightDrawableOutside(true);
         titleTextView.setRightDrawableOutside(!isCentered());
         titleTextView.setScrollNonFitText(isCentered());
         titleTextView.setPadding(0, dp(6), 0, dp(12));
@@ -609,7 +609,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int padding = isCentered() ? dp(10) : 0;
+        int padding = isCentered() ? dp(isPreviewMode() ? 35 : 10) : 0;
         int width = MeasureSpec.getSize(widthMeasureSpec) + (isCentered() ? 0 : titleTextView.getPaddingRight());
         int availableWidth = width - dp(((avatarImageView.getVisibility() == VISIBLE || isCentered()) ? 54 : 0) + 16);
         avatarImageView.measure(MeasureSpec.makeMeasureSpec(dp(42), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(dp(42), MeasureSpec.EXACTLY));
@@ -983,9 +983,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
                 } else {
                     subtitleTextView.replaceTextWithDrawable(null, null);
                     statusDrawables[type].setColor(getThemedColor(Theme.key_chat_status));
-                    if (!NaConfig.INSTANCE.getCenterActionBarTitle().Bool() && NaConfig.INSTANCE.getCenterActionBarTitleType().Int() != 2){
-                        subtitleTextView.setLeftDrawable(statusDrawables[type]);
-                    }
+                    subtitleTextView.setLeftDrawable(statusDrawables[type]);
                 }
                 currentTypingDrawable = statusDrawables[type];
                 for (int a = 0; a < statusDrawables.length; a++) {

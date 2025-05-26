@@ -391,14 +391,15 @@ public class SimpleTextView extends View implements Drawable.Callback {
                 if (!rightDrawableInside) {
                     if (rightDrawable != null && !rightDrawableOutside) {
                         rightDrawableWidth += (int) (rightDrawable.getIntrinsicWidth() * rightDrawableScale);
-                        width -= rightDrawableWidth;
+                        // width -= rightDrawableWidth;
                         width -= drawablePadding;
                     }
                     if (rightDrawable2 != null && !rightDrawableOutside) {
                         rightDrawableWidth += (int) (rightDrawable2.getIntrinsicWidth() * rightDrawableScale);
-                        width -= rightDrawableWidth;
+                        // width -= rightDrawableWidth;
                         width -= drawablePadding;
                     }
+                    width -= rightDrawableWidth;
                 }
                 if (replacedText != null && replacedDrawable != null) {
                     replacingDrawableTextIndex = text.toString().indexOf(replacedText);
@@ -793,14 +794,15 @@ public class SimpleTextView extends View implements Drawable.Callback {
             if (!rightDrawableInside) {
                 if (rightDrawable != null && !rightDrawableOutside) {
                     rightDrawableWidth = (int) (rightDrawable.getIntrinsicWidth() * rightDrawableScale);
-                    width -= rightDrawableWidth;
+                    // width -= rightDrawableWidth;
                     width -= drawablePadding;
                 }
                 if (rightDrawable2 != null && !rightDrawableOutside) {
                     rightDrawableWidth = (int) (rightDrawable2.getIntrinsicWidth() * rightDrawableScale);
-                    width -= rightDrawableWidth;
+                    // width -= rightDrawableWidth;
                     width -= drawablePadding;
                 }
+                width -= rightDrawableWidth;
             }
             if (replacedText != null && replacedDrawable != null) {
                 if ((replacingDrawableTextIndex = text.toString().indexOf(replacedText)) < 0) {
