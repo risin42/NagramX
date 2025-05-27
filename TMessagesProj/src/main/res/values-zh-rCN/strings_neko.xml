@@ -131,7 +131,7 @@
     <string name="enhancedFileLoader">下载加速</string>
     <string name="mapDriftingFixForGoogleMaps">修复 Google 地图在中国的漂移问题</string>
     <string name="useOSMDroidMap">使用 OSMDroid 地图</string>
-    <string name="UnknownNekoSettingsOption">没有这样的喵设置选项。</string>
+    <string name="UnknownNekoSettingsOption">没有这样的N-设置选项。</string>
     <string name="PasscodeNeeded">您必须先启用锁定码</string>
     <string name="PasscodeNeko">锁定码</string>
     <string name="PasscodeShowInSettings">在N-设置中显示</string>

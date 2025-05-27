@@ -131,7 +131,7 @@
     <string name="enhancedFileLoader">Download Speed Boost</string>
     <string name="mapDriftingFixForGoogleMaps">Fix Google Maps Drifting in China</string>
     <string name="useOSMDroidMap">Use OSMDroid Map</string>
-    <string name="UnknownNekoSettingsOption">There is no such Neko Settings option.</string>
+    <string name="UnknownNekoSettingsOption">There is no such N-Settings option.</string>
     <string name="PasscodeNeeded">You have to enable passcode lock first</string>
     <string name="PasscodeNeko">Passcode</string>
     <string name="PasscodeShowInSettings">Show in N-Settings</string>

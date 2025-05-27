@@ -11,7 +11,6 @@
     <string name="ShowReactions">Tepkileri Göster</string>
     <string name="CustomTitle">Özel Başlık</string>
     <string name="CustomTitleHint">Nagram X’i kullanmak için boş bırakın</string>
-    <string name="CodeSyntaxHighlight">Kod Sözdizimi Vurgulama</string>
     <string name="CreateMono">Monospace Oluştur</string>
     <string name="CreateMonoLanguage">Kod Dili</string>
     <string name="CopyPhoto">Fotoğrafı Kopyala</string>
@@ -32,7 +31,6 @@
     <string name="AppIconDarkBlue">Koyu Mavi</string>
     <string name="AppIconBlurBlue">Bulanık Mavi</string>
     <string name="AutoInsertGIFCaption">GIF Göndermeden Önce Otomatik Altyazı Ekle</string>
-    <string name="DefaultMonoLanguage">Varsayılan Kod Dili</string>
     <string name="DisableGlobalSearch">Global Aramayı Devre Dışı Bırak</string>
     <string name="InputMessageId">Mesaj Kimliğini Girin</string>
     <string name="ToTheMessage">Mesaja Git</string>
@@ -125,7 +123,6 @@
     <string name="ShowTimeHint">Mesaj Saatine Tıklayarak Detayları Göster</string>
     <string name="SearchHashtagDefaultPageChannel">Kanallarda Varsayılan Hashtag Arama Sayfası</string>
     <string name="SearchHashtagDefaultPageChat">Sohbetlerde Varsayılan Hashtag Arama Sayfası</string>
-    <string name="OpenUrlOutBotWebViewRegex">Bot WebView Dışında Linkleri Açmak İçin URL Regex</string>
     <string name="LocaleToDBC">DBC Durumunda Yerel Metin</string>
     <string name="EnablePanguOnReceiving">Alırken Pangu’yu Etkinleştir</string>
     <string name="EnablePanguOnSending">Gönderirken Pangu’yu Etkinleştir</string>
@@ -137,4 +134,8 @@
     <string name="CustomTitleUserName">Kullanıcı Takma Adını Başlık Olarak Kullan</string>
     <string name="EnhancedVideoBitrate">Geliştirilmiş Paylaşılan Video Bit Hızı</string>
     <string name="ActionBarButtons">Eylem Çubuğu Düğmeleri</string>
+    <string name="VideoPlayerDecoder">Video Çözücü</string>
+    <string name="VideoPlayerDecoderPreferSW">SW Tercih Et</string>
+    <string name="VideoPlayerDecoderHardware">Sadece HW</string>
+    <string name="VideoPlayerDecoderPreferHW">HW Tercih Et</string>
 </resources>

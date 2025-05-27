@@ -180,4 +180,10 @@
     <string name="ApiNotSupportedOnAndroidVersion">此 API 提供商不支持您的 Android 版本 (需要 Android 8.0+)。</string>
     <string name="AppIconTelegramOriginal">官方默认</string>
     <string name="BurnTtlMessage">销毁</string>
+    <string name="StreamMkvNax">MKV 显示为视频</string>
+    <string name="StreamAllVideoNax">流式播放所有视频</string>
+    <string name="MonoCode">代码</string>
+    <string name="CreateCode">创建代码</string>
+    <string name="CreateCodeLanguage">语言</string>
+    <string name="NoCaptionForward">无说明转发</string>
 </resources>

@@ -33,7 +33,7 @@
     <string name="Valentine">Dia dos Namorados</string>
     <string name="Snowflakes">Flocos de neve</string>
     <string name="Fireworks">Fogos de Artifício</string>
-    <string name="DeleteDownloadedFile">Excluir Downloaded</string>
+    <string name="DeleteDownloadedFile">Excluir arquivo baixado</string>
     <string name="TestBackend">Teste de back-end</string>
     <string name="HideProxySponsorChannel">Ocultar canal de patrocinador de proxy</string>
     <string name="ViewHistory">Histórico</string>
@@ -131,7 +131,7 @@
     <string name="enhancedFileLoader">Aumentar Velocidade de Download</string>
     <string name="mapDriftingFixForGoogleMaps">Corrigir Google Maps Drifting na China</string>
     <string name="useOSMDroidMap">Usar Mapa OSMDroid</string>
-    <string name="UnknownNekoSettingsOption">Essa opção não existe nas configurações do Neko.</string>
+    <string name="UnknownNekoSettingsOption">Não existe essa opção em N-Configurações.</string>
     <string name="PasscodeNeeded">Você precisa ativar o passcode primeiro</string>
     <string name="PasscodeNeko">Passcode</string>
     <string name="PasscodeShowInSettings">Mostrar em N-Configurações</string>

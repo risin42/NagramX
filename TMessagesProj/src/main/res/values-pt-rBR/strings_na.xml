@@ -11,7 +11,6 @@
     <string name="ShowReactions">Mostrar Reações</string>
     <string name="CustomTitle">Título Personalizado</string>
     <string name="CustomTitleHint">Deixe em branco para usar Nagram X</string>
-    <string name="CodeSyntaxHighlight">Destaque de sintaxe de código</string>
     <string name="CreateMono">Criar monoespaço</string>
     <string name="CreateMonoLanguage">Linguagem do Código</string>
     <string name="CopyPhoto">Copiar foto</string>
@@ -32,7 +31,6 @@
     <string name="AppIconDarkBlue">Azul Escuro</string>
     <string name="AppIconBlurBlue">Azul desfocado</string>
     <string name="AutoInsertGIFCaption">Inserir Legenda Automaticamente antes de enviar GIF</string>
-    <string name="DefaultMonoLanguage">Linguagem de código padrão</string>
     <string name="DisableGlobalSearch">Desativar Pesquisa Global</string>
     <string name="InputMessageId">Inserir ID da Mensagem</string>
     <string name="ToTheMessage">Ir Para</string>
@@ -125,16 +123,19 @@
     <string name="ShowTimeHint">Clique no Horário da Mensagem para Mostrar Detalhes</string>
     <string name="SearchHashtagDefaultPageChannel">Página de busca de hashtag padrão nos canais</string>
     <string name="SearchHashtagDefaultPageChat">Página de busca de Hashtag padrão nos Chats</string>
-    <string name="OpenUrlOutBotWebViewRegex">URL Regex para abrir Links do Bot WebView</string>
     <string name="LocaleToDBC">Texto de localidade usando DBC Case</string>
     <string name="EnablePanguOnReceiving">Ativar Pangu ao Receber</string>
     <string name="EnablePanguOnSending">Ativar Pangu no Envio</string>
     <string name="PanguInfo">Espaçamento de texto paranóico para boa leitura, para inserir automaticamente espaço em branco entre CJK (Chinês, Japonês, Coreano), inglês de meia largura, dígito e símbolo de caracteres.</string>
     <string name="SendWithPangu">Enviar com Pangu</string>
     <string name="SendWithoutPangu">Enviar sem Pangu</string>
-    <string name="DefaultHlsVideoQuality">Qualidade padrão do vídeo HLS</string>
+    <string name="DefaultHlsVideoQuality">Qualidade Padrão de Vídeo HLS</string>
     <string name="DisableBotOpenButton">Desativar Botão de Abrir do Bot</string>
     <string name="CustomTitleUserName">Usar Apelido do Usuário como Título</string>
     <string name="EnhancedVideoBitrate">Taxa de Bits de Vídeo Compartilhado Aprimorada</string>
     <string name="ActionBarButtons">Botões da Barra de Ação</string>
+    <string name="VideoPlayerDecoder">Decodificador de Vídeo</string>
+    <string name="VideoPlayerDecoderPreferSW">Preferir SW</string>
+    <string name="VideoPlayerDecoderHardware">Apenas HW</string>
+    <string name="VideoPlayerDecoderPreferHW">Preferir HW</string>
 </resources>

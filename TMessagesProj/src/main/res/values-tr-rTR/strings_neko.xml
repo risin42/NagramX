@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="NekoSettings">N-Ayarlar</string>
+    <string name="NekoSettings">N-Ayarları</string>
     <string name="IPv6">IPv6\'yı Tercih Et</string>
     <string name="MessageMenu">Mesaj Menüsü</string>
     <string name="HidePhone">Telefon Numarasını Gizle</string>
@@ -131,7 +131,7 @@
     <string name="enhancedFileLoader">İndirme Hızını Artır</string>
     <string name="mapDriftingFixForGoogleMaps">Çin’de Google Haritalar Kaymasını Düzelt</string>
     <string name="useOSMDroidMap">OSMDroid Haritasını Kullan</string>
-    <string name="UnknownNekoSettingsOption">Böyle bir Neko Ayarları seçeneği yok.</string>
+    <string name="UnknownNekoSettingsOption">Böyle bir N-Ayarları seçeneği yok.</string>
     <string name="PasscodeNeeded">Önce parola kilidini etkinleştirmeniz gerekiyor</string>
     <string name="PasscodeNeko">Parola</string>
     <string name="PasscodeShowInSettings">N-Ayarlarda Göster</string>

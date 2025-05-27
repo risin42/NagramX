@@ -11,7 +11,6 @@
     <string name="ShowReactions">Показать реакции</string>
     <string name="CustomTitle">Пользовательский заголовок</string>
     <string name="CustomTitleHint">Оставьте поле пустым, чтобы использовать «Nagram X»</string>
-    <string name="CodeSyntaxHighlight">Подсветка синтаксиса</string>
     <string name="CreateMono">Создать монопространство</string>
     <string name="CreateMonoLanguage">Язык кода</string>
     <string name="CopyPhoto">Копировать фото</string>
@@ -32,7 +31,6 @@
     <string name="AppIconDarkBlue">Тёмно-синяя</string>
     <string name="AppIconBlurBlue">Размытая синяя</string>
     <string name="AutoInsertGIFCaption">Автоматическая вставка подписи перед отправкой GIF</string>
-    <string name="DefaultMonoLanguage">Язык кода по умолчанию</string>
     <string name="DisableGlobalSearch">Отключить глобальный поиск</string>
     <string name="InputMessageId">Введите ID сообщения</string>
     <string name="ToTheMessage">К сообщению</string>
@@ -125,7 +123,6 @@
     <string name="ShowTimeHint">Показывать подробности при нажатии на время сообщения</string>
     <string name="SearchHashtagDefaultPageChannel">Страница поиска по хэштегам в каналах по умолчанию</string>
     <string name="SearchHashtagDefaultPageChat">Страница поиска по хэштегам в чатах по умолчанию</string>
-    <string name="OpenUrlOutBotWebViewRegex">URL regex для открытия ссылок вне веб-бота</string>
     <string name="LocaleToDBC">Текст локали с использованием регистра DBC</string>
     <string name="EnablePanguOnReceiving">Включить Pangu при получении</string>
     <string name="EnablePanguOnSending">Включить Pangu при отправке</string>
@@ -137,4 +134,8 @@
     <string name="CustomTitleUserName">Имя пользователя в качестве заголовка</string>
     <string name="EnhancedVideoBitrate">Улучшить общий битрейт видео</string>
     <string name="ActionBarButtons">Кнопки панели действий</string>
+    <string name="VideoPlayerDecoder">Видео декодер</string>
+    <string name="VideoPlayerDecoderPreferSW">Предпочтение SW</string>
+    <string name="VideoPlayerDecoderHardware">Только HW</string>
+    <string name="VideoPlayerDecoderPreferHW">Предпочтение HW</string>
 </resources>

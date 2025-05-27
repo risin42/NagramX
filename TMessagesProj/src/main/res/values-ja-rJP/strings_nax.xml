@@ -180,4 +180,10 @@
     <string name="ApiNotSupportedOnAndroidVersion">この API プロバイダは、お使いの Android バージョンではサポートされていません（Android 8.0以上が必要です）。</string>
     <string name="AppIconTelegramOriginal">オリジナル</string>
     <string name="BurnTtlMessage">消去</string>
+    <string name="StreamMkvNax">MKV をビデオとして表示</string>
+    <string name="StreamAllVideoNax">すべてのビデオをストリーミング</string>
+    <string name="MonoCode">コード</string>
+    <string name="CreateCode">コードを作成</string>
+    <string name="CreateCodeLanguage">言語</string>
+    <string name="NoCaptionForward">説明文なしで転送</string>
 </resources>

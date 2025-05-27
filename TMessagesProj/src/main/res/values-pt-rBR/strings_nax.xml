@@ -4,10 +4,10 @@
     <string name="EnableSaveDeletedMessages">Salvar Mensagens Excluídas</string>
     <string name="DeletedMessage">excluído</string>
     <string name="EnableSaveEditsHistory">Salvar Histórico de Edições</string>
-    <string name="EditsHistoryMenuText">Histórico de edições</string>
+    <string name="EditsHistoryMenuText">Histórico de Edições</string>
     <string name="DeleteKeepLocally">Manter localmente</string>
     <string name="ClearMessageDatabase">Limpar Banco de Dados de Mensagens</string>
-    <string name="ClearMessageDatabaseNotification">Banco de Mensagens apagado</string>
+    <string name="ClearMessageDatabaseNotification">Dados de mensagens limpos.</string>
     <string name="CustomDeletedMark">Marca personalizada excluída</string>
     <string name="HidePremiumSection">Ocultar Premium nas Configurações</string>
     <string name="HideHelpSection">Ocultar Ajuda nas Configurações</string>
@@ -132,9 +132,9 @@
     <string name="GhostReadMessage">Ler Mensagem</string>
     <string name="SendWithSound">Enviar com Som</string>
     <string name="PerformanceClass">Classe de Desempenho do Dispositivo</string>
-    <string name="PerformanceClassHigh">Alto</string>
-    <string name="PerformanceClassAverage">Médio</string>
-    <string name="PerformanceClassLow">Baixo</string>
+    <string name="PerformanceClassHigh">Alta</string>
+    <string name="PerformanceClassAverage">Média</string>
+    <string name="PerformanceClassLow">Baixa</string>
     <string name="PerformanceClassUnknown">Desconhecido</string>
     <string name="HideGiftButton">Ocultar Botão de Presente</string>
     <string name="TranscribeProviderShort">Provedor</string>
@@ -180,4 +180,10 @@
     <string name="ApiNotSupportedOnAndroidVersion">Este Provedor de API Não É Compatível com a Sua Versão do Android (Requer Android 8.0+).</string>
     <string name="AppIconTelegramOriginal">Original</string>
     <string name="BurnTtlMessage">Queimar</string>
+    <string name="StreamMkvNax">Exibir MKV como Vídeo</string>
+    <string name="StreamAllVideoNax">Transmitir Todos os Vídeos</string>
+    <string name="MonoCode">Código</string>
+    <string name="CreateCode">Criar Código</string>
+    <string name="CreateCodeLanguage">Idioma</string>
+    <string name="NoCaptionForward">Encaminhar sem legenda</string>
 </resources>

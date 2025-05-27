@@ -11,7 +11,6 @@
     <string name="ShowReactions">Mostrar reacciones</string>
     <string name="CustomTitle">Título personalizado</string>
     <string name="CustomTitleHint">Dejar en blanco para usar Nagram X</string>
-    <string name="CodeSyntaxHighlight">Resaltar sintaxis de código</string>
     <string name="CreateMono">Crear Monoespacio</string>
     <string name="CreateMonoLanguage">Idioma del código</string>
     <string name="CopyPhoto">Copiar Foto</string>
@@ -32,7 +31,6 @@
     <string name="AppIconDarkBlue">Azul oscuro</string>
     <string name="AppIconBlurBlue">Desenfoque Azul</string>
     <string name="AutoInsertGIFCaption">Insertar leyenda automática antes de enviar GIF</string>
-    <string name="DefaultMonoLanguage">Idioma de código por defecto</string>
     <string name="DisableGlobalSearch">Deshabilitar búsqueda global</string>
     <string name="InputMessageId">Introducir ID del mensaje</string>
     <string name="ToTheMessage">Ir a</string>
@@ -45,7 +43,6 @@
     <string name="HideTitle">Ocultar título</string>
     <string name="IgnoreFolderCount">Ocultar contador de no leídos en carpetas</string>
     <string name="SendWithoutMarkdown">Enviar sin rebajar</string>
-    <string name="SaveWithoutMarkdown">Guardar sin rebajar</string>
     <string name="SendAsEmoji">Enviar como emoji</string>
     <string name="CustomArtworkApi">API de Artwork personalizada</string>
     <string name="CustomEditedMessage">Marca personalizada editada</string>
@@ -126,7 +123,6 @@ También puede utilizar texto sin formato, pero no olvide escapar los paréntesi
     <string name="ShowTimeHint">Haga clic en Tiempo de Mensaje para mostrar detalles</string>
     <string name="SearchHashtagDefaultPageChannel">Página de búsqueda por defecto de Hashtag en canales</string>
     <string name="SearchHashtagDefaultPageChat">Página de búsqueda por defecto de Hashtag en Chats</string>
-    <string name="OpenUrlOutBotWebViewRegex">Regex URL para abrir enlaces fuera de la vista WebView Bot</string>
     <string name="LocaleToDBC">Texto local usando caso DBC</string>
     <string name="EnablePanguOnReceiving">Habilitar Pangu al recibir</string>
     <string name="EnablePanguOnSending">Activar Pangu al enviar</string>

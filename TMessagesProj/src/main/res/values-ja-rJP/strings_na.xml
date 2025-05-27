@@ -11,7 +11,6 @@
     <string name="ShowReactions">リアクションメニューを表示</string>
     <string name="CustomTitle">カスタムタイトル</string>
     <string name="CustomTitleHint">空白のままにすると、Nagram X が使用されます</string>
-    <string name="CodeSyntaxHighlight">コードの構文ハイライト</string>
     <string name="CreateMono">等幅フォントを作成</string>
     <string name="CreateMonoLanguage">等幅フォントの言語</string>
     <string name="CopyPhoto">画像をコピー</string>
@@ -32,7 +31,6 @@
     <string name="AppIconDarkBlue">ダークブルー</string>
     <string name="AppIconBlurBlue">ブラーブルー</string>
     <string name="AutoInsertGIFCaption">GIF を送信する前にキャプションを追加</string>
-    <string name="DefaultMonoLanguage">デフォルトのコード言語</string>
     <string name="DisableGlobalSearch">グローバル検索を無効にする</string>
     <string name="InputMessageId">メッセージ ID を入力</string>
     <string name="ToTheMessage">メッセージに移動</string>
@@ -124,7 +122,6 @@
     <string name="ShowTimeHint">メッセージ時間をクリックして詳細を表示</string>
     <string name="SearchHashtagDefaultPageChannel">チャンネルでのハッシュタグ検索ページ</string>
     <string name="SearchHashtagDefaultPageChat">チャットでのハッシュタグ検索ページ</string>
-    <string name="OpenUrlOutBotWebViewRegex">URL 正規表現で、ボットウェブビューを回避してリンクを開く</string>
     <string name="LocaleToDBC">インターフェーステキストに半角記号を使用</string>
     <string name="EnablePanguOnReceiving">受信時に Pangu を有効にする</string>
     <string name="EnablePanguOnSending">送信時に Pangu を有効にする</string>

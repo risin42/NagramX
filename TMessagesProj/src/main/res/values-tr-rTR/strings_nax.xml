@@ -180,4 +180,10 @@
     <string name="ApiNotSupportedOnAndroidVersion">Bu API sağlayıcısı, Android sürümünüzde desteklenmiyor (Android 8.0+ gerektirir).</string>
     <string name="AppIconTelegramOriginal">Orijinal</string>
     <string name="BurnTtlMessage">Yak</string>
+    <string name="StreamMkvNax">MKV\'yi Video Olarak Göster</string>
+    <string name="StreamAllVideoNax">Tüm Videoları Yayınla</string>
+    <string name="MonoCode">Kod</string>
+    <string name="CreateCode">Kod Oluştur</string>
+    <string name="CreateCodeLanguage">Dil</string>
+    <string name="NoCaptionForward">Altyazı Olmadan İlet</string>
 </resources>

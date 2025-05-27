@@ -11,7 +11,6 @@
     <string name="ShowReactions">Показати реакції</string>
     <string name="CustomTitle">Свій заголовок</string>
     <string name="CustomTitleHint">Залиште порожнім, щоб використовувати Nagram X</string>
-    <string name="CodeSyntaxHighlight">Підсвічування синтаксису</string>
     <string name="CreateMono">Створити монопростір</string>
     <string name="CreateMonoLanguage">Мова коду</string>
     <string name="CopyPhoto">Копіювати зображення</string>
@@ -32,7 +31,6 @@
     <string name="AppIconDarkBlue">Темний синій</string>
     <string name="AppIconBlurBlue">Розмитий синій</string>
     <string name="AutoInsertGIFCaption">Автовставка підпису перед надсиланням GIF</string>
-    <string name="DefaultMonoLanguage">Мова коду за замовчуванням</string>
     <string name="DisableGlobalSearch">Вимкнути глобальний пошук</string>
     <string name="InputMessageId">Введіть ID повідомлення</string>
     <string name="ToTheMessage">Перейти до</string>
@@ -106,7 +104,7 @@
     <string name="StickersCopyStickerSet">Копіювати набір наліпок</string>
     <string name="DisableChannelMuteButton">Приховати нижню панель у каналах</string>
     <string name="DisablePreviewVideoSoundShortcut">Вимкнути вмикання звуку відео кнопками гучності</string>
-    <string name="DisablePreviewVideoSoundShortcutNotice">Не вмикати звук у прев\'ю відео кнопкою гучності</string>
+    <string name="DisablePreviewVideoSoundShortcutNotice">\nНе вмикати звук у прев\'ю відео кнопкою гучності.</string>
     <string name="DisableAutoWebLogin">Вимкнути автоматичний вхід під час переходу до веб-версії</string>
     <string name="PreviewSendPhoto">Надіслати фото</string>
     <string name="PreviewSendVideo">Надіслати відео</string>
@@ -122,9 +120,8 @@
     <string name="RegexFiltersAddDescription">Ви можете скористатися сайтом <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> для повної перевірки вашого регулярного виразу. Ви також можете використовувати звичайний текст, але не забудьте екранувати дужки.</string>
     <string name="RegexFiltersAddError">Помилка синтаксису регулярного виразу</string>
     <string name="ShowTimeHint">Показувати подробиці при натисканні на час повідомлення</string>
-    <string name="SearchHashtagDefaultPageChannel">Сторінка пошуку хештегів за замовчуванням у каналах</string>
-    <string name="SearchHashtagDefaultPageChat">Сторінка пошуку хештегів за замовчуванням у чатах</string>
-    <string name="OpenUrlOutBotWebViewRegex">URL Regex для відкриття посилань поза WebView</string>
+    <string name="SearchHashtagDefaultPageChannel">Типовий пошук хештегів у каналах</string>
+    <string name="SearchHashtagDefaultPageChat">Типовий пошук хештегів у чатах</string>
     <string name="LocaleToDBC">Текст локалізації з використанням регістру DBC</string>
     <string name="EnablePanguOnReceiving">Увімкнути Pangu при отриманні</string>
     <string name="EnablePanguOnSending">Увімкнути Pangu при надсиланні</string>
@@ -136,4 +133,8 @@
     <string name="CustomTitleUserName">Використовувати ім\'я користувача як заголовок</string>
     <string name="EnhancedVideoBitrate">Покращений бітрейт відео</string>
     <string name="ActionBarButtons">Кнопки панелі дій</string>
+    <string name="VideoPlayerDecoder">Декодер відео</string>
+    <string name="VideoPlayerDecoderPreferSW">Перевага програмному</string>
+    <string name="VideoPlayerDecoderHardware">Тільки апаратне декодування</string>
+    <string name="VideoPlayerDecoderPreferHW">Перевага апаратному</string>
 </resources>

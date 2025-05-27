@@ -147,14 +147,14 @@
     <string name="CloudflareAPIToken">Токен API</string>
     <string name="CloudflareCredentialsDialog">Настройте ID аккаунта Cloudflare и токен API.\n**Как получить?**\n</string>
     <string name="GeminiApiKeyNotSet">Ключ API Gemini не настроен.</string>
-    <string name="GeminiApiKeyDialog">Настройте ключ API Gemini. Оставьте пустым, чтобы использовать ключ из настроек переводчика.\n**Как получить?**\n</string>
+    <string name="GeminiApiKeyDialog">Настройте ключ API Gemini. Оставьте поле пустым, чтобы использовать ключ из настроек переводчика.\n**Как получить?**\n</string>
     <string name="GeminiNotSupport">Gemini не поддерживается на этом устройстве.</string>
     <string name="ReplyInPrivate">Ответить в личном чате</string>
     <string name="TranscribeProviderGeminiPrompt">Промпт (необязательно)</string>
     <string name="uploadBoost">Увеличить скорость скачивания</string>
     <string name="HideDividers">Скрыть разделители</string>
     <string name="IconReplacements">Замена значков</string>
-    <string name="IconReplacementSolar">Значки Solar от @Design480</string>
+    <string name="IconReplacementSolar">Solar от @Design480</string>
     <string name="DebugMenuEnableInvoicePayment">Включить оплату счетов</string>
     <string name="DebugMenuDisableInvoicePayment">Отключить оплату счетов</string>
     <string name="DebugMenuUseCamera2Api">Использовать API Camera 2</string>
@@ -180,4 +180,10 @@
     <string name="ApiNotSupportedOnAndroidVersion">Этот поставщик API не поддерживается на вашей версии Android (требуется Android 8.0+).</string>
     <string name="AppIconTelegramOriginal">Оригинальная</string>
     <string name="BurnTtlMessage">Сжечь</string>
+    <string name="StreamMkvNax">Показывать MKV как видео</string>
+    <string name="StreamAllVideoNax">Стриминг всех видео</string>
+    <string name="MonoCode">Код</string>
+    <string name="CreateCode">Создать код</string>
+    <string name="CreateCodeLanguage">Язык</string>
+    <string name="NoCaptionForward">Переслать без подписи</string>
 </resources>

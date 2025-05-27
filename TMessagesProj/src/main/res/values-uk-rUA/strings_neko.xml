@@ -81,7 +81,7 @@
     <string name="Categories">Налаштування</string>
     <string name="OfficialChannel">Канал Nagram</string>
     <string name="About">Про застосунок</string>
-    <string name="IgnoreBlockedAbout">Ви більше не бачитимете повідомлення від заблокованих користувачів.</string>
+    <string name="IgnoreBlockedAbout">\nВи більше не бачитимете повідомлення від заблокованих користувачів.</string>
     <string name="SourceCode">Вихідний код</string>
     <string name="ResetStickerSize">Скинути розмір наліпки</string>
     <string name="RestartAppToTakeEffect">Перезапустіть додаток для застосування змін.</string>
@@ -191,8 +191,8 @@
     <string name="AccDescrChatAttachEnterMenu">Меню відправки</string>
     <string name="ChatAttachEnterMenuRecordVideo">Записати відео</string>
     <string name="ChatAttachEnterMenuRecordAudio">Записати аудіо</string>
-    <string name="ChatAttachEnterMenuDisableLinkPreview">Вимкнути попередній перегляд посилання</string>
-    <string name="ChatAttachEnterMenuEnableLinkPreview">Увімкнути попередній перегляд посилання</string>
+    <string name="ChatAttachEnterMenuDisableLinkPreview">Без прев’ю посилань</string>
+    <string name="ChatAttachEnterMenuEnableLinkPreview">З прев’ю посилань</string>
     <string name="UseChatAttachEnterMenu">Використовувати меню надсилання</string>
     <string name="UseChatAttachEnterMenuNotice">Кнопка надсилання буде замінена на розширене меню.</string>
     <string name="DisableLinkPreviewByDefault">Вимкнути попередній перегляд посилань за замовчуванням</string>
@@ -267,6 +267,7 @@
     <string name="TabletMode">Режим планшета</string>
     <string name="TabletModeDefault">Автоматично</string>
     <string name="ReplaceText">Змінити текст</string>
+    <string name="TextOrigin">Оригінал</string>
     <string name="TextReplace">Замінити</string>
     <string name="ReplaceRegex">Використовувати регулярні вирази</string>
     <string name="DisableTrending">Вимкнути Тренди</string>

@@ -179,4 +179,6 @@
     <string name="OpenAiCredentialsNotSet">Облікові дані API не встановлені.</string>
     <string name="ApiNotSupportedOnAndroidVersion">Цей постачальник API не підтримується для вашої версії Android (необхідний Android 8.0+).</string>
     <string name="AppIconTelegramOriginal">Оригінал</string>
+    <string name="StreamMkvNax">Показувати MKV як відео</string>
+    <string name="StreamAllVideoNax">Потокове відтворення всіх відео</string>
 </resources>
