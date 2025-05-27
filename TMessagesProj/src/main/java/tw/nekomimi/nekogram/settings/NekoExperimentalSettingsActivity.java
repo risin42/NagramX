@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +48,7 @@ import org.telegram.ui.Cells.EmptyCell;
 import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.NotificationsCheckCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
+import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextCheckBoxCell;
 import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Cells.TextDetailSettingsCell;
@@ -76,6 +78,7 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellHeader;
 import tw.nekomimi.nekogram.config.cell.ConfigCellSelectBox;
 import tw.nekomimi.nekogram.config.cell.ConfigCellText;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck;
+import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheckIcon;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
 import tw.nekomimi.nekogram.config.cell.WithOnClick;
@@ -86,6 +89,7 @@ import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.ExternalStickerCacheHelper;
 
 @SuppressLint("RtlHardcoded")
+@SuppressWarnings("unused")
 public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity {
 
     private ListAdapter listAdapter;
@@ -111,7 +115,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell springAnimationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimation()));
     private final AbstractConfigCell springAnimationCrossfadeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimationCrossfade()));
     private final AbstractConfigCell customAudioBitrateRow = cellGroup.appendCell(new ConfigCellCustom("CustomAudioBitrate", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
-    private final AbstractConfigCell playerDecoder = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getPlayerDecoder(), new String[]{
+    private final AbstractConfigCell playerDecoderRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getPlayerDecoder(), new String[]{
         getString(R.string.VideoPlayerDecoderHardware),
         getString(R.string.VideoPlayerDecoderPreferHW),
         getString(R.string.VideoPlayerDecoderPreferSW),
@@ -120,9 +124,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
     // Ayu
     private final AbstractConfigCell headerAyuMoments = cellGroup.appendCell(new ConfigCellHeader("AyuMoments"));
-    private final AbstractConfigCell GhostModeRow = cellGroup.appendCell(new ConfigCellText("GhostMode", () -> {
-        presentFragment(new GhostModeActivity());
-    }));
+    private final AbstractConfigCell GhostModeRow = cellGroup.appendCell(new ConfigCellText("GhostMode", () -> presentFragment(new GhostModeActivity())));
     private final AbstractConfigCell enableSaveDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveDeletedMessages()));
     private final AbstractConfigCell enableSaveEditsHistoryRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnableSaveEditsHistory()));
     private final AbstractConfigCell messageSavingSaveMediaRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getMessageSavingSaveMedia(), getString(R.string.MessageSavingSaveMediaHint)));
@@ -131,7 +133,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell translucentDeletedMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getTranslucentDeletedMessages()));
     private final AbstractConfigCell useDeletedIconRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getUseDeletedIcon()));
     private final AbstractConfigCell customDeletedMarkRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomDeletedMark(), "", null));
-    private final AbstractConfigCell clearMessageDatabaseRow = cellGroup.appendCell(new ConfigCellText("ClearMessageDatabase", () -> {
+    private final AbstractConfigCell clearMessageDatabaseRow = cellGroup.appendCell(new ConfigCellTextCheckIcon(null, "ClearMessageDatabase", null, R.drawable.msg_clear, false, () -> {
         AlertDialog progressDialog = new AlertDialog(getParentActivity(), AlertDialog.ALERT_TYPE_SPINNER);
         progressDialog.setCanCancel(false);
         progressDialog.show();
@@ -189,7 +191,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell localeToDBCRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.localeToDBC));
     private final AbstractConfigCell dividerPangu = cellGroup.appendCell(new ConfigCellDivider());
 
-    private List<AbstractConfigCell> externalStickerRows;
+    private final List<AbstractConfigCell> externalStickerRows;
 
     public NekoExperimentalSettingsActivity() {
         externalStickerRows = List.of(
@@ -326,7 +328,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 if (o != null) {
                     try {
                         o.onItemClick(view, position);
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 }
             } else if (a instanceof ConfigCellCustom) { // Custom onclick
@@ -381,6 +383,8 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                     });
                     builder.show();
                 }
+            } else if (a instanceof ConfigCellTextCheckIcon) {
+                ((ConfigCellTextCheckIcon) a).onClick();
             }
         });
         listView.setOnItemLongClickListener((view, position, x, y) -> {
@@ -522,11 +526,14 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             } catch (Exception e) {
                 FileLog.e(e);
                 NekoConfig.useCustomEmoji.setConfigBool(false);
-                Toast.makeText(ApplicationLoader.applicationContext, "Failed: " + e.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(ApplicationLoader.applicationContext, "Failed: " + e, Toast.LENGTH_LONG).show();
             }
             tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
         } else if (requestCode == INTENT_PICK_EXTERNAL_STICKER_DIRECTORY && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
+            if (uri == null) {
+                return;
+            }
             // reserve permissions
             int takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
             ApplicationLoader.applicationContext.getContentResolver().takePersistableUriPermission(uri, takeFlags);
@@ -537,6 +544,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onResume() {
         super.onResume();
@@ -546,6 +554,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void updateRows() {
         if (listAdapter != null) {
@@ -656,7 +665,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     //impl ListAdapter
     private class ListAdapter extends RecyclerListView.SelectionAdapter {
 
-        private Context mContext;
+        private final Context mContext;
 
         public ListAdapter(Context context) {
             mContext = context;
@@ -687,47 +696,43 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             AbstractConfigCell a = cellGroup.rows.get(position);
             if (a != null) {
                 if (a instanceof ConfigCellCustom) {
                     // Custom binds
-                    if (holder.itemView instanceof TextCheckCell) {
-                        TextCheckCell textCell = (TextCheckCell) holder.itemView;
-                        textCell.setEnabled(true, null);
+                    if (holder.itemView instanceof TextCheckCell textCheckCell) {
+                        textCheckCell.setEnabled(true, null);
                         if (position == cellGroup.rows.indexOf(disableFilteringRow)) {
-                            textCell.setTextAndValueAndCheck(getString(R.string.SensitiveDisableFiltering), getString(R.string.SensitiveAbout), sensitiveEnabled, true, true);
-                            textCell.setEnabled(sensitiveCanChange, null);
+                            textCheckCell.setTextAndValueAndCheck(getString(R.string.SensitiveDisableFiltering), getString(R.string.SensitiveAbout), sensitiveEnabled, true, true);
+                            textCheckCell.setEnabled(sensitiveCanChange, null);
                         }
-                    } else if (holder.itemView instanceof TextSettingsCell) {
-                        TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
-                        textCell.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+                    } else if (holder.itemView instanceof TextSettingsCell textSettingsCell) {
+                        textSettingsCell.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
                         if (position == cellGroup.rows.indexOf(customAudioBitrateRow)) {
-                            String value = String.valueOf(NekoConfig.customAudioBitrate.Int()) + "kbps";
+                            String value = NekoConfig.customAudioBitrate.Int() + "kbps";
                             if (NekoConfig.customAudioBitrate.Int() == 32)
                                 value += " (" + getString(R.string.Default) + ")";
-                            textCell.setTextAndValue(getString(R.string.customGroupVoipAudioBitrate), value, false);
+                            textSettingsCell.setTextAndValue(getString(R.string.customGroupVoipAudioBitrate), value, false);
                         }
                     }
                 } else {
                     // Default binds
                     a.onBindViewHolder(holder);
-                    if (holder.itemView instanceof TextSettingsCell) {
-                        TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
-                        if (position == cellGroup.rows.indexOf(clearMessageDatabaseRow)) {
-                            textCell.setText(getString(R.string.ClearMessageDatabase), false);
-                            textCell.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
-                        } else {
-                            // Reset text color to default for other TextSettingsCells
-                            textCell.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+                    if (a instanceof ConfigCellTextCheckIcon) {
+                        if (holder.itemView instanceof TextCell textCell) {
+                            if (position == cellGroup.rows.indexOf(clearMessageDatabaseRow)) {
+                                textCell.setColors(Theme.key_text_RedRegular, Theme.key_text_RedRegular);
+                            }
                         }
                     }
                 }
             }
         }
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = null;
             switch (viewType) {
                 case CellGroup.ITEM_TYPE_DIVIDER:
@@ -751,6 +756,10 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                     break;
                 case CellGroup.ITEM_TYPE_TEXT:
                     view = new TextInfoPrivacyCell(mContext);
+                    break;
+                case CellGroup.ITEM_TYPE_TEXT_CHECK_ICON:
+                    view = new TextCell(mContext);
+                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
             }
             //noinspection ConstantConditions
@@ -799,7 +808,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             } else { // a == 4
                 cells[a].setTextAndCheck(getString(R.string.MessageSavingSaveMediaInPrivateGroups), NaConfig.INSTANCE.getSaveMediaInPrivateGroups().Bool(), true);
             }
-            cells[a].setBackgroundDrawable(Theme.getSelectorDrawable(false));
+            cells[a].setBackground(Theme.getSelectorDrawable(false));
             cells[a].setOnClickListener(v -> {
                 if (!v.isEnabled()) {
                     return;

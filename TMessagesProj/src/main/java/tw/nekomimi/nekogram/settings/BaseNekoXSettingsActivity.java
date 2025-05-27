@@ -3,15 +3,21 @@ package tw.nekomimi.nekogram.settings;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.content.Context;
+import android.widget.LinearLayout;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
+import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.Cells.TextCell;
+import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Components.BlurredRecyclerView;
 import org.telegram.ui.Components.BulletinFactory;
+import org.telegram.ui.Components.LayoutHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +29,7 @@ import tw.nekomimi.nekogram.config.cell.AbstractConfigCell;
 import tw.nekomimi.nekogram.config.cell.ConfigCellAutoTextCheck;
 import tw.nekomimi.nekogram.config.cell.ConfigCellCustom;
 import tw.nekomimi.nekogram.config.cell.ConfigCellSelectBox;
+import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheckIcon;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
@@ -90,6 +97,8 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
             return ((ConfigCellTextInput) row).getBindConfig();
         } else if (row instanceof ConfigCellAutoTextCheck) {
             return ((ConfigCellAutoTextCheck) row).getBindConfig();
+        } else if (row instanceof ConfigCellTextCheckIcon) {
+            return ((ConfigCellTextCheckIcon) row).getBindConfig();
         }
         return null;
     }
@@ -109,6 +118,8 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
             return ((ConfigCellCustom) row).getKey();
         } else if (row instanceof ConfigCellAutoTextCheck) {
             return ((ConfigCellAutoTextCheck) row).getKey();
+        } else if (row instanceof ConfigCellTextCheckIcon) {
+            return ((ConfigCellTextCheckIcon) row).getKey();
         }
         return null;
     }
@@ -193,5 +204,72 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
 
     public HashMap<Integer, String> getRowMapReverse() {
         return rowMapReverse;
+    }
+
+    public static AlertDialog showConfigMenuAlert(Context context, String titleKey, ArrayList<ConfigCellTextCheck> configItems) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(getString(titleKey));
+
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout linearLayoutInviteContainer = new LinearLayout(context);
+        linearLayoutInviteContainer.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(linearLayoutInviteContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+        int count = configItems.size();
+        for (int a = 0; a < count; a++) {
+            ConfigCellTextCheck configItem = configItems.get(a);
+            TextCheckCell textCell = new TextCheckCell(context);
+            textCell.setTextAndCheck(configItem.getTitle(), configItem.getBindConfig().Bool(), false);
+            textCell.setTag(a);
+            textCell.setBackground(Theme.getSelectorDrawable(false));
+            linearLayoutInviteContainer.addView(textCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            int finalA = a;
+            textCell.setOnClickListener(v2 -> {
+                Integer tag = (Integer) v2.getTag();
+                if (tag == finalA) {
+                    textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
+                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+                }
+            });
+        }
+        builder.setPositiveButton(getString(R.string.OK), null);
+        builder.setView(linearLayout);
+        return builder.create();
+    }
+
+    public static AlertDialog showConfigMenuWithIconAlert(BaseFragment bf, int titleKeyRes, ArrayList<ConfigCellTextCheckIcon> configItems) {
+        Context context = bf.getContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(getString(titleKeyRes));
+
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout linearLayoutInviteContainer = new LinearLayout(context);
+        linearLayoutInviteContainer.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(linearLayoutInviteContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+        int count = configItems.size();
+        for (int a = 0; a < count; a++) {
+            ConfigCellTextCheckIcon configItem = configItems.get(a);
+            TextCell textCell = new TextCell(context, 23, false, true, bf.getResourceProvider());
+            textCell.setTextAndCheckAndIcon(configItem.getTitle(), configItem.getBindConfig().Bool(), configItem.getResId(), configItem.getDivider());
+            textCell.setTag(a);
+            textCell.setBackground(Theme.getSelectorDrawable(false));
+            linearLayoutInviteContainer.addView(textCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            int finalA = a;
+            textCell.setOnClickListener(v2 -> {
+                Integer tag = (Integer) v2.getTag();
+                if (tag == finalA) {
+                    textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
+                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+                }
+            });
+        }
+        builder.setPositiveButton(getString(R.string.OK), null);
+        builder.setView(linearLayout);
+        return builder.create();
     }
 }

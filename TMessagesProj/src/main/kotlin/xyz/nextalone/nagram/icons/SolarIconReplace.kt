@@ -320,6 +320,7 @@ class SolarIconReplace : BaseIconReplace() {
         R.drawable.msg_secret to R.drawable.msg_secret_solar,
         R.drawable.msg_secret_ny to R.drawable.msg_secret_ny_solar,
         R.drawable.msg_select to R.drawable.msg_select_solar,
+        R.drawable.ic_select_between to R.drawable.msg_select_between_solar,
         R.drawable.msg_send to R.drawable.msg_send_solar,
         R.drawable.msg_sendfile to R.drawable.msg_sendfile_solar,
         R.drawable.msg_settings to R.drawable.msg_settings_solar,

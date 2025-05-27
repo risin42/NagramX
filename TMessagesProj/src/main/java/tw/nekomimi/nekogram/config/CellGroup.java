@@ -20,6 +20,7 @@ public class CellGroup {
     public static final int ITEM_TYPE_HEADER = 4;
     public static final int ITEM_TYPE_TEXT_DETAIL = 5;
     public static final int ITEM_TYPE_TEXT = 6;
+    public static final int ITEM_TYPE_TEXT_CHECK_ICON = 7;
 
     public BaseFragment thisFragment;
     public RecyclerListView listView;

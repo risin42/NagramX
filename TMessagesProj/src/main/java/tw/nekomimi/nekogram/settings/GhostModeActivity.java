@@ -44,7 +44,7 @@ public class GhostModeActivity extends BaseNekoSettingsActivity {
     private int markReadAfterSendNoticeRow;
 
     private int sendWithoutSoundRow;
-    private  int sendWithoutSoundNoticeRow;
+    private int sendWithoutSoundNoticeRow;
     private int showGhostInDrawerRow;
     private boolean ghostModeMenuExpanded;
 

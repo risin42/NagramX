@@ -12,8 +12,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,13 +25,13 @@ import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
-import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ActionBar.ThemeDescription;
 import org.telegram.ui.Cells.EmptyCell;
 import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.NotificationsCheckCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
+import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Cells.TextDetailSettingsCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
@@ -57,6 +57,7 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellDivider;
 import tw.nekomimi.nekogram.config.cell.ConfigCellHeader;
 import tw.nekomimi.nekogram.config.cell.ConfigCellSelectBox;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck;
+import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheckIcon;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
@@ -66,6 +67,7 @@ import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.DoubleTap;
 
 @SuppressLint("RtlHardcoded")
+@SuppressWarnings("unused")
 public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implements NotificationCenter.NotificationCenterDelegate, EmojiHelper.EmojiPacksLoadedListener {
 
     private final CellGroup cellGroup = new CellGroup(this);
@@ -100,7 +102,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell showOnlineStatusRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowOnlineStatus(), getString(R.string.ShowOnlineStatusNotice)));
     private final AbstractConfigCell showRecentOnlineStatusRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowRecentOnlineStatus()));
     private final AbstractConfigCell disableCustomWallpaperUserRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableCustomWallpaperUser()));
-    private final AbstractConfigCell silentMessageByDefaultRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSilentMessageByDefault()));
     private final AbstractConfigCell dontAutoPlayNextVoiceRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDontAutoPlayNextVoice()));
     private final AbstractConfigCell coloredAdminTitleRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getColoredAdminTitle()));
     private final AbstractConfigCell photoResolutionRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getSendPhotoResolution(), new String[]{
@@ -141,70 +142,66 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
 
     // MenuAndButtons
     private final AbstractConfigCell headerMenuAndButtons = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.MenuAndButtons)));
-    private final AbstractConfigCell chatMenuRow = cellGroup.appendCell(new ConfigCellSelectBox("ChatMenu", null, null, () -> {
-        if (getParentActivity() == null) return;
-        showDialog(showConfigMenuAlert(getParentActivity(), "ChatMenu", new ArrayList<>() {{
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShortcutsAdministrators(), null, getString(R.string.ChannelAdministrators)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShortcutsRecentActions(), null, getString(R.string.EventLog)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShortcutsStatistics(), null, getString(R.string.Statistics)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShortcutsPermissions(), null, getString(R.string.ChannelPermissions)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShortcutsMembers(), null, getString(R.string.GroupMembers)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getChatMenuItemBoostGroup(), null, getString(R.string.BoostingBoostGroupMenu)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getChatMenuItemLinkedChat(), null, getString(R.string.LinkedGroupChat)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getChatMenuItemToBeginning(), null, getString(R.string.ToTheBeginning)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getChatMenuItemGoToMessage(), null, getString(R.string.ToTheMessage)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getChatMenuItemHideTitle(), null, getString(R.string.HideTitle)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getChatMenuItemClearDeleted(), null, getString(R.string.ClearDeleted)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getChatMenuItemDeleteOwnMessages(), null, getString(R.string.DeleteAllFromSelf)));
-        }}));
-    }));
-    private final AbstractConfigCell messageMenuRow = cellGroup.appendCell(new ConfigCellSelectBox("MessageMenu", null, null, () -> {
-        if (getParentActivity() == null) return;
-        showDialog(showConfigMenuAlert(getParentActivity(), "MessageMenu", new ArrayList<>() {{
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowReactions()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowReplyInPrivate()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowCopyPhoto()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowCopyAsSticker()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowAddToStickers()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowAddToFavorites()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowNoQuoteForward()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowSetReminder()));
-            add(new ConfigCellTextCheck(NekoConfig.showAddToSavedMessages, null, getString(R.string.AddToSavedMessages)));
-            add(new ConfigCellTextCheck(NekoConfig.showRepeat, null, getString(R.string.Repeat)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowRepeatAsCopy()));
-            add(new ConfigCellTextCheck(NekoConfig.showDeleteDownloadedFile, null, getString(R.string.DeleteDownloadedFile)));
-            add(new ConfigCellTextCheck(NekoConfig.showViewHistory, null, getString(R.string.ViewHistory)));
-            add(new ConfigCellTextCheck(NekoConfig.showTranslate, null, getString(R.string.Translate)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTranslateMessageLLM()));
-            add(new ConfigCellTextCheck(NekoConfig.showShareMessages, null, getString(R.string.ShareMessages)));
-            add(new ConfigCellTextCheck(NekoConfig.showMessageHide, null, getString(R.string.Hide)));
-            add(new ConfigCellTextCheck(NekoConfig.showReport, null, getString(R.string.ReportChat)));
-            add(new ConfigCellTextCheck(NekoConfig.showAdminActions, null, getString(R.string.EditAdminRights)));
-            add(new ConfigCellTextCheck(NekoConfig.showChangePermissions, null, getString(R.string.ChangePermissions)));
-            add(new ConfigCellTextCheck(NekoConfig.showMessageDetails, null, getString(R.string.MessageDetails)));
-        }}));
-    }));
-    private final AbstractConfigCell mediaViewerMenuRow = cellGroup.appendCell(new ConfigCellSelectBox("MediaViewerMenu", null, null, () -> {
-        if (getParentActivity() == null) return;
-        showDialog(showConfigMenuAlert(getParentActivity(), "MediaViewerMenu", new ArrayList<>() {{
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getMediaViewerMenuItemForward(), null, getString(R.string.Forward)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getMediaViewerMenuItemNoQuoteForward(), null, getString(R.string.NoQuoteForward)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getMediaViewerMenuItemCopyPhoto(), null, getString(R.string.CopyPhoto)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getMediaViewerMenuItemSetProfilePhoto(), null, getString(R.string.SetProfilePhoto)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getMediaViewerMenuItemScanQRCode(), null, getString(R.string.ScanQRCode)));
-        }}));
-    }));
-    private final AbstractConfigCell actionBarButtonRow = cellGroup.appendCell(new ConfigCellSelectBox("ActionBarButtons", null, null, () -> {
-        if (getParentActivity() == null) return;
-        showDialog(showConfigMenuAlert(getParentActivity(), "ActionBarButtons", new ArrayList<>() {{
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getActionBarButtonReply()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getActionBarButtonEdit()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getActionBarButtonSelectBetween()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getActionBarButtonCopy()));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getActionBarButtonForward()));
-        }}));
-    }));
-    private final AbstractConfigCell defaultDeleteMenuRow = cellGroup.appendCell(new ConfigCellSelectBox("DefaultDeleteMenu", null, null, () -> {
+    private final AbstractConfigCell chatMenuRow = cellGroup.appendCell(new ConfigCellTextCheckIcon(null, "ChatMenu", null, R.drawable.menu_chats, false, () ->
+        showDialog(showConfigMenuWithIconAlert(this, R.string.ChatMenu, new ArrayList<>() {{
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShortcutsAdministrators(), getString(R.string.ChannelAdministrators), R.drawable.msg_admins));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShortcutsRecentActions(), getString(R.string.EventLog), R.drawable.msg_log));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShortcutsStatistics(), getString(R.string.Statistics), R.drawable.msg_stats));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShortcutsPermissions(), getString(R.string.ChannelPermissions), R.drawable.msg_permissions));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShortcutsMembers(), getString(R.string.GroupMembers), R.drawable.msg_groups, true));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getChatMenuItemBoostGroup(), getString(R.string.BoostingBoostGroupMenu), R.drawable.boost_channel_solar));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getChatMenuItemLinkedChat(), getString(R.string.LinkedGroupChat), R.drawable.msg_discussion));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getChatMenuItemToBeginning(), getString(R.string.ToTheBeginning), R.drawable.ic_upward));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getChatMenuItemGoToMessage(), getString(R.string.ToTheMessage), R.drawable.msg_go_up));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getChatMenuItemHideTitle(), getString(R.string.HideTitle), R.drawable.hide_title));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getChatMenuItemClearDeleted(), getString(R.string.ClearDeleted), R.drawable.msg_clear));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getChatMenuItemDeleteOwnMessages(), getString(R.string.DeleteAllFromSelf), R.drawable.msg_delete));
+        }}))
+    ));
+    private final AbstractConfigCell messageMenuRow = cellGroup.appendCell(new ConfigCellTextCheckIcon(null, "MessageMenu", null, R.drawable.msg_list, false, () ->
+        showDialog(showConfigMenuWithIconAlert(this, R.string.MessageMenu, new ArrayList<>() {{
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShowReactions(), R.drawable.msg_reactions2));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShowReplyInPrivate(), R.drawable.menu_reply));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShowCopyPhoto(), R.drawable.msg_copy));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShowCopyAsSticker(), R.drawable.msg_copy));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShowAddToStickers(), R.drawable.msg_sticker));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShowAddToFavorites(), R.drawable.msg_fave));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShowNoQuoteForward(), R.drawable.msg_forward_noquote));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShowSetReminder(), R.drawable.msg_calendar2));
+            add(new ConfigCellTextCheckIcon(NekoConfig.showAddToSavedMessages, getString(R.string.AddToSavedMessages), R.drawable.msg_saved));
+            add(new ConfigCellTextCheckIcon(NekoConfig.showRepeat, getString(R.string.Repeat), R.drawable.msg_repeat));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShowRepeatAsCopy(), R.drawable.msg_repeat));
+            add(new ConfigCellTextCheckIcon(NekoConfig.showDeleteDownloadedFile, getString(R.string.DeleteDownloadedFile), R.drawable.msg_clear));
+            add(new ConfigCellTextCheckIcon(NekoConfig.showViewHistory, getString(R.string.ViewHistory), R.drawable.menu_recent));
+            add(new ConfigCellTextCheckIcon(NekoConfig.showTranslate, getString(R.string.Translate), R.drawable.msg_translate));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getShowTranslateMessageLLM(), R.drawable.magic_stick_solar));
+            add(new ConfigCellTextCheckIcon(NekoConfig.showShareMessages, getString(R.string.ShareMessages), R.drawable.msg_shareout));
+            add(new ConfigCellTextCheckIcon(NekoConfig.showMessageHide, getString(R.string.Hide), R.drawable.msg_disable));
+            add(new ConfigCellTextCheckIcon(NekoConfig.showReport, getString(R.string.ReportChat), R.drawable.msg_report));
+            add(new ConfigCellTextCheckIcon(NekoConfig.showAdminActions, getString(R.string.EditAdminRights), R.drawable.profile_admin));
+            add(new ConfigCellTextCheckIcon(NekoConfig.showChangePermissions, getString(R.string.ChangePermissions), R.drawable.msg_permissions));
+            add(new ConfigCellTextCheckIcon(NekoConfig.showMessageDetails, getString(R.string.MessageDetails), R.drawable.msg_info));
+        }}))
+    ));
+    private final AbstractConfigCell mediaViewerMenuRow = cellGroup.appendCell(new ConfigCellTextCheckIcon(null, "MediaViewerMenu", null, R.drawable.msg_photos, false, () ->
+        showDialog(showConfigMenuWithIconAlert(this, R.string.MediaViewerMenu, new ArrayList<>() {{
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getMediaViewerMenuItemForward(), getString(R.string.Forward), R.drawable.msg_forward));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getMediaViewerMenuItemNoQuoteForward(), getString(R.string.NoQuoteForward), R.drawable.msg_forward_noquote));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getMediaViewerMenuItemCopyPhoto(), getString(R.string.CopyPhoto), R.drawable.msg_copy));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getMediaViewerMenuItemSetProfilePhoto(), getString(R.string.SetProfilePhoto), R.drawable.msg_openprofile));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getMediaViewerMenuItemScanQRCode(), getString(R.string.ScanQRCode), R.drawable.msg_qrcode));
+        }}))
+    ));
+    private final AbstractConfigCell actionBarButtonRow = cellGroup.appendCell(new ConfigCellTextCheckIcon(null, "ActionBarButtons", null, R.drawable.msg_media, false, () ->
+        showDialog(showConfigMenuWithIconAlert(this, R.string.ActionBarButtons, new ArrayList<>() {{
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getActionBarButtonReply(), R.drawable.menu_reply));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getActionBarButtonEdit(), R.drawable.msg_edit));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getActionBarButtonSelectBetween(), R.drawable.ic_select_between));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getActionBarButtonCopy(), R.drawable.msg_copy));
+            add(new ConfigCellTextCheckIcon(NaConfig.INSTANCE.getActionBarButtonForward(), R.drawable.msg_forward));
+        }}))
+    ));
+    private final AbstractConfigCell defaultDeleteMenuRow = cellGroup.appendCell(new ConfigCellTextCheckIcon(null, "DefaultDeleteMenu", null, R.drawable.msg_admins, false, () -> {
         if (getParentActivity() == null) return;
         showDialog(showConfigMenuAlert(getParentActivity(), NaConfig.INSTANCE.getDefaultDeleteMenu().getKey(), new ArrayList<>() {{
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDefaultDeleteMenuBanUsers()));
@@ -213,7 +210,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDefaultDeleteMenuDoActionsInCommonGroups()));
         }}));
     }));
-    private final AbstractConfigCell textStyleRow = cellGroup.appendCell(new ConfigCellSelectBox("TextStyle", null, null, () -> {
+    private final AbstractConfigCell textStyleRow = cellGroup.appendCell(new ConfigCellTextCheckIcon(null, "TextStyle", null, R.drawable.msg_photo_text_framed3, false, () -> {
         if (getParentActivity() == null) return;
         showDialog(showConfigMenuAlert(getParentActivity(), "TextStyle", new ArrayList<>() {{
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextBold(), null, getString(R.string.Bold)));
@@ -256,7 +253,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell disableRemoteEmojiInteractionsRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableRemoteEmojiInteractions));
     private final AbstractConfigCell rememberAllBackMessagesRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.rememberAllBackMessages));
     private final AbstractConfigCell showFullAboutRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowFullAbout()));
-    private final AbstractConfigCell hideMessageSeenTooltipcRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideMessageSeenTooltip()));
+    private final AbstractConfigCell hideMessageSeenTooltipRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideMessageSeenTooltip()));
     private final AbstractConfigCell typeMessageHintUseGroupNameRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getTypeMessageHintUseGroupName()));
     private final AbstractConfigCell showSendAsUnderMessageHintRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowSendAsUnderMessageHint()));
     private final AbstractConfigCell hideBotButtonInInputFieldRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideBotButtonInInputField()));
@@ -302,7 +299,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private ListAdapter listAdapter;
     private ActionBarMenuItem menuItem;
     private StickerSizeCell stickerSizeCell;
-    private EmojiSetCell emojiSetCell;
     private UndoView tooltip;
 
     public NekoChatSettingsActivity() {
@@ -392,9 +388,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                 if (o != null) {
                     try {
                         o.onItemClick(view, position);
-                    } catch (
-                            Exception e) {
-                    }
+                    } catch (Exception ignored) {}
                 }
             } else if (a instanceof ConfigCellCustom) { // Custom onclick
                 if (position == cellGroup.rows.indexOf(maxRecentStickerCountRow)) {
@@ -455,6 +449,8 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                 } else if (position == cellGroup.rows.indexOf(transcribeProviderOpenAiRow)) {
                     TranscribeHelper.showOpenAiCredentialsDialog(this);
                 }
+            } else if (a instanceof ConfigCellTextCheckIcon) {
+                ((ConfigCellTextCheckIcon) a).onClick();
             }
         });
         listView.setOnItemLongClickListener((view, position, x, y) -> {
@@ -520,6 +516,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         return fragmentView;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onResume() {
         super.onResume();
@@ -528,6 +525,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void updateRows() {
         if (listAdapter != null) {
@@ -586,39 +584,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         return themeDescriptions;
     }
 
-    public static AlertDialog showConfigMenuAlert(Context context, String titleKey, ArrayList<ConfigCellTextCheck> configItems) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(getString(titleKey));
-
-        LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-        LinearLayout linearLayoutInviteContainer = new LinearLayout(context);
-        linearLayoutInviteContainer.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(linearLayoutInviteContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-
-        int count = configItems.size();
-        for (int a = 0; a < count; a++) {
-            ConfigCellTextCheck configItem = configItems.get(a);
-            TextCheckCell textCell = new TextCheckCell(context);
-            textCell.setTextAndCheck(configItem.getTitle(), configItem.getBindConfig().Bool(), false);
-            textCell.setTag(a);
-            textCell.setBackground(Theme.getSelectorDrawable(false));
-            linearLayoutInviteContainer.addView(textCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            int finalA = a;
-            textCell.setOnClickListener(v2 -> {
-                Integer tag = (Integer) v2.getTag();
-                if (tag == finalA) {
-                    textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
-                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
-                }
-            });
-        }
-        builder.setPositiveButton(getString(R.string.OK), null);
-        builder.setView(linearLayout);
-        return builder.create();
-    }
-
     public static boolean[] getDeleteMenuChecks() {
         return new boolean[]{
                 NaConfig.INSTANCE.getDefaultDeleteMenuBanUsers().Bool(),
@@ -667,18 +632,10 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
 
             sizeBar = new SeekBarView(context);
             sizeBar.setReportChanges(true);
-            sizeBar.setDelegate(new SeekBarView.SeekBarViewDelegate() {
-                @Override
-                public void onSeekBarDrag(boolean stop, float progress) {
-                    NekoConfig.stickerSize.setConfigFloat(startStickerSize + (endStickerSize - startStickerSize) * progress);
-                    StickerSizeCell.this.invalidate();
-                    menuItem.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onSeekBarPressed(boolean pressed) {
-
-                }
+            sizeBar.setDelegate((stop, progress) -> {
+                NekoConfig.stickerSize.setConfigFloat(startStickerSize + (endStickerSize - startStickerSize) * progress);
+                StickerSizeCell.this.invalidate();
+                menuItem.setVisibility(View.VISIBLE);
             });
             addView(sizeBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 38, Gravity.LEFT | Gravity.TOP, 9, 5, 43, 11));
 
@@ -746,8 +703,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             if (a != null) {
                 if (a instanceof ConfigCellCustom) {
                     // Custom binds
-                    if (holder.itemView instanceof TextSettingsCell) {
-                        TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
+                    if (holder.itemView instanceof TextSettingsCell textCell) {
                         if (position == cellGroup.rows.indexOf(maxRecentStickerCountRow)) {
                             textCell.setTextAndValue(getString(R.string.maxRecentStickerCount), String.valueOf(NekoConfig.maxRecentStickerCount.Int()), true);
                         } else if (position == cellGroup.rows.indexOf(doubleTapActionRow)) {
@@ -761,8 +717,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                         } else if (position == cellGroup.rows.indexOf(transcribeProviderOpenAiRow)) {
                             textCell.setTextAndValue(getString(R.string.TranscribeProviderOpenAI), "", true);
                         }
-                    } else if (view instanceof EmojiSetCell) {
-                        EmojiSetCell v1 =  (EmojiSetCell) view;
+                    } else if (view instanceof EmojiSetCell v1) {
                         v1.setData(EmojiHelper.getInstance().getCurrentEmojiPackInfo(), false, true);
                     }
                 } else {
@@ -772,8 +727,9 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             }
         }
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = null;
             switch (viewType) {
                 case CellGroup.ITEM_TYPE_DIVIDER:
@@ -797,15 +753,18 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                     break;
                 case CellGroup.ITEM_TYPE_TEXT:
                     view = new TextInfoPrivacyCell(mContext);
-                    // view.setBackground(Theme.getThemedDrawable(mContext, R.drawable.greydivider, Theme.key_windowBackgroundGrayShadow));
                     break;
                 case ConfigCellCustom.CUSTOM_ITEM_StickerSize:
                     view = stickerSizeCell = new StickerSizeCell(mContext);
                     view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
                     break;
                 case ConfigCellCustom.CUSTOM_ITEM_EmojiSet:
-                    view = emojiSetCell = new EmojiSetCell(mContext, false);
+                    view = new EmojiSetCell(mContext, false);
                     view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+                    break;
+                case CellGroup.ITEM_TYPE_TEXT_CHECK_ICON:
+                    view = new TextCell(mContext);
+                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
             }
             //noinspection ConstantConditions

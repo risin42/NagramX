@@ -70,7 +70,7 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 
 @SuppressWarnings("FieldCanBeLocal")
-@Deprecated // use Bulletin instead
+// @Deprecated // use Bulletin instead
 public class UndoView extends FrameLayout {
 
     private int infoTextViewEmojiCacheType = AnimatedEmojiDrawable.CACHE_TYPE_MESSAGES;
