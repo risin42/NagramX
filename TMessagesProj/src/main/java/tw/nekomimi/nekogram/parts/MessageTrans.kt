@@ -168,6 +168,7 @@ fun ChatActivity.translateMessages(
                         return@trans
                     }
                     if (result != null) {
+                        result?.text = result?.text?.trim()
                         selectedObject.messageOwner.translatedMessage = selectedObject.messageOwner.message + "\n\n--------\n\n" + result?.text
                         selectedObject.messageOwner.translatedText = result
                     }
