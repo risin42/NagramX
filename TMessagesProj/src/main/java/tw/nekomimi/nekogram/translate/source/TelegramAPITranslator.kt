@@ -66,7 +66,7 @@ object TelegramAPITranslator : Translator {
                             if (err?.text != null && err.text!!.isNotEmpty()) {
                                 FileLog.e(err.text)
                             }
-                            continuation.resumeWithException(RuntimeException("Failed to translate by Telegram API"))
+                            continuation.resumeWithException(RuntimeException("An unexpected error occurred during Telegram API call: ${err?.text ?: "Unknown error"}"))
                         }
                     }
             } catch (e: Exception) {
