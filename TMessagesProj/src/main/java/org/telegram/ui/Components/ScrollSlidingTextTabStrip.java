@@ -436,12 +436,12 @@ public class ScrollSlidingTextTabStrip extends HorizontalScrollView {
         boolean result = super.drawChild(canvas, child, drawingTime);
         if (child == tabsContainer) {
             final int height = getMeasuredHeight();
-            /*selectorDrawable.setAlpha((int) (255 * tabsContainer.getAlpha()));
+            /* selectorDrawable.setAlpha((int) (255 * tabsContainer.getAlpha()));
             float x = indicatorX + indicatorXAnimationDx;
             float w = x + indicatorWidth + indicatorWidthAnimationDx;
-            selectorDrawable.setBounds((int) x, height - AndroidUtilities.dpr(4), (int) w, height);*/
+            selectorDrawable.setBounds((int) x, height - AndroidUtilities.dpr(4), (int) w, height);
+            selectorDrawable.draw(canvas); */
             // --- Tab Style Start ---
-            selectorDrawable.draw(canvas);
             int tabStyle = NaConfig.INSTANCE.getTabStyle().Int();
             int inlinePadding = 0;
             int topBound = height - AndroidUtilities.dp(4);
