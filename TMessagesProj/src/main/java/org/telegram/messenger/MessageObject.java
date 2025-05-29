@@ -3518,8 +3518,8 @@ public class MessageObject {
             fromUser = MessagesController.getInstance(currentAccount).getUser(messageOwner.from_id.user_id);
         }
         messageText = text;
-        // ArrayList<TLRPC.MessageEntity> entities = translated && messageOwner.translatedText != null ? messageOwner.translatedText.entities : messageOwner.entities;
-        ArrayList<TLRPC.MessageEntity> entities = translated && messageOwner.translatedText != null ? reparseMessageEntities(messageOwner.translatedText.entities) : messageOwner.entities;
+        ArrayList<TLRPC.MessageEntity> entities = translated && messageOwner.translatedText != null && (NaConfig.INSTANCE.getTranslatorMode().Int() == MessageTransKt.TRANSLATE_MODE_REPLACE || MessagesController.getInstance(currentAccount).getTranslateController().isTranslatingDialog(getDialogId()))
+                        ? reparseMessageEntities(messageOwner.translatedText.entities) : messageOwner.entities;
         TextPaint paint;
         if (getMedia(messageOwner) instanceof TLRPC.TL_messageMediaGame) {
             paint = Theme.chat_msgGameTextPaint;
