@@ -1,11 +1,6 @@
 package tw.nekomimi.nekogram.utils
 
-import cn.hutool.core.collection.CollUtil
-import cn.hutool.core.util.ArrayUtil
-import cn.hutool.core.util.StrUtil
 import org.telegram.ui.ActionBar.AlertDialog
-import java.math.BigInteger
-import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
@@ -17,74 +12,6 @@ import kotlin.reflect.KProperty0
 /**
  * 一些基于语言特性的全局函数
  */
-
-fun <T> T.applyIf(boolean: Boolean, block: (T.() -> Unit)?): T {
-    if (boolean) block?.invoke(this)
-    return this
-}
-
-fun <T> T.applyIfNot(boolean: Boolean, block: (T.() -> Unit)?): T {
-    if (!boolean) block?.invoke(this)
-    return this
-}
-
-fun String.input(vararg params: Any): String {
-
-    return StrUtil.format(this, *params)
-
-}
-
-val Number.asByteArray get() = BigInteger.valueOf(toLong()).toByteArray()!!
-
-val ByteArray.asLong get() = BigInteger(this).toLong()
-val ByteArray.asInt get() = BigInteger(this).toInt()
-
-fun <T> Array<T>.shift(): Array<T> {
-
-    return shift(1)
-
-}
-
-fun <T> Array<T>.shift(size: Int): Array<T> {
-
-    return ArrayUtil.sub(this, size, this.size)
-
-}
-
-fun <T> Collection<T>.shift() = shift(1)
-
-fun <T> Collection<T>.shift(size: Int): Collection<T> {
-
-    return LinkedList(CollUtil.sub(this, size, this.size))
-
-}
-
-class WriteOnlyField<T>(val setter: (T) -> Unit) {
-
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): T = error("WriteOnlyField : ${property.name}")
-
-    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-
-        setter.invoke(value)
-
-    }
-
-}
-
-class WeakField<T> {
-
-    private var value: T? = null
-
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
-        return value
-            ?: throw IllegalStateException("Property ${property.name} should be initialized before get.")
-    }
-
-    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T?) {
-        this.value = value
-    }
-
-}
 
 fun <T, R> receive(getter: T.() -> R) = Receiver(getter)
 

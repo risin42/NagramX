@@ -125,7 +125,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import cn.hutool.core.thread.ThreadUtil;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -8503,9 +8502,9 @@ public class MessagesController extends BaseController implements NotificationCe
                 UIUtil.runOnUIThread(() -> getNotificationCenter().postNotificationName(NotificationCenter.blockedUsersDidLoad));
 
             });
-
-            ThreadUtil.sleep(233);
-
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ignored) {}
         }
 
         if (retry) {

@@ -69,8 +69,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 import xyz.nextalone.nagram.NaConfig;
@@ -16966,8 +16964,13 @@ public class MessagesStorage extends BaseController {
                             found = 1;
                         } else if (username != null && username.startsWith(q)) {
                             found = 2;
-                        } else if (NumberUtil.isInteger(q) && (NumberUtil.parseInt(q) == uid || q.length() > 3 && StrUtil.utf8Str(uid).contains(q))) {
-                            found = 3;
+                        } else {
+                            try {
+                                int qInt = Integer.parseInt(q);
+                                if (qInt == uid || q.length() > 3 && String.valueOf(uid).contains(q)) {
+                                    found = 3;
+                                }
+                            } catch (NumberFormatException ignored) {}
                         }
                         if (found != 0) {
                             NativeByteBuffer data = cursor.byteBufferValue(0);
@@ -17012,8 +17015,13 @@ public class MessagesStorage extends BaseController {
                         int found = 0;
                         if (name.startsWith(q) || name.contains(" " + q) || tName != null && (tName.startsWith(q) || tName.contains(" " + q))) {
                             found = 1;
-                        } else if (NumberUtil.isInteger(q) && (NumberUtil.parseInt(q) == chatId || q.length() > 3 && StrUtil.utf8Str(chatId).contains(q))) {
-                            found = 2;
+                        } else {
+                            try {
+                                int qInt = Integer.parseInt(q);
+                                if (qInt == chatId || q.length() > 3 && String.valueOf(chatId).contains(q)) {
+                                    found = 2;
+                                }
+                            } catch (NumberFormatException ignored) {}
                         }
                         if (found > 0) {
                             NativeByteBuffer data = cursor.byteBufferValue(0);
@@ -17072,8 +17080,13 @@ public class MessagesStorage extends BaseController {
                             found = 1;
                         } else if (username != null && username.startsWith(q)) {
                             found = 2;
-                        } else if (NumberUtil.isInteger(q) && (NumberUtil.parseInt(q) == user_id || q.length() > 3 && StrUtil.utf8Str(user_id).contains(q))) {
-                            found = 3;
+                        } else {
+                            try {
+                                int qInt = Integer.parseInt(q);
+                                if (qInt == user_id || q.length() > 3 && String.valueOf(user_id).contains(q)) {
+                                    found = 3;
+                                }
+                            } catch (NumberFormatException ignored) {}
                         }
 
                         if (found != 0) {
@@ -17184,8 +17197,13 @@ public class MessagesStorage extends BaseController {
                             found = 1;
                         } else if (username != null && username.startsWith(q)) {
                             found = 2;
-                        } else if (NumberUtil.isInteger(q) && (NumberUtil.parseInt(q) == uid || q.length() > 3 && StrUtil.utf8Str(uid).contains(q))) {
-                            found = 3;
+                        } else {
+                            try {
+                                int qInt = Integer.parseInt(q);
+                                if (qInt == uid || q.length() > 3 && String.valueOf(uid).contains(q)) {
+                                    found = 3;
+                                }
+                            } catch (NumberFormatException ignored) {}
                         }
                         if (found != 0) {
                             NativeByteBuffer data = cursor.byteBufferValue(0);

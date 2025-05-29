@@ -287,7 +287,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
     // utilities 
     implementation "org.osmdroid:osmdroid-android:6.1.20"
-    implementation "cn.hutool:hutool-core:5.8.36"
     // network
     implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.14"
     implementation 'dnsjava:dnsjava:3.4.1'

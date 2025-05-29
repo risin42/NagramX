@@ -305,7 +305,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import cn.hutool.core.util.StrUtil;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.NekoConfig;
@@ -31122,7 +31121,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             boolean docsWithMessages = false;
                             if (selectedObjectGroup != null && selectedObjectGroup.isDocuments) {
                                 for (MessageObject object : selectedObjectGroup.messages) {
-                                    if (StrUtil.isNotBlank(object.messageOwner.message)) {
+                                    if (!TextUtils.isEmpty(object.messageOwner.message)) {
                                         docsWithMessages = true;
                                     }
                                 }
@@ -31336,7 +31335,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         boolean docsWithMessages = false;
                         if (selectedObjectGroup != null && selectedObjectGroup.isDocuments) {
                             for (MessageObject object : selectedObjectGroup.messages) {
-                                if (StrUtil.isNotBlank(object.messageOwner.message)) {
+                                if (!TextUtils.isEmpty(object.messageOwner.message)) {
                                     docsWithMessages = true;
                                 }
                             }

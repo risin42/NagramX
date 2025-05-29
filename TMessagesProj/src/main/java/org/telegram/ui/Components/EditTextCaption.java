@@ -62,7 +62,6 @@ import org.telegram.ui.ActionBar.Theme;
 import java.util.List;
 import java.util.Locale;
 
-import cn.hutool.core.util.StrUtil;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
@@ -299,7 +298,7 @@ public class EditTextCaption extends EditTextBoldCursor {
         String origin = getText().toString();
         String text = getText().subSequence(start, end).toString();
 
-        if (StrUtil.isBlank(origin)) return;
+        if (TextUtils.isEmpty(origin)) return;
 
         Locale to = TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String());
         Translator.translate(to, text, new Translator.Companion.TranslateCallBack() {

@@ -14,8 +14,6 @@ import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
-import org.telegram.messenger.SharedConfig;
-import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.Theme;
 
 import java.io.BufferedReader;
@@ -24,18 +22,11 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 public class NekoXConfig {
 
     public static String FAQ_URL = "https://github.com/NextAlone/Nagram#faq";
-    public static long[] officialChats = {
-    };
-
-    public static long[] developers = {
-    };
 
     public static final int TITLE_TYPE_TEXT = 0;
     public static final int TITLE_TYPE_ICON = 1;
@@ -54,8 +45,6 @@ public class NekoXConfig {
     public static int customAppId = preferences.getInt("custom_app_id", 0);
     public static String customAppHash = preferences.getString("custom_app_hash", "");
 
-    private static Boolean hasDeveloper = null;
-    
     public static int currentAppId() {
         switch (customApi) {
             case 0:
@@ -90,29 +79,18 @@ public class NekoXConfig {
                 .apply();
     }
 
-    public static boolean isDeveloper() {
-        if (hasDeveloper != null)
-            return hasDeveloper;
-        hasDeveloper = true; // BuildVars.DEBUG_VERSION;
-        for (int acc : SharedConfig.activeAccounts) {
-            long myId = UserConfig.getInstance(acc).clientUserId;
-            if (ArrayUtil.contains(NekoXConfig.developers, myId)) {
-                hasDeveloper = true;
-                break;
-            }
-        }
-        return hasDeveloper;
-    }
-
     public static String formatLang(String name) {
         if (name == null || name.isEmpty()) {
             return getString(R.string.Default);
         } else {
-            if (name.contains("-")) {
-                return new Locale(StrUtil.subBefore(name, "-", false), StrUtil.subAfter(name, "-", false)).getDisplayName(LocaleController.getInstance().currentLocale);
+            String[] parts = name.split("-");
+            Locale locale;
+            if (parts.length > 1) {
+                locale = new Locale(parts[0], parts[1]);
             } else {
-                return new Locale(name).getDisplayName(LocaleController.getInstance().currentLocale);
+                locale = new Locale(parts[0]);
             }
+            return locale.getDisplayName(LocaleController.getInstance().currentLocale);
         }
     }
 

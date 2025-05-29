@@ -212,7 +212,7 @@ public class MessageHelper extends BaseController {
         final TLRPC.TL_messages_search req = new TLRPC.TL_messages_search();
         req.peer = getMessagesController().getInputPeer((int) dialog_id);
         if (req.peer == null) {
-            if (progress != null) uDismiss(progress);
+            if (progress != null) AndroidUtilities.runOnUIThread(progress::dismiss);
             return;
         }
         req.limit = 100;
@@ -249,14 +249,17 @@ public class MessageHelper extends BaseController {
                     indey++;
                 }
                 if (ids.size() == 0) {
-                    if (progress != null) uDismiss(progress);
+                    if (progress != null) AndroidUtilities.runOnUIThread(progress::dismiss);
                     return;
                 }
                 AndroidUtilities.runOnUIThread(() -> getMessagesController().deleteMessages(ids, random_ids, null, dialog_id, 0, true, 0));
-                if (progress != null) uUpdate(progress, ">> " + indey);
+                if (progress != null) {
+                    final String message = ">> " + indey;
+                    AndroidUtilities.runOnUIThread(() -> progress.setMessage(message));
+                }
                 deleteUserChannelHistoryWithSearch(progress, dialog_id, user, lastMessageId, indey);
             } else {
-                if (progress != null) uDismiss(progress);
+                if (progress != null) AndroidUtilities.runOnUIThread(progress::dismiss);
                 AlertUtil.showToast(error);
             }
         }, ConnectionsManager.RequestFlagFailOnServerErrors);

@@ -13,6 +13,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
 import android.view.Gravity;
@@ -51,7 +52,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.hutool.core.util.StrUtil;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
@@ -192,13 +192,13 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         BottomBuilder builder = new BottomBuilder(getParentActivity());
         builder.addTitle(getString(bind.getKey()), subtitle);
         var keyField = builder.addEditText(hint);
-        if (StrUtil.isNotBlank(bind.String())) {
+        if (!bind.String().trim().isEmpty()) {
             keyField.setText(bind.String());
         }
         builder.addCancelButton();
         builder.addOkButton((it) -> {
             String key = keyField.getText().toString();
-            if (StrUtil.isBlank(key)) key = null;
+            if (key.trim().isEmpty()) key = null;
             bind.setConfigString(key);
             listAdapter.notifyItemChanged(position);
             return Unit.INSTANCE;

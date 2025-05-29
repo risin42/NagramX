@@ -479,7 +479,7 @@ public class GroupCallUserCell extends FrameLayout {
 
             nameTextView.setText(UserObject.getUserName(currentUser));
             botVerificationIcon = DialogObject.getBotVerificationIcon(currentUser);
-            if (currentUser != null && currentUser.verifiedExtended()) {
+            if (currentUser != null && currentUser.verified) {
                 rightDrawable.set(verifiedDrawable = (verifiedDrawable == null ? new VerifiedDrawable(getContext()) : verifiedDrawable), animated);
             } else if (currentUser != null && DialogObject.getEmojiStatusDocumentId(currentUser.emoji_status) != 0) {
                 rightDrawable.set(DialogObject.getEmojiStatusDocumentId(currentUser.emoji_status), animated);
@@ -519,7 +519,7 @@ public class GroupCallUserCell extends FrameLayout {
             botVerificationIcon = DialogObject.getBotVerificationIcon(currentChat);
             if (currentChat != null) {
                 nameTextView.setText(currentChat.title);
-                if (currentChat.verifiedExtended()) {
+                if (currentChat.verified) {
                     rightDrawable.set(verifiedDrawable = (verifiedDrawable == null ? new VerifiedDrawable(getContext()) : verifiedDrawable), animated);
                 } else if (currentChat != null && DialogObject.getEmojiStatusDocumentId(currentChat.emoji_status) != 0) {
                     rightDrawable.set(DialogObject.getEmojiStatusDocumentId(currentChat.emoji_status), animated);

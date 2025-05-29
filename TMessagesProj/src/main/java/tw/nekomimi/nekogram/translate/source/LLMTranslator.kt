@@ -1,7 +1,7 @@
 package tw.nekomimi.nekogram.translate.source
 
+import android.text.TextUtils
 import android.util.Log
-import cn.hutool.core.util.StrUtil
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -71,7 +71,7 @@ object LLMTranslator : Translator {
         }
         val key = keyConfig.String()
 
-        apiKeys = if (StrUtil.isNotBlank(key)) {
+        apiKeys = if (!TextUtils.isEmpty(key)) {
             key.split(",").map { it.trim() }.filter { it.isNotEmpty() }
         } else {
             emptyList()

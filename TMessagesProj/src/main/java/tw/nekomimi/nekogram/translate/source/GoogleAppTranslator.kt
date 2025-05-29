@@ -1,6 +1,6 @@
 package tw.nekomimi.nekogram.translate.source
 
-import cn.hutool.core.util.StrUtil
+import android.text.TextUtils
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONException
@@ -35,7 +35,7 @@ object GoogleAppTranslator : Translator {
             )
         }
 
-        if (StrUtil.isNotBlank(NekoConfig.googleCloudTranslateKey.String())) {
+        if (!TextUtils.isEmpty(NekoConfig.googleCloudTranslateKey.String())) {
             return GoogleCloudTranslator.doTranslate(
                 from, to, query, entities
             )

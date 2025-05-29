@@ -217,16 +217,12 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
-import tw.nekomimi.nekogram.DataCenter;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
-import tw.nekomimi.nekogram.ui.EditTextAutoFill;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 
@@ -9978,7 +9974,9 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             } catch (Exception ignore) {
             }
             if (response instanceof TLRPC.TL_auth_loginToken) {
-                exportLoginTokenDialog = ProxyUtil.showQrDialog(getParentActivity(), "tg://login?token=" + cn.hutool.core.codec.Base64.encodeUrlSafe(((TLRPC.TL_auth_loginToken) response).token));
+                byte[] tokenBytes = ((TLRPC.TL_auth_loginToken) response).token;
+                String encodedToken = Base64.encodeToString(tokenBytes, Base64.URL_SAFE | Base64.NO_PADDING);
+                exportLoginTokenDialog = ProxyUtil.showQrDialog(getParentActivity(), "tg://login?token=" + encodedToken);
                 int delay = (int) (((TLRPC.TL_auth_loginToken) response).expires - System.currentTimeMillis() / 1000);
                 if (delay < 0 || delay > 20) delay = 20;
                 if (BuildVars.DEBUG_VERSION) {
@@ -10106,12 +10104,15 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (StrUtil.isBlank(s.toString())) {
+                if (TextUtils.isEmpty(s.toString().trim())) {
                     NekoXConfig.customAppId = 0;
-                } else if (!NumberUtil.isInteger(s.toString())) {
-                    inputs[0].setText("0");
                 } else {
-                    NekoXConfig.customAppId = NumberUtil.parseInt(s.toString());
+                    try {
+                        NekoXConfig.customAppId = Integer.parseInt(s.toString());
+                    } catch (NumberFormatException e) {
+                        inputs[0].setText("0");
+                        NekoXConfig.customAppId = 0;
+                    }
                 }
             }
 
@@ -10121,7 +10122,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         });
         inputs[1] = builder.addEditText("App Hash");
         inputs[1].setFilters(new InputFilter[]{new InputFilter.LengthFilter(BuildVars.OFFICAL_APP_HASH.length())});
-        if (StrUtil.isNotBlank(NekoXConfig.customAppHash)) {
+        if (!TextUtils.isEmpty(NekoXConfig.customAppHash)) {
             inputs[1].setText(NekoXConfig.customAppHash);
         }
         inputs[1].addTextChangedListener(new TextWatcher() {
@@ -10151,7 +10152,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     inputs[0].requestFocus();
                     AndroidUtilities.showKeyboard(inputs[0]);
                     return Unit.INSTANCE;
-                } else if (StrUtil.isBlank(NekoXConfig.customAppHash)) {
+                } else if (TextUtils.isEmpty(NekoXConfig.customAppHash)) {
                     inputs[1].requestFocus();
                     AndroidUtilities.showKeyboard(inputs[1]);
                     return Unit.INSTANCE;

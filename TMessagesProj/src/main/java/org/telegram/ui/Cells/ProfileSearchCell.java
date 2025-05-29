@@ -425,7 +425,7 @@ public class ProfileSearchCell extends BaseCell implements NotificationCenter.No
             updateStatus(false, null, null, false);
         } else if (chat != null) {
             dialog_id = -chat.id;
-            drawCheck = chat.verifiedExtended();
+            drawCheck = chat.verified;
             if (!LocaleController.isRTL) {
                 nameLeft = dp(AndroidUtilities.leftBaseline);
             } else {
@@ -440,7 +440,7 @@ public class ProfileSearchCell extends BaseCell implements NotificationCenter.No
                 nameLeft = dp(11);
             }
             nameLockTop = dp(21);
-            drawCheck = user.verifiedExtended();
+            drawCheck = user.verified;
             drawPremium = !savedMessages && MessagesController.getInstance(currentAccount).isPremiumUser(user);
             updateStatus(drawCheck, user, null, false);
         } else if (contact != null) {

@@ -80,7 +80,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.ssl.SSLException;
 
-import cn.hutool.core.util.StrUtil;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.utils.DnsFactory;
 import tw.nekomimi.nekogram.ErrorDatabase;
@@ -262,7 +261,7 @@ public class ConnectionsManager extends BaseController {
             appId = BuildConfig.APP_ID;
             String versionName = BuildConfig.VERSION_NAME;
             if (versionName.contains("-")) {
-                versionName = StrUtil.subBefore(versionName, "-", false);
+                versionName = versionName.split("-")[0];
             }
             appVersion = versionName + " (" + BuildConfig.VERSION_CODE + ")";
         }

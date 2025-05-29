@@ -1,7 +1,7 @@
 package tw.nekomimi.nekogram.translate
 
+import android.text.TextUtils
 import android.view.View
-import cn.hutool.core.util.StrUtil
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
@@ -38,7 +38,7 @@ val String.code2Locale: Locale by receiveLazy<String, Locale> {
 }
 
 val Locale.locale2code by receiveLazy<Locale, String> {
-    if (StrUtil.isBlank(country)) {
+    if (TextUtils.isEmpty(country)) {
         language
     } else {
         "$language-$country"

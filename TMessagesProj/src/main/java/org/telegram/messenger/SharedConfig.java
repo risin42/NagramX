@@ -58,12 +58,8 @@ import java.util.LinkedList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
-import cn.hutool.core.util.StrUtil;
-import okhttp3.HttpUrl;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.EnvUtil;
-import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.UIUtil;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -553,7 +549,7 @@ public class SharedConfig {
     public static void saveAccounts() {
         FileLog.e("Save accounts: " + activeAccounts, new Exception());
         ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE).edit()
-                .putString("active_accounts", StrUtil.join(",", activeAccounts))
+                .putString("active_accounts", TextUtils.join(",", activeAccounts))
                 .apply();
     }
 
@@ -705,7 +701,7 @@ public class SharedConfig {
             messageSeenHintCount = preferences.getInt("messageSeenCount", 3);
             emojiInteractionsHintCount = preferences.getInt("emojiInteractionsHintCount", 3);
             dayNightThemeSwitchHintCount = preferences.getInt("dayNightThemeSwitchHintCount", 3);
-            activeAccounts = Arrays.stream(preferences.getString("active_accounts", "").split(",")).filter(StrUtil::isNotBlank).map(Integer::parseInt).collect(Collectors.toCollection(CopyOnWriteArraySet::new));
+            activeAccounts = Arrays.stream(preferences.getString("active_accounts", "").split(",")).filter(str -> str != null && !str.trim().isEmpty()).map(Integer::parseInt).collect(Collectors.toCollection(CopyOnWriteArraySet::new));
 
             if (!preferences.contains("activeAccountsLoaded")) {
                 int maxAccounts;
@@ -726,13 +722,13 @@ public class SharedConfig {
                     } else {
                         perf = ApplicationLoader.applicationContext.getSharedPreferences("userconfig" + i, Context.MODE_PRIVATE);
                     }
-                    if (StrUtil.isNotBlank(perf.getString("user", null))) {
+                    if (!TextUtils.isEmpty(perf.getString("user", null))) {
                         activeAccounts.add(i);
                     }
                 }
 
                 if (!SharedConfig.activeAccounts.isEmpty()) {
-                    preferences.edit().putString("active_accounts", StrUtil.join(",", activeAccounts)).apply();
+                    preferences.edit().putString("active_accounts", TextUtils.join(",", activeAccounts)).apply();
                 }
 
                 preferences.edit().putBoolean("activeAccountsLoaded", true).apply();

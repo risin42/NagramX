@@ -1,7 +1,6 @@
 package tw.nekomimi.nekogram.utils
 
 import android.os.Build
-import cn.hutool.core.io.resource.ResourceUtil
 import okhttp3.internal.closeQuietly
 import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.FileLog
@@ -269,17 +268,18 @@ object FileUtil {
     fun saveNonAsset(path: String, saveTo: File) {
 
         runCatching {
-
-            ResourceUtil.getStream(path).use {
-
-                FileLog.d("found nonAsset in resources: $path")
-
-                IoUtil.copy(it, saveTo)
-
-                return
-
+            val inputStream = object {}.javaClass.classLoader?.getResourceAsStream(path)
+            if (inputStream != null) {
+                inputStream.use {
+                    FileLog.d("found nonAsset in resources: $path")
+                    IoUtil.copy(it, saveTo)
+                    return
+                }
+            } else {
+                FileLog.e("Resource not found: $path")
             }
-
+        }.onFailure {
+            FileLog.e("Failed to save nonAsset: $path", it)
         }
 
         ZipFile(ApplicationLoader.applicationContext.applicationInfo.sourceDir).use {

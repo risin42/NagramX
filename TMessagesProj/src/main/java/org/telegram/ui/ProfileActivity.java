@@ -319,14 +319,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import java.util.concurrent.atomic.AtomicReference;
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.helpers.ProfileDateHelper;
@@ -340,7 +337,6 @@ import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.parts.DialogTransKt;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
-import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.LangsKt;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
@@ -2536,7 +2532,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         String text = null;
                         if (userId != 0) {
                             TLRPC.User user = getMessagesController().getUser(userId);
-                            if (user == null || StrUtil.isBlank(user.username)) {
+                            if (user == null || TextUtils.isEmpty(user.username)) {
                                 return;
                             }
                             if (botInfo != null && userInfo != null && !TextUtils.isEmpty(userInfo.about) && id == share) {
@@ -2551,7 +2547,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                             }
                             if (chatInfo != null && !TextUtils.isEmpty(chatInfo.about) && id == share) {
                                 text = String.format("%s\nhttps://" + getMessagesController().linkPrefix + "/%s", chatInfo.about, ChatObject.getPublicUsername(chat));
-                            } else if (StrUtil.isNotBlank(chat.username)) {
+                            } else if (!TextUtils.isEmpty(chat.username)) {
                                 text = String.format("https://" + getMessagesController().linkPrefix + "/%s", ChatObject.getPublicUsername(chat));
                             } else if (id == qr_code && ChatObject.canUserDoAdminAction(chat, ChatObject.ACTION_INVITE)) {
                                 if (chatInfo != null && chatInfo.exported_invite != null) {
@@ -4256,7 +4252,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 pro.show();
                 UIUtil.runOnIoDispatcher(() -> {
                     FileUtil.delete(AndroidUtilities.getLogsDir());
-                    ThreadUtil.sleep(100L);
+                    try {
+                        Thread.sleep(100L);
+                    } catch (InterruptedException ignored) {}
                     LangsKt.uDismiss(pro);
                 });
             } else if (position == switchBackendRow) {
@@ -4319,7 +4317,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 presentFragment(new UserInfoActivity());
             } else if (position == numberRow) {
                 TLRPC.User user = UserConfig.getInstance(currentAccount).getCurrentUser();
-                if (user == null || StrUtil.isBlank(user.phone)) {
+                if (user == null || TextUtils.isEmpty(user.phone)) {
                     return;
                 }
                 String number = PhoneFormat.getInstance().format("+" + user.phone);
@@ -4356,7 +4354,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 showDialog(builder.create());
             } else if (position == phoneRow) {
                 final TLRPC.User user = getMessagesController().getUser(userId);
-                if (user == null || StrUtil.isBlank(user.phone)) {
+                if (user == null || TextUtils.isEmpty(user.phone)) {
                     return;
                 }
                 String number = PhoneFormat.getInstance().format("+" + user.phone);
@@ -10300,7 +10298,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 } else if (a == 1) {
                     if (user.scam || user.fake) {
                         nameTextView[a].setRightDrawable2(getScamDrawable(user.scam ? 0 : 1));
-                    } else if (user.verifiedExtended()) {
+                    } else if (user.verified) {
                         nameTextView[a].setRightDrawable2(getVerifiedCrossfadeDrawable(a));
                     } else {
                         nameTextView[a].setRightDrawable2(null);
@@ -10569,7 +10567,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     if (chat.scam || chat.fake) {
                         nameTextView[a].setRightDrawable2(getScamDrawable(chat.scam ? 0 : 1));
                         nameTextViewRightDrawableContentDescription = LocaleController.getString(R.string.ScamMessage);
-                    } else if (chat.verifiedExtended()) {
+                    } else if (chat.verified) {
                         nameTextView[a].setRightDrawable2(getVerifiedCrossfadeDrawable(a));
                         nameTextViewRightDrawableContentDescription = LocaleController.getString(R.string.AccDescrVerified);
                     } else {
@@ -11738,6 +11736,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         }
     }
 
+    @SuppressLint("NewApi")
     public static void sendLogs(Activity activity, boolean last) {
         if (activity == null) {
             return;
@@ -11756,8 +11755,21 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
                 File logcatFile = new File(dir, "NagramX-" + System.currentTimeMillis() + ".log");
                 try {
-                    RuntimeUtil.exec("logcat", "-df", logcatFile.getPath()).waitFor();
-                    RuntimeUtil.exec("logcat", "-c").waitFor();
+                    ProcessBuilder pb1 = new ProcessBuilder("logcat", "-df", logcatFile.getPath());
+                    pb1.inheritIO();
+                    Process process1 = pb1.start();
+                    boolean finished1 = process1.waitFor(10, TimeUnit.SECONDS);
+                    if (!finished1) {
+                        process1.destroyForcibly();
+                    }
+
+                    ProcessBuilder pb2 = new ProcessBuilder("logcat", "-c");
+                    pb2.inheritIO();
+                    Process process2 = pb2.start();
+                    boolean finished2 = process2.waitFor(10, TimeUnit.SECONDS);
+                    if (!finished2) {
+                        process2.destroyForcibly();
+                    }
                 } catch (Exception e) {
                     AlertUtil.showToast(e);
                 }

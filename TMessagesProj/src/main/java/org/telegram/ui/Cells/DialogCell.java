@@ -1298,7 +1298,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                             emojiStatus.set(DialogObject.getEmojiStatusDocumentId(chat.emoji_status), false);
                             emojiStatus.setParticles(DialogObject.isEmojiStatusCollectible(chat.emoji_status), false);
                         } else {
-                            drawVerified = !forbidVerified && chat.verifiedExtended();
+                            drawVerified = !forbidVerified && chat.verified;
                             drawBotVerified = !forbidVerified && chat.bot_verification_icon != 0;
                         }
                     } else if (user != null) {
@@ -1310,7 +1310,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                             drawScam = 2;
                             Theme.dialogs_fakeDrawable.checkText();
                         } else {
-                            drawVerified = !forbidVerified && user.verifiedExtended();
+                            drawVerified = !forbidVerified && user.verified;
                             drawBotVerified = !forbidVerified && !UserObject.isUserSelf(user) && user.bot_verification_icon != 0;
                         }
                         drawPremium = MessagesController.getInstance(currentAccount).isPremiumUser(user) && UserConfig.getInstance(currentAccount).clientUserId != user.id && user.id != 0;

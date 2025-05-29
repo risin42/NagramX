@@ -45,8 +45,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
-import cn.hutool.core.util.StrUtil;
-
 public class FileLog {
     private OutputStreamWriter streamWriter = null;
     private FastDateFormat dateFormat = null;
@@ -544,7 +542,10 @@ public class FileLog {
 
     private static String mkTag() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        return StrUtil.subAfter(stackTrace[4].getClassName(), ".", true);
+        String className = stackTrace[4].getClassName();
+        int lastDotIndex = className.lastIndexOf(".");
+        return lastDotIndex != -1 ? className.substring(lastDotIndex + 1) : className;
+
     }
 
     private static String mkMessage(Throwable e) {

@@ -91,6 +91,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -98,7 +99,6 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import cn.hutool.core.collection.CollectionUtil;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.NekoConfig;
@@ -1675,7 +1675,7 @@ public class DocumentSelectActivity extends BaseFragment {
 
     @Override
     public ArrayList<ThemeDescription> getThemeDescriptions() {
-        return CollectionUtil.toList(new ThemeDescription(sizeNotifierFrameLayout, ThemeDescription.FLAG_BACKGROUND, null, null, null, null, Theme.key_dialogBackground),
+        return new ArrayList<>(Arrays.asList(new ThemeDescription(sizeNotifierFrameLayout, ThemeDescription.FLAG_BACKGROUND, null, null, null, null, Theme.key_dialogBackground),
 
                 new ThemeDescription(actionBar, ThemeDescription.FLAG_BACKGROUND, null, null, null, null, Theme.key_dialogBackground),
                 new ThemeDescription(actionBar, ThemeDescription.FLAG_AB_ITEMSCOLOR, null, null, null, null, Theme.key_dialogTextBlack),
@@ -1707,6 +1707,7 @@ public class DocumentSelectActivity extends BaseFragment {
 
                 new ThemeDescription(writeButton, ThemeDescription.FLAG_IMAGECOLOR, null, null, null, null, Theme.key_dialogFloatingIcon),
                 new ThemeDescription(writeButton, ThemeDescription.FLAG_BACKGROUNDFILTER, null, null, null, null, Theme.key_dialogFloatingButton),
-                new ThemeDescription(writeButton, ThemeDescription.FLAG_BACKGROUNDFILTER | ThemeDescription.FLAG_DRAWABLESELECTEDSTATE, null, null, null, null, Build.VERSION.SDK_INT >= 21 ? Theme.key_dialogFloatingButtonPressed : Theme.key_dialogFloatingButton));
+                new ThemeDescription(writeButton, ThemeDescription.FLAG_BACKGROUNDFILTER | ThemeDescription.FLAG_DRAWABLESELECTEDSTATE, null, null, null, null, Build.VERSION.SDK_INT >= 21 ? Theme.key_dialogFloatingButtonPressed : Theme.key_dialogFloatingButton))
+        );
     }
 }

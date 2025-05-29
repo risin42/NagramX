@@ -228,7 +228,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import cn.hutool.core.util.StrUtil;
 import kotlin.text.StringsKt;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
@@ -5145,7 +5144,13 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                     input = new TLRPC.TL_inputStickerSetAnimatedEmoji();
                 } else if (sticker.startsWith("dice/")) {
                     TLRPC.TL_inputStickerSetDice stickerset = new TLRPC.TL_inputStickerSetDice();
-                    stickerset.emoticon = StrUtil.subAfter(sticker, "dice/", true);
+                    String separator = "dice/";
+                    int lastIndex = sticker.lastIndexOf(separator);
+                    if (lastIndex != -1) {
+                        stickerset.emoticon = sticker.substring(lastIndex + separator.length());
+                    } else {
+                        stickerset.emoticon = null;
+                    }
                     input = stickerset;
                 } else {
                     TLRPC.TL_inputStickerSetShortName stickerset = new TLRPC.TL_inputStickerSetShortName();

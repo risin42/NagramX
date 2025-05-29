@@ -1,6 +1,6 @@
 package tw.nekomimi.nekogram.translate.source
 
-import cn.hutool.core.util.StrUtil
+import android.text.TextUtils
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -33,7 +33,7 @@ object GoogleCloudTranslator : Translator {
         }
 
         val apiKey = NekoConfig.googleCloudTranslateKey.String()
-        if (StrUtil.isBlank(apiKey)) error("Missing Cloud Translate Key")
+        if (TextUtils.isEmpty(apiKey)) error("Missing Cloud Translate Key")
 
         val originalText = TLRPC.TL_textWithEntities().apply {
             this.text = query

@@ -20,13 +20,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.Emoji;
 import org.telegram.messenger.LocaleController;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.EmojiTextView;
 import org.telegram.ui.Components.LayoutHelper;
-
-import cn.hutool.core.util.StrUtil;
 
 public class TextDetailSettingsCell extends FrameLayout {
 
@@ -103,7 +100,7 @@ public class TextDetailSettingsCell extends FrameLayout {
 
     public void setTextAndValue(CharSequence text, CharSequence value, boolean divider) {
         textView.setText(text);
-        if (StrUtil.isBlank(value)) {
+        if (TextUtils.isEmpty(value)) {
             valueTextView.setVisibility(GONE);
         } else {
             valueTextView.setVisibility(VISIBLE);

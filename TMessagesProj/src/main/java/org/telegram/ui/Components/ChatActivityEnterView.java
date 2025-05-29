@@ -209,8 +209,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.StrUtil;
 import kotlin.Unit;
 import kotlin.text.StringsKt;
 import top.qwq2333.nullgram.utils.StringUtils;
@@ -6095,14 +6093,14 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 String replaced;
                 if (useRegex) {
                     try {
-                        replaced = ReUtil.replaceAll(finalText, originText, replaceText);
+                        replaced = finalText.replaceAll(originText, replaceText);
                     } catch (Exception e) {
                         UIUtil.runOnUIThread(progress::dismiss);
                         AlertUtil.showToast(e);
                         return;
                     }
                 } else {
-                    replaced = StrUtil.replace(finalText, originText, replaceText);
+                    replaced = finalText.replace(originText, replaceText);
                 }
                 UIUtil.runOnUIThread(() -> {
                     if (start == end) messageEditText.setText(replaced);
@@ -7488,7 +7486,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             if (checkPremiumAnimatedEmoji(currentAccount, dialog_id, parentFragment, null, message)) {
                 return;
             }
-            if (StrUtil.isNotBlank(message)) {
+            if (!TextUtils.isEmpty(message)) {
                 if (delegate != null) {
                     delegate.beforeMessageSend(message, notify, scheduleDate, payStars);
                 }

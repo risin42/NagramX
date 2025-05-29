@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import cn.hutool.core.util.ArrayUtil;
 import tw.nekomimi.nekogram.NekoXConfig;
 
 @SuppressWarnings("unchecked")
@@ -21419,10 +21418,6 @@ public class TLRPC {
         public long bot_verification_icon;
         public long send_paid_messages_stars;
 
-        public boolean verifiedExtended() {
-            return verified || (ArrayUtil.contains(NekoXConfig.developers, id) && NekoXConfig.isDeveloper());
-        }
-
         public static User TLdeserialize(InputSerializedData stream, int constructor, boolean exception) {
             User result = null;
             switch (constructor) {
@@ -41572,10 +41567,6 @@ public class TLRPC {
         public long send_paid_messages_stars;
 
         public ArrayList<TL_username> usernames = new ArrayList<>();
-
-        public boolean verifiedExtended() {
-            return verified ||( ArrayUtil.contains(NekoXConfig.officialChats, id) && NekoXConfig.isDeveloper());
-        }
 
         public static Chat TLdeserialize(InputSerializedData stream, int constructor, boolean exception) {
             return TLdeserialize(stream, constructor, exception, true);

@@ -2,6 +2,8 @@ package tw.nekomimi.nekogram.config.cell;
 
 import static org.telegram.messenger.LocaleController.getString;
 
+import android.text.TextUtils;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.ui.Cells.TextDetailSettingsCell;
@@ -10,7 +12,6 @@ import org.telegram.ui.Components.RecyclerListView;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import cn.hutool.core.util.StrUtil;
 import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.ConfigItem;
 
@@ -51,9 +52,9 @@ public class ConfigCellTextDetail extends AbstractConfigCell {
 
     public void onBindViewHolder(RecyclerView.ViewHolder holder) {
         TextDetailSettingsCell cell = (TextDetailSettingsCell) holder.itemView;
-        String value = bindConfig.String();
+        String value = bindConfig.String().trim();
 
-        if (StrUtil.isNotBlank(value)) {
+        if (!TextUtils.isEmpty(value)) {
             if (isKey) {
                 // Split the value by commas, mask each key, and join them back
                 value = Arrays.stream(value.split(","))

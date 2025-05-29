@@ -1,19 +1,10 @@
 package tw.nekomimi.nekogram.utils
 
-import cn.hutool.core.util.ZipUtil
 import java.io.File
 import java.io.InputStream
 import java.util.zip.ZipInputStream
 
 object ZipUtil {
-
-    @JvmStatic
-    @JvmOverloads
-    fun makeZip(zipFile: File, withSrcDirs: Boolean = false, vararg contents: File) {
-
-        ZipUtil.zip(zipFile, withSrcDirs, *contents)
-
-    }
 
     fun read(input: InputStream, path: String): ByteArray {
 
