@@ -130,7 +130,6 @@
     <string name="ShowTimeHint">Click Message Time to Show Details</string>
     <string name="SearchHashtagDefaultPageChannel">Default Hashtag Search Page in Channels</string>
     <string name="SearchHashtagDefaultPageChat">Default Hashtag Search Page in Chats</string>
-    <string name="OpenUrlOutBotWebViewRegex">URL Regex to Open Links Outside Bot WebView</string>
     <string name="LocaleToDBC">Locale Text Using DBC Case</string>
     <string name="Pangu" translatable="false">Pangu</string>
     <string name="EnablePanguOnReceiving">Enable Pangu on Receiving</string>

@@ -569,12 +569,6 @@ object NaConfig {
             ConfigItem.configTypeInt,
             0
         )
-    val openUrlOutBotWebViewRegex =
-        addConfig(
-            "OpenUrlOutBotWebViewRegex",
-            ConfigItem.configTypeString,
-            ""
-        )
     val enablePanguOnSending =
         addConfig(
             "EnablePanguOnSending",

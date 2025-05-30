@@ -64,7 +64,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
@@ -167,16 +166,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         getString(R.string.PerformanceClassLow),
     }, null));
     private final AbstractConfigCell customArtworkApiRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomArtworkApi(), "", null));
-    private final AbstractConfigCell openUrlOutBotWebViewRegexRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getOpenUrlOutBotWebViewRegex(),
-            null, null,
-            (input) -> {
-                try {
-                    Pattern.compile(input, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
-                    return input;
-                } catch (Exception ignored) {
-                    return "";
-                }
-            }));
     private final AbstractConfigCell dividerNConfig = cellGroup.appendCell(new ConfigCellDivider());
 
     // Story
