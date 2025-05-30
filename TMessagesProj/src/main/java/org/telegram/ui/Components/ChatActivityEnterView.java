@@ -210,7 +210,6 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlin.Unit;
-import kotlin.text.StringsKt;
 import top.qwq2333.nullgram.utils.StringUtils;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.translate.Translator;
@@ -219,8 +218,6 @@ import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.UIUtil;
 import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.helper.Dialogs;
-import xyz.nextalone.nagram.ui.syntaxhighlight.SyntaxHighlight;
 
 public class ChatActivityEnterView extends BlurredFrameLayout implements NotificationCenter.NotificationCenterDelegate, SizeNotifierFrameLayout.SizeNotifierFrameLayoutDelegate, StickersAlert.StickersAlertDelegate, SuggestEmojiView.AnchorViewDelegate {
 
@@ -10158,12 +10155,8 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                         stringBuilder.setSpan(new URLSpanUserMention("" + ((TLRPC.TL_messageEntityMentionName) entity).user_id, 3), entity.offset, entity.offset + entity.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     } else if (entity instanceof TLRPC.TL_messageEntityCode) {
                         TextStyleSpan.TextStyleRun run = new TextStyleSpan.TextStyleRun();
-                        run.start = entity.offset;
-                        run.end = entity.offset + entity.length;
                         run.flags |= TextStyleSpan.FLAG_STYLE_MONO;
-                        run.urlEntity = entity;
                         MediaDataController.addStyleToText(new TextStyleSpan(run), entity.offset, entity.offset + entity.length, stringBuilder, true);
-                        SyntaxHighlight.highlight(run, stringBuilder);
                     } else if (entity instanceof TLRPC.TL_messageEntityPre) {
                         continue;
                     } else if (entity instanceof TLRPC.TL_messageEntityBold) {

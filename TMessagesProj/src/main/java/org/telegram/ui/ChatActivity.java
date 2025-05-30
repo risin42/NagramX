@@ -26970,6 +26970,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             stringBuilder.setSpan(new TypefaceSpan(Typeface.MONOSPACE), 0, stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             menu.add(R.id.menu_groupbolditalic, R.id.menu_mono, order++, stringBuilder);
         }
+        if (NaConfig.INSTANCE.getShowTextMonoCode().Bool()) {
+            stringBuilder = new SpannableStringBuilder(LocaleController.getString(R.string.MonoCode));
+            stringBuilder.setSpan(new TypefaceSpan(Typeface.MONOSPACE), 0, stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            menu.add(R.id.menu_groupbolditalic, R.id.menu_code, order++, stringBuilder);
+        }
         if (encryptedChat == null || AndroidUtilities.getPeerLayerVersion(encryptedChat.layer) >= 101) {
             TextStyleSpan.TextStyleRun run;
             if (NaConfig.INSTANCE.getShowTextStrikethrough().Bool()) {
@@ -27001,7 +27006,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             menu.add(R.id.menu_groupbolditalic, R.id.menu_mention, order++, LocaleController.getString(R.string.CreateMention));
         }
         if (NaConfig.INSTANCE.getShowTextRegular().Bool()) {
-            menu.add(R.id.menu_groupbolditalic, R.id.menu_regular, 13, LocaleController.getString(R.string.Regular));
+            menu.add(R.id.menu_groupbolditalic, R.id.menu_regular, order++, LocaleController.getString(R.string.Regular));
         }
     }
 

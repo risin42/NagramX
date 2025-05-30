@@ -154,12 +154,6 @@ object NaConfig {
                 R.string.NagramX
             )
         )
-    val codeSyntaxHighlight =
-        addConfig(
-            "CodeSyntaxHighlight",
-            ConfigItem.configTypeBool,
-            true
-        )
     val dateOfForwardedMsg =
         addConfig(
             "DateOfForwardedMsg",
@@ -201,12 +195,6 @@ object NaConfig {
             "AutoInsertGIFCaption",
             ConfigItem.configTypeBool,
             true
-        )
-    val defaultMonoLanguage =
-        addConfig(
-            "DefaultMonoLanguage",
-            ConfigItem.configTypeString,
-            ""
         )
     val disableGlobalSearch =
         addConfig(
@@ -1261,6 +1249,12 @@ object NaConfig {
             "LeftBottomButtonAction",
             ConfigItem.configTypeInt,
             0
+        )
+    val showTextMonoCode =
+        addConfig(
+            "TextMonoCode",
+            ConfigItem.configTypeBool,
+            true
         )
     val preferredTranslateTargetLangList = ArrayList<String>()
 

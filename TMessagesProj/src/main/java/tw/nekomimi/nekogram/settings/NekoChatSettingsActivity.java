@@ -115,9 +115,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             getString(R.string.AddToSavedMessages),
             getString(R.string.DirectShare),
     }, null));
-    private final AbstractConfigCell defaultMonoLanguageRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getDefaultMonoLanguage(),
-            null, null,
-            (input) -> input.isEmpty() ? (String) NaConfig.INSTANCE.getDefaultMonoLanguage().defaultValue : input));
     private final AbstractConfigCell dividerChats = cellGroup.appendCell(new ConfigCellDivider());
 
     // Double Tap
@@ -216,6 +213,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextBold(), null, getString(R.string.Bold)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextItalic(), null, getString(R.string.Italic)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextMono(), null, getString(R.string.Mono)));
+            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextMonoCode(), null, getString(R.string.MonoCode)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextStrikethrough(), null, getString(R.string.Strike)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextUnderline(), null, getString(R.string.Underline)));
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextSpoiler(), null, getString(R.string.Spoiler)));

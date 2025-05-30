@@ -11,7 +11,6 @@
     <string name="ShowReactions">Show Reactions</string>
     <string name="CustomTitle">Custom Title</string>
     <string name="CustomTitleHint">Leave blank to use Nagram X</string>
-    <string name="CodeSyntaxHighlight">Code Syntax Highlight</string>
     <string name="CreateMono">Create Monospace</string>
     <string name="CreateMonoLanguage">Code Language</string>
     <string name="CopyPhoto">Copy Photo</string>
@@ -33,7 +32,6 @@
     <string name="AppIconDarkBlue">Dark Blue</string>
     <string name="AppIconBlurBlue">Blur Blue</string>
     <string name="AutoInsertGIFCaption">Auto Insert Caption Before Sending GIF</string>
-    <string name="DefaultMonoLanguage">Default Code Language</string>
     <string name="DisableGlobalSearch">Disable Global Search</string>
     <string name="InputMessageId">Enter Message ID</string>
     <string name="ToTheMessage">Go To</string>

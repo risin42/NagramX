@@ -195,4 +195,7 @@
     <string name="BurnTtlMessage">Burn</string>
     <string name="StreamMkvNax">Show MKV as Video</string>
     <string name="StreamAllVideoNax">Stream All Videos</string>
+    <string name="MonoCode">Code</string>
+    <string name="CreateCode">Create Code</string>
+    <string name="CreateCodeLanguage">Language</string>
 </resources>

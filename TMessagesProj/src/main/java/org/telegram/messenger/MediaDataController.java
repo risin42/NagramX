@@ -7049,21 +7049,15 @@ public class MediaDataController extends BaseController {
         return runs;
     }
 
-    public void addStyle(TextStyleSpan.TextStyleRun styleRun, int spanStart, int spanEnd, ArrayList<TLRPC.MessageEntity> entities) {
-        int flags = styleRun.flags;
+    public void addStyle(int flags, int spanStart, int spanEnd, ArrayList<TLRPC.MessageEntity> entities) {
         if ((flags & TextStyleSpan.FLAG_STYLE_SPOILER) != 0)
             entities.add(setEntityStartEnd(new TLRPC.TL_messageEntitySpoiler(), spanStart, spanEnd));
         if ((flags & TextStyleSpan.FLAG_STYLE_BOLD) != 0)
             entities.add(setEntityStartEnd(new TLRPC.TL_messageEntityBold(), spanStart, spanEnd));
         if ((flags & TextStyleSpan.FLAG_STYLE_ITALIC) != 0)
             entities.add(setEntityStartEnd(new TLRPC.TL_messageEntityItalic(), spanStart, spanEnd));
-        if ((flags & TextStyleSpan.FLAG_STYLE_MONO) != 0) {
-            if (styleRun.urlEntity != null) {
-                entities.add(setEntityStartEnd(styleRun.urlEntity, spanStart, spanEnd));
-            } else {
-                entities.add(setEntityStartEnd(new TLRPC.TL_messageEntityCode(), spanStart, spanEnd));
-            }
-        }
+        if ((flags & TextStyleSpan.FLAG_STYLE_MONO) != 0)
+            entities.add(setEntityStartEnd(new TLRPC.TL_messageEntityCode(), spanStart, spanEnd));
         if ((flags & TextStyleSpan.FLAG_STYLE_STRIKE) != 0)
             entities.add(setEntityStartEnd(new TLRPC.TL_messageEntityStrike(), spanStart, spanEnd));
         if ((flags & TextStyleSpan.FLAG_STYLE_UNDERLINE) != 0)
@@ -7187,7 +7181,7 @@ public class MediaDataController extends BaseController {
                     if (entities == null) {
                         entities = new ArrayList<>();
                     }
-                    addStyle(span.getTextStyleRun(), spanStart, spanEnd, entities);
+                    addStyle(span.getStyleFlags(), spanStart, spanEnd, entities);
                 }
             }
 
@@ -7223,7 +7217,7 @@ public class MediaDataController extends BaseController {
                     entities.add(entity);
                     TextStyleSpan.TextStyleRun style = spansUrlReplacement[b].getTextStyleRun();
                     if (style != null) {
-                        addStyle(style, entity.offset, entity.offset + entity.length, entities);
+                        addStyle(style.flags, entity.offset, entity.offset + entity.length, entities);
                     }
                 }
             }
