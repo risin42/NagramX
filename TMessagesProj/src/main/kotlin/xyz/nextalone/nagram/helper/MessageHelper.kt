@@ -135,7 +135,7 @@ object MessageHelper {
 
     @JvmStatic
     fun showForwardDate(obj: MessageObject, orig: String): String {
-        val date: Long = obj.messageOwner.fwd_from.date.toLong()
+        val date: Long = obj.messageOwner?.fwd_from?.date?.toLong() ?: 0
         val day: String = LocaleController.formatDate(date)
         val time: String = LocaleController.getInstance().formatterDay.format(date * 1000)
         return if (!NaConfig.dateOfForwardedMsg.Bool() || date == 0L) {

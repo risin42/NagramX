@@ -17120,7 +17120,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 try {
                     forwardedNameLayout[1] = new StaticLayout(lastLine, Theme.chat_forwardNamePaint, forwardedNameWidth + dp(2), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
                     lastLine = TextUtils.ellipsize(AndroidUtilities.replaceTags(showForwardDate(messageObject, forwardedString)), Theme.chat_forwardNamePaint, forwardedNameWidth, TextUtils.TruncateAt.END);
-                    lastLine = Emoji.replaceEmoji(lastLine, Theme.chat_forwardNamePaint.getFontMetricsInt(), false);
                     forwardedNameLayout[0] = new StaticLayout(lastLine, Theme.chat_forwardNamePaint, forwardedNameWidth + dp(2), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
                     if (forwardBg == null) {
                         forwardBg = new ForwardBackground(this);
@@ -24457,7 +24456,14 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     info.setClickable(true);
                 } else if (virtualViewId == FORWARD) {
                     info.setEnabled(true);
-                    info.setContentDescription(currentForwardNameString);
+                    StringBuilder sb = new StringBuilder();
+                    if (forwardedNameLayout[0] != null && forwardedNameLayout[1] != null) {
+                        for (int a = 0; a < 2; a++) {
+                            sb.append(forwardedNameLayout[a].getText());
+                            sb.append(a == 0 ? " " : "\n");
+                        }
+                    }
+                    info.setContentDescription(sb.toString());
                     info.addAction(AccessibilityNodeInfo.ACTION_CLICK);
 
                     int x = (int) Math.min(forwardNameX - forwardNameOffsetX[0], forwardNameX - forwardNameOffsetX[1]);
