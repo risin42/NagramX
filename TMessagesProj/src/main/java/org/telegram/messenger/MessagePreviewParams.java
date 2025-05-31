@@ -206,10 +206,11 @@ public class MessagePreviewParams {
         this.noforwards = secret || noforwards;
     }
 
-    public MessagePreviewParams(boolean secret, boolean noforwards, boolean hideForwardSendersName) {
+    public MessagePreviewParams(boolean secret, boolean noforwards, boolean hideForwardSendersName, boolean hideCaption) {
         this.isSecret = secret;
         this.noforwards = secret || noforwards;
         this.hideForwardSendersName = hideForwardSendersName;
+        this.hideCaption = hideCaption;
     }
 
     public void updateReply(MessageObject replyMessageObject, MessageObject.GroupedMessages group, long dialogId, ChatActivity.ReplyQuote replyQuote) {

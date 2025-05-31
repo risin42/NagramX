@@ -1188,7 +1188,7 @@ object NaConfig {
         addConfig(
             "CopyPhotoAsSticker",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     var showAddToStickers =
         addConfig(
@@ -1256,6 +1256,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val showCopyLink =
+        addConfig(
+            "CopyLink",
+            ConfigItem.configTypeBool,
+            true
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {
@@ -1281,6 +1287,19 @@ object NaConfig {
             2 -> 2560
             else -> 1280
         }
+    }
+
+    fun isLLMTranslatorAvailable(): Boolean {
+        val llmProvider = llmProviderPreset.Int()
+        val keyConfig = when (llmProvider) {
+            1 -> llmProviderOpenAIKey
+            2 -> llmProviderGeminiKey
+            3 -> llmProviderGroqKey
+            4 -> llmProviderDeepSeekKey
+            5 -> llmProviderXAIKey
+            else -> llmApiKey
+        }
+        return keyConfig.String().isNotEmpty()
     }
 
     private fun addConfig(

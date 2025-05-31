@@ -35,7 +35,7 @@ const val TRANSLATE_MODE_REPLACE = 1
 fun ChatActivity.translateMessages1() = translateMessages()
 
 @JvmName("translateMessages")
-fun ChatActivity.translateMessages2(target: Locale) = translateMessages(target)
+fun ChatActivity.translateMessages2(target: Locale, provider: Int = 0) = translateMessages(target, provider = provider)
 
 @JvmName("translateMessages")
 fun ChatActivity.translateMessages3(messages: List<MessageObject>) = translateMessages(messages = messages)

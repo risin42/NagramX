@@ -198,4 +198,5 @@
     <string name="MonoCode">Code</string>
     <string name="CreateCode">Create Code</string>
     <string name="CreateCodeLanguage">Language</string>
+    <string name="NoCaptionForward">NoCaption forward</string>
 </resources>
