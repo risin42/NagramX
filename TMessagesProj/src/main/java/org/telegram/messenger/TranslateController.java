@@ -43,7 +43,6 @@ import tw.nekomimi.nekogram.translate.TranslatorKt;
 import xyz.nextalone.nagram.NaConfig;
 
 public class TranslateController extends BaseController {
-    private static final String NAX = "TranslateController";
 
     public static final String UNKNOWN_LANGUAGE = "und";
 
@@ -145,14 +144,14 @@ public class TranslateController extends BaseController {
         if (hideTranslateDialogs.contains(dialogId)) {
             return true;
         }
-        TLRPC.ChatFull chatFull = getMessagesController().getChatFull(-dialogId);
+        /*TLRPC.ChatFull chatFull = getMessagesController().getChatFull(-dialogId);
         if (chatFull != null) {
             return chatFull.translations_disabled;
         }
         TLRPC.UserFull userFull = getMessagesController().getUserFull(dialogId);
         if (userFull != null) {
             return userFull.translations_disabled;
-        }
+        }*/
         return false;
     }
 
@@ -242,7 +241,7 @@ public class TranslateController extends BaseController {
     }
 
     public void updateDialogFull(long dialogId) {
-        if (!isFeatureAvailable() || !isDialogTranslatable(dialogId)) {
+        if (true || !isFeatureAvailable() || !isDialogTranslatable(dialogId)) {
             return;
         }
 
@@ -310,7 +309,7 @@ public class TranslateController extends BaseController {
                 hideTranslateDialogs.add(dialogId);
                 if (!fromMinimize) {
                     translatingDialogs.remove(dialogId);
-                } else if (!translatingDialogs.contains(dialogId)) {
+                } else {
                     translatingDialogs.add(dialogId);
                 }
             } else {

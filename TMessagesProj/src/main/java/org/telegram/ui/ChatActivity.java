@@ -11234,7 +11234,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (translateItem == null) {
             return;
         }
-        translateItem.setVisibility(getMessagesController().getTranslateController().isTranslateDialogHidden(getDialogId()) && getMessagesController().getTranslateController().isDialogTranslatable(getDialogId()) ? View.VISIBLE : View.GONE);
+        translateItem.setVisibility(getMessagesController().getTranslateController().isTranslateDialogHidden(getDialogId())/* && getMessagesController().getTranslateController().isDialogTranslatable(getDialogId())*/ ? View.VISIBLE : View.GONE);
     }
 
     private Animator infoTopViewAnimator;
