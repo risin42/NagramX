@@ -15259,7 +15259,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             chatActivityEnterView.showTopView(true, openKeyboard);
         } else {
             fieldPanelShown = 0;
-            if (replyingMessageObject == null && messagePreviewParams == null && foundWebPage == null && editingMessageObject == null && !chatActivityEnterView.forceShowSendButton && !chatActivityEnterView.isTopViewVisible()) {
+            if (replyingMessageObject == null && messagePreviewParams == null && foundWebPage == null && editingMessageObject == null && !chatActivityEnterView.isTopViewVisible()) {
                 messagePreviewParams = null;
                 return;
             }
@@ -15273,6 +15273,19 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 chatActivityEnterView.setWebPage(null, !cancel);
             }
             beforeMessageSend(notify, scheduleDate, false, payStars);
+            /*if (messagePreviewParams != null && messagePreviewParams.forwardMessages != null) {
+                forbidForwardingWithDismiss = false;
+//                if (messagePreviewParams.quote == null) {
+                    ArrayList<MessageObject> messagesToForward = new ArrayList<>();
+                    if (messagePreviewParams.forwardMessages != null) {
+                        messagePreviewParams.forwardMessages.getSelectedMessages(messagesToForward);
+                    }
+                    forwardMessages(messagesToForward, messagePreviewParams.hideForwardSendersName, messagePreviewParams.hideCaption, notify, scheduleDate != 0 && scheduleDate != 0x7ffffffe ? scheduleDate + 1 : scheduleDate, payStars);
+//                }
+            }*/
+            if (forwardingPreviewView == null) {
+                messagePreviewParams = null;
+            }
             chatActivityEnterView.setForceShowSendButton(false, animated);
             if (!waitingForSendingMessageLoad) {
                 chatActivityEnterView.hideTopView(animated);
