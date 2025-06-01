@@ -43335,6 +43335,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     return;
                 }
                 getMessageHelper().saveStickerToGallery(getParentActivity(), selectedObject);
+                BulletinFactory.createSaveToGalleryBulletin(this, selectedObject.isVideo(), themeDelegate).show();
                 break;
             }
             case nkbtn_sticker_copy: {
