@@ -251,7 +251,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
-import tw.nekomimi.nekogram.utils.ProxyUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, FloatingDebugProvider {
@@ -410,7 +409,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private boolean downloadsItemVisible;
     private ActionBarMenuItem proxyItem;
     private boolean proxyItemVisible;
-    private ActionBarMenuItem scanItem;
     private ActionBarMenuItem searchItem;
     private ActionBarMenuItem optionsItem;
     private ActionBarMenuItem speedItem;
@@ -613,9 +611,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private final static int pin2 = 108;
     private final static int add_to_folder = 109;
     private final static int remove_from_folder = 110;
-
-
-    private final static int nekox_scanqr = 1003;
 
     private final static int ARCHIVE_ITEM_STATE_PINNED = 0;
     private final static int ARCHIVE_ITEM_STATE_SHOWED = 1;
@@ -3121,10 +3116,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             updateProxyButton(false, false);
         }
 
-        scanItem = menu.addItem(nekox_scanqr, R.drawable.msg_qrcode);
-        scanItem.setContentDescription(LocaleController.getString("ScanQRCode", R.string.ScanQRCode));
-        scanItem.setVisibility(View.GONE);
-
         searchItem = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true, false).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
             boolean isSpeedItemCreated = false;
 
@@ -3163,9 +3154,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
                 if (downloadsItem != null && downloadsItemVisible) {
                     downloadsItem.setVisibility(View.GONE);
-                }
-                if (scanItem != null) {
-                    scanItem.setVisibility(View.VISIBLE);
                 }
                 if (viewPages[0] != null) {
                     if (searchString != null) {
@@ -3219,9 +3207,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
                 if (downloadsItem != null && downloadsItemVisible) {
                     downloadsItem.setVisibility(View.VISIBLE);
-                }
-                if (scanItem != null) {
-                    scanItem.setVisibility(View.GONE);
                 }
                 if (searchString != null) {
                     finishFragment();
@@ -3821,26 +3806,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     presentFragment(new ArchiveSettingsActivity());
                 } else if (id == 6) {
                     showArchiveHelp();
-                } else if (id == nekox_scanqr) {
-                    if (Build.VERSION.SDK_INT >= 23) {
-                        if (getParentActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                            getParentActivity().requestPermissions(new String[]{Manifest.permission.CAMERA}, 22);
-                            return;
-                        }
-                    }
-                    CameraScanActivity.showAsSheet(DialogsActivity.this, true, CameraScanActivity.TYPE_QR, new CameraScanActivity.CameraScanActivityDelegate() {
-
-                        @Override
-                        public void didFindQr(String text) {
-                            ProxyUtil.showLinkAlert(getParentActivity(), text);
-                        }
-
-                        @Override
-                        public boolean processQr(String text, Runnable onLoadEnd) {
-                            onLoadEnd.run();
-                            return false;
-                        }
-                    });
                 } else if (id >= 10 && id < 10 + accounts) {
                     if (getParentActivity() == null) {
                         return;
