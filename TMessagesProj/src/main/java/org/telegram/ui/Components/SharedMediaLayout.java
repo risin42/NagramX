@@ -1484,7 +1484,7 @@ public class SharedMediaLayout extends FrameLayout implements NotificationCenter
         topicId = sharedMediaPreloader.topicId;
         hasMedia = new int[]{ mediaCount[0], mediaCount[1], mediaCount[2], mediaCount[3], mediaCount[4], mediaCount[5], topicId == 0 ? commonGroupsCount : 0 };
         if (initialTab == TAB_GIFTS || initialTab == TAB_RECOMMENDED_CHANNELS || initialTab == TAB_SAVED_DIALOGS || initialTab == TAB_COMMON_GROUPS) {
-            this.initialTab = initialTab;
+            this.initialTab = userInfo != null && userInfo.common_chats_count > 0 ? TAB_COMMON_GROUPS : initialTab;
         } else if (user != null && user.bot && user.bot_has_main_app && user.bot_can_edit) {
             this.initialTab = TAB_BOT_PREVIEWS;
         } else if (userInfo != null && userInfo.bot_info != null && userInfo.bot_info.has_preview_medias) {
