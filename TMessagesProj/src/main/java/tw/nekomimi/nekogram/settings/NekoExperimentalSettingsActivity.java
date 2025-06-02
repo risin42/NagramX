@@ -713,7 +713,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                             String value = NekoConfig.customAudioBitrate.Int() + "kbps";
                             if (NekoConfig.customAudioBitrate.Int() == 32)
                                 value += " (" + getString(R.string.Default) + ")";
-                            textSettingsCell.setTextAndValue(getString(R.string.customGroupVoipAudioBitrate), value, false);
+                            textSettingsCell.setTextAndValue(getString(R.string.customGroupVoipAudioBitrate), value, true);
                         }
                     }
                 } else {
