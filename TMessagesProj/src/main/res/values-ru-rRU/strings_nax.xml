@@ -136,7 +136,6 @@
     <string name="PerformanceClassAverage">Средний</string>
     <string name="PerformanceClassLow">Низкий</string>
     <string name="PerformanceClassUnknown">Неизвестный</string>
-    <string name="HideGiftButton">Скрыть кнопку подарка</string>
     <string name="TranscribeProviderShort">Поставщик</string>
     <string name="TranscribeProviderAuto">Автовыбор</string>
     <string name="TranscribeProviderWorkersAI">Whisper (Workers AI)</string>

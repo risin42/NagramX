@@ -136,7 +136,6 @@
     <string name="PerformanceClassAverage">Media</string>
     <string name="PerformanceClassLow">Bajo</string>
     <string name="PerformanceClassUnknown">Desconocido</string>
-    <string name="HideGiftButton">Ocultar Botón de Gif</string>
     <string name="TranscribeProviderShort">Proveedor</string>
     <string name="TranscribeProviderAuto">Autoseleccionar</string>
     <string name="TranscribeProviderWorkersAI">Susurro (IA de los Trabajadores)</string>

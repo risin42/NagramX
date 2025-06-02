@@ -136,7 +136,6 @@
     <string name="PerformanceClassAverage">Média</string>
     <string name="PerformanceClassLow">Baixa</string>
     <string name="PerformanceClassUnknown">Desconhecido</string>
-    <string name="HideGiftButton">Ocultar Botão de Presente</string>
     <string name="TranscribeProviderShort">Provedor</string>
     <string name="TranscribeProviderAuto">Seleção automática</string>
     <string name="TranscribeProviderWorkersAI">Whisper (Workers AI)</string>

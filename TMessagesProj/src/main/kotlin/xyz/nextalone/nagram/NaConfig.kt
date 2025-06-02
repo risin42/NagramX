@@ -1106,12 +1106,6 @@ object NaConfig {
             ConfigItem.configTypeInt,
             0
         )
-    var hideGiftButton =
-        addConfig(
-            "HideGiftButton",
-            ConfigItem.configTypeBool,
-            false
-        )
     var transcribeProvider =
         addConfig(
             "TranscribeProvider",

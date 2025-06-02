@@ -136,7 +136,6 @@
     <string name="PerformanceClassAverage">Ortalama</string>
     <string name="PerformanceClassLow">Düşük</string>
     <string name="PerformanceClassUnknown">Bilinmeyen</string>
-    <string name="HideGiftButton">Hediye Düğmesini Gizle</string>
     <string name="TranscribeProviderShort">Sağlayıcı</string>
     <string name="TranscribeProviderAuto">Otomatik seçim</string>
     <string name="TranscribeProviderWorkersAI">Whisper (Workers AI)</string>

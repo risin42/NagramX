@@ -136,7 +136,6 @@
     <string name="PerformanceClassAverage">中</string>
     <string name="PerformanceClassLow">低</string>
     <string name="PerformanceClassUnknown">未知</string>
-    <string name="HideGiftButton">隐藏礼物按钮</string>
     <string name="TranscribeProviderShort">提供者</string>
     <string name="TranscribeProviderAuto">自动选择</string>
     <string name="TranscribeProviderWorkersAI">Whisper (Workers AI)</string>

@@ -136,7 +136,6 @@
     <string name="PerformanceClassAverage">ミドルレンジ</string>
     <string name="PerformanceClassLow">エントリー</string>
     <string name="PerformanceClassUnknown">不明</string>
-    <string name="HideGiftButton">ギフトボタンを非表示</string>
     <string name="TranscribeProviderShort">プロバイダ</string>
     <string name="TranscribeProviderAuto">自動選択</string>
     <string name="TranscribeProviderWorkersAI">Whisper (Workers AI)</string>
