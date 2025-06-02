@@ -10,7 +10,8 @@ repositories {
     }
 }
 
-def verName = APP_VERSION_NAME
+def commitId = System.getenv("COMMIT_ID")
+def verName = "${APP_VERSION_NAME}${commitId?.take(7) ? "-${commitId.take(7)}" : ''}"
 def verCode = 1209
 
 def officialVer = APP_VERSION_NAME
@@ -30,7 +31,7 @@ def keystorePwd = null
 def alias = null
 def pwd = null
 def disableCMakeRelWithDebInfo = System.getenv("COMPILE_NATIVE") == null
-def nagramx_build_args = System.getenv("NAGRAMX_BUILD_ARGS") == null ? "" : System.getenv("NAGRAMX_BUILD_ARGS")
+def nagramx_build_args = System.getenv("NAGRAMX_BUILD_ARGS") ?: ""
 
 Properties properties
 def base64 = System.getenv("LOCAL_PROPERTIES")
@@ -53,8 +54,7 @@ keystorePwd = keystorePwd ?: System.getenv("KEYSTORE_PASS")
 alias = alias ?: System.getenv("ALIAS_NAME")
 pwd = pwd ?: System.getenv("ALIAS_PASS")
 
-def nativeTarget = System.getenv("NATIVE_TARGET")
-if (nativeTarget == null) nativeTarget = ""
+def nativeTarget = System.getenv("NATIVE_TARGET") ?: ""
 
 android {
     compileSdkVersion 35
