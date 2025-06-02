@@ -9,8 +9,6 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.PopupSwipeBackLayout;
 
-import java.util.Arrays;
-
 import kotlin.Unit;
 import tw.nekomimi.nekogram.parts.MessageTransKt;
 import tw.nekomimi.nekogram.translate.Translator;
@@ -31,21 +29,23 @@ public class TranslatePopupWrapper {
             ActionBarMenuItem.addColoredGap(windowLayout, resourcesProvider);
         }
 
-        Arrays.stream(TranslateItem.ITEM_IDS).forEach(id -> {
-            var item = ActionBarMenuItem.addItem(false, false, windowLayout, R.drawable.magic_stick_solar, TranslateItem.ITEM_TITLES.get(id), false, resourcesProvider);
-            item.setOnClickListener(view -> delegate.onItemClick(id));
-            item.setOnLongClickListener(view -> {
-                Translator.showTargetLangSelect(view, (locale) -> {
-                    if (fragment.scrimPopupWindow != null) {
-                        fragment.scrimPopupWindow.dismiss();
-                        fragment.scrimPopupWindow = null;
-                        fragment.scrimPopupWindowItems = null;
-                    }
-                    MessageTransKt.translateMessages(fragment, locale, Translator.providerLLMTranslator);
-                    return Unit.INSTANCE;
+        for (var id : TranslateItem.ITEM_IDS) {
+            if (id == TranslateItem.ID_TRANSLATE_LLM) {
+                var item = ActionBarMenuItem.addItem(false, false, windowLayout, R.drawable.magic_stick_solar, TranslateItem.ITEM_TITLES.get(id), false, resourcesProvider);
+                item.setOnClickListener(view -> delegate.onItemClick(id));
+                item.setOnLongClickListener(view -> {
+                    Translator.showTargetLangSelect(view, (locale) -> {
+                        if (fragment.scrimPopupWindow != null) {
+                            fragment.scrimPopupWindow.dismiss();
+                            fragment.scrimPopupWindow = null;
+                            fragment.scrimPopupWindowItems = null;
+                        }
+                        MessageTransKt.translateMessages(fragment, locale, Translator.providerLLMTranslator);
+                        return Unit.INSTANCE;
+                    });
+                    return true;
                 });
-                return true;
-            });
-        });
+            }
+        }
     }
 }
