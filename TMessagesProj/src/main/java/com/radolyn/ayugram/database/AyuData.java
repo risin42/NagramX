@@ -14,10 +14,20 @@ import androidx.room.Room;
 import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.database.dao.DeletedMessageDao;
 import com.radolyn.ayugram.database.dao.EditedMessageDao;
+import com.radolyn.ayugram.messages.AyuMessagesController;
 
+import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.FileLog;
+import org.telegram.messenger.Utilities;
+
+import java.io.File;
+
+import tw.nekomimi.nekogram.settings.NekoExperimentalSettingsActivity;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 
 public class AyuData {
+    public static long dbSize, attachmentsSize, totalSize;
     private static AyuDatabase database;
     private static EditedMessageDao editedMessageDao;
     private static DeletedMessageDao deletedMessageDao;
@@ -52,5 +62,47 @@ public class AyuData {
         database.close();
 
         ApplicationLoader.applicationContext.deleteDatabase(AyuConstants.AYU_DATABASE);
+    }
+
+    public static long getDatabaseSize() {
+        long size = 0;
+        try {
+            File dbFile = ApplicationLoader.applicationContext.getDatabasePath(AyuConstants.AYU_DATABASE);
+            File shmCacheFile = new File(dbFile.getAbsolutePath() + "-shm");
+            File walCacheFile = new File(dbFile.getAbsolutePath() + "-wal");
+            if (dbFile.exists()) {
+                size = dbFile.length();
+            }
+            if (shmCacheFile.exists()) {
+                size += shmCacheFile.length();
+            }
+            if (walCacheFile.exists()) {
+                size += walCacheFile.length();
+            }
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+        return size;
+    }
+
+    public static long getAttachmentsDirSize() {
+        long size = 0;
+        try {
+            if (AyuMessagesController.attachmentsPath.exists()) {
+                size = AndroidUtil.getDirectorySize(AyuMessagesController.attachmentsPath);
+            }
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+        return size;
+    }
+
+    public static void loadSizes(NekoExperimentalSettingsActivity bf) {
+        Utilities.globalQueue.postRunnable(() -> {
+            dbSize = getDatabaseSize();
+            attachmentsSize = getAttachmentsDirSize();
+            totalSize = dbSize + attachmentsSize;
+            AndroidUtilities.runOnUIThread(bf::refreshAyuDataSize, 500);
+        });
     }
 }

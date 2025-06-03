@@ -13,6 +13,7 @@ public class ConfigCellTextCheckIcon extends AbstractConfigCell {
     private final ConfigItem bindConfig;
     private final String key;
     private final String title;
+    private String value;
     private final int resId;
     private final boolean divider;
     private final Runnable onClickCustom;
@@ -28,14 +29,18 @@ public class ConfigCellTextCheckIcon extends AbstractConfigCell {
     }
 
     public ConfigCellTextCheckIcon(ConfigItem bind, String customTitle, int resId, boolean divider) {
-        this(bind, null, customTitle, resId, divider, null);
+        this(bind, null, customTitle, null, resId, divider, null);
     }
 
     public ConfigCellTextCheckIcon(ConfigItem bind, String key, String customTitle, int resId) {
-        this(bind, key, customTitle, resId, false, null);
+        this(bind, key, customTitle, null, resId, false, null);
     }
 
     public ConfigCellTextCheckIcon(ConfigItem bind, String key, String customTitle, int resId, boolean divider, Runnable customOnClick) {
+        this(bind, key, customTitle, null, resId, divider, customOnClick);
+    }
+
+    public ConfigCellTextCheckIcon(ConfigItem bind, String key, String customTitle, String value, int resId, boolean divider, Runnable customOnClick) {
         this.bindConfig = bind;
         String key1 = key;
         if (key == null) {
@@ -43,6 +48,7 @@ public class ConfigCellTextCheckIcon extends AbstractConfigCell {
         }
         this.key = key1;
         this.title = customTitle == null ? getString(this.key) : customTitle;
+        this.value = value;
         this.resId = resId;
         this.divider = divider;
         this.onClickCustom = customOnClick;
@@ -83,12 +89,27 @@ public class ConfigCellTextCheckIcon extends AbstractConfigCell {
         }
     }
 
+    public void setValue(String newValue) {
+        value = newValue;
+        if (cell != null) {
+            if (value == null) {
+                cell.setTextAndIcon(title, resId, cellGroup.needSetDivider(this));
+            } else {
+                cell.setTextAndValueAndIcon(title, value, resId, cellGroup.needSetDivider(this));
+            }
+        }
+    }
+
     public void onBindViewHolder(RecyclerView.ViewHolder holder) {
         TextCell cell = (TextCell) holder.itemView;
         this.cell = cell;
         cell.setEnabled(enabled);
         if (bindConfig == null) {
-            cell.setTextAndIcon(title, resId, cellGroup.needSetDivider(this));
+            if (value == null) {
+                cell.setTextAndIcon(title, resId, cellGroup.needSetDivider(this));
+            } else {
+                cell.setTextAndValueAndIcon(title, value, resId, cellGroup.needSetDivider(this));
+            }
             return;
         }
         cell.setTextAndCheckAndIcon(title, bindConfig.Bool(), resId, cellGroup.needSetDivider(this));
