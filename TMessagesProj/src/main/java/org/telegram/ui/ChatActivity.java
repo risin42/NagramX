@@ -32212,7 +32212,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         }
                         return r > 0;
                     });
-                    if (option == OPTION_REPLY) {
+                    if (option == OPTION_REPLY && !noforwardsOrPaidMedia && !selectedObject.isSponsored() && selectedObject.contentType == 0 && chatMode == MODE_DEFAULT && !isInsideContainer && currentChat != null && currentUser == null && selectedObject.messageOwner.peer_id.user_id == 0 && selectedObject.messageOwner.from_id.user_id > 0 && selectedObject.messageOwner.from_id.user_id != getUserConfig().getClientUserId() && !isAyuDeleted) {
                         var replyPopupWrapper = new ReplyPopupWrapper(this, popupLayout.getSwipeBack(), this::processSelectedOption, getResourceProvider());
                         int swipeBackIndex = popupLayout.addViewToSwipeBack(replyPopupWrapper.windowLayout);
                         cell.setOnLongClickListener(view -> {
