@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.radolyn.ayugram.AyuConstants;
+import com.radolyn.ayugram.AyuUtils;
 import com.radolyn.ayugram.database.AyuData;
 import com.radolyn.ayugram.database.dao.DeletedMessageDao;
 import com.radolyn.ayugram.database.dao.EditedMessageDao;
@@ -30,7 +31,6 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.tgnet.TLRPC;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,53 +38,64 @@ import tw.nekomimi.nekogram.utils.FileUtil;
 
 public class AyuMessagesController {
     public static final String attachmentsSubfolder = "Saved Attachments";
-    public static final File attachmentsPath = new File(
-            new File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AyuConstants.APP_NAME),
-            attachmentsSubfolder
-    );
+    public static final File attachmentsPath = new File(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AyuConstants.APP_NAME), attachmentsSubfolder);
     private static final String NAX = "AyuMessagesController";
     private static AyuMessagesController instance;
     private final EditedMessageDao editedMessageDao;
     private final DeletedMessageDao deletedMessageDao;
+
     private AyuMessagesController() {
         initializeAttachmentsFolder();
 
         editedMessageDao = AyuData.getEditedMessageDao();
         deletedMessageDao = AyuData.getDeletedMessageDao();
     }
+
     private static void initializeAttachmentsFolder() {
-        if (!attachmentsPath.exists()) {
-            attachmentsPath.mkdirs();
-            try {
-                new File(attachmentsPath, ".nomedia").createNewFile();
-            } catch (IOException e) {
-                // ignored, I hate java
+        try {
+            File nomediaFile = new File(attachmentsPath, ".nomedia");
+            if (attachmentsPath.exists() || attachmentsPath.mkdirs()) {
+                AndroidUtilities.createEmptyFile(nomediaFile);
             }
+            if (!nomediaFile.exists()) {
+                try {
+                    File randomFile = new File(attachmentsPath, AyuUtils.generateRandomString(4));
+                    AndroidUtilities.createEmptyFile(randomFile);
+                    if (!randomFile.renameTo(nomediaFile)) {
+                        FileLog.e("Failed to rename random .nomedia file to the correct name");
+                    }
+                } catch (Exception ignored) {}
+            } else {
+               FileLog.e(".nomedia file already exists in attachments folder");
+            }
+        } catch (Exception e) {
+            FileLog.e("initializeAttachmentsFolder", e);
         }
     }
+
     public static AyuMessagesController getInstance() {
         if (instance == null) {
             instance = new AyuMessagesController();
         }
         return instance;
     }
+
     public void onMessageEdited(AyuSavePreferences prefs, TLRPC.Message newMessage) {
         try {
             onMessageEditedInner(prefs, newMessage, false);
         } catch (Exception e) {
-            Log.e(NAX, "error onMessageEdited", e);
             FileLog.e("onMessageEdited", e);
         }
     }
+
     public void onMessageEditedForce(AyuSavePreferences prefs) {
         try {
             onMessageEditedInner(prefs, prefs.getMessage(), true);
         } catch (Exception e) {
-            Log.e(NAX, "error onMessageEditedForce", e);
             FileLog.e("onMessageEditedForce", e);
         }
     }
+
     private void onMessageEditedInner(AyuSavePreferences prefs, TLRPC.Message newMessage, boolean force) {
         var oldMessage = prefs.getMessage();
 
@@ -110,9 +121,7 @@ public class AyuMessagesController {
 
         editedMessageDao.insert(revision);
 
-        AndroidUtilities.runOnUIThread(() -> {
-            NotificationCenter.getInstance(prefs.getAccountId()).postNotificationName(AyuConstants.MESSAGE_EDITED_NOTIFICATION, prefs.getDialogId(), prefs.getMessageId());
-        });
+        AndroidUtilities.runOnUIThread(() -> NotificationCenter.getInstance(prefs.getAccountId()).postNotificationName(AyuConstants.MESSAGE_EDITED_NOTIFICATION, prefs.getDialogId(), prefs.getMessageId()));
     }
 
     private static boolean isSameMedia(TLRPC.Message newMessage, boolean force, TLRPC.Message oldMessage) {
@@ -139,7 +148,6 @@ public class AyuMessagesController {
         try {
             onMessageDeletedInner(prefs);
         } catch (Exception e) {
-            Log.e(NAX, "error onMessageDeleted", e);
             FileLog.e("onMessageDeleted", e);
         }
     }
@@ -169,7 +177,6 @@ public class AyuMessagesController {
 
         var fakeMsgId = deletedMessageDao.insert(deletedMessage);
 
-        // if (msg != null && msg.reactions != null && AyuConfig.saveReactions) {
         if (msg != null && msg.reactions != null) {
             processDeletedReactions(fakeMsgId, msg.reactions);
         }
@@ -245,12 +252,12 @@ public class AyuMessagesController {
 
         if (!TextUtils.isEmpty(msg.message.mediaPath)) {
             var p = new File(msg.message.mediaPath);
-            if (p.exists()) {
-                try {
-                    p.delete();
-                } catch (Exception e) {
-                    Log.e(NAX, "failed to delete file " + msg.message.mediaPath, e);
+            try {
+                if (!p.exists() || !p.delete()) {
+                    Log.e(NAX, "failed to delete file " + msg.message.mediaPath);
                 }
+            } catch (Exception e) {
+                FileLog.e(e);
             }
         }
     }
@@ -271,12 +278,12 @@ public class AyuMessagesController {
 
             if (!TextUtils.isEmpty(msg.message.mediaPath)) {
                 var p = new File(msg.message.mediaPath);
-                if (p.exists()) {
-                    try {
-                        p.delete();
-                    } catch (Exception e) {
-                        Log.e(NAX, "failed to delete file " + msg.message.mediaPath, e);
+                try {
+                    if (!p.exists() || !p.delete()) {
+                        Log.e(NAX, "failed to delete file " + msg.message.mediaPath);
                     }
+                } catch (Exception e) {
+                    FileLog.e(e);
                 }
             }
         }
@@ -310,12 +317,12 @@ public class AyuMessagesController {
         for (DeletedMessageFull msg : messages) {
             if (msg.message.mediaPath != null && !msg.message.mediaPath.isEmpty()) {
                 File mediaFile = new File(msg.message.mediaPath);
-                if (mediaFile.exists()) {
-                    try {
-                        mediaFile.delete();
-                    } catch (Exception e) {
-                        Log.e(NAX, "Failed to delete media file: " + msg.message.mediaPath, e);
+                try {
+                    if (!mediaFile.exists() || !mediaFile.delete()) {
+                        Log.e(NAX, "failed to delete file " + msg.message.mediaPath);
                     }
+                } catch (Exception e) {
+                    FileLog.e(e);
                 }
             }
         }
