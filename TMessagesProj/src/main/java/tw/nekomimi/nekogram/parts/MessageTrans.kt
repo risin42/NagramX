@@ -128,19 +128,19 @@ fun ChatActivity.translateMessages(
         messagesToTranslate.forEachIndexed { _, selectedObject ->
             deferred.add(async(transPool) trans@{
                 if (selectedObject.isPoll) {
-                    val pool = (selectedObject.messageOwner.media as TLRPC.TL_messageMediaPoll).poll
+                    val poll = (selectedObject.messageOwner.media as TLRPC.TL_messageMediaPoll).poll
                     var translatedQuestion: String? = null
                     runCatching {
-                        translatedQuestion = Translator.translate(target, pool.question.text, provider)
+                        translatedQuestion = Translator.translate(target, poll.question.text, provider)
                     }.onFailure { e ->
                         handleTranslationError(parentActivity, e, controller, selectedObject) {
                             translateMessages(target, messagesToTranslate)
                         }
                         return@trans
                     }
-                    pool.translatedQuestion = translatedQuestion
+                    poll.translatedQuestion = translatedQuestion?.trim()
 
-                    pool.answers.forEach {
+                    poll.answers.forEach {
                         var translatedAnswer: String? = null
                         runCatching {
                             translatedAnswer = Translator.translate(target, it.text.text, provider)
@@ -150,7 +150,7 @@ fun ChatActivity.translateMessages(
                             }
                             return@trans
                         }
-                        it.translatedText = translatedAnswer
+                        it.translatedText = translatedAnswer?.trim()
                     }
                 } else {
                     var result: TLRPC.TL_textWithEntities? = null
