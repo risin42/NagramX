@@ -53,7 +53,6 @@
     <string name="RegexFiltersNotice">点击以编辑。</string>
     <string name="botCommandConfirmTitle">确认指令</string>
     <string name="botCommandConfirmText">您确定要发送此指令吗？\n\n%s</string>
-    <string name="TranslateMessagesInfo3">“显示翻译按钮”和“翻译全部聊天记录”已被 N-设置 覆盖，无法在此修改。</string>
     <string name="DisableScreenshotDetection">禁用截屏检测</string>
     <string name="MessageSavingSaveMedia">保存媒体</string>
     <string name="MessageSavingSaveMediaHint">点击查看更多选项</string>
@@ -185,4 +184,6 @@
     <string name="CreateCode">创建代码</string>
     <string name="CreateCodeLanguage">语言</string>
     <string name="NoCaptionForward">无说明转发</string>
+    <string name="PreferCommonGroupsTab">首选群组标签</string>
+    <string name="PreferCommonGroupsTabNotice">在个人资料页面自动选择“群组”标签而不是“礼物”。</string>
 </resources>

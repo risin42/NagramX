@@ -53,7 +53,6 @@
     <string name="RegexFiltersNotice">Натисніть для Редагування.</string>
     <string name="botCommandConfirmTitle">Надіслати команду</string>
     <string name="botCommandConfirmText">Ви хочете відправити цю команду? \n\n%s</string>
-    <string name="TranslateMessagesInfo3">Налаштування «Показувати кнопку “Перекласти”» і «Перекладати чати цілком» обробляються «Налаштуваннями N» і не можуть бути змінені тут.</string>
     <string name="DisableScreenshotDetection">Вимкнути виявлення скріншотів</string>
     <string name="MessageSavingSaveMedia">Зберегти медіа</string>
     <string name="MessageSavingSaveMediaHint">Натисніть, щоб побачити більше</string>

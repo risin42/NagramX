@@ -53,7 +53,6 @@
     <string name="RegexFiltersNotice">Düzenlemek için dokunun.</string>
     <string name="botCommandConfirmTitle">Komut Gönder</string>
     <string name="botCommandConfirmText">Bu komutu göndermek istiyor musunuz?\n\n%s</string>
-    <string name="TranslateMessagesInfo3">‘Çeviri Düğmesini Göster’ ve ‘Tüm Sohbetleri Çevir’ ayarları N-Ayarlar tarafından yönetilir ve burada değiştirilemez.</string>
     <string name="DisableScreenshotDetection">Ekran Görüntüsü Algılamayı Devre Dışı Bırak</string>
     <string name="MessageSavingSaveMedia">Medyayı Kaydet</string>
     <string name="MessageSavingSaveMediaHint">Daha Fazla İçin Tıklayın</string>
@@ -185,4 +184,6 @@
     <string name="CreateCode">Kod Oluştur</string>
     <string name="CreateCodeLanguage">Dil</string>
     <string name="NoCaptionForward">Altyazı Olmadan İlet</string>
+    <string name="PreferCommonGroupsTab">Gruplar Sekmesini Tercih Et</string>
+    <string name="PreferCommonGroupsTabNotice">Mümkün olduğunda \"Hediyeler\" yerine \"Gruplar\" sekmesini otomatik olarak seç.</string>
 </resources>

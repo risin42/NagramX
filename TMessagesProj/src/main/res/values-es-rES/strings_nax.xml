@@ -53,7 +53,6 @@
     <string name="RegexFiltersNotice">Toca para editar.</string>
     <string name="botCommandConfirmTitle">Enviar comando</string>
     <string name="botCommandConfirmText">¿Quieres enviar este comando?\n\n%s</string>
-    <string name="TranslateMessagesInfo3">Los ajustes de \'Mostrar botón de traducción\' y \'Traducir todo el chat\' son manejados por N-Ajustes y no se pueden cambiar aquí.</string>
     <string name="DisableScreenshotDetection">Desactivar detección de capturas de pantalla</string>
     <string name="MessageSavingSaveMedia">Guardar Multimedia</string>
     <string name="MessageSavingSaveMediaHint">Haga clic para más información</string>

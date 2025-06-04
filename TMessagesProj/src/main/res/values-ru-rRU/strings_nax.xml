@@ -53,7 +53,6 @@
     <string name="RegexFiltersNotice">Нажмите, чтобы изменить.</string>
     <string name="botCommandConfirmTitle">Отправить команду</string>
     <string name="botCommandConfirmText">Вы хотите отправить эту команду?\n\n%s</string>
-    <string name="TranslateMessagesInfo3">Настройки «Показывать кнопку «Перевести»» и «Переводить чаты целиком» обрабатываются «Настройками N» и не могут быть изменены здесь.</string>
     <string name="DisableScreenshotDetection">Отключить обнаружение скриншотов</string>
     <string name="MessageSavingSaveMedia">Сохранять медиа</string>
     <string name="MessageSavingSaveMediaHint">Нажмите, чтобы узнать больше.</string>

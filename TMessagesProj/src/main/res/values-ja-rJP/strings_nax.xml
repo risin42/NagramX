@@ -53,7 +53,6 @@
     <string name="RegexFiltersNotice">タップして編集。</string>
     <string name="botCommandConfirmTitle">コマンド確認</string>
     <string name="botCommandConfirmText">このコマンドを送信しますか？\n\n%s</string>
-    <string name="TranslateMessagesInfo3">「翻訳ボタンを表示」と「チャット全体を翻訳」はN-設定で管理され、ここでは変更できません。</string>
     <string name="DisableScreenshotDetection">スクリーンショット検出を無効にする</string>
     <string name="MessageSavingSaveMedia">メディアを保存</string>
     <string name="MessageSavingSaveMediaHint">クリックしてその他のオプションを表示</string>
@@ -185,4 +184,6 @@
     <string name="CreateCode">コードを作成</string>
     <string name="CreateCodeLanguage">言語</string>
     <string name="NoCaptionForward">説明文なしで転送</string>
+    <string name="PreferCommonGroupsTab">グループタブを優先</string>
+    <string name="PreferCommonGroupsTabNotice">可能な場合、\"ギフト\"の代わりに\"グループ\"タブを自動選択します。</string>
 </resources>
