@@ -58,15 +58,16 @@ public class AyuMessagesController {
                 AndroidUtilities.createEmptyFile(nomediaFile);
             }
             if (!nomediaFile.exists()) {
-                try {
-                    File randomFile = new File(attachmentsPath, AyuUtils.generateRandomString(4));
-                    AndroidUtilities.createEmptyFile(randomFile);
-                    if (!randomFile.renameTo(nomediaFile)) {
-                        FileLog.e("Failed to rename random .nomedia file to the correct name");
-                    }
-                } catch (Exception ignored) {}
+                File randomFile = new File(attachmentsPath, AyuUtils.generateRandomString(4));
+                AndroidUtilities.createEmptyFile(randomFile);
+                if (!randomFile.renameTo(nomediaFile)) {
+                    if (!randomFile.delete()) FileLog.e("Failed to delete random .nomedia file");
+                    FileLog.e("Failed to rename random .nomedia file to the correct name");
+                } else {
+                    FileLog.d("Created .nomedia file in attachments folder by renaming a random file");
+                }
             } else {
-               FileLog.e(".nomedia file already exists in attachments folder");
+               FileLog.d(".nomedia file already exists in attachments folder");
             }
         } catch (Exception e) {
             FileLog.e("initializeAttachmentsFolder", e);
