@@ -35,6 +35,7 @@ import org.telegram.ui.Components.TextStyleSpan;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class HTMLKeeper {
     final private static String[] list_html_params = new String[]{"b", "i", "u", "s", "tt", "a", "q", "tg-emoji"};
@@ -220,17 +221,17 @@ public class HTMLKeeper {
     // VARIOUS HTML FIXERS
     private static String fixStrangeSpace(String string) {
         for (String list_param : list_html_params) {
-            String fixedStart = String.format("<%s>", list_param);
-            String fixedEnd = String.format("</%s>", list_param);
-            string = string.replace(String.format("< %s>", list_param), fixedStart);
-            string = string.replace(String.format("<%s >", list_param), fixedStart);
-            string = string.replace(String.format("< %s >", list_param), fixedStart);
-            string = string.replace(String.format("</ %s>", list_param), fixedEnd);
-            string = string.replace(String.format("< / %s>", list_param), fixedEnd);
-            string = string.replace(String.format("< /%s>", list_param), fixedEnd);
-            string = string.replace(String.format("< /%s >", list_param), fixedEnd);
-            string = string.replace(String.format("</%s >", list_param), fixedEnd);
-            string = string.replace(String.format("< / %s >", list_param), fixedEnd);
+            String fixedStart = String.format(Locale.US, "<%s>", list_param);
+            String fixedEnd = String.format(Locale.US, "</%s>", list_param);
+            string = string.replace(String.format(Locale.US, "< %s>", list_param), fixedStart);
+            string = string.replace(String.format(Locale.US, "<%s >", list_param), fixedStart);
+            string = string.replace(String.format(Locale.US, "< %s >", list_param), fixedStart);
+            string = string.replace(String.format(Locale.US, "</ %s>", list_param), fixedEnd);
+            string = string.replace(String.format(Locale.US, "< / %s>", list_param), fixedEnd);
+            string = string.replace(String.format(Locale.US, "< /%s>", list_param), fixedEnd);
+            string = string.replace(String.format(Locale.US, "< /%s >", list_param), fixedEnd);
+            string = string.replace(String.format(Locale.US, "</%s >", list_param), fixedEnd);
+            string = string.replace(String.format(Locale.US, "< / %s >", list_param), fixedEnd);
         }
         return string;
     }
