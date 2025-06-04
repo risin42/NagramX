@@ -30844,7 +30844,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             icons.add(R.drawable.msg_viewreplies);
                             items.add(LocaleController.getString("ViewInChat", R.string.ViewInChat));
                         }
-                        if ((NaConfig.INSTANCE.getShowCopyLink().Bool() || selectedObject.isAnyKindOfSticker()) && !selectedObject.isSponsored() && chatMode != MODE_SCHEDULED && ChatObject.isChannel(currentChat) && selectedObject.getDialogId() != mergeDialogId && !isAyuDeleted) {
+                        if ((NaConfig.INSTANCE.getShowCopyLink().Bool() || selectedObject.isAnyKindOfSticker() || selectedObject.isPoll()) && !selectedObject.isSponsored() && chatMode != MODE_SCHEDULED && ChatObject.isChannel(currentChat) && selectedObject.getDialogId() != mergeDialogId && !isAyuDeleted) {
                             items.add(LocaleController.getString(R.string.CopyLink));
                             options.add(OPTION_COPY_LINK);
                             icons.add(R.drawable.msg_link);
