@@ -8407,7 +8407,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                             resumeDelayedFragmentAnimation();
                             needLayout(true);
                         }
-                        if (userInfo.common_chats_count > 0 && sharedMediaLayout.scrollSlidingTextTabStrip != null && sharedMediaLayout.scrollSlidingTextTabStrip.getCurrentTabId() != SharedMediaLayout.TAB_COMMON_GROUPS) {
+                        if (NaConfig.INSTANCE.getPreferCommonGroupsTab().Bool() && userInfo.common_chats_count > 0 && sharedMediaLayout.scrollSlidingTextTabStrip != null && sharedMediaLayout.scrollSlidingTextTabStrip.getCurrentTabId() == SharedMediaLayout.TAB_GIFTS) {
                             AndroidUtilities.runOnUIThread(() -> {
                                 sharedMediaLayout.scrollToPage(SharedMediaLayout.TAB_COMMON_GROUPS);
                                 sharedMediaLayout.scrollSlidingTextTabStrip.selectTabWithId(SharedMediaLayout.TAB_COMMON_GROUPS, 1.0f);

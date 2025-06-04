@@ -1256,6 +1256,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    var preferCommonGroupsTab =
+        addConfig(
+            "PreferCommonGroupsTab",
+            ConfigItem.configTypeBool,
+            true
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

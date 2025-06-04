@@ -197,4 +197,6 @@
     <string name="CreateCode">Create Code</string>
     <string name="CreateCodeLanguage">Language</string>
     <string name="NoCaptionForward">NoCaption forward</string>
+    <string name="PreferCommonGroupsTab">Prefer Groups Tab</string>
+    <string name="PreferCommonGroupsTabNotice">Auto-select \"Groups\" tab instead of \"Gifts\" when possible.</string>
 </resources>
