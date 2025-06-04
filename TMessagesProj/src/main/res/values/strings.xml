@@ -8174,14 +8174,18 @@
     <string name="SearchEngine5SearchURL">https://search.brave.com/search?q=</string>
     <string name="SearchEngine5AutocompleteURL">https://search.brave.com/api/suggest?q=</string>
     <string name="SearchEngine5PrivacyPolicyURL">https://search.brave.com/help/privacy-policy</string>
-    <string name="SearchEngine6Name">reserved</string>
-    <string name="SearchEngine6SearchURL">reserved</string>
-    <string name="SearchEngine6AutocompleteURL">reserved</string>
-    <string name="SearchEngine6PrivacyPolicyURL">reserved</string>
-    <string name="SearchEngine7Name">reserved</string>
-    <string name="SearchEngine7SearchURL">reserved</string>
-    <string name="SearchEngine7AutocompleteURL">reserved</string>
-    <string name="SearchEngine7PrivacyPolicyURL">reserved</string>
+    <string name="SearchEngine6Name">Yandex</string>
+    <string name="SearchEngine6SearchURL">https://yandex.com/search/?text=</string>
+    <string name="SearchEngine6AutocompleteURL">https://yandex.com/suggest/suggest-ya.cgi?part=</string>
+    <string name="SearchEngine6PrivacyPolicyURL">https://yandex.com/legal/confidential</string>
+    <string name="SearchEngine7Name">Startpage</string>
+    <string name="SearchEngine7SearchURL">https://www.startpage.com/sp/search?query=</string>
+    <string name="SearchEngine7AutocompleteURL">https://www.startpage.com/osuggestions?q=</string>
+    <string name="SearchEngine7PrivacyPolicyURL">https://www.startpage.com/en/privacy-policy</string>
+    <string name="SearchEngine8Name">reserved</string>
+    <string name="SearchEngine8SearchURL">reserved</string>
+    <string name="SearchEngine8AutocompleteURL">reserved</string>
+    <string name="SearchEngine8PrivacyPolicyURL">reserved</string>
     <string name="BrowserSettingsTitle">Web Browser</string>
     <string name="BrowserSettingsEnable">Enable In-App Browser</string>
     <string name="BrowserSettingsCustomTabsTitle">Open external links in</string>
