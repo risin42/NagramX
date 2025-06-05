@@ -202,11 +202,19 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
             protected void openSponsoredOptions(ProfileSearchCell cell, TLRPC.TL_sponsoredPeer sponsoredPeer) {
                 AndroidUtilities.hideKeyboard(fragment.getParentActivity().getCurrentFocus());
                 final ItemOptions o = ItemOptions.makeOptions(fragment, cell, true);
-                if (!TextUtils.isEmpty(sponsoredPeer.sponsor_info)) {
+                if (!TextUtils.isEmpty(sponsoredPeer.sponsor_info) || !TextUtils.isEmpty(sponsoredPeer.additional_info)) {
                     final ItemOptions oi = o.makeSwipeback()
                         .add(R.drawable.ic_ab_back, getString(R.string.Back), () -> o.closeSwipeback())
-                        .addGap()
-                        .addText(sponsoredPeer.sponsor_info, 13);
+                        .addGap();
+                    if (!TextUtils.isEmpty(sponsoredPeer.sponsor_info)) {
+                        oi.addText(sponsoredPeer.sponsor_info, 13);
+                    }
+                    if (!TextUtils.isEmpty(sponsoredPeer.additional_info)) {
+                        if (!TextUtils.isEmpty(sponsoredPeer.sponsor_info)) {
+                            oi.addGap();
+                        }
+                        oi.addText(sponsoredPeer.additional_info, 13);
+                    }
                     o.add(R.drawable.msg_channel, getString(R.string.SponsoredMessageSponsorReportable), () -> {
                         o.openSwipeback(oi);
                     });
@@ -911,7 +919,7 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
                         if (message != null) {
                             AccountInstance.getInstance(currentAccount).getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of(message.toString(), did, null, null, null, true, null, null, null, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, null, false));
                         }
-                        AccountInstance.getInstance(currentAccount).getSendMessagesHelper().sendMessage(fmessages, did, false,false, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, 0);
+                        AccountInstance.getInstance(currentAccount).getSendMessagesHelper().sendMessage(fmessages, did, false,false, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, 0, 0);
                     }
                     fragment1.finishFragment();
                 } else {

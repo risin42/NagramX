@@ -74,6 +74,8 @@ public class FilterTabsView extends FrameLayout {
 
     private final int customTabStyle = NaConfig.INSTANCE.getTabStyle().Int();
 
+    private final Theme.ResourcesProvider resourcesProvider;
+
     public int getCurrentTabStableId() {
         return positionToStableId.get(currentPosition, -1);
     }
@@ -127,13 +129,10 @@ public class FilterTabsView extends FrameLayout {
         public boolean isLocked;
         public boolean noanimate;
 
-        public Tab(int i, String t, String emoticon, ArrayList<TLRPC.MessageEntity> entities, boolean noanimate) {
-            id = i;
-            realTitle = t != null ? new SpannableStringBuilder(t) : new SpannableStringBuilder("");
-            realTitle = Emoji.replaceEmoji(realTitle, textPaint.getFontMetricsInt(), false);
-//            MessageObject.addEntitiesToText(title, entities, false, false, false, true);
-            realTitle = MessageObject.replaceAnimatedEmoji(realTitle, entities, textPaint.getFontMetricsInt());
-            title = new SpannableStringBuilder(NekoConfig.tabsTitleType.Int() == NekoXConfig.TITLE_TYPE_ICON ? "" : realTitle);
+        public Tab(int i, CharSequence title, String emoticon, boolean noanimate) {
+            this.id = i;
+            realTitle = title != null ? title : "";
+            this.title = NekoConfig.tabsTitleType.Int() == NekoXConfig.TITLE_TYPE_ICON ? "" : realTitle;
             this.noanimate = noanimate;
             this.emoticon = (i != Integer.MAX_VALUE) ? (emoticon != null ? emoticon : "") : "\uD83D\uDCAC";
         }
@@ -503,10 +502,10 @@ public class FilterTabsView extends FrameLayout {
 
             if (animateCounterEnter || counterText != null || showRemove && (isEditing || editingStartAnimationProgress != 0)) {
                 if (aBackgroundColorKey < 0) {
-                    textCounterPaint.setColor(Theme.getColor(backgroundColorKey));
+                    textCounterPaint.setColor(Theme.getColor(backgroundColorKey, resourcesProvider));
                 } else {
-                    int color1 = Theme.getColor(backgroundColorKey);
-                    int color2 = Theme.getColor(aBackgroundColorKey);
+                    int color1 = Theme.getColor(backgroundColorKey, resourcesProvider);
+                    int color2 = Theme.getColor(aBackgroundColorKey, resourcesProvider);
                     textCounterPaint.setColor(ColorUtils.blendARGB(color1, color2, animationValue));
                 }
                 if (Theme.hasThemeKey(unreadKey) && Theme.hasThemeKey(unreadOtherKey)) {
@@ -874,7 +873,7 @@ public class FilterTabsView extends FrameLayout {
         }
     }
 
-    private final TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    public final TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private final TextPaint textCounterPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private final Paint deletePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private final Paint counterPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -979,8 +978,8 @@ public class FilterTabsView extends FrameLayout {
         public void setValue(FilterTabsView object, float value) {
             animationValue = value;
 
-            int color1 = Theme.getColor(tabLineColorKey);
-            int color2 = Theme.getColor(aTabLineColorKey);
+            int color1 = Theme.getColor(tabLineColorKey, resourcesProvider);
+            int color2 = Theme.getColor(aTabLineColorKey, resourcesProvider);
             selectorDrawable.setColor(ColorUtils.blendARGB(color1, color2, value));
 
             listView.invalidateViews();
@@ -994,8 +993,9 @@ public class FilterTabsView extends FrameLayout {
         }
     };
 
-    public FilterTabsView(Context context) {
+    public FilterTabsView(Context context, Theme.ResourcesProvider resourcesProvider) {
         super(context);
+        this.resourcesProvider = resourcesProvider;
         textCounterPaint.setTextSize(AndroidUtilities.dp(13));
         textCounterPaint.setTypeface(AndroidUtilities.bold());
         textPaint.setTextSize(AndroidUtilities.dp(15));
@@ -1007,7 +1007,7 @@ public class FilterTabsView extends FrameLayout {
         selectorDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, null);
         float rad = AndroidUtilities.dpf2(3);
         selectorDrawable.setCornerRadii(new float[]{rad, rad, rad, rad, 0, 0, 0, 0});
-        selectorDrawable.setColor(Theme.getColor(tabLineColorKey));
+        selectorDrawable.setColor(Theme.getColor(tabLineColorKey, resourcesProvider));
 
         setHorizontalScrollBarEnabled(false);
         listView = new RecyclerListView(context) {
@@ -1337,6 +1337,13 @@ public class FilterTabsView extends FrameLayout {
         selectedTabId = -1;
     }
 
+    public CharSequence text(String t, ArrayList<TLRPC.MessageEntity> e)  {
+        CharSequence title = new SpannableStringBuilder(t);
+        title = Emoji.replaceEmoji(title, textPaint.getFontMetricsInt(), false);
+        title = MessageObject.replaceAnimatedEmoji(title, e, textPaint.getFontMetricsInt());
+        return title;
+    }
+
     public void addTab(int id, int stableId, String text, String emoticon, ArrayList<TLRPC.MessageEntity> entities, boolean noanimate, boolean isDefault, boolean isLocked) {
         int position = tabs.size();
         if (position == 0 && selectedTabId == -1) {
@@ -1349,7 +1356,26 @@ public class FilterTabsView extends FrameLayout {
             currentPosition = position;
         }
 
-        Tab tab = new Tab(id, text, emoticon, entities, noanimate);
+        Tab tab = new Tab(id, text(text, entities), emoticon, noanimate);
+        tab.isDefault = isDefault;
+        tab.isLocked = isLocked;
+        allTabsWidth += tab.getWidth(true) + AndroidUtilities.dp(32);
+        tabs.add(tab);
+    }
+
+    public void addTab(int id, int stableId, CharSequence text, boolean noanimate, boolean isDefault, boolean isLocked) {
+        int position = tabs.size();
+        if (position == 0 && selectedTabId == -1) {
+            selectedTabId = id;
+        }
+        positionToId.put(position, id);
+        positionToStableId.put(position, stableId);
+        idToPosition.put(id, position);
+        if (selectedTabId != -1 && selectedTabId == id) {
+            currentPosition = position;
+        }
+
+        Tab tab = new Tab(id, text, null, noanimate);
         tab.isDefault = isDefault;
         tab.isLocked = isLocked;
         allTabsWidth += tab.getWidth(true) + FolderIconHelper.getPaddingTab();
@@ -1372,6 +1398,19 @@ public class FilterTabsView extends FrameLayout {
         adapter.notifyDataSetChanged();
         delegate.onTabSelected(tabs.get(currentPosition), false, false);
         oldAnimatedTab = currentPosition;
+    }
+
+    public void setColors(int line, int active, int unactive, int selector, int background) {
+        tabLineColorKey = line;
+        backgroundColorKey = background;
+        activeTextColorKey = active;
+        unactiveTextColorKey = unactive;
+        selectorDrawable.setColor(Theme.getColor(tabLineColorKey, resourcesProvider));
+        listView.setSelectorDrawableColor(Theme.getColor(selector, resourcesProvider));
+
+        listView.invalidateViews();
+        listView.invalidate();
+        invalidate();
     }
 
     public void animateColorsTo(int line, int active, int unactive, int selector, int background) {
@@ -1983,7 +2022,7 @@ public class FilterTabsView extends FrameLayout {
             if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
                 listView.cancelClickRunnables(false);
                 viewHolder.itemView.setPressed(true);
-                viewHolder.itemView.setBackgroundColor(Theme.getColor(backgroundColorKey));
+                viewHolder.itemView.setBackgroundColor(Theme.getColor(backgroundColorKey, resourcesProvider));
             } else {
                 AndroidUtilities.cancelRunOnUIThread(resetDefaultPosition);
                 AndroidUtilities.runOnUIThread(resetDefaultPosition, 320);

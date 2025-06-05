@@ -183,7 +183,7 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
                 var editedMessage = messages.get(position);
                 var msg = createMessageObject(editedMessage);
 
-                ayuMessageDetailCell.setMessageObject(msg, null, false, false);
+                ayuMessageDetailCell.setMessageObject(msg, null, false, false, false);
                 ayuMessageDetailCell.setEditedMessage(editedMessage);
                 ayuMessageDetailCell.setId(position);
             }

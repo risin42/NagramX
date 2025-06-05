@@ -201,7 +201,7 @@ public class ChatsHelper extends BaseController {
         if ((scheduleDate != 0) == (chatActivity.getChatMode() == ChatActivity.MODE_SCHEDULED)) {
             chatActivity.waitingForSendingMessageLoad = true;
         }
-        AlertsCreator.showSendMediaAlert(getSendMessagesHelper().sendMessage(arrayList, did == 0 ? chatActivity.getDialogId() : did, fromMyName, false, notify, scheduleDate, 0), chatActivity, chatActivity.getResourceProvider());
+        AlertsCreator.showSendMediaAlert(getSendMessagesHelper().sendMessage(arrayList, did == 0 ? chatActivity.getDialogId() : did, fromMyName, false, notify, scheduleDate, 0, chatActivity.getSendMonoForumPeerId()), chatActivity, chatActivity.getResourceProvider());
     }
 
     private void createShareAlertSelected(ChatActivity chatActivity) {
