@@ -44,7 +44,7 @@
 
 ----
 <details> 
-<summary><strong>Nagram 功能</strong></summary>
+<summary><strong>Nagram 新增功能</strong></summary>
 
 1. 精美图标（感谢 MaitungTM）
 2. 合并消息
@@ -59,7 +59,7 @@
 
 ----
 <details>
-<summary><strong>NekoX 功能</strong></summary>
+<summary><strong>NekoX 新增功能</strong></summary>
 
 - Nekogram 的大部分功能
 - 无限制登录账户
