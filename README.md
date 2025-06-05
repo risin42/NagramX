@@ -39,6 +39,10 @@ You can grab the latest versions in these two ways:
   - And more ?
 
 ----
+> [!NOTE]
+> Some changes of Nagram and NekoX have been removed
+
+----
 <details> 
 <summary><strong>Nagram Changes</strong></summary>
 
