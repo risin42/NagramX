@@ -184,4 +184,6 @@
     <string name="CreateCode">Criar Código</string>
     <string name="CreateCodeLanguage">Idioma</string>
     <string name="NoCaptionForward">Encaminhar sem legenda</string>
+    <string name="PreferCommonGroupsTab">Preferir a aba Grupos</string>
+    <string name="PreferCommonGroupsTabNotice">Selecionar automaticamente a aba \"Grupos\" em vez de \"Presentes\" sempre que possível.</string>
 </resources>

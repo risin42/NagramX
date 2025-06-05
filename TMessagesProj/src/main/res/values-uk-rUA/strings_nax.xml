@@ -77,7 +77,7 @@
     <string name="HideArchive">Видалити \"Архівні чати\" зі Списку Чату</string>
     <string name="HideChannelSilentBroadcast">Сховати беззвучний перемикач трансляції</string>
     <string name="ConfirmAllLinks">Запитувати перед відкриттям вбудованих посилань</string>
-    <string name="ConfirmAllLinksDescription">Включаючи внутрішні посилання, такі як t.me у вбудованих ботах.</string>
+    <string name="ConfirmAllLinksDescription">\nВключаючи внутрішні посилання, такі як t.me у вбудованих ботах.</string>
     <string name="TranslatorMinimizedChannel">Для цього каналу було згорнуто панель перекладу.</string>
     <string name="TranslatorMinimizedGroup">Для цього групового чату було згорнуто панель перекладу.</string>
     <string name="TranslatorMinimized">Для цього чату згорнуто панель перекладу.</string>
@@ -164,7 +164,7 @@
     <string name="DebugMenuEnableVideoQualitiesDebug">Увімкнути налагодження якості відео</string>
     <string name="DebugMenuDisableVideoQualitiesDebug">Вимкнути налагодження якості відео</string>
     <string name="DebugMenuReloadAppConfig">Перезавантажити налаштування програми</string>
-    <string name="TranslateMessageLLM">Перекласти за допомогою AI</string>
+    <string name="TranslateMessageLLM">Перекладач AI</string>
     <string name="ResetChatNameOverrides">Скинути змінені назви чатів</string>
     <string name="ResetChatNameNotification">Змінені назви чатів очищені.</string>
     <string name="TabStyle">Стиль вкладок</string>
@@ -179,4 +179,9 @@
     <string name="AppIconTelegramOriginal">Оригінал</string>
     <string name="StreamMkvNax">Показувати MKV як відео</string>
     <string name="StreamAllVideoNax">Потокове відтворення всіх відео</string>
+    <string name="MonoCode">Код</string>
+    <string name="CreateCode">Створити код</string>
+    <string name="CreateCodeLanguage">Мова</string>
+    <string name="PreferCommonGroupsTab">Перевага вкладці \"Групи”</string>
+    <string name="PreferCommonGroupsTabNotice">Автоматично вибирати вкладку «Групи» замість «Подарунки», коли це можливо.</string>
 </resources>

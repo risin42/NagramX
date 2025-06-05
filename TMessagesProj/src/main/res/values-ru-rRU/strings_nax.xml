@@ -184,4 +184,6 @@
     <string name="CreateCode">Создать код</string>
     <string name="CreateCodeLanguage">Язык</string>
     <string name="NoCaptionForward">Переслать без подписи</string>
+    <string name="PreferCommonGroupsTab">Предпочитать вкладку «Группы»</string>
+    <string name="PreferCommonGroupsTabNotice">Автоматически выбирать вкладку «Группы» вместо «Подарки», когда это возможно.</string>
 </resources>
