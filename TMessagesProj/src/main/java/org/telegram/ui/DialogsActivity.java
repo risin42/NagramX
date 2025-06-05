@@ -5926,7 +5926,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 true
             );
             updateAuthHintCellVisibility(false);
-        }else if (folderId == 0 && getMessagesController().pendingSuggestions.contains("PREMIUM_GRACE") && !NekoConfig.disableTrending.Bool()) {
+        } else if (folderId == 0 && getMessagesController().pendingSuggestions.contains("PREMIUM_GRACE") && !NekoConfig.disableTrending.Bool()) {
             dialogsHintCellVisible = true;
             dialogsHintCell.setVisibility(View.VISIBLE);
             dialogsHintCell.setCompact(true);
@@ -8961,13 +8961,13 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             floatingButton.setAnimation(R.raw.write_contacts_fab_icon, 52, 52);
             floatingButtonContainer.setContentDescription(LocaleController.getString(R.string.NewMessageTitle));
 
-            if (floatingButton2 != null) {
+            /*if (floatingButton2 != null) {
                 floatingButton2.setImageResource(R.drawable.filled_premium_camera);
                 floatingButton2Container.setContentDescription(LocaleController.getString(R.string.AccDescrCaptureStory));
                 if (floatingButtonContainer.getVisibility() == View.VISIBLE) {
                     floatingButton2Container.setVisibility(View.VISIBLE);
                 }
-            }
+            }*/
         }
     }
 
