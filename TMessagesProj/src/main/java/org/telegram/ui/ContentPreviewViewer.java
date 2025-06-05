@@ -545,13 +545,15 @@ public class ContentPreviewViewer {
                     items.add(LocaleController.getString("SaveToGallery", R.string.SaveToGallery));
                     icons.add(R.drawable.msg_gallery);
                     actions.add(nkbtn_stickerdl);
-                    if (NaConfig.INSTANCE.getShowCopyPhoto().Bool()) {
-                        items.add(LocaleController.getString("CopyPhotoAsSticker", R.string.CopyPhotoAsSticker));
-                        icons.add(R.drawable.msg_copy);
-                        actions.add(nkbtn_sticker_copy);
-                        items.add(LocaleController.getString("CopyPhoto", R.string.CopyPhoto));
+                    if (!MessageObject.isAnimatedStickerDocument(currentDocument)) {
+                        items.add(getString(R.string.CopyPhoto));
                         icons.add(R.drawable.msg_copy);
                         actions.add(nkbtn_sticker_copy_png);
+                    }
+                    if (!MessageObject.isAnimatedStickerDocument(currentDocument)) {
+                        items.add(getString(R.string.CopyPhotoAsSticker));
+                        icons.add(R.drawable.msg_copy);
+                        actions.add(nkbtn_sticker_copy);
                     }
                 }
                 if (!MessageObject.isMaskDocument(currentDocument) && (inFavs || MediaDataController.getInstance(currentAccount).canAddStickerToFavorites() && MessageObject.isStickerHasSet(currentDocument))) {
