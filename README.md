@@ -39,8 +39,8 @@ You can grab the latest versions in these two ways:
   - And more ?
 
 ----
-
-## Nagram Changes
+<details> 
+<summary><strong>Nagram Changes</strong></summary>
 
 1. Nice icon (thanks to MaitungTM)
 2. Combine message
@@ -51,6 +51,7 @@ You can grab the latest versions in these two ways:
 7. Undo and Redo
 8. Scrollable chat preview (thanks to TeleTux)
 9. Noise suppress and voice enhance
+</details>
 
 ----
 <details>
