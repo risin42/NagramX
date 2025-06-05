@@ -1,6 +1,6 @@
 # Nagram X
 
-[Nagram](https://github.com/NextAlone/Nagram) 的增强版本，包含更多附加功能。
+[Nagram](https://github.com/NextAlone/Nagram) 的衍生版本，包含附加功能。
 
 ## 下载
 
