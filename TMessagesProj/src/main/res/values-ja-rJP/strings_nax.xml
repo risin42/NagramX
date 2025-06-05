@@ -103,7 +103,6 @@
     <string name="MediaViewerMenu">メディアビューアーメニュー</string>
     <string name="MenuAndButtons">メニューとボタン</string>
     <string name="ColoredAdminTitle">色付きの管理者タイトル</string>
-    <string name="SendPhotoResolution">写真の解像度</string>
     <string name="SettingsNax">設定</string>
     <string name="AccountSettingsNax">アカウント設定</string>
     <string name="HideReactions">リアクションを非表示</string>

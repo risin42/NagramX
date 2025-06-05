@@ -2895,14 +2895,10 @@ public class AndroidUtilities {
             return highQualityPhotoSize;
         } else {
             if (photoSize == null) {
-                photoSize = 2560;
+                photoSize = 1280;
             }
             return photoSize;
         }
-    }
-
-    public static int getPhotoSizeOld() {
-        return 1280;
     }
 
     /*public static void clearCursorDrawable(EditText editText) {

@@ -71,20 +71,20 @@ import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.AlertsCreator;
 import org.telegram.ui.Components.AnimatedEmojiSpan;
 import org.telegram.ui.Components.AnimatedFileDrawable;
-import org.telegram.ui.LaunchActivity;
-import org.telegram.ui.Stars.StarsController;
-import org.telegram.ui.Stars.StarsIntroActivity;
-import org.telegram.ui.bots.BotWebViewSheet;
 import org.telegram.ui.Components.Bulletin;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.Point;
 import org.telegram.ui.Components.Premium.LimitReachedBottomSheet;
 import org.telegram.ui.Components.Reactions.ReactionsLayoutInBubble;
 import org.telegram.ui.Components.Reactions.ReactionsUtils;
+import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.PaymentFormActivity;
+import org.telegram.ui.Stars.StarsController;
+import org.telegram.ui.Stars.StarsIntroActivity;
 import org.telegram.ui.Stories.MessageMediaStoryFull;
 import org.telegram.ui.TwoStepVerificationActivity;
 import org.telegram.ui.TwoStepVerificationSetupActivity;
+import org.telegram.ui.bots.BotWebViewSheet;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7871,29 +7871,12 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
         }).start();
     }
 
-    public void removeBigPhotoSizes(TLRPC.TL_photo photo, Boolean isEncrypted) {
-        if (!isEncrypted || photo == null) {
-            return;
-        }
-        ArrayList<TLRPC.PhotoSize> sizes = new ArrayList<>();
-        for (TLRPC.PhotoSize size: photo.sizes) {
-            if (size != null && size.w <= AndroidUtilities.getPhotoSizeOld() && size.h <= AndroidUtilities.getPhotoSizeOld()) {
-                sizes.add(size);
-            }
-        }
-        photo.sizes = sizes;
-    }
-
     public TLRPC.TL_photo generatePhotoSizes(String path, Uri imageUri) {
         return generatePhotoSizes(null, path, imageUri, false);
     }
 
     public TLRPC.TL_photo generatePhotoSizes(TLRPC.TL_photo photo, String path, Uri imageUri, boolean highQuality) {
-        int maxSize = NaConfig.INSTANCE.photosResolution();
         Bitmap bitmap = ImageLoader.loadBitmap(path, imageUri, AndroidUtilities.getPhotoSize(highQuality), AndroidUtilities.getPhotoSize(highQuality), true);
-        if (bitmap == null && maxSize == 2560) {
-            bitmap = ImageLoader.loadBitmap(path, imageUri, 1280, 1280, true);
-        }
         if (bitmap == null) {
             bitmap = ImageLoader.loadBitmap(path, imageUri, 800, 800, true);
         }
@@ -7907,16 +7890,6 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
         } else {
             size = ImageLoader.scaleAndSaveImage(bitmap, AndroidUtilities.getPhotoSize(highQuality), AndroidUtilities.getPhotoSize(highQuality), true, 80, false, 101, 101);
         }
-
-        //        ===== Nagram Hook start =====
-        if (maxSize > 1280) {
-            size = ImageLoader.scaleAndSaveImage(bitmap, AndroidUtilities.getPhotoSizeOld(), AndroidUtilities.getPhotoSizeOld(), true, 80, false, 101, 101);
-            if (size != null) {
-                sizes.add(size);
-            }
-        }
-        //        ===== Nagram Hook end =====
-
         if (size != null) {
             sizes.add(size);
         }
@@ -9006,11 +8979,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
             File bigFile = FileLoader.getInstance(accountInstance.getCurrentAccount()).getPathToAttach(bigSize, false);
             boolean bigExists = bigFile.exists();
             if (!smallExists || !bigExists) {
-                int maxSize = NaConfig.INSTANCE.photosResolution();
-                Bitmap bitmap = ImageLoader.loadBitmap(path, uri, maxSize, maxSize, true);
-                if (bitmap == null && maxSize == 2560) {
-                    bitmap = ImageLoader.loadBitmap(path, uri, 1280, 1280, true);
-                }
+                Bitmap bitmap = ImageLoader.loadBitmap(path, uri, AndroidUtilities.getPhotoSize(), AndroidUtilities.getPhotoSize(), true);
                 if (bitmap == null) {
                     bitmap = ImageLoader.loadBitmap(path, uri, 800, 800, true);
                 }
@@ -9211,10 +9180,6 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                             worker.sync = new CountDownLatch(1);
                             mediaSendThreadPool.execute(() -> {
                                 worker.photo = accountInstance.getSendMessagesHelper().generatePhotoSizes(null, info.path, info.uri, info.highQuality);
-
-                                //        ===== Nagram Hook start =====
-                                accountInstance.getSendMessagesHelper().removeBigPhotoSizes(worker.photo, isEncrypted);
-                                //        ===== Nagram Hook end =====
                                 if (isEncrypted && info.canDeleteAfter) {
                                     new File(info.path).delete();
                                 }
@@ -9814,11 +9779,6 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                                 }
                                 if (photo == null) {
                                     photo = accountInstance.getSendMessagesHelper().generatePhotoSizes(info.path, info.uri);
-
-                                    //        ===== Nagram Hook start =====
-                                    accountInstance.getSendMessagesHelper().removeBigPhotoSizes(photo, isEncrypted);
-                                    //        ===== Nagram Hook end =====
-
                                     if (isEncrypted && info.canDeleteAfter) {
                                         new File(info.path).delete();
                                     }

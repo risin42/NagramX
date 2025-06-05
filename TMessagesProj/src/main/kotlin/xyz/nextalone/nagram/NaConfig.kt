@@ -1082,12 +1082,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    var sendPhotoResolution =
-        addConfig(
-            "SendPhotoResolution",
-            ConfigItem.configTypeInt,
-            2
-        )
     var hideReactions =
         addConfig(
             "HideReactions",
@@ -1272,15 +1266,6 @@ object NaConfig {
                 preferredTranslateTargetLangList.add(lang.trim().lowercase())
             }
         }, 1000)
-    }
-
-    fun photosResolution(): Int {
-        return when (sendPhotoResolution.Int()) {
-            0 -> 800
-            1 -> 1280
-            2 -> 2560
-            else -> 1280
-        }
     }
 
     fun isLLMTranslatorAvailable(): Boolean {
