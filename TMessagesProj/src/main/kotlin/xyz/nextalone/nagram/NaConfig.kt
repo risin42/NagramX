@@ -1250,6 +1250,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    var sendHighQualityPhoto =
+        addConfig(
+            "SendHighQualityPhoto",
+            ConfigItem.configTypeBool,
+            true
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

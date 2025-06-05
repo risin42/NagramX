@@ -504,7 +504,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
         public boolean isCropped;
         public int ttl;
         public long effectId;
-        public boolean highQuality;
+        public boolean highQuality = NaConfig.INSTANCE.getSendHighQualityPhoto().Bool();
 
         public CropState cropState;
 
@@ -533,7 +533,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
             savedFilterState = null;
             stickers = null;
             cropState = null;
-            highQuality = false;
+            highQuality = NaConfig.INSTANCE.getSendHighQualityPhoto().Bool();
         }
 
         public void copyFrom(MediaEditState state) {

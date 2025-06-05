@@ -198,4 +198,5 @@
     <string name="NoCaptionForward">NoCaption forward</string>
     <string name="PreferCommonGroupsTab">Prefer Groups Tab</string>
     <string name="PreferCommonGroupsTabNotice">Auto-select \"Groups\" tab instead of \"Gifts\" when possible.</string>
+    <string name="SendHighQualityPhoto">Send High Quality Photo</string>
 </resources>
