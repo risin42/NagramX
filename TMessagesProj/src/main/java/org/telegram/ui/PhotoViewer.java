@@ -14695,9 +14695,9 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     if (masksItemVisible) {
                         setItemVisible(masksItem, false, false);
                     }
-                    if (noforwards) {
+                    /*if (noforwards) {
                         setItemVisible(pipItem, false, true);
-                    } else if (!pipAvailable) {
+                    } else */if (!pipAvailable) {
                         pipItem.setEnabled(false);
                         setItemVisible(pipItem, true, !masksItemVisible && editItem.getAlpha() <= 0, 0.5f);
                         pipInvalidateAvailability();
