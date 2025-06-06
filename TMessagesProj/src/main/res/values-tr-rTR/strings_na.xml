@@ -53,7 +53,6 @@
     <string name="HalloWeen">Cadılar Bayramı</string>
     <string name="ShowOnlineStatus">Çevrimiçi Durumu Göster</string>
     <string name="ShowOnlineStatusNotice">Gruplarda profil fotoğraflarının yanında diğer kişilerin çevrimiçi durumunu göster.</string>
-    <string name="ShowRecentOnlineStatus">Son Çevrimiçi Durumu Göster</string>
     <string name="DoActionsInCommonGroups">Ortak Gruplarda Uygula</string>
     <string name="ShowFullAbout">Sohbet Açıklamasını Her Zaman Genişlet</string>
     <string name="HideMessageSeenTooltip">Okundu Bilgilerini Gizle</string>

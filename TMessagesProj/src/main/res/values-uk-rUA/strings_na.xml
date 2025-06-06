@@ -53,7 +53,6 @@
     <string name="HalloWeen">Хелловін</string>
     <string name="ShowOnlineStatus">Показувати онлайн-статус</string>
     <string name="ShowOnlineStatusNotice">Показує онлайн-статус інших людей поруч із зображенням профілю в групах.</string>
-    <string name="ShowRecentOnlineStatus">Показати останній онлайн-статус</string>
     <string name="DoActionsInCommonGroups">Застосувати у спільних групах</string>
     <string name="ShowFullAbout">Завжди розгортати опис чату</string>
     <string name="HideMessageSeenTooltip">Приховати сповіщення про прочитання</string>

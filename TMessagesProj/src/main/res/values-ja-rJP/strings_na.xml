@@ -53,7 +53,6 @@
     <string name="HalloWeen">ハロウィン</string>
     <string name="ShowOnlineStatus">ユーザーのオンラインステータスを表示</string>
     <string name="ShowOnlineStatusNotice">グループチャットで、ユーザーのアバターの右下にオンラインステータスを表示します。</string>
-    <string name="ShowRecentOnlineStatus">ユーザーの最近のオンラインステータスを表示</string>
     <string name="DoActionsInCommonGroups">共通のグループに適用</string>
     <string name="ShowFullAbout">常にチャットの「情報」を展開</string>
     <string name="HideMessageSeenTooltip">メッセージ既読マークを非表示</string>

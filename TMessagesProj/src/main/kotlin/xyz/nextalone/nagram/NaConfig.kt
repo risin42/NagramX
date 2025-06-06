@@ -386,12 +386,6 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
-    val showRecentOnlineStatus =
-        addConfig(
-            "ShowRecentOnlineStatus",
-            ConfigItem.configTypeBool,
-            false
-        )
     val showSquareAvatar =
         addConfig(
             "ShowSquareAvatar",

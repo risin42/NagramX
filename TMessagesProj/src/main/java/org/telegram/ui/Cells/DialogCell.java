@@ -708,10 +708,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             }
         }
         boolean isOnline = isOnline();
-        if (NaConfig.INSTANCE.getShowRecentOnlineStatus().Bool() && !isOnline && user != null && !user.self && user.status != null) {
-            final int diff = user.status.expires - ConnectionsManager.getInstance(currentAccount).getCurrentTime();
-            isOnline = diff > -60 * 60;
-        }
         onlineProgress = isOnline ? 1.0f : 0.0f;
     }
 
@@ -4582,26 +4578,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             if (user != null && !MessagesController.isSupportUser(user) && !user.bot) {
                 boolean isOnline = isOnline();
                 wasDrawnOnline = isOnline;
-                int colorOnline = 0;
-                if (NaConfig.INSTANCE.getShowRecentOnlineStatus().Bool() && !user.self && user.status != null) {
-                    final int diff = user.status.expires - ConnectionsManager.getInstance(currentAccount).getCurrentTime();
-                    colorOnline = diff > 0
-                            ? Theme.getColor(Theme.key_chats_onlineCircle)
-                            : diff > -15 * 60
-                            ? android.graphics.Color.argb(255, 234, 234, 30)
-                            : diff > -30 * 60
-                            ? android.graphics.Color.argb(255, 234, 132, 30)
-                            : diff > -60 * 60
-                            ? android.graphics.Color.argb(255, 234, 30, 30)
-                            : 0;
-                    if (colorOnline != 0) {
-                        isOnline = true;
-                    }
-                }
                 if (isOnline || onlineProgress != 0) {
-                    if (onlineProgress != 0 && colorOnline == 0) {
-                        colorOnline = Theme.getColor(Theme.key_chats_onlineCircle, resourcesProvider);
-                    }
                     int top = (int) (storyParams.originalAvatarRect.bottom - dp(useForceThreeLines || SharedConfig.useThreeLinesLayout ? 6 : 8));
                     int left;
                     if (LocaleController.isRTL) {
@@ -4612,7 +4589,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
                     Theme.dialogs_onlineCirclePaint.setColor(Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider));
                     canvas.drawCircle(left, top, dp(7) * onlineProgress, Theme.dialogs_onlineCirclePaint);
-                    Theme.dialogs_onlineCirclePaint.setColor(colorOnline);
+                    Theme.dialogs_onlineCirclePaint.setColor(Theme.getColor(Theme.key_chats_onlineCircle, resourcesProvider));
                     canvas.drawCircle(left, top, dp(5) * onlineProgress, Theme.dialogs_onlineCirclePaint);
                     if (isOnline) {
                         if (onlineProgress < 1.0f) {

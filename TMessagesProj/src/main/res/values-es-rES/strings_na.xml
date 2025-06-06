@@ -53,7 +53,6 @@
     <string name="HalloWeen">HalloWeen</string>
     <string name="ShowOnlineStatus">Mostrar estado en línea</string>
     <string name="ShowOnlineStatusNotice">Muestra el estado en línea de otras personas junto a su foto de perfil en grupos.</string>
-    <string name="ShowRecentOnlineStatus">Mostrar estado en línea reciente</string>
     <string name="DoActionsInCommonGroups">Aplicado en grupos comunes</string>
     <string name="ShowFullAbout">Expandir siempre la descripción del chat</string>
     <string name="HideMessageSeenTooltip">Ocultar recibos de lectura</string>
