@@ -11,7 +11,7 @@ import tw.nekomimi.nekogram.config.ConfigItem;
 
 public class ConfigCellTextCheck extends AbstractConfigCell {
     private final ConfigItem bindConfig;
-    private final String title;
+    private final CharSequence title;
     private final String subtitle;
     private boolean enabled = true;
     public TextCheckCell cell;
@@ -24,7 +24,7 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
         this(bind, subtitle, null);
     }
 
-    public ConfigCellTextCheck(ConfigItem bind, String subtitle, String customTitle) {
+    public ConfigCellTextCheck(ConfigItem bind, String subtitle, CharSequence customTitle) {
         this.bindConfig = bind;
         this.title = customTitle == null ? getString(bindConfig.getKey()) : customTitle;
         this.subtitle = subtitle;
@@ -38,7 +38,7 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
         return bindConfig;
     }
 
-    public String getTitle() {
+    public CharSequence getTitle() {
         return title;
     }
 
@@ -64,7 +64,7 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
             if (subtitle == null) {
                 cell.setTextAndCheck(title, bindConfig.Bool(), cellGroup.needSetDivider(this));
             } else {
-                cell.setTextAndValueAndCheck(title, subtitle, bindConfig.Bool(), true, cellGroup.needSetDivider(this));
+                cell.setTextAndValueAndCheck(title.toString(), subtitle, bindConfig.Bool(), true, cellGroup.needSetDivider(this));
             }
         }
     }
@@ -75,7 +75,7 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
         if (subtitle == null) {
             cell.setTextAndCheck(title, bindConfig.Bool(), cellGroup.needSetDivider(this));
         } else {
-            cell.setTextAndValueAndCheck(title, subtitle, bindConfig.Bool(), true, cellGroup.needSetDivider(this));
+            cell.setTextAndValueAndCheck(title.toString(), subtitle, bindConfig.Bool(), true, cellGroup.needSetDivider(this));
         }
         cell.setEnabled(enabled, null);
     }
