@@ -270,9 +270,12 @@ public class ContentPreviewViewer {
     public final static int CONTENT_TYPE_EMOJI = 2;
     public final static int CONTENT_TYPE_CUSTOM_STIKER = 3;
 
+    public static boolean nkbtn_hasMediaSpoilers;
+
     private final static int nkbtn_stickerdl = 110;
     private final static int nkbtn_sticker_copy = 111;
     private final static int nkbtn_sticker_copy_png = 112;
+    private final static int nkbtn_photo_spoiler = 113;
 
     private static TextPaint textPaint;
 
@@ -871,6 +874,11 @@ public class ContentPreviewViewer {
                     icons.add(sendWithoutSoundNax ? R.drawable.input_notify_on : R.drawable.input_notify_off);
                     actions.add(4);
                 }
+                if (delegate.needSend(currentContentType) && !delegate.isInScheduleMode()) {
+                    items.add(LocaleController.getString(R.string.EnablePhotoSpoiler));
+                    icons.add(R.drawable.msg_spoiler);
+                    actions.add(nkbtn_photo_spoiler);
+                }
                 if (delegate.canSchedule()) {
                     items.add(LocaleController.getString(R.string.Schedule));
                     icons.add(R.drawable.msg_autodelete);
@@ -924,6 +932,9 @@ public class ContentPreviewViewer {
                         Object parent = parentObject;
                         ContentPreviewViewerDelegate stickerPreviewViewerDelegate = delegate;
                         AlertsCreator.createScheduleDatePickerDialog(parentActivity, stickerPreviewViewerDelegate.getDialogId(), (notify, scheduleDate) -> stickerPreviewViewerDelegate.sendGif(document != null ? document : result, parent, notify, scheduleDate), resourcesProvider);
+                    } else if (actions.get(which) == nkbtn_photo_spoiler) {
+                        nkbtn_hasMediaSpoilers = true;
+                        delegate.sendGif(currentDocument != null ? currentDocument : inlineResult, parentObject, true, 0);
                     }
                     dismissPopupWindow();
                 };

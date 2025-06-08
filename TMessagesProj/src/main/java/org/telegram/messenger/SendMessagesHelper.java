@@ -77,6 +77,7 @@ import org.telegram.ui.Components.Point;
 import org.telegram.ui.Components.Premium.LimitReachedBottomSheet;
 import org.telegram.ui.Components.Reactions.ReactionsLayoutInBubble;
 import org.telegram.ui.Components.Reactions.ReactionsUtils;
+import org.telegram.ui.ContentPreviewViewer;
 import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.PaymentFormActivity;
 import org.telegram.ui.Stars.StarsController;
@@ -1947,7 +1948,9 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                     sendMessageParams.quick_reply_shortcut_id = quick_reply_shortcut_id;
                     sendMessageParams.payStars = stars;
                     sendMessageParams.monoForumPeer = monoForumPeerId;
+                    sendMessageParams.hasMediaSpoilers = ContentPreviewViewer.nkbtn_hasMediaSpoilers;
                     sendMessage(sendMessageParams);
+                    ContentPreviewViewer.nkbtn_hasMediaSpoilers = false;
                 });
             });
         } else {
