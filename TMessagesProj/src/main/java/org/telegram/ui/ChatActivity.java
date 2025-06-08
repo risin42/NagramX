@@ -6363,7 +6363,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             canvas.scale(1f - getSideMenuAlpha(), 1f - getSideMenuAlpha(), imageReceiver.getImageX2(), imageReceiver.getImageY2());
                             canvas.translate(dp(24) * getSideMenuAlpha(), 0f);
                         }
-                        imageReceiver.draw(canvas);
+                        // imageReceiver.draw(canvas);
                         cell.drawStatusWithImage(canvas, imageReceiver, AndroidUtilities.dp(7));
                         canvas.restore();
 
