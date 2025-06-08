@@ -735,6 +735,8 @@ public class TopicsController extends BaseController {
     }
 
     public void toggleCloseTopic(long chatId, int topicId, boolean close) {
+        SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
+        preferences.edit().putBoolean("hideRestartTopicButton_" + chatId + topicId, !close).apply();
         TLRPC.TL_channels_editForumTopic req = new TLRPC.TL_channels_editForumTopic();
         req.channel = getMessagesController().getInputChannel(chatId);
         req.topic_id = topicId;

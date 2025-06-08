@@ -551,6 +551,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     @Nullable
     private TextView restartTopicButton;
     @Nullable
+    private ImageView closeRestartTopicButton;
+    @Nullable
     private TranslateButton translateButton;
     public TopicsTabsView topicsTabs;
     @Nullable
@@ -7127,6 +7129,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         topViewSeparator3 = null;
         addToContactsButton = null;
         restartTopicButton = null;
+        closeRestartTopicButton = null;
         closeReportSpam = null;
         translateButton = null;
         topicsTabs = null;
@@ -10150,6 +10153,23 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         topChatPanelView.addView(restartTopicButton, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.LEFT | Gravity.TOP, 0, 0, 0, 1));
         restartTopicButton.setOnClickListener(v -> {
             getMessagesController().getTopicsController().toggleCloseTopic(currentChat.id, forumTopic.id, forumTopic.closed = false);
+            updateTopicButtons();
+            updateBottomOverlay();
+            updateTopPanel(true);
+        });
+
+        closeRestartTopicButton = new ImageView(getContext());
+        closeRestartTopicButton.setVisibility(View.GONE);
+        closeRestartTopicButton.setImageResource(R.drawable.miniplayer_close);
+        if (Build.VERSION.SDK_INT >= 21) {
+            closeRestartTopicButton.setBackground(Theme.AdaptiveRipple.circle(getThemedColor(Theme.key_chat_topPanelClose)));
+        }
+        closeRestartTopicButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_topPanelClose), PorterDuff.Mode.MULTIPLY));
+        closeRestartTopicButton.setScaleType(ImageView.ScaleType.CENTER);
+        topChatPanelView.addView(closeRestartTopicButton, LayoutHelper.createFrame(36, 36, Gravity.RIGHT | Gravity.TOP, 0, 6, 2, 0));
+        closeRestartTopicButton.setOnClickListener(v -> {
+            SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
+            preferences.edit().putBoolean("hideRestartTopicButton_" + currentChat.id + forumTopic.id, true).commit();
             updateTopicButtons();
             updateBottomOverlay();
             updateTopPanel(true);
@@ -29646,7 +29666,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             show = true;
         }
-        boolean showRestartTopic = !isInPreviewMode() && forumTopic != null && forumTopic.closed && !forumTopic.hidden && ChatObject.canManageTopic(currentAccount, currentChat, forumTopic);
+        boolean hideRestartTopic = currentChat != null && forumTopic != null && preferences.getBoolean("hideRestartTopicButton_" + currentChat.id + forumTopic.id, false);
+        boolean showRestartTopic = !isInPreviewMode() && forumTopic != null && forumTopic.closed && !forumTopic.hidden && ChatObject.canManageTopic(currentAccount, currentChat, forumTopic) && !hideRestartTopic;
         boolean showTranslate = (
             true /*getUserConfig().isPremium()*/ ?
                 getMessagesController().getTranslateController().isDialogTranslatable(getDialogId()) && !getMessagesController().getTranslateController().isTranslateDialogHidden(getDialogId()) :
@@ -29660,7 +29681,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (showTranslate || showBizBot || showEmojiStatusReport != null) {
             shownTranslateTopic = true;
         }
-        boolean showRestartTopic1 = (showRestartTopic || shownRestartTopic) && !(showReport || showBlock || showGeo);
+        boolean showRestartTopic1 = (showRestartTopic || shownRestartTopic) && !(showReport || showBlock || showGeo) && !hideRestartTopic;
         if (show || showReport || showBlock || showGeo || showTranslate || showBizBot || showRestartTopic1) {
             createTopPanel();
             if (topChatPanelView == null) {
@@ -29826,6 +29847,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         if (restartTopicButton != null) {
             restartTopicButton.setVisibility(showRestartTopic1 ? View.VISIBLE : View.GONE);
+            if (closeRestartTopicButton != null) {
+                closeRestartTopicButton.setVisibility(showRestartTopic1 ? View.VISIBLE : View.GONE);
+            }
         }
         if (translateButton != null) {
             translateButton.setVisibility(showTranslate ? View.VISIBLE : View.GONE);
