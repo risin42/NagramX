@@ -185,4 +185,5 @@
     <string name="NoCaptionForward">説明文なしで転送</string>
     <string name="PreferCommonGroupsTab">グループタブを優先</string>
     <string name="PreferCommonGroupsTabNotice">可能な場合、\"ギフト\"の代わりに\"グループ\"タブを自動選択します。</string>
+    <string name="SendHighQualityPhoto">高画質の写真を送信</string>
 </resources>

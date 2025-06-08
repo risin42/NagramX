@@ -185,4 +185,5 @@
     <string name="NoCaptionForward">Encaminhar sem legenda</string>
     <string name="PreferCommonGroupsTab">Preferir a aba Grupos</string>
     <string name="PreferCommonGroupsTabNotice">Selecionar automaticamente a aba \"Grupos\" em vez de \"Presentes\" sempre que possível.</string>
+    <string name="SendHighQualityPhoto">Enviar Foto Em Alta Qualidade</string>
 </resources>

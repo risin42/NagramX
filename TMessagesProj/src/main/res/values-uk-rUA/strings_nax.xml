@@ -183,4 +183,5 @@
     <string name="CreateCodeLanguage">Мова</string>
     <string name="PreferCommonGroupsTab">Перевага вкладці \"Групи”</string>
     <string name="PreferCommonGroupsTabNotice">Автоматично вибирати вкладку «Групи» замість «Подарунки», коли це можливо.</string>
+    <string name="SendHighQualityPhoto">Надсилати фото у високій якості</string>
 </resources>

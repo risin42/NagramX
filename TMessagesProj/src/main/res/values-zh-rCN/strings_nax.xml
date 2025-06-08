@@ -185,4 +185,5 @@
     <string name="NoCaptionForward">无说明转发</string>
     <string name="PreferCommonGroupsTab">首选群组标签</string>
     <string name="PreferCommonGroupsTabNotice">在个人资料页面自动选择“群组”标签而不是“礼物”。</string>
+    <string name="SendHighQualityPhoto">发送高质量照片</string>
 </resources>

@@ -185,4 +185,5 @@
     <string name="NoCaptionForward">Переслать без подписи</string>
     <string name="PreferCommonGroupsTab">Предпочитать вкладку «Группы»</string>
     <string name="PreferCommonGroupsTabNotice">Автоматически выбирать вкладку «Группы» вместо «Подарки», когда это возможно.</string>
+    <string name="SendHighQualityPhoto">Отправлять фото высокого качества</string>
 </resources>
