@@ -1142,6 +1142,7 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
                             String languageText = NekoConfig.translateInputLang.String().toUpperCase();
                             String text = getString(R.string.TranslateMessageLLM) + ' ' + "(" + languageText + ")";
                             itemCells[a].setTextAndIcon(text, R.drawable.magic_stick_solar);
+                            itemCells[a].setVisibility(NaConfig.INSTANCE.isLLMTranslatorAvailable());
                         } else if (num == 3) {
                             String languageText = NekoConfig.translateInputLang.String().toUpperCase();
                             String text = getString(R.string.TranslateMessage) + ' ' + "(" + languageText + ")";

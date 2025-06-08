@@ -3498,10 +3498,12 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
             }
             if (chatActivity != null && commentTextView != null && commentTextView.getText().length() > 0) {
                 String languageText = NekoConfig.translateInputLang.String().toUpperCase();
-                StringBuilder sb = new StringBuilder();
-                sb.append(getString(R.string.TranslateMessageLLM));
-                sb.append(' ').append("(").append(languageText).append(")");
-                options.add(R.drawable.magic_stick_solar, sb,
+                StringBuilder sb;
+                if (NaConfig.INSTANCE.isLLMTranslatorAvailable()) {
+                    sb = new StringBuilder();
+                    sb.append(getString(R.string.TranslateMessageLLM));
+                    sb.append(' ').append("(").append(languageText).append(")");
+                    options.add(R.drawable.magic_stick_solar, sb,
                         () -> {
                             if (messageSendPreview != null) {
                                 messageSendPreview.dismiss(false);
@@ -3523,7 +3525,8 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                                 messageSendPreview = null;
                             }
                         }
-                );
+                    );
+                }
                 sb = new StringBuilder();
                 sb.append(getString(R.string.TranslateMessage));
                 sb.append(' ').append("(").append(languageText).append(")");
