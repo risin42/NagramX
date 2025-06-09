@@ -2183,14 +2183,14 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
                 dialogId < 0 && MessagesController.getInstance(currentAccount).isChatNoForwards(-dialogId) ||
                 MessagesController.getInstance(currentAccount).isChatNoForwards(messageObject.getChatId()) ||
                 messageObject.messageOwner.noforwards
-            ) && !NaConfig.INSTANCE.getForceCopy().Bool();
+            );
             if (noforwards) {
                 optionsButton.hideSubItem(1);
                 optionsButton.hideSubItem(100);
-                optionsButton.hideSubItem(2);
+                /*optionsButton.hideSubItem(2);
                 optionsButton.hideSubItem(5);
-                optionsButton.hideSubItem(6);
-                optionsButton.setAdditionalYOffset(-dp(16));
+                optionsButton.hideSubItem(6);*/
+                optionsButton.setAdditionalYOffset(-dp(16 + 48 * 3));
             } else {
                 optionsButton.showSubItem(1);
                 optionsButton.showSubItem(100);

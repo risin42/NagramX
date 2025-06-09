@@ -19954,7 +19954,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         newVisibility = View.VISIBLE;
                         for (int b = 0, N = selectedMessagesIds[0].size(); b < N; b++) {
                             MessageObject message = selectedMessagesIds[0].valueAt(b);
-                            if (ChatObject.isForum(currentChat) && !canSendMessageToTopic(message)) {
+                            if ((ChatObject.isForum(currentChat) && !canSendMessageToTopic(message)) || (NaConfig.INSTANCE.getLeftBottomButton().Int() != ChatsHelper.LEFT_BUTTON_REPLY && !message.canForwardMessage())) {
                                 newVisibility = View.GONE;
                                 break;
                             }
@@ -19966,7 +19966,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             for (int b = 0, N = selectedMessagesIds[a].size(); b < N; b++) {
                                 MessageObject message = selectedMessagesIds[a].valueAt(b);
                                 long groupId = message.getGroupId();
-                                if ((groupId == 0 || lastGroupId != 0 && lastGroupId != groupId || (ChatObject.isForum(currentChat) && !canSendMessageToTopic(message))) && (NaConfig.INSTANCE.getLeftBottomButton().Int() == ChatsHelper.LEFT_BUTTON_REPLY || noforwards)) {
+                                if ((groupId == 0 || lastGroupId != 0 && lastGroupId != groupId || (ChatObject.isForum(currentChat) && !canSendMessageToTopic(message))) && (NaConfig.INSTANCE.getLeftBottomButton().Int() == ChatsHelper.LEFT_BUTTON_REPLY || noforwards || !message.canForwardMessage())) {
                                     newVisibility = View.GONE;
                                     break;
                                 }
@@ -32199,20 +32199,18 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 options.add(nkbtn_setReminder);
                                 icons.add(R.drawable.msg_calendar2);
                             }
-                            if (!UserObject.isUserSelf(currentUser) && NekoConfig.showAddToSavedMessages.Bool()) {
-                                if (!noforwards) {
-                                    items.add(LocaleController.getString("AddToSavedMessages", R.string.AddToSavedMessages));
-                                    options.add(nkbtn_savemessage);
-                                    icons.add(R.drawable.msg_saved);
-                                }
+                            if (NekoConfig.showAddToSavedMessages.Bool() && !UserObject.isUserSelf(currentUser) && !noforwards && selectedObject.canForwardMessage()) {
+                                items.add(getString(R.string.AddToSavedMessages));
+                                options.add(nkbtn_savemessage);
+                                icons.add(R.drawable.msg_saved);
                             }
                             boolean allowRepeat = currentUser != null || (currentChat != null && ChatObject.canSendMessages(currentChat));
-                            if (allowRepeat && !noforwards && NekoConfig.showRepeat.Bool()) {
+                            if (allowRepeat && !noforwards && selectedObject.canForwardMessage() && NekoConfig.showRepeat.Bool()) {
                                 items.add(LocaleController.getString("Repeat", R.string.Repeat));
                                 options.add(nkbtn_repeat);
                                 icons.add(R.drawable.msg_repeat);
                             }
-                            if (allowRepeat && !isAyuDeleted && (NaConfig.INSTANCE.getShowRepeatAsCopy().Bool() || (NekoConfig.showRepeat.Bool() && noforwards))){
+                            if (allowRepeat && !isAyuDeleted && !selectedObject.needDrawBluredPreview() && (NaConfig.INSTANCE.getShowRepeatAsCopy().Bool() || (NekoConfig.showRepeat.Bool() && noforwards))){
                                 items.add(LocaleController.getString("RepeatAsCopy", R.string.RepeatAsCopy));
                                 options.add(nkbtn_repeatascopy);
                                 icons.add(R.drawable.msg_repeat);
