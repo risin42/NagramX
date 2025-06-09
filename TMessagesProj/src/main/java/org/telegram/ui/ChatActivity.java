@@ -31922,7 +31922,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             options.add(OPTION_REPLY);
                             icons.add(R.drawable.menu_reply);
                         }
-                       if (NaConfig.INSTANCE.getShowReplyInPrivate().Bool() && !noforwardsOrPaidMedia && !selectedObject.isSponsored() && selectedObject.contentType == 0 && chatMode == MODE_DEFAULT && !isInsideContainer && currentChat != null && currentUser == null && selectedObject.messageOwner.peer_id.user_id == 0 && selectedObject.messageOwner.from_id.user_id > 0 && selectedObject.messageOwner.from_id.user_id != getUserConfig().getClientUserId() && !isAyuDeleted) {
+                        if (NaConfig.INSTANCE.getShowReplyInPrivate().Bool() && !noforwardsOrPaidMedia && !selectedObject.isSponsored() && selectedObject.contentType == 0 && chatMode == MODE_DEFAULT && !isInsideContainer && currentChat != null && currentUser == null && selectedObject.messageOwner.peer_id.user_id == 0 && selectedObject.messageOwner.from_id.user_id > 0 && selectedObject.messageOwner.from_id.user_id != getUserConfig().getClientUserId() && !isAyuDeleted) {
                             items.add(LocaleController.getString(R.string.ReplyInPrivate));
                             options.add(nkbtn_reply_private);
                             icons.add(R.drawable.menu_reply);
@@ -32209,9 +32209,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             }
                             boolean allowRepeat = currentUser != null || (currentChat != null && ChatObject.canSendMessages(currentChat));
                             if (allowRepeat && !noforwards && NekoConfig.showRepeat.Bool()) {
-                                    items.add(LocaleController.getString("Repeat", R.string.Repeat));
-                                    options.add(nkbtn_repeat);
-                                    icons.add(R.drawable.msg_repeat);
+                                items.add(LocaleController.getString("Repeat", R.string.Repeat));
+                                options.add(nkbtn_repeat);
+                                icons.add(R.drawable.msg_repeat);
                             }
                             if (allowRepeat && !isAyuDeleted && (NaConfig.INSTANCE.getShowRepeatAsCopy().Bool() || (NekoConfig.showRepeat.Bool() && noforwards))){
                                 items.add(LocaleController.getString("RepeatAsCopy", R.string.RepeatAsCopy));
