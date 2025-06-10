@@ -29,22 +29,20 @@ public class CopyPopupWrapper {
         }
 
         var isPhoto = selectedObject.isPhoto();
+        boolean isBlurred = selectedObject.needDrawBluredPreview();
 
-        Arrays.stream(CopyItem.ITEM_IDS).forEach(id -> {
-            if (fromOption == id) {
-                return;
-            }
-            if (!isPhoto && (id == CopyItem.ID_COPY_PHOTO || id == CopyItem.ID_COPY_PHOTO_AS_STICKER)) {
-                return;
-            }
-            if (isPrivate && id == CopyItem.ID_COPY_LINK) {
-                return;
-            }
-            if (!isPrivate && id == CopyItem.ID_COPY_IN_PM) {
-                return;
-            }
-            var item = ActionBarMenuItem.addItem(false, false, windowLayout, id == CopyItem.ID_COPY_LINK || id == CopyItem.ID_COPY_IN_PM ? R.drawable.msg_link : R.drawable.msg_copy, CopyItem.ITEM_TITLES.get(id), false, resourcesProvider);
-            item.setOnClickListener(view -> delegate.onItemClick(id));
-        });
+        Arrays.stream(CopyItem.ITEM_IDS)
+            .filter(id -> {
+                if (fromOption == id) return false;
+                boolean isPhotoItem = (id == CopyItem.ID_COPY_PHOTO || id == CopyItem.ID_COPY_PHOTO_AS_STICKER);
+                if (isPhotoItem && (!isPhoto || isBlurred)) return false;
+                if (isPrivate && id == CopyItem.ID_COPY_LINK) return false;
+                return isPrivate || id != CopyItem.ID_COPY_IN_PM;
+            })
+            .forEach(id -> {
+                var item = ActionBarMenuItem.addItem(false, false, windowLayout, id == CopyItem.ID_COPY_LINK || id == CopyItem.ID_COPY_IN_PM ? R.drawable.msg_link : R.drawable.msg_copy, CopyItem.ITEM_TITLES.get(id), false, resourcesProvider);
+                item.setOnClickListener(view -> delegate.onItemClick(id));
+            })
+        ;
     }
 }
