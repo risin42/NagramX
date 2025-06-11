@@ -379,7 +379,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int nkbtn_repeatascopy = 2028;
     private final static int nkbtn_setReminder = 2029;
     private final static int nkbtn_sticker_copy = 2031;
-    private final static int nkbtn_sticker_copy_png = 2032;
     private final static int nkbtn_reply_private = 2033;
     private final static int nkbtn_translate_llm = 2034;
     private final static int nkbtn_forward_nocaption = 2035;
@@ -44671,14 +44670,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             case nkbtn_sticker_copy: {
                 getMessageHelper().addStickerToClipboard(selectedObject.getDocument(), () -> {
-                    if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
-                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
-                    }
-                });
-                break;
-            }
-            case nkbtn_sticker_copy_png: {
-                getMessageHelper().addStickerToClipboardAsPNG(selectedObject.getDocument(), () -> {
                     if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
                         BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
                     }

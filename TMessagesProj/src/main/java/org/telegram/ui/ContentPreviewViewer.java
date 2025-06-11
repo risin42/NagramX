@@ -274,7 +274,6 @@ public class ContentPreviewViewer {
 
     private final static int nkbtn_stickerdl = 110;
     private final static int nkbtn_sticker_copy = 111;
-    private final static int nkbtn_sticker_copy_png = 112;
     private final static int nkbtn_photo_spoiler = 113;
 
     private static TextPaint textPaint;
@@ -549,11 +548,6 @@ public class ContentPreviewViewer {
                     icons.add(R.drawable.msg_gallery);
                     actions.add(nkbtn_stickerdl);
                     if (!MessageObject.isAnimatedStickerDocument(currentDocument)) {
-                        items.add(getString(R.string.CopyPhoto));
-                        icons.add(R.drawable.msg_copy);
-                        actions.add(nkbtn_sticker_copy_png);
-                    }
-                    if (!MessageObject.isAnimatedStickerDocument(currentDocument)) {
                         items.add(getString(R.string.CopyPhotoAsSticker));
                         icons.add(R.drawable.msg_copy);
                         actions.add(nkbtn_sticker_copy);
@@ -632,10 +626,6 @@ public class ContentPreviewViewer {
                             MessageHelper.getInstance(currentAccount).saveStickerToGallery(parentActivity, currentDocument);
                         } else if (actions.get(which) == nkbtn_sticker_copy) {
                             MessageHelper.getInstance(currentAccount).addStickerToClipboard(currentDocument, () -> {
-                                BulletinFactory.global().createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
-                            });
-                        } else if (actions.get(which) == nkbtn_sticker_copy_png) {
-                            MessageHelper.getInstance(currentAccount).addStickerToClipboardAsPNG(currentDocument, () -> {
                                 BulletinFactory.global().createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
                             });
                         } else if (actions.get(which) == 7) {

@@ -1,8 +1,6 @@
 package tw.nekomimi.nekogram.ui;
 
 import static org.telegram.messenger.LocaleController.getString;
-import static tw.nekomimi.nekogram.utils.LangsKt.uDismiss;
-import static tw.nekomimi.nekogram.utils.LangsKt.uUpdate;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -462,27 +460,6 @@ public class MessageHelper extends BaseController {
         File file = new File(path);
         if (file.exists()) {
             xyz.nextalone.nagram.helper.MessageHelper.INSTANCE.addFileToClipboard(file, callback);
-        }
-    }
-
-    public void addStickerToClipboardAsPNG(TLRPC.Document document, Runnable callback) {
-        String path = FileLoader.getInstance(currentAccount).getPathToAttach(document, true).toString();
-
-        if (TextUtils.isEmpty(path)) {
-            return;
-        }
-        if (MessageObject.isVideoSticker(document)) {
-            return;
-        }
-        try {
-            Bitmap image = BitmapFactory.decodeFile(path);
-            File png = new File(path + ".png");
-            FileOutputStream stream = new FileOutputStream(png);
-            image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            stream.close();
-            xyz.nextalone.nagram.helper.MessageHelper.INSTANCE.addFileToClipboard(png, callback);
-        } catch (Exception e) {
-            FileLog.e(e);
         }
     }
 
