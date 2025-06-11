@@ -28,7 +28,6 @@ import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.CheckBoxCell;
 import org.telegram.ui.Cells.CreationTextCell;
-import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.NotificationsCheckCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCell;
@@ -51,6 +50,8 @@ import org.telegram.ui.Components.URLSpanNoUnderline;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+
+import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 
 public abstract class BaseNekoSettingsActivity extends BaseFragment {
 

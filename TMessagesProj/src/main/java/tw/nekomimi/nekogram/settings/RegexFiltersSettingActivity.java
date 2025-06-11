@@ -22,7 +22,6 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.Theme;
-import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextCheckCell;
 
@@ -31,6 +30,7 @@ import java.util.ArrayList;
 import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.ui.RegexFilterEditActivity;
 import tw.nekomimi.nekogram.ui.RegexFilterPopup;
+import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 import xyz.nextalone.nagram.NaConfig;
 
 public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {

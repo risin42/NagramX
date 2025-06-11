@@ -33,7 +33,6 @@ import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BackDrawable;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.CreationTextCell;
-import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
 import org.telegram.ui.Components.BulletinFactory;
@@ -52,6 +51,7 @@ import java.util.Objects;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
+import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 
 public class NekoEmojiSettingsActivity extends BaseNekoSettingsActivity implements EmojiHelper.EmojiPackLoadListener, EmojiHelper.EmojiPacksLoadedListener, ChatAttachAlertDocumentLayout.DocumentSelectActivityDelegate {
 

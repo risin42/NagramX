@@ -1547,7 +1547,7 @@ public class ChatRightsEditActivity extends BaseFragment implements Notification
             int left = MAX_RANK_LENGTH - (currentRank != null ? currentRank.codePointCount(0, currentRank.length()) : 0);
             if (left <= MAX_RANK_LENGTH - MAX_RANK_LENGTH * 0.7f) {
                 headerCell.setText2(String.format("%d", left));
-                TextView textView = headerCell.getTextView2();
+                SimpleTextView textView = headerCell.getTextView2();
                 int key = left < 0 ? Theme.key_text_RedRegular : Theme.key_windowBackgroundWhiteGrayText3;
                 textView.setTextColor(Theme.getColor(key));
                 textView.setTag(key);

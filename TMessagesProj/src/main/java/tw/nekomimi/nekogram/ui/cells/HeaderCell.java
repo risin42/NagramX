@@ -1,12 +1,4 @@
-/*
- * This is the source code of Telegram for Android v. 5.x.x.
- * It is licensed under GNU GPL v. 2 or later.
- * You should have received a copy of the license in this archive (see LICENSE).
- *
- * Copyright Nikolai Kudashov, 2013-2018.
- */
-
-package org.telegram.ui.Cells;
+package tw.nekomimi.nekogram.ui.cells;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -16,34 +8,32 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.core.view.ViewCompat;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
-import org.telegram.ui.ActionBar.SimpleTextView;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.AnimatedTextView;
 import org.telegram.ui.Components.LayoutHelper;
 
 import java.util.ArrayList;
 
-public class HeaderCell extends FrameLayout {
+public class HeaderCell extends LinearLayout {
 
+    private final Theme.ResourcesProvider resourcesProvider;
+    private final TextView textView2;
+    private final boolean animated;
     public int id;
-
     protected int padding;
     protected int bottomMargin;
-
     private TextView textView;
     private AnimatedTextView animatedTextView;
-    private SimpleTextView textView2;
     private int height = 40;
-    private final Theme.ResourcesProvider resourcesProvider;
-    private boolean animated;
 
     public HeaderCell(Context context) {
         this(context, Theme.key_windowBackgroundWhiteBlueHeader, 21, 15, false, null);
@@ -80,6 +70,9 @@ public class HeaderCell extends FrameLayout {
         this.bottomMargin = bottomMargin;
         this.animated = animated;
 
+        setOrientation(LinearLayout.VERTICAL);
+        setPadding(AndroidUtilities.dp(padding), AndroidUtilities.dp(topMargin), AndroidUtilities.dp(padding), 0);
+
         if (animated) {
             animatedTextView = new AnimatedTextView(getContext());
             animatedTextView.setTextSize(AndroidUtilities.dp(15));
@@ -88,7 +81,7 @@ public class HeaderCell extends FrameLayout {
             animatedTextView.setTextColor(getThemedColor(textColorKey));
             animatedTextView.setTag(textColorKey);
             animatedTextView.getDrawable().setHacks(true, true, false);
-            addView(animatedTextView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, height - topMargin, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, padding, topMargin, padding, text2 ? 0 : bottomMargin));
+            addView(animatedTextView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, height - topMargin));
         } else {
             textView = new TextView(getContext());
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
@@ -98,17 +91,34 @@ public class HeaderCell extends FrameLayout {
             textView.setMinHeight(AndroidUtilities.dp(height - topMargin));
             textView.setTextColor(getThemedColor(textColorKey));
             textView.setTag(textColorKey);
-            addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, padding, topMargin, padding, text2 ? 0 : bottomMargin));
+            addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         }
 
-        if (text2) {
-            textView2 = new SimpleTextView(getContext());
-            textView2.setTextSize(13);
-            textView2.setGravity((LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.TOP);
-            addView(textView2, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.TOP, padding, 21, padding, bottomMargin));
-        }
+        textView2 = new TextView(getContext());
+        textView2.setTextSize(13);
+        textView2.setMovementMethod(new AndroidUtilities.LinkMovementMethodMy());
+        textView2.setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
+        addView(textView2, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, bottomMargin));
+
+        if (!text2) textView2.setVisibility(View.GONE);
 
         ViewCompat.setAccessibilityHeading(this, true);
+    }
+
+    // NekoX: BottomSheet BigTitle, move big title from constructor to here
+    public HeaderCell setBigTitle(boolean enabled) {
+        if (enabled) {
+            textView.setTypeface(AndroidUtilities.getTypeface("fonts/mw_bold.ttf"));
+        } else {
+            textView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
+        }
+        return this;
+    }
+
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
+        params.width = -1;
+        super.setLayoutParams(params);
     }
 
     public void setHeight(int value) {
@@ -171,8 +181,8 @@ public class HeaderCell extends FrameLayout {
     }
 
     public void setText2(CharSequence text) {
-        if (textView2 == null) {
-            return;
+        if (textView2.getVisibility() != View.VISIBLE) {
+            textView2.setVisibility(View.VISIBLE);
         }
         textView2.setText(text);
     }
@@ -181,7 +191,7 @@ public class HeaderCell extends FrameLayout {
         return textView;
     }
 
-    public SimpleTextView getTextView2() {
+    public TextView getTextView2() {
         return textView2;
     }
 
@@ -190,7 +200,7 @@ public class HeaderCell extends FrameLayout {
         super.onInitializeAccessibilityNodeInfo(info);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             info.setHeading(true);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        } else {
             AccessibilityNodeInfo.CollectionItemInfo collection = info.getCollectionItemInfo();
             if (collection != null) {
                 info.setCollectionItemInfo(AccessibilityNodeInfo.CollectionItemInfo.obtain(collection.getRowIndex(), collection.getRowSpan(), collection.getColumnIndex(), collection.getColumnSpan(), true));

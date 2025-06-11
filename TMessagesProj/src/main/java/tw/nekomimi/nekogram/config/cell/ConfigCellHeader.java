@@ -2,7 +2,7 @@ package tw.nekomimi.nekogram.config.cell;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.telegram.ui.Cells.HeaderCell;
+import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 
 import tw.nekomimi.nekogram.config.CellGroup;
 

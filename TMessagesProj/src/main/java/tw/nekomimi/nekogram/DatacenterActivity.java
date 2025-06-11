@@ -27,7 +27,6 @@ import org.telegram.messenger.SvgHelper;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
-import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.LinkSpanDrawable;
@@ -37,6 +36,7 @@ import java.util.Locale;
 
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.settings.BaseNekoSettingsActivity;
+import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 
 public class DatacenterActivity extends BaseNekoSettingsActivity implements NotificationCenter.NotificationCenterDelegate {
 

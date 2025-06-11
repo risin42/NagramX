@@ -49,8 +49,6 @@ import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -70,7 +68,6 @@ import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.messenger.camera.CameraView;
-import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Components.AnimatedEmojiSpan;
 import org.telegram.ui.Components.AnimationProperties;
@@ -83,6 +80,7 @@ import java.util.ArrayList;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
+import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 
 public class BottomSheet extends Dialog implements BaseFragment.AttachedSheet {
     private final static boolean AVOID_SYSTEM_CUTOUT_FULLSCREEN = false;
