@@ -204,7 +204,6 @@
     <string name="CustomApiInput">Entrada manual</string>
     <string name="LinkedGroupChat">Grupo enlazado</string>
     <string name="LinkedChannelChat">Canal enlazado</string>
-    <string name="CustomBackend">Backend Personalizado</string>
     <string name="ChangeTranslateProvider">Cambiar de proveedor</string>
     <string name="GoogleCloudTransKeyNotice">Si configura una clave de Google Cloud Trans, la API de traducción a la nube será llamada en lugar de enviar un formulario falso a la versión web al traducir (más rápido, estable y ahorrando tráfico).</string>
     <string name="TransToLang">Idioma de destino</string>

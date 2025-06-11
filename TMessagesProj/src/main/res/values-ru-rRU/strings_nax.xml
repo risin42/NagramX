@@ -163,6 +163,8 @@
     <string name="DebugMenuEnableVideoQualitiesDebug">Включить отладку качества видео</string>
     <string name="DebugMenuDisableVideoQualitiesDebug">Отключить отладку качества видео</string>
     <string name="DebugMenuReloadAppConfig">Перезагрузить конфигурацию приложения</string>
+    <string name="DebugMenuForceForumTabs">Вкладки форумов принудительно</string>
+    <string name="DebugMenuDoNotForceForumTabs">Не использовать вкладки форумов принудительно</string>
     <string name="TranslateMessageLLM">Перевести с помощью ИИ</string>
     <string name="ResetChatNameOverrides">Сбросить названия чатов</string>
     <string name="ResetChatNameNotification">Изменённые названия чатов очищены.</string>

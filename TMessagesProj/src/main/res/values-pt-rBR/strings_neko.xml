@@ -202,7 +202,6 @@
     <string name="CustomApiInput">Entrada manual</string>
     <string name="LinkedGroupChat">Grupo vinculado</string>
     <string name="LinkedChannelChat">Canal vinculado</string>
-    <string name="CustomBackend">Back-end personalizado</string>
     <string name="ChangeTranslateProvider">Mudar provedor</string>
     <string name="ProviderYandexTranslate">Yandex Tradutor</string>
     <string name="GoogleCloudTransKey">Chave do Google Cloud Translate</string>

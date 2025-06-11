@@ -33,8 +33,8 @@
     <string name="Valentine">情人节</string>
     <string name="Snowflakes">雪花</string>
     <string name="Fireworks">烟花</string>
-    <string name="DeleteDownloadedFile">删除已缓存的文件</string>
-    <string name="TestBackend">测试后端服务器</string>
+    <string name="DeleteDownloadedFile">清除</string>
+    <string name="TestBackend">测试后端</string>
     <string name="HideProxySponsorChannel">隐藏代理赞助商频道</string>
     <string name="ViewHistory">历史消息</string>
     <string name="Nya">喵！</string>
@@ -204,7 +204,6 @@
     <string name="CustomApiInput">手动输入</string>
     <string name="LinkedGroupChat">链接的群组</string>
     <string name="LinkedChannelChat">链接的频道</string>
-    <string name="CustomBackend">自定义后端</string>
     <string name="ChangeTranslateProvider">更换翻译源</string>
     <string name="ProviderYandexTranslate">Yandex.翻译</string>
     <string name="GoogleCloudTransKey">Google Cloud 翻译密钥</string>

@@ -33,7 +33,7 @@
     <string name="Valentine">День св. Валентина</string>
     <string name="Snowflakes">Снегопад</string>
     <string name="Fireworks">Фейерверки</string>
-    <string name="DeleteDownloadedFile">Удалить из кэша</string>
+    <string name="DeleteDownloadedFile">Очистить</string>
     <string name="TestBackend">Использовать тестовый сервер</string>
     <string name="HideProxySponsorChannel">Скрыть спонсора прокси</string>
     <string name="ViewHistory">История</string>
@@ -203,7 +203,6 @@
     <string name="CustomApiInput">Ввести вручную</string>
     <string name="LinkedGroupChat">Привязанная группа</string>
     <string name="LinkedChannelChat">Привязанный канал</string>
-    <string name="CustomBackend">Выбрать DC</string>
     <string name="ChangeTranslateProvider">Изменить сервис перевода</string>
     <string name="ProviderYandexTranslate">Яндекс</string>
     <string name="GoogleCloudTransKey">Ключ Google Translation API</string>

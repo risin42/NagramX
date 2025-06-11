@@ -33,7 +33,7 @@
     <string name="Valentine">Sevgililer Günü</string>
     <string name="Snowflakes">Kar Taneleri</string>
     <string name="Fireworks">Havai Fişekler</string>
-    <string name="DeleteDownloadedFile">İndirileni Sil</string>
+    <string name="DeleteDownloadedFile">Temizle</string>
     <string name="TestBackend">Test Arka Ucu</string>
     <string name="HideProxySponsorChannel">Proxy Sponsor Kanalını Gizle</string>
     <string name="ViewHistory">Geçmişi Görüntüle</string>
@@ -202,7 +202,6 @@
     <string name="CustomApiInput">Manuel giriş</string>
     <string name="LinkedGroupChat">Bağlı Grup</string>
     <string name="LinkedChannelChat">Bağlı Kanal</string>
-    <string name="CustomBackend">Özel Arka Uç</string>
     <string name="ChangeTranslateProvider">Sağlayıcıyı Değiştir</string>
     <string name="GoogleCloudTransKeyNotice">Bir Google Cloud Çeviri Anahtarı ayarlarsanız, çeviri sırasında web sürümüne sahte bir form göndermek yerine bulut çeviri API’si çağrılacaktır (daha hızlı, kararlı ve trafik tasarrufu sağlar).</string>
     <string name="TransToLang">Hedef Dil</string>

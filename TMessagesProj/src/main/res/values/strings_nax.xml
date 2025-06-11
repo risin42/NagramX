@@ -176,6 +176,8 @@
     <string name="DebugMenuEnableVideoQualitiesDebug">Enable video qualities debug</string>
     <string name="DebugMenuDisableVideoQualitiesDebug">Disable video qualities debug</string>
     <string name="DebugMenuReloadAppConfig">Reload App Config</string>
+    <string name="DebugMenuForceForumTabs">Force Forum Tabs</string>
+    <string name="DebugMenuDoNotForceForumTabs">Do Not Force Forum Tabs</string>
     <string name="TranslateMessageLLM">Translate with AI</string>
     <string name="ResetChatNameOverrides">Reset Chat Name Overrides</string>
     <string name="ResetChatNameNotification">Chat name overrides cleared.</string>

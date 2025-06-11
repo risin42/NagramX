@@ -33,7 +33,7 @@
     <string name="Valentine">День Святого Валентина</string>
     <string name="Snowflakes">Сніжинки</string>
     <string name="Fireworks">Феєрверки</string>
-    <string name="DeleteDownloadedFile">Видалити з кешу</string>
+    <string name="DeleteDownloadedFile">Очистити</string>
     <string name="TestBackend">Використовувати тестовий сервер</string>
     <string name="HideProxySponsorChannel">Приховати канал спонсора проксі</string>
     <string name="ViewHistory">Історія</string>
@@ -202,7 +202,6 @@
     <string name="CustomApiInput">Ручне введення</string>
     <string name="LinkedGroupChat">Зв\'язана група</string>
     <string name="LinkedChannelChat">Зв\'язаний канал</string>
-    <string name="CustomBackend">Custom Backend</string>
     <string name="ChangeTranslateProvider">Змінити провайдера</string>
     <string name="GoogleCloudTransKeyNotice">Встановіть ключ Google Cloud Translation, щоб викликати хмарне API перекладу замість імітації надсилання форми у веб-версію (швидше, стабільніше й заощаджує трафік).</string>
     <string name="TransToLang">Цільова мова</string>

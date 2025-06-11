@@ -163,6 +163,8 @@
     <string name="DebugMenuEnableVideoQualitiesDebug">启用视频质量调试</string>
     <string name="DebugMenuDisableVideoQualitiesDebug">禁用视频质量调试</string>
     <string name="DebugMenuReloadAppConfig">重新加载应用程序配置</string>
+    <string name="DebugMenuForceForumTabs">强制话题标签</string>
+    <string name="DebugMenuDoNotForceForumTabs">取消强制话题标签</string>
     <string name="TranslateMessageLLM">AI 翻译</string>
     <string name="ResetChatNameOverrides">重置聊天名称覆盖</string>
     <string name="ResetChatNameNotification">聊天名称覆盖已清除。</string>

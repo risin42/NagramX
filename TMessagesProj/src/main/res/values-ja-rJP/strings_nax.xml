@@ -163,6 +163,8 @@
     <string name="DebugMenuEnableVideoQualitiesDebug">ビデオ品質のデバッグを有効にする</string>
     <string name="DebugMenuDisableVideoQualitiesDebug">ビデオ品質のデバッグを無効にする</string>
     <string name="DebugMenuReloadAppConfig">アプリ設定を再読み込み</string>
+    <string name="DebugMenuForceForumTabs">話題タブを強制する</string>
+    <string name="DebugMenuDoNotForceForumTabs">話題タブを強制しない</string>
     <string name="TranslateMessageLLM">AI で翻訳</string>
     <string name="ResetChatNameOverrides">チャット名の上書きをリセット</string>
     <string name="ResetChatNameNotification">チャット名の上書きがクリアされました。</string>

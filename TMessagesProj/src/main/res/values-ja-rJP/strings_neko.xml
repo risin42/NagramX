@@ -33,8 +33,8 @@
     <string name="Valentine">バレンタインデー</string>
     <string name="Snowflakes">雪</string>
     <string name="Fireworks">花火</string>
-    <string name="DeleteDownloadedFile">ダウンロード済を削除</string>
-    <string name="TestBackend">バックエンドサーバーをテスト</string>
+    <string name="DeleteDownloadedFile">クリア</string>
+    <string name="TestBackend">テストバックエンド</string>
     <string name="HideProxySponsorChannel">プロキシスポンサーチャンネルを非表示</string>
     <string name="ViewHistory">履歴</string>
     <string name="Nya">ニャー！</string>
@@ -202,7 +202,6 @@
     <string name="CustomApiInput">手動入力</string>
     <string name="LinkedGroupChat">リンクされたグループ</string>
     <string name="LinkedChannelChat">リンクされたチャンネル</string>
-    <string name="CustomBackend">カスタムバックエンド</string>
     <string name="ChangeTranslateProvider">プロバイダを変更</string>
     <string name="GoogleCloudTransKeyNotice">Google Cloud Trans Key を設定すると、翻訳時に偽のフォームをウェブバージョンに送信する代わりにクラウド翻訳APIが呼び出されます（高速で安定しており、トラフィックの節約になります）</string>
     <string name="TransToLang">翻訳先言語</string>

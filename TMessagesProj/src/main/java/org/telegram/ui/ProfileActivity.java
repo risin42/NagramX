@@ -4593,7 +4593,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                 SharedConfig.debugVideoQualities ? getString(R.string.DebugMenuDisableVideoQualitiesDebug) : getString(R.string.DebugMenuEnableVideoQualitiesDebug),
                                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? getString(SharedConfig.useSystemBoldFont ? R.string.DebugMenuDontUseSystemBoldFont : R.string.DebugMenuUseSystemBoldFont) : null,
                                 getString(R.string.DebugMenuReloadAppConfig),
-                                !SharedConfig.forceForumTabs ? "Force Forum Tabs" : "Do Not Force Forum Tabs"
+                                !SharedConfig.forceForumTabs ? getString(R.string.DebugMenuForceForumTabs) : getString(R.string.DebugMenuDoNotForceForumTabs)
                         };
 
                         builder.setItems(items, (dialog, which) -> {
