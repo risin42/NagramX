@@ -624,6 +624,7 @@ public class ContentPreviewViewer {
                             delegate.remove(importingSticker);
                         } else if (actions.get(which) == nkbtn_stickerdl) {
                             MessageHelper.getInstance(currentAccount).saveStickerToGallery(parentActivity, currentDocument);
+                            BulletinFactory.createSaveToGalleryBulletin(containerView, false, resourcesProvider).show();
                         } else if (actions.get(which) == nkbtn_sticker_copy) {
                             MessageHelper.getInstance(currentAccount).addStickerToClipboard(currentDocument, () -> {
                                 BulletinFactory.global().createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
