@@ -767,18 +767,12 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         menu.setSubMenuOpenSide(1);
         menu.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector)));
 
-        menu.addSubItem(menu_proxy, R.drawable.msg2_proxy_on, LocaleController.getString(R.string.Proxy))
-                .setContentDescription(LocaleController.getString(R.string.Proxy));
-        menu.addSubItem(menu_language, R.drawable.ic_translate, LocaleController.getString(R.string.Language))
-                .setContentDescription(LocaleController.getString(R.string.Language));
-        menu.addSubItem(menu_bot_login, R.drawable.msg_folders_bots, LocaleController.getString(R.string.BotLogin))
-                .setContentDescription(LocaleController.getString(R.string.BotLogin));
-        menu.addSubItem(menu_qr_login, R.drawable.msg_qrcode, LocaleController.getString(R.string.ImportLogin))
-                .setContentDescription(LocaleController.getString(R.string.ImportLogin));
-        menu.addSubItem(menu_custom_api, R.drawable.baseline_vpn_key_24, LocaleController.getString(R.string.CustomApi))
-                .setContentDescription(LocaleController.getString(R.string.CustomApi));
-        menu.addSubItem(menu_custom_dc, R.drawable.msg_retry, LocaleController.getString(R.string.CustomBackend))
-                .setContentDescription(LocaleController.getString(R.string.CustomBackend));
+        menu.addSubItem(menu_proxy, R.drawable.msg_policy_solar, getString(R.string.Proxy)).setContentDescription(getString(R.string.Proxy));
+        menu.addSubItem(menu_language, R.drawable.msg_translate_solar, getString(R.string.Language)).setContentDescription(getString(R.string.Language));
+        menu.addSubItem(menu_bot_login, R.drawable.msg_bots_solar, getString(R.string.BotLogin)).setContentDescription(getString(R.string.BotLogin));
+        menu.addSubItem(menu_qr_login, R.drawable.msg_qrcode_solar, getString(R.string.ImportLogin)).setContentDescription(getString(R.string.ImportLogin));
+        menu.addSubItem(menu_custom_api, R.drawable.msg_permissions_solar, getString(R.string.CustomApi)).setContentDescription(getString(R.string.CustomApi));
+        menu.addSubItem(menu_custom_dc, R.drawable.msg_retry_solar, getString(R.string.TestBackend)).setContentDescription(getString(R.string.TestBackend));
 
         menu.setOnClickListener(v -> {
             menu.toggleSubMenu();
