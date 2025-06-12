@@ -307,9 +307,7 @@ public class FilterTabsView extends FrameLayout {
         @SuppressLint("DrawAllocation")
         @Override
         protected void onDraw(Canvas canvas) {
-            boolean reorderEnabled = true;
-//            boolean reorderEnabled = (!currentTab.isDefault || UserConfig.getInstance(UserConfig.selectedAccount).isPremium());
-            // TODO: NekoX try to unlock
+            boolean reorderEnabled = (!currentTab.isDefault || UserConfig.getInstance(UserConfig.selectedAccount).isRealPremium());
             boolean showRemove = !currentTab.isDefault && reorderEnabled;
             if (reorderEnabled && editingAnimationProgress != 0) {
                 canvas.save();
@@ -1605,9 +1603,9 @@ public class FilterTabsView extends FrameLayout {
             Tab firstTab = findDefaultTab();
             if (firstTab != null && !NekoConfig.hideAllTab.Bool())  {
                 firstTab.setTitle(LocaleController.getString(R.string.FilterAllChats), null, false);
-                int tabWith = firstTab.getWidth(false);
+                int tabWidth = firstTab.getWidth(false);
                 firstTab.setTitle(allTabsWidth > width ? LocaleController.getString(R.string.FilterAllChatsShort) : LocaleController.getString(R.string.FilterAllChats), null, false);
-                trueTabsWidth = allTabsWidth - tabWith;
+                trueTabsWidth = allTabsWidth - tabWidth;
                 trueTabsWidth += firstTab.getWidth(false);
             } else {
                 trueTabsWidth = allTabsWidth;
