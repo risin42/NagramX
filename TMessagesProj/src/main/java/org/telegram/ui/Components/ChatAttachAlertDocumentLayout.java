@@ -837,7 +837,7 @@ public class ChatAttachAlertDocumentLayout extends ChatAttachAlert.AttachAlertLa
                 selectedMessages.remove(hashId);
                 add = false;
             } else {
-                if (selectedMessages.size() >= 1024) {
+                if (selectedMessages.size() >= 100) {
                     return false;
                 }
                 selectedMessages.put(hashId, message);

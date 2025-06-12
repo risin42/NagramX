@@ -1727,7 +1727,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         return;
                     }
                     if (messageObject.contentType == 0) {
-                        if (selected && selectedMessagesIds[0].size() + selectedMessagesIds[1].size() >= 1024) {
+                        if (selected && selectedMessagesIds[0].size() + selectedMessagesIds[1].size() >= 100) {
                             limitReached = true;
                         } else {
                             limitReached = false;
@@ -44241,7 +44241,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         continue;
                     }
 
-                    if (selectedMessagesIds[0].size() + selectedMessagesIds[1].size() >= 1024) {
+                    if (selectedMessagesIds[0].size() + selectedMessagesIds[1].size() >= 100) {
                         if (message.getId() != begin) {
                             for (int x = 0; x < messages.size(); x++) {
                                 MessageObject msg = messages.get(x);
