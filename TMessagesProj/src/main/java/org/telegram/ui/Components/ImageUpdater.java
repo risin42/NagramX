@@ -268,7 +268,7 @@ public class ImageUpdater implements NotificationCenter.NotificationCenterDelega
             openAttachMenu(onDismiss);
             return;
         }
-        BottomSheet.NekoXBuilder builder = new BottomSheet.NekoXBuilder(parentFragment.getParentActivity());
+        BottomSheet.Builder builder = new BottomSheet.Builder(parentFragment.getParentActivity());
 
         if (type == TYPE_SET_PHOTO_FOR_USER) {
             builder.setTitle(LocaleController.formatString("SetPhotoFor", R.string.SetPhotoFor, user.first_name), true);

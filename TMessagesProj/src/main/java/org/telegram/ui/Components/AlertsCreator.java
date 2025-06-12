@@ -660,9 +660,9 @@ public class AlertsCreator {
         builder.setTitle(LocaleController.getString(R.string.AppName));
         builder.setMessage(text);
         builder.setPositiveButton(LocaleController.getString(R.string.OK), null);
-//        if (updateApp) {
-//            builder.setNegativeButton(LocaleController.getString(R.string.UpdateApp), (dialog, which) -> Browser.openUrl(context, BuildVars.PLAYSTORE_APP_URL));
-//        }
+        /*if (updateApp) {
+           builder.setNegativeButton(LocaleController.getString(R.string.UpdateApp), (dialog, which) -> Browser.openUrl(context, BuildVars.PLAYSTORE_APP_URL));
+        }*/
         return builder.show();
     }
 
@@ -1097,7 +1097,7 @@ public class AlertsCreator {
                 drawable.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_text_RedRegular), PorterDuff.Mode.MULTIPLY));
             } else {
                 textView.setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
-                drawable.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_dialogIcon), PorterDuff.Mode.SRC_IN));
+                drawable.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_dialogIcon), PorterDuff.Mode.MULTIPLY));
             }
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             textView.setLines(1);
@@ -1335,12 +1335,8 @@ public class AlertsCreator {
             builder.setPositiveButton(LocaleController.getString(R.string.Open), (dialogInterface, i) -> open.run());
             builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
             builder.setNeutralButton(LocaleController.getString(R.string.Copy), (dialogInterface, i) -> {
-                try {
-                    AndroidUtilities.addToClipboard(url);
-                    Toast.makeText(fragment.getParentActivity(), LocaleController.getString(R.string.LinkCopied), Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    FileLog.e(e);
-                }
+                AndroidUtilities.addToClipboard(url);
+                BulletinFactory.of(fragment).createCopyLinkBulletin().show();
             });
             fragment.showDialog(dialog[0] = builder.create());
         }
@@ -5156,36 +5152,31 @@ public class AlertsCreator {
             return null;
         }
 
-        BottomBuilder builder = new BottomBuilder(fragment.getParentActivity());
-        builder.addTitle(LocaleController.getString(R.string.Notifications), true);
-        String[] items = new String[]{
+        BottomSheet.Builder builder = new BottomSheet.Builder(fragment.getParentActivity(), false, resourcesProvider);
+        builder.setTitle(LocaleController.getString(R.string.Notifications), true);
+        CharSequence[] items = new CharSequence[]{
                 LocaleController.formatString(R.string.MuteFor, LocaleController.formatPluralString("Hours", 1)),
                 LocaleController.formatString(R.string.MuteFor, LocaleController.formatPluralString("Hours", 8)),
                 LocaleController.formatString(R.string.MuteFor, LocaleController.formatPluralString("Days", 2)),
                 LocaleController.getString(R.string.MuteDisable)
         };
-        builder.addItems(items, new int[]{
-                R.drawable.msg_mute_period,
-                R.drawable.msg_mute_period,
-                R.drawable.msg_mute_period,
-                R.drawable.msg_mute_period
-        }, (i, text, cell) -> {
-            int setting;
-            if (i == 0) {
-                setting = NotificationsController.SETTING_MUTE_HOUR;
-            } else if (i == 1) {
-                setting = NotificationsController.SETTING_MUTE_8_HOURS;
-            } else if (i == 2) {
-                setting = NotificationsController.SETTING_MUTE_2_DAYS;
-            } else {
-                setting = NotificationsController.SETTING_MUTE_FOREVER;
-            }
-            NotificationsController.getInstance(UserConfig.selectedAccount).setDialogNotificationsSettings(dialog_id, topicId, setting);
-            if (BulletinFactory.canShowBulletin(fragment)) {
-                BulletinFactory.createMuteBulletin(fragment, setting, 0, resourcesProvider).show();
-            }
-            return Unit.INSTANCE;
-        });
+        builder.setItems(items, (dialogInterface, i) -> {
+                    int setting;
+                    if (i == 0) {
+                        setting = NotificationsController.SETTING_MUTE_HOUR;
+                    } else if (i == 1) {
+                        setting = NotificationsController.SETTING_MUTE_8_HOURS;
+                    } else if (i == 2) {
+                        setting = NotificationsController.SETTING_MUTE_2_DAYS;
+                    } else {
+                        setting = NotificationsController.SETTING_MUTE_FOREVER;
+                    }
+                    NotificationsController.getInstance(UserConfig.selectedAccount).setDialogNotificationsSettings(dialog_id, topicId, setting);
+                    if (BulletinFactory.canShowBulletin(fragment)) {
+                        BulletinFactory.createMuteBulletin(fragment, setting, 0, resourcesProvider).show();
+                    }
+                }
+        );
         return builder.create();
     }
 
@@ -5194,7 +5185,7 @@ public class AlertsCreator {
             return null;
         }
 
-        BottomSheet.NekoXBuilder builder = new BottomSheet.NekoXBuilder(fragment.getParentActivity(), false);
+        BottomSheet.Builder builder = new BottomSheet.Builder(fragment.getParentActivity(), false, resourcesProvider);
         builder.setTitle(LocaleController.getString(R.string.Notifications), true);
         CharSequence[] items = new CharSequence[]{
                 LocaleController.formatString(R.string.MuteFor, LocaleController.formatPluralString("Hours", 1)),
