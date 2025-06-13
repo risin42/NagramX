@@ -12,57 +12,47 @@ import tw.nekomimi.nekogram.utils.UIUtil
 import tw.nekomimi.nekogram.utils.uDismiss
 import java.util.concurrent.atomic.AtomicBoolean
 
-fun startTrans(ctx: Context, text: String) {
+@JvmOverloads
+fun startTrans(
+    ctx: Context,
+    text: String,
+    toLang: String = NekoConfig.translateToLang.String(),
+    provider: Int = 0
+) {
 
     val dialog = AlertUtil.showProgress(ctx)
-
     val canceled = AtomicBoolean(false)
+    val finalToLang = toLang.code2Locale
+    val finalProvider = provider.takeIf { it != 0 } ?: NekoConfig.translationProvider.Int()
 
     dialog.setOnCancelListener {
-
         canceled.set(true)
-
     }
 
     dialog.show()
 
     fun update(message: String) {
-
         UIUtil.runOnUIThread(Runnable { dialog.setMessage(message) })
-
     }
 
     GlobalScope.launch(Dispatchers.IO) {
-
         runCatching {
-
-            val result = Translator.translate(NekoConfig.translateToLang.String().code2Locale, text)
-
+            val result = Translator.translate(finalToLang, text, finalProvider)
             if (!canceled.get()) {
-
                 dialog.uDismiss()
-
                 AlertUtil.showCopyAlert(ctx, result)
-
             }
-
-        }.onFailure {
-
+        }.onFailure { e ->
             dialog.uDismiss()
-
             if (!canceled.get()) {
-
-                AlertUtil.showTransFailedDialog(ctx, it is UnsupportedOperationException, it.message
-                        ?: it.javaClass.simpleName) {
-
-                    startTrans(ctx, text)
-
+                AlertUtil.showTransFailedDialog(
+                    ctx,
+                    e is UnsupportedOperationException,
+                    e.message ?: e.javaClass.simpleName
+                ) {
+                    startTrans(ctx, text, toLang, finalProvider)
                 }
-
             }
-
         }
-
     }
-
 }
