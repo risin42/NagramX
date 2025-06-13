@@ -15146,14 +15146,14 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     // This method is used to forward messages to Saved Messages, or to multi Dialogs
-    private void forwardMessages(ArrayList<MessageObject> arrayList, boolean fromMyName, boolean notify, int scheduleDate, long did, long payStars, long monoForumPeerId) {
+    private void forwardMessages(ArrayList<MessageObject> arrayList, boolean fromMyName, boolean hideCaption, boolean notify, int scheduleDate, long did, long payStars) {
         if (arrayList == null || arrayList.isEmpty()) {
             return;
         }
         if ((scheduleDate != 0) == (chatMode == MODE_SCHEDULED)) {
             waitingForSendingMessageLoad = true;
         }
-        AlertsCreator.showSendMediaAlert(getSendMessagesHelper().sendMessage(arrayList, did == 0 ? dialog_id : did, fromMyName, false, notify, scheduleDate, payStars, monoForumPeerId), this);
+        AlertsCreator.showSendMediaAlert(getSendMessagesHelper().sendMessage(arrayList, did == 0 ? dialog_id : did, fromMyName, hideCaption, notify, scheduleDate, payStars, getSendMonoForumPeerId()), this);
     }
 
     public boolean shouldShowImport() {
@@ -35617,7 +35617,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         params.payStars = price == null ? 0 : price;
                         getSendMessagesHelper().sendMessage(params);
                     }
-                    forwardMessages(fmessages, noForwardQuote, notify, scheduleDate, did, price == null ? 0 : price, getSendMonoForumPeerId());
+                    forwardMessages(fmessages, noForwardQuote, noForwardCaption, notify, scheduleDate, did, price == null ? 0 : price);
                     // getSendMessagesHelper().sendMessage(fmessages, did, false, false, notify, scheduleDate, null, -1, price == null ? 0 : price, getSendMonoForumPeerId());
                     if (message != null && NekoConfig.sendCommentAfterForward.Bool()) {
                         SendMessagesHelper.SendMessageParams params = SendMessagesHelper.SendMessageParams.of(message.toString(), did, null, null, null, true, null, null, null, notify, scheduleDate, null, false);
@@ -44298,7 +44298,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         } else if (id == nkbtn_savemessage) {
             ArrayList<MessageObject> messages = getSelectedMessages();
-            forwardMessages(messages, false, true, 0, UserConfig.getInstance(currentAccount).getClientUserId(), 0, getSendMonoForumPeerId());
+            forwardMessages(messages, false, false, true,0, UserConfig.getInstance(currentAccount).getClientUserId(), 0);
             undoView.showWithAction(getUserConfig().getClientUserId(), UndoView.ACTION_FWD_MESSAGES, messages.size());
         } else if (id == nkbtn_hide) {
             ArrayList<MessageObject> messages = getSelectedMessages();
@@ -44629,7 +44629,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else {
                     messages.add(selectedObject);
                 }
-                forwardMessages(messages, false, true, 0, getUserConfig().getClientUserId(), 0, 0);
+                forwardMessages(messages, false, false, true, 0, getUserConfig().getClientUserId(), 0);
                 undoView.showWithAction(getUserConfig().getClientUserId(), UndoView.ACTION_FWD_MESSAGES, messages.size());
                 break;
             }
@@ -44783,7 +44783,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     messages.add(selectedObject);
                 }
                 AlertsCreator.createScheduleDatePickerDialog(getParentActivity(), getUserConfig().getClientUserId(), (notify, scheduleDate) -> {
-                    forwardMessages(messages, false, notify, scheduleDate, getUserConfig().getClientUserId(), 0, getSendMonoForumPeerId());
+                    forwardMessages(messages, false, false, notify, scheduleDate, getUserConfig().getClientUserId(), 0);
                     undoView.showWithAction(getUserConfig().getClientUserId(), UndoView.ACTION_FWD_MESSAGES, messages.size());
                 }, themeDelegate);
                 break;
