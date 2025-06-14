@@ -330,6 +330,7 @@ import tw.nekomimi.nekogram.helpers.ProfileDateHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
 import tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity;
+import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.DatacenterActivity;
 import tw.nekomimi.nekogram.NekoConfig;
@@ -6925,17 +6926,17 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             if (view instanceof AboutLinkCell && ((AboutLinkCell) view).onClick()) {
                 return false;
             }
+            String about;
+            if (position == locationRow) {
+                about = chatInfo != null && chatInfo.location instanceof TLRPC.TL_channelLocation ? ((TLRPC.TL_channelLocation) chatInfo.location).address : null;
+            } else if (position == channelInfoRow) {
+                about = chatInfo != null ? chatInfo.about : null;
+            } else {
+                about = userInfo != null ? userInfo.about : null;
+            }
             BottomBuilder builder = new BottomBuilder(getParentActivity());
             builder.addItem(LocaleController.getString(R.string.Copy), R.drawable.msg_copy, __ -> {
                 try {
-                    String about;
-                    if (position == locationRow) {
-                        about = chatInfo != null && chatInfo.location instanceof TLRPC.TL_channelLocation ? ((TLRPC.TL_channelLocation) chatInfo.location).address : null;
-                    } else if (position == channelInfoRow) {
-                        about = chatInfo != null ? chatInfo.about : null;
-                    } else {
-                        about = userInfo != null ? userInfo.about : null;
-                    }
                     if (!TextUtils.isEmpty(about)) {
                         AlertUtil.copyAndAlert(about);
                     }
@@ -6946,14 +6947,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             });
             builder.addItem(LocaleController.getString(R.string.Translate), R.drawable.ic_translate, __ -> {
                 try {
-                    String about;
-                    if (position == locationRow) {
-                        about = chatInfo != null && chatInfo.location instanceof TLRPC.TL_channelLocation ? ((TLRPC.TL_channelLocation) chatInfo.location).address : null;
-                    } else if (position == channelInfoRow) {
-                        about = chatInfo != null ? chatInfo.about : null;
-                    } else {
-                        about = userInfo != null ? userInfo.about : null;
-                    }
                     if (!TextUtils.isEmpty(about)) {
                         DialogTransKt.startTrans(getParentActivity(), about);
                     }
@@ -6962,6 +6955,18 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 return Unit.INSTANCE;
             });
+            if (NaConfig.INSTANCE.isLLMTranslatorAvailable()) {
+                builder.addItem(LocaleController.getString(R.string.TranslateMessageLLM), R.drawable.magic_stick_solar, __ -> {
+                    try {
+                        if (!TextUtils.isEmpty(about)) {
+                            DialogTransKt.startTrans(getParentActivity(), about, NekoConfig.translateToLang.String(), Translator.providerLLMTranslator);
+                        }
+                    } catch (Exception e) {
+                        FileLog.e(e);
+                    }
+                    return Unit.INSTANCE;
+                });
+            }
             builder.show();
             return !(view instanceof AboutLinkCell);
         } else if (position == bizHoursRow || position == bizLocationRow) {
