@@ -260,6 +260,11 @@ public class QuickShareSelectorDrawable extends Drawable implements Animator.Ani
     }
 
     private void closeImpl () {
+        if (openAnimation.isRunning()) {
+            openAnimation.cancel();
+            openAnimationCompleted = true;
+        }
+
         closeAnimation.start();
         closeAnimationStarted = true;
 

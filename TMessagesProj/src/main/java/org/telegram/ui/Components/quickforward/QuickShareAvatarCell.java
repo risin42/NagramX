@@ -126,6 +126,9 @@ class QuickShareAvatarCell implements ValueAnimator.AnimatorUpdateListener {
         if (blurredAvatarDrawable != null) {
             blurredAvatarDrawable.recycle();
         }
+        if (imageReceiver != null) {
+            imageReceiver.onDetachedFromWindow();
+        }
     }
 
 
