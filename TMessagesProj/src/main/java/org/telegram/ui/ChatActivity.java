@@ -44679,7 +44679,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             case nkbtn_translate_llm:
             case nkbtn_translate: {
                 if (NaConfig.INSTANCE.getTranslatorMode().Int() == 2 && !selectedObject.isPoll()) {
-                    String toLang = LocaleController.getInstance().getCurrentLocale().getLanguage();
+                    String toLang = NekoConfig.translateToLang.String()/*LocaleController.getInstance().getCurrentLocale().getLanguage()*/;
                     int[] messageIdToTranslate = new int[] { selectedObject.getId() };
                     final CharSequence finalMessageText = getMessageCaption(selectedObject, selectedObjectGroup, messageIdToTranslate);
                     Utilities.CallbackReturn<URLSpan, Boolean> onLinkPress = (link) -> {
