@@ -6941,11 +6941,11 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
 
     public void setWebPage(TLRPC.WebPage webPage, boolean searchWebPages) {
         messageWebPage = webPage;
-        messageWebPageSearch = searchWebPages;
+        messageWebPageSearch = searchWebPages && delegate.getDisableLinkPreviewStatus() == 1;
     }
 
     public boolean isMessageWebPageSearchEnabled() {
-        return messageWebPageSearch;
+        return messageWebPageSearch && delegate.getDisableLinkPreviewStatus() == 1;
     }
 
     private void setImageDrawableWithAnimation(ImageView imageView, int fromRes, int targetRes, int duration) {
@@ -7933,7 +7933,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     params.searchLinks = false;
                     params.mediaWebPage = null;
                 } else if (messageWebPage instanceof TLRPC.TL_webPagePending) {
-                    params.searchLinks = true;
+                    params.searchLinks = delegate.getDisableLinkPreviewStatus() == 1;
                     params.mediaWebPage = null;
                 } else if (messageWebPage != null) {
                     params.mediaWebPage = new TLRPC.TL_messageMediaWebPage();
@@ -7947,7 +7947,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     if (parentFragment.messagePreviewParams != null) {
                         parentFragment.messagePreviewParams.updateLink(currentAccount, null, "", null, null, null);
                     }
-                    setWebPage(null, true);
+                    setWebPage(null, delegate.getDisableLinkPreviewStatus() == 1);
                     parentFragment.fallbackFieldPanel();
                 }
                 SendMessagesHelper.getInstance(currentAccount).sendMessage(params);

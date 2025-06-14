@@ -10391,7 +10391,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
         public MessageObject replyToMsg;
         public MessageObject replyToTopMsg;
         public TLRPC.WebPage webPage;
-        public boolean searchLinks = true;
+        public boolean searchLinks = !NekoConfig.disableLinkPreviewByDefault.Bool();
         public MessageObject retryMessageObject;
         public ArrayList<TLRPC.MessageEntity> entities;
         public TLRPC.ReplyMarkup replyMarkup;
