@@ -324,7 +324,6 @@ import tw.nekomimi.nekogram.parts.MessageTransKt;
 import tw.nekomimi.nekogram.parts.PollTransUpdatesKt;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
 import tw.nekomimi.nekogram.translate.Translator;
-import tw.nekomimi.nekogram.translate.popupwrapper.LanguageDetector;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -44086,88 +44085,80 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
     private void updateBotHelpCellClick(BotHelpCell cell) {
         final CharSequence text = cell.getText();
-        if (text != null && LanguageDetector.hasSupport()) {
-            LanguageDetector.detectLanguage(text.toString(), lang -> {
-                String toLang = NekoConfig.translateToLang.String();
-                if (lang != null && !RestrictedLanguagesSelectActivity.getRestrictedLanguages().contains(lang)) {
-                    cell.setOnClickListener(e -> {
-                        ActionBarPopupWindow.ActionBarPopupWindowLayout layout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(getContext());
-                        Drawable shadowDrawable2 = ContextCompat.getDrawable(getContext(), R.drawable.popup_fixed_alert).mutate();
-                        shadowDrawable2.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_actionBarDefaultSubmenuBackground), PorterDuff.Mode.MULTIPLY));
-                        layout.setBackground(shadowDrawable2);
+        if (!TextUtils.isEmpty(text)) {
+            String toLang = NekoConfig.translateToLang.String();
+            cell.setOnClickListener(e -> {
+                ActionBarPopupWindow.ActionBarPopupWindowLayout layout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(getContext());
+                Drawable shadowDrawable2 = ContextCompat.getDrawable(getContext(), R.drawable.popup_fixed_alert).mutate();
+                shadowDrawable2.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_actionBarDefaultSubmenuBackground), PorterDuff.Mode.MULTIPLY));
+                layout.setBackground(shadowDrawable2);
 
-                        final Runnable[] dismiss = new Runnable[3];
-                        ActionBarMenuSubItem copyButton = new ActionBarMenuSubItem(getContext(), true, false);
-                        copyButton.setTextAndIcon(getString(R.string.Copy), R.drawable.msg_copy);
-                        copyButton.setOnClickListener(e2 -> {
-                            AndroidUtilities.addToClipboard(text);
-                            createUndoView();
-                            if (undoView == null) return;
-                            undoView.showWithAction(0, UndoView.ACTION_MESSAGE_COPIED, null);
-                            if (dismiss[0] != null) dismiss[0].run();
-                        });
-                        layout.addView(copyButton);
+                final Runnable[] dismiss = new Runnable[3];
+                ActionBarMenuSubItem copyButton = new ActionBarMenuSubItem(getContext(), true, false);
+                copyButton.setTextAndIcon(getString(R.string.Copy), R.drawable.msg_copy);
+                copyButton.setOnClickListener(e2 -> {
+                    AndroidUtilities.addToClipboard(text);
+                    createUndoView();
+                    if (undoView == null) return;
+                    undoView.showWithAction(0, UndoView.ACTION_MESSAGE_COPIED, null);
+                    if (dismiss[0] != null) dismiss[0].run();
+                });
+                layout.addView(copyButton);
 
-                        ActionBarMenuSubItem translateButton = new ActionBarMenuSubItem(getContext(), false, false);
-                        translateButton.setTextAndIcon(LocaleController.getString(R.string.TranslateMessage), R.drawable.msg_translate);
-                        translateButton.setOnClickListener(e3 -> {
-                            DialogTransKt.startTrans(getParentActivity(), text.toString());
-                            if (dismiss[1] != null) dismiss[1].run();
-                        });
-                        translateButton.setOnLongClickListener(view -> {
-                            Translator.showTargetLangSelect(view, (locale) -> {
-                                if (scrimPopupWindow != null) {
-                                    scrimPopupWindow.dismiss();
-                                    scrimPopupWindow = null;
-                                    scrimPopupWindowItems = null;
-                                }
-                                DialogTransKt.startTrans(getParentActivity(), text.toString(), locale.getLanguage());
-                                if (dismiss[1] != null) dismiss[1].run();
-                                return Unit.INSTANCE;
-                            });
-                            return true;
-                        });
-                        layout.addView(translateButton);
-
-                        ActionBarMenuSubItem translateLlmButton = new ActionBarMenuSubItem(getContext(), false, true);
-                        translateLlmButton.setVisibility(NaConfig.INSTANCE.isLLMTranslatorAvailable() ? View.VISIBLE : View.GONE);
-                        translateLlmButton.setTextAndIcon(LocaleController.getString(R.string.TranslateMessageLLM), R.drawable.magic_stick_solar);
-                        translateLlmButton.setOnClickListener(e4 -> {
-                            DialogTransKt.startTrans(getParentActivity(), text.toString(), toLang, Translator.providerLLMTranslator);
-                            if (dismiss[2] != null) dismiss[2].run();
-                        });
-                        translateLlmButton.setOnLongClickListener(view -> {
-                            Translator.showTargetLangSelect(view, (locale) -> {
-                                if (scrimPopupWindow != null) {
-                                    scrimPopupWindow.dismiss();
-                                    scrimPopupWindow = null;
-                                    scrimPopupWindowItems = null;
-                                }
-                                DialogTransKt.startTrans(getParentActivity(), text.toString(), locale.getLanguage(), Translator.providerLLMTranslator);
-                                if (dismiss[2] != null) dismiss[2].run();
-                                return Unit.INSTANCE;
-                            });
-                            return true;
-                        });
-                        layout.addView(translateLlmButton);
-
-                        ActionBarPopupWindow window = new ActionBarPopupWindow(layout, LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT);
-                        dismiss[0] = () -> window.dismiss();
-                        dismiss[1] = () -> window.dismiss();
-                        dismiss[2] = () -> window.dismiss();
-                        window.setPauseNotifications(true);
-                        window.setDismissAnimationDuration(220);
-                        window.setOutsideTouchable(true);
-                        window.setClippingEnabled(true);
-                        window.setAnimationStyle(R.style.PopupContextAnimation);
-                        window.setFocusable(true);
-                        window.showAsDropDown(cell, cell.getWidth() / 2 - AndroidUtilities.dp(90), AndroidUtilities.dp(-16), Gravity.BOTTOM | Gravity.LEFT);
+                ActionBarMenuSubItem translateButton = new ActionBarMenuSubItem(getContext(), false, false);
+                translateButton.setTextAndIcon(LocaleController.getString(R.string.TranslateMessage), R.drawable.msg_translate);
+                translateButton.setOnClickListener(e3 -> {
+                    DialogTransKt.startTrans(getParentActivity(), text.toString());
+                    if (dismiss[1] != null) dismiss[1].run();
+                });
+                translateButton.setOnLongClickListener(view -> {
+                    Translator.showTargetLangSelect(view, (locale) -> {
+                        if (scrimPopupWindow != null) {
+                            scrimPopupWindow.dismiss();
+                            scrimPopupWindow = null;
+                            scrimPopupWindowItems = null;
+                        }
+                        DialogTransKt.startTrans(getParentActivity(), text.toString(), locale.getLanguage());
+                        if (dismiss[1] != null) dismiss[1].run();
+                        return Unit.INSTANCE;
                     });
-                } else {
-                    cell.setClickable(false);
-                }
-            }, err -> {
-                cell.setClickable(false);
+                    return true;
+                });
+                layout.addView(translateButton);
+
+                ActionBarMenuSubItem translateLlmButton = new ActionBarMenuSubItem(getContext(), false, true);
+                translateLlmButton.setVisibility(NaConfig.INSTANCE.isLLMTranslatorAvailable() ? View.VISIBLE : View.GONE);
+                translateLlmButton.setTextAndIcon(LocaleController.getString(R.string.TranslateMessageLLM), R.drawable.magic_stick_solar);
+                translateLlmButton.setOnClickListener(e4 -> {
+                    DialogTransKt.startTrans(getParentActivity(), text.toString(), toLang, Translator.providerLLMTranslator);
+                    if (dismiss[2] != null) dismiss[2].run();
+                });
+                translateLlmButton.setOnLongClickListener(view -> {
+                    Translator.showTargetLangSelect(view, (locale) -> {
+                        if (scrimPopupWindow != null) {
+                            scrimPopupWindow.dismiss();
+                            scrimPopupWindow = null;
+                            scrimPopupWindowItems = null;
+                        }
+                        DialogTransKt.startTrans(getParentActivity(), text.toString(), locale.getLanguage(), Translator.providerLLMTranslator);
+                        if (dismiss[2] != null) dismiss[2].run();
+                        return Unit.INSTANCE;
+                    });
+                    return true;
+                });
+                layout.addView(translateLlmButton);
+
+                ActionBarPopupWindow window = new ActionBarPopupWindow(layout, LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT);
+                dismiss[0] = () -> window.dismiss();
+                dismiss[1] = () -> window.dismiss();
+                dismiss[2] = () -> window.dismiss();
+                window.setPauseNotifications(true);
+                window.setDismissAnimationDuration(220);
+                window.setOutsideTouchable(true);
+                window.setClippingEnabled(true);
+                window.setAnimationStyle(R.style.PopupContextAnimation);
+                window.setFocusable(true);
+                window.showAsDropDown(cell, cell.getWidth() / 2 - AndroidUtilities.dp(90), AndroidUtilities.dp(-16), Gravity.BOTTOM | Gravity.LEFT);
             });
         } else {
             cell.setClickable(false);
