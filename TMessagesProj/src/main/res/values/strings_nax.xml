@@ -201,4 +201,6 @@
     <string name="PreferCommonGroupsTab">Prefer Groups Tab</string>
     <string name="PreferCommonGroupsTabNotice">Auto-select \"Groups\" tab instead of \"Gifts\" when possible.</string>
     <string name="SendHighQualityPhoto">Send High Quality Photo</string>
+    <string name="GroupedMessageMenu">Group Message Menu</string>
+    <string name="GroupedMessageMenuNotice">Grouping moves the main actions to the bottom of the message menu.</string>
 </resources>

@@ -13,46 +13,111 @@ import android.widget.LinearLayout;
 
 import androidx.core.content.ContextCompat;
 
+import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ChatActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import xyz.nextalone.nagram.NaConfig;
 
 @SuppressLint("ViewConstructor")
 public class GroupedIconsView extends FrameLayout {
 
     private final static int OPTION_DELETE = 1;
+    private final static int OPTION_FORWARD = 2;
+    private final static int OPTION_FORWARD_NOQUOTE = 2011;
     private final static int OPTION_COPY = 3;
+    private final static int OPTION_COPY_PHOTO = 150;
+    private final static int OPTION_COPY_PHOTO_AS_STICKER = 151;
+    private final static int OPTION_COPY_LINK = 22;
+    private final static int OPTION_COPY_LINK_PM = 2025;
     private final static int OPTION_REPLY = 8;
+    private final static int OPTION_REPLY_PM = 2033;
     private final static int OPTION_EDIT = 12;
 
-
-
-    private Context context;
-    private ChatActivity chatActivity;
+    private final Context context;
+    private final ChatActivity chatActivity;
     public LinearLayout linearLayout;
 
-    public GroupedIconsView(Context context, ChatActivity chatActivity,
-                            boolean canDelete, boolean canEdit,
-                            boolean canCopy, boolean canReply) {
+    public GroupedIconsView(Context context, ChatActivity chatActivity, MessageObject messageObject,
+                            boolean allowReply, boolean allowReplyPm,
+                            boolean allowEdit, boolean allowDelete, boolean allowForward,
+                            boolean allowCopy, boolean allowCopyPhoto, boolean allowCopySticker, boolean allowCopyLink, boolean allowCopyLinkPm) {
         super(context);
 
         linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         linearLayout.setGravity(Gravity.CENTER);
 
-
         this.context = context;
         this.chatActivity = chatActivity;
-        addOption(R.drawable.menu_reply, OPTION_REPLY, canReply);
-        addOption(R.drawable.msg_delete, OPTION_DELETE, canDelete);
-        addOption(R.drawable.msg_copy, OPTION_COPY, canCopy);
-        addOption(R.drawable.msg_edit, OPTION_EDIT, canEdit);
+
+        List<OptionConfig> options = new ArrayList<>();
+
+        // button 1: reply
+        options.add(new OptionConfig(R.drawable.menu_reply, OPTION_REPLY, OPTION_REPLY_PM, allowReply, allowReplyPm));
+
+        // button 2: copy text > copy photo > copy sticker > copy link
+        if (allowCopy) {
+            if (!allowCopyPhoto && messageObject != null && messageObject.isPhoto() && !messageObject.needDrawBluredPreview()) {
+                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, OPTION_COPY_PHOTO, true));
+            } else if (allowCopyLink) {
+                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, OPTION_COPY_LINK, true));
+            } else if (allowCopyLinkPm) {
+                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, OPTION_COPY_LINK_PM, true));
+            } else {
+                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, true));
+            }
+        } else if (allowCopyPhoto) {
+            options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO, OPTION_COPY_PHOTO_AS_STICKER, true));
+        } else if (allowCopySticker) {
+            if (allowCopyLink) {
+                options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO_AS_STICKER, OPTION_COPY_LINK, true));
+            } else if (allowCopyLinkPm) {
+                options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO_AS_STICKER, OPTION_COPY_LINK_PM, true));
+            }
+        } else if (allowCopyLink && allowDelete) {
+            options.add(new OptionConfig(R.drawable.msg_link, OPTION_COPY_LINK, true));
+        } else if (allowCopyLinkPm) {
+            options.add(new OptionConfig(R.drawable.msg_link, OPTION_COPY_LINK_PM, true));
+        } else {
+            options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, false));
+        }
+
+        // button 3: delete > copy photo > copy link
+        if (allowDelete) {
+            options.add(new OptionConfig(R.drawable.msg_delete, OPTION_DELETE, true));
+        } else if (allowCopy && allowCopyPhoto) {
+            options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO, OPTION_COPY_PHOTO_AS_STICKER, true));
+        } else {
+            options.add(new OptionConfig(R.drawable.msg_link, OPTION_COPY_LINK, allowCopyLink));
+        }
+
+        // button 4: edit > forward
+        if (allowEdit) {
+            options.add(new OptionConfig(R.drawable.msg_edit, OPTION_EDIT, true));
+        } else {
+            options.add(new OptionConfig(R.drawable.msg_forward_noquote, OPTION_FORWARD, OPTION_FORWARD_NOQUOTE, allowForward, allowForward));
+        }
+
+        for (OptionConfig config : options) {
+            addOption(config);
+        }
     }
 
-    private void addOption(int icon, int option, boolean canClick) {
+    public static boolean useGroupedIcons() {
+        return NaConfig.INSTANCE.getGroupedMessageMenu().Bool();
+    }
+
+    private void addOption(OptionConfig config) {
         var imageView = new ImageView(context);
         imageView.setScaleType(ImageView.ScaleType.CENTER);
-        imageView.setImageDrawable(ContextCompat.getDrawable(context, icon).mutate());
+        imageView.setImageDrawable(Objects.requireNonNull(ContextCompat.getDrawable(context, config.iconResId)).mutate());
+        imageView.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
         imageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_actionBarDefaultSubmenuItemIcon), PorterDuff.Mode.MULTIPLY));
 
         var params = new LinearLayout.LayoutParams(
@@ -63,19 +128,42 @@ public class GroupedIconsView extends FrameLayout {
         params.setMargins(dp(14), dp(12), dp(14), dp(12));
         imageView.setLayoutParams(params);
 
-
         linearLayout.addView(imageView);
 
-        if (canClick) {
-            imageView.setOnClickListener(v1 -> chatActivity.processSelectedOption(option));
+        if (config.isEnabled) {
+            imageView.setOnClickListener(v1 -> chatActivity.processSelectedOption(config.shortPressOptionId));
+            if (config.longPressOptionId != null && config.isLongClickEnabled) {
+                imageView.setOnLongClickListener(v1 -> {
+                    chatActivity.processSelectedOption(config.longPressOptionId);
+                    return true;
+                });
+            }
         } else {
             imageView.setAlpha(0.4f);
         }
     }
 
-    public static boolean useGroupedIcons() {
-        // todo: implement config or so
-        // i hope nagramX devs can do it
-        return true;
+    public static class OptionConfig {
+        final int iconResId;
+        final int shortPressOptionId;
+        final Integer longPressOptionId;
+        final boolean isEnabled;
+        final boolean isLongClickEnabled;
+
+        public OptionConfig(int iconResId, int shortPressOptionId, boolean isEnabled) {
+            this(iconResId, shortPressOptionId, null, isEnabled, false);
+        }
+
+        public OptionConfig(int iconResId, int shortPressOptionId, int longPressOptionId, boolean isEnabled) {
+            this(iconResId, shortPressOptionId, longPressOptionId, isEnabled, true);
+        }
+
+        public OptionConfig(int iconResId, int shortPressOptionId, Integer longPressOptionId, boolean isEnabled, boolean isLongClickEnabled) {
+            this.iconResId = iconResId;
+            this.shortPressOptionId = shortPressOptionId;
+            this.longPressOptionId = longPressOptionId;
+            this.isEnabled = isEnabled;
+            this.isLongClickEnabled = isLongClickEnabled;
+        }
     }
 }

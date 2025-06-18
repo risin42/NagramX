@@ -154,6 +154,7 @@ class SolarIconReplace : BaseIconReplace() {
         R.drawable.msg_contacts_ny to R.drawable.msg_contacts_ny_solar,
         R.drawable.msg_contacts_time to R.drawable.msg_contacts_time_solar,
         R.drawable.msg_copy to R.drawable.msg_copy_solar,
+        R.drawable.msg_copy_photo to R.drawable.msg_copy_photo_solar,
         R.drawable.msg_copy_filled to R.drawable.msg_copy_filled_solar,
         R.drawable.msg_current_location to R.drawable.msg_current_location_solar,
         R.drawable.msg_customize to R.drawable.msg_photo_settings_solar,
