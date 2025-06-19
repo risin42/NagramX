@@ -163,6 +163,8 @@
     <string name="DebugMenuEnableVideoQualitiesDebug">Ativar depuração das qualidades de vídeo</string>
     <string name="DebugMenuDisableVideoQualitiesDebug">Desativar depuração das qualidades de vídeo</string>
     <string name="DebugMenuReloadAppConfig">Recarregar Configuração do Aplicativo</string>
+    <string name="DebugMenuForceForumTabs">Forçar Abas do Fórum</string>
+    <string name="DebugMenuDoNotForceForumTabs">Não Forçar Abas do Fórum</string>
     <string name="TranslateMessageLLM">Traduzir com IA</string>
     <string name="ResetChatNameOverrides">Redefinir Substituições de Nome do Chat</string>
     <string name="ResetChatNameNotification">Substituições de nome do chat limpas.</string>
@@ -186,4 +188,6 @@
     <string name="PreferCommonGroupsTab">Preferir a aba Grupos</string>
     <string name="PreferCommonGroupsTabNotice">Selecionar automaticamente a aba \"Grupos\" em vez de \"Presentes\" sempre que possível.</string>
     <string name="SendHighQualityPhoto">Enviar Foto Em Alta Qualidade</string>
+    <string name="GroupedMessageMenu">Menu de Mensagens do Grupo</string>
+    <string name="GroupedMessageMenuNotice">O agrupamento move as principais ações para o final do menu de mensagens.</string>
 </resources>

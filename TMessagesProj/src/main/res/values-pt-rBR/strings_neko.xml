@@ -33,7 +33,7 @@
     <string name="Valentine">Dia dos Namorados</string>
     <string name="Snowflakes">Flocos de neve</string>
     <string name="Fireworks">Fogos de Artifício</string>
-    <string name="DeleteDownloadedFile">Excluir arquivo baixado</string>
+    <string name="DeleteDownloadedFile">Limpar</string>
     <string name="TestBackend">Teste de back-end</string>
     <string name="HideProxySponsorChannel">Ocultar canal de patrocinador de proxy</string>
     <string name="ViewHistory">Histórico</string>
@@ -127,7 +127,7 @@
     <string name="MutualContact">Contato comum</string>
     <string name="MutualContactDescription">Este é um contato em comum.</string>
     <string name="DatacenterStatusAbout">Verifique o status dos **datacenters** do Telegram.</string>
-    <string name="DatacenterStatus">Datacenter Status</string>
+    <string name="DatacenterStatus">Status do Datacenter</string>
     <string name="enhancedFileLoader">Aumentar Velocidade de Download</string>
     <string name="mapDriftingFixForGoogleMaps">Corrigir Google Maps Drifting na China</string>
     <string name="useOSMDroidMap">Usar Mapa OSMDroid</string>

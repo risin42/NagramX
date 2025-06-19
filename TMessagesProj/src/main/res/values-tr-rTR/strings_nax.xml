@@ -188,4 +188,6 @@
     <string name="PreferCommonGroupsTab">Gruplar Sekmesini Tercih Et</string>
     <string name="PreferCommonGroupsTabNotice">Mümkün olduğunda \"Hediyeler\" yerine \"Gruplar\" sekmesini otomatik olarak seç.</string>
     <string name="SendHighQualityPhoto">Yüksek Kaliteli Fotoğraf Gönder</string>
+    <string name="GroupedMessageMenu">Mesaj Menüsünü Grupla</string>
+    <string name="GroupedMessageMenuNotice">Gruplama, ana eylemleri mesaj menüsünün altına taşır.</string>
 </resources>
