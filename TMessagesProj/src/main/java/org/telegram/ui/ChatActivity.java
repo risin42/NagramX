@@ -132,6 +132,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.exteragram.messenger.components.GroupedIconsView;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.zxing.common.detector.MathUtils;
 import com.radolyn.ayugram.AyuConstants;
@@ -31708,7 +31709,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
 
                 if (type == -1) {
-                    if ((selectedObject.type == MessageObject.TYPE_TEXT || selectedObject.isAnimatedEmoji() || selectedObject.isAnimatedEmojiStickers() || getMessageCaption(selectedObject, selectedObjectGroup) != null) && !noforwardsOrPaidMedia && !message.isExpiredStory()) {
+                    if (!GroupedIconsView.useGroupedIcons() && (selectedObject.type == MessageObject.TYPE_TEXT || selectedObject.isAnimatedEmoji() || selectedObject.isAnimatedEmojiStickers() || getMessageCaption(selectedObject, selectedObjectGroup) != null) && !noforwardsOrPaidMedia && !message.isExpiredStory()) {
                         items.add(LocaleController.getString(R.string.Copy));
                         options.add(OPTION_COPY);
                         icons.add(R.drawable.msg_copy);
@@ -31716,7 +31717,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     items.add(LocaleController.getString(R.string.CancelSending));
                     options.add(OPTION_CANCEL_SENDING);
                     icons.add(R.drawable.msg_delete);
-                } else if (type == 0) {
+                } else if (type == 0 && !GroupedIconsView.useGroupedIcons()) {
                     items.add(LocaleController.getString(R.string.Retry));
                     options.add(OPTION_RETRY);
                     icons.add(R.drawable.msg_retry);
@@ -31725,7 +31726,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     icons.add(selectedObject.messageOwner.ttl_period != 0 ? R.drawable.msg_delete_auto : R.drawable.msg_delete);
                 } else if (type == 1) {
                     if (currentChat != null) {
-                        if (allowChatActions && !isInsideContainer) {
+                        if (allowChatActions && !isInsideContainer && !GroupedIconsView.useGroupedIcons()) {
                             items.add(LocaleController.getString(R.string.Reply));
                             options.add(OPTION_REPLY);
                             icons.add(R.drawable.menu_reply);
@@ -31754,7 +31755,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             options.add(OPTION_TRANSLATE);
                             icons.add(R.drawable.msg_translate);
                         }*/
-                        if (message.canEditMessage(currentChat)) {
+                        if (message.canEditMessage(currentChat) && !GroupedIconsView.useGroupedIcons()) {
                             items.add(LocaleController.getString(R.string.Edit));
                             options.add(OPTION_EDIT);
                             icons.add(R.drawable.msg_edit);
@@ -31770,7 +31771,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             icons.add(R.drawable.msg_report);
                         }
                     } else {
-                        if (selectedObject.getId() > 0 && allowChatActions && !isInsideContainer) {
+                        if (selectedObject.getId() > 0 && allowChatActions && !isInsideContainer && !GroupedIconsView.useGroupedIcons()) {
                             items.add(LocaleController.getString(R.string.Reply));
                             options.add(OPTION_REPLY);
                             icons.add(R.drawable.menu_reply);
@@ -31781,16 +31782,16 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         options.add(OPTION_GIFT);
                         icons.add(R.drawable.menu_gift);
                     }
-                    if (message.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat) && (threadMessageObjects == null || !threadMessageObjects.contains(message)) && !(message != null && message.messageOwner != null && message.messageOwner.action instanceof TLRPC.TL_messageActionTopicCreate)) {
+                    if (!GroupedIconsView.useGroupedIcons() && message.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat) && (threadMessageObjects == null || !threadMessageObjects.contains(message)) && !(message != null && message.messageOwner != null && message.messageOwner.action instanceof TLRPC.TL_messageActionTopicCreate)) {
                         items.add(LocaleController.getString(chatMode == MODE_SAVED && threadMessageId != getUserConfig().getClientUserId() ? R.string.Remove : R.string.Delete));
                         options.add(OPTION_DELETE);
                         icons.add(selectedObject.messageOwner.ttl_period != 0 ? R.drawable.msg_delete_auto : R.drawable.msg_delete);
                     }
-                } else if (type == 20) {
+                } else if (type == 20 && !GroupedIconsView.useGroupedIcons()) {
                     items.add(LocaleController.getString(R.string.Retry));
                     options.add(OPTION_RETRY);
                     icons.add(R.drawable.msg_retry);
-                    if (!noforwardsOrPaidMedia) {
+                    if (!noforwardsOrPaidMedia && !GroupedIconsView.useGroupedIcons()) {
                         items.add(LocaleController.getString(R.string.Copy));
                         options.add(OPTION_COPY);
                         icons.add(R.drawable.msg_copy);
@@ -31816,7 +31817,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 icons.add(R.drawable.msg_fave);
                             }
                         }
-                        if ((allowChatActions || !noforwardsOrPaidMedia && ChatObject.isChannelAndNotMegaGroup(currentChat) && !selectedObject.isSponsored() && selectedObject.contentType == 0 && chatMode == MODE_DEFAULT) && !isInsideContainer && !isAyuDeleted) {
+                        if (!GroupedIconsView.useGroupedIcons() && (allowChatActions || !noforwardsOrPaidMedia && ChatObject.isChannelAndNotMegaGroup(currentChat) && !selectedObject.isSponsored() && selectedObject.contentType == 0 && chatMode == MODE_DEFAULT) && !isInsideContainer && !isAyuDeleted) {
                             items.add(LocaleController.getString(R.string.Reply));
                             options.add(OPTION_REPLY);
                             icons.add(R.drawable.menu_reply);
@@ -31826,7 +31827,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             options.add(nkbtn_reply_private);
                             icons.add(R.drawable.menu_reply);
                         }
-                        if ((selectedObject.type == MessageObject.TYPE_TEXT || selectedObject.isDice() || selectedObject.isAnimatedEmoji() || selectedObject.isAnimatedEmojiStickers() || getMessageCaption(selectedObject, selectedObjectGroup) != null) && !noforwardsOrPaidMedia && !selectedObject.sponsoredCanReport) {
+                        if (!GroupedIconsView.useGroupedIcons() && (selectedObject.type == MessageObject.TYPE_TEXT || selectedObject.isDice() || selectedObject.isAnimatedEmoji() || selectedObject.isAnimatedEmojiStickers() || getMessageCaption(selectedObject, selectedObjectGroup) != null) && !noforwardsOrPaidMedia && !selectedObject.sponsoredCanReport) {
                             items.add(LocaleController.getString(R.string.Copy));
                             options.add(OPTION_COPY);
                             icons.add(R.drawable.msg_copy);
@@ -32204,7 +32205,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             options.add(OPTION_TRANSLATE);
                             icons.add(R.drawable.msg_translate);
                         }*/
-                        if (allowEdit) {
+                        if (allowEdit && !GroupedIconsView.useGroupedIcons()) {
                             items.add(LocaleController.getString(R.string.Edit));
                             options.add(OPTION_EDIT);
                             icons.add(R.drawable.msg_edit);
@@ -32236,18 +32237,18 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 icons.add(R.drawable.msg_report);
                             }
                         }
-                        if (message.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat) && (threadMessageObjects == null || !threadMessageObjects.contains(message))) {
+                        if (!GroupedIconsView.useGroupedIcons() && message.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat) && (threadMessageObjects == null || !threadMessageObjects.contains(message))) {
                             items.add(LocaleController.getString(chatMode == MODE_SAVED && threadMessageId != getUserConfig().getClientUserId() ? R.string.Remove : R.string.Delete));
                             options.add(OPTION_DELETE);
                             icons.add(selectedObject.messageOwner.ttl_period != 0 ? R.drawable.msg_delete_auto : R.drawable.msg_delete);
                         }
                     } else {
-                        if (allowChatActions && !isInsideContainer) {
+                        if (allowChatActions && !isInsideContainer && !GroupedIconsView.useGroupedIcons()) {
                             items.add(LocaleController.getString(R.string.Reply));
                             options.add(OPTION_REPLY);
                             icons.add(R.drawable.menu_reply);
                         }
-                        if ((selectedObject.type == MessageObject.TYPE_TEXT || selectedObject.isAnimatedEmoji() || selectedObject.isAnimatedEmojiStickers() || getMessageCaption(selectedObject, selectedObjectGroup) != null) && !noforwardsOrPaidMedia) {
+                        if (!GroupedIconsView.useGroupedIcons() && (selectedObject.type == MessageObject.TYPE_TEXT || selectedObject.isAnimatedEmoji() || selectedObject.isAnimatedEmojiStickers() || getMessageCaption(selectedObject, selectedObjectGroup) != null) && !noforwardsOrPaidMedia) {
                             items.add(LocaleController.getString(R.string.Copy));
                             options.add(OPTION_COPY);
                             icons.add(R.drawable.msg_copy);
@@ -33293,6 +33294,20 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     layout.addView(infoText, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.FILL));
                     popupLayout.addView(layout);
                 }
+
+                if (GroupedIconsView.useGroupedIcons()) {
+                    popupLayout.addView(new ActionBarPopupWindow.GapView(contentView.getContext(), themeDelegate), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 8));
+
+                    boolean canCopy = (selectedObject.type == MessageObject.TYPE_TEXT || selectedObject.isAnimatedEmoji() || selectedObject.isAnimatedEmojiStickers() || getMessageCaption(selectedObject, selectedObjectGroup) != null);
+                    boolean canReply = (allowChatActions || !noforwardsOrPaidMedia && ChatObject.isChannelAndNotMegaGroup(currentChat) && !selectedObject.isSponsored() && selectedObject.contentType == 0 && chatMode == MODE_DEFAULT) && !isInsideContainer;
+                    boolean canDelete = selectedObject.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat);
+                    boolean canEdit = selectedObject.canEditMessage(currentChat);
+
+
+                    var groupedIconsView = new GroupedIconsView(getContext(), ChatActivity.this, canDelete, canEdit, canCopy, canReply);
+                    popupLayout.addView(groupedIconsView.linearLayout);
+                }
+
             }
 
             ChatScrimPopupContainerLayout scrimPopupContainerLayout = new ChatScrimPopupContainerLayout(contentView.getContext()) {
@@ -34484,7 +34499,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         MediaController.saveFile(messageObject, path, getParentActivity(), messageObject.isVideo() ? 1 : 0, null, null);
     }
 
-    private void processSelectedOption(int option) {
+    public void processSelectedOption(int option) {
         if (selectedObject == null || getParentActivity() == null) {
             return;
         }
