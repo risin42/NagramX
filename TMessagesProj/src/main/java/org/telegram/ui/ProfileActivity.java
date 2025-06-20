@@ -12631,7 +12631,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     } else if (position == sendLogsRow) {
                         textCell.setTextAndIcon(getString(R.string.DebugSendLogs), R.drawable.ic_upward_solar, true);
                     } else if (position == sendLastLogsRow) {
-                        textCell.setTextAndIcon(LocaleController.getString(R.string.DebugSendLastLogs), R.drawable.baseline_bug_report_24 ,true);
+                        textCell.setTextAndIcon(LocaleController.getString(R.string.DebugSendLastLogs), R.drawable.bug_solar ,true);
                     } else if (position == clearLogsRow) {
                         textCell.setTextAndIcon(getString(R.string.DebugClearLogs), R.drawable.msg_clear_solar, switchBackendRow != -1);
                     } else if (position == switchBackendRow) {

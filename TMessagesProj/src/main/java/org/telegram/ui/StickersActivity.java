@@ -371,8 +371,8 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
         ActionBarMenuItem otherItem = menu.addItem(menu_other, R.drawable.ic_ab_other);
 
-        otherItem.addSubItem(menu_export, R.drawable.msg_download, LocaleController.getString("ExportStickers", R.string.ExportStickers));
-        otherItem.addSubItem(menu_import, R.drawable.baseline_playlist_add_24, LocaleController.getString("ImportStickersX", R.string.ImportStickersX));
+        otherItem.addSubItem(menu_export, R.drawable.msg_instant_link, LocaleController.getString("ExportStickers", R.string.ExportStickers));
+        otherItem.addSubItem(menu_import, R.drawable.msg_download, LocaleController.getString("ImportStickersX", R.string.ImportStickersX));
 
         ActionBarMenu actionMode = actionBar.createActionMode();
         selectedCountTextView = new NumberTextView(actionMode.getContext());

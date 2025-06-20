@@ -185,7 +185,7 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
     }
 
     fun addCancelItem() {
-        addItem(getString(R.string.Cancel), R.drawable.baseline_cancel_24) {}
+        addItem(getString(R.string.Cancel), R.drawable.msg_cancel) {}
     }
 
     @JvmOverloads

@@ -402,7 +402,7 @@ public class ProxyListActivity extends BaseFragment implements NotificationCente
         });
         otherItem.addSubItem(na_menu_delete_all, LocaleController.getString("DeleteAllServer", R.string.DeleteAllServer)).setOnClickListener((v) -> AlertUtil.showConfirm(getParentActivity(),
                 LocaleController.getString("DeleteAllServer", R.string.DeleteAllServer),
-                R.drawable.baseline_delete_24, LocaleController.getString("Delete", R.string.Delete),
+                R.drawable.msg_delete, LocaleController.getString("Delete", R.string.Delete),
                 true, () -> {
                     SharedConfig.deleteAllProxy();
                     updateRows(true);
@@ -411,7 +411,7 @@ public class ProxyListActivity extends BaseFragment implements NotificationCente
         otherItem.addSubItem(na_menu_delete_unavailable, LocaleController.getString("DeleteUnavailableServer", R.string.DeleteUnavailableServer)).setOnClickListener((v) -> {
             AlertUtil.showConfirm(getParentActivity(),
                     LocaleController.getString("DeleteUnavailableServer", R.string.DeleteUnavailableServer),
-                    R.drawable.baseline_delete_24, LocaleController.getString("Delete", R.string.Delete),
+                    R.drawable.msg_delete, LocaleController.getString("Delete", R.string.Delete),
                     true, () -> {
                         for (SharedConfig.ProxyInfo info : SharedConfig.getProxyList()) {
                             if (info.checking) {

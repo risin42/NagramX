@@ -45143,7 +45143,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         options.add(R.drawable.msg_copy, getString(isHashtag ? R.string.CopyHashtag : isMail ? R.string.CopyMail : R.string.CopyLink), () -> {
             run1.run(true);
         });
-        options.add(R.drawable.wallet_qr, getString(R.string.ShareQRCode), () -> {
+        options.add(R.drawable.msg_qrcode, getString(R.string.ShareQRCode), () -> {
             // QRCode
             ProxyUtil.showQrDialog(getParentActivity(), str);
         });

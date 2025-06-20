@@ -153,8 +153,8 @@ object ProxyUtil {
 
                         ), intArrayOf(
 
-                                R.drawable.baseline_image_24,
-                                R.drawable.baseline_cancel_24
+                                R.drawable.msg_gallery,
+                                R.drawable.msg_cancel
 
                         )) { i, _, _ ->
 
@@ -290,9 +290,9 @@ object ProxyUtil {
                 getString(R.string.Copy),
                 getString(R.string.ShareQRCode)
         ), intArrayOf(
-                R.drawable.baseline_open_in_browser_24,
-                R.drawable.baseline_content_copy_24,
-                R.drawable.wallet_qr
+                R.drawable.web_browser,
+                R.drawable.msg_copy,
+                R.drawable.msg_qrcode
         )) { which, _, _ ->
             when (which) {
                 0 -> Browser.openUrl(ctx, text)
