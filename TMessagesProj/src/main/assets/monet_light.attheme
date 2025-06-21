@@ -460,7 +460,7 @@ dialogTopBackground=n1_500
 dialog_inlineProgress=a1_600
 dialog_inlineProgressBackground=n1_50
 dialog_liveLocationProgress=a1_600
-divider=n1_50
+divider=n1_200
 emptyListPlaceholder=n2_800
 fastScrollActive=a1_200
 fastScrollInactive=a1_600
@@ -722,4 +722,14 @@ windowBackgroundWhiteInputFieldActivated=a1_600
 windowBackgroundWhiteLinkSelection=n1_200
 windowBackgroundWhiteLinkText=a3_500
 windowBackgroundWhiteValueText=a1_600
+
+# Nickname Colorful
+# avatar_nameInMessageBlue=a1_400
+# avatar_nameInMessageCyan=a1_400
+# avatar_nameInMessageGreen=a1_400
+# avatar_nameInMessageOrange=a1_400
+# avatar_nameInMessagePink=a1_400
+# avatar_nameInMessageRed=a1_400
+# avatar_nameInMessageViolet=a1_400
+
 end
