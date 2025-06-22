@@ -165,6 +165,7 @@
     <string name="DebugMenuReloadAppConfig">Uygulama Yapılandırmasını Yeniden Yükle</string>
     <string name="DebugMenuForceForumTabs">Forum Sekmelerini Zorla</string>
     <string name="DebugMenuDoNotForceForumTabs">Forum Sekmelerini Zorlama</string>
+    <string name="DebugMenuCleanAppUpdate">Temiz Uygulama Güncellemesi</string>
     <string name="TranslateMessageLLM">Yapay Zeka ile Çevir</string>
     <string name="ResetChatNameOverrides">Sohbet Adı Geçersiz Kılmalarını Sıfırla</string>
     <string name="ResetChatNameNotification">Sohbet adı geçersiz kılmaları temizlendi.</string>
@@ -190,4 +191,10 @@
     <string name="SendHighQualityPhoto">Yüksek Kaliteli Fotoğraf Gönder</string>
     <string name="GroupedMessageMenu">Mesaj Menüsünü Grupla</string>
     <string name="GroupedMessageMenuNotice">Gruplama, ana eylemleri mesaj menüsünün altına taşır.</string>
+    <string name="CopySticker">Çıkartmayı Kopyala</string>
+    <string name="CheckUpdate">Güncellemeleri Kontrol et</string>
+    <string name="AutoCheckUpdateOFF">KAPALI</string>
+    <string name="AutoCheckUpdateSwitch">Güncelleme Kanalı</string>
+    <string name="AutoCheckUpdateRelease">Sürüm</string>
+    <string name="AutoCheckUpdateBeta">Beta</string>
 </resources>

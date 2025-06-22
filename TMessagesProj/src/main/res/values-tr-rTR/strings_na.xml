@@ -20,8 +20,6 @@
     <string name="ShowMessageID">Mesaj Kimliğini Göster</string>
     <string name="ShowRPCError">RPC Hatalarını Bildir</string>
     <string name="ShowPremiumStickersAnimation">Premium Çıkartma Animasyonlarını Göster</string>
-    <string name="ShowPremiumStarInChat">Sohbette Premium Yıldızını Göster</string>
-    <string name="ShowPremiumAvatarAnimation">Premium Avatar Animasyonunu Göster</string>
     <string name="AlwaysSaveChatOffset">Sohbet Kaydırma Konumunu Her Zaman Kaydet</string>
     <string name="AppIconColorful">Renkli</string>
     <string name="AppIconDarkGreen">Koyu Yeşil</string>
@@ -31,7 +29,6 @@
     <string name="AppIconDarkBlue">Koyu Mavi</string>
     <string name="AppIconBlurBlue">Bulanık Mavi</string>
     <string name="AutoInsertGIFCaption">GIF Göndermeden Önce Otomatik Altyazı Ekle</string>
-    <string name="DisableGlobalSearch">Global Aramayı Devre Dışı Bırak</string>
     <string name="InputMessageId">Mesaj Kimliğini Girin</string>
     <string name="ToTheMessage">Mesaja Git</string>
     <string name="ZalgoFilter">\"Zalgo\" Sembollerini Filtrele</string>
@@ -39,7 +36,6 @@
     <string name="labelChannelUser">Kanal Kullanıcılarını Etiketle</string>
     <string name="CustomChannelLabel">Özel Kanal Etiketi</string>
     <string name="AlwaysShowDownloadIcon">İndirme Simgesini Her Zaman Göster</string>
-    <string name="RealHideTimeForSticker">Çıkartmalarda Zamanı Gizle</string>
     <string name="HideTitle">Başlığı Gizle</string>
     <string name="IgnoreFolderCount">Klasörlerdeki Okunmamış Sayısını Gizle</string>
     <string name="SendWithoutMarkdown">Markdown’suz Gönder</string>
@@ -55,7 +51,6 @@
     <string name="ShowOnlineStatusNotice">Gruplarda profil fotoğraflarının yanında diğer kişilerin çevrimiçi durumunu göster.</string>
     <string name="DoActionsInCommonGroups">Ortak Gruplarda Uygula</string>
     <string name="ShowFullAbout">Sohbet Açıklamasını Her Zaman Genişlet</string>
-    <string name="HideMessageSeenTooltip">Okundu Bilgilerini Gizle</string>
     <string name="TypeMessageHintUseGroupName">Grup Adını İpucu Metni Olarak Kullan</string>
     <string name="HideBotButtonInInputField">Giriş Alanındaki Bot Düğmesini Gizle</string>
     <string name="ShowSendAsUnderMessageHint">Mesaj İpucunun Altında Göndereni Göster</string>
@@ -70,8 +65,6 @@
     <string name="DisableStories">Hikayeleri Devre Dışı Bırak</string>
     <string name="HideFilterMuteAll">Uzun Basma Menüsünde \"Tümünü Sustur\"u Gizle</string>
     <string name="ShowSquareAvatar">Kare Avatar Göster</string>
-    <string name="DisableCustomWallpaperUser">Kullanıcı Özel Duvar Kağıdını Devre Dışı Bırak</string>
-    <string name="DisableCustomWallpaperChannel">Kanal Özel Duvar Kağıdını Devre Dışı Bırak</string>
     <string name="CopyPhotoAsSticker">Çıkartma Olarak Kopyala</string>
     <string name="ExternalStickerCache">Harici Çıkartma Önbelleği</string>
     <string name="ExternalStickerCacheHint">Diğer uygulamalarla çıkartma paketlerini paylaşmak için. Depolama konumunu seçmek için tıklayın.</string>
@@ -87,7 +80,6 @@
     <string name="ProviderTranSmartTranslate">TranSmart Çevirmen</string>
     <string name="DisableMarkdown">Markdown’u Devre Dışı Bırak</string>
     <string name="SendWithMarkdown">Markdown ile Gönder</string>
-    <string name="DisableClickProfileGalleryView">Dokunarak Avatarları Çevirmeyi Devre Dışı Bırak</string>
     <string name="TipsChannel">Özellik İpuçları Kanalı</string>
     <string name="ShowSmallGIF">Küçük GIF Göster</string>
     <string name="DisableClickCommandToSend">Bot Komutu Göndermeden Önce Sor</string>

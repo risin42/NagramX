@@ -163,6 +163,8 @@
     <string name="DebugMenuEnableVideoQualitiesDebug">Увімкнути налагодження якості відео</string>
     <string name="DebugMenuDisableVideoQualitiesDebug">Вимкнути налагодження якості відео</string>
     <string name="DebugMenuReloadAppConfig">Перезавантажити налаштування програми</string>
+    <string name="DebugMenuForceForumTabs">Примусові вкладки у форумах</string>
+    <string name="DebugMenuDoNotForceForumTabs">Не примусово вкладки у форумах</string>
     <string name="TranslateMessageLLM">Перекладач AI</string>
     <string name="ResetChatNameOverrides">Скинути змінені назви чатів</string>
     <string name="ResetChatNameNotification">Змінені назви чатів очищені.</string>
@@ -186,4 +188,7 @@
     <string name="SendHighQualityPhoto">Надсилати фото у високій якості</string>
     <string name="GroupedMessageMenu">Згрупувати меню повідомлення</string>
     <string name="GroupedMessageMenuNotice">Групування переміщує основні дії в нижню частину меню повідомлення.</string>
+    <string name="CopySticker">Копіювати наліпку</string>
+    <string name="CheckUpdate">Перевірити наявність оновлень</string>
+    <string name="AutoCheckUpdateSwitch">Канал оновлення</string>
 </resources>

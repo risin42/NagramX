@@ -20,8 +20,6 @@
     <string name="ShowMessageID">Mostrar ID del mensaje</string>
     <string name="ShowRPCError">Errores RPC Toast</string>
     <string name="ShowPremiumStickersAnimation">Mostrar Animación de Stickers Premium</string>
-    <string name="ShowPremiumStarInChat">Mostrar estrella Premium en el chat</string>
-    <string name="ShowPremiumAvatarAnimation">Mostrar Animación de Stickers Premium</string>
     <string name="AlwaysSaveChatOffset">Guardar siempre el Desplazamiento de Chat</string>
     <string name="AppIconColorful">Colorido</string>
     <string name="AppIconDarkGreen">Verde Obscuro</string>
@@ -31,7 +29,6 @@
     <string name="AppIconDarkBlue">Azul oscuro</string>
     <string name="AppIconBlurBlue">Desenfoque Azul</string>
     <string name="AutoInsertGIFCaption">Insertar leyenda automática antes de enviar GIF</string>
-    <string name="DisableGlobalSearch">Deshabilitar búsqueda global</string>
     <string name="InputMessageId">Introducir ID del mensaje</string>
     <string name="ToTheMessage">Ir a</string>
     <string name="ZalgoFilter">Filtrar símbolos \"Zalgo\"</string>
@@ -39,7 +36,6 @@
     <string name="labelChannelUser">Etiquetar al usuario del canal</string>
     <string name="CustomChannelLabel">Etiqueta de canal personalizada</string>
     <string name="AlwaysShowDownloadIcon">Mostrar siempre el icono de descarga</string>
-    <string name="RealHideTimeForSticker">Ocultar la hora en los stickers</string>
     <string name="HideTitle">Ocultar título</string>
     <string name="IgnoreFolderCount">Ocultar contador de no leídos en carpetas</string>
     <string name="SendWithoutMarkdown">Enviar sin rebajar</string>
@@ -55,7 +51,6 @@
     <string name="ShowOnlineStatusNotice">Muestra el estado en línea de otras personas junto a su foto de perfil en grupos.</string>
     <string name="DoActionsInCommonGroups">Aplicado en grupos comunes</string>
     <string name="ShowFullAbout">Expandir siempre la descripción del chat</string>
-    <string name="HideMessageSeenTooltip">Ocultar recibos de lectura</string>
     <string name="TypeMessageHintUseGroupName">Usar nombre del grupo como texto de sugerencia</string>
     <string name="HideBotButtonInInputField">Ocultar Botón en el campo de entrada</string>
     <string name="ShowSendAsUnderMessageHint">Mostrar mensaje de remitente bajo mensaje</string>
@@ -70,8 +65,6 @@
     <string name="DisableStories">Deshabilitar historias</string>
     <string name="HideFilterMuteAll">Ocultar \"Silenciar todos\" en el menú de Pulsación larga</string>
     <string name="ShowSquareAvatar">Avatar cuadrado</string>
-    <string name="DisableCustomWallpaperUser">Deshabilitar fondo de pantalla personalizado del usuario</string>
-    <string name="DisableCustomWallpaperChannel">Deshabilitar fondo de pantalla personalizado del canal</string>
     <string name="CopyPhotoAsSticker">Copiar como sticker</string>
     <string name="ExternalStickerCache">Memoria caché externa</string>
     <string name="ExternalStickerCacheHint">Para compartir paquetes de pegatinas con otras aplicaciones. Haz clic para elegir la ubicación de almacenamiento.</string>
@@ -87,7 +80,6 @@
     <string name="ProviderTranSmartTranslate">Traductor TranSmart</string>
     <string name="DisableMarkdown">Desactivar Markdown</string>
     <string name="SendWithMarkdown">Enviar con Markdown</string>
-    <string name="DisableClickProfileGalleryView">Desactivar el volteo de avatares al tocar</string>
     <string name="TipsChannel">Canal de funciones y características</string>
     <string name="ShowSmallGIF">Mostrar GIF pequeño</string>
     <string name="DisableClickCommandToSend">Preguntar antes de enviar un comando al bot</string>

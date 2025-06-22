@@ -165,6 +165,7 @@
     <string name="DebugMenuReloadAppConfig">Перезагрузить конфигурацию приложения</string>
     <string name="DebugMenuForceForumTabs">Вкладки форумов принудительно</string>
     <string name="DebugMenuDoNotForceForumTabs">Не использовать вкладки форумов принудительно</string>
+    <string name="DebugMenuCleanAppUpdate">Очистить обновления приложения</string>
     <string name="TranslateMessageLLM">Перевести с помощью ИИ</string>
     <string name="ResetChatNameOverrides">Сбросить названия чатов</string>
     <string name="ResetChatNameNotification">Изменённые названия чатов очищены.</string>
@@ -188,6 +189,12 @@
     <string name="PreferCommonGroupsTab">Предпочитать вкладку «Группы»</string>
     <string name="PreferCommonGroupsTabNotice">Автоматически выбирать вкладку «Группы» вместо «Подарки», когда это возможно.</string>
     <string name="SendHighQualityPhoto">Отправлять фото высокого качества</string>
-    <string name="GroupedMessageMenu">Группировать меню сообщения</string>
-    <string name="GroupedMessageMenuNotice">Группировка перемещает основные действия в нижнюю часть меню сообщения.</string>
+    <string name="GroupedMessageMenu">Группировать меню сообщений</string>
+    <string name="GroupedMessageMenuNotice">Группировка перемещает основные действия в нижнюю часть меню сообщений.</string>
+    <string name="CopySticker">Копировать стикер</string>
+    <string name="CheckUpdate">Проверить обновления</string>
+    <string name="AutoCheckUpdateOFF">Выкл</string>
+    <string name="AutoCheckUpdateSwitch">Канал обновлений</string>
+    <string name="AutoCheckUpdateRelease">Релиз</string>
+    <string name="AutoCheckUpdateBeta">Бета</string>
 </resources>

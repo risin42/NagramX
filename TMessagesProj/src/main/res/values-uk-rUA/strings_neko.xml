@@ -99,7 +99,7 @@
     <string name="DontSendGreetingSticker">Не надсилати привітальну наліпку</string>
     <string name="TakeGIFasVideo">Сприймати GIF як відео</string>
     <string name="UseMediaStreamInVoip">Використовувати медіапотік у VoIP</string>
-    <string name="HideTimeForSticker">Приховати час та звіт про прочитання на наліпках</string>
+    <string name="HideTimeForSticker">Приховати час на наліпках</string>
     <string name="hideGroupSticker">Приховати наліпку групи</string>
     <string name="useSystemDNS">Використати системний DNS</string>
     <string name="customDoH">Власний DoH</string>
@@ -107,7 +107,6 @@
     <string name="maxRecentStickerCount">Максимум останніх наліпок</string>
     <string name="disableSwipeToNextChannel">Вимкнути перехід на наступний канал свайпом</string>
     <string name="disableChoosingSticker">Відправляти \"друкує\" замість вибирає наліпку</string>
-    <string name="disableRemoteEmojiInteractions">Вимкнути віддалену взаємодію з емодзі</string>
     <string name="hideSendAsChannel">Сховати Надіслати як канал</string>
     <string name="showSpoilersDirectly">Розкривати спойлери відразу</string>
     <string name="SaveToDownloadCount_zero">Збереження %1$d файлів у завантаження</string>
@@ -197,12 +196,13 @@
     <string name="UseChatAttachEnterMenuNotice">Кнопка надсилання буде замінена на розширене меню.</string>
     <string name="DisableLinkPreviewByDefault">Вимкнути попередній перегляд посилань за замовчуванням</string>
     <string name="CustomApi">Користувацький API</string>
-    <string name="UseCustomApiNotice">Увійдіть за допомогою іншого API, якщо не вдається зареєструватися або увійти — це може допомогти.\n\nПримітка: Fcm не працюватиме, якщо ви використовуєте релізну версію.</string>
+    <string name="UseCustomApiNotice">Увійдіть за допомогою користувацького API. Якщо ви не можете зареєструватися або увійти, це може допомогти.\n\nПримітка: FCM не працюватиме, якщо ви використовуєте користувацький API.</string>
     <string name="CustomApiNo">Не використовувати (рекомендовано)</string>
     <string name="CustomApiInput">Ручне введення</string>
     <string name="LinkedGroupChat">Зв\'язана група</string>
     <string name="LinkedChannelChat">Зв\'язаний канал</string>
     <string name="ChangeTranslateProvider">Змінити провайдера</string>
+    <string name="ProviderYandexTranslate">Яндекс Перекладач</string>
     <string name="GoogleCloudTransKeyNotice">Встановіть ключ Google Cloud Translation, щоб викликати хмарне API перекладу замість імітації надсилання форми у веб-версію (швидше, стабільніше й заощаджує трафік).</string>
     <string name="TransToLang">Цільова мова</string>
     <string name="TransInputToLang">Перекладати з</string>
@@ -249,7 +249,6 @@
     <string name="TransSite">Допомогти з перекладом</string>
     <string name="ShareMessages">Поділитися</string>
     <string name="DisableVibration">Вимкнути вібрацію</string>
-    <string name="IgnoreContentRestrictions">Ігноруйте обмеження щодо контенту</string>
     <string name="SendCommentAfterForward">Надіслати коментар після пересилання</string>
     <string name="ImportLogin">Вхід за QR-кодом</string>
     <string name="UserRestrictionsSendGames">Надіслати ігри</string>

@@ -20,8 +20,6 @@
     <string name="ShowMessageID">Показати ID повідомлення</string>
     <string name="ShowRPCError">Показувати помилки RPC</string>
     <string name="ShowPremiumStickersAnimation">Показувати анімацію Premium наліпок</string>
-    <string name="ShowPremiumStarInChat">Показувати преміум користувачів у чаті</string>
-    <string name="ShowPremiumAvatarAnimation">Показувати анімацію преміум аватара</string>
     <string name="AlwaysSaveChatOffset">Завжди зберігати зміщення чату</string>
     <string name="AppIconColorful">Барвистість</string>
     <string name="AppIconDarkGreen">Темно-зелений</string>
@@ -31,7 +29,6 @@
     <string name="AppIconDarkBlue">Темний синій</string>
     <string name="AppIconBlurBlue">Розмитий синій</string>
     <string name="AutoInsertGIFCaption">Автовставка підпису перед надсиланням GIF</string>
-    <string name="DisableGlobalSearch">Вимкнути глобальний пошук</string>
     <string name="InputMessageId">Введіть ID повідомлення</string>
     <string name="ToTheMessage">Перейти до</string>
     <string name="ZalgoFilter">Фільтр символів «Zalgo»</string>
@@ -39,7 +36,6 @@
     <string name="labelChannelUser">Мітка користувачів каналу</string>
     <string name="CustomChannelLabel">Власна мітка каналу</string>
     <string name="AlwaysShowDownloadIcon">Завжди показувати значок завантаження</string>
-    <string name="RealHideTimeForSticker">Приховати час на наліпках</string>
     <string name="HideTitle">Сховати заголовок</string>
     <string name="IgnoreFolderCount">Приховати кількість непрочитаних тек</string>
     <string name="SendWithoutMarkdown">Відправити без форматування</string>
@@ -55,7 +51,6 @@
     <string name="ShowOnlineStatusNotice">Показує онлайн-статус інших людей поруч із зображенням профілю в групах.</string>
     <string name="DoActionsInCommonGroups">Застосувати у спільних групах</string>
     <string name="ShowFullAbout">Завжди розгортати опис чату</string>
-    <string name="HideMessageSeenTooltip">Приховати сповіщення про прочитання</string>
     <string name="TypeMessageHintUseGroupName">Назва групи як текст підказки у полі введення</string>
     <string name="HideBotButtonInInputField">Приховати кнопку бота в полі вводу</string>
     <string name="ShowSendAsUnderMessageHint">Показувати відправника під підказкою Повідомлення у полі введення</string>
@@ -70,8 +65,6 @@
     <string name="DisableStories">Вимкнути історії</string>
     <string name="HideFilterMuteAll">Приховати \"Вимкнути все\" в меню довгого натискання</string>
     <string name="ShowSquareAvatar">Квадратні аватари</string>
-    <string name="DisableCustomWallpaperUser">Вимкнути користувацькі шпалери</string>
-    <string name="DisableCustomWallpaperChannel">Вимкнути користувацькі шпалери каналів</string>
     <string name="CopyPhotoAsSticker">Копіювати як наліпку</string>
     <string name="ExternalStickerCache">Зовнішній кеш наліпок</string>
     <string name="ExternalStickerCacheHint">Для обміну наборами наліпок з іншими програмами. Натисніть, щоб вибрати місце зберігання.</string>
@@ -87,7 +80,6 @@
     <string name="ProviderTranSmartTranslate">TranSmart</string>
     <string name="DisableMarkdown">Вимкнути розмітку тексту</string>
     <string name="SendWithMarkdown">Надіслати із розміткою</string>
-    <string name="DisableClickProfileGalleryView">Не гортати аватари після натискання</string>
     <string name="TipsChannel">Канал з порадами щодо функцій</string>
     <string name="ShowSmallGIF">Маленькі GIF</string>
     <string name="DisableClickCommandToSend">Запитувати перед відправленням команди бота</string>

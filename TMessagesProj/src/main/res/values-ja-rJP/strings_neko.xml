@@ -99,7 +99,7 @@
     <string name="DontSendGreetingSticker">挨拶ステッカーを送信しない</string>
     <string name="TakeGIFasVideo">GIF をビデオとして表示</string>
     <string name="UseMediaStreamInVoip">通話でメディアストリームを使用</string>
-    <string name="HideTimeForSticker">ステッカーの送信時間と既読を非表示</string>
+    <string name="HideTimeForSticker">ステッカーの送信時間を非表示</string>
     <string name="hideGroupSticker">グループステッカーを非表示</string>
     <string name="useSystemDNS">システム DNS を使用</string>
     <string name="customDoH">カスタム DoH</string>
@@ -107,7 +107,6 @@
     <string name="maxRecentStickerCount">最近使用したステッカーの数の上限</string>
     <string name="disableSwipeToNextChannel">次のチャンネルへのスワイプを無効にする</string>
     <string name="disableChoosingSticker">ステッカー選択時に入力中として表示</string>
-    <string name="disableRemoteEmojiInteractions">リモート絵文字インタラクションを無効にする</string>
     <string name="hideSendAsChannel">チャンネルとして送信を非表示</string>
     <string name="showSpoilersDirectly">ネタバレ情報を直接表示</string>
     <string name="SaveToDownloadCount_zero">%1$d個のファイルをダウンロードに保存しています</string>
@@ -197,12 +196,13 @@
     <string name="UseChatAttachEnterMenuNotice">記録ボタンを入力メニューに変更し、リンクプレビュースイッチを追加します。</string>
     <string name="DisableLinkPreviewByDefault">デフォルトではリンクプレビューを無効にする</string>
     <string name="CustomApi">カスタム API</string>
-    <string name="UseCustomApiNotice">カスタム API を使用してログインします。登録やログインができない場合は、これが役に立つことがあります。\n\n注意: リリースバージョンを使用している場合、fcm は動作しません。</string>
+    <string name="UseCustomApiNotice">カスタム API を使用してログインします。登録やログインができない場合は、これが役に立つ可能性があります。\n\n注意: カスタム API を使用している場合、FCM は動作しません。</string>
     <string name="CustomApiNo">カスタム API を使用しない</string>
     <string name="CustomApiInput">手動入力</string>
     <string name="LinkedGroupChat">リンクされたグループ</string>
     <string name="LinkedChannelChat">リンクされたチャンネル</string>
     <string name="ChangeTranslateProvider">プロバイダを変更</string>
+    <string name="ProviderYandexTranslate">Yandex 翻訳</string>
     <string name="GoogleCloudTransKeyNotice">Google Cloud Trans Key を設定すると、翻訳時に偽のフォームをウェブバージョンに送信する代わりにクラウド翻訳APIが呼び出されます（高速で安定しており、トラフィックの節約になります）</string>
     <string name="TransToLang">翻訳先言語</string>
     <string name="TransInputToLang">入力翻訳先言語</string>
@@ -249,7 +249,6 @@
     <string name="TransSite">翻訳者になろう</string>
     <string name="ShareMessages">共有</string>
     <string name="DisableVibration">バイブを無効にする</string>
-    <string name="IgnoreContentRestrictions">コンテンツ制限を無視します</string>
     <string name="SendCommentAfterForward">転送後にコメントを送信する</string>
     <string name="ImportLogin">QR コードログイン</string>
     <string name="UserRestrictionsSendGames">ゲームを送る</string>

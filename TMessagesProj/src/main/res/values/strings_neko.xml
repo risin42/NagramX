@@ -99,7 +99,7 @@
     <string name="DontSendGreetingSticker">Don\'t Send Greeting Sticker</string>
     <string name="TakeGIFasVideo">Take GIF as Video</string>
     <string name="UseMediaStreamInVoip">Use Media Stream in VoIP</string>
-    <string name="HideTimeForSticker">Hide Time and Read Receipts on Stickers</string>
+    <string name="HideTimeForSticker">Hide Time on Stickers</string>
     <string name="hideGroupSticker">Hide Group Sticker</string>
     <string name="useSystemDNS">Use System DNS</string>
     <string name="customDoH">Custom DoH</string>
@@ -107,7 +107,6 @@
     <string name="maxRecentStickerCount">Max Recent Stickers</string>
     <string name="disableSwipeToNextChannel">Disable Swipe to Next Channel</string>
     <string name="disableChoosingSticker">Send Typing Instead of Choosing Sticker</string>
-    <string name="disableRemoteEmojiInteractions">Disable Emoji Interactions from Remote</string>
     <string name="hideSendAsChannel">Hide Send as Channel</string>
     <string name="showSpoilersDirectly">Show Spoiler Messages Directly</string>
     <string name="SaveToDownloadCount_zero">Saving %1$d files to downloads</string>
@@ -199,7 +198,7 @@
     <string name="UseChatAttachEnterMenuNotice">Change the record button to an input menu, and add a link preview switch.</string>
     <string name="DisableLinkPreviewByDefault">Disable Link Preview by Default</string>
     <string name="CustomApi">Custom API</string>
-    <string name="UseCustomApiNotice">Log in using the custom api, if you are unable to register or log in, this may help.\n\nNote: fcm will not work if you are using the release version.</string>
+    <string name="UseCustomApiNotice">Log in using the custom API, if you are unable to register or log in, this may help.\n\nNote: FCM will not work if you are using a custom API.</string>
     <string name="CustomApiNo">Don\'t use custom API</string>
     <string name="CustomApiOfficial">Telegram Android</string>
     <string name="CustomApiTGX">Telegram Android X</string>
@@ -255,7 +254,6 @@
     <string name="TransSite">Help with Translation</string>
     <string name="ShareMessages">Share</string>
     <string name="DisableVibration">Disable Vibration</string>
-    <string name="IgnoreContentRestrictions">Ignore content restrictions</string>
     <string name="SendCommentAfterForward">Send Comment After Forwarding</string>
     <string name="ImportLogin">QR Login</string>
     <string name="UserRestrictionsSendGames">Send Games</string>

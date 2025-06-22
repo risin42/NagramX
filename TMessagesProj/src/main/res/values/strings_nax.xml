@@ -178,6 +178,7 @@
     <string name="DebugMenuReloadAppConfig">Reload App Config</string>
     <string name="DebugMenuForceForumTabs">Force Forum Tabs</string>
     <string name="DebugMenuDoNotForceForumTabs">Do Not Force Forum Tabs</string>
+    <string name="DebugMenuCleanAppUpdate">Clean App Update</string>
     <string name="TranslateMessageLLM">Translate with AI</string>
     <string name="ResetChatNameOverrides">Reset Chat Name Overrides</string>
     <string name="ResetChatNameNotification">Chat name overrides cleared.</string>
@@ -203,4 +204,12 @@
     <string name="SendHighQualityPhoto">Send High Quality Photo</string>
     <string name="GroupedMessageMenu">Group Message Menu</string>
     <string name="GroupedMessageMenuNotice">Grouping moves the main actions to the bottom of the message menu.</string>
+    <string name="CopySticker">Copy Sticker</string>
+    <string name="CheckUpdate">Check for Updates</string>
+    <string name="AutoCheckUpdateOFF">OFF</string>
+    <string name="AutoCheckUpdateSwitch">Update Channel</string>
+    <string name="AutoCheckUpdateRelease">Release</string>
+    <string name="AutoCheckUpdateBeta">Beta</string>
+    <string name="AutoInsertGIFCaption">Auto-Caption GIFs</string>
+    <string name="AutoInsertGIFCaptionNotice">Automatically uses the text in the current input field as the GIF\'s caption.</string>
 </resources>

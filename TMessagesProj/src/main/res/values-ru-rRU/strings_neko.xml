@@ -99,7 +99,7 @@
     <string name="DontSendGreetingSticker">Не отправлять приветственный стикер</string>
     <string name="TakeGIFasVideo">Воспринимать GIF как видео</string>
     <string name="UseMediaStreamInVoip">Использовать медиапоток в VoIP</string>
-    <string name="HideTimeForSticker">Скрыть время и отчёты о прочтении на стикерах</string>
+    <string name="HideTimeForSticker">Скрыть время на стикерах</string>
     <string name="hideGroupSticker">Скрыть стикер группы</string>
     <string name="useSystemDNS">Системный DNS</string>
     <string name="customDoH">Пользовательский DoH</string>
@@ -107,7 +107,6 @@
     <string name="maxRecentStickerCount">Максимум недавних стикеров</string>
     <string name="disableSwipeToNextChannel">Отключить переход на следующий канал пролистыванием</string>
     <string name="disableChoosingSticker">Отправлять «печатает» вместо «выбирает стикер»</string>
-    <string name="disableRemoteEmojiInteractions">Отключить удаленное взаимодействие с эмодзи</string>
     <string name="hideSendAsChannel">Скрыть «Отправить как канал»</string>
     <string name="showSpoilersDirectly">Раскрывать спойлеры сразу</string>
     <string name="SaveToDownloadCount_zero">Сохранение %1$d файлов для загрузки</string>
@@ -197,7 +196,7 @@
     <string name="UseChatAttachEnterMenuNotice">Кнопка отправки будет заменена на расширенное меню.</string>
     <string name="DisableLinkPreviewByDefault">Отправлять ссылки без превью</string>
     <string name="CustomApi">Выбрать API</string>
-    <string name="UseCustomApiNotice">Используйте на свой страх и риск. Есть шанс, что ваш аккаунт будет удалён, а номер заблокирован.\n\nПримечание: push-уведомления от Google работать не будут.</string>
+    <string name="UseCustomApiNotice">Войдите в систему, используя пользовательский API. Если вы не можете зарегистрироваться или войти в систему, это может помочь.\n\nПримечание: FCM не будет работать, если вы используете пользовательский API.</string>
     <string name="CustomApiNo">Не использовать (рекомендуется)</string>
     <string name="CustomApiTGX">Telegram X</string>
     <string name="CustomApiInput">Ввести вручную</string>
@@ -252,7 +251,6 @@
     <string name="TransSite">Платформа переводов</string>
     <string name="ShareMessages">Поделиться</string>
     <string name="DisableVibration">Отключить вибрацию</string>
-    <string name="IgnoreContentRestrictions">Игнорировать ограничения контента</string>
     <string name="SendCommentAfterForward">Комментарий после пересылаемого</string>
     <string name="ImportLogin">Вход по QR-коду</string>
     <string name="UserRestrictionsSendGames">Отправка игр</string>

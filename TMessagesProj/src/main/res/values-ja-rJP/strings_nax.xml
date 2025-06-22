@@ -165,6 +165,7 @@
     <string name="DebugMenuReloadAppConfig">アプリ設定を再読み込み</string>
     <string name="DebugMenuForceForumTabs">話題タブを強制する</string>
     <string name="DebugMenuDoNotForceForumTabs">話題タブを強制しない</string>
+    <string name="DebugMenuCleanAppUpdate">アプリの更新を消去</string>
     <string name="TranslateMessageLLM">AI で翻訳</string>
     <string name="ResetChatNameOverrides">チャット名の上書きをリセット</string>
     <string name="ResetChatNameNotification">チャット名の上書きがクリアされました。</string>
@@ -190,4 +191,12 @@
     <string name="SendHighQualityPhoto">高画質の写真を送信</string>
     <string name="GroupedMessageMenu">メッセージメニューをグループ化</string>
     <string name="GroupedMessageMenuNotice">グループ化すると、メインアクションがメッセージメニューの下部に移動します。</string>
+    <string name="CopySticker">ステッカーをコピー</string>
+    <string name="CheckUpdate">アップデートを確認</string>
+    <string name="AutoCheckUpdateOFF">オフ</string>
+    <string name="AutoCheckUpdateSwitch">更新チャネル</string>
+    <string name="AutoCheckUpdateRelease">リリース</string>
+    <string name="AutoCheckUpdateBeta">ベータ</string>
+    <string name="AutoInsertGIFCaption">GIF 自動キャプション</string>
+    <string name="AutoInsertGIFCaptionNotice">メッセージ入力欄のテキストを、GIF のキャプションとして自動で送信します。</string>
 </resources>

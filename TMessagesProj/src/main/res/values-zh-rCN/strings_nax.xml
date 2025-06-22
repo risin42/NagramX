@@ -165,6 +165,7 @@
     <string name="DebugMenuReloadAppConfig">重新加载应用程序配置</string>
     <string name="DebugMenuForceForumTabs">强制话题标签</string>
     <string name="DebugMenuDoNotForceForumTabs">取消强制话题标签</string>
+    <string name="DebugMenuCleanAppUpdate">清除应用更新</string>
     <string name="TranslateMessageLLM">AI 翻译</string>
     <string name="ResetChatNameOverrides">重置聊天名称覆盖</string>
     <string name="ResetChatNameNotification">聊天名称覆盖已清除。</string>
@@ -190,4 +191,12 @@
     <string name="SendHighQualityPhoto">发送高质量照片</string>
     <string name="GroupedMessageMenu">分组消息菜单</string>
     <string name="GroupedMessageMenuNotice">将主要操作选项移至消息菜单的底部。</string>
+    <string name="CopySticker">复制贴纸</string>
+    <string name="CheckUpdate">检查更新</string>
+    <string name="AutoCheckUpdateOFF">禁用</string>
+    <string name="AutoCheckUpdateSwitch">更新通道</string>
+    <string name="AutoCheckUpdateRelease">稳定版</string>
+    <string name="AutoCheckUpdateBeta">测试版</string>
+    <string name="AutoInsertGIFCaption">发送 GIF 时自动插入草稿</string>
+    <string name="AutoInsertGIFCaptionNotice">自动将当前输入框中的内容作为 GIF 的附带文字发送。</string>
 </resources>

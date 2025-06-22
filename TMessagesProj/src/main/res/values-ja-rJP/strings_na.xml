@@ -20,8 +20,6 @@
     <string name="ShowMessageID">メッセージ ID を表示</string>
     <string name="ShowRPCError">RPC エラーを表示</string>
     <string name="ShowPremiumStickersAnimation">プレミアムステッカーアニメーションを表示</string>
-    <string name="ShowPremiumStarInChat">チャットにプレミアムスターを表示</string>
-    <string name="ShowPremiumAvatarAnimation">プレミアムアバターアニメーションを表示</string>
     <string name="AlwaysSaveChatOffset">常にチャットオフセットを保存</string>
     <string name="AppIconColorful">カラフル</string>
     <string name="AppIconDarkGreen">ダークグリーン</string>
@@ -30,8 +28,6 @@
     <string name="AppIconBlue">ブルー</string>
     <string name="AppIconDarkBlue">ダークブルー</string>
     <string name="AppIconBlurBlue">ブラーブルー</string>
-    <string name="AutoInsertGIFCaption">GIF を送信する前にキャプションを追加</string>
-    <string name="DisableGlobalSearch">グローバル検索を無効にする</string>
     <string name="InputMessageId">メッセージ ID を入力</string>
     <string name="ToTheMessage">メッセージに移動</string>
     <string name="ZalgoFilter">「Zalgo」文字をフィルタリング</string>
@@ -39,7 +35,6 @@
     <string name="labelChannelUser">チャンネルユーザーをラベル付け</string>
     <string name="CustomChannelLabel">カスタムチャンネルユーザーのラベル</string>
     <string name="AlwaysShowDownloadIcon">常にダウンロードアイコンを表示</string>
-    <string name="RealHideTimeForSticker">ステッカーの送信時間を非表示</string>
     <string name="HideTitle">タイトルを非表示</string>
     <string name="IgnoreFolderCount">フォルダタブで未読数を非表示</string>
     <string name="SendWithoutMarkdown">Markdown を無効にする</string>
@@ -55,9 +50,8 @@
     <string name="ShowOnlineStatusNotice">グループチャットで、ユーザーのアバターの右下にオンラインステータスを表示します。</string>
     <string name="DoActionsInCommonGroups">共通のグループに適用</string>
     <string name="ShowFullAbout">常にチャットの「情報」を展開</string>
-    <string name="HideMessageSeenTooltip">メッセージ既読マークを非表示</string>
     <string name="TypeMessageHintUseGroupName">入力ヒントとしてグループ名を使用</string>
-    <string name="HideBotButtonInInputField">入力フィールドのボットボタンを非表示</string>
+    <string name="HideBotButtonInInputField">入力欄のボットボタンを非表示</string>
     <string name="ShowSendAsUnderMessageHint">入力ヒントの下に送信者を表示</string>
     <string name="CheckAllForum">すべてのトピックモードグループを追加</string>
     <string name="DecorationNone">なし</string>
@@ -70,8 +64,6 @@
     <string name="DisableStories">ストーリー機能を無効にする</string>
     <string name="HideFilterMuteAll">長押しメニューの「すべてミュート」を非表示</string>
     <string name="ShowSquareAvatar">正方形のアバター</string>
-    <string name="DisableCustomWallpaperUser">チャットのカスタム壁紙を無効にする</string>
-    <string name="DisableCustomWallpaperChannel">チャンネルのカスタム壁紙を無効にする</string>
     <string name="CopyPhotoAsSticker">ステッカーとしてコピー</string>
     <string name="ExternalStickerCache">外部ステッカーキャッシュ</string>
     <string name="ExternalStickerCacheHint">他のアプリとステッカーパックを共有するには、クリックしてストレージの場所を選択。</string>
@@ -87,7 +79,6 @@
     <string name="ProviderTranSmartTranslate">TransSmart 翻訳</string>
     <string name="DisableMarkdown">Markdown を無効にする</string>
     <string name="SendWithMarkdown">Markdown で送信</string>
-    <string name="DisableClickProfileGalleryView">タップによるアバターの切り替えを無効にする</string>
     <string name="TipsChannel">機能紹介チャンネル</string>
     <string name="ShowSmallGIF">GIF を小さく表示</string>
     <string name="DisableClickCommandToSend">ボットコマンドを送信する前に確認</string>

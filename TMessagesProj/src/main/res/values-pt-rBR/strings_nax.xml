@@ -8,7 +8,7 @@
     <string name="DeleteKeepLocally">Manter localmente</string>
     <string name="ClearMessageDatabase">Limpar DB de Mensagens</string>
     <string name="ClearMessageDatabaseNotification">Dados de mensagens limpos.</string>
-    <string name="CustomDeletedMark">Marca personalizada excluída</string>
+    <string name="CustomDeletedMark">Marca de Exclusão Personalizada</string>
     <string name="HidePremiumSection">Ocultar Premium nas Configurações</string>
     <string name="HideHelpSection">Ocultar Ajuda nas Configurações</string>
     <string name="ProviderLLMTranslator">IA Tradutor</string>
@@ -81,7 +81,7 @@
     <string name="TranslatorMinimizedChannel">A Barra de tradução foi minimizada para este canal.</string>
     <string name="TranslatorMinimizedGroup">A barra de tradução foi minimizada para este grupo.</string>
     <string name="TranslatorMinimized">A Barra de tradução foi minimizada para este chat.</string>
-    <string name="UseDeletedIcon">Mostrar Ícone em Vez de \"deletado\"</string>
+    <string name="UseDeletedIcon">Mostrar Ícone em Vez de \"excluído\"</string>
     <string name="UseEditedIcon">Mostrar ícone ao invés de \"editado\"</string>
     <string name="SilentMessageByDefault">Enviar sem som</string>
     <string name="FolderNameAsTitle">Usar Nome da Pasta como Título</string>
@@ -124,7 +124,7 @@
     <string name="DontSendUploadProgress">Ocultar Digitando</string>
     <string name="SendOfflinePacketAfterOnline">Ficar off-line automaticamente</string>
     <string name="MarkReadAfterSend">Ler ao Interagir</string>
-    <string name="GhostModeNotice">Toque longo em qualquer opção para evitar que ela seja alterada ao ativar/desativar o Modo Fantasma.</string>
+    <string name="GhostModeNotice">Toque e segure em qualquer opção para evitar que ela seja alterada ao ativar ou desativar o Modo Fantasma.</string>
     <string name="MarkReadAfterSendNotice">Lê automaticamente a mensagem quando você envia uma nova ou toca em uma reação.</string>
     <string name="SendWithoutSoundRowNotice">Envia automaticamente mensagens sem som.</string>
     <string name="GhostReadMessage">Ler Mensagem</string>
@@ -165,6 +165,7 @@
     <string name="DebugMenuReloadAppConfig">Recarregar Configuração do Aplicativo</string>
     <string name="DebugMenuForceForumTabs">Forçar Abas do Fórum</string>
     <string name="DebugMenuDoNotForceForumTabs">Não Forçar Abas do Fórum</string>
+    <string name="DebugMenuCleanAppUpdate">Limpar Atualizações do App</string>
     <string name="TranslateMessageLLM">Traduzir com IA</string>
     <string name="ResetChatNameOverrides">Redefinir Substituições de Nome do Chat</string>
     <string name="ResetChatNameNotification">Substituições de nome do chat limpas.</string>
@@ -189,5 +190,11 @@
     <string name="PreferCommonGroupsTabNotice">Selecionar automaticamente a aba \"Grupos\" em vez de \"Presentes\" sempre que possível.</string>
     <string name="SendHighQualityPhoto">Enviar Foto Em Alta Qualidade</string>
     <string name="GroupedMessageMenu">Menu de Mensagens do Grupo</string>
-    <string name="GroupedMessageMenuNotice">O agrupamento move as principais ações para o final do menu de mensagens.</string>
+    <string name="GroupedMessageMenuNotice">O agrupamento move as ações principais para a parte inferior do menu de mensagens.</string>
+    <string name="CopySticker">Copiar Sticker</string>
+    <string name="CheckUpdate">Verificar Atualizações</string>
+    <string name="AutoCheckUpdateOFF">DESLIGADO</string>
+    <string name="AutoCheckUpdateSwitch">Canal de Atualização</string>
+    <string name="AutoCheckUpdateRelease">Lançamento</string>
+    <string name="AutoCheckUpdateBeta">Beta</string>
 </resources>

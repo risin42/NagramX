@@ -99,7 +99,7 @@
     <string name="DontSendGreetingSticker">No enviar Sticker de Saludos</string>
     <string name="TakeGIFasVideo">Tomar GIF como vídeo</string>
     <string name="UseMediaStreamInVoip">Usar flujo de medios en VoIP</string>
-    <string name="HideTimeForSticker">Ocultar Tiempo y Leído en Stickers</string>
+    <string name="HideTimeForSticker">Ocultar la hora en los stickers</string>
     <string name="hideGroupSticker">Ocultar Sticker de Grupo</string>
     <string name="useSystemDNS">Usar DNS del sistema</string>
     <string name="customDoH">DoH personalizado</string>
@@ -107,7 +107,6 @@
     <string name="maxRecentStickerCount">Máximo de stickers recientes</string>
     <string name="disableSwipeToNextChannel">Deshabilitar Deslizar al siguiente canal</string>
     <string name="disableChoosingSticker">Mostrar escribiendo en lugar de eligiendo Sticker</string>
-    <string name="disableRemoteEmojiInteractions">Deshabilitar interacciones remotas de emoticonos</string>
     <string name="hideSendAsChannel">Ocultar \"Enviar como canal\"</string>
     <string name="showSpoilersDirectly">Mostrar mensajes Spoiler directamente</string>
     <string name="SaveToDownloadCount_zero">Guardando %1$d archivos en descargas</string>
@@ -251,7 +250,6 @@
     <string name="TransSite">Ayúdanos con la traducción</string>
     <string name="ShareMessages">Compartir</string>
     <string name="DisableVibration">Desactivar vibración</string>
-    <string name="IgnoreContentRestrictions">Ignorar las restricciones de contenido</string>
     <string name="SendCommentAfterForward">Enviar comentario después del reenvío</string>
     <string name="ImportLogin">Inicio de sesión con QR</string>
     <string name="UserRestrictionsSendGames">Enviar Juegos</string>

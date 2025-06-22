@@ -20,8 +20,6 @@
     <string name="ShowMessageID">显示消息 ID</string>
     <string name="ShowRPCError">显示 RPC 错误</string>
     <string name="ShowPremiumStickersAnimation">显示 Premium 贴纸动画</string>
-    <string name="ShowPremiumStarInChat">在消息上显示 Premium 用户标识</string>
-    <string name="ShowPremiumAvatarAnimation">显示 Premium 动态头像</string>
     <string name="AlwaysSaveChatOffset">总是保存聊天记录的偏移量</string>
     <string name="AppIconColorful">缤纷</string>
     <string name="AppIconDarkGreen">深翠</string>
@@ -30,8 +28,6 @@
     <string name="AppIconBlue">几何</string>
     <string name="AppIconDarkBlue">几何蓝</string>
     <string name="AppIconBlurBlue">轻盈</string>
-    <string name="AutoInsertGIFCaption">在 GIF 发送时自动插入草稿</string>
-    <string name="DisableGlobalSearch">禁用全局搜索</string>
     <string name="InputMessageId">输入消息 ID</string>
     <string name="ToTheMessage">回到消息</string>
     <string name="ZalgoFilter">过滤 \"Zalgo\" 符号</string>
@@ -39,7 +35,6 @@
     <string name="labelChannelUser">标记频道身份发言用户</string>
     <string name="CustomChannelLabel">自定义频道标记</string>
     <string name="AlwaysShowDownloadIcon">始终显示下载图标</string>
-    <string name="RealHideTimeForSticker">隐藏贴纸发送时间</string>
     <string name="HideTitle">隐藏标题和头像</string>
     <string name="IgnoreFolderCount">忽略文件夹标签上的未读计数</string>
     <string name="SendWithoutMarkdown">发送时禁用 Markdown</string>
@@ -55,7 +50,6 @@
     <string name="ShowOnlineStatusNotice">在群组聊天时用户头像的右下角显示在线状态。</string>
     <string name="DoActionsInCommonGroups">应用到共同群组</string>
     <string name="ShowFullAbout">总是展开群组简介</string>
-    <string name="HideMessageSeenTooltip">隐藏消息已读提示</string>
     <string name="TypeMessageHintUseGroupName">使用群组名称作为输入框提示</string>
     <string name="HideBotButtonInInputField">隐藏输入框中的机器人按钮</string>
     <string name="ShowSendAsUnderMessageHint">在输入提示下显示发送者</string>
@@ -70,8 +64,6 @@
     <string name="DisableStories">禁用动态功能</string>
     <string name="HideFilterMuteAll">隐藏长按菜单中的\"全部静音\"</string>
     <string name="ShowSquareAvatar">方形头像</string>
-    <string name="DisableCustomWallpaperUser">禁用私聊的自定义背景</string>
-    <string name="DisableCustomWallpaperChannel">禁用频道的自定义背景</string>
     <string name="CopyPhotoAsSticker">复制为贴纸</string>
     <string name="ExternalStickerCache">外部贴纸缓存</string>
     <string name="ExternalStickerCacheHint">用于与其他应用共享贴纸包，点击选择存储位置。</string>
@@ -87,7 +79,6 @@
     <string name="ProviderTranSmartTranslate">腾讯交互翻译</string>
     <string name="DisableMarkdown">禁用 Markdown</string>
     <string name="SendWithMarkdown">启用 Markdown</string>
-    <string name="DisableClickProfileGalleryView">禁用点按切换头像</string>
     <string name="TipsChannel">功能介绍频道</string>
     <string name="ShowSmallGIF">GIF 显示得更小</string>
     <string name="DisableClickCommandToSend">点击 bot 指令发送前确认</string>

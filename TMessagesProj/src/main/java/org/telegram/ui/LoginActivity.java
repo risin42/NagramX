@@ -10167,7 +10167,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             }
             return Unit.INSTANCE;
         });
-        inputs[0] = builder.addEditText("App Id");
+        inputs[0] = builder.addEditText("App ID");
         inputs[0].setInputType(InputType.TYPE_CLASS_NUMBER);
         if (NekoXConfig.customAppId != 0) {
             inputs[0].setText(NekoXConfig.customAppId + "");

@@ -84,7 +84,7 @@
     <string name="IgnoreBlockedAbout">Você não verá mais mensagens de usuários bloqueados em grupos.</string>
     <string name="SourceCode">Código Fonte</string>
     <string name="ResetStickerSize">Redefinir tamanho do sticker</string>
-    <string name="RestartAppToTakeEffect">Reinicie o aplicativo para aplicar as alterações.</string>
+    <string name="RestartAppToTakeEffect">Reinicie o app para aplicar as alterações.</string>
     <string name="DisableAppBarShadow">Desativar Sombra da Barra de Título</string>
     <string name="MediaPreview">Pré-visualização de mídia na lista de chats</string>
     <string name="AutoPauseVideo">Pausar Vídeo Automaticamente</string>
@@ -99,7 +99,7 @@
     <string name="DontSendGreetingSticker">Não envie Sticker de saudação</string>
     <string name="TakeGIFasVideo">Tratar GIF como vídeo</string>
     <string name="UseMediaStreamInVoip">Use o Stream de Mídia no VoIP</string>
-    <string name="HideTimeForSticker">Ocultar Horário e Confirmações de Leitura em Stickers</string>
+    <string name="HideTimeForSticker">Ocultar Horário nos Stickers</string>
     <string name="hideGroupSticker">Ocultar Sticker do Grupo</string>
     <string name="useSystemDNS">Usar DNS do sistema</string>
     <string name="customDoH">DoH Personalizado</string>
@@ -107,7 +107,6 @@
     <string name="maxRecentStickerCount">Máximo de Stickers Recentes</string>
     <string name="disableSwipeToNextChannel">Desativar Deslizar para o Próximo Canal</string>
     <string name="disableChoosingSticker">Enviar digitando em vez de escolhendo sticker</string>
-    <string name="disableRemoteEmojiInteractions">Desativar interações de emoji remotamente</string>
     <string name="hideSendAsChannel">Ocultar Enviar como Canal</string>
     <string name="showSpoilersDirectly">Mostrar mensagens de spoiler diretamente</string>
     <string name="SaveToDownloadCount_zero">Salvando %1$d arquivos em downloads</string>
@@ -197,7 +196,7 @@
     <string name="UseChatAttachEnterMenuNotice">Alterar o botão de gravação para um menu de entrada e adicionar uma opção de pré-visualização de link.</string>
     <string name="DisableLinkPreviewByDefault">Desativar Pré-visualização de Link por Padrão</string>
     <string name="CustomApi">API Personalizada</string>
-    <string name="UseCustomApiNotice">Faça login usando a Api personalizada. Se você não conseguir se registrar ou fazer login, isso pode ajudar.\n\nObservação: o Fcm não funcionará se você estiver usando a versão de lançamento.</string>
+    <string name="UseCustomApiNotice">Faça login usando a API personalizada. Se você não conseguir se registrar ou fazer login, isso pode ajudar.\n\nObservação: o FCM não funcionará se você estiver usando uma API personalizada.</string>
     <string name="CustomApiNo">Não usar API personalizada</string>
     <string name="CustomApiInput">Entrada manual</string>
     <string name="LinkedGroupChat">Grupo vinculado</string>
@@ -251,7 +250,6 @@
     <string name="TransSite">Traduzir Nagram X</string>
     <string name="ShareMessages">Compartilhar</string>
     <string name="DisableVibration">Desativar vibração</string>
-    <string name="IgnoreContentRestrictions">Ignore as restrições de conteúdo</string>
     <string name="SendCommentAfterForward">Enviar Comentário Depois de Encaminhamento</string>
     <string name="ImportLogin">Login QR</string>
     <string name="UserRestrictionsSendGames">Enviar jogos</string>
