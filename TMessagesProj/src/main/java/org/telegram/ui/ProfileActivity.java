@@ -4455,7 +4455,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 String message = cell.getTextView().getText().toString();
                 builder.addTitle(message);
                 String finalMessage = message;
-                builder.addItem(LocaleController.getString(R.string.Copy), R.drawable.msg_copy, (it) -> {
+                builder.addItem(LocaleController.getString(R.string.Copy), R.drawable.msg_copy_solar, (it) -> {
                     AndroidUtilities.addToClipboard(finalMessage);
                     AlertUtil.showToast(LocaleController.getString(R.string.TextCopied));
                     return Unit.INSTANCE;

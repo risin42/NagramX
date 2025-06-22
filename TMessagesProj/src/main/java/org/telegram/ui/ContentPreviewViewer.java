@@ -548,8 +548,8 @@ public class ContentPreviewViewer {
                     icons.add(R.drawable.msg_gallery);
                     actions.add(nkbtn_stickerdl);
                     if (!MessageObject.isAnimatedStickerDocument(currentDocument)) {
-                        items.add(getString(R.string.CopyPhotoAsSticker));
-                        icons.add(R.drawable.msg_copy);
+                        items.add(getString(R.string.CopySticker));
+                        icons.add(R.drawable.msg_copy_photo);
                         actions.add(nkbtn_sticker_copy);
                     }
                 }

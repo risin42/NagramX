@@ -380,7 +380,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int nkbtn_copy_link_in_pm = 2025;
     private final static int nkbtn_repeatascopy = 2028;
     private final static int nkbtn_setReminder = 2029;
-    private final static int nkbtn_sticker_copy = 2031;
     private final static int nkbtn_reply_private = 2033;
     private final static int nkbtn_translate_llm = 2034;
     private final static int nkbtn_forward_nocaption = 2035;
@@ -31548,17 +31547,21 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             allowPin = false;
         }
         allowPin = allowPin && message.getId() > 0 && (message.messageOwner.action == null || message.messageOwner.action instanceof TLRPC.TL_messageActionEmpty) && !message.isExpiredStory() && message.type != MessageObject.TYPE_STORY_MENTION;
+        // --- group message menu ---
         final boolean isGroupedMode = GroupedIconsView.useGroupedIcons();
         boolean isMessageTextEmpty = false;
+        boolean isStaticSticker = false;
+        boolean hasCaption = false;
+        boolean canDeleteMessage = false;
         boolean allowCopy = false;
         boolean allowCopyPhoto = false;
-        boolean allowCopySticker = false;
         boolean allowCopyLink = false;
         boolean allowCopyLinkPm = false;
         boolean allowDelete = false;
         boolean allowReply = false;
         boolean allowReplyPm = false;
         boolean allowForward = false;
+        // --- group message menu ---
         boolean noforwards = getMessagesController().isChatNoForwards(currentChat) || message.messageOwner.noforwards || getDialogId() == UserObject.VERIFY;
         boolean noforwardsOverride = noforwards && !NaConfig.INSTANCE.getForceCopy().Bool();
         boolean noforwardsOrPaidMedia = noforwardsOverride || message.type == MessageObject.TYPE_PAID_MEDIA;
@@ -31672,7 +31675,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             } else if (type >= 0 || type == -1 && single && (message.isSending() || message.isEditing()) && currentEncryptedChat == null) {
                 selectedObject = message;
                 selectedObjectGroup = groupedMessages;
+                // --- group message menu ---
                 isMessageTextEmpty = selectedObject.messageOwner == null || TextUtils.isEmpty(selectedObject.messageOwner.message);
+                isStaticSticker = type == 7 && !selectedObject.isAnimatedSticker() && !selectedObject.isVideoSticker();
+                hasCaption = !TextUtils.isEmpty(getMessageCaption(selectedObject, selectedObjectGroup));
+                canDeleteMessage = selectedObject.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat);
+                // --- group message menu ---
                 if (selectedObject.type != MessageObject.TYPE_EMOJIS && selectedObject.type != MessageObject.TYPE_ANIMATED_STICKER && selectedObject.type != MessageObject.TYPE_STICKER) {
                     messageTextToTranslate = getMessageCaption(selectedObject, selectedObjectGroup, messageIdToTranslate);
                     if (messageTextToTranslate == null && selectedObject.isPoll()) {
@@ -31891,7 +31899,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         }
                         if (!selectedObject.isSponsored() && chatMode != MODE_SCHEDULED && ChatObject.isChannel(currentChat) && !ChatObject.isMonoForum(currentChat) && selectedObject.getDialogId() != mergeDialogId && !isAyuDeleted) {
                             allowCopyLink = true;
-                            if ((!isGroupedMode && (NaConfig.INSTANCE.getShowCopyLink().Bool() || selectedObject.isAnyKindOfSticker() || selectedObject.isPoll())) || (isGroupedMode && isMessageTextEmpty && message.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat) && (selectedObject.isPhoto() || type == 7 && !selectedObject.isAnimatedSticker() && !selectedObject.isVideoSticker()))) {
+                            if (
+                                (!isGroupedMode && (NaConfig.INSTANCE.getShowCopyLink().Bool() || selectedObject.isAnyKindOfSticker() || selectedObject.isPoll()))
+                                ||
+                                (isGroupedMode && NaConfig.INSTANCE.getShowCopyLink().Bool() && ((!isMessageTextEmpty || hasCaption) && selectedObject.isPhoto() && !selectedObject.isWebpage() || (canDeleteMessage && (!isMessageTextEmpty || selectedObject.isPhoto() || isStaticSticker))))
+                            ) {
                                 items.add(getString(R.string.CopyLink));
                                 options.add(OPTION_COPY_LINK);
                                 icons.add(R.drawable.msg_link);
@@ -31899,13 +31911,17 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         }
                         if (!selectedObject.isSponsored() && chatMode != MODE_SCHEDULED && currentUser != null && selectedObject.getDialogId() != mergeDialogId) {
                             allowCopyLinkPm = true;
-                            if ((NaConfig.INSTANCE.getShowCopyLink().Bool() && !isGroupedMode) || (isGroupedMode && isMessageTextEmpty && (selectedObject.isPhoto() && !selectedObject.needDrawBluredPreview() || type == 7 && !selectedObject.isAnimatedSticker() && !selectedObject.isVideoSticker()))) {
+                            if (
+                                (!isGroupedMode && NaConfig.INSTANCE.getShowCopyLink().Bool())
+                                ||
+                                (isGroupedMode && NaConfig.INSTANCE.getShowCopyLink().Bool() && (!isMessageTextEmpty && !selectedObject.isPhoto() || selectedObject.isPhoto() && !selectedObject.needDrawBluredPreview() || isStaticSticker))
+                            ) {
                                 items.add(getString(R.string.CopyLink));
                                 options.add(nkbtn_copy_link_in_pm);
                                 icons.add(R.drawable.msg_link);
                             }
                         }
-                        if (selectedObject != null && selectedObject.messageOwner != null && selectedObject.messageOwner.action == null && currentChat != null && currentChat.forum && !isTopic && selectedObject.messageOwner != null && selectedObject.messageOwner.reply_to != null && selectedObject.messageOwner.reply_to.forum_topic) {
+                        if (selectedObject != null && selectedObject.messageOwner != null && selectedObject.messageOwner.action == null && currentChat != null && currentChat.forum && !isTopic && selectedObject.messageOwner.reply_to != null && selectedObject.messageOwner.reply_to.forum_topic) {
                             items.add(LocaleController.getString(R.string.ViewInTopic));
                             options.add(OPTION_VIEW_IN_TOPIC);
                             icons.add(R.drawable.msg_viewintopic);
@@ -31982,18 +31998,22 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                         icons.add(R.drawable.msg_gallery);
                                         allowCopyPhoto = true;
                                         if (
-                                            (!isGroupedMode && isMessageTextEmpty && NaConfig.INSTANCE.getShowCopyPhoto().Bool())
+                                            (!isGroupedMode && NaConfig.INSTANCE.getShowCopyPhoto().Bool())
                                             ||
-                                            (isGroupedMode && !isMessageTextEmpty && message.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat))
+                                            (isGroupedMode && (!isMessageTextEmpty || hasCaption) && canDeleteMessage && NaConfig.INSTANCE.getShowCopyPhoto().Bool())
                                         ) {
                                             items.add(LocaleController.getString(R.string.CopyPhoto));
                                             options.add(OPTION_COPY_PHOTO);
                                             icons.add(R.drawable.msg_copy_photo);
                                         }
-                                        if (NaConfig.INSTANCE.getShowCopyAsSticker().Bool() && isMessageTextEmpty) {
+                                        if (
+                                            (!isGroupedMode && NaConfig.INSTANCE.getShowCopyAsSticker().Bool())
+                                            ||
+                                            (isGroupedMode && (!isMessageTextEmpty || hasCaption) && canDeleteMessage && NaConfig.INSTANCE.getShowCopyAsSticker().Bool())
+                                        ) {
                                             items.add(LocaleController.getString(R.string.CopyPhotoAsSticker));
                                             options.add(OPTION_COPY_PHOTO_AS_STICKER);
-                                            icons.add(R.drawable.msg_copy);
+                                            icons.add(R.drawable.msg_copy_photo);
                                         }
                                     }
                                 }
@@ -32062,15 +32082,14 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 icons.add(R.drawable.msg_sticker);
                             } else {
                                 if (!selectedObject.isAnimatedSticker() && !selectedObject.isVideoSticker()) {
-                                    allowCopySticker = true;
                                     items.add(LocaleController.getString(R.string.SaveToGallery));
                                     options.add(nkbtn_stickerdl);
                                     icons.add(R.drawable.msg_gallery);
-                                    if (NaConfig.INSTANCE.getShowCopyAsSticker().Bool()) {
-                                        items.add(LocaleController.getString(R.string.CopyPhotoAsSticker));
-                                        icons.add(R.drawable.msg_copy);
-                                        options.add(nkbtn_sticker_copy);
-
+                                    allowCopyPhoto = true;
+                                    if (!isGroupedMode) {
+                                        items.add(getString(R.string.CopySticker));
+                                        icons.add(R.drawable.msg_copy_photo);
+                                        options.add(OPTION_COPY_PHOTO);
                                     }
                                 }
                                 if (NaConfig.INSTANCE.getShowAddToStickers().Bool()) {
@@ -32143,7 +32162,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             if (!isGroupedMode || allowEdit) {
                                 items.add(getString(R.string.Forward));
                                 options.add(OPTION_FORWARD);
-                                icons.add(R.drawable.msg_forward);
+                                icons.add(NaConfig.INSTANCE.getShowNoQuoteForward().Bool() ? R.drawable.msg_forward : R.drawable.msg_forward_noquote);
                             }
                         }
                         if (chatMode != MODE_SCHEDULED && !selectedObject.needDrawBluredPreview() && !selectedObject.isLiveLocation() && selectedObject.type != 16) {
@@ -32201,7 +32220,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             }
                             final TranslateController translateController = getMessagesController().getTranslateController();
                             boolean showTranslate = NekoConfig.showTranslate.Bool();
-                            boolean showTranslateLLM = NaConfig.INSTANCE.getShowTranslateMessageLLM().Bool();
+                            boolean showTranslateLLM = NaConfig.INSTANCE.getShowTranslateMessageLLM().Bool() && NaConfig.INSTANCE.isLLMTranslatorAvailable();
                             boolean isTranslatingDialog = translateController.isTranslatingDialog(selectedObject.getDialogId());
                             if ((showTranslate || showTranslateLLM) && (selectedObject.isOutOwner() || !isTranslatingDialog)) {
                                 if (messageObject != null || docsWithMessages) {
@@ -32367,18 +32386,22 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 icons.add(R.drawable.msg_gallery);
                                 allowCopyPhoto = true;
                                 if (
-                                    (!isGroupedMode && isMessageTextEmpty && NaConfig.INSTANCE.getShowCopyPhoto().Bool())
+                                    (!isGroupedMode && NaConfig.INSTANCE.getShowCopyPhoto().Bool())
                                     ||
-                                    (isGroupedMode && !isMessageTextEmpty && message.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat))
+                                    (isGroupedMode && (!isMessageTextEmpty || hasCaption) && canDeleteMessage && NaConfig.INSTANCE.getShowCopyPhoto().Bool())
                                 ) {
                                     items.add(LocaleController.getString(R.string.CopyPhoto));
                                     options.add(OPTION_COPY_PHOTO);
                                     icons.add(R.drawable.msg_copy_photo);
                                 }
-                                if (NaConfig.INSTANCE.getShowCopyAsSticker().Bool() && isMessageTextEmpty) {
+                                if (
+                                    (!isGroupedMode && NaConfig.INSTANCE.getShowCopyAsSticker().Bool())
+                                    ||
+                                    (isGroupedMode && (!isMessageTextEmpty || hasCaption) && canDeleteMessage && NaConfig.INSTANCE.getShowCopyAsSticker().Bool())
+                                ) {
                                     items.add(LocaleController.getString(R.string.CopyPhotoAsSticker));
                                     options.add(OPTION_COPY_PHOTO_AS_STICKER);
-                                    icons.add(R.drawable.msg_copy);
+                                    icons.add(R.drawable.msg_copy_photo);
                                 }
                             }
                         } else if (type == 5) {
@@ -33304,7 +33327,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         }
                         return r > 0;
                     });
-                    if (option == OPTION_REPLY && !noforwardsOrPaidMedia && !selectedObject.isSponsored() && selectedObject.contentType == 0 && chatMode == MODE_DEFAULT && !isInsideContainer && currentChat != null && currentUser == null && selectedObject.messageOwner.peer_id.user_id == 0 && selectedObject.messageOwner.from_id.user_id > 0 && selectedObject.messageOwner.from_id.user_id != getUserConfig().getClientUserId() && !isAyuDeleted) {
+                    if (option == OPTION_REPLY && allowReplyPm) {
                         var replyPopupWrapper = new ReplyPopupWrapper(this, popupLayout.getSwipeBack(), this::processSelectedOption, getResourceProvider());
                         int swipeBackIndex = popupLayout.addViewToSwipeBack(replyPopupWrapper.windowLayout);
                         cell.setOnLongClickListener(view -> {
@@ -33312,7 +33335,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             return true;
                         });
                     }
-                    if (option == OPTION_COPY || (option == OPTION_COPY_PHOTO && isMessageTextEmpty)) {
+                    if (option == OPTION_COPY || option == OPTION_COPY_PHOTO) {
                         var isPrivate = !selectedObject.isSponsored() && chatMode != MODE_SCHEDULED && currentUser != null && selectedObject.getDialogId() != mergeDialogId;
                         var copyPopupWrapper = new CopyPopupWrapper(this, selectedObject, option, isPrivate, popupLayout.getSwipeBack(), this::processSelectedOption, getResourceProvider());
                         int swipeBackIndex = popupLayout.addViewToSwipeBack(copyPopupWrapper.windowLayout);
@@ -33372,7 +33395,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (isGroupedMode) {
                     popupLayout.addView(new ActionBarPopupWindow.GapView(contentView.getContext(), themeDelegate), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 8));
 
-                    var groupedIconsView = new GroupedIconsView(getContext(), ChatActivity.this, selectedObject, allowReply, allowReplyPm, allowEdit, allowDelete, allowForward, allowCopy, allowCopyPhoto, allowCopySticker, allowCopyLink, allowCopyLinkPm);
+                    var groupedIconsView = new GroupedIconsView(getContext(), ChatActivity.this, selectedObject, allowReply, allowReplyPm, allowEdit, allowDelete, allowForward, allowCopy, allowCopyPhoto, allowCopyLink, allowCopyLinkPm);
                     popupLayout.addView(groupedIconsView.linearLayout);
                 }
 
@@ -44648,14 +44671,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
                 getMessageHelper().saveStickerToGallery(getParentActivity(), selectedObject);
                 BulletinFactory.createSaveToGalleryBulletin(this, selectedObject.isVideo(), themeDelegate).show();
-                break;
-            }
-            case nkbtn_sticker_copy: {
-                getMessageHelper().addStickerToClipboard(selectedObject.getDocument(), () -> {
-                    if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
-                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
-                    }
-                });
                 break;
             }
             case nkbtn_translate_llm:

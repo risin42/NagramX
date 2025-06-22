@@ -46,7 +46,7 @@ public class GroupedIconsView extends FrameLayout {
     public GroupedIconsView(Context context, ChatActivity chatActivity, MessageObject messageObject,
                             boolean allowReply, boolean allowReplyPm,
                             boolean allowEdit, boolean allowDelete, boolean allowForward,
-                            boolean allowCopy, boolean allowCopyPhoto, boolean allowCopySticker, boolean allowCopyLink, boolean allowCopyLinkPm) {
+                            boolean allowCopy, boolean allowCopyPhoto, boolean allowCopyLink, boolean allowCopyLinkPm) {
         super(context);
 
         linearLayout = new LinearLayout(context);
@@ -63,43 +63,47 @@ public class GroupedIconsView extends FrameLayout {
 
         // button 2: copy text > copy photo > copy sticker > copy link
         if (allowCopy) {
-            if (!allowCopyPhoto && messageObject != null && messageObject.isPhoto() && !messageObject.needDrawBluredPreview()) {
-                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, OPTION_COPY_PHOTO, true));
+            if (!allowCopyPhoto && messageObject != null && messageObject.isWebpage()) {
+                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, OPTION_COPY_PHOTO));
             } else if (allowCopyLink) {
-                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, OPTION_COPY_LINK, true));
+                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, OPTION_COPY_LINK));
             } else if (allowCopyLinkPm) {
-                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, OPTION_COPY_LINK_PM, true));
+                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, OPTION_COPY_LINK_PM));
             } else {
-                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, true));
+                options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY));
             }
         } else if (allowCopyPhoto) {
-            options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO, OPTION_COPY_PHOTO_AS_STICKER, true));
-        } else if (allowCopySticker) {
-            if (allowCopyLink) {
-                options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO_AS_STICKER, OPTION_COPY_LINK, true));
-            } else if (allowCopyLinkPm) {
-                options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO_AS_STICKER, OPTION_COPY_LINK_PM, true));
+            if (messageObject != null && !messageObject.isSticker()) {
+                options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO, OPTION_COPY_PHOTO_AS_STICKER));
+            } else {
+                if (allowCopyLink) {
+                    options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO, OPTION_COPY_LINK));
+                } else if (allowCopyLinkPm) {
+                    options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO, OPTION_COPY_LINK_PM));
+                } else {
+                    options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO));
+                }
             }
         } else if (allowCopyLink && allowDelete) {
-            options.add(new OptionConfig(R.drawable.msg_link, OPTION_COPY_LINK, true));
+            options.add(new OptionConfig(R.drawable.msg_link, OPTION_COPY_LINK));
         } else if (allowCopyLinkPm) {
-            options.add(new OptionConfig(R.drawable.msg_link, OPTION_COPY_LINK_PM, true));
+            options.add(new OptionConfig(R.drawable.msg_link, OPTION_COPY_LINK_PM));
         } else {
             options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, false));
         }
 
         // button 3: delete > copy photo > copy link
         if (allowDelete) {
-            options.add(new OptionConfig(R.drawable.msg_delete, OPTION_DELETE, true));
+            options.add(new OptionConfig(R.drawable.msg_delete, OPTION_DELETE));
         } else if (allowCopy && allowCopyPhoto) {
-            options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO, OPTION_COPY_PHOTO_AS_STICKER, true));
+            options.add(new OptionConfig(R.drawable.msg_copy_photo, OPTION_COPY_PHOTO, OPTION_COPY_PHOTO_AS_STICKER));
         } else {
             options.add(new OptionConfig(R.drawable.msg_link, OPTION_COPY_LINK, allowCopyLink));
         }
 
         // button 4: edit > forward
         if (allowEdit) {
-            options.add(new OptionConfig(R.drawable.msg_edit, OPTION_EDIT, true));
+            options.add(new OptionConfig(R.drawable.msg_edit, OPTION_EDIT));
         } else {
             options.add(new OptionConfig(R.drawable.msg_forward_noquote, OPTION_FORWARD, OPTION_FORWARD_NOQUOTE, allowForward, allowForward));
         }
@@ -150,12 +154,16 @@ public class GroupedIconsView extends FrameLayout {
         final boolean isEnabled;
         final boolean isLongClickEnabled;
 
+        public OptionConfig(int iconResId, int shortPressOptionId) {
+            this(iconResId, shortPressOptionId, null, true, false);
+        }
+
         public OptionConfig(int iconResId, int shortPressOptionId, boolean isEnabled) {
             this(iconResId, shortPressOptionId, null, isEnabled, false);
         }
 
-        public OptionConfig(int iconResId, int shortPressOptionId, int longPressOptionId, boolean isEnabled) {
-            this(iconResId, shortPressOptionId, longPressOptionId, isEnabled, true);
+        public OptionConfig(int iconResId, int shortPressOptionId, int longPressOptionId) {
+            this(iconResId, shortPressOptionId, longPressOptionId, true, true);
         }
 
         public OptionConfig(int iconResId, int shortPressOptionId, Integer longPressOptionId, boolean isEnabled, boolean isLongClickEnabled) {

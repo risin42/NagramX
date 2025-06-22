@@ -40,7 +40,7 @@ public class CopyPopupWrapper {
                 return isPrivate || id != CopyItem.ID_COPY_IN_PM;
             })
             .forEach(id -> {
-                var item = ActionBarMenuItem.addItem(false, false, windowLayout, id == CopyItem.ID_COPY_LINK || id == CopyItem.ID_COPY_IN_PM ? R.drawable.msg_link : R.drawable.msg_copy, CopyItem.ITEM_TITLES.get(id), false, resourcesProvider);
+                var item = ActionBarMenuItem.addItem(false, false, windowLayout, id == CopyItem.ID_COPY_LINK || id == CopyItem.ID_COPY_IN_PM ? R.drawable.msg_link : R.drawable.msg_copy_photo, CopyItem.ITEM_TITLES.get(id), false, resourcesProvider);
                 item.setOnClickListener(view -> delegate.onItemClick(id));
             })
         ;
