@@ -560,7 +560,7 @@ public class ChatAttachAlertContactsLayout extends ChatAttachAlert.AttachAlertLa
     }
 
     private void showErrorBox(String error) {
-        new AlertDialog.Builder(getContext(), resourcesProvider).setTitle(LocaleController.getString(R.string.AppName)).setMessage(error).setPositiveButton(LocaleController.getString(R.string.OK), null).show();
+        new AlertDialog.Builder(getContext(), resourcesProvider).setTitle(LocaleController.getString(R.string.NagramX)).setMessage(error).setPositiveButton(LocaleController.getString(R.string.OK), null).show();
     }
 
     private TLRPC.User prepareContact(Object object) {

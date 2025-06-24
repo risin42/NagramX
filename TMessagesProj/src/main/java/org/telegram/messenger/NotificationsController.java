@@ -4179,7 +4179,7 @@ public class NotificationsController extends BaseController {
                         name = LocaleController.getString(R.string.NotificationHiddenName);
                     }
                 } else {
-                    name = LocaleController.getString(R.string.AppName);
+                    name = LocaleController.getString(R.string.NagramX);
                 }
                 replace = false;
             } else {

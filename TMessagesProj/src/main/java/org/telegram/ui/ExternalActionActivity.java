@@ -287,7 +287,7 @@ public class ExternalActionActivity extends Activity implements INavigationLayou
                     }
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(ExternalActionActivity.this);
-                    builder.setTitle(LocaleController.getString(R.string.AppName));
+                    builder.setTitle(LocaleController.getString(R.string.NagramX));
                     builder.setMessage(LocaleController.getString(R.string.PleaseLoginPassport));
                     builder.setPositiveButton(LocaleController.getString(R.string.OK), null);
                     builder.show();

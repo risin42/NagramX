@@ -650,7 +650,7 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
                         }
                         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
                         builder.setMessage(LocaleController.getString(R.string.InviteUser));
-                        builder.setTitle(LocaleController.getString(R.string.AppName));
+                        builder.setTitle(LocaleController.getString(R.string.NagramX));
                         final String arg1 = usePhone;
                         builder.setPositiveButton(LocaleController.getString(R.string.OK), (dialogInterface, i) -> {
                             try {
@@ -1036,7 +1036,7 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
                 }
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-            builder.setTitle(LocaleController.getString(R.string.AppName));
+            builder.setTitle(LocaleController.getString(R.string.NagramX));
             String message = LocaleController.formatStringSimple(selectAlertString, UserObject.getUserName(user));
             EditTextBoldCursor editText = null;
             if (!user.bot && needForwardCount) {

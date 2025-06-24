@@ -10693,7 +10693,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                         return;
                     }
                     AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity, resourcesProvider);
-                    builder.setTitle(getString("AppName", R.string.AppName));
+                    builder.setTitle(getString(R.string.NagramX));
                     builder.setMessage(getString(R.string.CantPlayVideo));
                     builder.setPositiveButton(getString("Open", R.string.Open), (dialog, which) -> {
                         try {

@@ -21,7 +21,7 @@ object Dialogs {
     @JvmStatic
     fun createNeedChangeNekoSettingsAlert(context: Context) {
         val builder = AlertDialog.Builder(context)
-        builder.setTitle(getString(R.string.AppName))
+        builder.setTitle(getString(R.string.NagramX))
         builder.setMessage(getString(R.string.NeedChangeNekoSettings))
         builder.setPositiveButton(getString(R.string.OK), null)
         builder.show()

@@ -3132,7 +3132,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                         if (PhoneNumberUtils.compare(phone, userPhone) && ConnectionsManager.getInstance(a).isTestBackend() == testBackend) {
                             final int num = a;
                             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-                            builder.setTitle(getString(R.string.AppName));
+                            builder.setTitle(getString(R.string.NagramX));
                             builder.setMessage(getString("AccountAlreadyLoggedIn", R.string.AccountAlreadyLoggedIn));
                             builder.setPositiveButton(getString("AccountSwitch", R.string.AccountSwitch), (dialog, which) -> {
                                 if (UserConfig.selectedAccount != num) {

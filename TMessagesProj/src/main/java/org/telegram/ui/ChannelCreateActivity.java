@@ -1356,7 +1356,7 @@ public class ChannelCreateActivity extends BaseFragment implements NotificationC
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setTitle(LocaleController.getString(R.string.AppName));
+        builder.setTitle(LocaleController.getString(R.string.NagramX));
         switch (error) {
             case "USERNAME_INVALID":
                 builder.setMessage(LocaleController.getString(R.string.LinkInvalid));

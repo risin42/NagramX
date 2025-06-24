@@ -1289,7 +1289,7 @@ public class ChatEditTypeActivity extends BaseFragment implements NotificationCe
                         AdminedChannelCell cell = (AdminedChannelCell) view.getParent();
                         final TLRPC.Chat channel = cell.getCurrentChannel();
                         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-                        builder.setTitle(LocaleController.getString(R.string.AppName));
+                        builder.setTitle(LocaleController.getString(R.string.NagramX));
                         if (isChannel) {
                             builder.setMessage(AndroidUtilities.replaceTags(LocaleController.formatString("RevokeLinkAlertChannel", R.string.RevokeLinkAlertChannel, getMessagesController().linkPrefix + "/" + ChatObject.getPublicUsername(channel), channel.title)));
                         } else {

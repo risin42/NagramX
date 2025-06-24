@@ -130,7 +130,7 @@ public class ThemePreviewMessagesCell extends LinearLayout {
             message.media.webpage = new TLRPC.TL_webPage();
             message.media.webpage.embed_url = "https://telegram.org/";
             message.media.webpage.flags |= 2;
-            message.media.webpage.site_name = LocaleController.getString(R.string.AppName);
+            message.media.webpage.site_name = LocaleController.getString(R.string.NagramX);
             message.media.webpage.flags |= 4;
             message.media.webpage.title = LocaleController.getString(isChannel ? R.string.ChannelColorPreviewLinkTitle : R.string.UserColorPreviewLinkTitle);
             message.media.webpage.flags |= 8;

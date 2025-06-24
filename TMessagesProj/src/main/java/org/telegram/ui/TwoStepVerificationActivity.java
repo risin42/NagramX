@@ -631,9 +631,9 @@ public class TwoStepVerificationActivity extends BaseFragment implements Notific
                         } else {
                             timeString = LocaleController.formatPluralString("Minutes", time / 60);
                         }
-                        showAlertWithText(getString(R.string.AppName), LocaleController.formatString("FloodWaitTime", R.string.FloodWaitTime, timeString));
+                        showAlertWithText(getString(R.string.NagramX), LocaleController.formatString("FloodWaitTime", R.string.FloodWaitTime, timeString));
                     } else {
-                        showAlertWithText(getString(R.string.AppName), error.text);
+                        showAlertWithText(getString(R.string.NagramX), error.text);
                     }
                 }
             }), ConnectionsManager.RequestFlagFailOnServerErrors | ConnectionsManager.RequestFlagWithoutLogin);

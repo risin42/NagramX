@@ -2593,7 +2593,7 @@ public class PaymentFormActivity extends BaseFragment implements NotificationCen
                 });
                 AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
                 builder.setMessage(LocaleController.getString(R.string.ResendCodeInfo));
-                builder.setTitle(LocaleController.getString(R.string.AppName));
+                builder.setTitle(LocaleController.getString(R.string.NagramX));
                 builder.setPositiveButton(LocaleController.getString(R.string.OK), null);
                 showDialog(builder.create());
             });
@@ -3635,9 +3635,9 @@ public class PaymentFormActivity extends BaseFragment implements NotificationCen
                         } else {
                             timeString = LocaleController.formatPluralString("Minutes", time / 60);
                         }
-                        showAlertWithText(LocaleController.getString(R.string.AppName), LocaleController.formatString("FloodWaitTime", R.string.FloodWaitTime, timeString));
+                        showAlertWithText(LocaleController.getString(R.string.NagramX), LocaleController.formatString("FloodWaitTime", R.string.FloodWaitTime, timeString));
                     } else {
-                        showAlertWithText(LocaleController.getString(R.string.AppName), error.text);
+                        showAlertWithText(LocaleController.getString(R.string.NagramX), error.text);
                     }
                 }
             }), ConnectionsManager.RequestFlagFailOnServerErrors | ConnectionsManager.RequestFlagWithoutLogin);
@@ -3734,7 +3734,7 @@ public class PaymentFormActivity extends BaseFragment implements NotificationCen
                                 }
                             } else {
                                 if (error.text.equals("EMAIL_INVALID")) {
-                                    showAlertWithText(LocaleController.getString(R.string.AppName), LocaleController.getString(R.string.PasswordEmailInvalid));
+                                    showAlertWithText(LocaleController.getString(R.string.NagramX), LocaleController.getString(R.string.PasswordEmailInvalid));
                                 } else if (error.text.startsWith("FLOOD_WAIT")) {
                                     int time = Utilities.parseInt(error.text);
                                     String timeString;
@@ -3743,9 +3743,9 @@ public class PaymentFormActivity extends BaseFragment implements NotificationCen
                                     } else {
                                         timeString = LocaleController.formatPluralString("Minutes", time / 60);
                                     }
-                                    showAlertWithText(LocaleController.getString(R.string.AppName), LocaleController.formatString("FloodWaitTime", R.string.FloodWaitTime, timeString));
+                                    showAlertWithText(LocaleController.getString(R.string.NagramX), LocaleController.formatString("FloodWaitTime", R.string.FloodWaitTime, timeString));
                                 } else {
-                                    showAlertWithText(LocaleController.getString(R.string.AppName), error.text);
+                                    showAlertWithText(LocaleController.getString(R.string.NagramX), error.text);
                                 }
                             }
                         }
