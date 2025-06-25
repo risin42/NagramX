@@ -290,7 +290,15 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         // Before listAdapter
         setCanNotChange();
 
-        listView = new BlurredRecyclerView(context);
+        listView = new BlurredRecyclerView(context) {
+            @Override
+            public Integer getSelectorColor(int position) {
+                if (position == cellGroup.rows.indexOf(clearMessageDatabaseRow)) {
+                    return Theme.multAlpha(getThemedColor(Theme.key_text_RedRegular), .1f);
+                }
+                return getThemedColor(Theme.key_listSelector);
+            }
+        };
         listView.setVerticalScrollBarEnabled(false);
         listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
