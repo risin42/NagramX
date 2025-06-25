@@ -47,7 +47,7 @@ public class TranslateController extends BaseController {
 
     public static final String UNKNOWN_LANGUAGE = "und";
 
-    private static final int REQUIRED_TOTAL_MESSAGES_CHECKED = 8;
+    private static final int REQUIRED_TOTAL_MESSAGES_CHECKED = 3;
     private static final int REQUIRED_TOTAL_MESSAGES_CHECKED_AUTOTRANSLATE = 2;
     private static final float REQUIRED_PERCENTAGE_MESSAGES_TRANSLATABLE = .60F;
     private static final float REQUIRED_MIN_MESSAGES_TRANSLATABLE_AUTOTRANSLATE = 2;
@@ -222,7 +222,7 @@ public class TranslateController extends BaseController {
     public String getDialogTranslateTo(long dialogId) {
         String lang = translateDialogLanguage.get(dialogId);
         if (lang == null) {
-            lang = TranslateAlert2.getToLanguage();
+            lang = NekoConfig.translateToLang.String();
             if (lang == null || lang.equals(getDialogDetectedLanguage(dialogId))) {
                 lang = currentLanguage();
             }
