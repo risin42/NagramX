@@ -718,7 +718,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
             Bitmap b;
             if (cropState != null) {
                 b = PhotoViewer.createCroppedBitmap(bitmap, cropState, new int[] { orientation.first, orientation.second }, true);
-                bitmap.recycle();
+                AndroidUtilities.recycleBitmap(bitmap);
             } else {
                 if (orientation.first != 0) {
                     Matrix matrix = new Matrix();
@@ -729,7 +729,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                         matrix.postScale(1, -1);
                     }
                     b = Bitmaps.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                    bitmap.recycle();
+                    AndroidUtilities.recycleBitmap(bitmap);
                 } else {
                     b = bitmap;
                 }
@@ -742,7 +742,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                 if (cropState != null) {
                     Bitmap b2 = BitmapFactory.decodeFile(fullPaintPath);
                     paintBitmap = PhotoViewer.createCroppedBitmap(b2, cropState, null, false);
-                    b2.recycle();
+                    AndroidUtilities.recycleBitmap(b2);
                 } else {
                     paintBitmap = BitmapFactory.decodeFile(fullPaintPath);
                 }
@@ -760,9 +760,9 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                 } catch (Exception e) {
                     FileLog.e(e);
                 }
-                paintBitmap.recycle();
+                AndroidUtilities.recycleBitmap(paintBitmap);
             }
-            b.recycle();
+            AndroidUtilities.recycleBitmap(b);
         }
     }
 
