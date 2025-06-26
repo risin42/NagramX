@@ -230,6 +230,7 @@ import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.helpers.TimeStringHelper;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
 import tw.nekomimi.nekogram.parts.MessageTransKt;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 import tw.nekomimi.nekogram.utils.NeteaseEmbed;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -1795,6 +1796,11 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     public void drawStatusWithImage(Canvas canvas, ImageReceiver imageReceiver, int radius) {
+        int onlineColor = AndroidUtil.getOnlineColor(currentUser, resourcesProvider);
+        if (onlineColor == 0) {
+            imageReceiver.draw(canvas);
+            return;
+        }
         int x = Math.round(imageReceiver.getImageX2());
         int y = Math.round(imageReceiver.getImageY2());
         int circleRadius = radius - AndroidUtilities.dp(2.25f);
@@ -1802,12 +1808,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         int xCenterRegion = x - spaceLeft;
         int yCenterRegion = y - spaceLeft;
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Theme.getColor(Theme.key_chats_onlineCircle));
-        String formatUserStatus = currentUser != null ? LocaleController.formatUserStatus(this.currentAccount, currentUser) : "";
-        if (!NaConfig.INSTANCE.getShowOnlineStatus().Bool() || currentUser == null || currentUser.bot || !formatUserStatus.equals(getString(R.string.Online))) {
-            imageReceiver.draw(canvas);
-            return;
-        }
+        paint.setColor(onlineColor);
         canvas.save();
         Path p = new Path();
         p.addCircle(x - radius, y - radius, radius, Path.Direction.CW);

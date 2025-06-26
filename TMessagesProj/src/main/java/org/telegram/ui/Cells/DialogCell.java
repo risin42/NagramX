@@ -140,6 +140,7 @@ import java.util.Stack;
 import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.ui.MessageHelper;
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 public class DialogCell extends BaseCell implements StoriesListPlaceProvider.AvatarOverlaysView {
@@ -4578,6 +4579,15 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             if (user != null && !MessagesController.isSupportUser(user) && !user.bot) {
                 boolean isOnline = isOnline();
                 wasDrawnOnline = isOnline;
+                int onlineColor = Theme.getColor(Theme.key_chats_onlineCircle, resourcesProvider);
+                if (!isOnline) {
+                    int color = AndroidUtil.getOnlineColor(user, resourcesProvider);
+                    if (color != 0) {
+                        onlineColor = color;
+                        isOnline = true;
+                        onlineProgress = 1.0f;
+                    }
+                }
                 if (isOnline || onlineProgress != 0) {
                     int top = (int) (storyParams.originalAvatarRect.bottom - dp(useForceThreeLines || SharedConfig.useThreeLinesLayout ? 6 : 8));
                     int left;
@@ -4589,7 +4599,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
                     Theme.dialogs_onlineCirclePaint.setColor(Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider));
                     canvas.drawCircle(left, top, dp(7) * onlineProgress, Theme.dialogs_onlineCirclePaint);
-                    Theme.dialogs_onlineCirclePaint.setColor(Theme.getColor(Theme.key_chats_onlineCircle, resourcesProvider));
+                    Theme.dialogs_onlineCirclePaint.setColor(onlineColor);
                     canvas.drawCircle(left, top, dp(5) * onlineProgress, Theme.dialogs_onlineCirclePaint);
                     if (isOnline) {
                         if (onlineProgress < 1.0f) {
