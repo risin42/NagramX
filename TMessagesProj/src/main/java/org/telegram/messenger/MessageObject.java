@@ -598,7 +598,7 @@ public class MessageObject {
                 TLRPC.RestrictionReason reason = messageOwner.restriction_reason.get(i);
                 if (
                     "sensitive".equals(reason.reason) &&
-                    ("all".equals(reason.platform) || !ApplicationLoader.isStandaloneBuild() && !AndroidUtilities.isBetaApp() && "android".equals(reason.platform))
+                    ("all".equals(reason.platform) || (!ApplicationLoader.isStandaloneBuild() && !BuildVars.isBetaApp() || BuildVars.DEBUG_PRIVATE_VERSION) && "android".equals(reason.platform))
                 ) {
                     return isSensitiveCached = true;
                 }
@@ -611,7 +611,7 @@ public class MessageObject {
                     TLRPC.RestrictionReason reason = chat.restriction_reason.get(i);
                     if (
                         "sensitive".equals(reason.reason) &&
-                        ("all".equals(reason.platform) || !ApplicationLoader.isStandaloneBuild() && !AndroidUtilities.isBetaApp() && "android".equals(reason.platform))
+                        ("all".equals(reason.platform) || (!ApplicationLoader.isStandaloneBuild() && !BuildVars.isBetaApp() || BuildVars.DEBUG_PRIVATE_VERSION) && "android".equals(reason.platform))
                     ) {
                         return isSensitiveCached = true;
                     }
@@ -5226,7 +5226,7 @@ public class MessageObject {
         } else {
             isRestrictedMessage = false;
             String restrictionReason = MessagesController.getInstance(currentAccount).getRestrictionReason(messageOwner.restriction_reason);
-            if (!TextUtils.isEmpty(restrictionReason) && !NekoConfig.ignoreContentRestrictions.Bool()) {
+            if (!TextUtils.isEmpty(restrictionReason)) {
                 messageText = restrictionReason;
                 isRestrictedMessage = true;
             } else if (!isMediaEmpty() && !isSponsored()) {

@@ -66,6 +66,15 @@ public class BuildVars {
         return true;
     }
 
+    private static Boolean betaApp;
+    public static boolean isBetaApp() {
+        return BuildConfig.DEBUG;
+        /*if (betaApp == null) {
+            betaApp = ApplicationLoader.applicationContext != null && "org.telegram.messenger.beta".equals(ApplicationLoader.applicationContext.getPackageName());
+        }
+        return betaApp;*/
+    }
+
     public static String getSmsHash() {
         return ApplicationLoader.isStandaloneBuild() ? "w0lkcmTZkKh" : (DEBUG_VERSION ? "O2P2z+/jBpJ" : "oLeq9AcOZkT");
     }

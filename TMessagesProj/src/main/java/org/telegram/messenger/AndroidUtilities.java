@@ -1164,14 +1164,6 @@ public class AndroidUtilities {
         return standaloneApp;
     }
 
-    private static Boolean betaApp;
-    public static boolean isBetaApp() {
-        if (betaApp == null) {
-            betaApp = "org.telegram.messenger.beta".equals(ApplicationLoader.applicationContext.getPackageName());
-        }
-        return betaApp;
-    }
-
     private static String makeUrl(String url, String[] prefixes, Matcher matcher) {
         boolean hasPrefix = false;
         for (int i = 0; i < prefixes.length; i++) {

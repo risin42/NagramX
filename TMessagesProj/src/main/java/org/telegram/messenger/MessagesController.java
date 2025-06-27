@@ -21074,14 +21074,14 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public String getRestrictionReason(ArrayList<TLRPC.RestrictionReason> reasons) {
-        if (reasons.isEmpty()) {
+        if (reasons.isEmpty() || NekoConfig.ignoreContentRestrictions.Bool()) {
             return null;
         }
         for (int a = 0, N = reasons.size(); a < N; a++) {
             TLRPC.RestrictionReason reason = reasons.get(a);
             if (ignoreRestrictionReasons != null && ignoreRestrictionReasons.contains(reason.reason)) continue;
             if ("sensitive".equals(reason.reason)) continue;
-            if ("all".equals(reason.platform) || !ApplicationLoader.isStandaloneBuild() && !AndroidUtilities.isBetaApp() && "android".equals(reason.platform) && !NekoConfig.ignoreContentRestrictions.Bool()) {
+            if ("all".equals(reason.platform) || !ApplicationLoader.isStandaloneBuild() && !BuildVars.isBetaApp() && "android".equals(reason.platform)) {
                 return reason.text;
             }
         }
@@ -21095,7 +21095,7 @@ public class MessagesController extends BaseController implements NotificationCe
         for (int a = 0, N = reasons.size(); a < N; a++) {
             TLRPC.RestrictionReason reason = reasons.get(a);
             if (ignoreRestrictionReasons != null && ignoreRestrictionReasons.contains(reason.reason)) continue;
-            if ("all".equals(reason.platform) || !ApplicationLoader.isStandaloneBuild() && !AndroidUtilities.isBetaApp() && "android".equals(reason.platform) && !NekoConfig.ignoreContentRestrictions.Bool()) {
+            if ("all".equals(reason.platform) || !ApplicationLoader.isStandaloneBuild() && !BuildVars.isBetaApp() && "android".equals(reason.platform)) {
                 if ("sensitive".equals(reason.reason)) return true;
             }
         }
@@ -21207,7 +21207,7 @@ public class MessagesController extends BaseController implements NotificationCe
         }
         if (reason != null) {
             showCantOpenAlert(fragment, reason);
-            if (!NekoConfig.ignoreContentRestrictions.Bool()) return false;
+            return false;
         }
         if (messageId != 0 && originalMessage != null && chat != null && chat.access_hash == 0) {
             long did = originalMessage.getDialogId();
@@ -21314,7 +21314,6 @@ public class MessagesController extends BaseController implements NotificationCe
         }
         if (reason != null) {
             showCantOpenAlert(fragment, reason);
-            if (!NekoConfig.ignoreContentRestrictions.Bool()) return;
         } else {
             Bundle args = new Bundle();
             if (chat != null) {
