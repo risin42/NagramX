@@ -3604,7 +3604,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
 
         TextView buttonTextView = new TextView(getContext());
         ScaleStateListAnimator.apply(buttonTextView);
-        buttonTextView.setText(LocaleController.getString(R.string.AppUpdate));
+        buttonTextView.setText(LocaleController.getString(R.string.AppUpdate).replace("Telegram", LocaleController.getString(R.string.NagramX)));
         buttonTextView.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText, resourcesProvider));
         buttonTextView.setPadding(AndroidUtilities.dp(16), AndroidUtilities.dp(12), AndroidUtilities.dp(16), AndroidUtilities.dp(12));
         buttonTextView.setGravity(Gravity.CENTER);
@@ -3616,16 +3616,15 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                 ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_featuredStickers_buttonText, resourcesProvider), 30))
         );
         buttonTextView.setOnClickListener(v -> {
-//            if (ApplicationLoader.isStandaloneBuild()) {
-//                if (LaunchActivity.instance != null) {
-//                    LaunchActivity.instance.checkAppUpdate(true, null);
-//                }
-//            } else if (BuildVars.isHuaweiStoreApp()){
-//                Browser.openUrl(getContext(), BuildVars.HUAWEI_STORE_URL);
-//            } else {
-//                Browser.openUrl(getContext(), BuildVars.PLAYSTORE_APP_URL);
-//            }
-            Browser.openUrl(getContext(), BuildVars.GITHUB_RELEASE_URL);
+            if (ApplicationLoader.isStandaloneBuild()) {
+                if (LaunchActivity.instance != null) {
+                    LaunchActivity.instance.checkAppUpdate(true, null);
+                }
+            }/* else if (BuildVars.isHuaweiStoreApp()){
+                Browser.openUrl(getContext(), BuildVars.HUAWEI_STORE_URL);
+            } else {
+                Browser.openUrl(getContext(), BuildVars.PLAYSTORE_APP_URL);
+            }*/
         });
         linearLayout.addView(textView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
         linearLayout.addView(buttonTextView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 24, 0, 0));

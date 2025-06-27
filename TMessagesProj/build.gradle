@@ -10,6 +10,7 @@ repositories {
     }
 }
 
+def buildTimestamp = System.getenv("BUILD_TIMESTAMP") ?: "0"
 def commitId = System.getenv("COMMIT_ID")
 def verName = "${APP_VERSION_NAME}${commitId?.take(7) ? "-${commitId.take(7)}" : ''}"
 def verCode = 1213
@@ -97,6 +98,7 @@ android {
         buildConfigField "int", "OFFICIAL_VERSION_CODE", officialCode + ""
         buildConfigField "int", "APP_ID", appId
         buildConfigField "String", "APP_HASH", "\"" + appHash + "\""
+        buildConfigField "long", "BUILD_TIMESTAMP", buildTimestamp + "L"
 
         resValue 'string', 'DEEPL_API_KEY', (System.getenv("DEEPL_API_KEY") ?: "")
 

@@ -10,7 +10,7 @@ api_id = os.environ.get("APP_ID")
 api_hash = os.environ.get("APP_HASH")
 artifacts_path = Path("artifacts")
 test_version = argv[3] == "test" if len(argv) > 2 else None
-
+metadata_chat_id = argv[4] if len(argv) > 3 else None
 
 def find_apk(abi: str) -> Path:
     dirs = list(artifacts_path.glob("*"))
@@ -53,6 +53,11 @@ def get_document() -> list["InputMediaDocument"]:
     print(documents)
     return documents
 
+def get_metadata():
+    commit_message = "`" + os.environ.get("COMMIT_MESSAGE", "None") + "`"
+    build_timestamp = "`" + os.environ.get("BUILD_TIMESTAMP", "None") + "`"
+    return commit_message + "\n" + build_timestamp
+
 def retry(func):
     async def wrapper(*args, **kwargs):
         for _ in range(3):
@@ -72,6 +77,15 @@ async def send_to_channel(client: "Client", cid: str):
         media=get_document(),
     )
 
+@retry
+async def send_metadata(client: "Client", cid: str):
+    with contextlib.suppress(ValueError):
+        cid = int(cid)
+    await client.send_message(
+        chat_id=cid,
+        text=get_metadata(),
+    )
+
 def get_client(bot_token: str):
     return Client(
         "helper_bot",
@@ -86,6 +100,8 @@ async def main():
     client = get_client(bot_token)
     await client.start()
     await send_to_channel(client, chat_id)
+    if metadata_chat_id:
+        await send_metadata(client, metadata_chat_id)
     await client.log_out()
 
 

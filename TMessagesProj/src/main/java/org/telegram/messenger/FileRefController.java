@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import tw.nekomimi.nekogram.helpers.remote.UpdateHelper;
+
 public class FileRefController extends BaseController {
 
     private static class Requester {
@@ -576,6 +578,15 @@ public class FileRefController extends BaseController {
 //                    req.source = "";
 //                }
 //                getConnectionsManager().sendRequest(req, (response, error) -> onRequestComplete(locationKey, parentKey, response, error, true, false));
+                UpdateHelper.getInstance().checkNewVersionAvailable((response, error) -> {
+                    if (error != null) {
+                        TLRPC.TL_error error1 = new TLRPC.TL_error();
+                        error1.text = error;
+                        onRequestComplete(locationKey, parentKey, response, error1, true, false);
+                    } else {
+                        onRequestComplete(locationKey, parentKey, response, null, true, false);
+                    }
+                });
             } else if (string.startsWith("avatar_")) {
                 long id = Utilities.parseLong(string);
                 if (id > 0) {

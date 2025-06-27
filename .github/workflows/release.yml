@@ -177,6 +177,8 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - native
+    outputs:
+      build_timestamp: ${{ steps.release_build_step.outputs.build_timestamp }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -217,9 +219,12 @@ jobs:
           path: ~/.gradle
           key: gradle-${{ hashFiles('**/*.gradle') }}
       - name: Release Build
+        id: release_build_step
         run: |
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
           export DEEPL_API_KEY="${{ secrets.DEEPL_API_KEY }}"
+          export BUILD_TIMESTAMP=$(date +%s)
+          echo "build_timestamp=$BUILD_TIMESTAMP" >> "$GITHUB_OUTPUT"
           ./gradlew TMessagesProj:assembleRelease
 
           APK=$(find TMessagesProj/build/outputs/apk -name '*arm64-v8a*.apk')
@@ -238,7 +243,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Donwload Artifacts
+      - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
@@ -253,9 +258,10 @@ jobs:
           COMMIT_ID: ${{ github.event.head_commit.id }}
           COMMIT_URL: ${{ github.event.head_commit.url }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          BUILD_TIMESTAMP: ${{ needs.build.outputs.build_timestamp }}
         run: |
           # send apk via telegram bot api
           export mini64=$(find artifacts -name "*arm64-v8a.apk")
           echo $mini64
           python -m pip install -r bin/scripts/requirements.txt
-          python bin/scripts/upload.py ${{ secrets.HELPER_BOT_TOKEN }} ${{ secrets.HELPER_BOT_TARGET }} release
+          python bin/scripts/upload.py ${{ secrets.HELPER_BOT_TOKEN }} ${{ secrets.HELPER_BOT_TARGET }} release ${{ secrets.HELPER_BOT_CANARY_TARGET }}

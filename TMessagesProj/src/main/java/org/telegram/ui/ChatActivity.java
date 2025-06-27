@@ -41662,7 +41662,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 }
                             }
                         };
-                        // LaunchActivity.instance.checkAppUpdate(true, progressDialogCurrent);
+                        LaunchActivity.instance.checkAppUpdate(true, progressDialogCurrent);
                     }
                 }
             } else if (type == 8) {

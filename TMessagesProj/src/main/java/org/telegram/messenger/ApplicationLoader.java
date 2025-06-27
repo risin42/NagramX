@@ -725,6 +725,10 @@ public class ApplicationLoader extends Application {
         return true;
     }
 
+    public boolean showCustomUpdateAppPopup(Context context, BetaUpdate update, int account) {
+        return false;
+    }
+
     public IUpdateLayout takeUpdateLayout(Activity activity, ViewGroup sideMenu, ViewGroup sideMenuContainer) {
         return new UpdateLayout(activity, sideMenu, sideMenuContainer);
     }
@@ -770,6 +774,25 @@ public class ApplicationLoader extends Application {
     }
 
     public BaseFragment openSettings(int n) {
+        return null;
+    }
+
+    public boolean isCustomUpdate() {
+        return false;
+    }
+    public void downloadUpdate() {}
+    public void cancelDownloadingUpdate() {}
+    public boolean isDownloadingUpdate() {
+        return false;
+    }
+    public float getDownloadingUpdateProgress() {
+        return 0.0f;
+    }
+    public void checkUpdate(boolean force, Runnable whenDone) {}
+    public BetaUpdate getUpdate() {
+        return null;
+    }
+    public File getDownloadedUpdateFile() {
         return null;
     }
 }

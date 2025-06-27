@@ -91,6 +91,7 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.AutoDeleteMediaTask;
 import org.telegram.messenger.BackupAgent;
+import org.telegram.messenger.BetaUpdate;
 import org.telegram.messenger.BotWebViewVibrationEffect;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChannelBoostsController;
@@ -162,6 +163,7 @@ import org.telegram.ui.Components.AppIconBulletinLayout;
 import org.telegram.ui.Components.AttachBotIntroTopView;
 import org.telegram.ui.Components.AudioPlayerAlert;
 import org.telegram.ui.Components.BatteryDrawable;
+import org.telegram.ui.Components.BlockingUpdateView;
 import org.telegram.ui.Components.Bulletin;
 import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.CubicBezierInterpolator;
@@ -240,6 +242,7 @@ import tw.nekomimi.nekogram.helpers.MonetHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
 import tw.nekomimi.nekogram.helpers.remote.PagePreviewRulesHelper;
+import tw.nekomimi.nekogram.helpers.remote.UpdateHelper;
 import tw.nekomimi.nekogram.settings.GhostModeActivity;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -309,7 +312,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
     private PasscodeViewDialog passcodeDialog;
     private List<PasscodeView> overlayPasscodeViews = new ArrayList<>();
     private TermsOfServiceView termsOfServiceView;
-    // private BlockingUpdateView blockingUpdateView;
+    private BlockingUpdateView blockingUpdateView;
     public final ArrayList<Dialog> visibleDialogs = new ArrayList<>();
     private Dialog proxyErrorDialog;
     private RecyclerListView sideMenu;
@@ -1812,22 +1815,22 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         }
     }
 
-    // private void showUpdateActivity(int account, TLRPC.TL_help_appUpdate update, boolean check) {
-    //     if (blockingUpdateView == null) {
-    //         blockingUpdateView = new BlockingUpdateView(LaunchActivity.this) {
-    //             @Override
-    //             public void setVisibility(int visibility) {
-    //                 super.setVisibility(visibility);
-    //                 if (visibility == View.GONE) {
-    //                     drawerLayoutContainer.setAllowOpenDrawer(true, false);
-    //                 }
-    //             }
-    //         };
-    //         drawerLayoutContainer.addView(blockingUpdateView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
-    //     }
-    //     blockingUpdateView.show(account, update, check);
-    //     drawerLayoutContainer.setAllowOpenDrawer(false, false);
-    // }
+    private void showUpdateActivity(int account, TLRPC.TL_help_appUpdate update, boolean check) {
+        if (blockingUpdateView == null) {
+            blockingUpdateView = new BlockingUpdateView(LaunchActivity.this) {
+                @Override
+                public void setVisibility(int visibility) {
+                    super.setVisibility(visibility);
+                    if (visibility == View.GONE) {
+                        drawerLayoutContainer.setAllowOpenDrawer(true, false);
+                    }
+                }
+            };
+            drawerLayoutContainer.addView(blockingUpdateView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        }
+        blockingUpdateView.show(account, update, check);
+        drawerLayoutContainer.setAllowOpenDrawer(false, false);
+    }
 
     private void showTosActivity(int account, TLRPC.TL_help_termsOfService tos) {
         if (termsOfServiceView == null) {
@@ -3037,16 +3040,16 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                                         } catch (Exception e) {
                                             FileLog.e(e);
                                         }
-                                    // } else if (url.startsWith("tg:upgrade") || url.startsWith("tg://upgrade") || url.startsWith("tg:update") || url.startsWith("tg://update")) {
-                                    //     boolean updateAlways = false;
-                                    //     try {
-                                    //         url = url.replace("tg:upgrade", "tg://telegram.org").replace("tg://upgrade", "tg://telegram.org").replace("tg:update", "tg://telegram.org").replace("tg://update", "tg://telegram.org");
-                                    //         data = Uri.parse(url);
-                                    //         updateAlways = data.getQueryParameter("always") != null && "true".equals(data.getQueryParameter("always"));
-                                    //     } catch (Exception e) {
-                                    //         FileLog.e(e);
-                                    //     }
-                                    //     checkAppUpdate(true, null, updateAlways);
+                                    } else if (url.startsWith("tg:upgrade") || url.startsWith("tg://upgrade") || url.startsWith("tg:update") || url.startsWith("tg://update")) {
+                                        boolean updateAlways = false;
+                                        try {
+                                            url = url.replace("tg:upgrade", "tg://telegram.org").replace("tg://upgrade", "tg://telegram.org").replace("tg:update", "tg://telegram.org").replace("tg://update", "tg://telegram.org");
+                                            data = Uri.parse(url);
+                                            updateAlways = data.getQueryParameter("always") != null && "true".equals(data.getQueryParameter("always"));
+                                        } catch (Exception e) {
+                                            FileLog.e(e);
+                                        }
+                                        checkAppUpdate(true, null, updateAlways);
                                     } else if (url.startsWith("tg:neko") || url.startsWith("tg://neko")) {
                                         url = url.replace("tg:neko", "tg://t.me/nasettings").replace("tg://neko", "tg://t.me/nasettings");
                                         data = Uri.parse(url);
@@ -6081,79 +6084,89 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         return foundContacts;
     }
 
-    // public void checkAppUpdate(boolean force, Browser.Progress progress) {
-    //     if (!force && BuildVars.DEBUG_VERSION || !force && !BuildVars.CHECK_UPDATES) {
-    //         return;
-    //     }
-    //     if (!force && Math.abs(System.currentTimeMillis() - SharedConfig.lastUpdateCheckTime) < MessagesController.getInstance(0).updateCheckDelay * 1000) {
-    //         return;
-    //     }
-    //     TLRPC.TL_help_getAppUpdate req = new TLRPC.TL_help_getAppUpdate();
-    //     try {
-    //         req.source = ApplicationLoader.applicationContext.getPackageManager().getInstallerPackageName(ApplicationLoader.applicationContext.getPackageName());
-    //     } catch (Exception ignore) {
+    private boolean firstAppUpdateCheck = true;
+    public void checkAppUpdate(boolean force, Browser.Progress progress) {
+        checkAppUpdate(force, progress, false);
+    }
 
-    //     }
-    //     if (req.source == null) {
-    //         req.source = "";
-    //     }
-    //     final int accountNum = currentAccount;
-    //     int reqId = ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> {
-    //         SharedConfig.lastUpdateCheckTime = System.currentTimeMillis();
-    //         SharedConfig.saveConfig();
-    //         if (response instanceof TLRPC.TL_help_appUpdate) {
-    //             final TLRPC.TL_help_appUpdate res = (TLRPC.TL_help_appUpdate) response;
-    //             AndroidUtilities.runOnUIThread(() -> {
-    //                 if (SharedConfig.pendingAppUpdate != null && SharedConfig.pendingAppUpdate.version.equals(res.version)) {
-    //                     return;
-    //                 }
-    //                 final boolean newVersionAvailable = SharedConfig.setNewAppVersionAvailable(res);
-    //                 if (newVersionAvailable) {
-    //                     if (res.can_not_skip) {
-    //                         showUpdateActivity(accountNum, res, false);
-    //                     } else if (ApplicationLoader.isStandaloneBuild() || BuildVars.DEBUG_VERSION) {
-    //                         drawerLayoutAdapter.notifyDataSetChanged();
-    //                         ApplicationLoader.applicationLoaderInstance.showUpdateAppPopup(LaunchActivity.this, res, accountNum);
-    //                     }
-    //                     NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.appUpdateAvailable);
-    //                 }
-    //                 if (progress != null) {
-    //                     progress.end();
-    //                     if (!newVersionAvailable) {
-    //                         BaseFragment fragment = getLastFragment();
-    //                         if (fragment != null) {
-    //                             BulletinFactory.of(fragment).createSimpleBulletin(R.raw.chats_infotip, LocaleController.getString(R.string.YourVersionIsLatest)).show();
-    //                         }
-    //                     }
-    //                 }
-    //             });
-    //         } else if (response instanceof TLRPC.TL_help_noAppUpdate) {
-    //             AndroidUtilities.runOnUIThread(() -> {
-    //                 if (progress != null) {
-    //                     progress.end();
-    //                     BaseFragment fragment = getLastFragment();
-    //                     if (fragment != null) {
-    //                         BulletinFactory.of(fragment).createSimpleBulletin(R.raw.chats_infotip, LocaleController.getString(R.string.YourVersionIsLatest)).show();
-    //                     }
-    //                 }
-    //             });
-    //         } else if (error != null) {
-    //             AndroidUtilities.runOnUIThread(() -> {
-    //                 if (progress != null) {
-    //                     progress.end();
-    //                     BaseFragment fragment = getLastFragment();
-    //                     if (fragment != null) {
-    //                         BulletinFactory.of(fragment).showForError(error);
-    //                     }
-    //                 }
-    //             });
-    //         }
-    //     });
-    //     if (progress != null) {
-    //         progress.init();
-    //         progress.onCancel(() -> ConnectionsManager.getInstance(currentAccount).cancelRequest(reqId, true));
-    //     }
-    // }
+    public void checkAppUpdate(boolean force, Browser.Progress progress, boolean updateAlways) {
+       /*if (!ApplicationLoader.isStandaloneBuild() && !ApplicationLoader.isBetaBuild()) {
+           return;
+       }
+       if (!force && !BuildVars.CHECK_UPDATES) {
+           return;
+       }*/
+        if (ApplicationLoader.applicationLoaderInstance.isCustomUpdate()) {
+            final BetaUpdate prevUpdate = ApplicationLoader.applicationLoaderInstance.getUpdate();
+            final boolean first = firstAppUpdateCheck;
+            firstAppUpdateCheck = false;
+            ApplicationLoader.applicationLoaderInstance.checkUpdate(force, () -> {
+                final BetaUpdate pendingUpdate = ApplicationLoader.applicationLoaderInstance.getUpdate();
+                if (progress != null) {
+                    progress.end();
+                    if (pendingUpdate == null) {
+                        BaseFragment fragment = getLastFragment();
+                        if (fragment != null) {
+                            BulletinFactory.of(fragment).createSimpleBulletin(R.raw.done, LocaleController.getString(R.string.YourVersionIsLatest)).show();
+                        }
+                    }
+                }
+                if (pendingUpdate != null && !ApplicationLoader.applicationLoaderInstance.isDownloadingUpdate() && (first || prevUpdate == null || pendingUpdate.higherThan(prevUpdate))) {
+                    ApplicationLoader.applicationLoaderInstance.showCustomUpdateAppPopup(LaunchActivity.this, pendingUpdate, currentAccount);
+                }
+            });
+            return;
+        }
+        if (!force && Math.abs(System.currentTimeMillis() - SharedConfig.lastUpdateCheckTime) < MessagesController.getInstance(0).updateCheckDelay * 1000) {
+            return;
+        }
+        final TLRPC.TL_help_getAppUpdate req = new TLRPC.TL_help_getAppUpdate();
+        try {
+            req.source = ApplicationLoader.applicationContext.getPackageManager().getInstallerPackageName(ApplicationLoader.applicationContext.getPackageName());
+        } catch (Exception ignore) {
+
+        }
+        if (req.source == null) {
+            req.source = "";
+        }
+        final int accountNum = currentAccount;
+        if (progress != null) progress.init();
+        UpdateHelper.getInstance().checkNewVersionAvailable((res, error) -> {
+            SharedConfig.lastUpdateCheckTime = System.currentTimeMillis();
+            SharedConfig.saveConfig();
+            AndroidUtilities.runOnUIThread(() -> {
+                if (res != null) {
+                    SharedConfig.setNewAppVersionAvailable(res);
+                    if (res.can_not_skip) {
+                        showUpdateActivity(accountNum, res, false);
+                    } else {
+                        drawerLayoutAdapter.notifyDataSetChanged();
+                        ApplicationLoader.applicationLoaderInstance.showUpdateAppPopup(LaunchActivity.this, res, accountNum);
+                    }
+                } else {
+                    if (force) {
+                        BaseFragment fragment = getLastFragment();
+                        if (fragment != null) {
+                            if (error == null) {
+                                BulletinFactory.of(fragment).createSimpleBulletin(R.raw.done, getString(R.string.YourVersionIsLatest)).show();
+                            } else {
+                                AlertsCreator.createSimpleAlert(this, getString(R.string.ErrorOccurred) + "\n" + error).show();
+                            }
+                        }
+                    }
+                    SharedConfig.setNewAppVersionAvailable(null);
+                    drawerLayoutAdapter.notifyDataSetChanged();
+                }
+                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.appUpdateAvailable);
+                if (progress != null) {
+                    progress.end();
+                }
+            });
+        }, updateAlways);
+        if (progress != null) {
+            progress.init();
+        }
+    }
 
     public Dialog showAlertDialog(AlertDialog.Builder builder) {
         try {
@@ -6997,10 +7010,10 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         }
         if (UserConfig.getInstance(UserConfig.selectedAccount).unacceptedTermsOfService != null) {
             showTosActivity(UserConfig.selectedAccount, UserConfig.getInstance(UserConfig.selectedAccount).unacceptedTermsOfService);
-        // } else if (SharedConfig.pendingAppUpdate != null && SharedConfig.pendingAppUpdate.can_not_skip) {
-        //     showUpdateActivity(UserConfig.selectedAccount, SharedConfig.pendingAppUpdate, true);
+        } else if (SharedConfig.pendingAppUpdate != null && SharedConfig.pendingAppUpdate.can_not_skip) {
+            showUpdateActivity(UserConfig.selectedAccount, SharedConfig.pendingAppUpdate, true);
         }
-        // checkAppUpdate(false, null);
+        checkAppUpdate(false, null);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ApplicationLoader.canDrawOverlays = Settings.canDrawOverlays(this);
