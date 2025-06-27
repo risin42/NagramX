@@ -172,12 +172,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val showPremiumAvatarAnimation =
-        addConfig(
-            "ShowPremiumAvatarAnimation",
-            ConfigItem.configTypeBool,
-            true
-        )
     val alwaysSaveChatOffset =
         addConfig(
             "AlwaysSaveChatOffset",
