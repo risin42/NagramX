@@ -1226,13 +1226,7 @@ public class ProfileGalleryView extends CircularViewPager implements Notificatio
             item.imageView.getImageReceiver().setCrossfadeAlpha((byte) 2);
 
             item.imageView.setRoundRadius(roundTopRadius, roundTopRadius, roundBottomRadius, roundBottomRadius);
-
-            if (NaConfig.INSTANCE.getDisableClickProfileGalleryView().Bool()) {
-                item.imageView.setOnClickListener(__ -> callback.onClick());
-            }
-
             item.imageView.setTag(realPosition);
-
             return item;
         }
 

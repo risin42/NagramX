@@ -431,12 +431,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val disableClickProfileGalleryView =
-        addConfig(
-            "DisableClickProfileGalleryView",
-            ConfigItem.configTypeBool,
-            false
-        )
     val showSmallGIF =
         addConfig(
             "ShowSmallGIF",
