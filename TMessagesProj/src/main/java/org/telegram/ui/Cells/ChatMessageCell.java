@@ -17775,9 +17775,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     private Object getAuthorStatus() {
-        if (!NaConfig.INSTANCE.getShowPremiumStarInChat().Bool()) {
-            return null;
-        }
         if (currentUser != null) {
             Long emojiStatusId = UserObject.getEmojiStatusDocumentId(currentUser);
             if (emojiStatusId != null) {

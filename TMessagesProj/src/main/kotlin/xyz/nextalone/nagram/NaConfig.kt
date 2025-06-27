@@ -172,12 +172,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val showPremiumStarInChat =
-        addConfig(
-            "ShowPremiumStarInChat",
-            ConfigItem.configTypeBool,
-            true
-        )
     val showPremiumAvatarAnimation =
         addConfig(
             "ShowPremiumAvatarAnimation",
