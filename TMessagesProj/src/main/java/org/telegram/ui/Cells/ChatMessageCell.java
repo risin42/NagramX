@@ -16670,9 +16670,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 ((SpannableStringBuilder) timeString).append(" | ").append(LocaleController.getString(R.string.Translated));
             }
         }
-        if (messageObject.isAnyKindOfSticker() && NaConfig.INSTANCE.getRealHideTimeForSticker().Bool()) {
-            timeString = "";
-        }
         currentTimeString = new SpannableStringBuilder(timeString);
         if (signString != null) {
             if (messageObject.messageOwner.via_business_bot_id != 0) {
@@ -18275,15 +18272,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         if ((!autoPlayingMedia || !MediaController.getInstance().isPlayingMessageAndReadyToDraw(currentMessageObject) || isRoundVideo) && !transitionParams.animateBackgroundBoundsInner && !(currentMessageObject != null && currentMessageObject.preview)) {
             drawOverlays(canvas);
         }
-        boolean should_draw_time = true;
-        if (currentMessageObject.isAnyKindOfSticker()) {
-            if (NekoConfig.hideTimeForSticker.Bool()) {
-                should_draw_time = false;
-            } else if (NaConfig.INSTANCE.getRealHideTimeForSticker().Bool() && !currentMessageObject.isOut()) {
-                should_draw_time = false;
-            }
-        }
-        if ((drawTime || !mediaBackground) && !forceNotDrawTime && !transitionParams.animateBackgroundBoundsInner && !(enterTransitionInProgress && !currentMessageObject.isVoice()) && (!currentMessageObject.isQuickReply() || currentMessageObject.isSendError()) && should_draw_time) {
+        if ((drawTime || !mediaBackground) && !forceNotDrawTime && !transitionParams.animateBackgroundBoundsInner && !(enterTransitionInProgress && !currentMessageObject.isVoice()) && (!currentMessageObject.isQuickReply() || currentMessageObject.isSendError())) {
             drawTime(canvas, 1f, false);
         }
 
@@ -21327,6 +21316,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             return;
         }
         if (currentMessageObject != null && currentMessageObject.type == MessageObject.TYPE_JOINED_CHANNEL) {
+            return;
+        }
+        if (NekoConfig.hideTimeForSticker.Bool() && currentMessageObject != null && currentMessageObject.isAnyKindOfSticker() && !isDrawSelectionBackground()) {
             return;
         }
         for (int i = 0; i < 2; i++) {

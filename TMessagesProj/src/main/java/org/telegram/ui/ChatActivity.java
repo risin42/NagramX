@@ -9402,8 +9402,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (cell == null || cell.timeLayout == null || cell.getMessageObject() == null ||
                 cell.getMessageObject().messageOwner == null ||
                 (chatMode != MODE_DEFAULT && chatMode != MODE_PINNED && chatMode != MODE_SAVED) ||
-                (NekoConfig.hideTimeForSticker.Bool() && cell.getMessageObject().isAnyKindOfSticker()) ||
-                (NaConfig.INSTANCE.getRealHideTimeForSticker().Bool() && cell.getMessageObject().isAnyKindOfSticker())
+                (NekoConfig.hideTimeForSticker.Bool() && cell.getMessageObject().isAnyKindOfSticker())
         ) {
             return;
         }

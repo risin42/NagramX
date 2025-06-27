@@ -202,12 +202,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val realHideTimeForSticker =
-        addConfig(
-            "RealHideTimeForSticker",
-            ConfigItem.configTypeBool,
-            false
-        )
     val ignoreFolderCount =
         addConfig(
             "IgnoreFolderCount",
