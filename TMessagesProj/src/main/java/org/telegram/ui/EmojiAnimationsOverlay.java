@@ -196,8 +196,6 @@ public class EmojiAnimationsOverlay implements NotificationCenter.NotificationCe
                 checkStickerPack();
             }
         } else if (id == NotificationCenter.onEmojiInteractionsReceived) {
-            if (NekoConfig.disableRemoteEmojiInteractions.Bool())
-                return;
             if (chatActivity == null) {
                 return;
             }
