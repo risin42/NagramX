@@ -33,6 +33,10 @@ import tw.nekomimi.nekogram.helpers.CloudSettingsHelper;
 @SuppressLint("ApplySharedPref")
 public class NekoConfig {
 
+    public static final int TABLET_AUTO = 0;
+    public static final int TABLET_ENABLE = 1;
+    public static final int TABLET_DISABLE = 2;
+
     public static final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Context.MODE_PRIVATE);
     public static final Object sync = new Object();
     public static final String channelAliasPrefix = "channelAliasPrefix_";

@@ -20,6 +20,7 @@ import android.content.pm.PackageInfo;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 import android.os.Build;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -59,7 +60,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.utils.UIUtil;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -1715,11 +1715,11 @@ public class SharedConfig {
     public static void checkSaveToGalleryFiles() {
         Utilities.globalQueue.postRunnable(() -> {
             try {
-                File telegramPath = EnvUtil.getTelegramPath();
-                File imagePath = new File(telegramPath, "images");
-                imagePath.mkdirs();
-                File videoPath = new File(telegramPath, "videos");
-                videoPath.mkdirs();
+                File telegramPath = new File(Environment.getExternalStorageDirectory(), "Telegram");
+                File imagePath = new File(telegramPath, "Telegram Images");
+                imagePath.mkdir();
+                File videoPath = new File(telegramPath, "Telegram Video");
+                videoPath.mkdir();
 
                 if (!BuildVars.NO_SCOPED_STORAGE) {
                     if (imagePath.isDirectory()) {
@@ -1740,6 +1740,28 @@ public class SharedConfig {
                 FileLog.e(e);
             }
         });
+    }
+
+    public static File getTelegramPath() {
+        File path = null;
+        if (!TextUtils.isEmpty(SharedConfig.storageCacheDir)) {
+            if (!Environment.getExternalStorageDirectory().getAbsolutePath().startsWith(SharedConfig.storageCacheDir)) {
+                File[] dirs = ApplicationLoader.applicationContext.getExternalFilesDirs(null);
+                for (File dir : dirs) {
+                    if (dir.getAbsolutePath().startsWith(SharedConfig.storageCacheDir)) {
+                        path = dir;
+                        break;
+                    }
+                }
+            }
+        }
+        if (path == null) {
+            path = ApplicationLoader.applicationContext.getExternalFilesDir(null);
+        }
+        File telegramPath = new File(path, "Telegram");
+        //noinspection ResultOfMethodCallIgnored
+        telegramPath.mkdirs();
+        return telegramPath;
     }
 
     public static int getChatSwipeAction(int currentAccount) {

@@ -100,7 +100,6 @@ import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlin.Unit;
-import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
@@ -1391,7 +1390,7 @@ public class DocumentSelectActivity extends BaseFragment {
         ListItem fs = new ListItem();
 
         try {
-            File telegramPath = EnvUtil.getTelegramPath();
+            File telegramPath = SharedConfig.getTelegramPath();
             if (telegramPath.exists()) {
                 fs = new ListItem();
                 fs.title = "Telegram";

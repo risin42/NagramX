@@ -90,12 +90,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSmoothScroller;
-import androidx.recyclerview.widget.RecyclerView;
-
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
-import tw.nekomimi.nekogram.utils.EnvUtil;
 
 public class ChatAttachAlertDocumentLayout extends ChatAttachAlert.AttachAlertLayout {
 
@@ -1365,7 +1360,7 @@ public class ChatAttachAlertDocumentLayout extends ChatAttachAlert.AttachAlertLa
 
         ListItem fs;
         try {
-            File telegramPath = EnvUtil.getTelegramPath();
+            File telegramPath = new File(ApplicationLoader.applicationContext.getExternalFilesDir(null), "Telegram");;
             if (telegramPath.exists()) {
                 fs = new ListItem();
                 fs.title = "Telegram";

@@ -168,9 +168,21 @@ public class ApplicationLoader extends Application {
     }
 
     public static File getFilesDirFixed() {
-        File filesDir = new File(getDataDirFixed(), "files");
-        FileUtil.initDir(filesDir);
-        return filesDir;
+        for (int a = 0; a < 10; a++) {
+            File path = ApplicationLoader.applicationContext.getFilesDir();
+            if (path != null) {
+                return path;
+            }
+        }
+        try {
+            ApplicationInfo info = applicationContext.getApplicationInfo();
+            File path = new File(info.dataDir, "files");
+            path.mkdirs();
+            return path;
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+        return new File("/data/data/" + BuildConfig.APPLICATION_ID + "/files");
     }
 
     public static File getCacheDirFixed() {

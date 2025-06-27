@@ -85,6 +85,7 @@ import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.FilePathDatabase;
 import org.telegram.messenger.FilePathDatabase;
+import org.telegram.messenger.FilesMigrationService;
 import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MediaDataController;
@@ -152,13 +153,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 
-import kotlin.Unit;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
-import tw.nekomimi.nekogram.ui.BottomBuilder;
-import tw.nekomimi.nekogram.utils.EnvUtil;
-import tw.nekomimi.nekogram.utils.FileUtil;
-import tw.nekomimi.nekogram.utils.UIUtil;
 
 public class CacheControlActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -390,8 +386,6 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
         Utilities.globalQueue.postRunnable(() -> {
             cacheSize = getDirectorySize(FileLoader.checkDirectory(FileLoader.MEDIA_DIR_CACHE), 5);
 
-            cacheSize += getDirectorySize(new File(ApplicationLoader.getDataDirFixed(), "cache"), 0);
-            cacheSize += getDirectorySize(ApplicationLoader.applicationContext.getExternalFilesDir("logs"), 0);
             if (canceled) {
                 return;
             }
@@ -450,7 +444,22 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
             totalSize = lastTotalSizeCalculated = cacheSize + cacheTempSize + videoSize + logsSize + audioSize + photoSize + documentsSize + musicSize + storiesSize + stickersCacheSize;
             lastTotalSizeCalculatedTime = System.currentTimeMillis();
 
-            File path = EnvUtil.getTelegramPath();
+            File path;
+            if (Build.VERSION.SDK_INT >= 19) {
+                ArrayList<File> storageDirs = AndroidUtilities.getRootDirs();
+                String dir = (path = storageDirs.get(0)).getAbsolutePath();
+                if (!TextUtils.isEmpty(SharedConfig.storageCacheDir)) {
+                    for (int a = 0, N = storageDirs.size(); a < N; a++) {
+                        File file = storageDirs.get(a);
+                        if (file.getAbsolutePath().startsWith(SharedConfig.storageCacheDir)) {
+                            path = file;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                path = new File(SharedConfig.storageCacheDir);
+            }
             try {
                 StatFs stat = new StatFs(path.getPath());
                 long blockSize;
@@ -1141,16 +1150,6 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
                 cacheSize = getDirectorySize(FileLoader.checkDirectory(FileLoader.MEDIA_DIR_CACHE), 5);
                 cacheTempSize = getDirectorySize(FileLoader.checkDirectory(FileLoader.MEDIA_DIR_CACHE), 4);
                 imagesCleared = true;
-
-                    try {
-                        FileUtil.delete(new File(ApplicationLoader.getDataDirFixed(), "cache"));
-                    } catch (Exception ignored) {
-                    }
-
-                    try {
-                        FileUtil.delete(new File(EnvUtil.getTelegramPath(), "logs"));
-                    } catch (Exception ignored) {
-                    }
             } else if (type == FileLoader.MEDIA_DIR_AUDIO) {
                 audioSize = getDirectorySize(FileLoader.checkDirectory(FileLoader.MEDIA_DIR_AUDIO), documentsMusicType);
             } else if (type == FileLoader.MEDIA_DIR_STORIES) {
@@ -1712,6 +1711,11 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
         return path.contains(FileLoader.checkDirectory(mediaDirType).getAbsolutePath());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private void migrateOldFolder() {
+        FilesMigrationService.checkBottomSheet(this);
+    }
+
     private void clearDatabase(boolean fullReset) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
         builder.setTitle(LocaleController.getString(R.string.LocalDatabaseClearTextTitle));
@@ -1742,7 +1746,6 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
             button.setTextColor(Theme.getColor(Theme.key_text_RedBold));
         }
     }
-
 
     @Override
     public void onResume() {
@@ -3083,9 +3086,9 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
                     break;
                 }
             }
-//            if (allGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && FilesMigrationService.filesMigrationBottomSheet != null) {
-//                FilesMigrationService.filesMigrationBottomSheet.migrateOldFolder();
-//            }
+           if (allGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && FilesMigrationService.filesMigrationBottomSheet != null) {
+               FilesMigrationService.filesMigrationBottomSheet.migrateOldFolder();
+           }
 
         }
     }

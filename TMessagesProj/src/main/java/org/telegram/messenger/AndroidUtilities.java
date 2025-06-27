@@ -228,8 +228,6 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.utils.EnvUtil;
-import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.TelegramUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.ColorOsHelper;
@@ -799,10 +797,6 @@ public class AndroidUtilities {
         }
     }
 
-    public static boolean isMapsInstalled(BaseFragment fragment) {
-        return true;
-    }
-
     public static void googleVoiceClientService_performAction(Intent intent, boolean isVerified, Bundle options) {
         if (!isVerified) {
             return;
@@ -881,16 +875,16 @@ public class AndroidUtilities {
     }
 
     public static File getLogsDir() {
-//        try {
-//            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-//                File path = ApplicationLoader.applicationContext.getExternalFilesDir(null);
-//                File dir = new File(path.getAbsolutePath() + "/logs");
-//                dir.mkdirs();
-//                return dir;
-//            }
-//        } catch (Exception e) {
-//
-//        }
+        try {
+            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                File path = ApplicationLoader.applicationContext.getExternalFilesDir(null);
+                File dir = new File(path.getAbsolutePath() + "/logs");
+                dir.mkdirs();
+                return dir;
+            }
+        } catch (Exception e) {
+
+        }
         try {
             File dir = new File(ApplicationLoader.applicationContext.getCacheDir() + "/logs");
             dir.mkdirs();
@@ -1154,14 +1148,6 @@ public class AndroidUtilities {
         String url;
         int start;
         int end;
-    }
-
-    private static Boolean standaloneApp;
-    public static boolean isStandaloneApp() {
-        if (standaloneApp == null) {
-            standaloneApp = "org.telegram.messenger.web".equals(ApplicationLoader.applicationContext.getPackageName());
-        }
-        return standaloneApp;
     }
 
     private static String makeUrl(String url, String[] prefixes, Matcher matcher) {
@@ -1725,6 +1711,10 @@ public class AndroidUtilities {
         }
     }
 
+    public static boolean isMapsInstalled(BaseFragment fragment) {
+        return true;
+    }
+
     public static int[] toIntArray(List<Integer> integers) {
         int[] ret = new int[integers.size()];
         for (int i = 0; i < ret.length; i++) {
@@ -1750,10 +1740,6 @@ public class AndroidUtilities {
             }
             // Allow sending VoIP logs from cache/voip_logs
             if (pathString.matches(Pattern.quote(new File(ApplicationLoader.applicationContext.getCacheDir(), "voip_logs").getAbsolutePath()) + "/\\d+\\.log")) {
-                return false;
-            }
-            // NekoX: Allow send media
-            if (pathString.startsWith(EnvUtil.getTelegramPath().toString())) {
                 return false;
             }
             int tries = 0;
@@ -2351,6 +2337,22 @@ public class AndroidUtilities {
     }
 
     public static void setWaitingForSms(boolean value) {
+        /*synchronized (smsLock) {
+            waitingForSms = value;
+            try {
+                if (waitingForSms) {
+                    SmsRetrieverClient client = SmsRetriever.getClient(ApplicationLoader.applicationContext);
+                    Task<Void> task = client.startSmsRetriever();
+                    task.addOnSuccessListener(aVoid -> {
+                        if (BuildVars.DEBUG_VERSION) {
+                            FileLog.d("sms listener registered");
+                        }
+                    });
+                }
+            } catch (Throwable e) {
+                FileLog.e(e);
+            }
+        }*/
     }
 
     public static int getShadowHeight() {
@@ -2461,6 +2463,7 @@ public class AndroidUtilities {
                 return new String[]{locale.replace('_', '-'), "en"};
             }
         } catch (Exception ignore) {
+
         }
         return new String[]{"en"};
     }
@@ -2551,14 +2554,69 @@ public class AndroidUtilities {
     }
 
     public static File getCacheDir() {
+        String state = null;
         try {
-            File file = new File(EnvUtil.getTelegramPath(), "caches");
-            FileUtil.initDir(file);
-            return file;
-        } catch (Throwable e) {
+            state = Environment.getExternalStorageState();
+        } catch (Exception e) {
             FileLog.e(e);
         }
-        return new File(ApplicationLoader.getDataDirFixed(), "cache/media/caches");
+
+        if (state == null || state.startsWith(Environment.MEDIA_MOUNTED)) {
+            FileLog.d("external dir mounted");
+            try {
+                File file;
+
+                File[] dirs = ApplicationLoader.applicationContext.getExternalCacheDirs();
+                file = dirs[0];
+                if (!TextUtils.isEmpty(SharedConfig.storageCacheDir)) {
+                    for (int a = 0; a < dirs.length; a++) {
+                        if (dirs[a] != null && dirs[a].getAbsolutePath().startsWith(SharedConfig.storageCacheDir)) {
+                            file = dirs[a];
+                            break;
+                        }
+                    }
+                }
+
+                FileLog.d("check dir " + (file == null ? null : file.getPath()) + " ");
+                if (file != null && (file.exists() || file.mkdirs()) && file.canWrite()) {
+//                    boolean canWrite = true;
+//                    try {
+//                        AndroidUtilities.createEmptyFile(new File(file, ".nomedia"));
+//                    } catch (Exception e) {
+//                        canWrite = false;
+//                    }
+//                    if (canWrite) {
+//                        return file;
+//                    }
+                    return file;
+                } else if (file != null) {
+                    FileLog.d("check dir file exist " + file.exists() + " can write " + file.canWrite());
+                }
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
+        }
+        try {
+            File file = ApplicationLoader.applicationContext.getCacheDir();
+            if (file != null) {
+                return file;
+            }
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+        try {
+            File file = ApplicationLoader.applicationContext.getFilesDir();
+            if (file != null) {
+                File cacheFile = new File(file, "cache/");
+                cacheFile.mkdirs();
+                if ((file.exists() || file.mkdirs()) && file.canWrite()) {
+                    return cacheFile;
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return new File("");
     }
 
     public static int dp(float value) {
@@ -2805,20 +2863,15 @@ public class AndroidUtilities {
     }
 
     public static boolean isTabletForce() {
+        if (NekoConfig.tabletMode.Int() != NekoConfig.TABLET_AUTO) {
+            return NekoConfig.tabletMode.Int() == NekoConfig.TABLET_ENABLE;
+        }
         return ApplicationLoader.applicationContext != null && ApplicationLoader.applicationContext.getResources().getBoolean(R.bool.isTablet);
     }
 
     public static boolean isTabletInternal() {
-        if (isTablet == null) switch (NekoConfig.tabletMode.Int()) {
-            case 0:
-                isTablet = isTabletForce();
-                break;
-            case 1:
-                isTablet = true;
-                break;
-            case 2:
-                isTablet = false;
-                break;
+        if (isTablet == null) {
+            isTablet = isTabletForce();
         }
         return isTablet;
     }
@@ -2840,7 +2893,7 @@ public class AndroidUtilities {
     }
 
     public static boolean isTablet() {
-        return isTabletInternal() && !SharedConfig.forceDisableTabletMode;
+        return isTabletInternal()/* && !SharedConfig.forceDisableTabletMode*/;
     }
 
     public static boolean isSmallScreen() {
@@ -2852,8 +2905,7 @@ public class AndroidUtilities {
 
     public static boolean isSmallTablet() {
         float minSide = Math.min(displaySize.x, displaySize.y) / density;
-//        return minSide <= 690;
-        return minSide <= 840;
+        return minSide <= 690;
     }
 
     public static int getMinTabletSide() {
@@ -3011,7 +3063,8 @@ public class AndroidUtilities {
                     return insets.bottom;
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            FileLog.e(e);
         }
         return 0;
     }
@@ -3331,7 +3384,6 @@ public class AndroidUtilities {
             }
             return false;
         }
-
     }
 
     public static boolean needShowPasscode() {
@@ -4736,13 +4788,13 @@ public class AndroidUtilities {
         return null;
     }
 
-    public static void fixGoogleMapsBug() {/* //https://issuetracker.google.com/issues/154855417#comment301
+    public static void fixGoogleMapsBug() { //https://issuetracker.google.com/issues/154855417#comment301
         SharedPreferences googleBug = ApplicationLoader.applicationContext.getSharedPreferences("google_bug_154855417", Context.MODE_PRIVATE);
         if (!googleBug.contains("fixed")) {
             File corruptedZoomTables = new File(ApplicationLoader.getFilesDirFixed(), "ZoomTables.data");
             corruptedZoomTables.delete();
             googleBug.edit().putBoolean("fixed", true).apply();
-        }*/
+        }
     }
 
     public static CharSequence concat(CharSequence... text) {

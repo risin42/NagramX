@@ -25,8 +25,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
-import tw.nekomimi.nekogram.utils.EnvUtil;
-
 public class VoIPController {
 
 	public static final int NET_TYPE_UNKNOWN = 0;

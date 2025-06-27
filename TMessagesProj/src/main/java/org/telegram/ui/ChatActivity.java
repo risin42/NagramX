@@ -327,7 +327,6 @@ import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
-import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import tw.nekomimi.nekogram.utils.TelegramUtil;
 import xyz.nextalone.nagram.NaConfig;
@@ -44548,82 +44547,22 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 break;
             }
             case nkbtn_deldlcache: {
-                final MessageObject so = selectedObject;
-                final boolean isDownloading = TelegramUtil.messageObjectIsDownloading(getMessageType(so));
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-                builder.setTitle(LocaleController.getString("DeleteDownloadedFile"));
-                builder.setMessage(LocaleController.getString("DeleteDownloadedFileConfirm"));
-                builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), (dialogInterface, i) -> {
-                    if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT <= 28 || BuildVars.NO_SCOPED_STORAGE) && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        getParentActivity().requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4);
-                        return;
-                    }
-                    ChatMessageCell messageCell = null;
-                    int count = chatListView.getChildCount();
-                    for (int a = 0; a < count; a++) {
-                        View child = chatListView.getChildAt(a);
-                        if (child instanceof ChatMessageCell) {
-                            ChatMessageCell cell = (ChatMessageCell) child;
-                            if (cell.getMessageObject() == so) {
-                                messageCell = cell;
-                                break;
-                            }
+                if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT <= 28 || BuildVars.NO_SCOPED_STORAGE) && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    getParentActivity().requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4);
+                    selectedObject = null;
+                    selectedObjectGroup = null;
+                    selectedObjectToEditCaption = null;
+                    return;
+                }
+                var object = selectedObject;
+                getMessageHelper().clearMessageFiles(object, () -> {
+                    if (object != null) {
+                        var messageCell = (ChatMessageCell) findMessageCell(object.getId(), false);
+                        if (messageCell != null) {
+                            messageCell.updateButtonState(false, true, false);
                         }
                     }
-                    String path = so.messageOwner.attachPath;
-                    if (path != null && path.length() > 0) {
-                        File temp = new File(path);
-                        if (!temp.exists()) {
-                            path = null;
-                        }
-                    }
-                    if (path == null || path.length() == 0) {
-                        path = FileLoader.getInstance(currentAccount).getPathToMessage(so.messageOwner).toString();
-                    }
-
-                    File file = new File(path);
-                    FileLoader.getInstance(currentAccount).cancelLoadFile(so.getDocument());
-                    so.loadedFileSize = 0;
-
-                    if (isDownloading) {
-                        // Download unfinished catalog is not the same
-                        String cacheFilePath = AndroidUtilities.getCacheDir().getAbsolutePath();
-                        cacheFilePath += "/" + TelegramUtil.getFileNameWithoutEx(file.getName());
-                        List<String> suffix = Arrays.asList(".pt", ".temp");
-                        for (int ii = 0; ii < suffix.size(); ii++) {
-                            file = new File(cacheFilePath + suffix.get(ii));
-                            try {
-                                file.delete();
-                                so.mediaExists = false;
-                            } catch (Exception ignore) {
-                                file.deleteOnExit();
-                            }
-                        }
-                    } else {
-                        if (path.startsWith(EnvUtil.getTelegramPath().getAbsolutePath())) {
-                            try {
-                                file.delete();
-                                so.mediaExists = false;
-                            } catch (Exception ignore) {
-                                file.deleteOnExit();
-                            }
-                        } else {
-                            Toast.makeText(getParentActivity(), LocaleController.getString("DeleteDownloadedFileExternal"), Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                    }
-
-                    if (messageCell != null) {
-//                        checkAutoDownloadMessage(so);
-                        messageCell.updateButtonState(false, true, false);
-                    }
-
-                    Toast.makeText(getParentActivity(), LocaleController.getString("DeleteDownloadedFileSucceed"), Toast.LENGTH_LONG).show();
                 });
-                builder.setNegativeButton(LocaleController.getString("Cancel"), (dialog, which) -> {
-                });
-                builder.show();
                 break;
             }
             case nkbtn_savemessage: {

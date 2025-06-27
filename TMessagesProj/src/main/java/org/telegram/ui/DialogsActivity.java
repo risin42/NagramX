@@ -107,6 +107,7 @@ import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.Emoji;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.FilesMigrationService;
 import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.LiteMode;
@@ -5277,6 +5278,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             });
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            FilesMigrationService.checkBottomSheet(this);
+        }
         updateMenuButton(false);
         actionBar.setDrawBlurBackground(contentView);
 
@@ -10578,9 +10582,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     break;
                 }
             }
-            /*if (allGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && FilesMigrationService.filesMigrationBottomSheet != null) {
+            if (allGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && FilesMigrationService.filesMigrationBottomSheet != null) {
                 FilesMigrationService.filesMigrationBottomSheet.migrateOldFolder();
-            }*/
+            }
 
         }
     }

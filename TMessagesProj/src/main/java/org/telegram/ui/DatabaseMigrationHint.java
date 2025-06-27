@@ -1,7 +1,6 @@
 package org.telegram.ui;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -10,18 +9,12 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
-
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RLottieImageView;
-
-import tw.nekomimi.nekogram.utils.EnvUtil;
-import tw.nekomimi.nekogram.NekoConfig;
 
 public class DatabaseMigrationHint extends FrameLayout {
 
@@ -75,16 +68,5 @@ public class DatabaseMigrationHint extends FrameLayout {
                 return true;
             }
         });
-
-        // On Android 11+ /storage/emulated/0/NekoX is no longer accessible
-        // Move to /sdcard/Android/...... automatically
-        if (Build.VERSION.SDK_INT >= 30) {
-            ContextCompat.getMainExecutor(getContext()).execute(() -> {
-                if (!NekoConfig.cachePath.String().contains("/data/")) {
-                    NekoConfig.cachePath.setConfigString(EnvUtil.getAvailableDirectories()[2]);
-                    ImageLoader.getInstance().checkMediaPaths();
-                }
-            });
-        }
     }
 }

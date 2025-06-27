@@ -113,7 +113,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.utils.AlertUtil;
-import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
 import tw.nekomimi.nekogram.utils.StickersUtil;
@@ -689,7 +688,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
             JsonObject exportObj = StickersUtil.exportStickers(currentAccount, exportSets, exportArchived);
 
-            File cacheFile = new File(EnvUtil.getShareCachePath(), new Date().toLocaleString() + ".nekox-stickers.json");
+            File cacheFile = new File(AndroidUtilities.getCacheDir(), new Date().toLocaleString() + ".nekox-stickers.json");
 
             StringWriter stringWriter = new StringWriter();
             JsonWriter jsonWriter = new JsonWriter(stringWriter);
@@ -1198,7 +1197,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
                         JsonObject exportObj = StickersUtil.exportStickers(stickerSetList);
 
-                        File cacheFile = new File(EnvUtil.getShareCachePath(), new Date().toLocaleString() + ".nekox-stickers.json");
+                        File cacheFile = new File(AndroidUtilities.getCacheDir(), new Date().toLocaleString() + ".nekox-stickers.json");
 
                         StringWriter stringWriter = new StringWriter();
                         JsonWriter jsonWriter = new JsonWriter(stringWriter);
