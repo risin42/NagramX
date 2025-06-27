@@ -374,18 +374,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val disableCustomWallpaperUser =
-        addConfig(
-            "DisableCustomWallpaperUser",
-            ConfigItem.configTypeBool,
-            false
-        )
-    val disableCustomWallpaperChannel =
-        addConfig(
-            "DisableCustomWallpaperChannel",
-            ConfigItem.configTypeBool,
-            false
-        )
     val externalStickerCache =
         addConfig(
             "ExternalStickerCache",
