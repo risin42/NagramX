@@ -190,12 +190,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    val disableGlobalSearch =
-        addConfig(
-            "DisableGlobalSearch",
-            ConfigItem.configTypeBool,
-            false
-        )
     val zalgoFilter =
         addConfig(
             "ZalgoFilter",
