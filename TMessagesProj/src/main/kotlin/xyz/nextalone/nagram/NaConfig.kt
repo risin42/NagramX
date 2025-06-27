@@ -268,12 +268,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    val hideMessageSeenTooltip =
-        addConfig(
-            "HideMessageSeenTooltip",
-            ConfigItem.configTypeBool,
-            false
-        )
     val typeMessageHintUseGroupName =
         addConfig(
             "TypeMessageHintUseGroupName",
