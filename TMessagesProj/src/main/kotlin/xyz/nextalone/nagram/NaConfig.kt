@@ -1220,6 +1220,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             1 // 0: off; 1: release; 2: beta
         )
+    var userAvatarsInMessagePreview =
+        addConfig(
+            "UserAvatarsInMessagePreview",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

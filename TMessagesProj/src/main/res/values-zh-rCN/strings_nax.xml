@@ -199,4 +199,5 @@
     <string name="AutoCheckUpdateBeta">测试版</string>
     <string name="AutoInsertGIFCaption">发送 GIF 时自动插入草稿</string>
     <string name="AutoInsertGIFCaptionNotice">自动将当前输入框中的内容作为 GIF 的附带文字发送。</string>
+    <string name="UserAvatarsInMessagePreview">在消息预览中显示用户头像</string>
 </resources>
