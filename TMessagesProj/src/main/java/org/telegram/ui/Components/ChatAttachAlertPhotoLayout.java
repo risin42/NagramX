@@ -3992,7 +3992,7 @@ public class ChatAttachAlertPhotoLayout extends ChatAttachAlert.AttachAlertLayou
     private void resumeCameraPreview() {
         try {
             checkCamera(false);
-            if (cameraView != null && !NekoConfig.disableInstantCamera.Bool()) {
+            if (cameraView != null) {
                 CameraController.getInstance().startPreview(cameraView.getCameraSessionObject());
             }
         } catch (Exception e) {
