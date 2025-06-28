@@ -219,7 +219,6 @@
     <string name="SortByUser">Сначала личные</string>
     <string name="SortByContacts">Сначала контакты</string>
     <string name="NagramXPushService">Push-сервис</string>
-    <string name="DisableUndo">Скрыть отмену действий</string>
     <string name="DisableSystemAccount">Скрыть аккаунт в системе</string>
     <string name="FilterMenu">Меню фильтра диалогов</string>
     <string name="DisableProxyWhenVpnEnabled">Отключать прокси если включён VPN</string>

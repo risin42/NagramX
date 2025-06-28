@@ -220,7 +220,6 @@
     <string name="SortByUser">用户优先排序</string>
     <string name="SortByContacts">联系人优先排序</string>
     <string name="NagramXPushService">推送服务</string>
-    <string name="DisableUndo">禁用五秒内后悔</string>
     <string name="DisableSystemAccount">禁用系统帐户</string>
     <string name="FilterMenu">分类菜单</string>
     <string name="DisableProxyWhenVpnEnabled">启用 VPN 时禁用代理</string>

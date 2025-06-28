@@ -197,4 +197,8 @@
     <string name="AutoCheckUpdateSwitch">Güncelleme Kanalı</string>
     <string name="AutoCheckUpdateRelease">Sürüm</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
+    <string name="AutoInsertGIFCaption">Otomatik Altyazılı GIF\'ler</string>
+    <string name="AutoInsertGIFCaptionNotice">Mevcut giriş alanındaki metni otomatik olarak GIF\'in altyazısı olarak kullanır.</string>
+    <string name="UserAvatarsInMessagePreview">Mesaj Önizlemesinde Kullanıcı Avatarları</string>
+    <string name="YourVersionIsLatestNax">Sürümünüz güncel.</string>
 </resources>

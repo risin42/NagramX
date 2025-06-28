@@ -28,7 +28,6 @@
     <string name="AppIconBlue">Синій</string>
     <string name="AppIconDarkBlue">Темний синій</string>
     <string name="AppIconBlurBlue">Розмитий синій</string>
-    <string name="AutoInsertGIFCaption">Автовставка підпису перед надсиланням GIF</string>
     <string name="InputMessageId">Введіть ID повідомлення</string>
     <string name="ToTheMessage">Перейти до</string>
     <string name="ZalgoFilter">Фільтр символів «Zalgo»</string>

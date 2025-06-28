@@ -217,7 +217,6 @@
     <string name="SortByUser">Сортувати за користувачем</string>
     <string name="SortByContacts">Сортувати за контактами</string>
     <string name="NagramXPushService">Служба Push-сповіщень</string>
-    <string name="DisableUndo">Приховати скасування дій</string>
     <string name="DisableSystemAccount">Приховати акаунт у системі</string>
     <string name="FilterMenu">Меню фільтру діалогів</string>
     <string name="DisableProxyWhenVpnEnabled">Вимкнути проксі, коли увімкнено VPN</string>

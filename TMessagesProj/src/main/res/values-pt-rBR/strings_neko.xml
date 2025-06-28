@@ -106,7 +106,7 @@
     <string name="customGroupVoipAudioBitrate">Taxa de bits de áudio VoIP do grupo</string>
     <string name="maxRecentStickerCount">Máximo de Stickers Recentes</string>
     <string name="disableSwipeToNextChannel">Desativar Deslizar para o Próximo Canal</string>
-    <string name="disableChoosingSticker">Enviar digitando em vez de escolhendo sticker</string>
+    <string name="disableChoosingSticker">Enviar Digitando Em Vez de Escolhendo um Sticker</string>
     <string name="hideSendAsChannel">Ocultar Enviar como Canal</string>
     <string name="showSpoilersDirectly">Mostrar mensagens de spoiler diretamente</string>
     <string name="SaveToDownloadCount_zero">Salvando %1$d arquivos em downloads</string>
@@ -218,7 +218,6 @@
     <string name="SortByUser">Ordenar por Usuário</string>
     <string name="SortByContacts">Ordenar por Contatos</string>
     <string name="NagramXPushService">Serviço de Notificação</string>
-    <string name="DisableUndo">Desativar Desfazer</string>
     <string name="DisableSystemAccount">Desativar Conta do Sistema</string>
     <string name="FilterMenu">Menu de Filtro de Diálogos</string>
     <string name="DisableProxyWhenVpnEnabled">Desativar Proxy quando a VPN estiver ativada</string>

@@ -28,7 +28,6 @@
     <string name="AppIconBlue">Mavi</string>
     <string name="AppIconDarkBlue">Koyu Mavi</string>
     <string name="AppIconBlurBlue">Bulanık Mavi</string>
-    <string name="AutoInsertGIFCaption">GIF Göndermeden Önce Otomatik Altyazı Ekle</string>
     <string name="InputMessageId">Mesaj Kimliğini Girin</string>
     <string name="ToTheMessage">Mesaja Git</string>
     <string name="ZalgoFilter">\"Zalgo\" Sembollerini Filtrele</string>

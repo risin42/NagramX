@@ -217,7 +217,6 @@
     <string name="SortByUser">Kullanıcıya Göre Sırala</string>
     <string name="SortByContacts">Kişilere Göre Sırala</string>
     <string name="NagramXPushService">Bildirim Servisi</string>
-    <string name="DisableUndo">Geri Almayı Devre Dışı Bırak</string>
     <string name="DisableSystemAccount">Sistem Hesabını Devre Dışı Bırak</string>
     <string name="FilterMenu">Sohbet Filtre Menüsü</string>
     <string name="DisableProxyWhenVpnEnabled">VPN Etkin Olduğunda Proxy’i Devre Dışı Bırak</string>

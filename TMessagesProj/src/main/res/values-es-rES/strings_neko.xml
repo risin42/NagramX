@@ -218,7 +218,6 @@
     <string name="SortByUser">Ordenar por usuario</string>
     <string name="SortByContacts">Ordenar por contactos</string>
     <string name="NagramXPushService">Servicio Push</string>
-    <string name="DisableUndo">Desactivar Deshacer</string>
     <string name="DisableSystemAccount">Desactivar cuenta del sistema</string>
     <string name="FilterMenu">Menú de filtros de diálogos</string>
     <string name="DisableProxyWhenVpnEnabled">Desactivar proxy cuando la VPN está habilitada</string>

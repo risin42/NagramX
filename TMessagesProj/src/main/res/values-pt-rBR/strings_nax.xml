@@ -197,4 +197,8 @@
     <string name="AutoCheckUpdateSwitch">Canal de Atualização</string>
     <string name="AutoCheckUpdateRelease">Lançamento</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
+    <string name="AutoInsertGIFCaption">Legendas Automáticas em GIFs</string>
+    <string name="AutoInsertGIFCaptionNotice">Usa automaticamente o texto do campo de entrada atual como legenda do GIFs.</string>
+    <string name="UserAvatarsInMessagePreview">Avatares de Usuário na Prévia da Mensagem</string>
+    <string name="YourVersionIsLatestNax">Sua Versão Está Atualizada.</string>
 </resources>

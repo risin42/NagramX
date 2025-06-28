@@ -165,6 +165,7 @@
     <string name="DebugMenuReloadAppConfig">Перезавантажити налаштування програми</string>
     <string name="DebugMenuForceForumTabs">Примусові вкладки у форумах</string>
     <string name="DebugMenuDoNotForceForumTabs">Не примусово вкладки у форумах</string>
+    <string name="DebugMenuCleanAppUpdate">Очистити оновлення програми</string>
     <string name="TranslateMessageLLM">Перекладач AI</string>
     <string name="ResetChatNameOverrides">Скинути змінені назви чатів</string>
     <string name="ResetChatNameNotification">Змінені назви чатів очищені.</string>
@@ -191,4 +192,7 @@
     <string name="CopySticker">Копіювати наліпку</string>
     <string name="CheckUpdate">Перевірити наявність оновлень</string>
     <string name="AutoCheckUpdateSwitch">Канал оновлення</string>
+    <string name="AutoInsertGIFCaption">Автоматично підписувати GIF</string>
+    <string name="AutoInsertGIFCaptionNotice">Автоматично використовує текст з поля вводу як підпис до GIF.</string>
+    <string name="UserAvatarsInMessagePreview">Аватари користувачів у попередньому перегляді</string>
 </resources>

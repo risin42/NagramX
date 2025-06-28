@@ -217,7 +217,6 @@
     <string name="SortByUser">ユーザーで並べ替え</string>
     <string name="SortByContacts">連絡先で並べ替え</string>
     <string name="NagramXPushService">プッシュ通知サービス</string>
-    <string name="DisableUndo">取り消しを無効にする</string>
     <string name="DisableSystemAccount">システムアカウントを無効にする</string>
     <string name="FilterMenu">ダイアログフィルターメニュー</string>
     <string name="DisableProxyWhenVpnEnabled">VPN が有効なときにプロキシを無効にする</string>

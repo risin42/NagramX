@@ -222,7 +222,6 @@
     <string name="SortByUser">Sort By User</string>
     <string name="SortByContacts">Sort By Contacts</string>
     <string name="NagramXPushService">Push Service</string>
-    <string name="DisableUndo">Disable Undo</string>
     <string name="DisableSystemAccount">Disable System Account</string>
     <string name="FilterMenu">Dialogs Filter Menu</string>
     <string name="DisableProxyWhenVpnEnabled">Disable Proxy When VPN is Enabled</string>

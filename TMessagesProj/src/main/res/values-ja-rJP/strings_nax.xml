@@ -200,4 +200,5 @@
     <string name="AutoInsertGIFCaption">GIF 自動キャプション</string>
     <string name="AutoInsertGIFCaptionNotice">メッセージ入力欄のテキストを、GIF のキャプションとして自動で送信します。</string>
     <string name="UserAvatarsInMessagePreview">メッセージプレビューでのユーザーアバター</string>
+    <string name="YourVersionIsLatestNax">お使いのバージョンは最新です。</string>
 </resources>

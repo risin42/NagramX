@@ -193,8 +193,12 @@
     <string name="GroupedMessageMenuNotice">Группировка перемещает основные действия в нижнюю часть меню сообщений.</string>
     <string name="CopySticker">Копировать стикер</string>
     <string name="CheckUpdate">Проверить обновления</string>
-    <string name="AutoCheckUpdateOFF">Выкл</string>
+    <string name="AutoCheckUpdateOFF">ВЫКЛ</string>
     <string name="AutoCheckUpdateSwitch">Канал обновлений</string>
     <string name="AutoCheckUpdateRelease">Релиз</string>
     <string name="AutoCheckUpdateBeta">Бета</string>
+    <string name="AutoInsertGIFCaption">Автоматическая подпись к GIF</string>
+    <string name="AutoInsertGIFCaptionNotice">Автоматически использует текст в поле ввода в качестве подписи к GIF.</string>
+    <string name="UserAvatarsInMessagePreview">Аватары пользователей в предпросмотре сообщений</string>
+    <string name="YourVersionIsLatestNax">Последняя версия уже установлена.</string>
 </resources>
