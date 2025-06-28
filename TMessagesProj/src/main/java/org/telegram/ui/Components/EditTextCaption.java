@@ -64,6 +64,7 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
+import xyz.nextalone.nagram.NaConfig;
 
 public class EditTextCaption extends EditTextBoldCursor {
 
@@ -313,7 +314,7 @@ public class EditTextCaption extends EditTextBoldCursor {
         if (TextUtils.isEmpty(origin)) return;
 
         Locale to = TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String());
-        Translator.translate(to, text, new Translator.Companion.TranslateCallBack() {
+        Translator.translate(to, text, NaConfig.INSTANCE.isLLMTranslatorAvailable() ? Translator.providerLLMTranslator : 0, new Translator.Companion.TranslateCallBack() {
 
             AlertDialog status = AlertUtil.showProgress(getContext());
 

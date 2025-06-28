@@ -27860,7 +27860,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         menu.add(android.R.id.copy, android.R.id.copy, order++, android.R.string.copy);
         menu.add(android.R.id.paste, android.R.id.paste, order++, android.R.string.paste);
 
-        menu.add(R.id.menu_translate, R.id.menu_translate, order++, LocaleController.getString(R.string.Translate));
+        menu.add(R.id.menu_translate, R.id.menu_translate, order++, NaConfig.INSTANCE.isLLMTranslatorAvailable() ? getString(R.string.TranslateMessageLLM) : getString(R.string.TranslateMessage));
         SpannableStringBuilder stringBuilder;
         if (NaConfig.INSTANCE.getShowTextBold().Bool()) {
             stringBuilder = new SpannableStringBuilder(LocaleController.getString(R.string.Bold));
