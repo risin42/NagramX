@@ -5337,7 +5337,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                                     if (message != null) {
                                         SendMessagesHelper.getInstance(currentAccount).sendMessage(SendMessagesHelper.SendMessageParams.of(message.toString(), did, null, null, null, true, null, null, null, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, null, false));
                                     }
-                                    SendMessagesHelper.getInstance(currentAccount).sendMessage(fmessages, did, id == gallery_menu_send_noquote, false, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, 0, parentChatActivity.getSendMonoForumPeerId());
+                                    SendMessagesHelper.getInstance(currentAccount).sendMessage(fmessages, did, id == gallery_menu_send_noquote, false, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, 0);
                                 }
                                 fragment1.finishFragment();
                                 if (parentChatActivityFinal != null) {
@@ -8495,12 +8495,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     if (message != null) {
                         SendMessagesHelper.getInstance(currentAccount).sendMessage(message.toString(), did, null, null, null, true, null, null, null, notify, scheduleDate, null, false);
                     }
-                    if (noQuote) {
-                        //MessageHelper.getInstance(currentAccount).processForwardFromMyName(fmessages, did, true, 0);
-                        SendMessagesHelper.getInstance(currentAccount).sendMessage(fmessages, did, true, false, notify, scheduleDate, 0, parentChatActivity.getSendMonoForumPeerId());
-                    } else {
-                        SendMessagesHelper.getInstance(currentAccount).sendMessage(fmessages, did, false, false, notify, scheduleDate, 0, parentChatActivity.getSendMonoForumPeerId());
-                    }
+                    SendMessagesHelper.getInstance(currentAccount).sendMessage(fmessages, did, noQuote, false, notify, scheduleDate, 0);
                 }
                 fragment1.finishFragment();
                 if (parentChatActivityFinal != null) {

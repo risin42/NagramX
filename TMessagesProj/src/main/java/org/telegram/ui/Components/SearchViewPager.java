@@ -919,7 +919,7 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
                         if (message != null) {
                             AccountInstance.getInstance(currentAccount).getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of(message.toString(), did, null, null, null, true, null, null, null, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, null, false));
                         }
-                        AccountInstance.getInstance(currentAccount).getSendMessagesHelper().sendMessage(fmessages, did, false,false, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, 0, 0);
+                        AccountInstance.getInstance(currentAccount).getSendMessagesHelper().sendMessage(fmessages, did, false,false, !NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, 0);
                     }
                     fragment1.finishFragment();
                 } else {

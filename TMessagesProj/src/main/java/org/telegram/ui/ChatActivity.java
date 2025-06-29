@@ -15126,7 +15126,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if ((scheduleDate != 0) == (chatMode == MODE_SCHEDULED)) {
             waitingForSendingMessageLoad = true;
         }
-        AlertsCreator.showSendMediaAlert(getSendMessagesHelper().sendMessage(arrayList, did == 0 ? dialog_id : did, fromMyName, hideCaption, notify, scheduleDate, payStars, getSendMonoForumPeerId()), this);
+        AlertsCreator.showSendMediaAlert(getSendMessagesHelper().sendMessage(arrayList, did == 0 ? dialog_id : did, fromMyName, hideCaption, notify, scheduleDate, getThreadMessage(), -1, payStars, getSendMonoForumPeerId()), this);
     }
 
     public boolean shouldShowImport() {

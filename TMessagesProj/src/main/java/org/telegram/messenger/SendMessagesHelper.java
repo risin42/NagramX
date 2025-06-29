@@ -1972,8 +1972,8 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
         }
     }
 
-    public int sendMessage(ArrayList<MessageObject> messages, final long peer, boolean forwardFromMyName, boolean hideCaption, boolean notify, int scheduleDate, long payStars, long monoForumPeerId) {
-        return sendMessage(messages, peer, forwardFromMyName, hideCaption, notify, scheduleDate, null, -1, payStars, monoForumPeerId);
+    public int sendMessage(ArrayList<MessageObject> messages, final long peer, boolean forwardFromMyName, boolean hideCaption, boolean notify, int scheduleDate, long payStars) {
+        return sendMessage(messages, peer, forwardFromMyName, hideCaption, notify, scheduleDate, null, -1, payStars);
     }
 
     public int sendMessage(ArrayList<MessageObject> messages, final long peer, boolean forwardFromMyName, boolean hideCaption, boolean notify, int scheduleDate, MessageObject replyToTopMsg, int video_timestamp, long payStars) {
