@@ -903,12 +903,8 @@ public class FileLoader extends BaseController {
             operation = new FileLoadOperation(document, parentObject);
             if (MessageObject.isVoiceDocument(document)) {
                 type = MEDIA_DIR_AUDIO;
-            } else if (MessageObject.isVideoDocument(document) || MessageObject.isGifDocument(document)) {
+            } else if (MessageObject.isVideoDocument(document)) {
                 type = MEDIA_DIR_VIDEO;
-                documentId = document.id;
-                dcId = document.dc_id;
-            } else if (MessageObject.isStickerDocument(document)) {
-                type = MEDIA_DIR_CACHE;
                 documentId = document.id;
                 dcId = document.dc_id;
             } else {
@@ -982,7 +978,7 @@ public class FileLoader extends BaseController {
                         }
                     } else if (!TextUtils.isEmpty(getDocumentFileName(document)) && canSaveAsFile(parentObject)) {
                         storeFileName = getDocumentFileName(document);
-                        File newDir = getDirectory(MEDIA_DIR_DOCUMENT);
+                        File newDir = getDirectory(MEDIA_DIR_FILES);
                         if (newDir != null) {
                             storeDir = newDir;
                             saveCustomPath = true;
@@ -1375,10 +1371,8 @@ public class FileLoader extends BaseController {
                 } else {
                     if (MessageObject.isVoiceDocument(document)) {
                         type = MEDIA_DIR_AUDIO;
-                    } else if (MessageObject.isVideoDocument(document) || MessageObject.isGifDocument(document)) {
+                    } else if (MessageObject.isVideoDocument(document)) {
                         type = MEDIA_DIR_VIDEO;
-                    } else if (MessageObject.isStickerDocument(document)) {
-                        dir = getDirectory(MEDIA_DIR_CACHE);
                     } else {
                         type = MEDIA_DIR_DOCUMENT;
                     }
@@ -1685,28 +1679,21 @@ public class FileLoader extends BaseController {
     public static String getAttachFileName(TLObject attach, String size, String ext) {
         if (attach instanceof TLRPC.Document) {
             TLRPC.Document document = (TLRPC.Document) attach;
-            if (document.mime_type != null && (
-                    document.mime_type.startsWith("application/x") ||
-                            document.mime_type.startsWith("audio/") ||
-                            document.mime_type.startsWith("video/") ||
-                            document.mime_type.startsWith("image/"))) {
-                String docExt = getDocumentFileName(document);
-                int idx;
-                if (docExt == null || (idx = docExt.lastIndexOf('.')) == -1) {
-                    docExt = "";
-                } else {
-                    docExt = docExt.substring(idx);
-                }
-                if (docExt.length() <= 1) {
-                    docExt = getExtensionByMimeType(document.mime_type);
-                }
-                if (docExt.length() > 1) {
-                    return document.dc_id + "_" + document.id + docExt;
-                } else {
-                    return document.dc_id + "_" + document.id;
-                }
+            String docExt;
+            docExt = getDocumentFileName(document);
+            int idx;
+            if ((idx = docExt.lastIndexOf('.')) == -1) {
+                docExt = "";
             } else {
-                return (document.dc_id + "_" + document.id).hashCode() + "_" + getDocumentFileName(document);
+                docExt = docExt.substring(idx);
+            }
+            if (docExt.length() <= 1) {
+                docExt = getExtensionByMimeType(document.mime_type);
+            }
+            if (docExt.length() > 1) {
+                return document.dc_id + "_" + document.id + docExt;
+            } else {
+                return document.dc_id + "_" + document.id;
             }
         } else if (attach instanceof SecureDocument) {
             SecureDocument secureDocument = (SecureDocument) attach;
