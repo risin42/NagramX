@@ -99,8 +99,6 @@ public class NekoConfig {
     public static ConfigItem sortByUser = addConfig("sort_by_user", configTypeBool, true);
     public static ConfigItem sortByContacts = addConfig("sort_by_contacts", configTypeBool, true);
 
-    public static ConfigItem disableUndo = addConfig("DisableUndo", configTypeBool, false);
-
     public static ConfigItem filterUsers = addConfig("filter_users", configTypeBool, true);
     public static ConfigItem filterContacts = addConfig("filter_contacts", configTypeBool, true);
     public static ConfigItem filterGroups = addConfig("filter_groups", configTypeBool, true);

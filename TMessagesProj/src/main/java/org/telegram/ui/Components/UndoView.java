@@ -265,7 +265,7 @@ public class UndoView extends FrameLayout {
         infoTextView.setMovementMethod(new LinkMovementMethodMy());
         addView(infoTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.LEFT, 45, 13, 0, 0));
 
-        subinfoTextView = new EmojiTextView(context);
+        subinfoTextView = new TextView(context);
         subinfoTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13);
         subinfoTextView.setTextColor(getThemedColor(Theme.key_undo_infoColor));
         subinfoTextView.setLinkTextColor(getThemedColor(Theme.key_undo_cancelColor));
@@ -311,7 +311,7 @@ public class UndoView extends FrameLayout {
 
         undoImageView = new ImageView(context);
         undoImageView.setImageResource(R.drawable.chats_undo);
-        undoImageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_undo_cancelColor), PorterDuff.Mode.SRC_IN));
+        undoImageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_undo_cancelColor), PorterDuff.Mode.MULTIPLY));
         undoButton.addView(undoImageView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL | Gravity.LEFT, 4, 4, 0, 4));
 
         undoTextView = new TextView(context);
@@ -486,12 +486,6 @@ public class UndoView extends FrameLayout {
         currentAction = action;
         timeLeft = 5000;
         currentInfoObject = infoObject;
-
-        if (NekoConfig.disableUndo.Bool() && !isTooltipAction()) {
-            if (actionRunnable != null) actionRunnable.run();
-            return;
-        }
-
         currentInfoObject2 = infoObject2;
         lastUpdateTime = SystemClock.elapsedRealtime();
         undoTextView.setText(LocaleController.getString(R.string.Undo));
@@ -557,10 +551,10 @@ public class UndoView extends FrameLayout {
             currentCancelRunnable = () -> AppRestartHelper.triggerRebirth(getContext(), new Intent(getContext(), LaunchActivity.class));
 
         } else if (isTooltipAction()) {
-            CharSequence infoText = "";
-            CharSequence subInfoText = "";
+            CharSequence infoText;
+            CharSequence subInfoText;
             @DrawableRes
-            int icon = 0;
+            int icon;
             int size = 36;
             boolean iconIsDrawable = false;
 
@@ -1302,9 +1296,9 @@ public class UndoView extends FrameLayout {
                 } else {
                     String info = LocaleController.getServerString("DiceEmojiInfo_" + emoji);
                     if (!TextUtils.isEmpty(info)) {
-                        infoTextView.setText(info);
+                        infoTextView.setText(Emoji.replaceEmoji(info, infoTextView.getPaint().getFontMetricsInt(), false));
                     } else {
-                        infoTextView.setText(LocaleController.formatString("DiceEmojiInfo", R.string.DiceEmojiInfo, emoji));
+                        infoTextView.setText(Emoji.replaceEmoji(LocaleController.formatString("DiceEmojiInfo", R.string.DiceEmojiInfo, emoji), infoTextView.getPaint().getFontMetricsInt(), false));
                     }
                 }
                 leftImageView.setImageDrawable(Emoji.getEmojiDrawable(emoji));
