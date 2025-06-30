@@ -424,7 +424,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                 SharedPreferences.Editor editor = preferences.edit();
                 boolean enabled;
                 if (preferences.contains("pushService")) {
-                    enabled = preferences.getBoolean("pushService", false);
+                    enabled = preferences.getBoolean("pushService", true);
                 } else {
                     enabled = MessagesController.getMainSettings(UserConfig.selectedAccount).getBoolean("keepAliveService", false);
                 }
