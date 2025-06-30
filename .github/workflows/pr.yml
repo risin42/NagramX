@@ -16,7 +16,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Fetch Status
         run: |
-          sed -i 's/\/\///g' settings.gradle
           git submodule status TMessagesProj/jni/ffmpeg > ffmpeg_status
           git submodule status TMessagesProj/jni/libvpx > libvpx_status
           git submodule status TMessagesProj/jni/dav1d > libdav1d_status
@@ -64,7 +63,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Fetch Status
         run: |
-          sed -i 's/\/\///g' settings.gradle
           git submodule status TMessagesProj/jni/boringssl > boringssl_status
       - name: BoringSSL Cache
         id: cache
@@ -108,7 +106,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Fetch Status
         run: |
-          sed -i 's/\/\///g' settings.gradle
           git submodule status TMessagesProj/jni/ffmpeg > ffmpeg_status
           git submodule status TMessagesProj/jni/libvpx > libvpx_status
           git submodule status TMessagesProj/jni/dav1d > libdav1d_status
@@ -187,7 +184,6 @@ jobs:
           echo "android.ndkversion=21.4.7075529" >> local.properties
       - name: Fetch Status
         run: |
-          sed -i 's/\/\///g' settings.gradle
           git submodule status TMessagesProj/jni/ffmpeg > ffmpeg_status
           git submodule status TMessagesProj/jni/boringssl > boringssl_status
       - name: Native Cache (arm64-v8a)
