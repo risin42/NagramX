@@ -966,25 +966,27 @@ public class MediaDataController extends BaseController {
             if (remove) {
                 NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_STICKER, document, StickerSetBulletinLayout.TYPE_REMOVED_FROM_FAVORITES);
             } else {
-                boolean replace = recentStickers[type].size() > (getUserConfig().isRealPremium() ? 10 : getMessagesController().maxFaveStickersCount);
+                boolean replace = !NekoConfig.unlimitedFavedStickers.Bool() && recentStickers[type].size() > (getUserConfig().isRealPremium() ? 10 : getMessagesController().maxFaveStickersCount);
                 NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_STICKER, document, replace ? StickerSetBulletinLayout.TYPE_REPLACED_TO_FAVORITES : StickerSetBulletinLayout.TYPE_ADDED_TO_FAVORITES);
             }
-            TLRPC.TL_messages_faveSticker req = new TLRPC.TL_messages_faveSticker();
-            req.id = new TLRPC.TL_inputDocument();
-            req.id.id = document.id;
-            req.id.access_hash = document.access_hash;
-            req.id.file_reference = document.file_reference;
-            if (req.id.file_reference == null) {
-                req.id.file_reference = new byte[0];
-            }
-            req.unfave = remove;
-            getConnectionsManager().sendRequest(req, (response, error) -> {
-                if (error != null && FileRefController.isFileRefError(error.text) && parentObject != null) {
-                    getFileRefController().requestReference(parentObject, req);
-                } else {
-                    AndroidUtilities.runOnUIThread(() -> getMediaDataController().loadRecents(MediaDataController.TYPE_FAVE, false, false, true));
+            if (!NekoConfig.unlimitedFavedStickers.Bool()) {
+                TLRPC.TL_messages_faveSticker req = new TLRPC.TL_messages_faveSticker();
+                req.id = new TLRPC.TL_inputDocument();
+                req.id.id = document.id;
+                req.id.access_hash = document.access_hash;
+                req.id.file_reference = document.file_reference;
+                if (req.id.file_reference == null) {
+                    req.id.file_reference = new byte[0];
                 }
-            });
+                req.unfave = remove;
+                getConnectionsManager().sendRequest(req, (response, error) -> {
+                    if (error != null && FileRefController.isFileRefError(error.text) && parentObject != null) {
+                        getFileRefController().requestReference(parentObject, req);
+                    } else {
+                        AndroidUtilities.runOnUIThread(() -> getMediaDataController().loadRecents(MediaDataController.TYPE_FAVE, false, false, true));
+                    }
+                });
+            }
             maxCount = NekoConfig.unlimitedFavedStickers.Bool() ? Integer.MAX_VALUE : getUserConfig().isRealPremium() ? 10 : getMessagesController().maxFaveStickersCount;
         } else {
             if (type == TYPE_IMAGE && remove) {
@@ -2081,7 +2083,7 @@ public class MediaDataController extends BaseController {
                     } else {
                         cacheType = 5;
                     }
-                    if (replace) {
+                    if (replace && (type != TYPE_FAVE || !NekoConfig.unlimitedFavedStickers.Bool())) {
                         database.executeFast("DELETE FROM web_recent_v3 WHERE type = " + cacheType).stepThis().dispose();
                     }
                     for (int a = 0; a < count; a++) {
