@@ -37,6 +37,7 @@ import org.telegram.ui.RestrictedLanguagesSelectActivity;
 import java.util.ArrayList;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.NekoXConfig;
 
 public class TranslateButton extends FrameLayout {
 
@@ -348,6 +349,9 @@ public class TranslateButton extends FrameLayout {
             }
             String text;
             String lang = TranslateAlert2.languageName(lng, accusative);
+            if (lang == null) {
+                lang = NekoXConfig.formatLang(NekoConfig.translateToLang.String());
+            }
             if (accusative[0]) {
                 text = LocaleController.formatString(R.string.TranslateToButton, lang);
             } else {

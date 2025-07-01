@@ -992,7 +992,7 @@ public class TranslateAlert2 extends BottomSheet implements NotificationCenter.N
     }
 
     public static String languageName(String locale, boolean[] accusative) {
-        if (locale == null || locale.equals(TranslateController.UNKNOWN_LANGUAGE) || locale.equals("auto")) {
+        if (TextUtils.isEmpty(locale) || locale.equals(TranslateController.UNKNOWN_LANGUAGE) || locale.equals("auto")) {
             return null;
         }
 

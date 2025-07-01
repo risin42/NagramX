@@ -1448,7 +1448,7 @@ public class TranslateController extends BaseController {
 
     public boolean canTranslateStory(TL_stories.StoryItem storyItem) {
         return storyItem != null && !TextUtils.isEmpty(storyItem.caption) && !Emoji.fullyConsistsOfEmojis(storyItem.caption) && (
-            storyItem.detectedLng == null && storyItem.translatedText != null && TextUtils.equals(storyItem.translatedLng, TranslateAlert2.getToLanguage()) ||
+            storyItem.detectedLng == null && storyItem.translatedText != null && TextUtils.equals(storyItem.translatedLng, NekoConfig.translateToLang.String()) ||
             storyItem.detectedLng != null && !isLanguageRestricted(storyItem.detectedLng)
         );
     }
@@ -1460,7 +1460,7 @@ public class TranslateController extends BaseController {
 
         final StoryKey key = new StoryKey(storyItem);
 
-        String toLang = TranslateAlert2.getToLanguage();
+        String toLang = NekoConfig.translateToLang.String();
 
         if (storyItem.translatedText != null && TextUtils.equals(storyItem.translatedLng, toLang)) {
             if (done != null) {
@@ -1620,7 +1620,7 @@ public class TranslateController extends BaseController {
             detectedLanguage = messageObject.messageOwner.originalLanguage;
         }
         return messageObject != null && messageObject.messageOwner != null && !TextUtils.isEmpty(messageObject.messageOwner.message) && (
-            detectedLanguage == null && messageObject.messageOwner.translatedText != null && TextUtils.equals(messageObject.messageOwner.translatedToLanguage, TranslateAlert2.getToLanguage()) ||
+            detectedLanguage == null && messageObject.messageOwner.translatedText != null && TextUtils.equals(messageObject.messageOwner.translatedToLanguage, NekoConfig.translateToLang.String()) ||
             detectedLanguage != null && !isLanguageRestricted(messageObject.messageOwner.originalLanguage)
         ) && !messageObject.translated;
     }
@@ -1632,7 +1632,7 @@ public class TranslateController extends BaseController {
 
         final MessageKey key = new MessageKey(messageObject);
 
-        String toLang = TranslateAlert2.getToLanguage();
+        String toLang = NekoConfig.translateToLang.String();
 
         if (messageObject.messageOwner.translatedText != null && TextUtils.equals(messageObject.messageOwner.translatedToLanguage, toLang)) {
             if (done != null) {
