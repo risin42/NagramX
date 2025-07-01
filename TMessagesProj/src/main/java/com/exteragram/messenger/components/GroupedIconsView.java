@@ -63,7 +63,7 @@ public class GroupedIconsView extends FrameLayout {
 
         // button 2: copy text > copy photo > copy sticker > copy link
         if (allowCopy) {
-            if (!allowCopyPhoto && messageObject != null && messageObject.isWebpage()) {
+            if (!allowCopyPhoto && messageObject != null && messageObject.isPhoto() && messageObject.isWebpage()) {
                 options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, OPTION_COPY_PHOTO));
             } else if (allowCopyLink) {
                 options.add(new OptionConfig(R.drawable.msg_copy, OPTION_COPY, OPTION_COPY_LINK));
