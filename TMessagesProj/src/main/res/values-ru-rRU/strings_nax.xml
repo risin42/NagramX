@@ -198,7 +198,7 @@
     <string name="AutoCheckUpdateRelease">Релиз</string>
     <string name="AutoCheckUpdateBeta">Бета</string>
     <string name="AutoInsertGIFCaption">Автоматическая подпись к GIF</string>
-    <string name="AutoInsertGIFCaptionNotice">Автоматически использует текст в поле ввода в качестве подписи к GIF.</string>
+    <string name="AutoInsertGIFCaptionNotice">Автоматически использует текст в текущем поле ввода в качестве подписи к GIF.</string>
     <string name="UserAvatarsInMessagePreview">Аватары пользователей в предпросмотре сообщений</string>
-    <string name="YourVersionIsLatestNax">Последняя версия уже установлена.</string>
+    <string name="YourVersionIsLatestNax">Ваша версия актуальна.</string>
 </resources>

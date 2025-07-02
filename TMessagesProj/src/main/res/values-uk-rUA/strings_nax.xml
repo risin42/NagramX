@@ -184,6 +184,7 @@
     <string name="MonoCode">Код</string>
     <string name="CreateCode">Створити код</string>
     <string name="CreateCodeLanguage">Мова</string>
+    <string name="NoCaptionForward">Переслати без підпису</string>
     <string name="PreferCommonGroupsTab">Перевага вкладці \"Групи”</string>
     <string name="PreferCommonGroupsTabNotice">Автоматично вибирати вкладку «Групи» замість «Подарунки», коли це можливо.</string>
     <string name="SendHighQualityPhoto">Надсилати фото у високій якості</string>
@@ -191,8 +192,12 @@
     <string name="GroupedMessageMenuNotice">Групування переміщує основні дії в нижню частину меню повідомлення.</string>
     <string name="CopySticker">Копіювати наліпку</string>
     <string name="CheckUpdate">Перевірити наявність оновлень</string>
+    <string name="AutoCheckUpdateOFF">ВИМК.</string>
     <string name="AutoCheckUpdateSwitch">Канал оновлення</string>
+    <string name="AutoCheckUpdateRelease">Стабільна версія</string>
+    <string name="AutoCheckUpdateBeta">Бета</string>
     <string name="AutoInsertGIFCaption">Автоматично підписувати GIF</string>
     <string name="AutoInsertGIFCaptionNotice">Автоматично використовує текст з поля вводу як підпис до GIF.</string>
     <string name="UserAvatarsInMessagePreview">Аватари користувачів у попередньому перегляді</string>
+    <string name="YourVersionIsLatestNax">Ваша версія актуальна.</string>
 </resources>
