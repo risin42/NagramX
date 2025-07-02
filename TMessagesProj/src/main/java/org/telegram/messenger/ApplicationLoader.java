@@ -146,8 +146,16 @@ public class ApplicationLoader extends Application {
         return BuildConfig.APPLICATION_ID;
     }
 
+    public static boolean isHuaweiStoreBuild() {
+        return false;
+    }
+
     public static boolean isStandaloneBuild() {
         return true;
+    }
+
+    public static boolean isBetaBuild() {
+        return BuildConfig.DEBUG;
     }
 
     @SuppressLint("SdCardPath")
