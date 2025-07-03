@@ -46281,7 +46281,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         allowPin = allowPin && message.getId() > 0 && (message.messageOwner.action == null || message.messageOwner.action instanceof TLRPC.TL_messageActionEmpty) && !message.isExpiredStory() && message.type != MessageObject.TYPE_STORY_MENTION;
         boolean noforwards = getMessagesController().isChatNoForwards(currentChat) || message.messageOwner.noforwards || getDialogId() == UserObject.VERIFY;
-        boolean noforwardsOrPaidMedia = noforwards || message.type == MessageObject.TYPE_PAID_MEDIA;
+        boolean noforwardsOverride = noforwards && !NaConfig.INSTANCE.getForceCopy().Bool();
+        boolean noforwardsOrPaidMedia = noforwardsOverride || message.type == MessageObject.TYPE_PAID_MEDIA;
         boolean allowUnpin = message.getDialogId() != mergeDialogId && allowPin && (pinnedMessageObjects.containsKey(message.getId()) || groupedMessages != null && !groupedMessages.messages.isEmpty() && pinnedMessageObjects.containsKey(groupedMessages.messages.get(0).getId())) && !message.isExpiredStory();
         boolean allowEdit = message.canEditMessage(currentChat) && !chatActivityEnterView.hasAudioToSend() && message.getDialogId() != mergeDialogId && message.type != MessageObject.TYPE_STORY && message.type != MessageObject.TYPE_POLL;
 
