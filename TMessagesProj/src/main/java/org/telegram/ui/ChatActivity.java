@@ -345,7 +345,7 @@ import xyz.nextalone.nagram.helper.MessageHelper;
 @SuppressWarnings("unchecked")
 public class ChatActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate, LocationActivity.LocationActivityDelegate, ChatAttachAlertDocumentLayout.DocumentSelectActivityDelegate, ChatActivityInterface, FloatingDebugProvider, InstantCameraView.Delegate {
 
-    private MessageMenuActionsState lastMenuActionsState = new MessageMenuActionsState(false, false, false, false, false, false, false, false, false);
+    private MessageMenuStatus lastMessageMenuStatus = new MessageMenuStatus(false, false, false, false, false, false, false, false, false);
 
     private final static boolean PULL_DOWN_BACK_FRAGMENT = false;
     private final static boolean DISABLE_PROGRESS_VIEW = true;
@@ -32797,7 +32797,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         }
                         return r > 0;
                     });
-                    if (option == OPTION_REPLY && lastMenuActionsState.allowReplyPm) {
+                    if (option == OPTION_REPLY && this.lastMessageMenuStatus.allowReplyPm) {
                         var replyPopupWrapper = new ReplyPopupWrapper(this, popupLayout.getSwipeBack(), this::processSelectedOption, getResourceProvider());
                         int swipeBackIndex = popupLayout.addViewToSwipeBack(replyPopupWrapper.windowLayout);
                         cell.setOnLongClickListener(view -> {
@@ -32865,7 +32865,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (GroupedIconsView.useGroupedIcons()) {
                     popupLayout.addView(new ActionBarPopupWindow.GapView(contentView.getContext(), themeDelegate), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 8));
 
-                    var groupedIconsView = new GroupedIconsView(getContext(), ChatActivity.this, selectedObject, lastMenuActionsState.allowReply, lastMenuActionsState.allowReplyPm, lastMenuActionsState.allowEdit, lastMenuActionsState.allowDelete, lastMenuActionsState.allowForward, lastMenuActionsState.allowCopy, lastMenuActionsState.allowCopyPhoto, lastMenuActionsState.allowCopyLink, lastMenuActionsState.allowCopyLinkPm);
+                    var groupedIconsView = new GroupedIconsView(getContext(), ChatActivity.this, selectedObject, this.lastMessageMenuStatus.allowReply, this.lastMessageMenuStatus.allowReplyPm, this.lastMessageMenuStatus.allowEdit, this.lastMessageMenuStatus.allowDelete, this.lastMessageMenuStatus.allowForward, this.lastMessageMenuStatus.allowCopy, this.lastMessageMenuStatus.allowCopyPhoto, this.lastMessageMenuStatus.allowCopyLink, this.lastMessageMenuStatus.allowCopyLinkPm);
                     popupLayout.addView(groupedIconsView.linearLayout);
                 }
 
@@ -47198,7 +47198,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             options.add(nkbtn_detail);
             icons.add(R.drawable.msg_info);
         }
-        this.lastMenuActionsState = new MessageMenuActionsState(allowCopy, allowCopyPhoto, allowCopyLink, allowCopyLinkPm, allowDelete, allowEdit, allowReply, allowReplyPm, allowForward);
+        this.lastMessageMenuStatus = new MessageMenuStatus(allowCopy, allowCopyPhoto, allowCopyLink, allowCopyLinkPm, allowDelete, allowEdit, allowReply, allowReplyPm, allowForward);
     }
 
     private boolean isTitleCentered() {
@@ -47240,38 +47240,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         return messageObject;
     }
 
-    private final class MessageMenuActionsState {
-
-        public final boolean allowCopy;
-        public final boolean allowCopyPhoto;
-        public final boolean allowCopyLink;
-        public final boolean allowCopyLinkPm;
-        public final boolean allowDelete;
-        public final boolean allowEdit;
-        public final boolean allowReply;
-        public final boolean allowReplyPm;
-        public final boolean allowForward;
-
-        public MessageMenuActionsState(
-                boolean allowCopy,
-                boolean allowCopyPhoto,
-                boolean allowCopyLink,
-                boolean allowCopyLinkPm,
-                boolean allowDelete,
-                boolean allowEdit,
-                boolean allowReply,
-                boolean allowReplyPm,
-                boolean allowForward
-        ) {
-            this.allowCopy = allowCopy;
-            this.allowCopyPhoto = allowCopyPhoto;
-            this.allowCopyLink = allowCopyLink;
-            this.allowCopyLinkPm = allowCopyLinkPm;
-            this.allowDelete = allowDelete;
-            this.allowEdit = allowEdit;
-            this.allowReply = allowReply;
-            this.allowReplyPm = allowReplyPm;
-            this.allowForward = allowForward;
-        }
+    private record MessageMenuStatus(boolean allowCopy, boolean allowCopyPhoto,
+                                     boolean allowCopyLink, boolean allowCopyLinkPm,
+                                     boolean allowDelete, boolean allowEdit,
+                                     boolean allowReply, boolean allowReplyPm,
+                                     boolean allowForward) {
     }
 }
