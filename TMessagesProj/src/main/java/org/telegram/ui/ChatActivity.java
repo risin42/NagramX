@@ -2014,7 +2014,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     selectReaction(view, messageObject, null, null, x, y, ReactionsLayoutInBubble.VisibleReaction.fromEmojicon(reaction), true, false, false, false);
                 }
             } else if (doubleTapAction == DoubleTap.DOUBLE_TAP_ACTION_SHOW_REACTIONS) {
-                createMenu(view, true, false, x, y, true, false, true, true);
+                createMenu(view, true, false, x, y, true, false, false, true);
             } else {
                 if (!(view instanceof ChatMessageCell)) {
                     return;
