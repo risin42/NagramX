@@ -122,7 +122,6 @@
     <string name="channelLabel">canal</string>
     <string name="forceBlurInChat">Forzar activación de Desenfoque de Chat</string>
     <string name="ChatBlurAlphaValue">Desenfoque de Chat Alfa</string>
-    <string name="disablePremiumStickerAnimation">Desactivar Animaciones de Sticker Premium</string>
     <string name="MutualContact">Contacto en común</string>
     <string name="MutualContactDescription">Este contacto es un contacto mutuo.</string>
     <string name="DatacenterStatusAbout">Compruebe el estado de los **datacenters** de Telegram.</string>

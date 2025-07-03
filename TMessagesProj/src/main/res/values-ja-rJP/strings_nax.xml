@@ -201,4 +201,15 @@
     <string name="AutoInsertGIFCaptionNotice">メッセージ入力欄のテキストを、GIF のキャプションとして自動で送信します。</string>
     <string name="UserAvatarsInMessagePreview">メッセージプレビューでのユーザーアバター</string>
     <string name="YourVersionIsLatestNax">お使いのバージョンは最新です。</string>
+    <string name="PremiumElements">プレミアム要素</string>
+    <string name="PremiumItemBoosts">後押し者標示</string>
+    <string name="PremiumItemStickerEffects">ステッカーエフェクト</string>
+    <string name="PremiumItemEmojiStatus">絵文字ステータス</string>
+    <string name="PremiumItemEmojiInReplies">返信の絵文字</string>
+    <string name="PremiumItemCustomColorInReplies">返信の色</string>
+    <string name="PremiumItemStarInReactions">反応中のスター</string>
+    <string name="PremiumItemVideoAvatar">アバターアニメーション</string>
+    <string name="PremiumItemCustomWallpaper">カスタム背景</string>
+    <string name="TranslationTargetApp">アプリに従う</string>
+    <string name="DisableAvatarTapToSwitch">タップでアバター切り替えを無効にする</string>
 </resources>

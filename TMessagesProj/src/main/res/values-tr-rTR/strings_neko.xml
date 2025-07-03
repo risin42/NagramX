@@ -122,7 +122,6 @@
     <string name="channelLabel">kanal</string>
     <string name="forceBlurInChat">Sohbet Bulanıklığını Zorla Etkinleştir</string>
     <string name="ChatBlurAlphaValue">Sohbet Bulanıklık Alfa</string>
-    <string name="disablePremiumStickerAnimation">Premium Çıkartma Animasyonlarını Devre Dışı Bırak</string>
     <string name="MutualContact">Ortak kişi</string>
     <string name="MutualContactDescription">Bu kişi ortak bir kişidir.</string>
     <string name="DatacenterStatusAbout">Telegram’ın **veri merkezlerinin** durumunu kontrol edin.</string>

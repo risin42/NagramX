@@ -214,4 +214,15 @@
     <string name="AutoInsertGIFCaptionNotice">Automatically uses the text in the current input field as the GIF\'s caption.</string>
     <string name="UserAvatarsInMessagePreview">User Avatars in Message Preview</string>
     <string name="YourVersionIsLatestNax">Your version is up to date.</string>
+    <string name="PremiumElements">Premium Elements</string>
+    <string name="PremiumItemBoosts">Boost Counter</string>
+    <string name="PremiumItemStickerEffects">Sticker Effects</string>
+    <string name="PremiumItemEmojiStatus">Emoji Statuses</string>
+    <string name="PremiumItemEmojiInReplies">Emojis in Replies</string>
+    <string name="PremiumItemCustomColorInReplies">Custom Colors</string>
+    <string name="PremiumItemStarInReactions">Star in Reactions</string>
+    <string name="PremiumItemVideoAvatar">Animated Avatars</string>
+    <string name="PremiumItemCustomWallpaper">Custom Wallpapers</string>
+    <string name="TranslationTargetApp">Follow App</string>
+    <string name="DisableAvatarTapToSwitch">Disable Cycling Avatars by Tapping</string>
 </resources>

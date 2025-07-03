@@ -57,7 +57,7 @@
     <string name="TranslateApiUnsupported">The translation provider you selected don\'t support your language.</string>
     <string name="ProviderLingocloud">LingoCloud Translate</string>
     <string name="UndoTranslate">Hide Translation</string>
-    <string name="DisablePhotoViewerSideAction">Disable Flip Photos by Tapping</string>
+    <string name="DisablePhotoViewerSideAction">Disable Side-Tap to Switch Photos</string>
     <string name="BotToken">Token</string>
     <string name="UnlimitedPinnedDialogs">Unlimited Pinned Dialogs</string>
     <string name="UnlimitedPinnedDialogsAbout">Pin unlimited dialogs by turn their sync off.</string>
@@ -122,7 +122,6 @@
     <string name="channelLabel">channel</string>
     <string name="forceBlurInChat">Force Enable Chat Blur</string>
     <string name="ChatBlurAlphaValue">Chat Blur Alpha</string>
-    <string name="disablePremiumStickerAnimation">Disable Premium Sticker Animations</string>
     <string name="MutualContact">Mutual contact</string>
     <string name="MutualContactDescription">This contact is a mutual contact.</string>
     <string name="DatacenterStatusAbout">Check the status of Telegram\'s **datacenters**.</string>

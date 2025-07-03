@@ -57,7 +57,7 @@
     <string name="TranslateApiUnsupported">選択した翻訳プロバイダは、あなたの言語をサポートしていません。</string>
     <string name="ProviderLingocloud">彩雲小訳</string>
     <string name="UndoTranslate">翻訳を元に戻す</string>
-    <string name="DisablePhotoViewerSideAction">タップで画像切り替えを無効にする</string>
+    <string name="DisablePhotoViewerSideAction">サイドタップで写真の切り替えを無効にする</string>
     <string name="BotToken">トークン</string>
     <string name="UnlimitedPinnedDialogs">無制限のピン留め</string>
     <string name="UnlimitedPinnedDialogsAbout">同期をオフにして無制限のチャットをピン留めします。</string>
@@ -122,7 +122,6 @@
     <string name="channelLabel">チャンネル</string>
     <string name="forceBlurInChat">チャットタイトルのぼかしを有効にする</string>
     <string name="ChatBlurAlphaValue">ぼかしの不透明度</string>
-    <string name="disablePremiumStickerAnimation">プレミアムステッカーアニメーションを無効にする</string>
     <string name="MutualContact">相互の連絡先</string>
     <string name="MutualContactDescription">この連絡先は相互の連絡先です。</string>
     <string name="DatacenterStatusAbout">Telegram の**データセンター**の状態を確認します。</string>

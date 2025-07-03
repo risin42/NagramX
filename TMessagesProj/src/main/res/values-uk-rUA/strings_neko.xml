@@ -57,7 +57,6 @@
     <string name="TranslateApiUnsupported">Провайдер перекладу, обраний вами не підтримує вашу мову.</string>
     <string name="ProviderLingocloud">LingoCloud Translate</string>
     <string name="UndoTranslate">Приховати переклад</string>
-    <string name="DisablePhotoViewerSideAction">Не гортати медіафайли після натискання</string>
     <string name="BotToken">Token</string>
     <string name="UnlimitedPinnedDialogs">Необмежені закріплені діалоги</string>
     <string name="UnlimitedPinnedDialogsAbout">Їхня синхронізація буде відключена.</string>
@@ -122,7 +121,6 @@
     <string name="channelLabel">канал</string>
     <string name="forceBlurInChat">Примусове розмиття в чаті</string>
     <string name="ChatBlurAlphaValue">Розмиття чатів (Alpha)</string>
-    <string name="disablePremiumStickerAnimation">Вимкнути анімацію Premium-наліпок</string>
     <string name="MutualContact">Взаємний контакт</string>
     <string name="MutualContactDescription">Цей контакт є взаємним контактом.</string>
     <string name="DatacenterStatusAbout">Перевірте стан **дата-центрів** Telegram.</string>
@@ -275,7 +273,7 @@
     <string name="useCustomEmojiInvalid">Недійсний набір емодзі.</string>
     <string name="repeatConfirm">Запитувати перед повтором</string>
     <string name="repeatConfirmText">Ви хочете повторити повідомлення?</string>
-    <string name="valuesLargeAvatarInDrawer">Типовий стиль Telegram\nАватар\nВеликий аватар</string>
+    <string name="valuesLargeAvatarInDrawer">Типовий стиль\nАватар\nВеликий аватар</string>
     <string name="rememberAllBackMessages">Запам’ятати всі натиснуті відповіді</string>
     <string name="DisableInstantCamera">Приховати прев\'ю з камери на панелі «Прикріпити»</string>
     <string name="showSeconds">Показувати час у секундах</string>

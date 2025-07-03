@@ -31,7 +31,7 @@
     <string name="LlmSystemPromptHint">Ти корисний помічник.</string>
     <string name="LlmSystemPromptNotice">Визначте роль і поведінку AI.\n\nЦей промпт задає тон, індивідуальність і обмеження для ШІ. Подумайте про те, яким типом помічника має бути ШІ.\n\nМожна залишити порожнім.</string>
     <string name="LlmUserPrompt">Користувацький Промпт</string>
-    <string name="LlmUserPromptNotice">Використовуйте @text як заповнювач для вихідного повідомлення і @toLang для цільової мови (необов\'язково).\n\nНаприклад: «Переведи @text на @toLang без пояснень».\n\n\nЯкщо залишити це поле порожнім, буде використовуватися промпт за замовчуванням.</string>
+    <string name="LlmUserPromptNotice">Використовуйте @text як заповнювач для вихідного повідомлення і @toLang для цільової мови (необов\'язково).\n\nНаприклад: «Переклади @text на @toLang без пояснень».\n\n\nЯкщо залишити це поле порожнім, буде використовуватися промпт за замовчуванням.</string>
     <string name="LlmTemperature">Температура</string>
     <string name="AITranslatorSettings">AI Перекладач</string>
     <string name="TranslucentDeletedMessages">Напівпрозорі видалені повідомлення</string>
@@ -179,6 +179,7 @@
     <string name="OpenAiCredentialsNotSet">Облікові дані API не встановлені.</string>
     <string name="ApiNotSupportedOnAndroidVersion">Цей постачальник API не підтримується для вашої версії Android (необхідний Android 8.0+).</string>
     <string name="AppIconTelegramOriginal">Оригінал</string>
+    <string name="BurnTtlMessage">Спалити</string>
     <string name="StreamMkvNax">Показувати MKV як відео</string>
     <string name="StreamAllVideoNax">Потокове відтворення всіх відео</string>
     <string name="MonoCode">Код</string>

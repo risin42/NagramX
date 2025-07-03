@@ -57,7 +57,6 @@
     <string name="TranslateApiUnsupported">O provedor de tradução que você selecionou não suporta seu idioma.</string>
     <string name="ProviderLingocloud">LingoCloud Tradutor</string>
     <string name="UndoTranslate">Ocultar Tradução</string>
-    <string name="DisablePhotoViewerSideAction">Desativar Virar Fotos Ao Tocar</string>
     <string name="BotToken">Token</string>
     <string name="UnlimitedPinnedDialogs">Diálogos Fixados Ilimitados</string>
     <string name="UnlimitedPinnedDialogsAbout">Fixe diálogos ilimitados desativando a sincronização deles.</string>
@@ -122,7 +121,6 @@
     <string name="channelLabel">canal</string>
     <string name="forceBlurInChat">Forçar Ativação do Desfoque no Chat</string>
     <string name="ChatBlurAlphaValue">Desfoque no chat Alpha</string>
-    <string name="disablePremiumStickerAnimation">Desativar Animações de Sticker Premium</string>
     <string name="MutualContact">Contato comum</string>
     <string name="MutualContactDescription">Este é um contato em comum.</string>
     <string name="DatacenterStatusAbout">Verifique o status dos **datacenters** do Telegram.</string>
