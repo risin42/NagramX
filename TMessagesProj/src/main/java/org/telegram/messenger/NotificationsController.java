@@ -51,9 +51,6 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
-import android.text.TextUtils;
-import android.util.SparseArray;
-
 
 import androidx.collection.LongSparseArray;
 import androidx.core.app.NotificationCompat;
@@ -180,16 +177,21 @@ public class NotificationsController extends BaseController {
         audioManager = (AudioManager) ApplicationLoader.applicationContext.getSystemService(Context.AUDIO_SERVICE);
     }
 
-    private static SparseArray<NotificationsController> Instance = new SparseArray<>();
-    private static final Object lockObject = new Object();
+    private static volatile NotificationsController[] Instance = new NotificationsController[UserConfig.MAX_ACCOUNT_COUNT];
+    private static final Object[] lockObjects = new Object[UserConfig.MAX_ACCOUNT_COUNT];
+    static {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
+            lockObjects[i] = new Object();
+        }
+    }
 
     public static NotificationsController getInstance(int num) {
-        NotificationsController localInstance = Instance.get(num);
+        NotificationsController localInstance = Instance[num];
         if (localInstance == null) {
-            synchronized (lockObject) {
-                localInstance = Instance.get(num);
+            synchronized (lockObjects[num]) {
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new NotificationsController(num));
+                    Instance[num] = localInstance = new NotificationsController(num);
                 }
             }
         }
@@ -198,7 +200,6 @@ public class NotificationsController extends BaseController {
 
     public NotificationsController(int instance) {
         super(instance);
-
         notificationId = currentAccount + 1;
         notificationGroup = "messages" + (currentAccount == 0 ? "" : currentAccount);
         SharedPreferences preferences = getAccountInstance().getNotificationsSettings();
@@ -418,59 +419,6 @@ public class NotificationsController extends BaseController {
                             if (BuildVars.LOGS_ENABLED) {
                                 FileLog.d("delete channel cleanup " + id);
                             }
-                        }
-                    }
-                } catch (Throwable e) {
-                    FileLog.e(e);
-                }
-                try {
-                    String keyGroup = currentAccount + "group";
-                    List<NotificationChannelGroup> list = systemNotificationManager.getNotificationChannelGroups();
-                    for (NotificationChannelGroup group : list) {
-                        String id = group.getId();
-                        if (id.equals(keyGroup)) {
-                            systemNotificationManager.deleteNotificationChannelGroup(id);
-                        }
-                    }
-                } catch (Throwable e) {
-                    FileLog.e(e);
-                }
-            }
-        });
-    }
-
-    public void cleanupNotificationChannels() {
-        notificationsQueue.postRunnable(() -> {
-            if (Build.VERSION.SDK_INT >= 26) {
-                try {
-                    String keyStart = currentAccount + "channel";
-                    List<NotificationChannel> list = systemNotificationManager.getNotificationChannels();
-                    int count = list.size();
-                    for (int a = 0; a < count; a++) {
-                        NotificationChannel channel = list.get(a);
-                        String id = channel.getId();
-                        if (id.startsWith(keyStart)) {
-                            try {
-                                systemNotificationManager.deleteNotificationChannel(id);
-                            } catch (Exception e) {
-                                FileLog.e(e);
-                            }
-                            if (BuildVars.LOGS_ENABLED) {
-                                FileLog.d("delete channel cleanup " + id);
-                            }
-                        }
-                    }
-                } catch (Throwable e) {
-                    FileLog.e(e);
-                }
-                // Remove shits from 0552bcdc
-                try {
-                    String keyGroup = currentAccount + "group";
-                    List<NotificationChannelGroup> list = systemNotificationManager.getNotificationChannelGroups();
-                    for (NotificationChannelGroup group : list) {
-                        String id = group.getId();
-                        if (id.equals(keyGroup)) {
-                            systemNotificationManager.deleteNotificationChannelGroup(id);
                         }
                     }
                 } catch (Throwable e) {
@@ -1103,7 +1051,6 @@ public class NotificationsController extends BaseController {
                 if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(messageObject.getSenderId()) >= 0) {
                     continue;
                 }
-
                 if (messageObject.isStoryPush) {
                     long date = messageObject.messageOwner == null ? System.currentTimeMillis() : messageObject.messageOwner.date * 1000L;
                     long dialogId = messageObject.getDialogId();
@@ -1726,8 +1673,7 @@ public class NotificationsController extends BaseController {
 
     private int getTotalAllUnreadCount() {
         int count = 0;
-        FileLog.d("getTotalAllUnreadCount: init 0");
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             if (!UserConfig.getInstance(a).isClientActivated() || !SharedConfig.showNotificationsForAllAccounts && UserConfig.selectedAccount != a) {
                 continue;
             }
@@ -4054,7 +4000,6 @@ public class NotificationsController extends BaseController {
                 // todo: deal with vendor messed up crash here later
                 notificationChannel.setSound(null, builder.build());
             }
-            systemNotificationManager.createNotificationChannel(notificationChannel);
             if (BuildVars.LOGS_ENABLED) {
                 FileLog.d("create new channel " + channelId);
             }
@@ -4695,7 +4640,7 @@ public class NotificationsController extends BaseController {
                                     callbackIntent.putExtra("data", button.data);
                                 }
                                 callbackIntent.putExtra("mid", lastMessageObject.getId());
-                                mBuilder.addAction(0, button.text, PendingIntent.getBroadcast(ApplicationLoader.applicationContext, lastButtonId++, callbackIntent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE));
+                                mBuilder.addAction(0, button.text, PendingIntent.getBroadcast(ApplicationLoader.applicationContext, lastButtonId++, callbackIntent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT));
                                 hasCallback = true;
                             }
                         }

@@ -11,7 +11,6 @@ package org.telegram.ui;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,7 +34,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.ChatObject;
-import org.telegram.messenger.FileLog;
 import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
@@ -72,8 +70,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
-
-import tw.nekomimi.nekogram.utils.AlertUtil;
 
 public class NotificationsSettingsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -680,28 +676,25 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
                 editor.putBoolean("badgeNumberMessages", getNotificationsController().showBadgeMessages);
                 editor.commit();
                 getNotificationsController().updateBadge();
-            } else if (position == notificationsServiceRow) {
-                SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
-                enabled = preferences.getBoolean("pushService", getMessagesController().keepAliveService);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("pushService", !enabled);
-                editor.apply();
-                ApplicationLoader.startPushService();
             } else if (position == notificationsServiceConnectionRow) {
                 SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
                 enabled = preferences.getBoolean("pushConnection", getMessagesController().backgroundConnection);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean("pushConnection", !enabled);
-                editor.apply();
-                ConnectionsManager.getInstance(currentAccount).setPushConnectionEnabled(!enabled);
+                editor.commit();
+                if (!enabled) {
+                    ConnectionsManager.getInstance(currentAccount).setPushConnectionEnabled(true);
+                } else {
+                    ConnectionsManager.getInstance(currentAccount).setPushConnectionEnabled(false);
+                }
             } else if (position == accountsAllRow) {
                 SharedPreferences preferences = MessagesController.getGlobalNotificationsSettings();
                 enabled = preferences.getBoolean("AllAccounts", true);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean("AllAccounts", !enabled);
-                editor.apply();
+                editor.commit();
                 SharedConfig.showNotificationsForAllAccounts = !enabled;
-                for (int a : SharedConfig.activeAccounts) {
+                for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                     if (SharedConfig.showNotificationsForAllAccounts) {
                         NotificationsController.getInstance(a).showNotifications();
                     } else {
@@ -712,6 +705,13 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
                         }
                     }
                 }
+            } else if (position == notificationsServiceRow) {
+                SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
+                enabled = preferences.getBoolean("pushService", getMessagesController().keepAliveService);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("pushService", !enabled);
+                editor.commit();
+                ApplicationLoader.startPushService();
             } else if (position == callsVibrateRow) {
                 if (getParentActivity() == null) {
                     return;
@@ -764,32 +764,6 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
         });
 
         return fragmentView;
-    }
-
-    public boolean openNotificationListenSettings() {
-        try {
-            Intent intent;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-                intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
-            } else {
-                intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-            }
-            getParentActivity().startActivity(intent);
-            return true;
-        } catch (Exception e) {
-            try {
-                Intent intent = new Intent();
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$NotificationAccessSettingsActivity");
-                intent.setComponent(cn);
-                intent.putExtra(":settings:show_fragment", "NotificationAccessSettings");
-                getParentActivity().startActivity(intent);
-                return true;
-            } catch (Exception ex) {
-                AlertsCreator.showSimpleToast(this, "Open NotificationAccessSettings Error");
-            }
-        }
-        return false;
     }
 
     @Override
