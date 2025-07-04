@@ -14168,7 +14168,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             float rad = (float) Math.floor(SharedConfig.bubbleRadius / (currentMessageObject.isSponsored() ? 2f : 3f));
             linkLine
                 .offsetEmoji(0, drawPhotoImageBefore ? (1f - isSmallImage()) * (dp(18) + photoImage.getImageHeight() + (siteNameLayout != null ? siteNameLayout.getLineBottom(siteNameLayout.getLineCount() - 1) : 0)) : 0)
-                .drawBackground(canvas, AndroidUtilities.rectTmp, rad, rad, rad, alpha);
+                .drawBackground(canvas, AndroidUtilities.rectTmp, rad, rad, rad, alpha, false, !NaConfig.INSTANCE.getMessageColoredBackground().Bool());
 
             int rippleColor = linkLine.getBackgroundColor();
             if (linkPreviewSelector == null) {
@@ -17517,7 +17517,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             }
 
             int boosts = currentMessageObject.messageOwner.from_boosts_applied;
-            if (boosts > 0) {
+            if (NaConfig.INSTANCE.getPremiumItemBoosts().Bool() && boosts > 0) {
                 if (adminString == null) {
                     adminString = new SpannableStringBuilder();
                 }
@@ -18279,6 +18279,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     private Object getAuthorStatus() {
+        if (!NaConfig.INSTANCE.getPremiumItemEmojiStatus().Bool()) {
+            return null;
+        }
         if (currentUser != null) {
             Long emojiStatusId = UserObject.getEmojiStatusDocumentId(currentUser);
             if (emojiStatusId != null) {

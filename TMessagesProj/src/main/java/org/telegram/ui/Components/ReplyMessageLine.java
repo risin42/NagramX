@@ -252,6 +252,9 @@ public class ReplyMessageLine {
             } else {
                 colorId = 0;
             }
+            if (!NaConfig.INSTANCE.getPremiumItemCustomColorInReplies().Bool()) {
+                colorId = 0;
+            }
             resolveColor(messageObject, colorId, resourcesProvider);
             backgroundColor = Theme.multAlpha(color1, 0.10f);
             nameColor = color1;
@@ -296,6 +299,9 @@ public class ReplyMessageLine {
             } else {
                 colorId = 0;
             }
+            if (!NaConfig.INSTANCE.getPremiumItemCustomColorInReplies().Bool()) {
+                colorId = 0;
+            }
             resolveColor(messageObject.replyMessageObject, colorId, resourcesProvider);
             backgroundColor = Theme.multAlpha(color1, 0.10f);
             nameColor = color1;
@@ -332,8 +338,7 @@ public class ReplyMessageLine {
         if ((type == TYPE_REPLY || type == TYPE_LINK || type == TYPE_CONTACT) && messageObject != null && messageObject.overrideLinkEmoji != -1) {
             emojiDocumentId = messageObject.overrideLinkEmoji;
         }
-        if (!NaConfig.INSTANCE.getMessageColoredBackground().Bool()) {
-            backgroundColor = Color.TRANSPARENT;
+        if (!NaConfig.INSTANCE.getPremiumItemEmojiInReplies().Bool()) {
             emojiDocumentId = 0;
         }
         if (emojiDocumentId != 0 && emoji == null) {

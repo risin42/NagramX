@@ -91,6 +91,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import xyz.nextalone.nagram.NaConfig;
 
 public class ReactionsContainerLayout extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
 
@@ -1090,7 +1091,7 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
                 visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.fromTL(result.reaction));
             }
         } else if (reactionsChat != null) {
-            if (reactionsChat != null && reactionsChat.paid_reactions_available) {
+            if (NaConfig.INSTANCE.getPremiumItemStarInReactions().Bool() && reactionsChat != null && reactionsChat.paid_reactions_available) {
                 hasStar = true;
                 visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.asStar());
             }

@@ -1232,6 +1232,54 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val premiumItemEmojiStatus =
+        addConfig(
+            "PremiumItemEmojiStatus",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var premiumItemEmojiInReplies =
+        addConfig(
+            "PremiumItemEmojiInReplies",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var premiumItemCustomColorInReplies =
+        addConfig(
+            "PremiumItemCustomColorInReplies",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val premiumItemCustomWallpaper =
+        addConfig(
+            "PremiumItemCustomWallpaper",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val premiumItemVideoAvatar =
+        addConfig(
+            "PremiumItemVideoAvatar",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var premiumItemStarInReactions =
+        addConfig(
+            "PremiumItemStarInReactions",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var premiumItemStickerEffects =
+        addConfig(
+            "PremiumItemStickerEffects",
+            ConfigItem.configTypeBool,
+            true
+        )
+    var premiumItemBoosts =
+        addConfig(
+            "PremiumItemBoosts",
+            ConfigItem.configTypeBool,
+            true
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {

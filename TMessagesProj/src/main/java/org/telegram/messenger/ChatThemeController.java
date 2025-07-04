@@ -303,6 +303,9 @@ public class ChatThemeController extends BaseController {
 
     public TLRPC.WallPaper getDialogWallpaper(long dialogId) {
         if (dialogId >= 0) {
+            if (!NaConfig.INSTANCE.getPremiumItemCustomWallpaper().Bool()) {
+                return null;
+            }
             TLRPC.UserFull userFull = getMessagesController().getUserFull(dialogId);
             if (userFull != null) {
                 return userFull.wallpaper;

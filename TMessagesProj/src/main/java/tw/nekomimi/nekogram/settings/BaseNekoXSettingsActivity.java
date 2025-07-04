@@ -27,6 +27,8 @@ import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.ConfigItem;
 import tw.nekomimi.nekogram.config.cell.AbstractConfigCell;
 import tw.nekomimi.nekogram.config.cell.ConfigCellAutoTextCheck;
+import tw.nekomimi.nekogram.config.cell.ConfigCellCheckBox;
+import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck2;
 import tw.nekomimi.nekogram.config.cell.ConfigCellCustom;
 import tw.nekomimi.nekogram.config.cell.ConfigCellSelectBox;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheckIcon;
@@ -120,6 +122,10 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
             return ((ConfigCellAutoTextCheck) row).getKey();
         } else if (row instanceof ConfigCellTextCheckIcon) {
             return ((ConfigCellTextCheckIcon) row).getKey();
+        } else if (row instanceof ConfigCellTextCheck2) {
+            return ((ConfigCellTextCheck2) row).getKey();
+        } else if (row instanceof ConfigCellCheckBox) {
+            return ((ConfigCellCheckBox) row).getKey();
         }
         return null;
     }

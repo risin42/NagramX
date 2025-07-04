@@ -21,6 +21,8 @@ public class CellGroup {
     public static final int ITEM_TYPE_TEXT_DETAIL = 5;
     public static final int ITEM_TYPE_TEXT = 6;
     public static final int ITEM_TYPE_TEXT_CHECK_ICON = 7;
+    public static final int ITEM_TYPE_CHECK2 = 8;
+    public static final int ITEM_TYPE_CHECK_BOX = 9;
 
     public BaseFragment thisFragment;
     public RecyclerListView listView;
@@ -32,6 +34,10 @@ public class CellGroup {
     public CellGroup(BaseFragment thisFragment) {
         this.thisFragment = thisFragment;
         this.rows = new ArrayList<>();
+    }
+
+    public RecyclerListView.SelectionAdapter getListAdapter() {
+        return listAdapter;
     }
 
     public void setListAdapter(RecyclerListView lv, RecyclerListView.SelectionAdapter la) {
