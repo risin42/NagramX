@@ -478,7 +478,8 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                                 textCell.setTextAndValue(getString(R.string.TranslationProvider), getProviderName(NekoConfig.translationProvider.Int()), true);
                             }
                         } else if (position == cellGroup.rows.indexOf(translateToLangRow)) {
-                            textCell.setTextAndValue(getString(R.string.TransToLang), NekoXConfig.formatLang(NekoConfig.translateToLang.String()), true);
+                            String value = TextUtils.isEmpty(NekoConfig.translateToLang.String()) ? getString(R.string.TranslationTargetApp) : NekoXConfig.formatLang(NekoConfig.translateToLang.String());
+                            textCell.setTextAndValue(getString(R.string.TransToLang), value, true);
                         } else if (position == cellGroup.rows.indexOf(doNotTranslateRow)) {
                             textCell.setTextAndValue(getString(R.string.DoNotTranslate), getRestrictedLanguages(), true, true);
                         } else if (position == cellGroup.rows.indexOf(articleTranslationProviderRow)) {

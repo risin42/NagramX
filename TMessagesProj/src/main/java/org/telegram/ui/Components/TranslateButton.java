@@ -363,7 +363,11 @@ public class TranslateButton extends FrameLayout {
             String text;
             String lang = TranslateAlert2.languageName(lng, accusative);
             if (lang == null) {
-                lang = NekoXConfig.formatLang(NekoConfig.translateToLang.String());
+                if (TextUtils.isEmpty(NekoConfig.translateToLang.String())) {
+                    lang = LocaleController.getInstance().currentLocale.getDisplayName();
+                } else {
+                    lang = NekoXConfig.formatLang(NekoConfig.translateToLang.String());
+                }
             }
             if (accusative[0]) {
                 text = LocaleController.formatString(R.string.TranslateToButton, lang);

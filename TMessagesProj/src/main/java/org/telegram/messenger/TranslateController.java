@@ -1665,10 +1665,6 @@ public class TranslateController extends BaseController {
         translatingStories.add(key);
 
         // --- NagramX Start ---
-        if (NekoConfig.translateToLang.String() == null) {
-            return;
-        }
-
         if (NekoConfig.translationProvider.Int() != Translator.providerTelegram) {
             Translator.translate(storyItem.caption, storyItem.entities, new Translator.Companion.TranslateCallBack2() {
                 @Override
@@ -1837,10 +1833,6 @@ public class TranslateController extends BaseController {
         translatingPhotos.add(key);
 
         // --- NagramX Start ---
-        if (NekoConfig.translateToLang.String() == null) {
-            return;
-        }
-
         if (NekoConfig.translationProvider.Int() != Translator.providerTelegram) {
             final long start = System.currentTimeMillis();
             Translator.translate(messageObject.messageOwner.message, messageObject.messageOwner.entities, new Translator.Companion.TranslateCallBack2() {
