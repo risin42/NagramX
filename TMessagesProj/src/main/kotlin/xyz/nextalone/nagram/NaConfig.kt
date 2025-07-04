@@ -1226,6 +1226,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val disableAvatarTapToSwitch =
+        addConfig(
+            "DisableAvatarTapToSwitch",
+            ConfigItem.configTypeBool,
+            false
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {
