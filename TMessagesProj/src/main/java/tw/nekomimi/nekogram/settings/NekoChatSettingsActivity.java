@@ -647,7 +647,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             });
             addView(sizeBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 38, Gravity.LEFT | Gravity.TOP, 9, 5, 43, 11));
 
-            messagesCell = new StickerSizePreviewMessagesCell(context, parentLayout);
+            messagesCell = new StickerSizePreviewMessagesCell(context, NekoChatSettingsActivity.this);
             addView(messagesCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 0, 53, 0, 0));
         }
 
