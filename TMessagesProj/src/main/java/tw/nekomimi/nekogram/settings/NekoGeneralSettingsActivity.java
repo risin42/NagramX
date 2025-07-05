@@ -492,9 +492,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             } else if (key.equals(NaConfig.INSTANCE.getHideDividers().getKey())) {
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getIconReplacements().getKey())) {
-                LaunchActivity launchActivity = (LaunchActivity) AndroidUtilities.getActivity();
-                launchActivity.reloadResources();
-                getNotificationCenter().postNotificationName(NotificationCenter.reloadInterface);
+                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             }
         };
 

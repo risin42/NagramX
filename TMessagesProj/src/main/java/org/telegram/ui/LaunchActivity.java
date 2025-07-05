@@ -250,7 +250,7 @@ import tw.nekomimi.nekogram.utils.BrowserUtils;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.ExternalStickerCacheHelper;
-import xyz.nextalone.nagram.icons.IconsResources;
+import tw.nekomimi.nekogram.ui.icons.IconsResources;
 
 public class LaunchActivity extends BasePermissionsActivity implements INavigationLayout.INavigationLayoutDelegate, NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate, IPipActivity {
     public final static String EXTRA_FORCE_NOT_INTERNAL_APPS = "force_not_internal_apps";
@@ -383,20 +383,16 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
     public static LaunchActivity instance;
     private View customNavigationBar;
 
-    private IconsResources res = null;
-    private AssetManager assetManager = null;
+    private AssetManager iconsAsset;
+    private IconsResources customResources;
 
     @Override
     public Resources getResources() {
-        if (assetManager != super.getResources().getAssets()) {
-            res = new IconsResources(super.getResources());
-            assetManager = super.getResources().getAssets();
+        if (iconsAsset != super.getResources().getAssets()) {
+            customResources = new IconsResources(super.getResources());
+            iconsAsset = super.getResources().getAssets();
         }
-        return res;
-    }
-
-    public void reloadResources() {
-        res.reloadReplacements();
+        return customResources;
     }
 
     @Override
