@@ -40,6 +40,9 @@ import android.widget.FrameLayout;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BuildVars;
@@ -48,6 +51,8 @@ import org.telegram.messenger.R;
 import org.telegram.messenger.Utilities;
 import org.telegram.ui.Components.PasscodeView;
 import org.telegram.ui.Stars.SuperRipple;
+
+import xyz.nextalone.nagram.NaConfig;
 
 public class DrawerLayoutContainer extends FrameLayout {
 
@@ -241,6 +246,10 @@ public class DrawerLayoutContainer extends FrameLayout {
             currentAnimation.cancel();
             currentAnimation = null;
         }
+        if (currentSpringAnimation != null) {
+            currentSpringAnimation.cancel();
+            currentSpringAnimation = null;
+        }
     }
 
     public void openDrawer(boolean fast) {
@@ -251,6 +260,21 @@ public class DrawerLayoutContainer extends FrameLayout {
             AndroidUtilities.hideKeyboard(parentActionBarLayout.getParentActivity().getCurrentFocus());
         }
         cancelCurrentAnimation();
+
+        if (USE_SPRING_ANIMATION) {
+            currentSpringAnimation = new SpringAnimation(this, DRAWER_POSITION_PROPERTY)
+                    .setSpring(new SpringForce()
+                            .setStiffness(getSpringStiffness(fast))
+                            .setDampingRatio(SpringForce.DAMPING_RATIO_NO_BOUNCY)
+                    )
+                    .addEndListener(
+                            (animation, canceled, value, velocity) -> onDrawerAnimationEnd(true)
+                    );
+            currentSpringAnimation.animateToFinalPosition(drawerLayout.getMeasuredWidth());
+            currentSpringAnimation.start();
+            return;
+        }
+
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(ObjectAnimator.ofFloat(this, "drawerPosition", drawerLayout.getMeasuredWidth()));
         animatorSet.setInterpolator(new DecelerateInterpolator());
@@ -274,6 +298,21 @@ public class DrawerLayoutContainer extends FrameLayout {
             return;
         }
         cancelCurrentAnimation();
+
+        if (USE_SPRING_ANIMATION) {
+            currentSpringAnimation = new SpringAnimation(this, DRAWER_POSITION_PROPERTY)
+                    .setSpring(new SpringForce()
+                            .setStiffness(getSpringStiffness(fast))
+                            .setDampingRatio(SpringForce.DAMPING_RATIO_NO_BOUNCY)
+                    )
+                    .addEndListener(
+                            (animation, canceled, value, velocity) -> onDrawerAnimationEnd(false)
+                    );
+            currentSpringAnimation.animateToFinalPosition(0);
+            currentSpringAnimation.start();
+            return;
+        }
+
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(
                 ObjectAnimator.ofFloat(this, "drawerPosition", 0)
@@ -870,4 +909,23 @@ public class DrawerLayoutContainer extends FrameLayout {
             return PixelFormat.TRANSLUCENT;
         }
     }
+
+    private final boolean USE_SPRING_ANIMATION = NaConfig.INSTANCE.getSpringAnimation().Bool();
+    private SpringAnimation currentSpringAnimation;
+
+    private float getSpringStiffness(boolean fast) {
+        return fast ? 1000f : 750f;
+    }
+
+    public final static FloatPropertyCompat<DrawerLayoutContainer> DRAWER_POSITION_PROPERTY = new FloatPropertyCompat<>("drawerPosition") {
+        @Override
+        public float getValue(DrawerLayoutContainer object) {
+            return object.getDrawerPosition();
+        }
+
+        @Override
+        public void setValue(DrawerLayoutContainer object, float value) {
+            object.setDrawerPosition(value);
+        }
+    };
 }

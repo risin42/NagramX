@@ -253,6 +253,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, FloatingDebugProvider {
@@ -821,8 +822,13 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
                 canvas.clipRect(0, -getY() + getActionBarTop() + getActionBarFullHeight(), getMeasuredWidth(), getMeasuredHeight());
                 if (slideFragmentProgress != 1f) {
-                    if (slideFragmentLite || NaConfig.INSTANCE.getSpringAnimation().Bool()) {
+                    if (slideFragmentLite || USE_SPRING_ANIMATION) {
                         canvas.translate((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress), 0);
+                        BaseFragment lastFragment = LaunchActivity.getSafeLastFragment();
+                        if (AndroidUtil.needToAnimateFragment(lastFragment)) {
+                            final float s = 1f - 0.05f * (1f - slideFragmentProgress);
+                            canvas.scale(s, s, isDrawerTransition ? getMeasuredWidth() : 0, -getY() + scrollYOffset + getActionBarFullHeight());
+                        }
                     } else {
                         final float s = 1f - 0.05f * (1f - slideFragmentProgress);
                         canvas.translate((isDrawerTransition ? dp(4) : -dp(4)) * (1f - slideFragmentProgress), 0);
@@ -833,7 +839,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 canvas.restore();
             } else if (child == actionBar && slideFragmentProgress != 1f) {
                 canvas.save();
-                if (slideFragmentLite || NaConfig.INSTANCE.getSpringAnimation().Bool()) {
+                if (slideFragmentLite || USE_SPRING_ANIMATION) {
                     canvas.translate((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress), 0);
                 } else {
                     float s = 1f - 0.05f * (1f - slideFragmentProgress);
@@ -1040,7 +1046,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 canvas.save();
                 canvas.translate(fragmentContextView.getX(), fragmentContextView.getY());
                 if (slideFragmentProgress != 1f) {
-                    if (slideFragmentLite || NaConfig.INSTANCE.getSpringAnimation().Bool()) {
+                    if (slideFragmentLite) {
                         canvas.translate((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress), 0);
                     } else {
                         final float s = 1f - 0.05f * (1f - slideFragmentProgress);
@@ -3165,6 +3171,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                         if (floatingButton2Container != null) {
                             floatingButton2Container.setVisibility(View.GONE);
                         }
+                        if (updateButton != null) {
+                            updateButton.setVisibility(View.GONE);
+                        }
                         if (storyHint != null) {
                             storyHint.hide();
                         }
@@ -3226,6 +3235,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                         floatingButtonContainer.setVisibility(View.VISIBLE);
                         if (floatingButton2Container != null) {
                             floatingButton2Container.setVisibility(storiesEnabled ? View.VISIBLE : View.GONE);
+                        }
+                        if (updateButton != null) {
+                            updateButton.setVisibility(View.VISIBLE);
                         }
                         floatingHidden = true;
                         floatingButtonTranslation = dp(100);
@@ -4719,7 +4731,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
         searchTabsView = null;
 
-        if (!onlySelect && initialDialogsType == 0) {
+        if (!onlySelect && initialDialogsType == DIALOGS_TYPE_DEFAULT) {
             fragmentLocationContextView = new FragmentContextView(context, this, true);
             fragmentLocationContextView.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 38, Gravity.TOP | Gravity.LEFT, 0, -36, 0, 0));
             contentView.addView(fragmentLocationContextView);
@@ -10367,7 +10379,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private void updateSelectedCount() {
         if (commentView != null) {
             if (selectedDialogs.isEmpty()) {
-                if (initialDialogsType == 3 && selectAlertString == null) {
+                if (initialDialogsType == DIALOGS_TYPE_FORWARD && selectAlertString == null) {
                     actionBar.setTitle(actionBarTitleNax = LocaleController.getString(R.string.ForwardTo));
                 } else {
                     actionBar.setTitle(actionBarTitleNax = LocaleController.getString(R.string.SelectChat));
@@ -12721,13 +12733,25 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             fragmentView.invalidate();
         }
 
-        if (slideFragmentLite || NaConfig.INSTANCE.getSpringAnimation().Bool()) {
+        if (slideFragmentLite || USE_SPRING_ANIMATION) {
             if (filterTabsView != null) {
                 filterTabsView.getListView().setTranslationX((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress));
                 filterTabsView.invalidate();
             }
             if (dialogStoriesCell != null) {
                 dialogStoriesCell.setTranslationX((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress));
+            }
+            if (floatingButton2Container != null && USE_SPRING_ANIMATION) {
+                floatingButton2Container.setTranslationX((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress));
+                floatingButton2Container.invalidate();
+            }
+            if (floatingButtonContainer != null && USE_SPRING_ANIMATION) {
+                floatingButtonContainer.setTranslationX((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress));
+                floatingButtonContainer.invalidate();
+            }
+            if (updateButton != null && USE_SPRING_ANIMATION) {
+                updateButton.setTranslationX((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress));
+                updateButton.invalidate();
             }
             if (rightSlidingDialogContainer != null && rightSlidingDialogContainer.getFragmentView() != null) {
                 if (!rightFragmentTransitionInProgress) {
@@ -12765,7 +12789,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
     @Override
     public INavigationLayout.BackButtonState getBackButtonState() {
-        return isArchive() || rightSlidingDialogContainer.isOpenned ? INavigationLayout.BackButtonState.BACK : INavigationLayout.BackButtonState.MENU;
+        return isArchive() || searching || searchString != null || onlySelect || rightSlidingDialogContainer.isOpenned ? INavigationLayout.BackButtonState.BACK : INavigationLayout.BackButtonState.MENU;
     }
 
     @Override
@@ -13635,6 +13659,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             })
             .open(StoryRecorder.SourceView.fromFloatingButton(floatingButtonContainer), true);
     }
+
+    private static final boolean USE_SPRING_ANIMATION = NaConfig.INSTANCE.getSpringAnimation().Bool();
 
     @Override
     public boolean isActionBarCrossfadeEnabled() {

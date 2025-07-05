@@ -7,7 +7,14 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.CallLogActivity;
+import org.telegram.ui.ChatActivity;
+import org.telegram.ui.Components.MediaActivity;
+import org.telegram.ui.ContactsActivity;
+import org.telegram.ui.GroupCreateActivity;
+import org.telegram.ui.ProfileActivity;
 
 import java.io.File;
 
@@ -67,4 +74,12 @@ public class AndroidUtil {
         return 0;
     }
 
+    public static boolean needToAnimateFragment(BaseFragment fragment) {
+        return fragment instanceof CallLogActivity
+                || fragment instanceof ContactsActivity
+                || fragment instanceof ChatActivity
+                || fragment instanceof GroupCreateActivity
+                || fragment instanceof MediaActivity
+                || fragment instanceof ProfileActivity;
+    }
 }

@@ -89,19 +89,6 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
     private boolean isSheet;
     private Window window;
 
-    // --- Spring Animation ---
-    private static final boolean USE_SPRING_ANIMATION = NaConfig.INSTANCE.getSpringAnimation().Bool();
-    private static final boolean USE_ACTIONBAR_CROSSFADE = USE_SPRING_ANIMATION && NaConfig.INSTANCE.getSpringAnimationCrossfade().Bool();
-    private static final float SPRING_STIFFNESS = 700f;
-    private static final float SPRING_STIFFNESS_PREVIEW = 650f;
-    private static final float SPRING_STIFFNESS_PREVIEW_OUT = 800f;
-    private static final float SPRING_STIFFNESS_PREVIEW_EXPAND = 750f;
-    private static final float SPRING_MULTIPLIER = 1000f;
-    private float swipeProgress;
-    private SpringAnimation currentSpringAnimation;
-    private MenuDrawable menuDrawable;
-    // --- Spring Animation ---
-
     @Override
     public void setHighlightActionButtons(boolean highlightActionButtons) {
         this.highlightActionButtons = highlightActionButtons;
@@ -1219,7 +1206,7 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
                                 currentSpringAnimation = new SpringAnimation(valueHolder)
                                         .setSpring(new SpringForce(SPRING_MULTIPLIER)
                                                 .setStiffness(SPRING_STIFFNESS)
-                                                .setDampingRatio(1f));
+                                                .setDampingRatio(SpringForce.DAMPING_RATIO_NO_BOUNCY));
                                 if (velX != 0) {
                                     currentSpringAnimation.setStartVelocity(velX / 15f);
                                 }
@@ -1227,7 +1214,7 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
                                 currentSpringAnimation = new SpringAnimation(valueHolder)
                                         .setSpring(new SpringForce(0f)
                                                 .setStiffness(SPRING_STIFFNESS)
-                                                .setDampingRatio(1f));
+                                                .setDampingRatio(SpringForce.DAMPING_RATIO_NO_BOUNCY));
                             }
                             currentSpringAnimation.addUpdateListener((animation, value, velocity) -> {
                                 var progress = value / SPRING_MULTIPLIER;
@@ -3229,6 +3216,34 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
     }
 
     // --- Spring Animation ---
+    private static final boolean USE_SPRING_ANIMATION = NaConfig.INSTANCE.getSpringAnimation().Bool();
+    private static final boolean USE_ACTIONBAR_CROSSFADE = USE_SPRING_ANIMATION && NaConfig.INSTANCE.getSpringAnimationCrossfade().Bool();
+    private static final float SPRING_STIFFNESS = 700f;
+    private static final float SPRING_STIFFNESS_PREVIEW = 650f;
+    private static final float SPRING_STIFFNESS_PREVIEW_OUT = 800f;
+    private static final float SPRING_STIFFNESS_PREVIEW_EXPAND = 750f;
+    private static final float SPRING_MULTIPLIER = 1000f;
+    private float swipeProgress;
+    private SpringAnimation currentSpringAnimation;
+    private MenuDrawable menuDrawable;
+
+    private void invalidateActionBars() {
+        if (getLastFragment() != null && getLastFragment().getActionBar() != null) {
+            getLastFragment().getActionBar().invalidate();
+        }
+        if (getBackgroundFragment() != null && getBackgroundFragment().getActionBar() != null) {
+            getBackgroundFragment().getActionBar().invalidate();
+        }
+    }
+
+    public boolean isActionBarInCrossfade() {
+        if (!USE_ACTIONBAR_CROSSFADE) {
+            return false;
+        }
+        boolean crossfadeNoFragments = SharedConfig.animationsEnabled() && !isInPreviewMode() && (isSwipeInProgress() || isTransitionAnimationInProgress()) && currentAnimation == null;
+        return crossfadeNoFragments && getLastFragment() != null && getLastFragment().isActionBarCrossfadeEnabled() && getBackgroundFragment() != null && getBackgroundFragment().isActionBarCrossfadeEnabled();
+    }
+
     @Override
     public void draw(@NonNull Canvas canvas) {
         super.draw(canvas);
@@ -3307,24 +3322,6 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
             canvas.translate(getPaddingLeft(), fgActionBar.getY() + getPaddingTop() - containerView.fragmentPanTranslationOffset);
             fgActionBar.onDrawCrossfadeContent(canvas, true, useBackDrawable, swipeProgress);
             canvas.restore();
-        }
-    }
-
-    public boolean isActionBarInCrossfade() {
-        if (!USE_ACTIONBAR_CROSSFADE) {
-            return false;
-        }
-
-        boolean crossfadeNoFragments = SharedConfig.animationsEnabled() && !isInPreviewMode() && (isSwipeInProgress() || isTransitionAnimationInProgress()) && currentAnimation == null;
-        return crossfadeNoFragments && getLastFragment() != null && getLastFragment().isActionBarCrossfadeEnabled() && getBackgroundFragment() != null && getBackgroundFragment().isActionBarCrossfadeEnabled();
-    }
-
-    private void invalidateActionBars() {
-        if (getLastFragment() != null && getLastFragment().getActionBar() != null) {
-            getLastFragment().getActionBar().invalidate();
-        }
-        if (getBackgroundFragment() != null && getBackgroundFragment().getActionBar() != null) {
-            getBackgroundFragment().getActionBar().invalidate();
         }
     }
     // --- Spring Animation ---
