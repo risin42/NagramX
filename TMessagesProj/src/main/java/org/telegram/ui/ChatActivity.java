@@ -23431,7 +23431,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }, 350);
         } else if (id == NotificationCenter.chatInfoDidLoad) {
             TLRPC.ChatFull chatFull = (TLRPC.ChatFull) args[0];
-            if (currentChat != null && chatFull.id == currentChat.id) {
+            if (currentChat != null && chatFull != null && chatFull.id == currentChat.id) {
                 checkGroupEmojiPackHint();
                 if (chatFull instanceof TLRPC.TL_channelFull) {
                     if (currentChat.megagroup && !ChatObject.isMonoForum(currentChat)) {
