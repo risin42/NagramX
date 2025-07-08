@@ -356,12 +356,6 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
-    val showSquareAvatar =
-        addConfig(
-            "ShowSquareAvatar",
-            ConfigItem.configTypeBool,
-            false
-        )
     val externalStickerCache =
         addConfig(
             "ExternalStickerCache",

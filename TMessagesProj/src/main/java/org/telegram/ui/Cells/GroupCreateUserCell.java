@@ -55,8 +55,6 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.Premium.PremiumGradient;
 
-import xyz.nextalone.nagram.NaConfig;
-
 public class GroupCreateUserCell extends FrameLayout {
 
     private BackupImageView avatarImageView;
@@ -567,12 +565,7 @@ public class GroupCreateUserCell extends FrameLayout {
             paint.setColor(Theme.getColor(Theme.key_checkboxSquareBackground, resourcesProvider));
             float cx = avatarImageView.getLeft() + avatarImageView.getMeasuredWidth() / 2;
             float cy = avatarImageView.getTop() + avatarImageView.getMeasuredHeight() / 2;
-            if (NaConfig.INSTANCE.getShowSquareAvatar().Bool()) {
-                float dp = AndroidUtilities.dp(18) + AndroidUtilities.dp(4) * checkProgress;
-                canvas.drawRect(cx - dp, cy - dp, cx + dp, cy + dp, paint);
-            } else {
-                canvas.drawCircle(cx, cy, AndroidUtilities.dp(18) + AndroidUtilities.dp(4) * checkProgress, paint);
-            }
+            canvas.drawCircle(cx, cy, AndroidUtilities.dp(18) + AndroidUtilities.dp(4) * checkProgress, paint);
         }
         if (drawDivider) {
             int start = AndroidUtilities.dp(LocaleController.isRTL ? 0 : 72 + padding);
