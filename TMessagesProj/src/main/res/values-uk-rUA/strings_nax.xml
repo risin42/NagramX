@@ -6,7 +6,7 @@
     <string name="EnableSaveEditsHistory">Зберегти історію змін</string>
     <string name="EditsHistoryMenuText">Історія редагувань</string>
     <string name="DeleteKeepLocally">Зберігати локально</string>
-    <string name="ClearMessageDatabase">Очистити базу даних повідомлень</string>
+    <string name="ClearMessageDatabase">Очистити базу даних</string>
     <string name="ClearMessageDatabaseNotification">База повідомлень очищена</string>
     <string name="CustomDeletedMark">Підпис для видалених повідомлень</string>
     <string name="HidePremiumSection">Приховати \"Преміум\" в налаштуваннях</string>
@@ -201,4 +201,15 @@
     <string name="AutoInsertGIFCaptionNotice">Автоматично використовує текст з поля вводу як підпис до GIF.</string>
     <string name="UserAvatarsInMessagePreview">Аватари користувачів у попередньому перегляді</string>
     <string name="YourVersionIsLatestNax">Ваша версія актуальна.</string>
+    <string name="PremiumElements">Преміум Елементи</string>
+    <string name="PremiumItemBoosts">Лічильник бустів</string>
+    <string name="PremiumItemStickerEffects">Ефекти наклейок</string>
+    <string name="PremiumItemEmojiStatus">Емоджі-статуси</string>
+    <string name="PremiumItemEmojiInReplies">Емодзі у відповідях</string>
+    <string name="PremiumItemCustomColorInReplies">Користувацькі кольори</string>
+    <string name="PremiumItemStarInReactions">Зірка у реакціях</string>
+    <string name="PremiumItemVideoAvatar">Анімовані аватари</string>
+    <string name="PremiumItemCustomWallpaper">Користувацькі шпалери</string>
+    <string name="TranslationTargetApp">Слідкувати за додатком</string>
+    <string name="DisableAvatarTapToSwitch">Не гортати аватари після натискання</string>
 </resources>

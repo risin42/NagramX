@@ -201,4 +201,15 @@
     <string name="AutoInsertGIFCaptionNotice">Usa automaticamente o texto do campo de entrada atual como legenda do GIFs.</string>
     <string name="UserAvatarsInMessagePreview">Avatares de Usuário na Prévia da Mensagem</string>
     <string name="YourVersionIsLatestNax">Sua Versão Está Atualizada.</string>
+    <string name="PremiumElements">Elementos Premium</string>
+    <string name="PremiumItemBoosts">Contador de Impulsos</string>
+    <string name="PremiumItemStickerEffects">Efeitos no Sticker</string>
+    <string name="PremiumItemEmojiStatus">Status com Emojis</string>
+    <string name="PremiumItemEmojiInReplies">Emojis nas Respostas</string>
+    <string name="PremiumItemCustomColorInReplies">Cores Personalizadas</string>
+    <string name="PremiumItemStarInReactions">Estrela nas Reações</string>
+    <string name="PremiumItemVideoAvatar">Avatares Animados</string>
+    <string name="PremiumItemCustomWallpaper">Papéis de Parede Personalizados</string>
+    <string name="TranslationTargetApp">Seguir Aplicativo</string>
+    <string name="DisableAvatarTapToSwitch">Desativar Avatares Cíclicos ao Tocar</string>
 </resources>

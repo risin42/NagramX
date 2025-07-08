@@ -63,7 +63,6 @@
     <string name="DisableSuggestionView">Вимкнути пропозицію налаштувань профілю</string>
     <string name="DisableStories">Вимкнути історії</string>
     <string name="HideFilterMuteAll">Приховати \"Вимкнути все\" в меню довгого натискання</string>
-    <string name="ShowSquareAvatar">Квадратні аватари</string>
     <string name="CopyPhotoAsSticker">Копіювати як наліпку</string>
     <string name="ExternalStickerCache">Зовнішній кеш наліпок</string>
     <string name="ExternalStickerCacheHint">Для обміну наборами наліпок з іншими програмами. Натисніть, щоб вибрати місце зберігання.</string>

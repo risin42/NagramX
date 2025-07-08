@@ -204,9 +204,9 @@
     <string name="PremiumElements">Premium 元素</string>
     <string name="PremiumItemBoosts">助推者标识</string>
     <string name="PremiumItemStickerEffects">Premium 贴纸特效</string>
-    <string name="PremiumItemEmojiStatus">Premium Emoji 标识</string>
+    <string name="PremiumItemEmojiStatus">Emoji 标识</string>
     <string name="PremiumItemEmojiInReplies">回复背景中的 Emoji</string>
-    <string name="PremiumItemCustomColorInReplies">自定义消息颜色</string>
+    <string name="PremiumItemCustomColorInReplies">自定义颜色</string>
     <string name="PremiumItemStarInReactions">表情回应中的星星</string>
     <string name="PremiumItemVideoAvatar">动态头像</string>
     <string name="PremiumItemCustomWallpaper">自定义壁纸</string>

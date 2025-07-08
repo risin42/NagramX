@@ -63,7 +63,6 @@
     <string name="DisableSuggestionView">Desativar sugestão de configurações de perfil</string>
     <string name="DisableStories">Desativar Stories</string>
     <string name="HideFilterMuteAll">Ocultar \"Silenciar tudo\" no Menu de Toque Longo</string>
-    <string name="ShowSquareAvatar">Avatar Quadrado</string>
     <string name="CopyPhotoAsSticker">Copiar como Sticker</string>
     <string name="ExternalStickerCache">Cache de Sticker Externo</string>
     <string name="ExternalStickerCacheHint">Para compartilhar pacotes de sticker com outros aplicativos. Clique para escolher o local de armazenamento.</string>

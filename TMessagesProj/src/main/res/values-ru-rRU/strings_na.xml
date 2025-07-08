@@ -63,7 +63,6 @@
     <string name="DisableSuggestionView">Отключить предложение настройки профиля</string>
     <string name="DisableStories">Отключить истории</string>
     <string name="HideFilterMuteAll">Скрыть «Отключить все» в меню долгого нажатия</string>
-    <string name="ShowSquareAvatar">Квадратные аватары</string>
     <string name="CopyPhotoAsSticker">Копировать как стикер</string>
     <string name="ExternalStickerCache">Внешний кэш стикеров</string>
     <string name="ExternalStickerCacheHint">Для обмена наборами стикеров с другими приложениями. Нажмите, чтобы выбрать место хранения.</string>

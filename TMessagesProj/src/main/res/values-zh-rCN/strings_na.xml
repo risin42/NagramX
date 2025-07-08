@@ -63,7 +63,6 @@
     <string name="DisableSuggestionView">禁用修改手机号码的建议</string>
     <string name="DisableStories">禁用动态功能</string>
     <string name="HideFilterMuteAll">隐藏长按菜单中的\"全部静音\"</string>
-    <string name="ShowSquareAvatar">方形头像</string>
     <string name="CopyPhotoAsSticker">复制为贴纸</string>
     <string name="ExternalStickerCache">外部贴纸缓存</string>
     <string name="ExternalStickerCacheHint">用于与其他应用共享贴纸包，点击选择存储位置。</string>

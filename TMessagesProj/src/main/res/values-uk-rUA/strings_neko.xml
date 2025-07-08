@@ -57,6 +57,7 @@
     <string name="TranslateApiUnsupported">Провайдер перекладу, обраний вами не підтримує вашу мову.</string>
     <string name="ProviderLingocloud">LingoCloud Translate</string>
     <string name="UndoTranslate">Приховати переклад</string>
+    <string name="DisablePhotoViewerSideAction">Вимкнути бічний дотик для перемикання фотографій</string>
     <string name="BotToken">Token</string>
     <string name="UnlimitedPinnedDialogs">Необмежені закріплені діалоги</string>
     <string name="UnlimitedPinnedDialogsAbout">Їхня синхронізація буде відключена.</string>

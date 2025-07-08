@@ -64,7 +64,6 @@
     <string name="DisableSuggestionView">Desactivar la sugerencia de configuración del perfil</string>
     <string name="DisableStories">Deshabilitar historias</string>
     <string name="HideFilterMuteAll">Ocultar \"Silenciar todos\" en el menú de Pulsación larga</string>
-    <string name="ShowSquareAvatar">Avatar cuadrado</string>
     <string name="CopyPhotoAsSticker">Copiar como sticker</string>
     <string name="ExternalStickerCache">Memoria caché externa</string>
     <string name="ExternalStickerCacheHint">Para compartir paquetes de pegatinas con otras aplicaciones. Haz clic para elegir la ubicación de almacenamiento.</string>

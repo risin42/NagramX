@@ -201,4 +201,15 @@
     <string name="AutoInsertGIFCaptionNotice">Автоматически использует текст в текущем поле ввода в качестве подписи к GIF.</string>
     <string name="UserAvatarsInMessagePreview">Аватары пользователей в предпросмотре сообщений</string>
     <string name="YourVersionIsLatestNax">Ваша версия актуальна.</string>
+    <string name="PremiumElements">Premium-элементы</string>
+    <string name="PremiumItemBoosts">Счётчик голосов</string>
+    <string name="PremiumItemStickerEffects">Эффекты стикеров</string>
+    <string name="PremiumItemEmojiStatus">Эмодзи-статусы</string>
+    <string name="PremiumItemEmojiInReplies">Эмодзи в ответах</string>
+    <string name="PremiumItemCustomColorInReplies">Пользовательские цвета</string>
+    <string name="PremiumItemStarInReactions">Звезда в реакциях</string>
+    <string name="PremiumItemVideoAvatar">Анимированные аватары</string>
+    <string name="PremiumItemCustomWallpaper">Пользовательские обои</string>
+    <string name="TranslationTargetApp">Подписаться на приложение</string>
+    <string name="DisableAvatarTapToSwitch">Не листать аватары по нажатию</string>
 </resources>

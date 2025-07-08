@@ -65,7 +65,6 @@
     <string name="DisableSuggestionView">Disable Profile Settings Suggestion</string>
     <string name="DisableStories">Disable Stories</string>
     <string name="HideFilterMuteAll">Hide \"Mute All\" in Long Press Menu</string>
-    <string name="ShowSquareAvatar">Square Avatar</string>
     <string name="CopyPhotoAsSticker">Copy as Sticker</string>
     <string name="ExternalStickerCache">External Sticker Cache</string>
     <string name="ExternalStickerCacheHint">For sharing sticker packs with other apps. Click to pick storage location.</string>

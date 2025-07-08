@@ -63,7 +63,6 @@
     <string name="DisableSuggestionView">電話番号変更の提案を無効にする</string>
     <string name="DisableStories">ストーリー機能を無効にする</string>
     <string name="HideFilterMuteAll">長押しメニューの「すべてミュート」を非表示</string>
-    <string name="ShowSquareAvatar">正方形のアバター</string>
     <string name="CopyPhotoAsSticker">ステッカーとしてコピー</string>
     <string name="ExternalStickerCache">外部ステッカーキャッシュ</string>
     <string name="ExternalStickerCacheHint">他のアプリとステッカーパックを共有するには、クリックしてストレージの場所を選択。</string>
