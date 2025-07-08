@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Parcelable;
 import android.text.TextPaint;
 import android.transition.TransitionManager;
 import android.view.Gravity;
@@ -79,6 +80,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private DrawerProfilePreviewCell profilePreviewCell;
     private ChatBlurAlphaSeekBar chatBlurAlphaSeekbar;
     private UndoView restartTooltip;
+    private Parcelable recyclerViewState = null;
 
     private final CellGroup cellGroup = new CellGroup(this);
 
@@ -176,9 +178,19 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell headerChatBlur = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.ChatBlurAlphaValue)));
     private final AbstractConfigCell chatBlurAlphaValueRow = cellGroup.appendCell(new ConfigCellCustom("ChatBlurAlphaValue", ConfigCellCustom.CUSTOM_ITEM_CharBlurAlpha, NekoConfig.forceBlurInChat.Bool()));
     private final AbstractConfigCell iconReplacements = cellGroup.appendCell(new ConfigCellSelectBox("IconReplacements", NaConfig.INSTANCE.getIconReplacements(), new String[]{
-        getString(R.string.Default),
-        getString(R.string.IconReplacementSolar),
+            getString(R.string.Default),
+            getString(R.string.IconReplacementSolar),
 }, null));
+    private final AbstractConfigCell switchStyleRow = cellGroup.appendCell(new ConfigCellSelectBox("SwitchStyle", NaConfig.INSTANCE.getSwitchStyle(), new String[]{
+            getString(R.string.Default),
+            getString(R.string.StyleModern),
+            getString(R.string.StyleMaterialDesign3)
+    }, null));
+    private final AbstractConfigCell sliderStyleRow = cellGroup.appendCell(new ConfigCellSelectBox("SliderStyle", NaConfig.INSTANCE.getSliderStyle(), new String[]{
+            getString(R.string.Default),
+            getString(R.string.StyleModern),
+            getString(R.string.StyleMaterialDesign3)
+    }, null));
     private final AbstractConfigCell actionBarDecorationRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NekoConfig.actionBarDecoration, new String[]{
             getString(R.string.DependsOnDate),
             getString(R.string.Snowflakes),
@@ -209,10 +221,10 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             getString(R.string.Disable)
     }, null));
     private final AbstractConfigCell centerActionBarTitleRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getCenterActionBarTitleType(), new String[]{
-        getString(R.string.Disable),
-        getString(R.string.Enable),
-        getString(R.string.SettingsOnly),
-        getString(R.string.ChatsOnly)
+            getString(R.string.Disable),
+            getString(R.string.Enable),
+            getString(R.string.SettingsOnly),
+            getString(R.string.ChatsOnly)
     }, null));
     private final AbstractConfigCell drawerElementsRow = cellGroup.appendCell(new ConfigCellTextCheckIcon(null, "DrawerElements", null, R.drawable.menu_newfilter, false, () ->
         showDialog(showConfigMenuWithIconAlert(this, R.string.DrawerElements, new ArrayList<>() {{
@@ -492,6 +504,12 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getIconReplacements().getKey())) {
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
+            } else if (key.equals(NaConfig.INSTANCE.getSwitchStyle().getKey()) || key.equals(NaConfig.INSTANCE.getSliderStyle().getKey())) {
+                if (listView.getLayoutManager() != null) {
+                    recyclerViewState = listView.getLayoutManager().onSaveInstanceState();
+                }
+                parentLayout.rebuildFragments(INavigationLayout.REBUILD_FLAG_REBUILD_LAST);
+                listView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
             }
         };
 

@@ -225,4 +225,8 @@
     <string name="PremiumItemCustomWallpaper">Custom Wallpapers</string>
     <string name="TranslationTargetApp">Follow App</string>
     <string name="DisableAvatarTapToSwitch">Disable Cycling Avatars by Tapping</string>
+    <string name="SwitchStyle">Switch Style</string>
+    <string name="SliderStyle">Slider Style</string>
+    <string name="StyleModern">Modern</string>
+    <string name="StyleMaterialDesign3" translatable="false">Material Design 3</string>
 </resources>

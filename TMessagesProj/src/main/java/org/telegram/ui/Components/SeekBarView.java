@@ -50,7 +50,13 @@ import org.telegram.ui.DialogsActivity;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import xyz.nextalone.nagram.NaConfig;
+
 public class SeekBarView extends FrameLayout {
+
+    public static final int SLIDER_STYLE_DEFAULT = 0;
+    public static final int SLIDER_STYLE_MODERN = 1;
+    public static final int SLIDER_STYLE_MD3 = 2;
 
     private final SeekBarAccessibilityDelegate seekBarAccessibilityDelegate;
 
@@ -74,7 +80,12 @@ public class SeekBarView extends FrameLayout {
     private float transitionProgress = 1f;
     private int transitionThumbX;
     private int separatorsCount;
+    private boolean isModern = false;
+    private int previewingState = -1;
     private int lineWidthDp = 3;
+    private boolean hasCustomLineWidthValue = false;
+
+    private Path path = new Path();
 
     private boolean twoSided;
     private final Theme.ResourcesProvider resourcesProvider;
@@ -229,6 +240,10 @@ public class SeekBarView extends FrameLayout {
     boolean captured;
     float sx, sy;
     boolean onTouch(MotionEvent ev) {
+        if (delegate == null) {
+            return false;
+        }
+
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             sx = ev.getX();
             sy = ev.getY();
@@ -340,6 +355,7 @@ public class SeekBarView extends FrameLayout {
 
     public void setLineWidth(int dp) {
         lineWidthDp = dp;
+        hasCustomLineWidthValue = true;
     }
 
     int lastValue;
@@ -434,12 +450,40 @@ public class SeekBarView extends FrameLayout {
         return pressed;
     }
 
+    private void updateModernState() {
+        int style = (previewingState == -1 ? NaConfig.INSTANCE.getSliderStyle().Int() : previewingState);
+        isModern = style == SLIDER_STYLE_MODERN || style == SLIDER_STYLE_MD3;
+        isModern &= (timestamps == null || timestamps.isEmpty());
+
+        if (!hasCustomLineWidthValue || style != SLIDER_STYLE_DEFAULT) {
+            lineWidthDp = style == SLIDER_STYLE_MODERN ? 17 : (style == SLIDER_STYLE_MD3 ? 13 : 3);
+        }
+
+        if (isModern && style == SLIDER_STYLE_MD3) {
+            thumbSize = AndroidUtilities.dp(4);
+        }
+    }
+
+    private int needCustomDraw() {
+        updateModernState();
+
+        int style = (previewingState == -1 ? NaConfig.INSTANCE.getSliderStyle().Int() : previewingState);
+        if (isModern && style == SLIDER_STYLE_MD3) {
+            return style;
+        }
+
+        return -1;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         int thumbX = this.thumbX;
+
+        updateModernState();
+
         if (!twoSided && separatorsCount > 1) {
-            float step = (getMeasuredWidth() - selectorWidth) / ((float) separatorsCount - 1f);
-            thumbX = (int) animatedThumbX.set(Math.round((thumbX) / step) * step);
+            //float step = (getMeasuredWidth() - selectorWidth) / ((float) separatorsCount - 1f);
+            //thumbX = (int) animatedThumbX.set(Math.round((thumbX) / step) * step);
         } else if (delegate != null && delegate.needVisuallyDivideSteps()) {
             float step = (getMeasuredWidth() - selectorWidth) / ((float) delegate.getStepsCount() - 1f);
             thumbX = (int) (Math.round((thumbX) / step) * step);
@@ -480,7 +524,7 @@ public class SeekBarView extends FrameLayout {
             }
         }
 
-        if (hoverDrawable != null) {
+        if (hoverDrawable != null && !isModern) {
             int dx = thumbX + selectorWidth / 2 - AndroidUtilities.dp(16);
             int dy = y + thumbSize / 2 - AndroidUtilities.dp(16);
             hoverDrawable.setBounds(dx, dy, dx + AndroidUtilities.dp(32), dy + AndroidUtilities.dp(32));
@@ -516,7 +560,49 @@ public class SeekBarView extends FrameLayout {
             }
         }
 
-        if (transitionProgress < 1f) {
+        if (!isModern) {
+            if (transitionProgress < 1f) {
+                final float oldCircleProgress = 1f - Easings.easeInQuad.getInterpolation(Math.min(1f, transitionProgress * 3f));
+                final float newCircleProgress = Easings.easeOutQuad.getInterpolation(transitionProgress);
+                if (oldCircleProgress > 0f) {
+                    canvas.drawCircle(transitionThumbX + selectorWidth / 2, y + thumbSize / 2, currentRadius * oldCircleProgress, outerPaint1);
+                }
+                canvas.drawCircle(thumbX + selectorWidth / 2, y + thumbSize / 2, currentRadius * newCircleProgress, outerPaint1);
+            } else {
+                canvas.drawCircle(thumbX + selectorWidth / 2, y + thumbSize / 2, currentRadius, outerPaint1);
+            }
+        } else if (needCustomDraw() == SLIDER_STYLE_MD3) {
+            float radius = AndroidUtilities.dp(8);
+            float radius2 = AndroidUtilities.dp(3);
+            float indicatorRadius = AndroidUtilities.dp(10);
+            float padding = AndroidUtilities.dp(7);
+
+            rect.set(left, top, thumbX + selectorWidth / 2f - padding, bottom);
+            if (rect.left < rect.right) {
+                if (rect.right - rect.left < AndroidUtilities.dp(7)) {
+                    canvas.drawRoundRect(rect, radius2, radius2, outerPaint1);
+                } else {
+                    updatePath(path, rect, radius, radius2);
+                    canvas.drawPath(path, outerPaint1);
+                }
+            }
+
+            rect.set(thumbX + selectorWidth / 2f + thumbSize + padding, top, right, bottom);
+            if (rect.left < rect.right) {
+                if (rect.right - rect.left < AndroidUtilities.dp(7)) {
+                    canvas.drawRoundRect(rect, radius2, radius2, innerPaint1);
+                } else {
+                    updatePath(path, rect, radius2, radius);
+                    canvas.drawPath(path, innerPaint1);
+                }
+            }
+
+            // left, top, right, bottom, rx, ry
+            rect.set(thumbX + selectorWidth / 2f, top - AndroidUtilities.dp(5), thumbX + selectorWidth / 2f + thumbSize, bottom + AndroidUtilities.dp(5));
+            canvas.drawRoundRect(rect, indicatorRadius, indicatorRadius, outerPaint1);
+        }
+
+        /*if (transitionProgress < 1f) {
             final float oldCircleProgress = 1f - Easings.easeInQuad.getInterpolation(Math.min(1f, transitionProgress * 3f));
             final float newCircleProgress = Easings.easeOutQuad.getInterpolation(transitionProgress);
             if (oldCircleProgress > 0f) {
@@ -525,13 +611,27 @@ public class SeekBarView extends FrameLayout {
             canvas.drawCircle(thumbX + selectorWidth / 2, y + thumbSize / 2, currentRadius * newCircleProgress, outerPaint1);
         } else {
             canvas.drawCircle(thumbX + selectorWidth / 2, y + thumbSize / 2, currentRadius, outerPaint1);
-        }
+        }*/
 
         drawTimestampLabel(canvas);
 
         if (needInvalidate) {
             postInvalidateOnAnimation();
         }
+    }
+
+    private void updatePath(Path path, RectF rect, float radius, float radius2) {
+        path.reset();
+        path.moveTo(rect.left + radius, rect.top);
+        path.lineTo(rect.right - radius2, rect.top);
+        path.quadTo(rect.right, rect.top, rect.right, rect.top + radius2);
+        path.lineTo(rect.right, rect.bottom - radius2);
+        path.quadTo(rect.right, rect.bottom, rect.right - radius2, rect.bottom);
+        path.lineTo(rect.left + radius, rect.bottom);
+        path.quadTo(rect.left, rect.bottom, rect.left, rect.bottom - radius);
+        path.lineTo(rect.left, rect.top + radius);
+        path.quadTo(rect.left, rect.top, rect.left + radius, rect.top);
+        path.close();
     }
 
     private ArrayList<Pair<Float, CharSequence>> timestamps;
@@ -655,8 +755,13 @@ public class SeekBarView extends FrameLayout {
     }
 
     private void drawProgressBar(Canvas canvas, RectF rect, Paint paint) {
-        float radius = AndroidUtilities.dp(2);
+        float radius = AndroidUtilities.dp(isModern ? 10 : 2);
+        //float radius = AndroidUtilities.dp(2);
         if (timestamps == null || timestamps.isEmpty()) {
+            if (needCustomDraw() != -1) {
+                return;
+            }
+
             canvas.drawRoundRect(rect, radius, radius, paint);
         } else {
             float lineWidth = rect.bottom - rect.top;
