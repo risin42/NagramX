@@ -176,28 +176,6 @@ object MessageHelper {
     }
 
     @JvmStatic
-    fun getDCLocation(dc: Int): String {
-        return when (dc) {
-            1, 3 -> "Miami"
-            2, 4 -> "Amsterdam"
-            5 -> "Singapore"
-            else -> "Unknown"
-        }
-    }
-
-    @JvmStatic
-    fun getDCName(dc: Int): String {
-        return when (dc) {
-            1 -> "Pluto"
-            2 -> "Venus"
-            3 -> "Aurora"
-            4 -> "Vesta"
-            5 -> "Flora"
-            else -> "Unknown"
-        }
-    }
-
-    @JvmStatic
     fun containsMarkdown(text: CharSequence?): Boolean {
         val newText = AndroidUtilities.getTrimmedString(text)
         val message = arrayOf(AndroidUtilities.getTrimmedString(newText))
@@ -218,59 +196,6 @@ object MessageHelper {
                 ""
             )
         )
-    }
-
-    @JvmStatic
-    fun isLinkOrEmojiOnlyMessage(messageObject: MessageObject): Boolean {
-        val entities = messageObject.messageOwner.entities
-        if (entities != null) {
-            for (entity in entities) {
-                if (entity is TL_messageEntityBotCommand ||
-                    entity is TL_messageEntityEmail ||
-                    entity is TL_messageEntityUrl ||
-                    entity is TL_messageEntityMention ||
-                    entity is TL_messageEntityCashtag ||
-                    entity is TL_messageEntityHashtag ||
-                    entity is TL_messageEntityBankCard ||
-                    entity is TL_messageEntityPhone
-                ) {
-                    if (entity.offset == 0 && entity.length == messageObject.messageOwner.message.length) {
-                        return true
-                    }
-                }
-            }
-        }
-        return Emoji.fullyConsistsOfEmojis(messageObject.messageOwner.message)
-    }
-
-    @JvmStatic
-    fun isMessageObjectAutoTranslatable(messageObject: MessageObject): Boolean {
-        if (messageObject.messageOwner.translated || messageObject.translating || messageObject.isOutOwner) {
-            return false
-        }
-        return if (messageObject.isPoll) {
-            true
-        } else !TextUtils.isEmpty(messageObject.messageOwner.message) && !isLinkOrEmojiOnlyMessage(
-            messageObject
-        )
-    }
-
-    @JvmStatic
-    fun getMessagePlainText(messageObject: MessageObject): String {
-        val message: String = if (messageObject.isPoll) {
-            val poll = (messageObject.messageOwner.media as TL_messageMediaPoll).poll
-            val pollText = StringBuilder(poll.question.text).append("\n")
-            for (answer in poll.answers) {
-                pollText.append("\n\uD83D\uDD18 ")
-                pollText.append(answer.text.text)
-            }
-            pollText.toString()
-        } else if (messageObject.isVoiceTranscriptionOpen) {
-            messageObject.messageOwner.voiceTranscription
-        } else {
-            messageObject.messageOwner.message
-        }
-        return message
     }
 
     private fun formatTime(timestamp: Int): String {

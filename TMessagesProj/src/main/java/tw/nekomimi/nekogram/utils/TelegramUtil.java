@@ -27,10 +27,4 @@ public class TelegramUtil {
         return cansave || downloading;
     }
 
-    // 当文件有过加载过程，loadedFileSize > 0 ，所以不能用loadedFileSize判断是否正在下载
-    public static boolean messageObjectIsDownloading(int type) {
-        boolean cansave = (type == 4 || type == 5 || type == 6 || type == 10);
-        return !cansave;
-    }
-
 }

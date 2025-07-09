@@ -12,28 +12,6 @@ import java.io.File
 
 object ShareUtil {
 
-    @JvmStatic
-    @JvmOverloads
-    fun shareText(ctx: Context, text: String, choose: Boolean = false) {
-
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, text)
-        }
-
-        if (!choose) {
-
-            intent.setClass(ctx, LaunchActivity::class.java)
-            ctx.startActivity(intent)
-
-        } else {
-
-            ctx.startActivity(Intent.createChooser(intent, text))
-
-        }
-
-    }
-
     @JvmOverloads
     @JvmStatic
     fun shareFile(ctx: Context, fileToShare: File, caption: String = "") {
@@ -61,44 +39,6 @@ object ShareUtil {
         i.setClass(ctx, LaunchActivity::class.java)
 
         ctx.startActivity(i)
-
-    }
-
-    @JvmOverloads
-    @JvmStatic
-    fun openFile(ctx: Context, fileToOpen: File) {
-
-        val uri = if (Build.VERSION.SDK_INT >= 24) {
-
-            FileProvider.getUriForFile(ctx, BuildConfig.APPLICATION_ID + ".provider", fileToOpen)
-
-        } else {
-
-            Uri.fromFile(fileToOpen)
-
-        }
-
-        val intent = Intent(Intent.ACTION_VIEW)
-
-        if (Build.VERSION.SDK_INT >= 24) {
-
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-        }
-
-        if (fileToOpen.extension.isBlank()) {
-
-            intent.type = "application/octet-stream"
-
-        } else {
-
-            intent.type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileToOpen.extension)
-
-        }
-
-        intent.data = uri
-
-        ctx.startActivity(intent)
 
     }
 

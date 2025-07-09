@@ -12,31 +12,16 @@ import static org.telegram.messenger.AndroidUtilities.dp;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
-import org.telegram.messenger.MessagesController;
-import org.telegram.messenger.R;
-import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.LayoutHelper;
-import org.telegram.ui.Components.URLSpanNoUnderline;
-import org.telegram.ui.ProxyListActivity;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import tw.nekomimi.nekogram.utils.StrUtil;
 import org.telegram.ui.Components.RadioButton;
 
 public class LanguageCell extends FrameLayout {
@@ -86,13 +71,6 @@ public class LanguageCell extends FrameLayout {
     public void setLanguage(LocaleController.LocaleInfo language, String desc, boolean divider) {
         textView.setText(desc != null ? desc : language.name);
         textView2.setText(language.nameEnglish);
-        currentLocale = language;
-        needDivider = divider;
-    }
-
-    public void setLanguage(BaseFragment fragment,LocaleController.LocaleInfo language, String desc, boolean divider) {
-        StrUtil.setText(fragment, textView, desc != null ? desc : language.name);
-        StrUtil.setText(fragment, textView2, language.nameEnglish);
         currentLocale = language;
         needDivider = divider;
     }

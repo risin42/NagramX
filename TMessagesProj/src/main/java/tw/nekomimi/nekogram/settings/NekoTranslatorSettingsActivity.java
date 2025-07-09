@@ -87,12 +87,11 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     // Translation
     private final AbstractConfigCell headerTranslation = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.Translate)));
     private final AbstractConfigCell translationProviderRow = cellGroup.appendCell(new ConfigCellCustom(NekoConfig.translationProvider.getKey(), CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
-    private final AbstractConfigCell translatorModeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getTranslatorMode(),
-            new String[]{
-                    getString(R.string.TranslatorModeAppend),
-                    getString(R.string.TranslatorModeInline),
-                    getString(R.string.TranslatorModePopup),
-            }, null));
+    private final AbstractConfigCell translatorModeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getTranslatorMode(), new String[]{
+            getString(R.string.TranslatorModeAppend),
+            getString(R.string.TranslatorModeInline),
+            getString(R.string.TranslatorModePopup),
+    }, null));
     private final AbstractConfigCell translateToLangRow = cellGroup.appendCell(new ConfigCellCustom("TranslateToLang", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell doNotTranslateRow = cellGroup.appendCell(new ConfigCellCustom("DoNotTranslate", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell preferredTranslateTargetLangRow = cellGroup.appendCell(
@@ -114,15 +113,14 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
     // AI Translator
     private final AbstractConfigCell headerAITranslatorSettings = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.AITranslatorSettings)));
-    private final AbstractConfigCell llmProviderRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getLlmProviderPreset(),
-            new String[]{
-                    getString(R.string.LlmProviderCustom),
-                    getString(R.string.LlmProviderOpenAI),
-                    getString(R.string.LlmProviderGemini),
-                    getString(R.string.LlmProviderGroq),
-                    getString(R.string.LlmProviderDeepSeek),
-                    getString(R.string.LlmProviderXAI),
-            }, null));
+    private final AbstractConfigCell llmProviderRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getLlmProviderPreset(), new String[]{
+            getString(R.string.LlmProviderCustom),
+            getString(R.string.LlmProviderOpenAI),
+            getString(R.string.LlmProviderGemini),
+            getString(R.string.LlmProviderGroq),
+            getString(R.string.LlmProviderDeepSeek),
+            getString(R.string.LlmProviderXAI),
+    }, null));
 
     private final Map<Integer, List<AbstractConfigCell>> llmProviderConfigMap = new HashMap<>();
 

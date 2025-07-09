@@ -190,8 +190,8 @@
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
 }
--keepclassmembernames,allowshrinking class tw.nekomimi.nekogram.settings.AccountCell { <fields>; }
--keepclassmembernames,allowshrinking class tw.nekomimi.nekogram.settings.EmojiSetCell { <fields>; }
+-keepclassmembernames,allowshrinking class tw.nekomimi.nekogram.ui.cells.AccountCell { <fields>; }
+-keepclassmembernames,allowshrinking class tw.nekomimi.nekogram.ui.cells.EmojiSetCell { <fields>; }
 -keepclassmembernames,allowshrinking class tw.nekomimi.nekogram.settings.NekoChatSettingsActivity$StickerSizeCell { <fields>; }
 
 # https://github.com/osmdroid/osmdroid/issues/633

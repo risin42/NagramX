@@ -32,11 +32,6 @@ public class NekoXConfig {
     public static final int TITLE_TYPE_ICON = 1;
     public static final int TITLE_TYPE_MIX = 2;
 
-    private static final String EMOJI_FONT_AOSP = "NotoColorEmoji.ttf";
-
-    public static boolean loadSystemEmojiFailed = false;
-    private static Typeface systemEmojiTypeface;
-
     public static SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nekox_config", Context.MODE_PRIVATE);
 
     public static boolean disableFlagSecure = NaConfig.INSTANCE.getDisableFlagSecure().Bool();
@@ -46,29 +41,21 @@ public class NekoXConfig {
     public static String customAppHash = preferences.getString("custom_app_hash", "");
 
     public static int currentAppId() {
-        switch (customApi) {
-            case 0:
-                return BuildConfig.APP_ID;
-            case 1:
-                return BuildVars.OFFICAL_APP_ID;
-            case 2:
-                return BuildVars.TGX_APP_ID;
-            default:
-                return customAppId;
-        }
+        return switch (customApi) {
+            case 0 -> BuildConfig.APP_ID;
+            case 1 -> BuildVars.OFFICAL_APP_ID;
+            case 2 -> BuildVars.TGX_APP_ID;
+            default -> customAppId;
+        };
     }
     
     public static String currentAppHash() {
-        switch (customApi) {
-            case 0:
-                return BuildConfig.APP_HASH;
-            case 1:
-                return BuildVars.OFFICAL_APP_HASH;
-            case 2:
-                return BuildVars.TGX_APP_HASH;
-            default:
-                return customAppHash;
-        }
+        return switch (customApi) {
+            case 0 -> BuildConfig.APP_HASH;
+            case 1 -> BuildVars.OFFICAL_APP_HASH;
+            case 2 -> BuildVars.TGX_APP_HASH;
+            default -> customAppHash;
+        };
     }
     
     public static void saveCustomApi() {
@@ -92,37 +79,6 @@ public class NekoXConfig {
             }
             return locale.getDisplayName(LocaleController.getInstance().currentLocale);
         }
-    }
-
-    public static Typeface getSystemEmojiTypeface() {
-        if (!loadSystemEmojiFailed && systemEmojiTypeface == null) {
-            try {
-                Pattern p = Pattern.compile(">(.*emoji.*)</font>", Pattern.CASE_INSENSITIVE);
-                BufferedReader br = new BufferedReader(new FileReader("/system/etc/fonts.xml"));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    Matcher m = p.matcher(line);
-                    if (m.find()) {
-                        systemEmojiTypeface = Typeface.createFromFile("/system/fonts/" + m.group(1));
-                        FileLog.d("emoji font file fonts.xml = " + m.group(1));
-                        break;
-                    }
-                }
-                br.close();
-            } catch (Exception e) {
-                FileLog.e(e);
-            }
-            if (systemEmojiTypeface == null) {
-                try {
-                    systemEmojiTypeface = Typeface.createFromFile("/system/fonts/" + EMOJI_FONT_AOSP);
-                    FileLog.d("emoji font file = " + EMOJI_FONT_AOSP);
-                } catch (Exception e) {
-                    FileLog.e(e);
-                    loadSystemEmojiFailed = true;
-                }
-            }
-        }
-        return systemEmojiTypeface;
     }
 
     public static int getNotificationColor() {

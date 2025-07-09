@@ -20,29 +20,6 @@ object LocaleUtil {
     @JvmField
     val cacheDir = File(ApplicationLoader.applicationContext.cacheDir, "builtIn_lang_export")
 
-    @JvmStatic
-    fun fetchAndExportLang() = runBlocking {
-
-        delete(cacheDir)
-        initDir(cacheDir)
-
-        for (localeInfo in LocaleController.getInstance().languages) {
-
-            if (!localeInfo.builtIn || localeInfo.pathToFile != "unofficial") continue
-
-            if (localeInfo.hasBaseLang()) {
-
-                localeInfo.pathToBaseFile.takeIf { it.isFile }?.copyTo(File(cacheDir, localeInfo.pathToBaseFile.name))
-
-            }
-
-            localeInfo.getPathToFile()?.takeIf { it.isFile }?.copyTo(File(cacheDir, localeInfo.getPathToFile().name))
-
-        }
-
-
-    }
-
     fun formatWithURLs(charSequence: CharSequence): CharSequence {
         val spannable: Spannable = SpannableString(charSequence)
         val spans = spannable.getSpans(0, charSequence.length, URLSpan::class.java)
