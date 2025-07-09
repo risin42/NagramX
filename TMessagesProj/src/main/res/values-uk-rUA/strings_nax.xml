@@ -212,4 +212,7 @@
     <string name="PremiumItemCustomWallpaper">Користувацькі шпалери</string>
     <string name="TranslationTargetApp">Слідкувати за додатком</string>
     <string name="DisableAvatarTapToSwitch">Не гортати аватари після натискання</string>
+    <string name="SwitchStyle">Стиль перемикача</string>
+    <string name="SliderStyle">Стиль слайдера</string>
+    <string name="StyleModern">Сучасний</string>
 </resources>

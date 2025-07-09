@@ -212,4 +212,7 @@
     <string name="PremiumItemCustomWallpaper">Özel Duvar Kağıtları</string>
     <string name="TranslationTargetApp">Uygulamayı Takip Et</string>
     <string name="DisableAvatarTapToSwitch">Dokunarak Avatarları Döngülemeyi Devre Dışı Bırak</string>
+    <string name="SwitchStyle">Düğme Stili</string>
+    <string name="SliderStyle">Kaydırıcı Stili</string>
+    <string name="StyleModern">Modern</string>
 </resources>
