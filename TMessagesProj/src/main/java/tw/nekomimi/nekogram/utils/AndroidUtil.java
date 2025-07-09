@@ -1,6 +1,7 @@
 package tw.nekomimi.nekogram.utils;
 
 import android.os.Build;
+import android.text.TextUtils;
 
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessagesController;
@@ -10,6 +11,7 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 import xyz.nextalone.nagram.NaConfig;
 
@@ -65,6 +67,14 @@ public class AndroidUtil {
             return android.graphics.Color.argb(255, 234, 30, 30);
         }
         return 0;
+    }
+
+    public static CharSequence sanitizeString(CharSequence input) {
+        if (TextUtils.isEmpty(input)) {
+            return input;
+        }
+        final Pattern FORMAT_CONTROL_CHARS_PATTERN = Pattern.compile("\\p{Cf}");
+        return FORMAT_CONTROL_CHARS_PATTERN.matcher(input).replaceAll("");
     }
 
 }
