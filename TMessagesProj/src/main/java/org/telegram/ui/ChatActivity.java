@@ -1936,6 +1936,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                     allowEdit = captionsCount < 2;
                 }
+                boolean allowDelete = message.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat);
                 boolean allowRepeat;
                 switch (doubleTapAction) {
                     case DoubleTap.DOUBLE_TAP_ACTION_TRANSLATE:
@@ -1959,6 +1960,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         return allowRepeat && !message.isSponsored() && chatMode != MODE_SCHEDULED && !message.needDrawBluredPreview() && !message.isLiveLocation() && message.type != 16;
                     case DoubleTap.DOUBLE_TAP_ACTION_EDIT:
                         return allowEdit && !isAyuDeleted;
+                    case DoubleTap.DOUBLE_TAP_ACTION_DELETE:
+                        return allowDelete;
                 }
             }
             return false;
@@ -2045,6 +2048,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         } else {
                             processSelectedOption(OPTION_EDIT);
                         }
+                        break;
+                    case DoubleTap.DOUBLE_TAP_ACTION_DELETE:
+                        processSelectedOption(OPTION_DELETE);
                         break;
                 }
             }

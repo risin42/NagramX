@@ -454,6 +454,8 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                         arrayList.add(getString(R.string.Edit));
                         types.add(DoubleTap.DOUBLE_TAP_ACTION_EDIT);
                     }
+                    arrayList.add(getString(R.string.Delete));
+                    types.add(DoubleTap.DOUBLE_TAP_ACTION_DELETE);
                     PopupBuilder builder = new PopupBuilder(view);
                     builder.setItems(arrayList, (i, str) -> {
                         if (position == cellGroup.rows.indexOf(doubleTapActionRow)) {
