@@ -10112,7 +10112,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         };
         topChatPanelView.backgroundColor = getThemedColor(Theme.key_chat_topPanelBackground);
-        topChatPanelView.backgroundPaddingBottom = dp(NaConfig.INSTANCE.getHideDividers().Bool() ? 0 : 2);
+        topChatPanelView.backgroundPaddingBottom = dp(NekoConfig.disableAppBarShadow.Bool() ? 0 : 2);
         topChatPanelView.setTag(1);
         topChatPanelViewOffset = -AndroidUtilities.dp(50);
         invalidateChatListViewTopPadding();
