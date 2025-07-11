@@ -124,7 +124,7 @@ public class NekoConfig {
     public static ConfigItem hideProxyByDefault = addConfig("HideProxyByDefault", configTypeBool, true);
     public static ConfigItem useProxyItem = addConfig("UseProxyItem", configTypeBool, true);
 
-    public static ConfigItem disableAppBarShadow = addConfig("DisableAppBarShadow", configTypeBool, true);
+    public static ConfigItem disableAppBarShadow = addConfig("DisableAppBarShadow", configTypeBool, false);
     public static ConfigItem mediaPreview = addConfig("MediaPreview", configTypeBool, true);
 
     public static ConfigItem disableVibration = addConfig("DisableVibration", configTypeBool, false);
