@@ -144,7 +144,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell llmSystemPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmSystemPrompt(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmSystemPrompt(), getString(R.string.LlmSystemPromptNotice), getString(R.string.LlmSystemPromptHint)), getString(R.string.Default)));
     private final AbstractConfigCell llmUserPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmUserPrompt(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmUserPrompt(), getString(R.string.LlmUserPromptNotice), ""), getString(R.string.Default)));
     private final AbstractConfigCell headerTemperature = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.LlmTemperature)));
-    private final AbstractConfigCell temperatureValueRow = cellGroup.appendCell(new ConfigCellCustom(getString(R.string.LlmTemperature), ConfigCellCustom.CUSTOM_ITEM_Temperature, true));
+    private final AbstractConfigCell temperatureValueRow = cellGroup.appendCell(new ConfigCellCustom(getString(R.string.LlmTemperature), ConfigCellCustom.CUSTOM_ITEM_Temperature, false));
     private final AbstractConfigCell dividerAITranslatorSettings = cellGroup.appendCell(new ConfigCellDivider());
 
     // article translation
@@ -540,6 +540,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
             sizeBar = new SeekBarView(context);
             sizeBar.setReportChanges(true);
+            sizeBar.setSeparatorsCount(21);
             sizeBar.setDelegate((stop, progress) -> {
                 float value = Math.round(progress * 20) / 10f;
                 NaConfig.INSTANCE.getLlmTemperature().setConfigFloat(value);

@@ -731,12 +731,14 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             super(context);
 
             setWillNotDraw(false);
+            setClickable(true);
 
             textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
             textPaint.setTextSize(AndroidUtilities.dp(16));
 
             sizeBar = new SeekBarView(context);
             sizeBar.setReportChanges(true);
+            sizeBar.setSeparatorsCount(256);
             sizeBar.setDelegate((stop, progress) -> {
                 NekoConfig.chatBlueAlphaValue.setConfigInt(Math.min(255, (int) (255 * progress)));
                 invalidate();
