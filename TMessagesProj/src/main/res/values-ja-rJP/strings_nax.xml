@@ -212,4 +212,7 @@
     <string name="PremiumItemCustomWallpaper">カスタム背景</string>
     <string name="TranslationTargetApp">アプリに従う</string>
     <string name="DisableAvatarTapToSwitch">タップでアバター切り替えを無効にする</string>
+    <string name="SwitchStyle">スイッチスタイル</string>
+    <string name="SliderStyle">スライダースタイル</string>
+    <string name="StyleModern">モダン</string>
 </resources>

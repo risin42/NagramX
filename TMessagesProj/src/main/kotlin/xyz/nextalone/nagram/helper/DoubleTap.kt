@@ -27,6 +27,8 @@ object DoubleTap {
         8
     const val DOUBLE_TAP_ACTION_TRANSLATE_LLM =
         9
+    const val DOUBLE_TAP_ACTION_DELETE =
+        10
 
     init {
         doubleTapActionMap[DOUBLE_TAP_ACTION_NONE] =
@@ -68,6 +70,10 @@ object DoubleTap {
         doubleTapActionMap[DOUBLE_TAP_ACTION_TRANSLATE_LLM] =
             getString(
                 R.string.TranslateMessageLLM
+            )
+        doubleTapActionMap[DOUBLE_TAP_ACTION_DELETE] =
+            getString(
+                R.string.Delete
             )
     }
 }

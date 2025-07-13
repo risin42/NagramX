@@ -210,6 +210,9 @@
     <string name="PremiumItemStarInReactions">Звезда в реакциях</string>
     <string name="PremiumItemVideoAvatar">Анимированные аватары</string>
     <string name="PremiumItemCustomWallpaper">Пользовательские обои</string>
-    <string name="TranslationTargetApp">Подписаться на приложение</string>
+    <string name="TranslationTargetApp">Как в приложении</string>
     <string name="DisableAvatarTapToSwitch">Не листать аватары по нажатию</string>
+    <string name="SwitchStyle">Стиль переключателей</string>
+    <string name="SliderStyle">Стиль ползунков</string>
+    <string name="StyleModern">Современный</string>
 </resources>

@@ -7352,6 +7352,8 @@ public class MessageObject {
         for (int a = 0; a < count; a++) {
             TextStyleSpan.TextStyleRun run = runs.get(a);
 
+            if (run.start >= run.end)
+                continue;
             if (allowed == ENTITIES_ONLY_HASHTAGS && !(run.urlEntity instanceof TLRPC.TL_messageEntityHashtag))
                 continue;
 

@@ -71,7 +71,9 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
 import tw.nekomimi.nekogram.ui.PopupBuilder;
+import tw.nekomimi.nekogram.ui.cells.EmojiSetCell;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
+import tw.nekomimi.nekogram.ui.cells.StickerSizePreviewMessagesCell;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.DoubleTap;
 
@@ -83,7 +85,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
 
     // Sticker Size
     private final AbstractConfigCell headerStickerSize = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.StickerSize)));
-    private final AbstractConfigCell stickerSizeRow = cellGroup.appendCell(new ConfigCellCustom("StickerSize", ConfigCellCustom.CUSTOM_ITEM_StickerSize, true));
+    private final AbstractConfigCell stickerSizeRow = cellGroup.appendCell(new ConfigCellCustom("StickerSize", ConfigCellCustom.CUSTOM_ITEM_StickerSize, false));
     private final AbstractConfigCell hideTimeForStickerRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.hideTimeForSticker));
     private final AbstractConfigCell disableReplyBackgroundRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getMessageColoredBackground()));
     private final AbstractConfigCell showTimeHintRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTimeHint()));
@@ -452,6 +454,8 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                         arrayList.add(getString(R.string.Edit));
                         types.add(DoubleTap.DOUBLE_TAP_ACTION_EDIT);
                     }
+                    arrayList.add(getString(R.string.Delete));
+                    types.add(DoubleTap.DOUBLE_TAP_ACTION_DELETE);
                     PopupBuilder builder = new PopupBuilder(view);
                     builder.setItems(arrayList, (i, str) -> {
                         if (position == cellGroup.rows.indexOf(doubleTapActionRow)) {
@@ -681,6 +685,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
 
             sizeBar = new SeekBarView(context);
             sizeBar.setReportChanges(true);
+            sizeBar.setSeparatorsCount(endStickerSize - startStickerSize + 1);
             sizeBar.setDelegate((stop, progress) -> {
                 NekoConfig.stickerSize.setConfigFloat(startStickerSize + (endStickerSize - startStickerSize) * progress);
                 StickerSizeCell.this.invalidate();

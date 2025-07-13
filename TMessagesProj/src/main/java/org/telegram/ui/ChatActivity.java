@@ -1936,6 +1936,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                     allowEdit = captionsCount < 2;
                 }
+                boolean allowDelete = message.canDeleteMessage(chatMode == MODE_SCHEDULED, currentChat);
                 boolean allowRepeat;
                 switch (doubleTapAction) {
                     case DoubleTap.DOUBLE_TAP_ACTION_TRANSLATE:
@@ -1959,6 +1960,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         return allowRepeat && !message.isSponsored() && chatMode != MODE_SCHEDULED && !message.needDrawBluredPreview() && !message.isLiveLocation() && message.type != 16;
                     case DoubleTap.DOUBLE_TAP_ACTION_EDIT:
                         return allowEdit && !isAyuDeleted;
+                    case DoubleTap.DOUBLE_TAP_ACTION_DELETE:
+                        return allowDelete;
                 }
             }
             return false;
@@ -2045,6 +2048,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         } else {
                             processSelectedOption(OPTION_EDIT);
                         }
+                        break;
+                    case DoubleTap.DOUBLE_TAP_ACTION_DELETE:
+                        processSelectedOption(OPTION_DELETE);
                         break;
                 }
             }
@@ -10112,7 +10118,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         };
         topChatPanelView.backgroundColor = getThemedColor(Theme.key_chat_topPanelBackground);
-        topChatPanelView.backgroundPaddingBottom = dp(NaConfig.INSTANCE.getHideDividers().Bool() ? 0 : 2);
+        topChatPanelView.backgroundPaddingBottom = dp(NekoConfig.disableAppBarShadow.Bool() ? 0 : 2);
         topChatPanelView.setTag(1);
         topChatPanelViewOffset = -AndroidUtilities.dp(50);
         invalidateChatListViewTopPadding();
@@ -25980,6 +25986,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         boolean updateChat = false;
         boolean hasFromMe = false;
         boolean isAd = false;
+        int blockedCount = 0;
 
         if (chatListItemAnimator != null) {
             chatListItemAnimator.setShouldAnimateEnterFromBottom(animatedFromBottom);
@@ -26223,6 +26230,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
                 if (!isAd) {
+                    if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(obj.getFromChatId()) >= 0) {
+                        blockedCount++;
+                        continue;
+                    }
                     newUnreadMessageCount++;
                 }
                 if (obj.type == 10 || obj.type == MessageObject.TYPE_ACTION_PHOTO) {
@@ -26577,6 +26588,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
                 if (!isAd) {
+                    if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(obj.getFromChatId()) >= 0) {
+                        blockedCount++;
+                        continue;
+                    }
                     newUnreadMessageCount++;
                 }
                 if (obj.type == 10 || obj.type == MessageObject.TYPE_ACTION_PHOTO) {
@@ -26643,8 +26658,17 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 pagedownButtonCounter.setCount(newUnreadMessageCount, true);
                             }
                         }
-                        canShowPagedownButton = true;
-                        updatePagedownButtonVisibility(true);
+                        if (arr.size() == blockedCount) {
+                            if (getMessagesController().isForum(dialog_id) || getMessagesController().isMonoForumWithManageRights(dialog_id)) {
+                                getMessagesController().markAllTopicsAsRead(dialog_id);
+                            }
+                            var dialog = getMessagesController().getDialog(dialog_id);
+                            getMessagesController().markMentionsAsRead(dialog_id, 0);
+                            getMessagesController().markDialogAsRead(dialog_id, dialog.top_message, dialog.top_message, dialog.last_message_date, false, 0, 0, true, 0);
+                        } else {
+                            canShowPagedownButton = true;
+                            updatePagedownButtonVisibility(true);
+                        }
                     }
                 } else {
                     MessageObject scrollToMessage = null;
@@ -32448,7 +32472,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     popupLayout.addView(messagePrivateSeenView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 36));
                     addGap = true;
                 }
-                boolean showRateTranscription = selectedObject != null && selectedObject.isVoice() && selectedObject.messageOwner != null && getUserConfig().isPremium() && !TextUtils.isEmpty(selectedObject.messageOwner.voiceTranscription) && selectedObject.messageOwner != null && !selectedObject.messageOwner.voiceTranscriptionRated && selectedObject.messageOwner.voiceTranscriptionId != 0 && selectedObject.messageOwner.voiceTranscriptionOpen;
+                boolean showRateTranscription = false && selectedObject != null && selectedObject.isVoice() && selectedObject.messageOwner != null && getUserConfig().isPremium() && !TextUtils.isEmpty(selectedObject.messageOwner.voiceTranscription) && selectedObject.messageOwner != null && !selectedObject.messageOwner.voiceTranscriptionRated && selectedObject.messageOwner.voiceTranscriptionId != 0 && selectedObject.messageOwner.voiceTranscriptionOpen;
 
                 if (!showRateTranscription && message.probablyRingtone() && currentEncryptedChat == null) {
                     ActionBarMenuSubItem cell = new ActionBarMenuSubItem(getParentActivity(), !showPrivateMessageSeen && !showPrivateMessageEdit && !showPrivateMessageFwdOriginal, false, themeDelegate);

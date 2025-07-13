@@ -212,4 +212,7 @@
     <string name="PremiumItemCustomWallpaper">Papéis de Parede Personalizados</string>
     <string name="TranslationTargetApp">Seguir Aplicativo</string>
     <string name="DisableAvatarTapToSwitch">Desativar Avatares Cíclicos ao Tocar</string>
+    <string name="SwitchStyle">Estilo Switch</string>
+    <string name="SliderStyle">Estilo Slider</string>
+    <string name="StyleModern">Moderno</string>
 </resources>

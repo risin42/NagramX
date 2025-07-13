@@ -1426,7 +1426,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
             return;
         }
         int currentTime = ConnectionsManager.getInstance(currentAccount).getCurrentTime();
-        if (info instanceof TLRPC.TL_chatFull || info instanceof TLRPC.TL_channelFull && info.participants_count <= 200 && info.participants != null) {
+        if (info instanceof TLRPC.TL_chatFull || info instanceof TLRPC.TL_channelFull && info.participants_count <= 50 && info.participants != null) {
             for (int a = 0; a < info.participants.participants.size(); a++) {
                 TLRPC.ChatParticipant participant = info.participants.participants.get(a);
                 TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(participant.user_id);
@@ -1434,7 +1434,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
                     onlineCount++;
                 }
             }
-        } else if (info instanceof TLRPC.TL_channelFull && info.participants_count > 200) {
+        } else if (info instanceof TLRPC.TL_channelFull && info.participants_count > 50) {
             onlineCount = info.online_count;
         }
     }

@@ -212,4 +212,7 @@
     <string name="PremiumItemCustomWallpaper">自定义壁纸</string>
     <string name="TranslationTargetApp">跟随应用</string>
     <string name="DisableAvatarTapToSwitch">禁用点按切换头像</string>
+    <string name="SwitchStyle">开关样式</string>
+    <string name="SliderStyle">滑块样式</string>
+    <string name="StyleModern">现代</string>
 </resources>

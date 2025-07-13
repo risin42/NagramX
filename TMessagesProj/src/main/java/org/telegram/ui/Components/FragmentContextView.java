@@ -396,6 +396,7 @@ public class FragmentContextView extends FrameLayout implements NotificationCent
 
         shadow = new View(context);
         shadow.setBackgroundResource(R.drawable.blockpanel_shadow);
+        shadow.setVisibility(NekoConfig.disableAppBarShadow.Bool() ? GONE : VISIBLE);
         addView(shadow, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 2, Gravity.LEFT | Gravity.TOP, 0, 36, 0, 0));
 
         playButton = new ImageView(context);

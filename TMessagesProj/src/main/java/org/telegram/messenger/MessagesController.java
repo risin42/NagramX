@@ -20833,10 +20833,11 @@ public class MessagesController extends BaseController implements NotificationCe
                         arrayList.add(msg);
                     }
                 }
-                if(NekoConfig.ignoreBlocked.Bool() && blockePeers.indexOfKey(lastMessage.getSenderId())>=0){
+                if (NekoConfig.ignoreBlocked.Bool() && blockePeers.indexOfKey(lastMessage.getSenderId()) >= 0) {
                     ArrayList<MessageObject> preMsg = dialogMessage.get(dialogId);
-                    if(preMsg.size() > 0 && blockePeers.indexOfKey(preMsg.get(0).getSenderId())<0)
+                    if (!preMsg.isEmpty() && blockePeers.indexOfKey(preMsg.get(0).getSenderId()) < 0) {
                         dialogMessageFromUnblocked.put(dialogId, preMsg.get(0));
+                    }
                 }
                 dialogMessage.put(dialogId, arrayList);
                 getTranslateController().checkDialogMessage(dialogId);

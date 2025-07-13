@@ -117,9 +117,9 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell springAnimationCrossfadeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimationCrossfade()));
     private final AbstractConfigCell customAudioBitrateRow = cellGroup.appendCell(new ConfigCellCustom("CustomAudioBitrate", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell playerDecoderRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getPlayerDecoder(), new String[]{
-        getString(R.string.VideoPlayerDecoderHardware),
-        getString(R.string.VideoPlayerDecoderPreferHW),
-        getString(R.string.VideoPlayerDecoderPreferSW),
+            getString(R.string.VideoPlayerDecoderHardware),
+            getString(R.string.VideoPlayerDecoderPreferHW),
+            getString(R.string.VideoPlayerDecoderPreferSW),
     }, null));
     private final AbstractConfigCell dividerExperimental = cellGroup.appendCell(new ConfigCellDivider());
 
@@ -164,10 +164,10 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell disableChoosingStickerRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableChoosingSticker));
     private final AbstractConfigCell disableScreenshotDetectionRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableScreenshotDetection()));
     private final AbstractConfigCell devicePerformanceClassRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getPerformanceClass(), new String[]{
-        getString(R.string.QualityAuto) + " [" + SharedConfig.getPerformanceClassName(SharedConfig.measureDevicePerformanceClass()) + "]",
-        getString(R.string.PerformanceClassHigh),
-        getString(R.string.PerformanceClassAverage),
-        getString(R.string.PerformanceClassLow),
+            getString(R.string.QualityAuto) + " [" + SharedConfig.getPerformanceClassName(SharedConfig.measureDevicePerformanceClass()) + "]",
+            getString(R.string.PerformanceClassHigh),
+            getString(R.string.PerformanceClassAverage),
+            getString(R.string.PerformanceClassLow),
     }, null));
     private final AbstractConfigCell customArtworkApiRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomArtworkApi(), "", null));
     private final AbstractConfigCell dividerNConfig = cellGroup.appendCell(new ConfigCellDivider());

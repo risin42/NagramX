@@ -35,7 +35,6 @@ public class NekoConfig {
 
     public static final int TABLET_AUTO = 0;
     public static final int TABLET_ENABLE = 1;
-    public static final int TABLET_DISABLE = 2;
 
     public static final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Context.MODE_PRIVATE);
     public static final Object sync = new Object();
@@ -99,22 +98,10 @@ public class NekoConfig {
     public static ConfigItem sortByUser = addConfig("sort_by_user", configTypeBool, true);
     public static ConfigItem sortByContacts = addConfig("sort_by_contacts", configTypeBool, true);
 
-    public static ConfigItem filterUsers = addConfig("filter_users", configTypeBool, true);
-    public static ConfigItem filterContacts = addConfig("filter_contacts", configTypeBool, true);
-    public static ConfigItem filterGroups = addConfig("filter_groups", configTypeBool, true);
-    public static ConfigItem filterChannels = addConfig("filter_channels", configTypeBool, true);
-    public static ConfigItem filterBots = addConfig("filter_bots", configTypeBool, true);
-    public static ConfigItem filterAdmins = addConfig("filter_admins", configTypeBool, true);
-    public static ConfigItem filterUnmuted = addConfig("filter_unmuted", configTypeBool, true);
-    public static ConfigItem filterUnread = addConfig("filter_unread", configTypeBool, true);
-    public static ConfigItem filterUnmutedAndUnread = addConfig("filter_unmuted_and_unread", configTypeBool, true);
-
     public static ConfigItem disableSystemAccount = addConfig("DisableSystemAccount", configTypeBool, false);
-//    public static ConfigItem disableProxyWhenVpnEnabled = addConfig("DisableProxyWhenVpnEnabled", configTypeBool, false);
     public static ConfigItem skipOpenLinkConfirm = addConfig("SkipOpenLinkConfirm", configTypeBool, false);
 
     public static ConfigItem ignoreMutedCount = addConfig("IgnoreMutedCount", configTypeBool, true);
-//    public static ConfigItem useDefaultTheme = addConfig("UseDefaultTheme", configTypeBool, false);
     public static ConfigItem showIdAndDc = addConfig("ShowIdAndDc", configTypeBool, true);
 
     public static ConfigItem cachePath = addConfig("cache_path", configTypeString, "");
@@ -137,7 +124,7 @@ public class NekoConfig {
     public static ConfigItem hideProxyByDefault = addConfig("HideProxyByDefault", configTypeBool, true);
     public static ConfigItem useProxyItem = addConfig("UseProxyItem", configTypeBool, true);
 
-    public static ConfigItem disableAppBarShadow = addConfig("DisableAppBarShadow", configTypeBool, true);
+    public static ConfigItem disableAppBarShadow = addConfig("DisableAppBarShadow", configTypeBool, false);
     public static ConfigItem mediaPreview = addConfig("MediaPreview", configTypeBool, true);
 
     public static ConfigItem disableVibration = addConfig("DisableVibration", configTypeBool, false);

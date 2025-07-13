@@ -51,6 +51,7 @@ import java.util.Objects;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
+import tw.nekomimi.nekogram.ui.cells.EmojiSetCell;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 
 public class NekoEmojiSettingsActivity extends BaseNekoSettingsActivity implements EmojiHelper.EmojiPackLoadListener, EmojiHelper.EmojiPacksLoadedListener, ChatAttachAlertDocumentLayout.DocumentSelectActivityDelegate {

@@ -230,7 +230,6 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.helpers.TimeStringHelper;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
-import tw.nekomimi.nekogram.parts.MessageTransKt;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
 import tw.nekomimi.nekogram.utils.NeteaseEmbed;
 import xyz.nextalone.nagram.NaConfig;
@@ -12084,12 +12083,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     public void setMessageObject(MessageObject messageObject, MessageObject.GroupedMessages groupedMessages, boolean bottomNear, boolean topNear, boolean firstInChat) {
-        // NagramX
-        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
-            if (messageObject.messageOwner != null && messageObject.messageOwner.ayuDeleted){
-                ayuDeleted = messageObject.messageOwner.ayuDeleted;
-            }
-        }
+        ayuDeleted = messageObject.messageOwner != null && messageObject.messageOwner.ayuDeleted;
+
         if (attachedToWindow && !frozen) {
             setMessageContent(messageObject, groupedMessages, bottomNear, topNear, firstInChat);
         } else {
@@ -15403,11 +15398,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         if (currentMessageObject == null || currentMessageObject.isSponsored()) {
             return;
         }
-        // NagramX
-        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
-            if (ayuDeleted) {
-                Theme.chat_msgTextPaint.setAlpha((int) (255 * 0.75f));
-            }
+        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool() && ayuDeleted){
+            Theme.chat_msgTextPaint.setAlpha((int) (255 * 0.75f));
         }
         float textY = this.textY;
         if (transitionParams.animateText) {
@@ -15467,11 +15459,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         } else {
             drawMessageText(textX, textY, canvas, currentMessageObject.textLayoutBlocks, currentMessageObject.textXOffset, true, 1.0f, true, false, false);
         }
-        // NagramX
-        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
-            if (ayuDeleted) {
-                Theme.chat_msgTextPaint.setAlpha(255);
-            }
+        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool() && ayuDeleted) {
+            Theme.chat_msgTextPaint.setAlpha(255);
         }
     }
 
@@ -18628,11 +18617,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         if (currentMessageObject == null || doNotDraw) {
             return;
         }
-        // NagramX
-        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
-            if (ayuDeleted) {
-                canvas.saveLayerAlpha(null, (int) (255 * 0.75f), Canvas.ALL_SAVE_FLAG);
-            }
+        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool() && ayuDeleted) {
+            canvas.saveLayerAlpha(null, (int) (255 * 0.75f), Canvas.ALL_SAVE_FLAG);
         }
         if (!wasLayout) {
             onLayout(false, getLeft(), getTop(), getRight(), getBottom());
@@ -18836,11 +18822,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         updateSelectionTextPosition();
 
         canvas.restoreToCount(restore);
-        // NagramX
-        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool()){
-            if (ayuDeleted) {
-                canvas.restore();
-            }
+
+        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool() && ayuDeleted) {
+            canvas.restore();
         }
     }
 
@@ -19144,6 +19128,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     } else {
                         currentSelectedBackgroundAlpha = 0;
                         currentBackgroundDrawable.setAlpha((int) (255 * alphaInternal));
+                        if (NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool() && ayuDeleted && currentMessageObject.isOutOwner()) {
+                            currentBackgroundDrawable.setAlpha((int) (255 * 0.75f));
+                        }
                         currentBackgroundDrawable.drawCached(canvas, backgroundCacheParams);
                     }
                 }

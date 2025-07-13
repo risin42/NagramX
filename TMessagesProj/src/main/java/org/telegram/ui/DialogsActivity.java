@@ -824,11 +824,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 if (slideFragmentProgress != 1f) {
                     if (slideFragmentLite || USE_SPRING_ANIMATION) {
                         canvas.translate((isDrawerTransition ? 1 : -1) * dp(slideAmplitudeDp) * (1f - slideFragmentProgress), 0);
-                        /*BaseFragment lastFragment = LaunchActivity.getSafeLastFragment();
-                        if (AndroidUtil.needToAnimateFragment(lastFragment)) {
-                            final float s = 1f - 0.05f * (1f - slideFragmentProgress);
-                            canvas.scale(s, s, isDrawerTransition ? getMeasuredWidth() : 0, -getY() + scrollYOffset + getActionBarFullHeight());
-                        }*/
                     } else {
                         final float s = 1f - 0.05f * (1f - slideFragmentProgress);
                         canvas.translate((isDrawerTransition ? dp(4) : -dp(4)) * (1f - slideFragmentProgress), 0);
