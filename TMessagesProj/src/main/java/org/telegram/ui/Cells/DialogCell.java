@@ -1440,7 +1440,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                             messageString = "";
                         } else {
                             SpannableStringBuilder stringBuilder = SpannableStringBuilder.valueOf(messageNameString);
-                            stringBuilder.setSpan(new ForegroundColorSpanThemable(Theme.key_chats_draft, resourcesProvider), 0, fixNameStringLength(messageNameString.length()), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            stringBuilder.setSpan(new ForegroundColorSpanThemable(Theme.key_chats_draft, resourcesProvider), 0, messageNameString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                             messageString = stringBuilder;
                         }
                     } else {
@@ -3492,6 +3492,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             customC &= !UserObject.isAnonymous(user);
             customC &= !message.isOut();
             customC &= draftMessage == null;
+            customC &= !draftVoice;
             customC &= !(message.messageOwner instanceof TLRPC.TL_messageService);
             customC &= currentDialogFolderId != 1; // archived chats
         }
