@@ -482,9 +482,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             } else if (key.equals(NekoConfig.useProxyItem.getKey())) {
                 NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
             } else if (key.equals(NekoConfig.hideProxyByDefault.getKey())) {
-                setCanNotChange();
                 NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
-                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useProxyItemRow));
             } else if (key.equals(NekoConfig.hideAllTab.getKey())) {
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getCenterActionBarTitleType().getKey())) {
@@ -712,9 +710,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
 
         enabled = NaConfig.INSTANCE.getIgnoreFolderCount().Bool();
         ((ConfigCellTextCheck) ignoreMutedCountRow).setEnabled(!enabled);
-
-        enabled = NekoConfig.hideProxyByDefault.Bool();
-        ((ConfigCellTextCheck) useProxyItemRow).setEnabled(!enabled);
 
         enabled = NaConfig.INSTANCE.getHideArchive().Bool();
         ((ConfigCellTextCheck) openArchiveOnPullRow).setEnabled(!enabled);
