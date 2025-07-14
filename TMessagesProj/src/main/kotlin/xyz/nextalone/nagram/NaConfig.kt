@@ -337,12 +337,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    val hideFilterMuteAll =
-        addConfig(
-            "HideFilterMuteAll",
-            ConfigItem.configTypeBool,
-            false
-        )
     val useLocalQuoteColorData =
         addConfig(
             "useLocalQuoteColorData",

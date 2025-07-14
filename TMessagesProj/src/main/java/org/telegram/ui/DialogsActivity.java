@@ -3669,16 +3669,23 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                             .add(R.drawable.msg_edit, defaultTab ? LocaleController.getString(R.string.FilterEditAll) : LocaleController.getString(R.string.FilterEdit), () -> {
                                 presentFragment(defaultTab ? new FiltersSetupActivity() : new FilterCreateActivity(dialogFilter));
                             })
-                            .addIf(!NaConfig.INSTANCE.getHideFilterMuteAll().Bool() && dialogFilter != null && !dialogs.isEmpty(), muteAll ? R.drawable.msg_mute : R.drawable.msg_unmute, muteAll ? LocaleController.getString(R.string.FilterMuteAll) : LocaleController.getString(R.string.FilterUnmuteAll), () -> {
-                                int count = 0;
-                                for (int i = 0; i < dialogs.size(); ++i) {
-                                    TLRPC.Dialog dialog = dialogs.get(i);
-                                    if (dialog != null) {
-                                        getNotificationsController().setDialogNotificationsSettings(dialog.id, 0, finalMuteAll ? NotificationsController.SETTING_MUTE_FOREVER : NotificationsController.SETTING_MUTE_UNMUTE);
-                                        count++;
+                            .addIf(dialogFilter != null && !dialogs.isEmpty(), muteAll ? R.drawable.msg_mute : R.drawable.msg_unmute, muteAll ? getString(R.string.FilterMuteAll) : getString(R.string.FilterUnmuteAll), () -> {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+                                builder.setTitle(finalMuteAll ? getString(R.string.FilterMuteAll) : getString(R.string.FilterUnmuteAll));
+                                builder.setMessage(LocaleController.getString(R.string.AreYouSure));
+                                builder.setPositiveButton(LocaleController.getString(R.string.OK), (dialogInterface, which) -> {
+                                    int count = 0;
+                                    for (int i = 0; i < dialogs.size(); ++i) {
+                                        TLRPC.Dialog dialog = dialogs.get(i);
+                                        if (dialog != null) {
+                                            getNotificationsController().setDialogNotificationsSettings(dialog.id, 0, finalMuteAll ? NotificationsController.SETTING_MUTE_FOREVER : NotificationsController.SETTING_MUTE_UNMUTE);
+                                            count++;
+                                        }
                                     }
-                                }
-                                BulletinFactory.createMuteBulletin(DialogsActivity.this, finalMuteAll, count, null).show();
+                                    BulletinFactory.createMuteBulletin(DialogsActivity.this, finalMuteAll, count, null).show();
+                                });
+                                builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+                                showDialog(builder.create());
                             })
                             .addIf(hasUnread, R.drawable.msg_markread, LocaleController.getString(R.string.MarkAllAsRead), () -> {
                                 markDialogsAsRead(dialogs);
