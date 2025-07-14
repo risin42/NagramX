@@ -10,6 +10,7 @@ import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.BuildVars
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
+import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.config.ConfigItem
 import tw.nekomimi.nekogram.config.ConfigItemKeyLinked
 import java.io.ByteArrayInputStream
@@ -197,12 +198,6 @@ object NaConfig {
     val alwaysShowDownloadIcon =
         addConfig(
             "AlwaysShowDownloadIcon",
-            ConfigItem.configTypeBool,
-            false
-        )
-    val ignoreFolderCount =
-        addConfig(
-            "IgnoreFolderCount",
             ConfigItem.configTypeBool,
             false
         )
@@ -1284,6 +1279,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             0 // 0: default; 1: Modern; 2: MD3
         )
+    var ignoreUnreadCount =
+        addConfig(
+            "IgnoreUnreadCount",
+            ConfigItem.configTypeInt,
+            getIgnoreMutedCountLegacy()
+        )
     val preferredTranslateTargetLangList = ArrayList<String>()
 
     fun updatePreferredTranslateTargetLangList() {
@@ -1313,6 +1314,14 @@ object NaConfig {
             else -> llmApiKey
         }
         return keyConfig.String().isNotEmpty()
+    }
+
+    private fun getIgnoreMutedCountLegacy(): Int {
+        return when {
+            preferences.getBoolean("IgnoreFolderCount", false) -> NekoConfig.DIALOG_FILTER_EXCLUDE_ALL
+            preferences.getBoolean("IgnoreMutedCount", true) -> NekoConfig.DIALOG_FILTER_EXCLUDE_MUTED
+            else -> NekoConfig.DIALOG_FILTER_EXCLUDE_NONE
+        }
     }
 
     private fun addConfig(

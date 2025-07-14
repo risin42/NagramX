@@ -2851,7 +2851,7 @@ public class MessagesStorage extends BaseController {
                         continue;
                     }
                     flags = filter.flags;
-                    if (NekoConfig.ignoreMutedCount.Bool() && (flags & MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_MUTED) == 0) {
+                    if (NaConfig.INSTANCE.getIgnoreUnreadCount().Int() == NekoConfig.DIALOG_FILTER_EXCLUDE_MUTED && (flags & MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_MUTED) == 0) {
                         flags |= MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_MUTED;
                     }
                 } else {
@@ -6007,7 +6007,7 @@ public class MessagesStorage extends BaseController {
                 }
                 unreadCount = filter.pendingUnreadCount;
                 flags = filter.flags;
-                if (NekoConfig.ignoreMutedCount.Bool() && (flags & MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_MUTED) == 0) {
+                if (NaConfig.INSTANCE.getIgnoreUnreadCount().Int() == NekoConfig.DIALOG_FILTER_EXCLUDE_MUTED && (flags & MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_MUTED) == 0) {
                     flags |= MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_MUTED;
                 }
             } else {

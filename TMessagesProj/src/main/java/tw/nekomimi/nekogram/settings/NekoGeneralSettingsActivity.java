@@ -127,8 +127,11 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell doNotUnarchiveBySwipeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDoNotUnarchiveBySwipe()));
     private final AbstractConfigCell openArchiveOnPullRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.openArchiveOnPull));
     private final AbstractConfigCell hideArchiveRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideArchive()));
-    private final AbstractConfigCell ignoreMutedCountRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.ignoreMutedCount));
-    private final AbstractConfigCell ignoreFolderCountRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getIgnoreFolderCount()));
+    private final AbstractConfigCell ignoreUnreadCountRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getIgnoreUnreadCount(), new String[]{
+            getString(R.string.Disable),
+            getString(R.string.FilterMuted),
+            getString(R.string.FilterAllChatsShort)
+    }, null));
     private final AbstractConfigCell hideFilterMuteAllRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideFilterMuteAll()));
     private final AbstractConfigCell tabsTitleTypeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NekoConfig.tabsTitleType, new String[]{
             getString(R.string.TabTitleTypeText),
@@ -473,11 +476,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                 ((ConfigCellTextInput) customTitleRow).setEnabled(!enabled);
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(customTitleRow));
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
-            } else if (key.equals(NaConfig.INSTANCE.getIgnoreFolderCount().getKey())) {
-                setCanNotChange();
-                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(ignoreMutedCountRow));
-                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
-            } else if (key.equals(NekoConfig.ignoreMutedCount.getKey())) {
+            } else if (key.equals(NaConfig.INSTANCE.getIgnoreUnreadCount().getKey())) {
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NekoConfig.useProxyItem.getKey())) {
                 NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
@@ -707,9 +706,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
 
         enabled = NaConfig.INSTANCE.getPushServiceType().Int() == 0;
         ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabled(enabled);
-
-        enabled = NaConfig.INSTANCE.getIgnoreFolderCount().Bool();
-        ((ConfigCellTextCheck) ignoreMutedCountRow).setEnabled(!enabled);
 
         enabled = NaConfig.INSTANCE.getHideArchive().Bool();
         ((ConfigCellTextCheck) openArchiveOnPullRow).setEnabled(!enabled);

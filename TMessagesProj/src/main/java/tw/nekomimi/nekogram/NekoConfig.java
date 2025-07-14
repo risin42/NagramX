@@ -36,6 +36,10 @@ public class NekoConfig {
     public static final int TABLET_AUTO = 0;
     public static final int TABLET_ENABLE = 1;
 
+    public static final int DIALOG_FILTER_EXCLUDE_NONE = 0;
+    public static final int DIALOG_FILTER_EXCLUDE_MUTED = 1;
+    public static final int DIALOG_FILTER_EXCLUDE_ALL = 2;
+
     public static final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Context.MODE_PRIVATE);
     public static final Object sync = new Object();
     public static final String channelAliasPrefix = "channelAliasPrefix_";
@@ -100,7 +104,6 @@ public class NekoConfig {
     public static ConfigItem disableSystemAccount = addConfig("DisableSystemAccount", configTypeBool, false);
     public static ConfigItem skipOpenLinkConfirm = addConfig("SkipOpenLinkConfirm", configTypeBool, false);
 
-    public static ConfigItem ignoreMutedCount = addConfig("IgnoreMutedCount", configTypeBool, true);
     public static ConfigItem showIdAndDc = addConfig("ShowIdAndDc", configTypeBool, true);
 
     public static ConfigItem cachePath = addConfig("cache_path", configTypeString, "");
