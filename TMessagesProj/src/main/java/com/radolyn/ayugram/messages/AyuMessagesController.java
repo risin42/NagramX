@@ -46,6 +46,7 @@ public class AyuMessagesController {
 
     private AyuMessagesController() {
         initializeAttachmentsFolder();
+        AyuSavePreferences.loadAllExclusions();
 
         editedMessageDao = AyuData.getEditedMessageDao();
         deletedMessageDao = AyuData.getDeletedMessageDao();

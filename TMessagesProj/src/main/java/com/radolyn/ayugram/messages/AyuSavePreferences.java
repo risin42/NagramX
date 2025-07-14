@@ -9,17 +9,25 @@
 
 package com.radolyn.ayugram.messages;
 
+import static tw.nekomimi.nekogram.NekoConfig.preferences;
+
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.TLRPC;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 import xyz.nextalone.nagram.NaConfig;
 
 public class AyuSavePreferences {
+    public static final String saveExclusionPrefix = "saveDeletedExclusion_";
+    public static ConcurrentHashMap<Long, Boolean> saveDeletedExclusions = new ConcurrentHashMap<>();
+    public static boolean isSaveDeletedExclusionsLoaded = false;
     private final TLRPC.Message message;
     private final int accountId;
     private final long userId;
@@ -58,10 +66,6 @@ public class AyuSavePreferences {
         this.requestCatchTime = (int) (System.currentTimeMillis() / 1000);
     }
 
-    public static boolean saveDeletedMessageFor(int accountId, long dialogId) {
-        return saveDeletedMessageFor(accountId, dialogId, null);
-    }
-
     public static boolean saveDeletedMessageFor(int accountId, long dialogId, MessageObject messageObject) {
         if (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.from_id != null) {
             return saveDeletedMessageFor(accountId, dialogId, messageObject.messageOwner.from_id.user_id);
@@ -74,12 +78,19 @@ public class AyuSavePreferences {
             return false;
         }
 
+        if (getSaveDeletedExclusion(dialogId)) {
+            return false;
+        }
+
         if (userId != 0) {
-            var fromUser = MessagesController.getInstance(accountId).getUser(userId);
-            if (fromUser != null && fromUser.bot && !NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().Bool()) {
+            if (getSaveDeletedExclusion(userId)) {
                 return false;
+            }
+            var fromUser = MessagesController.getInstance(accountId).getUser(userId);
+            if (fromUser != null) {
+                return !fromUser.bot || NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().Bool();
             } else {
-                final MessagesStorage messagesStorage = MessagesStorage.getInstance(UserConfig.selectedAccount);
+                final MessagesStorage messagesStorage = MessagesStorage.getInstance(accountId);
                 final CountDownLatch countDownLatch = new CountDownLatch(1);
                 final TLRPC.User[] user = {null};
                 messagesStorage.getStorageQueue().postRunnable(() -> {
@@ -88,9 +99,10 @@ public class AyuSavePreferences {
                 });
                 try {
                     countDownLatch.await();
-                } catch (Exception ignored) {}
-                if (user[0] != null && user[0].bot && !NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().Bool()) {
-                    return false;
+                } catch (Exception ignored) {
+                }
+                if (user[0] != null) {
+                    return !user[0].bot || NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().Bool();
                 }
             }
         }
@@ -101,6 +113,37 @@ public class AyuSavePreferences {
         }
 
         return !user.bot || NaConfig.INSTANCE.getSaveDeletedMessageForBot().Bool();
+    }
+
+    public static void setSaveDeletedExclusion(long chatId, boolean value) {
+        saveDeletedExclusions.put(Math.abs(chatId), value);
+        preferences.edit().putBoolean(saveExclusionPrefix + Math.abs(chatId), value).apply();
+    }
+
+    public static boolean getSaveDeletedExclusion(long chatId) {
+        if (isSaveDeletedExclusionsLoaded) {
+            return Boolean.TRUE.equals(saveDeletedExclusions.getOrDefault(Math.abs(chatId), false));
+        } else {
+            return saveDeletedExclusions.computeIfAbsent(Math.abs(chatId), k -> preferences.getBoolean(saveExclusionPrefix + Math.abs(chatId), false));
+        }
+    }
+
+    public static void loadAllExclusions() {
+        Utilities.stageQueue.postRunnable(() -> {
+            Map<String, ?> allEntries = preferences.getAll();
+            for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                if (entry.getKey().startsWith(saveExclusionPrefix)) {
+                    try {
+                        long chatId = Long.parseLong(entry.getKey().substring(saveExclusionPrefix.length()));
+                        if (entry.getValue() instanceof Boolean) {
+                            saveDeletedExclusions.put(chatId, (Boolean) entry.getValue());
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+            isSaveDeletedExclusionsLoaded = true;
+        });
     }
 
     public TLRPC.Message getMessage() {
@@ -123,7 +166,6 @@ public class AyuSavePreferences {
         if (dialogId == 0) {
             return;
         }
-
         this.dialogId = dialogId;
     }
 
@@ -145,4 +187,5 @@ public class AyuSavePreferences {
         }
         return message.from_id.user_id;
     }
+
 }
