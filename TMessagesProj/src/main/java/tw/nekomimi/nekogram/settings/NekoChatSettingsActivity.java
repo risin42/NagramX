@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.MediaController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
@@ -129,6 +130,10 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             getString(R.string.Reply),
             getString(R.string.AddToSavedMessages),
             getString(R.string.DirectShare),
+    }, null));
+    private final AbstractConfigCell markdownParserRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getMarkdownParser(), new String[]{
+            getString(R.string.Official),
+            "Nekogram",
     }, null));
     private final AbstractConfigCell dividerChats = cellGroup.appendCell(new ConfigCellDivider());
 
@@ -332,6 +337,9 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         }
         if (NaConfig.INSTANCE.getTranscribeProvider().Int() != TranscribeHelper.TRANSCRIBE_OPENAI) {
             cellGroup.rows.remove(transcribeProviderOpenAiRow);
+        }
+        if (!BuildVars.LOGS_ENABLED) {
+            cellGroup.rows.remove(markdownParserRow);
         }
         addRowsToMap(cellGroup);
     }

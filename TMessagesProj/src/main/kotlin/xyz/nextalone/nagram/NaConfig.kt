@@ -1285,8 +1285,14 @@ object NaConfig {
             ConfigItem.configTypeInt,
             getIgnoreMutedCountLegacy()
         )
-    val preferredTranslateTargetLangList = ArrayList<String>()
+    var markdownParser =
+        addConfig(
+            "MarkdownParser",
+            ConfigItem.configTypeInt,
+            NekoConfig.MARKDOWN_PARSER_NEKO
+        )
 
+    val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {
         AndroidUtilities.runOnUIThread({
             preferredTranslateTargetLangList.clear()
