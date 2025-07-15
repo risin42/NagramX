@@ -26,8 +26,6 @@ import xyz.nextalone.nagram.NaConfig;
 
 public class NekoXConfig {
 
-    public static String FAQ_URL = "https://github.com/NextAlone/Nagram#faq";
-
     public static final int TITLE_TYPE_TEXT = 0;
     public static final int TITLE_TYPE_ICON = 1;
     public static final int TITLE_TYPE_MIX = 2;

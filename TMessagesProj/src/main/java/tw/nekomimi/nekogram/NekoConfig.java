@@ -78,7 +78,6 @@ public class NekoConfig {
     public static ConfigItem showShareMessages = addConfig("showShareMessages", configTypeBool, false);
     public static ConfigItem showMessageHide = addConfig("showMessageHide", configTypeBool, false);
 
-    public static ConfigItem eventType = addConfig("eventType", configTypeInt, 0);
     public static ConfigItem actionBarDecoration = addConfig("ActionBarDecoration", configTypeInt, 0);
     public static ConfigItem newYear = addConfig("ChristmasHat", configTypeBool, false);
     public static ConfigItem stickerSize = addConfig("stickerSize", configTypeFloat, 14.0f);
@@ -155,7 +154,6 @@ public class NekoConfig {
 
     public static ConfigItem useMediaStreamInVoip = addConfig("UseMediaStreamInVoip", configTypeBool, false);
     public static ConfigItem customAudioBitrate = addConfig("customAudioBitrate", configTypeInt, 32);
-    public static ConfigItem disableGroupVoipAudioProcessing = addConfig("disableGroupVoipAudioProcessing", configTypeBool, false);
     public static ConfigItem enhancedFileLoader = addConfig("enhancedFileLoader", configTypeBool, false);
     public static ConfigItem uploadBoost = addConfig("uploadBoost", configTypeBool, false);
     public static ConfigItem useOSMDroidMap = addConfig("useOSMDroidMap", configTypeBool, false);

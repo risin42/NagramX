@@ -17,8 +17,6 @@ import java.io.ObjectInputStream
 
 
 object NaConfig {
-    const val TAG =
-        "NextAlone"
     val preferences: SharedPreferences =
         ApplicationLoader.applicationContext.getSharedPreferences(
             "nkmrcfg",
@@ -1468,7 +1466,7 @@ object NaConfig {
         )
         updatePreferredTranslateTargetLangList()
         if (!BuildVars.LOGS_ENABLED) {
-            NaConfig.showRPCError.setConfigBool(false);
+            showRPCError.setConfigBool(false)
         }
     }
 }

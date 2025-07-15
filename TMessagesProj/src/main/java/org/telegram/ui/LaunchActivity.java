@@ -709,7 +709,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 } else if (id == 8) {
                     openSettings(false);
                 } else if (id == 9) {
-                    Browser.openUrl(LaunchActivity.this, NekoXConfig.FAQ_URL);
+                    Browser.openUrl(LaunchActivity.this, LocaleController.getString(R.string.TelegramFaqUrl));
                     drawerLayoutContainer.closeDrawer(false);
                 } else if (id == 10) {
                     presentFragment(new CallLogActivity());
