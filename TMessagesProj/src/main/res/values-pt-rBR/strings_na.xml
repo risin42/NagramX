@@ -36,7 +36,7 @@
     <string name="CustomChannelLabel">Etiqueta de Canal Personalizado</string>
     <string name="AlwaysShowDownloadIcon">Sempre Mostrar Ícone de Download</string>
     <string name="HideTitle">Ocultar Título</string>
-    <string name="IgnoreFolderCount">Ocultar Contagem Não Lida nas Pasta</string>
+    <string name="IgnoreUnreadCount">Ocultar Contagem Não Lida nas Pasta</string>
     <string name="SendWithoutMarkdown">Enviar sem formatação</string>
     <string name="SendAsEmoji">Enviar como emoji</string>
     <string name="CustomArtworkApi">API Artwork Personalizada</string>
@@ -62,7 +62,6 @@
     <string name="DefaultDeleteMenu">Menu de exclusão padrão</string>
     <string name="DisableSuggestionView">Desativar sugestão de configurações de perfil</string>
     <string name="DisableStories">Desativar Stories</string>
-    <string name="HideFilterMuteAll">Ocultar \"Silenciar tudo\" no Menu de Toque Longo</string>
     <string name="CopyPhotoAsSticker">Copiar como Sticker</string>
     <string name="ExternalStickerCache">Cache de Sticker Externo</string>
     <string name="ExternalStickerCacheHint">Para compartilhar pacotes de sticker com outros aplicativos. Clique para escolher o local de armazenamento.</string>

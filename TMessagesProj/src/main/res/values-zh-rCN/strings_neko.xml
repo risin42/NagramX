@@ -23,9 +23,6 @@
     <string name="AddToSavedMessages">保存消息</string>
     <string name="CreateMention">创建\@</string>
     <string name="TransparentStatusBar">使用完全透明的状态栏</string>
-    <string name="EnableResidentNotification">请让猫咪住在通知栏里吧</string>
-    <string name="NekogramRunning">猫猫奔跑中</string>
-    <string name="EventType">抽屉图标集</string>
     <string name="ChristmasHat">一直显示圣诞帽</string>
     <string name="ActionBarDecoration">标题栏装饰</string>
     <string name="DependsOnDate">基于日期</string>
@@ -211,7 +208,6 @@
     <string name="More">更多</string>
     <string name="ShowIdAndDc">在个人资料中显示 ID/ DC</string>
     <string name="UseDefaultTheme">使用默认主题 *</string>
-    <string name="IgnoreMutedCount">隐藏文件夹标签上静音的未读计数</string>
     <string name="DialogsSettings">聊天列表</string>
     <string name="SortMenu">聊天列表排序</string>
     <string name="SortByUnread">未读优先排序</string>
@@ -223,7 +219,7 @@
     <string name="FilterMenu">分类菜单</string>
     <string name="DisableProxyWhenVpnEnabled">启用 VPN 时禁用代理</string>
     <string name="UseProxyItem">在侧栏显示代理项而不是顶部按钮</string>
-    <string name="HideProxyByDefault">默认隐藏代理按钮</string>
+    <string name="HideProxyByDefault">未连接时隐藏代理按钮</string>
     <string name="SkipOpenLinkConfirm">跳过打开链接确认</string>
     <string name="DeleteAllInChatAlert">警告！这将**删除此聊天中所有用户**的**所有消息**。</string>
     <string name="UnblockAll">解禁所有</string>

@@ -37,7 +37,7 @@
     <string name="CustomChannelLabel">Etiqueta de canal personalizada</string>
     <string name="AlwaysShowDownloadIcon">Mostrar siempre el icono de descarga</string>
     <string name="HideTitle">Ocultar título</string>
-    <string name="IgnoreFolderCount">Ocultar contador de no leídos en carpetas</string>
+    <string name="IgnoreUnreadCount">Ocultar contador de no leídos en carpetas</string>
     <string name="SendWithoutMarkdown">Enviar sin rebajar</string>
     <string name="SendAsEmoji">Enviar como emoji</string>
     <string name="CustomArtworkApi">API de Artwork personalizada</string>
@@ -63,7 +63,6 @@
     <string name="DefaultDeleteMenu">Menú de eliminación predeterminado</string>
     <string name="DisableSuggestionView">Desactivar la sugerencia de configuración del perfil</string>
     <string name="DisableStories">Deshabilitar historias</string>
-    <string name="HideFilterMuteAll">Ocultar \"Silenciar todos\" en el menú de Pulsación larga</string>
     <string name="CopyPhotoAsSticker">Copiar como sticker</string>
     <string name="ExternalStickerCache">Memoria caché externa</string>
     <string name="ExternalStickerCacheHint">Para compartir paquetes de pegatinas con otras aplicaciones. Haz clic para elegir la ubicación de almacenamiento.</string>

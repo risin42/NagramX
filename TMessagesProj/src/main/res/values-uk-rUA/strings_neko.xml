@@ -23,9 +23,6 @@
     <string name="AddToSavedMessages">Зберегти</string>
     <string name="CreateMention">Згадати</string>
     <string name="TransparentStatusBar">Прозорий рядок стану</string>
-    <string name="EnableResidentNotification">Показувати постійне сповіщення</string>
-    <string name="NekogramRunning">Nekogram запущено</string>
-    <string name="EventType">Набір піктограм бічної панелі</string>
     <string name="ChristmasHat">Різдвяна шапка у заголовку</string>
     <string name="ActionBarDecoration">Оформлення заголовку</string>
     <string name="DependsOnDate">За календарем</string>
@@ -208,7 +205,6 @@
     <string name="More">Більше</string>
     <string name="ShowIdAndDc">Показати ID/DC в профілі</string>
     <string name="UseDefaultTheme">Використовувати стандартну тему *</string>
-    <string name="IgnoreMutedCount">Приховати кількість непрочитаних приглушених у папках</string>
     <string name="DialogsSettings">Чати</string>
     <string name="SortMenu">Сортувати чати</string>
     <string name="SortByUnread">Сортувати за непрочитаними</string>
@@ -220,7 +216,7 @@
     <string name="FilterMenu">Меню фільтру діалогів</string>
     <string name="DisableProxyWhenVpnEnabled">Вимкнути проксі, коли увімкнено VPN</string>
     <string name="UseProxyItem">Показувати Налаштування проксі в бічному меню</string>
-    <string name="HideProxyByDefault">Приховати налаштування проксі</string>
+    <string name="HideProxyByDefault">Сховати неактивний проксі</string>
     <string name="SkipOpenLinkConfirm">Пропустити підтвердження відкриття посилання</string>
     <string name="DeleteAllInChatAlert">Увага! Це **видалить усі повідомлення** в цьому чаті для **всіх ** учасників.</string>
     <string name="UnblockAll">Розблокувати всіх</string>

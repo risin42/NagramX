@@ -19,7 +19,7 @@
     <string name="LlmModelNameHint">e.g. gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">API 基本 URL，支持任何与 OpenAI 兼容的端点。例如 Gemini、xAI (Grok)、Groq、Mistral、DeepSeek 等。\n\n如果留空将默认使用 Gemini 的 OpenAI 兼容端点。</string>
     <string name="LlmApiKeyNotice">API 密钥将用于向 API URL 发送请求。\n\n输入多个密钥，以逗号分隔（例如：key1, key2, key3）。\n如果提供多个密钥，它们将轮流使用。</string>
-    <string name="LlmModelNameNotice">如果留空将默认使用 `gemini-2.0-flash`。\n\n为了更快的响应，可以考虑使用更小的模型，例如 gpt-4.1-nano 或 gemini-flash。</string>
+    <string name="LlmModelNameNotice">如果留空将默认使用 `gemini-2.5-flash`。\n\n为了更快的响应，可以考虑使用更小的模型，例如 gpt-4.1-nano 或 gemini-flash。</string>
     <string name="LlmProviderPreset">模型预设</string>
     <string name="LlmProviderCustom">自定义</string>
     <string name="LlmProviderOpenAIKey">OpenAI API 密钥</string>
@@ -203,7 +203,7 @@
     <string name="YourVersionIsLatestNax">您的版本是最新的。</string>
     <string name="PremiumElements">Premium 元素</string>
     <string name="PremiumItemBoosts">助推者标识</string>
-    <string name="PremiumItemStickerEffects">Premium 贴纸特效</string>
+    <string name="PremiumItemStickerEffects">贴纸特效</string>
     <string name="PremiumItemEmojiStatus">Emoji 标识</string>
     <string name="PremiumItemEmojiInReplies">回复背景中的 Emoji</string>
     <string name="PremiumItemCustomColorInReplies">自定义颜色</string>
@@ -215,4 +215,9 @@
     <string name="SwitchStyle">开关样式</string>
     <string name="SliderStyle">滑块样式</string>
     <string name="StyleModern">现代</string>
+    <string name="SaveDeletedExclusionMenu">保存已删除</string>
+    <string name="SaveDeletedExcluded">排除</string>
+    <string name="MarkdownParser">Markdown 解析器</string>
+    <string name="KeepTranslatorPreferences">保留翻译偏好</string>
+    <string name="KeepTranslatorPreferencesNotice">更改应用语言时保留当前翻译器设置。</string>
 </resources>

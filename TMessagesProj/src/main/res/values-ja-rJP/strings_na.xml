@@ -36,7 +36,7 @@
     <string name="CustomChannelLabel">カスタムチャンネルユーザーのラベル</string>
     <string name="AlwaysShowDownloadIcon">常にダウンロードアイコンを表示</string>
     <string name="HideTitle">タイトルを非表示</string>
-    <string name="IgnoreFolderCount">フォルダタブで未読数を非表示</string>
+    <string name="IgnoreUnreadCount">未読数を非表示</string>
     <string name="SendWithoutMarkdown">Markdown を無効にする</string>
     <string name="SendAsEmoji">ミニゲームを無効にする</string>
     <string name="CustomArtworkApi">カスタムアートワーク API</string>
@@ -62,7 +62,6 @@
     <string name="DefaultDeleteMenu">デフォルトの削除メニュー</string>
     <string name="DisableSuggestionView">電話番号変更の提案を無効にする</string>
     <string name="DisableStories">ストーリー機能を無効にする</string>
-    <string name="HideFilterMuteAll">長押しメニューの「すべてミュート」を非表示</string>
     <string name="CopyPhotoAsSticker">ステッカーとしてコピー</string>
     <string name="ExternalStickerCache">外部ステッカーキャッシュ</string>
     <string name="ExternalStickerCacheHint">他のアプリとステッカーパックを共有するには、クリックしてストレージの場所を選択。</string>

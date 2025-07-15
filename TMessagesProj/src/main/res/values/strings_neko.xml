@@ -23,9 +23,6 @@
     <string name="AddToSavedMessages">Save</string>
     <string name="CreateMention">Create Mention</string>
     <string name="TransparentStatusBar">Transparent Status Bar</string>
-    <string name="EnableResidentNotification">Show Resident Notification</string>
-    <string name="NekogramRunning">Nekogram is running</string>
-    <string name="EventType">Sidebar icon set</string>
     <string name="ChristmasHat">Show Santa Hat Every Day</string>
     <string name="ActionBarDecoration">Title Bar Decoration</string>
     <string name="DependsOnDate">Depends on date</string>
@@ -213,7 +210,6 @@
     <string name="More">More</string>
     <string name="ShowIdAndDc">Show ID / DC in Profile</string>
     <string name="UseDefaultTheme">Use default theme *</string>
-    <string name="IgnoreMutedCount">Hide Muted Unread Count on Folders</string>
     <string name="DialogsSettings">Dialogs</string>
     <string name="SortMenu">Sort Chats</string>
     <string name="SortByUnread">Sort By Unread</string>
@@ -225,7 +221,7 @@
     <string name="FilterMenu">Dialogs Filter Menu</string>
     <string name="DisableProxyWhenVpnEnabled">Disable Proxy When VPN is Enabled</string>
     <string name="UseProxyItem">Show Proxy in Drawer</string>
-    <string name="HideProxyByDefault">Hide Proxy Settings</string>
+    <string name="HideProxyByDefault">Hide Proxy When Inactive</string>
     <string name="SkipOpenLinkConfirm">Skip Open Link Confirmation</string>
     <string name="DeleteAllInChatAlert">Warning! This will **delete all messages** in this chat for **all** participants.</string>
     <string name="UnblockAll">Unblock All</string>

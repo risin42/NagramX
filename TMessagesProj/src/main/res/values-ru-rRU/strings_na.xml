@@ -36,7 +36,7 @@
     <string name="CustomChannelLabel">Пользовательская метка каналов</string>
     <string name="AlwaysShowDownloadIcon">Всегда показывать значок «Загрузки»</string>
     <string name="HideTitle">Скрыть заголовок</string>
-    <string name="IgnoreFolderCount">Скрыть количество непрочитанных в папках</string>
+    <string name="IgnoreUnreadCount">Скрыть количество непрочитанных</string>
     <string name="SendWithoutMarkdown">Отправить без разметки</string>
     <string name="SendAsEmoji">Отправить как эмодзи</string>
     <string name="CustomArtworkApi">API пользовательских музыкальных обложек</string>
@@ -62,7 +62,6 @@
     <string name="DefaultDeleteMenu">Меню удаления по умолчанию</string>
     <string name="DisableSuggestionView">Отключить предложение настройки профиля</string>
     <string name="DisableStories">Отключить истории</string>
-    <string name="HideFilterMuteAll">Скрыть «Отключить все» в меню долгого нажатия</string>
     <string name="CopyPhotoAsSticker">Копировать как стикер</string>
     <string name="ExternalStickerCache">Внешний кэш стикеров</string>
     <string name="ExternalStickerCacheHint">Для обмена наборами стикеров с другими приложениями. Нажмите, чтобы выбрать место хранения.</string>

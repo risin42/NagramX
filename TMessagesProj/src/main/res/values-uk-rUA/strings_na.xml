@@ -36,7 +36,7 @@
     <string name="CustomChannelLabel">Власна мітка каналу</string>
     <string name="AlwaysShowDownloadIcon">Завжди показувати значок завантаження</string>
     <string name="HideTitle">Сховати заголовок</string>
-    <string name="IgnoreFolderCount">Приховати кількість непрочитаних тек</string>
+    <string name="IgnoreUnreadCount">Приховати кількість непрочитаних тек</string>
     <string name="SendWithoutMarkdown">Відправити без форматування</string>
     <string name="SendAsEmoji">Відправити як смайл</string>
     <string name="CustomArtworkApi">АРІ користувацьких музичних обкладинок</string>
@@ -62,7 +62,6 @@
     <string name="DefaultDeleteMenu">Меню видалення за замовчуванням</string>
     <string name="DisableSuggestionView">Вимкнути пропозицію налаштувань профілю</string>
     <string name="DisableStories">Вимкнути історії</string>
-    <string name="HideFilterMuteAll">Приховати \"Вимкнути все\" в меню довгого натискання</string>
     <string name="CopyPhotoAsSticker">Копіювати як наліпку</string>
     <string name="ExternalStickerCache">Зовнішній кеш наліпок</string>
     <string name="ExternalStickerCacheHint">Для обміну наборами наліпок з іншими програмами. Натисніть, щоб вибрати місце зберігання.</string>

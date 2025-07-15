@@ -20,9 +20,9 @@
     <string name="LlmModelNameHint">e.g. gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">API base URL for OpenAI-compatible endpoints such as Gemini, xAI (Grok), Groq, Mistral, DeepSeek, etc.\n\nLeaving this blank will default to the Gemini OpenAI-compatible endpoint.</string>
     <string name="LlmApiKeyNotice">The API Key will be used to send requests to the API URL.\n\nEnter multiple keys separated by commas (e.g., key1, key2, key3).\nIf you provide multiple keys, they will be used in rotation.</string>
-    <string name="LlmModelNameNotice">Leaving this blank will default to `gemini-2.0-flash`.\n\nFor faster responses, consider smaller models like gpt-4.1-nano or gemini-flash.</string>
+    <string name="LlmModelNameNotice">Leaving this blank will default to `gemini-2.5-flash`.\n\nFor faster responses, consider smaller models like gpt-4.1-nano or gemini-flash.</string>
     <string name="LlmApiUrlDefault" translatable="false">https://generativelanguage.googleapis.com/v1beta/openai</string>
-    <string name="LlmModelNameDefault" translatable="false">gemini-2.0-flash</string>
+    <string name="LlmModelNameDefault" translatable="false">gemini-2.5-flash</string>
     <string name="LlmProviderOpenAIModel" translatable="false">gpt-4.1-nano</string>
     <string name="LlmProviderGeminiModel" translatable="false">gemini-2.0-flash-lite</string>
     <string name="LlmProviderGroqModel" translatable="false">meta-llama/llama-4-maverick-17b-128e-instruct</string>
@@ -69,11 +69,11 @@
     <string name="DisableScreenshotDetection">Disable Screenshot Detection</string>
     <string name="MessageSavingSaveMedia">Save Media</string>
     <string name="MessageSavingSaveMediaHint">Click for More</string>
-    <string name="MessageSavingSaveMediaInPrivateChats">... in Private Chats</string>
-    <string name="MessageSavingSaveMediaInPublicChannels">... in Public Channels</string>
-    <string name="MessageSavingSaveMediaInPrivateChannels">... in Private Channels</string>
-    <string name="MessageSavingSaveMediaInPublicGroups">... in Public Groups</string>
-    <string name="MessageSavingSaveMediaInPrivateGroups">... in Private Groups</string>
+    <string name="MessageSavingSaveMediaInPrivateChats">… in Private Chats</string>
+    <string name="MessageSavingSaveMediaInPublicChannels">… in Public Channels</string>
+    <string name="MessageSavingSaveMediaInPrivateChannels">… in Private Channels</string>
+    <string name="MessageSavingSaveMediaInPublicGroups">… in Public Groups</string>
+    <string name="MessageSavingSaveMediaInPrivateGroups">… in Private Groups</string>
     <string name="TelegramUIAutoTranslate">Translate Entire Chats</string>
     <string name="TranslatorMode">Manual Translation Behavior</string>
     <string name="TranslatorModeAppend">Append</string>
@@ -229,4 +229,9 @@
     <string name="SliderStyle">Slider Style</string>
     <string name="StyleModern">Modern</string>
     <string name="StyleMaterialDesign3" translatable="false">Material Design 3</string>
+    <string name="SaveDeletedExclusionMenu">Save Deleted</string>
+    <string name="SaveDeletedExcluded">Exclude</string>
+    <string name="MarkdownParser">Markdown Parser</string>
+    <string name="KeepTranslatorPreferences">Keep Translator Preferences</string>
+    <string name="KeepTranslatorPreferencesNotice">Preserve the current translator settings when changing App language.</string>
 </resources>

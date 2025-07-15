@@ -37,7 +37,7 @@
     <string name="CustomChannelLabel">Custom Channel Label</string>
     <string name="AlwaysShowDownloadIcon">Always Show Download Icon</string>
     <string name="HideTitle">Hide Title</string>
-    <string name="IgnoreFolderCount">Hide Unread Count on Folders</string>
+    <string name="IgnoreUnreadCount">Hide Unread Counter</string>
     <string name="SendWithoutMarkdown">Send without markdown</string>
     <string name="SendAsEmoji">Send as emoji</string>
     <string name="CustomArtworkApi">Custom Artwork API</string>
@@ -64,7 +64,6 @@
     <string name="DefaultDeleteMenu">Default Delete Menu</string>
     <string name="DisableSuggestionView">Disable Profile Settings Suggestion</string>
     <string name="DisableStories">Disable Stories</string>
-    <string name="HideFilterMuteAll">Hide \"Mute All\" in Long Press Menu</string>
     <string name="CopyPhotoAsSticker">Copy as Sticker</string>
     <string name="ExternalStickerCache">External Sticker Cache</string>
     <string name="ExternalStickerCacheHint">For sharing sticker packs with other apps. Click to pick storage location.</string>

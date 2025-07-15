@@ -19,7 +19,7 @@
     <string name="LlmModelNameHint">ex. gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">URL base da API para endpoints compatíveis com OpenAI, como Gemini, xAI (Grok), Groq, Mistral, DeepSeek, etc.\n\nDeixar este campo em branco utilizará, por padrão, o endpoint compatível com OpenAI do Gemini.</string>
     <string name="LlmApiKeyNotice">A chave de API será usada para enviar solicitações para a URL da API.\n\nInsira várias chaves separadas por vírgulas (e.., chave1, chave2, chave3).\nSe você fornecer várias chaves, elas serão utilizadas na rotação.</string>
-    <string name="LlmModelNameNotice">Deixar isto em branco fará com que o padrão seja gemini-2.0-flash.\n\nPara respostas mais rápidas, considere modelos menores como gpt-4.1-nano ou gemini-flash.</string>
+    <string name="LlmModelNameNotice">Deixar isto em branco fará com que o padrão seja gemini-2.5-flash.\n\nPara respostas mais rápidas, considere modelos menores como gpt-4.1-nano ou gemini-flash.</string>
     <string name="LlmProviderPreset">Provedor do Modelo</string>
     <string name="LlmProviderCustom">Personalizado</string>
     <string name="LlmProviderOpenAIKey">Chave API da OpenAI</string>
@@ -56,11 +56,11 @@
     <string name="DisableScreenshotDetection">Desativar Detecção de Captura de Tela</string>
     <string name="MessageSavingSaveMedia">Salvar Mídia</string>
     <string name="MessageSavingSaveMediaHint">Clique para Mais</string>
-    <string name="MessageSavingSaveMediaInPrivateChats">... em Chats Privados</string>
-    <string name="MessageSavingSaveMediaInPublicChannels">... em Canais Públicos</string>
-    <string name="MessageSavingSaveMediaInPrivateChannels">... em Canais Privados</string>
-    <string name="MessageSavingSaveMediaInPublicGroups">... em Grupos Públicos</string>
-    <string name="MessageSavingSaveMediaInPrivateGroups">... em Grupos Privados</string>
+    <string name="MessageSavingSaveMediaInPrivateChats">… em Chats Privados</string>
+    <string name="MessageSavingSaveMediaInPublicChannels">… em Canais Públicos</string>
+    <string name="MessageSavingSaveMediaInPrivateChannels">… em Canais Privados</string>
+    <string name="MessageSavingSaveMediaInPublicGroups">… em Grupos Públicos</string>
+    <string name="MessageSavingSaveMediaInPrivateGroups">… em Grupos Privados</string>
     <string name="TelegramUIAutoTranslate">Traduzir Chats Inteiros</string>
     <string name="TranslatorMode">Comportamento de Tradução Manual</string>
     <string name="TranslatorModeAppend">Anexar</string>

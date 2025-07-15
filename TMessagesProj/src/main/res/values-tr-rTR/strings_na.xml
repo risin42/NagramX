@@ -36,7 +36,7 @@
     <string name="CustomChannelLabel">Özel Kanal Etiketi</string>
     <string name="AlwaysShowDownloadIcon">İndirme Simgesini Her Zaman Göster</string>
     <string name="HideTitle">Başlığı Gizle</string>
-    <string name="IgnoreFolderCount">Klasörlerdeki Okunmamış Sayısını Gizle</string>
+    <string name="IgnoreUnreadCount">Okunmamış Sayacını Gizle</string>
     <string name="SendWithoutMarkdown">Biçimlendirmesiz gönder</string>
     <string name="SendAsEmoji">Emoji olarak gönder</string>
     <string name="CustomArtworkApi">Özel Sanat Eseri API\'si</string>
@@ -62,7 +62,6 @@
     <string name="DefaultDeleteMenu">Varsayılan Silme Menüsü</string>
     <string name="DisableSuggestionView">Profil Ayarları Önerisini Devre Dışı Bırak</string>
     <string name="DisableStories">Hikayeleri Devre Dışı Bırak</string>
-    <string name="HideFilterMuteAll">Uzun Basma Menüsünde \"Tümünü Sessize Al\"ı Gizle</string>
     <string name="CopyPhotoAsSticker">Çıkartma Olarak Kopyala</string>
     <string name="ExternalStickerCache">Harici Çıkartma Önbelleği</string>
     <string name="ExternalStickerCacheHint">Çıkartma paketlerini diğer uygulamalarla paylaşmak için. Depolama konumu seçmek için tıklayın.</string>

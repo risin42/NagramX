@@ -23,9 +23,6 @@
     <string name="AddToSavedMessages">Сохранить</string>
     <string name="CreateMention">Упомянуть</string>
     <string name="TransparentStatusBar">Прозрачная строка состояния</string>
-    <string name="EnableResidentNotification">Показывать постоянное уведомление</string>
-    <string name="NekogramRunning">Nekogram запущен</string>
-    <string name="EventType">Набор значков бокового меню</string>
     <string name="ChristmasHat">Рождественский колпак в заголовке</string>
     <string name="ActionBarDecoration">Оформление заголовка</string>
     <string name="DependsOnDate">По календарю</string>
@@ -210,7 +207,6 @@
     <string name="More">Ещё</string>
     <string name="ShowIdAndDc">Показывать ID и DC в профиле</string>
     <string name="UseDefaultTheme">Использовать тему по умолчанию *</string>
-    <string name="IgnoreMutedCount">Скрыть количество непрочитанных приглушённых в папках</string>
     <string name="DialogsSettings">Настройки чатов</string>
     <string name="SortMenu">Сортировать чаты</string>
     <string name="SortByUnread">Сначала непрочитанные</string>
@@ -220,9 +216,9 @@
     <string name="NagramXPushService">Push-сервис</string>
     <string name="DisableSystemAccount">Скрыть аккаунт в системе</string>
     <string name="FilterMenu">Меню фильтра диалогов</string>
-    <string name="DisableProxyWhenVpnEnabled">Отключать прокси если включён VPN</string>
+    <string name="DisableProxyWhenVpnEnabled">Отключить прокси при включении VPN</string>
     <string name="UseProxyItem">Показывать «Настройки прокси» в боковом меню</string>
-    <string name="HideProxyByDefault">Скрыть «Настройки прокси»</string>
+    <string name="HideProxyByDefault">Скрыть «Настройки прокси», если прокси не используется</string>
     <string name="SkipOpenLinkConfirm">Открывать ссылки без подтверждения</string>
     <string name="DeleteAllInChatAlert">Внимание! Это **удалит все сообщения** в этом чате для **всех**.</string>
     <string name="UnblockAll">Разблокировать всех</string>

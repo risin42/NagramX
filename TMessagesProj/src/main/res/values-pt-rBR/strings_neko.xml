@@ -23,9 +23,6 @@
     <string name="AddToSavedMessages">Salvar</string>
     <string name="CreateMention">Criar Menção</string>
     <string name="TransparentStatusBar">Barra de Status Transparente</string>
-    <string name="EnableResidentNotification">Mostrar Notificação Residente</string>
-    <string name="NekogramRunning">Nekogram em execução</string>
-    <string name="EventType">Conjunto de ícones da barra lateral</string>
     <string name="ChristmasHat">Mostrar Chapéu de Papai Noel Todos os Dias</string>
     <string name="ActionBarDecoration">Decoração da Barra de Título</string>
     <string name="DependsOnDate">Depende da data</string>
@@ -209,7 +206,6 @@
     <string name="More">Mais</string>
     <string name="ShowIdAndDc">Mostrar ID / DC no perfil</string>
     <string name="UseDefaultTheme">Usar o tema padrão *</string>
-    <string name="IgnoreMutedCount">Ocultar número de mensagens não lidas de chats silenciados nas pastas</string>
     <string name="DialogsSettings">Diálogos</string>
     <string name="SortMenu">Ordenar Chats</string>
     <string name="SortByUnread">Ordenar por Não lidas</string>

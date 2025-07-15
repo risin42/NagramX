@@ -19,7 +19,7 @@
     <string name="LlmModelNameHint">напр. gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">URL базової URL-адреси для кінцевих точок OpenAI — сумісних, таких як Gemini, xAI (Grok), Groq, Mistral, DeepSeek та ін.\n\nзалишаючи це поле порожнім, за замовчуванням буде кінцева точка сумісності Gemini OpenAI.</string>
     <string name="LlmApiKeyNotice">Ключ API буде використовуватися для надсилання запитів на URL API.\n\nВведіть кілька ключів, розділених комами (наприклад, key1, key2, key3).\nЯкщо ви надасте кілька ключів, вони будуть використовуватися по черзі.</string>
-    <string name="LlmModelNameNotice">Якщо залишити це поле порожнім, за замовчуванням буде використовуватися `gemini-2.0-flash`.\n\nДля швидшого відгуку розгляньте менші моделі, такі як gpt-4o-mini або gemini-flash.</string>
+    <string name="LlmModelNameNotice">Якщо залишити це поле порожнім, за замовчуванням буде використовуватися `gemini-2.5-flash`.\n\nДля швидшого відгуку розгляньте менші моделі, такі як gpt-4o-mini або gemini-flash.</string>
     <string name="LlmProviderPreset">Провайдер моделей</string>
     <string name="LlmProviderCustom">Користувацька</string>
     <string name="LlmProviderOpenAIKey">Ключ API OpenAI</string>
@@ -56,11 +56,11 @@
     <string name="DisableScreenshotDetection">Вимкнути виявлення скріншотів</string>
     <string name="MessageSavingSaveMedia">Зберегти медіа</string>
     <string name="MessageSavingSaveMediaHint">Натисніть, щоб побачити більше</string>
-    <string name="MessageSavingSaveMediaInPrivateChats">... у приватних чатах</string>
-    <string name="MessageSavingSaveMediaInPublicChannels">... у публічних каналах</string>
-    <string name="MessageSavingSaveMediaInPrivateChannels">... у приватних каналах</string>
-    <string name="MessageSavingSaveMediaInPublicGroups">... у публічних групах</string>
-    <string name="MessageSavingSaveMediaInPrivateGroups">... у приватних групах</string>
+    <string name="MessageSavingSaveMediaInPrivateChats">… у приватних чатах</string>
+    <string name="MessageSavingSaveMediaInPublicChannels">… у публічних каналах</string>
+    <string name="MessageSavingSaveMediaInPrivateChannels">… у приватних каналах</string>
+    <string name="MessageSavingSaveMediaInPublicGroups">… у публічних групах</string>
+    <string name="MessageSavingSaveMediaInPrivateGroups">… у приватних групах</string>
     <string name="TelegramUIAutoTranslate">Перекласти весь чат</string>
     <string name="TranslatorMode">Режим ручного перекладу</string>
     <string name="TranslatorModeAppend">Додати</string>

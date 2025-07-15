@@ -23,9 +23,6 @@
     <string name="AddToSavedMessages">Kaydet</string>
     <string name="CreateMention">Bahsetme Oluştur</string>
     <string name="TransparentStatusBar">Şeffaf Durum Çubuğu</string>
-    <string name="EnableResidentNotification">Kalıcı Bildirimi Göster</string>
-    <string name="NekogramRunning">Nekogram çalışıyor</string>
-    <string name="EventType">Kenar çubuğu simge seti</string>
     <string name="ChristmasHat">Her Gün Noel Şapkası Göster</string>
     <string name="ActionBarDecoration">Başlık Çubuğu Süslemesi</string>
     <string name="DependsOnDate">Tarihe bağlı</string>
@@ -208,7 +205,6 @@
     <string name="More">Daha Fazla</string>
     <string name="ShowIdAndDc">Profilde ID / DC Göster</string>
     <string name="UseDefaultTheme">Varsayılan temayı kullan *</string>
-    <string name="IgnoreMutedCount">Klasörlerdeki Sessize Alınmış Okunmamış Sayısını Gizle</string>
     <string name="DialogsSettings">Sohbetler</string>
     <string name="SortMenu">Sohbetleri Sırala</string>
     <string name="SortByUnread">Okunmamışa Göre Sırala</string>
@@ -220,7 +216,7 @@
     <string name="FilterMenu">Sohbet Filtre Menüsü</string>
     <string name="DisableProxyWhenVpnEnabled">VPN Etkinken Proxy\'yi Devre Dışı Bırak</string>
     <string name="UseProxyItem">Kenar Çubuğunda Proxy Göster</string>
-    <string name="HideProxyByDefault">Proxy Ayarlarını Gizle</string>
+    <string name="HideProxyByDefault">Pasifken Proxy\'i Gizle</string>
     <string name="SkipOpenLinkConfirm">Bağlantı Açma Onayını Atla</string>
     <string name="DeleteAllInChatAlert">Uyarı! Bu işlem, bu sohbetteki **tüm mesajları bütün** katılımcılar için **silecektir**.</string>
     <string name="UnblockAll">Tüm Engelleri Kaldır</string>

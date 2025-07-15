@@ -19,7 +19,7 @@
     <string name="LlmModelNameHint">örn: gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">Gemini, xAI (Grok), Groq, Mistral, DeepSeek vb. gibi OpenAI uyumlu uç noktalar için API temel URL\'si.\n\nBu alanı boş bırakmak, varsayılan olarak Gemini OpenAI uyumlu uç noktasını kullanacaktır.</string>
     <string name="LlmApiKeyNotice">API Anahtarı, API URL\'sine istek göndermek için kullanılacaktır.\n\nBirden fazla anahtarı virgülle ayırarak girin (örn: anahtar1, anahtar2, anahtar3).\nBirden fazla anahtar sağlarsanız, sırayla kullanılacaktır.</string>
-    <string name="LlmModelNameNotice">Bu alanı boş bırakmak, varsayılan olarak `gemini-2.0-flash` modelini kullanacaktır.\n\nDaha hızlı yanıtlar için gpt-4.1-nano veya gemini-flash gibi daha küçük modelleri düşünebilirsiniz.</string>
+    <string name="LlmModelNameNotice">Bu alanı boş bırakmak, varsayılan olarak `gemini-2.5-flash` modelini kullanacaktır.\n\nDaha hızlı yanıtlar için gpt-4.1-nano veya gemini-flash gibi daha küçük modelleri düşünebilirsiniz.</string>
     <string name="LlmProviderPreset">Model Sağlayıcısı</string>
     <string name="LlmProviderCustom">Özel</string>
     <string name="LlmProviderOpenAIKey">OpenAI API Anahtarı</string>
@@ -56,11 +56,11 @@
     <string name="DisableScreenshotDetection">Ekran Görüntüsü Algılamayı Devre Dışı Bırak</string>
     <string name="MessageSavingSaveMedia">Medyayı Kaydet</string>
     <string name="MessageSavingSaveMediaHint">Daha Fazlası İçin Tıklayın</string>
-    <string name="MessageSavingSaveMediaInPrivateChats">... Özel Sohbetlerde</string>
-    <string name="MessageSavingSaveMediaInPublicChannels">... Herkese Açık Kanallarda</string>
-    <string name="MessageSavingSaveMediaInPrivateChannels">... Özel Kanallarda</string>
-    <string name="MessageSavingSaveMediaInPublicGroups">... Herkese Açık Gruplarda</string>
-    <string name="MessageSavingSaveMediaInPrivateGroups">... Özel Gruplarda</string>
+    <string name="MessageSavingSaveMediaInPrivateChats">… Özel Sohbetlerde</string>
+    <string name="MessageSavingSaveMediaInPublicChannels">… Herkese Açık Kanallarda</string>
+    <string name="MessageSavingSaveMediaInPrivateChannels">… Özel Kanallarda</string>
+    <string name="MessageSavingSaveMediaInPublicGroups">… Herkese Açık Gruplarda</string>
+    <string name="MessageSavingSaveMediaInPrivateGroups">… Özel Gruplarda</string>
     <string name="TelegramUIAutoTranslate">Tüm Sohbetleri Çevir</string>
     <string name="TranslatorMode">Manuel Çeviri Davranışı</string>
     <string name="TranslatorModeAppend">Sona Ekle</string>
@@ -215,4 +215,7 @@
     <string name="SwitchStyle">Düğme Stili</string>
     <string name="SliderStyle">Kaydırıcı Stili</string>
     <string name="StyleModern">Modern</string>
+    <string name="SaveDeletedExclusionMenu">Silinenleri Kaydet</string>
+    <string name="SaveDeletedExcluded">Hariç Tut</string>
+    <string name="MarkdownParser">Markdown Ayrıştırıcı</string>
 </resources>

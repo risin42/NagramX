@@ -23,9 +23,6 @@
     <string name="AddToSavedMessages">保存</string>
     <string name="CreateMention">\@メンションを作成</string>
     <string name="TransparentStatusBar">完全に透明なステータスバーを使用</string>
-    <string name="EnableResidentNotification">常駐通知を有効にする</string>
-    <string name="NekogramRunning">Nagram 実行中</string>
-    <string name="EventType">ドロワーアイコンセット</string>
     <string name="ChristmasHat">常にサンタ帽子を表示</string>
     <string name="ActionBarDecoration">タイトルバーの装飾</string>
     <string name="DependsOnDate">日付に基づく</string>
@@ -208,7 +205,6 @@
     <string name="More">もっと見る</string>
     <string name="ShowIdAndDc">プロファイルに ID / DC を表示</string>
     <string name="UseDefaultTheme">デフォルトテーマを使用 *</string>
-    <string name="IgnoreMutedCount">フォルダタブでミュート未読数を非表示</string>
     <string name="DialogsSettings">ダイアログ</string>
     <string name="SortMenu">ダイアログソート設定</string>
     <string name="SortByUnread">未読で並べ替え</string>
@@ -219,8 +215,8 @@
     <string name="DisableSystemAccount">システムアカウントを無効にする</string>
     <string name="FilterMenu">ダイアログフィルターメニュー</string>
     <string name="DisableProxyWhenVpnEnabled">VPN が有効なときにプロキシを無効にする</string>
-    <string name="UseProxyItem">ボタンの代わりにドロワーメニューにプロキシを表示</string>
-    <string name="HideProxyByDefault">デフォルトでプロキシ設定を隠す</string>
+    <string name="UseProxyItem">ドロワーメニューにプロキシを表示</string>
+    <string name="HideProxyByDefault">無効時にプロキシを非表示</string>
     <string name="SkipOpenLinkConfirm">リンクを開くときの確認をスキップする</string>
     <string name="DeleteAllInChatAlert">警告！このチャットの全てのメッセージは**削除**されます。</string>
     <string name="UnblockAll">すべてのブロックを解除</string>

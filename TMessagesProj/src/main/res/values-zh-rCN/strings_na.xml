@@ -36,7 +36,7 @@
     <string name="CustomChannelLabel">自定义频道标记</string>
     <string name="AlwaysShowDownloadIcon">始终显示下载图标</string>
     <string name="HideTitle">隐藏标题和头像</string>
-    <string name="IgnoreFolderCount">忽略文件夹标签上的未读计数</string>
+    <string name="IgnoreUnreadCount">忽略未读计数</string>
     <string name="SendWithoutMarkdown">发送时禁用 Markdown</string>
     <string name="SendAsEmoji">以 emoji 发送</string>
     <string name="CustomArtworkApi">自定义音乐封面 API</string>
@@ -62,7 +62,6 @@
     <string name="DefaultDeleteMenu">默认删除菜单</string>
     <string name="DisableSuggestionView">禁用修改手机号码的建议</string>
     <string name="DisableStories">禁用动态功能</string>
-    <string name="HideFilterMuteAll">隐藏长按菜单中的\"全部静音\"</string>
     <string name="CopyPhotoAsSticker">复制为贴纸</string>
     <string name="ExternalStickerCache">外部贴纸缓存</string>
     <string name="ExternalStickerCacheHint">用于与其他应用共享贴纸包，点击选择存储位置。</string>
