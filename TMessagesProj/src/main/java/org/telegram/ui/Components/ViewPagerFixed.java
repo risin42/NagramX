@@ -1533,7 +1533,7 @@ public class ViewPagerFixed extends FrameLayout {
                 ((DefaultItemAnimator) listView.getItemAnimator()).setDelayAnimations(false);
             }
 
-            listView.setSelectorType(tabsSelectorType);
+            listView.setSelectorType(NaConfig.INSTANCE.getTabStyle().Int() >= TabStyle.PILLS.getValue() ? 9 : tabsSelectorType);
             if (tabsSelectorType == 3) {
                 listView.setSelectorRadius(0);
             } else {

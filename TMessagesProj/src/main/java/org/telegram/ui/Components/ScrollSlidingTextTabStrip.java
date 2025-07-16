@@ -305,7 +305,7 @@ public class ScrollSlidingTextTabStrip extends HorizontalScrollView {
             };
             tab.setGravity(Gravity.CENTER);
             tab.setTextAlignment(TEXT_ALIGNMENT_CENTER);
-            tab.setBackground(Theme.createSelectorDrawable(Theme.multAlpha(processColor(Theme.getColor(activeTextColorKey, resourcesProvider)), .15f), 3));
+            if (NaConfig.INSTANCE.getTabStyle().Int() < TabStyle.PILLS.getValue()) tab.setBackground(Theme.createSelectorDrawable(Theme.multAlpha(processColor(Theme.getColor(activeTextColorKey, resourcesProvider)), .15f), 3));
             tab.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
             tab.setSingleLine(true);
             tab.setTypeface(AndroidUtilities.bold());
