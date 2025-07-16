@@ -132,23 +132,25 @@ public class TranslateController extends BaseController {
     private Boolean contextTranslateEnabled;
 
     public boolean isChatTranslateEnabled() {
-        if (!getMessagesController().isTranslationsAutoEnabled()) {
+        return true;
+        /*if (!getMessagesController().isTranslationsAutoEnabled()) {
             return false;
         }
         if (chatTranslateEnabled == null) {
             chatTranslateEnabled = messagesController.getMainSettings().getBoolean("translate_chat_button", true);
         }
-        return chatTranslateEnabled;
+        return chatTranslateEnabled;*/
     }
 
     public boolean isContextTranslateEnabled() {
-        if (!getMessagesController().isTranslationsManualEnabled()) {
+        return true;
+        /*if (!getMessagesController().isTranslationsManualEnabled()) {
             return false;
         }
         if (contextTranslateEnabled == null) {
             contextTranslateEnabled = messagesController.getMainSettings().getBoolean("translate_button", MessagesController.getGlobalMainSettings().getBoolean("translate_button", true));
         }
-        return contextTranslateEnabled;
+        return contextTranslateEnabled;*/
     }
 
     public void setContextTranslateEnabled(boolean enable) {
@@ -344,23 +346,21 @@ public class TranslateController extends BaseController {
     }
 
     public void setHideTranslateDialog(long dialogId, boolean hide, boolean doNotNotify, boolean fromMinimize) {
-        if (!fromMinimize) {
-            TLRPC.TL_messages_togglePeerTranslations req = new TLRPC.TL_messages_togglePeerTranslations();
-            req.peer = getMessagesController().getInputPeer(dialogId);
-            req.disabled = hide;
-            getConnectionsManager().sendRequest(req, null);
-        }
+        /*TLRPC.TL_messages_togglePeerTranslations req = new TLRPC.TL_messages_togglePeerTranslations();
+        req.peer = getMessagesController().getInputPeer(dialogId);
+        req.disabled = hide;
+        getConnectionsManager().sendRequest(req, null);
 
         TLRPC.ChatFull chatFull = getMessagesController().getChatFull(-dialogId);
-        if (chatFull != null && !fromMinimize) {
+        if (chatFull != null) {
             chatFull.translations_disabled = hide;
             getMessagesStorage().updateChatInfo(chatFull, true);
         }
         TLRPC.UserFull userFull = getMessagesController().getUserFull(dialogId);
-        if (userFull != null && !fromMinimize) {
+        if (userFull != null) {
             userFull.translations_disabled = hide;
             getMessagesStorage().updateUserInfo(userFull, true);
-        }
+        }*/
 
         synchronized (this) {
             if (hide) {
@@ -750,11 +750,9 @@ public class TranslateController extends BaseController {
         });
     }
 
-
     public void cleanup() {
         cancelAllTranslations();
         resetTranslatingDialogsCache();
-
         translatingDialogs.clear();
         translatableDialogs.clear();
         translatableDialogMessages.clear();

@@ -1285,6 +1285,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             NekoConfig.MARKDOWN_PARSER_NEKO
         )
+    var keepTranslatorPreferences =
+        addConfig(
+            "KeepTranslatorPreferences",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {

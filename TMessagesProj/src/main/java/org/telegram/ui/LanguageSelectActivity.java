@@ -69,6 +69,7 @@ import java.util.Iterator;
 import java.util.Timer;
 
 import tw.nekomimi.nekogram.settings.NekoTranslatorSettingsActivity;
+import xyz.nextalone.nagram.NaConfig;
 
 public class LanguageSelectActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -351,22 +352,24 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
                         });
                     }
 
-                    String langCode = localeInfo.pluralLangCode,
-                            prevLangCode = prevLocale.pluralLangCode;
-                    HashSet<String> selectedLanguages = RestrictedLanguagesSelectActivity.getRestrictedLanguages();
-                    HashSet<String> newSelectedLanguages = new HashSet<String>(selectedLanguages);
+                    if (!NaConfig.INSTANCE.getKeepTranslatorPreferences().Bool()) {
+                        String langCode = localeInfo.pluralLangCode,
+                                prevLangCode = prevLocale.pluralLangCode;
+                        HashSet<String> selectedLanguages = RestrictedLanguagesSelectActivity.getRestrictedLanguages();
+                        HashSet<String> newSelectedLanguages = new HashSet<String>(selectedLanguages);
 
-                    if (selectedLanguages.contains(prevLangCode) && !selectedLanguages.contains(langCode)) {
-                        newSelectedLanguages.removeIf(s -> s != null && s.equals(prevLangCode));
-                    }
-                    if (langCode != null && !"null".equals(langCode)) {
-                        newSelectedLanguages.add(langCode);
-                    }
-                    RestrictedLanguagesSelectActivity.updateRestrictedLanguages(newSelectedLanguages, false);
-                    MessagesController.getInstance(currentAccount).getTranslateController().checkRestrictedLanguagesUpdate();
-                    MessagesController.getInstance(currentAccount).getTranslateController().cleanup();
+                        if (selectedLanguages.contains(prevLangCode) && !selectedLanguages.contains(langCode)) {
+                            newSelectedLanguages.removeIf(s -> s != null && s.equals(prevLangCode));
+                        }
+                        if (langCode != null && !"null".equals(langCode)) {
+                            newSelectedLanguages.add(langCode);
+                        }
+                        RestrictedLanguagesSelectActivity.updateRestrictedLanguages(newSelectedLanguages, false);
+                        MessagesController.getInstance(currentAccount).getTranslateController().checkRestrictedLanguagesUpdate();
+                        MessagesController.getInstance(currentAccount).getTranslateController().cleanup();
 
-                    TranslateController.invalidateSuggestedLanguageCodes();
+                        TranslateController.invalidateSuggestedLanguageCodes();
+                    }
                 }
             } catch (Exception e) {
                 FileLog.e(e);

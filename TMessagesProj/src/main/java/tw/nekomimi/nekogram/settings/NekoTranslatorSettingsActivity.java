@@ -155,6 +155,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
     private final AbstractConfigCell headerExperimental = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.Experimental)));
     private final AbstractConfigCell googleTranslateExpRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getGoogleTranslateExp()));
+    private final AbstractConfigCell keepTranslatorPrefRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getKeepTranslatorPreferences(), getString(R.string.KeepTranslatorPreferencesNotice)));
     private final AbstractConfigCell dividerExperimental = cellGroup.appendCell(new ConfigCellDivider());
 
     private ListAdapter listAdapter;
@@ -638,6 +639,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
         cellGroup.appendCell(headerExperimental);
         cellGroup.appendCell(googleTranslateExpRow);
+        cellGroup.appendCell(keepTranslatorPrefRow);
         cellGroup.appendCell(dividerExperimental);
     }
 
