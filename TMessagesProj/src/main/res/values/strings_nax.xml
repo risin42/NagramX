@@ -27,14 +27,14 @@
     <string name="LlmProviderGeminiModel" translatable="false">gemini-2.0-flash-lite</string>
     <string name="LlmProviderGroqModel" translatable="false">meta-llama/llama-4-maverick-17b-128e-instruct</string>
     <string name="LlmProviderDeepSeekModel" translatable="false">deepseek-chat</string>
-    <string name="LlmProviderXAIModel" translatable="false">grok-3-fast</string>
+    <string name="LlmProviderXAIModel" translatable="false">grok-4</string>
     <string name="LlmProviderPreset">Model Provider</string>
     <string name="LlmProviderCustom">Custom</string>
     <string name="LlmProviderOpenAI" translatable="false">OpenAI gpt-4.1-nano</string>
     <string name="LlmProviderGemini" translatable="false">Google gemini-2.0-flash-lite</string>
     <string name="LlmProviderGroq" translatable="false">Groq llama-4-maverick</string>
     <string name="LlmProviderDeepSeek" translatable="false">DeepSeek deepseek-v3</string>
-    <string name="LlmProviderXAI" translatable="false">xAI grok-3-fast</string>
+    <string name="LlmProviderXAI" translatable="false">xAI grok-4</string>
     <string name="LlmProviderOpenAIKey">OpenAI API Key</string>
     <string name="LlmProviderGeminiKey">Gemini API Key</string>
     <string name="LlmProviderGroqKey">Groq API Key</string>
