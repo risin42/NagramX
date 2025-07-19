@@ -84,17 +84,17 @@ public class ConfigCellTextCheck2 extends AbstractConfigCell {
         return count;
     }
 
-    public boolean isFullChecked() {
+    /*public boolean isFullChecked() {
         for (ConfigCellCheckBox item : checkBox) {
             if (item != null && !item.getBindConfig().Bool()) {
                 return false;
             }
         }
         return true;
-    }
+    }*/
 
     public boolean toggleFullChecked() {
-        boolean newValue = !isFullChecked();
+        boolean newValue = getSelectedCount() == 0;
         for (ConfigCellCheckBox item : checkBox) {
             item.getBindConfig().setConfigBool(newValue);
             if (item.cell != null) {
@@ -114,7 +114,7 @@ public class ConfigCellTextCheck2 extends AbstractConfigCell {
         TextCheckCell2 cell = (TextCheckCell2) holder.itemView;
         this.cell = cell;
         cell.setEnabled(enabled);
-        cell.setTextAndCheck(title, isFullChecked(), cellGroup.needSetDivider(this), true);
+        cell.setTextAndCheck(title, getSelectedCount() != 0, cellGroup.needSetDivider(this), true);
         cell.setCollapseArrow(String.format(Locale.US, "%d/" + checkBox.size(), getSelectedCount()), collapsed, this::onCheckClick);
         cell.getCheckBox().setColors(Theme.key_switchTrack, Theme.key_switchTrackChecked, Theme.key_windowBackgroundWhite, Theme.key_windowBackgroundWhite);
         cell.getCheckBox().setDrawIconType(0);
