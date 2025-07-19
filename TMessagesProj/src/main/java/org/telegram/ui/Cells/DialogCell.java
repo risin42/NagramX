@@ -3489,6 +3489,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             customC = NaConfig.INSTANCE.getUserAvatarsInMessagePreview().Bool();
             customC &= !ChatObject.isChannelOrGiga(chat);
             customC &= !ChatObject.isForum(chat);
+            customC &= !ChatObject.isMonoForum(chat);
             customC &= !UserObject.isAnonymous(user);
             customC &= !message.isOut();
             customC &= draftMessage == null;
