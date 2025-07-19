@@ -33,11 +33,11 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           python-version: '3.12'
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
       - name: Setup Android SDK Tools
         uses: android-actions/setup-android@v3
@@ -71,11 +71,11 @@ jobs:
           path: |
             TMessagesProj/jni/boringssl/build
           key: ${{ hashFiles('boringssl_status') }}
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
       - name: Setup Android SDK Tools
         uses: android-actions/setup-android@v3
@@ -137,11 +137,11 @@ jobs:
           path: |
             TMessagesProj/jni/boringssl/build
           key: ${{ hashFiles('boringssl_status') }}
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
       - name: Setup Android SDK Tools
         uses: android-actions/setup-android@v3
@@ -170,10 +170,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
       - name: Setup Android SDK Tools
         uses: android-actions/setup-android@v3
