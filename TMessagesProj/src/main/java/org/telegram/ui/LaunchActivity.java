@@ -27,6 +27,7 @@ import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -770,28 +771,39 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                     presentFragment(new NekoSettingsActivity());
                     drawerLayoutContainer.closeDrawer(false);
                 } else if (id == DrawerLayoutAdapter.nkbtnQrLogin) {
-                    ActionIntroActivity fragment = new ActionIntroActivity(ActionIntroActivity.ACTION_TYPE_QR_LOGIN);
-                    fragment.setQrLoginDelegate(code -> {
-                        AlertDialog progressDialog = new AlertDialog(LaunchActivity.this, AlertDialog.ALERT_TYPE_SPINNER);
-                        progressDialog.setCanCancel(false);
-                        progressDialog.show();
-                        byte[] token = Base64.decode(code.substring("tg://login?token=".length()), Base64.URL_SAFE);
-                        TLRPC.TL_auth_acceptLoginToken req = new TLRPC.TL_auth_acceptLoginToken();
-                        req.token = token;
-                        ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
-                            try {
-                                progressDialog.dismiss();
-                            } catch (Exception ignore) {
-                            }
-                            if (!(response instanceof TLRPC.TL_authorization)) {
-                                AndroidUtilities.runOnUIThread(() -> AlertsCreator.showSimpleAlert(fragment, LocaleController.getString(R.string.AuthAnotherClient), LocaleController.getString(R.string.ErrorOccurred) + "\n" + error.text));
-                            }
-                        }));
+                    if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, ActionIntroActivity.CAMERA_PERMISSION_REQUEST_CODE);
+                        return;
+                    }
+                    CameraScanActivity.showAsSheet(this, false, CameraScanActivity.TYPE_QR_LOGIN, new CameraScanActivity.CameraScanActivityDelegate() {
+                        @Override
+                        public boolean processQr(String link, Runnable onLoadEnd) {
+                            AndroidUtilities.runOnUIThread(() -> {
+                                try {
+                                    String code = link.substring("tg://login?token=".length());
+                                    code = code.replaceAll("/", "_");
+                                    code = code.replaceAll("\\+", "-");
+                                    byte[] token = Base64.decode(code, Base64.URL_SAFE);
+                                    TLRPC.TL_auth_acceptLoginToken req = new TLRPC.TL_auth_acceptLoginToken();
+                                    req.token = token;
+                                    ConnectionsManager.getInstance(UserConfig.selectedAccount).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(onLoadEnd::run));
+                                } catch (Exception e) {
+                                    FileLog.e("Failed to pass qr code auth", e);
+                                    if (!actionBarLayout.getFragmentStack().isEmpty()) {
+                                        BaseFragment fragment = actionBarLayout.getFragmentStack().get(0);
+                                        AndroidUtilities.runOnUIThread(
+                                                () -> AlertsCreator.showSimpleAlert(fragment, getString(R.string.AuthAnotherClient), getString(R.string.ErrorOccurred))
+                                        );
+                                    }
+                                    onLoadEnd.run();
+                                }
+                            }, 750);
+                            return true;
+                        }
                     });
-                    actionBarLayout.presentFragment(fragment, false, true, true, false);
                     if (AndroidUtilities.isTablet()) {
-                        actionBarLayout.showLastFragment();
-                        rightActionBarLayout.showLastFragment();
+                        actionBarLayout.rebuildFragments(INavigationLayout.REBUILD_FLAG_REBUILD_LAST);
+                        rightActionBarLayout.rebuildFragments(INavigationLayout.REBUILD_FLAG_REBUILD_LAST);
                         drawerLayoutContainer.setAllowOpenDrawer(false, false);
                     } else {
                         drawerLayoutContainer.setAllowOpenDrawer(true, false);
