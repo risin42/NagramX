@@ -350,7 +350,7 @@ object NaConfig {
             ""
         )
     var externalStickerCacheUri: Uri?
-        get() = externalStickerCache.String().let { if (it.isBlank()) return null else return it.toUri() }
+        get() = externalStickerCache.String().let { return if (it.isBlank()) null else it.toUri() }
         set(value) = externalStickerCache.setConfigString(value.toString())
     val externalStickerCacheAutoRefresh =
         addConfig(
@@ -775,391 +775,391 @@ object NaConfig {
             ConfigItem.configTypeInt,
             1 // 0: off; 1: always on; 2: settings only; 3: chats only
         )
-    var drawerItemMyProfile =
+    val drawerItemMyProfile =
         addConfig(
             "DrawerItemMyProfile",
             ConfigItem.configTypeBool,
             true
         )
-    var drawerItemSetEmojiStatus =
+    val drawerItemSetEmojiStatus =
         addConfig(
             "DrawerItemSetEmojiStatus",
             ConfigItem.configTypeBool,
             true
         )
-    var drawerItemNewGroup =
+    val drawerItemNewGroup =
         addConfig(
             "DrawerItemNewGroup",
             ConfigItem.configTypeBool,
             true
         )
-    var drawerItemNewChannel =
+    val drawerItemNewChannel =
         addConfig(
             "DrawerItemNewChannel",
             ConfigItem.configTypeBool,
             false
         )
-    var drawerItemContacts =
+    val drawerItemContacts =
         addConfig(
             "DrawerItemContacts",
             ConfigItem.configTypeBool,
             true
         )
-    var drawerItemCalls =
+    val drawerItemCalls =
         addConfig(
             "DrawerItemCalls",
             ConfigItem.configTypeBool,
             true
         )
-    var drawerItemSaved =
+    val drawerItemSaved =
         addConfig(
             "DrawerItemSaved",
             ConfigItem.configTypeBool,
             true
         )
-    var drawerItemSettings =
+    val drawerItemSettings =
         addConfig(
             "DrawerItemSettings",
             ConfigItem.configTypeBool,
             true
         )
-    var drawerItemNSettings =
+    val drawerItemNSettings =
         addConfig(
             "DrawerItemNSettings",
             ConfigItem.configTypeBool,
             true
         )
-    var drawerItemQrLogin =
+    val drawerItemQrLogin =
         addConfig(
             "DrawerItemQrLogin",
             ConfigItem.configTypeBool,
             false
         )
-    var drawerItemArchivedChats =
+    val drawerItemArchivedChats =
         addConfig(
             "DrawerItemArchivedChats",
             ConfigItem.configTypeBool,
             false
         )
-    var drawerItemRestartApp =
+    val drawerItemRestartApp =
         addConfig(
             "DrawerItemRestartApp",
             ConfigItem.configTypeBool,
             false
         )
-    var drawerItemBrowser =
+    val drawerItemBrowser =
         addConfig(
             "DrawerItemBrowser",
             ConfigItem.configTypeBool,
             false
         )
-    var hideArchive =
+    val hideArchive =
         addConfig(
             "HideArchive",
             ConfigItem.configTypeBool,
             false
         )
-    var hideChannelSilentBroadcast =
+    val hideChannelSilentBroadcast =
         addConfig(
             "HideChannelSilentBroadcast",
             ConfigItem.configTypeBool,
             false
         )
-    var confirmAllLinks =
+    val confirmAllLinks =
         addConfig(
             "ConfirmAllLinks",
             ConfigItem.configTypeBool,
             false
         )
-    var useDeletedIcon =
+    val useDeletedIcon =
         addConfig(
             "UseDeletedIcon",
             ConfigItem.configTypeBool,
             true
         )
-    var useEditedIcon =
+    val useEditedIcon =
         addConfig(
             "UseEditedIcon",
             ConfigItem.configTypeBool,
             true
         )
-    var saveToChatSubfolder =
+    val saveToChatSubfolder =
         addConfig(
             "SaveToChatSubfolder",
             ConfigItem.configTypeBool,
             false
         )
-    var silentMessageByDefault =
+    val silentMessageByDefault =
         addConfig(
             "SilentMessageByDefault",
             ConfigItem.configTypeBool,
             false
         )
-    var folderNameAsTitle =
+    val folderNameAsTitle =
         addConfig(
             "FolderNameAsTitle",
             ConfigItem.configTypeBool,
             false
         )
-    var translatorKeepMarkdown =
+    val translatorKeepMarkdown =
         addConfig(
             "TranslatorKeepMarkdown",
             ConfigItem.configTypeBool,
             false
         )
-    var googleTranslateExp =
+    val googleTranslateExp =
         addConfig(
             "GoogleTranslateExp",
             ConfigItem.configTypeBool,
             true
         )
-    var springAnimation =
+    val springAnimation =
         addConfig(
             "SpringAnimation",
             ConfigItem.configTypeBool,
             true
         )
-    var springAnimationCrossfade =
+    val springAnimationCrossfade =
         addConfig(
             "SpringAnimationCrossfade",
             ConfigItem.configTypeBool,
             true
         )
-    var dontAutoPlayNextVoice =
+    val dontAutoPlayNextVoice =
         addConfig(
             "DontAutoPlayNextVoice",
             ConfigItem.configTypeBool,
             false
         )
-    var messageColoredBackground =
+    val messageColoredBackground =
         addConfig(
             "MessageColoredBackground",
             ConfigItem.configTypeBool,
             true
         )
-    var chatMenuItemBoostGroup =
+    val chatMenuItemBoostGroup =
         addConfig(
             "ChatMenuItemBoostGroup",
             ConfigItem.configTypeBool,
             true
         )
-    var chatMenuItemLinkedChat =
+    val chatMenuItemLinkedChat =
         addConfig(
             "ChatMenuItemLinkedChat",
             ConfigItem.configTypeBool,
             true
         )
-    var chatMenuItemToBeginning =
+    val chatMenuItemToBeginning =
         addConfig(
             "ChatMenuItemToBeginning",
             ConfigItem.configTypeBool,
             true
         )
-    var chatMenuItemGoToMessage =
+    val chatMenuItemGoToMessage =
         addConfig(
             "ChatMenuItemGoToMessage",
             ConfigItem.configTypeBool,
             true
         )
-    var chatMenuItemHideTitle =
+    val chatMenuItemHideTitle =
         addConfig(
             "ChatMenuItemHideTitle",
             ConfigItem.configTypeBool,
             true
         )
-    var chatMenuItemClearDeleted =
+    val chatMenuItemClearDeleted =
         addConfig(
             "ChatMenuItemClearDeleted",
             ConfigItem.configTypeBool,
             true
         )
-    var chatMenuItemDeleteOwnMessages =
+    val chatMenuItemDeleteOwnMessages =
         addConfig(
             "ChatMenuItemDeleteOwnMessages",
             ConfigItem.configTypeBool,
             true
         )
-    var mediaViewerMenuItemForward =
+    val mediaViewerMenuItemForward =
         addConfig(
             "MediaViewerMenuItemForward",
             ConfigItem.configTypeBool,
             true
         )
-    var mediaViewerMenuItemNoQuoteForward =
+    val mediaViewerMenuItemNoQuoteForward =
         addConfig(
             "MediaViewerMenuItemNoQuoteForward",
             ConfigItem.configTypeBool,
             true
         )
-    var mediaViewerMenuItemCopyPhoto =
+    val mediaViewerMenuItemCopyPhoto =
         addConfig(
             "MediaViewerMenuItemCopyPhoto",
             ConfigItem.configTypeBool,
             true
         )
-    var mediaViewerMenuItemSetProfilePhoto =
+    val mediaViewerMenuItemSetProfilePhoto =
         addConfig(
             "MediaViewerMenuItemSetProfilePhoto",
             ConfigItem.configTypeBool,
             true
         )
-    var mediaViewerMenuItemScanQRCode =
+    val mediaViewerMenuItemScanQRCode =
         addConfig(
             "MediaViewerMenuItemScanQRCode",
             ConfigItem.configTypeBool,
             true
         )
-    var coloredAdminTitle =
+    val coloredAdminTitle =
         addConfig(
             "ColoredAdminTitle",
             ConfigItem.configTypeBool,
             false
         )
-    var hideReactions =
+    val hideReactions =
         addConfig(
             "HideReactions",
             ConfigItem.configTypeBool,
             false
         )
-    var performanceClass =
+    val performanceClass =
         addConfig(
             "PerformanceClass",
             ConfigItem.configTypeInt,
             0
         )
-    var transcribeProvider =
+    val transcribeProvider =
         addConfig(
             "TranscribeProvider",
             ConfigItem.configTypeInt,
             0
         )
-    var transcribeProviderCfAccountID =
+    val transcribeProviderCfAccountID =
         addConfig(
             "TranscribeProviderCfAccountID",
             ConfigItem.configTypeString,
             ""
         )
-    var transcribeProviderCfApiToken =
+    val transcribeProviderCfApiToken =
         addConfig(
             "TranscribeProviderCfApiToken",
             ConfigItem.configTypeString,
             ""
         )
-    var transcribeProviderGeminiApiKey =
+    val transcribeProviderGeminiApiKey =
         addConfig(
             "TranscribeProviderGeminiApiKey",
             ConfigItem.configTypeString,
             ""
         )
-    var transcribeProviderOpenAiApiBase =
+    val transcribeProviderOpenAiApiBase =
         addConfig(
             "TranscribeProviderOpenAiApiBase",
             ConfigItem.configTypeString,
             ""
         )
-    var transcribeProviderOpenAiModel =
+    val transcribeProviderOpenAiModel =
         addConfig(
             "TranscribeProviderOpenAiModel",
             ConfigItem.configTypeString,
             ""
         )
-    var transcribeProviderOpenAiApiKey =
+    val transcribeProviderOpenAiApiKey =
         addConfig(
             "TranscribeProviderOpenAiApiKey",
             ConfigItem.configTypeString,
             ""
         )
-    var transcribeProviderOpenAiPrompt =
+    val transcribeProviderOpenAiPrompt =
         addConfig(
             "TranscribeProviderOpenAiPrompt",
             ConfigItem.configTypeString,
             ""
         )
-    var showReplyInPrivate =
+    val showReplyInPrivate =
         addConfig(
             "ReplyInPrivate",
             ConfigItem.configTypeBool,
             false
         )
-    var transcribeProviderGeminiPrompt =
+    val transcribeProviderGeminiPrompt =
         addConfig(
             "TranscribeProviderGeminiPrompt",
             ConfigItem.configTypeString,
             ""
         )
-    var hideDividers =
+    val hideDividers =
         addConfig(
             "HideDividers",
             ConfigItem.configTypeBool,
             false
         )
-    var iconReplacements =
+    val iconReplacements =
         addConfig(
             "IconReplacements",
             ConfigItem.configTypeInt,
             0
         )
-    var showCopyAsSticker =
+    val showCopyAsSticker =
         addConfig(
             "CopyPhotoAsSticker",
             ConfigItem.configTypeBool,
             false
         )
-    var showAddToStickers =
+    val showAddToStickers =
         addConfig(
             "AddToStickers",
             ConfigItem.configTypeBool,
             false
         )
-    var showAddToFavorites =
+    val showAddToFavorites =
         addConfig(
             "AddToFavorites",
             ConfigItem.configTypeBool,
             true
         )
-    var showTranslateMessageLLM =
+    val showTranslateMessageLLM =
         addConfig(
             "TranslateMessageLLM",
             ConfigItem.configTypeBool,
             false
         )
-    var tabStyle =
+    val tabStyle =
         addConfig(
             "TabStyle",
             ConfigItem.configTypeInt,
             0
         )
-    var shortcutsAdministrators =
+    val shortcutsAdministrators =
         addConfig(
             "ChannelAdministrators",
             ConfigItem.configTypeBool,
             false
         )
-    var shortcutsRecentActions =
+    val shortcutsRecentActions =
         addConfig(
             "EventLog",
             ConfigItem.configTypeBool,
             false
         )
-    var shortcutsStatistics =
+    val shortcutsStatistics =
         addConfig(
             "Statistics",
             ConfigItem.configTypeBool,
             false
         )
-    var shortcutsPermissions =
+    val shortcutsPermissions =
         addConfig(
             "ChannelPermissions",
             ConfigItem.configTypeBool,
             false
         )
-    var shortcutsMembers =
+    val shortcutsMembers =
         addConfig(
             "GroupMembers",
             ConfigItem.configTypeBool,
             false
         )
-    var leftBottomButton =
+    val leftBottomButton =
         addConfig(
             "LeftBottomButtonAction",
             ConfigItem.configTypeInt,
@@ -1177,31 +1177,31 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    var preferCommonGroupsTab =
+    val preferCommonGroupsTab =
         addConfig(
             "PreferCommonGroupsTab",
             ConfigItem.configTypeBool,
             true
         )
-    var sendHighQualityPhoto =
+    val sendHighQualityPhoto =
         addConfig(
             "SendHighQualityPhoto",
             ConfigItem.configTypeBool,
             true
         )
-    var groupedMessageMenu =
+    val groupedMessageMenu =
         addConfig(
             "GroupedMessageMenu",
             ConfigItem.configTypeBool,
             false
         )
-    var autoUpdateChannel =
+    val autoUpdateChannel =
         addConfig(
             "AutoUpdateChannel",
             ConfigItem.configTypeInt,
             1 // 0: off; 1: release; 2: beta
         )
-    var userAvatarsInMessagePreview =
+    val userAvatarsInMessagePreview =
         addConfig(
             "UserAvatarsInMessagePreview",
             ConfigItem.configTypeBool,
@@ -1219,13 +1219,13 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    var premiumItemEmojiInReplies =
+    val premiumItemEmojiInReplies =
         addConfig(
             "PremiumItemEmojiInReplies",
             ConfigItem.configTypeBool,
             true
         )
-    var premiumItemCustomColorInReplies =
+    val premiumItemCustomColorInReplies =
         addConfig(
             "PremiumItemCustomColorInReplies",
             ConfigItem.configTypeBool,
@@ -1243,49 +1243,49 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    var premiumItemStarInReactions =
+    val premiumItemStarInReactions =
         addConfig(
             "PremiumItemStarInReactions",
             ConfigItem.configTypeBool,
             true
         )
-    var premiumItemStickerEffects =
+    val premiumItemStickerEffects =
         addConfig(
             "PremiumItemStickerEffects",
             ConfigItem.configTypeBool,
             true
         )
-    var premiumItemBoosts =
+    val premiumItemBoosts =
         addConfig(
             "PremiumItemBoosts",
             ConfigItem.configTypeBool,
             true
         )
-    var switchStyle =
+    val switchStyle =
         addConfig(
             "SwitchStyle",
             ConfigItem.configTypeInt,
             0 // 0: default; 1: Modern; 2: MD3
         )
-    var sliderStyle =
+    val sliderStyle =
         addConfig(
             "SliderStyle",
             ConfigItem.configTypeInt,
             0 // 0: default; 1: Modern; 2: MD3
         )
-    var ignoreUnreadCount =
+    val ignoreUnreadCount =
         addConfig(
             "IgnoreUnreadCount",
             ConfigItem.configTypeInt,
             getIgnoreMutedCountLegacy()
         )
-    var markdownParser =
+    val markdownParser =
         addConfig(
             "MarkdownParser",
             ConfigItem.configTypeInt,
             NekoConfig.MARKDOWN_PARSER_NEKO
         )
-    var keepTranslatorPreferences =
+    val keepTranslatorPreferences =
         addConfig(
             "KeepTranslatorPreferences",
             ConfigItem.configTypeBool,
