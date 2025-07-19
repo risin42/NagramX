@@ -93,8 +93,6 @@ android {
         buildConfigField "String", "APP_HASH", "\"" + appHash + "\""
         buildConfigField "long", "BUILD_TIMESTAMP", buildTimestamp + "L"
 
-        resValue 'string', 'DEEPL_API_KEY', (System.getenv("DEEPL_API_KEY") ?: "")
-
         externalNativeBuild {
             cmake {
                 arguments "-DANDROID_STL=c++_static", "-DANDROID_PLATFORM=android-21"
@@ -290,11 +288,13 @@ dependencies {
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
     // add for UnifiedPush
     implementation 'com.github.UnifiedPush:android-connector:2.3.1'
-    // NagramX: add for save deleted messages
+    // add for save deleted messages
     implementation "androidx.room:room-runtime:2.7.2"
     annotationProcessor "androidx.room:room-compiler:2.7.2"
     // add for keep formatting in translations
     implementation "org.apache.commons:commons-text:1.13.1"
+    // translator from nekogram
+    implementation 'app.nekogram.translator:translator:1.5.4'
 
     compileOnly fileTree("libs")
 }

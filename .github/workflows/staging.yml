@@ -220,7 +220,6 @@ jobs:
           COMMIT_ID: ${{ github.event.head_commit.id }}
         run: |
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
-          export DEEPL_API_KEY="${{ secrets.DEEPL_API_KEY }}"
           export BUILD_TIMESTAMP=$(date +%s)
           echo "build_timestamp=$BUILD_TIMESTAMP" >> "$GITHUB_OUTPUT"
           ./gradlew TMessagesProj:assembleStaging
