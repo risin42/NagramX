@@ -215,4 +215,9 @@
     <string name="SwitchStyle">Estilo Switch</string>
     <string name="SliderStyle">Estilo Slider</string>
     <string name="StyleModern">Moderno</string>
+    <string name="SaveDeletedExclusionMenu">Salvar Excluído</string>
+    <string name="SaveDeletedExcluded">Excluir</string>
+    <string name="MarkdownParser">Analisador de Markdown</string>
+    <string name="KeepTranslatorPreferences">Manter Preferências do Tradutor</string>
+    <string name="KeepTranslatorPreferencesNotice">Manter configurações do tradutor ao mudar o idioma do aplicativo.</string>
 </resources>

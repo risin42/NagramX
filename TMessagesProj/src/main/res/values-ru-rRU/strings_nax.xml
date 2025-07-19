@@ -215,6 +215,8 @@
     <string name="SwitchStyle">Стиль переключателей</string>
     <string name="SliderStyle">Стиль ползунков</string>
     <string name="StyleModern">Современный</string>
+    <string name="SaveDeletedExclusionMenu">Сохранять удалённые</string>
+    <string name="SaveDeletedExcluded">Исключить</string>
     <string name="MarkdownParser">Парсер разметки</string>
     <string name="KeepTranslatorPreferences">Сохранять настройки переводчика</string>
     <string name="KeepTranslatorPreferencesNotice">Сохранять текущие настройки переводчика при смене языка приложения.</string>

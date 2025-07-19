@@ -36,7 +36,7 @@
     <string name="CustomChannelLabel">Etiqueta de Canal Personalizado</string>
     <string name="AlwaysShowDownloadIcon">Sempre Mostrar Ícone de Download</string>
     <string name="HideTitle">Ocultar Título</string>
-    <string name="IgnoreUnreadCount">Ocultar Contagem Não Lida nas Pasta</string>
+    <string name="IgnoreUnreadCount">Ocultar Contador de Não Lidas</string>
     <string name="SendWithoutMarkdown">Enviar sem formatação</string>
     <string name="SendAsEmoji">Enviar como emoji</string>
     <string name="CustomArtworkApi">API Artwork Personalizada</string>
@@ -92,7 +92,7 @@
     <string name="StickersChooseShortNameForStickerPack">Escolha um nome curto para seu pacote.</string>
     <string name="StickersCopyStickerSet">Copiar Conjunto de Sticker</string>
     <string name="DisableChannelMuteButton">Ocultar barra inferior nos canais</string>
-    <string name="DisablePreviewVideoSoundShortcut">Desativar Desmutar Vídeos com os Botões de Volume</string>
+    <string name="DisablePreviewVideoSoundShortcut">Bloquear Desmutar com Volume</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Impedir que a tecla de volume ative o som de pré-visualização de vídeo.</string>
     <string name="DisableAutoWebLogin">Desativar login automático na Web</string>
     <string name="PreviewSendPhoto">Enviar Foto</string>

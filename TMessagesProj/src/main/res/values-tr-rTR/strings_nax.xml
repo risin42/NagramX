@@ -218,4 +218,6 @@
     <string name="SaveDeletedExclusionMenu">Silinenleri Kaydet</string>
     <string name="SaveDeletedExcluded">Hariç Tut</string>
     <string name="MarkdownParser">Markdown Ayrıştırıcı</string>
+    <string name="KeepTranslatorPreferences">Çevirmen Tercihlerini Koru</string>
+    <string name="KeepTranslatorPreferencesNotice">Uygulama dili değiştirildiğinde mevcut çevirmen ayarlarını koru.</string>
 </resources>

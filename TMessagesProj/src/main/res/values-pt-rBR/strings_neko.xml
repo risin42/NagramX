@@ -217,7 +217,7 @@
     <string name="FilterMenu">Menu de Filtro de Diálogos</string>
     <string name="DisableProxyWhenVpnEnabled">Desativar Proxy quando a VPN estiver ativada</string>
     <string name="UseProxyItem">Mostrar Proxy na Gaveta</string>
-    <string name="HideProxyByDefault">Ocultar configurações do Proxy</string>
+    <string name="HideProxyByDefault">Ocultar Proxy Inativo</string>
     <string name="SkipOpenLinkConfirm">Pular confirmação de abertura de link</string>
     <string name="DeleteAllInChatAlert">Aviso! Isso irá **excluir todas as mensagens** neste chat para **todos** os participantes.</string>
     <string name="UnblockAll">Desbloquear Tudo</string>
