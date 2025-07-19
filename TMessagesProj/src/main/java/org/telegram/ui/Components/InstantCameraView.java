@@ -469,8 +469,8 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         }
 
         if (useCamera2) {
-            if (camera2Sessions[1] != null) {
-                camera2Sessions[1].setFlash(flashing && !isFrontface && recording);
+            if (camera2Sessions[NekoConfig.rearVideoMessages.Bool() ? 0 : 1] != null) {
+                camera2Sessions[NekoConfig.rearVideoMessages.Bool() ? 0 : 1].setFlash(flashing && !isFrontface && recording);
             }
         } else {
             if (cameraSession != null) {
@@ -799,7 +799,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
             if (bothCameras) {
                 for (int a = 0; a < 2; ++a) {
                     if (camera2Sessions[a] == null) {
-                        camera2Sessions[a] = Camera2Session.create(a == 0, MessagesController.getInstance(UserConfig.selectedAccount).roundVideoSize, MessagesController.getInstance(UserConfig.selectedAccount).roundVideoSize);
+                        camera2Sessions[a] = Camera2Session.create(a == (isFrontface ? 0 : 1), MessagesController.getInstance(UserConfig.selectedAccount).roundVideoSize, MessagesController.getInstance(UserConfig.selectedAccount).roundVideoSize);
                         if (camera2Sessions[a] != null) {
                             camera2Sessions[a].setRecordingVideo(true);
                             previewSize[a] = new Size(camera2Sessions[a].getPreviewWidth(), camera2Sessions[a].getPreviewHeight());
@@ -1164,7 +1164,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         updateFlash();
         if (useCamera2) {
             if (bothCameras) {
-                camera2SessionCurrent = camera2Sessions[isFrontface ? 0 : 1];
+                camera2SessionCurrent = camera2Sessions[!NekoConfig.rearVideoMessages.Bool() ? 0 : 1];
                 cameraThread.flipSurfaces();
                 return;
             } else {
