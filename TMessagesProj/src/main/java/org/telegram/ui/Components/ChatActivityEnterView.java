@@ -7070,6 +7070,10 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             }
         }
 
+        if (use && suggestButton != null) {
+            suggestButton.setVisibility(GONE);
+        }
+
         if (use) {
             attachButton.setTag(1);
 
@@ -7102,6 +7106,12 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
         }
         if (this.paidMessagesPrice > 0 && attachLayout != null) {
             attachLayout.setTranslationX(-dp(24));
+        }
+        if (suggestButton != null && suggestButton.getVisibility() == GONE) {
+            final boolean show = messageEditText != null && TextUtils.isEmpty(messageEditText.getText());
+            if (show) {
+                suggestButton.setVisibility(VISIBLE);
+            }
         }
     }
 
