@@ -370,8 +370,8 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
         ActionBarMenuItem otherItem = menu.addItem(menu_other, R.drawable.ic_ab_other);
 
-        otherItem.addSubItem(menu_export, R.drawable.msg_instant_link, LocaleController.getString("ExportStickers", R.string.ExportStickers));
-        otherItem.addSubItem(menu_import, R.drawable.msg_download, LocaleController.getString("ImportStickersX", R.string.ImportStickersX));
+        otherItem.addSubItem(menu_export, R.drawable.msg_instant_link_solar, LocaleController.getString(R.string.ExportStickers));
+        otherItem.addSubItem(menu_import, R.drawable.msg_photo_settings_solar, LocaleController.getString(R.string.ImportStickersX));
 
         ActionBarMenu actionMode = actionBar.createActionMode();
         selectedCountTextView = new NumberTextView(actionMode.getContext());
@@ -382,7 +382,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
         selectedCountTextView.setOnTouchListener((v, event) -> true);
 
         shareMenuItem = actionMode.addItemWithWidth(MENU_SHARE, R.drawable.msg_share, AndroidUtilities.dp(54));
-        exportMenuItem = actionMode.addItemWithWidth(MENU_EXPORT, R.drawable.msg_download, AndroidUtilities.dp(54));
+        exportMenuItem = actionMode.addItemWithWidth(MENU_EXPORT, R.drawable.msg_instant_link_solar, AndroidUtilities.dp(54));
         archiveMenuItem = actionMode.addItemWithWidth(MENU_ARCHIVE, R.drawable.msg_archive, AndroidUtilities.dp(54));
         deleteMenuItem = actionMode.addItemWithWidth(MENU_DELETE, R.drawable.msg_delete, AndroidUtilities.dp(54));
 
