@@ -19,7 +19,7 @@ public class EntitiesHelper {
             Pattern.compile("^`{3}(.*?)[\\n\\r](.*?[\\n\\r]?)`{3}", Pattern.MULTILINE | Pattern.DOTALL), // pre
             Pattern.compile("^`{3}[\\n\\r]?(.*?)[\\n\\r]?`{3}", Pattern.MULTILINE | Pattern.DOTALL), // pre
             Pattern.compile("[`]{3}([^`]+)[`]{3}"), // pre
-            Pattern.compile("[`]([^`\\n]+)[`]"), // code
+            Pattern.compile("[`]([^`]+?)[`]", Pattern.DOTALL), // code
             Pattern.compile("[*]{2}([^*\\n]+)[*]{2}"), // bold
             Pattern.compile("[_]{2}([^_\\n]+)[_]{2}"), // italic
             Pattern.compile("[~]{2}([^~\\n]+)[~]{2}"), // strike
