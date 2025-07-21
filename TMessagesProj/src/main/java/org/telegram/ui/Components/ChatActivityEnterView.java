@@ -4498,14 +4498,14 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 menuPopupLayout.addView(cell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 0, 48 * a++, 0, 0));
             }
         } else {
-            String languageText = NekoConfig.translateInputLang.String().toUpperCase();
+            String languageText = Translator.getInputTranslateLangForChat(getChatId()).toUpperCase();
             if (NaConfig.INSTANCE.isLLMTranslatorAvailable()) {
                 cell.setTextAndIcon(LocaleController.getString(R.string.TranslateMessageLLM) + " (" + languageText + ")", R.drawable.magic_stick_solar);
                 cell.setOnClickListener(v -> {
                     if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
                         menuPopupWindow.dismiss();
                     }
-                    translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()), Translator.providerLLMTranslator);
+                    translateComment(Translator.getInputTranslateLangLocaleForChat(getChatId()), Translator.providerLLMTranslator);
                 });
                 final ActionBarMenuSubItem llmTranslateCell = cell;
                 cell.setOnLongClickListener(v -> {
@@ -4514,7 +4514,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                             menuPopupWindow.dismiss();
                         }
                         translateComment(locale, Translator.providerLLMTranslator);
-                        NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
+                        Translator.setInputTranslateLangForChat(getChatId(), TranslatorKt.getLocale2code(locale));
                         return Unit.INSTANCE;
                     });
                     return true;
@@ -4528,7 +4528,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
                     menuPopupWindow.dismiss();
                 }
-                translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()));
+                translateComment(Translator.getInputTranslateLangLocaleForChat(getChatId()));
             });
             final ActionBarMenuSubItem translateCell = cell;
             cell.setOnLongClickListener(v -> {
@@ -4537,7 +4537,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                         menuPopupWindow.dismiss();
                     }
                     translateComment(locale);
-                    NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
+                    Translator.setInputTranslateLangForChat(getChatId(), TranslatorKt.getLocale2code(locale));
                     return Unit.INSTANCE;
                 });
                 return true;

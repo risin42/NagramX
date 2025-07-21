@@ -2,6 +2,7 @@ package tw.nekomimi.nekogram.translate
 
 import android.text.TextUtils
 import android.view.View
+import androidx.core.content.edit
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
@@ -65,6 +66,26 @@ interface Translator {
         const val providerTelegram = 8
         const val providerTranSmart = 9
         const val providerLLMTranslator = 10
+
+        @JvmStatic
+        fun getInputTranslateLangForChat(chatId: Long): String {
+            val key = "translateInputLang_$chatId"
+            return NekoConfig.preferences.getString(key, null)
+                ?: NekoConfig.translateInputLang.String()
+        }
+
+        @JvmStatic
+        fun setInputTranslateLangForChat(chatId: Long, langCode: String) {
+            val key = "translateInputLang_$chatId"
+            NekoConfig.preferences.edit {
+                putString(key, langCode)
+            }
+        }
+
+        @JvmStatic
+        fun getInputTranslateLangLocaleForChat(chatId: Long): Locale {
+            return getInputTranslateLangForChat(chatId).code2Locale
+        }
 
         @Throws(Exception::class)
         suspend fun translate(to: Locale, query: String, provider: Int = 0): String {
