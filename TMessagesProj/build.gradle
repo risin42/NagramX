@@ -1,7 +1,12 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.gradle.internal.os.OperatingSystem
+import java.nio.file.Paths
 
-apply plugin: "com.android.application"
-apply plugin: "kotlin-android"
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'kotlin-android'
+}
 
 def buildTimestamp = System.getenv("BUILD_TIMESTAMP") ?: "0"
 def commitId = System.getenv("COMMIT_ID")
@@ -10,10 +15,6 @@ def verCode = 1215
 
 def officialVer = APP_VERSION_NAME
 def officialCode = APP_VERSION_CODE
-
-configurations {
-    compile.exclude module: "support-v4"
-}
 
 configurations.configureEach {
     exclude group: 'androidx.recyclerview', module: 'recyclerview'
@@ -24,8 +25,6 @@ configurations.configureEach {
 def keystorePwd = null
 def alias = null
 def pwd = null
-def disableCMakeRelWithDebInfo = System.getenv("COMPILE_NATIVE") == null
-def nagramx_build_args = System.getenv("NAGRAMX_BUILD_ARGS") ?: ""
 
 Properties properties
 def base64 = System.getenv("LOCAL_PROPERTIES")
@@ -41,7 +40,6 @@ if (properties != null) {
     keystorePwd = properties.getProperty("KEYSTORE_PASS")
     alias = properties.getProperty("ALIAS_NAME")
     pwd = properties.getProperty("ALIAS_PASS")
-    nagramx_build_args = properties.getProperty("NAGRAMX_BUILD_ARGS", nagramx_build_args)
 }
 
 keystorePwd = keystorePwd ?: System.getenv("KEYSTORE_PASS")
@@ -51,10 +49,13 @@ pwd = pwd ?: System.getenv("ALIAS_PASS")
 def nativeTarget = System.getenv("NATIVE_TARGET") ?: ""
 
 android {
-    compileSdkVersion 36
-    ndkVersion rootProject.ext.ndkVersion
-
     defaultConfig.applicationId = "nu.gpu.nagram"
+
+    packagingOptions {
+        resources {
+            excludes += '**'
+        }
+    }
 
     splits {
         abi {
@@ -70,10 +71,6 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 21
-        //noinspection ExpiredTargetSdkVersion,OldTargetApi
-        targetSdkVersion 34
-
         versionName verName
         versionCode verCode
 
@@ -95,7 +92,15 @@ android {
 
         externalNativeBuild {
             cmake {
-                arguments "-DANDROID_STL=c++_static", "-DANDROID_PLATFORM=android-21"
+                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-21', '-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON'
+                System.getenv("PATH").split(File.pathSeparator).any { path ->
+                    var file = Paths.get("${path}${File.separator}ccache${if (OperatingSystem.current().windows) ".exe" else ""}").toFile()
+                    if (file.exists()) {
+                        println("Using ccache ${file.getAbsolutePath()}")
+                        arguments += "-DANDROID_CCACHE=${file.getAbsolutePath()}"
+                        return true
+                    }
+                }
             }
         }
 
@@ -114,24 +119,9 @@ android {
 
     externalNativeBuild {
         cmake {
+            version '3.31.6+'
             path "jni/CMakeLists.txt"
         }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
-
-        coreLibraryDesugaringEnabled true
-    }
-
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_21
-        }
-    }
-    testOptions {
-        unitTests.includeAndroidResources = true
     }
 
     signingConfigs {
@@ -175,52 +165,7 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-            assets.srcDirs = ["src/main/assets"]
-        }
-
-        debug {
-            java {
-                srcDirs "src/main/java"
-            }
-            jniLibs {
-                srcDir "src/main/libs"
-            }
-        }
-
-        staging {
-            java {
-                srcDirs "src/main/java"
-            }
-            jniLibs {
-                srcDir "src/main/libs"
-            }
-        }
-
-        release {
-            java {
-                srcDirs "src/main/java"
-            }
-            jniLibs {
-                srcDir "src/main/libs"
-            }
-        }
-    }
-
-    flavorDimensions "version"
-
-    tasks.configureEach { task ->
-        if (((task.name.endsWith("Ndk") || task.name.startsWith("generateJsonModel") || task.name.startsWith("externalNativeBuild"))) && !task.name.contains("Debug")) {
-            task.enabled = false
-        }
-        if (disableCMakeRelWithDebInfo && task.name.contains("CMakeRelWithDebInfo")) {
-            enabled = false
-        }
-        if (task.name.contains("buildCMakeDebug") && nagramx_build_args.contains("skip_buildCMakeDebug")) {
-            task.enabled = false
-        }
-    }
+    sourceSets.main.jniLibs.srcDirs = ['./jni/']
 
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach { output ->
@@ -232,32 +177,34 @@ android {
             outputFileName = name
         }
     }
+
+    namespace 'org.telegram.messenger'
 }
 
 dependencies {
     // official
     implementation 'androidx.fragment:fragment-ktx:1.8.8' // 1.2.0
-    implementation "androidx.core:core-ktx:1.16.0" // 1.10.1
-    implementation "androidx.palette:palette-ktx:1.0.0"
-    implementation "androidx.exifinterface:exifinterface:1.4.1" // 1.3.6
-    implementation "androidx.dynamicanimation:dynamicanimation-ktx:1.1.0" // 1.0.0
-    implementation "androidx.mediarouter:mediarouter:1.8.0"
-    implementation "androidx.multidex:multidex:2.0.1"
-    implementation "androidx.sharetarget:sharetarget:1.2.0"
-    implementation "androidx.interpolator:interpolator:1.0.0"
+    implementation 'androidx.core:core-ktx:1.16.0' // 1.10.1
+    implementation 'androidx.palette:palette-ktx:1.0.0'
+    implementation 'androidx.exifinterface:exifinterface:1.4.1' // 1.3.6
+    implementation 'androidx.dynamicanimation:dynamicanimation-ktx:1.1.0' // 1.0.0
+    implementation 'androidx.mediarouter:mediarouter:1.8.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.sharetarget:sharetarget:1.2.0'
+    implementation 'androidx.interpolator:interpolator:1.0.0'
     implementation 'androidx.biometric:biometric:1.1.0'
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
     compileOnly 'org.checkerframework:checker-qual:2.5.2'
     compileOnly 'org.checkerframework:checker-compat-qual:2.5.0'
-    implementation "com.google.firebase:firebase-messaging:24.1.2" // 22.0.0
-    implementation "com.google.firebase:firebase-crashlytics:19.4.4"
+    implementation 'com.google.firebase:firebase-messaging:24.1.2' // 22.0.0
+    implementation 'com.google.firebase:firebase-crashlytics:19.4.4'
     implementation 'com.google.android.gms:play-services-cast-framework:22.1.0' // 21.4.0
     implementation 'com.google.android.gms:play-services-maps:19.2.0' // 18.1.0
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
     implementation 'com.google.android.gms:play-services-location:21.3.0'
-    implementation "com.googlecode.mp4parser:isoparser:1.0.6"
+    implementation 'com.googlecode.mp4parser:isoparser:1.0.6'
     implementation 'com.google.mlkit:language-id:17.0.6' // 16.1.1
-    implementation "com.google.code.gson:gson:2.13.1"
+    implementation 'com.google.code.gson:gson:2.13.1'
     implementation ('com.google.guava:guava:33.4.8-android') { // 31.1
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
         exclude group: 'org.checkerframework', module: 'checker-compat-qual'
@@ -274,52 +221,27 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     implementation 'com.android.billingclient:billing:7.1.1' // 6.0.1
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs_nio:2.1.5" // 1.1.5
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5' // 1.1.5
 
     // kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:2.2.0"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
     // utilities 
-    implementation "org.osmdroid:osmdroid-android:6.1.20"
+    implementation 'org.osmdroid:osmdroid-android:6.1.20'
     // network
-    implementation "com.squareup.okhttp3:okhttp:5.1.0"
+    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
     implementation 'dnsjava:dnsjava:3.6.3'
     // add for emoji
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
     // add for UnifiedPush
     implementation 'com.github.UnifiedPush:android-connector:2.3.1'
     // add for save deleted messages
-    implementation "androidx.room:room-runtime:2.7.2"
-    annotationProcessor "androidx.room:room-compiler:2.7.2"
+    implementation 'androidx.room:room-runtime:2.7.2'
+    annotationProcessor 'androidx.room:room-compiler:2.7.2'
     // add for keep formatting in translations
-    implementation "org.apache.commons:commons-text:1.13.1"
+    implementation 'org.apache.commons:commons-text:1.13.1'
     // translator from nekogram
     implementation 'app.nekogram.translator:translator:1.5.4'
 
-    compileOnly fileTree("libs")
-}
-
-apply plugin: "com.google.gms.google-services"
-apply plugin: "com.google.firebase.crashlytics"
-
-android {
-    packagingOptions {
-        jniLibs {
-            excludes += ['/fabric/**', '/META-INF/native-image/**']
-            useLegacyPackaging true
-        }
-        resources {
-            excludes += ['/fabric/**', '/META-INF/*.version', '/META-INF/*.kotlin_module', '/META-INF/native-image/**', '/builddef.lst', '/*.txt', '/DebugProbesKt.bin', '/okhttp3/internal/publicsuffix/NOTICE']
-        }
-
-        def lib = "libtmessages.*.so"
-        pickFirst "lib/arm64-v8a/$lib"
-    }
-    namespace "org.telegram.messenger"
-    lint {
-        disable 'MissingTranslation', 'ExtraTranslation', 'BlockedPrivateApi'
-    }
-    buildFeatures {
-        buildConfig true
-    }
+    compileOnly fileTree('libs')
 }

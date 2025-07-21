@@ -218,5 +218,5 @@
 -keepattributes Signature,InnerClasses,EnclosingMethod
 -keepattributes SourceFile,LineNumberTable
 -keepattributes *Annotation*
-#-dontoptimize
+-dontoptimize
 -dontobfuscate
