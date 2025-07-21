@@ -3477,7 +3477,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     }
 
     private Object handleCurrentPreviewData() {
-        if (message == null) {
+        if (message == null || UserObject.isReplyUser(user) || !NaConfig.INSTANCE.getUserAvatarsInMessagePreview().Bool()) {
             return null;
         }
 
@@ -3486,8 +3486,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         //customC &= user != null;
 
         if (customC) {
-            customC = NaConfig.INSTANCE.getUserAvatarsInMessagePreview().Bool();
-            customC &= !ChatObject.isChannelOrGiga(chat);
+            customC = !ChatObject.isChannelOrGiga(chat);
             customC &= !ChatObject.isForum(chat);
             customC &= !ChatObject.isMonoForum(chat);
             customC &= !UserObject.isAnonymous(user);
