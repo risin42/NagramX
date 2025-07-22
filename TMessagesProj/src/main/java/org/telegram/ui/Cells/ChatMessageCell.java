@@ -17108,7 +17108,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         var ayuDeletedVal = messageObject.messageOwner.ayuDeleted;
         if (messageObject.scheduled || messageObject.isLiveLocation() || messageObject.messageOwner.edit_hide || messageObject.getDialogId() == 777000 || messageObject.messageOwner.via_bot_id != 0 || messageObject.messageOwner.via_bot_name != null || author != null && author.bot) {
             edited = false;
-            ayuDeleted =  ayuDeletedVal && !(currentChat instanceof TLRPC.TL_chat && author != null && author.bot); // ensure we're not in PM with bot, as it can screw experience
+            ayuDeleted = ayuDeletedVal && !(currentChat instanceof TLRPC.TL_chat && author != null && author.bot); // ensure we're not in PM with bot, as it can screw experience
         } else if (currentPosition == null || currentMessagesGroup == null || currentMessagesGroup.messages.isEmpty()) {
             edited = (messageObject.messageOwner.flags & TLRPC.MESSAGE_FLAG_EDITED) != 0 || messageObject.isEditing();
             ayuDeleted = ayuDeletedVal;
@@ -21832,7 +21832,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         if (currentMessageObject != null && currentMessageObject.type == MessageObject.TYPE_JOINED_CHANNEL) {
             return;
         }
-        if (NekoConfig.hideTimeForSticker.Bool() && currentMessageObject != null && currentMessageObject.isAnyKindOfSticker() && !isDrawSelectionBackground()) {
+        if (NekoConfig.hideTimeForSticker.Bool() && currentMessageObject != null && currentMessageObject.isAnyKindOfSticker() && !isDrawSelectionBackground() && !currentMessageObject.messageOwner.ayuDeleted) {
             return;
         }
         for (int i = 0; i < 2; i++) {
