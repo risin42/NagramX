@@ -5,6 +5,7 @@
 .externalNativeBuild
 .gradle/
 .idea/
+.idx/
 .vscode/
 .idx/
 local.properties

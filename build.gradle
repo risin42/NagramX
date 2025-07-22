@@ -38,12 +38,6 @@ subprojects {
                     targetSdkVersion 34
                 }
 
-                buildTypes {
-                    play {
-                        initWith release
-                    }
-                }
-
                 buildFeatures.buildConfig = true
             }
         }

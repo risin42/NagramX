@@ -1,1 +1,0 @@
-The third-party Telegram android app.

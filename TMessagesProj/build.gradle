@@ -1,5 +1,5 @@
-import org.gradle.internal.os.OperatingSystem
 import java.nio.file.Paths
+import org.gradle.internal.os.OperatingSystem
 
 plugins {
     id 'com.android.application'
@@ -15,12 +15,6 @@ def verCode = 1215
 
 def officialVer = APP_VERSION_NAME
 def officialCode = APP_VERSION_CODE
-
-configurations.configureEach {
-    exclude group: 'androidx.recyclerview', module: 'recyclerview'
-    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
-    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
-}
 
 def keystorePwd = null
 def alias = null
@@ -179,6 +173,12 @@ android {
     }
 
     namespace 'org.telegram.messenger'
+}
+
+configurations.configureEach {
+    exclude group: 'androidx.recyclerview', module: 'recyclerview'
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
 }
 
 dependencies {

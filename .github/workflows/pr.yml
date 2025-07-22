@@ -11,45 +11,31 @@ jobs:
   build:
     name: Gradle Build
     runs-on: ubuntu-latest
-    env:
-      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
-      CCACHE_NOHASHDIR: "true"
-      CCACHE_MAXSIZE: "10G"
-      CCACHE_HARDLINK: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          cache: 'gradle'
           distribution: 'temurin'
           java-version: '21'
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Set up ccache
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          key: ccache-stable
-          restore-keys: ccache-stable
       - name: Set up Android SDK Tools
         uses: android-actions/setup-android@v3
         with:
-          packages: "build-tools;36.0.0 ndk;27.2.12479018 platform-tools platforms;android-36"
+          packages: "build-tools;36.0.0 ndk;27.2.12479018 platforms;android-36"
       - name: Configure Android SDK Path
         run: |
           echo "sdk.dir=${ANDROID_HOME}" >> local.properties
       - name: Modify Gradle JVM Args
         run: |
-          # Get system memory size in KB
           MEMORY_KB=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-          # Convert to GB
           MEMORY_GB=$((MEMORY_KB / 1024 / 1024))
           echo "Detected memory size: ${MEMORY_GB}GB"
-
           if [ $MEMORY_GB -ge 12 ]; then
             sed -i '/^org\.gradle\.jvmargs=/d' gradle.properties
-            echo "org.gradle.jvmargs=-Xmx8G -XX:MaxMetaspaceSize=2G -XX:+UseParallelGC -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" >> gradle.properties
+            echo "org.gradle.jvmargs=-Xmx8G -XX:MaxMetaspaceSize=2G -XX:+UseParallelGC -Dfile.encoding=UTF-8" >> gradle.properties
           fi
           cat gradle.properties
       - name: Enable Optimization

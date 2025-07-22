@@ -22,43 +22,33 @@ jobs:
       build_timestamp: ${{ steps.staging_build_step.outputs.build_timestamp }}
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
-      CCACHE_NOHASHDIR: "true"
-      CCACHE_MAXSIZE: "10G"
       CCACHE_HARDLINK: "true"
+      CCACHE_NOHASHDIR: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          cache: 'gradle'
           distribution: 'temurin'
           java-version: '21'
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Set up ccache
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          key: ccache-stable
-          restore-keys: ccache-stable
       - name: Set up Android SDK Tools
         uses: android-actions/setup-android@v3
         with:
-          packages: "build-tools;36.0.0 ndk;27.2.12479018 platform-tools platforms;android-36"
+          packages: "build-tools;36.0.0 ndk;27.2.12479018 platforms;android-36"
       - name: Configure Android SDK Path
         run: |
           echo "sdk.dir=${ANDROID_HOME}" >> local.properties
       - name: Modify Gradle JVM Args
         run: |
-          # Get system memory size in KB
           MEMORY_KB=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-          # Convert to GB
           MEMORY_GB=$((MEMORY_KB / 1024 / 1024))
           echo "Detected memory size: ${MEMORY_GB}GB"
-
           if [ $MEMORY_GB -ge 12 ]; then
             sed -i '/^org\.gradle\.jvmargs=/d' gradle.properties
-            echo "org.gradle.jvmargs=-Xmx8G -XX:MaxMetaspaceSize=2G -XX:+UseParallelGC -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" >> gradle.properties
+            echo "org.gradle.jvmargs=-Xmx8G -XX:MaxMetaspaceSize=2G -XX:+UseParallelGC -Dfile.encoding=UTF-8" >> gradle.properties
           fi
           cat gradle.properties
       - name: Enable Optimization
@@ -67,6 +57,15 @@ jobs:
           echo "ProGuard optimization enabled for CI build"
           echo "Modified proguard-rules.pro:"
           grep -n "dontoptimize" TMessagesProj/proguard-rules.pro || echo "No dontoptimize rules found"
+      - name: Ccache
+        uses: hendrikmuhs/ccache-action@v1.2.18
+        with:
+          append-timestamp: false
+      - name: Gradle cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle
+          key: gradle-${{ hashFiles('**/*.gradle') }}
       - name: Staging Build
         id: staging_build_step
         env:
@@ -113,5 +112,5 @@ jobs:
           # send apk via telegram bot api
           export mini64=$(find artifacts -name "*arm64-v8a.apk")
           echo $mini64
-          python -m pip install -r bin/scripts/requirements.txt
-          python bin/scripts/upload.py ${{ secrets.HELPER_BOT_TOKEN }} ${{ secrets.HELPER_BOT_TARGET }} test ${{ secrets.HELPER_BOT_CANARY_TARGET }}
+          python -m pip install -r Tools/scripts/requirements.txt
+          python Tools/scripts/upload.py ${{ secrets.HELPER_BOT_TOKEN }} ${{ secrets.HELPER_BOT_TARGET }} test ${{ secrets.HELPER_BOT_CANARY_TARGET }}
