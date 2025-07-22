@@ -113,7 +113,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import top.qwq2333.nullgram.utils.StringUtils;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.parts.MessageTransKt;
@@ -1837,12 +1836,6 @@ public class MessageObject {
         TLRPC.User fromUser = null;
         if (message.from_id instanceof TLRPC.TL_peerUser) {
             fromUser = getUser(users, sUsers, message.from_id.user_id);
-        }
-
-        if (generateLayout && messageOwner.message != null && NaConfig.INSTANCE.getEnablePanguOnReceiving().Bool()) {
-            var pair = StringUtils.spacingText(messageOwner.message, messageOwner.entities);
-            messageOwner.message = pair.getFirst();
-            messageOwner.entities = pair.getSecond();
         }
 
         updateMessageText(users, chats, sUsers, sChats);

@@ -490,12 +490,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val enablePanguOnReceiving =
-        addConfig(
-            "EnablePanguOnReceiving",
-            ConfigItem.configTypeBool,
-            false
-        )
     val defaultHlsVideoQuality =
         addConfig(
             "DefaultHlsVideoQuality",
