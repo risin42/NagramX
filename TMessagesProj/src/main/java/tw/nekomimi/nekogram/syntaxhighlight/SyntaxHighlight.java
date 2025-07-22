@@ -17,7 +17,7 @@
  * <https://www.gnu.org/licenses/>
  */
 
-package xyz.nextalone.nagram.ui.syntaxhighlight;
+package tw.nekomimi.nekogram.syntaxhighlight;
 
 import android.graphics.Color;
 import android.text.Spannable;

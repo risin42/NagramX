@@ -109,7 +109,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import kotlin.Pair;
-import top.qwq2333.nullgram.utils.StringUtils;
+import tw.nekomimi.nekogram.utils.StringUtils;
 import tw.nekomimi.nekogram.NekoConfig;
 import xyz.nextalone.nagram.NaConfig;
 

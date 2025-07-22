@@ -31,10 +31,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.telegram.messenger.IMapsProvider;
-import org.telegram.messenger.R;
-
-import nekox.messenger.NekoLocationSource;
+import tw.nekomimi.nekogram.location.NekoLocationSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

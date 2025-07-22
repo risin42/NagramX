@@ -1,4 +1,4 @@
-package xyz.nextalone.nagram.ui.syntaxhighlight;
+package tw.nekomimi.nekogram.syntaxhighlight;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

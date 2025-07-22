@@ -1,4 +1,4 @@
-package com.exteragram.messenger.components;
+package tw.nekomimi.nekogram.ui.components;
 
 import static org.telegram.messenger.AndroidUtilities.dp;
 

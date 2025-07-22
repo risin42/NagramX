@@ -213,7 +213,7 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlin.Unit;
-import top.qwq2333.nullgram.utils.StringUtils;
+import tw.nekomimi.nekogram.utils.StringUtils;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;

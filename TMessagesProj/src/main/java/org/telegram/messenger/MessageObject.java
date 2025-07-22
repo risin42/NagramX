@@ -118,7 +118,7 @@ import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.parts.MessageTransKt;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.MessageHelper;
-import xyz.nextalone.nagram.ui.syntaxhighlight.SyntaxHighlight;
+import tw.nekomimi.nekogram.syntaxhighlight.SyntaxHighlight;
 
 public class MessageObject {
 
