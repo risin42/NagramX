@@ -113,7 +113,6 @@ También puede utilizar texto sin formato, pero no olvide escapar los paréntesi
     <string name="SearchHashtagDefaultPageChannel">Página de búsqueda por defecto de Hashtag en canales</string>
     <string name="SearchHashtagDefaultPageChat">Página de búsqueda por defecto de Hashtag en Chats</string>
     <string name="LocaleToDBC">Texto local usando caso DBC</string>
-    <string name="EnablePanguOnReceiving">Habilitar Pangu al recibir</string>
     <string name="EnablePanguOnSending">Activar Pangu al enviar</string>
     <string name="PanguInfo">Espaciado de texto paranoide para una buena legibilidad, para insertar automáticamente espacios en blanco entre CJK (chino, japonés, coreano), Inglés de medio ancho, dígitos y caracteres de símbolos.</string>
     <string name="SendWithPangu">Enviar con Pangu</string>

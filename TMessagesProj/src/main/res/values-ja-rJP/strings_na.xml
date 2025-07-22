@@ -111,7 +111,6 @@
     <string name="SearchHashtagDefaultPageChannel">チャンネルでのハッシュタグ検索ページ</string>
     <string name="SearchHashtagDefaultPageChat">チャットでのハッシュタグ検索ページ</string>
     <string name="LocaleToDBC">インターフェーステキストに半角記号を使用</string>
-    <string name="EnablePanguOnReceiving">受信時に Pangu を有効にする</string>
     <string name="EnablePanguOnSending">送信時に Pangu を有効にする</string>
     <string name="PanguInfo">テキストを読みやすくします。CJK（中国語、日本語、韓国語）、半角英数字、記号の間に自動的にスペースを挿入します。</string>
     <string name="SendWithPangu">Pangu を使用して送信</string>
