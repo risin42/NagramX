@@ -296,6 +296,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             NaConfig.INSTANCE.getCenterActionBarTitleType().setConfigInt(0);
         }
 
+        checkProfileConfigCellRows();
         addRowsToMap(cellGroup);
     }
 
@@ -418,8 +419,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             } else if (key.equals(NekoConfig.largeAvatarInDrawer.getKey())) {
                 getNotificationCenter().postNotificationName(NotificationCenter.mainUserInfoChanged);
                 TransitionManager.beginDelayedTransition(profilePreviewCell);
-                setCanNotChange();
-                listAdapter.notifyDataSetChanged();
+                checkProfileConfigCellRows();
             } else if (key.equals(NekoConfig.avatarBackgroundBlur.getKey())) {
                 getNotificationCenter().postNotificationName(NotificationCenter.mainUserInfoChanged);
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(profilePreviewRow));
@@ -699,10 +699,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
 
         boolean enabled;
 
-        enabled = NekoConfig.largeAvatarInDrawer.Int() > 0;
-        ((ConfigCellTextCheck) avatarBackgroundBlurRow).setEnabled(enabled);
-        ((ConfigCellTextCheck) avatarBackgroundDarkenRow).setEnabled(enabled);
-
         enabled = NaConfig.INSTANCE.getPushServiceType().Int() == 0;
         ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabled(enabled);
 
@@ -764,5 +760,40 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             textPaint.setAlpha((int) ((enabled ? 1.0f : 0.3f) * 255));
             this.invalidate();
         }
+    }
+
+    private void checkProfileConfigCellRows() {
+        int backgroundType = NekoConfig.largeAvatarInDrawer.Int();
+        boolean useAvatar = backgroundType == NekoConfig.DRAWER_BACKGROUND_AVATAR || backgroundType == NekoConfig.DRAWER_BACKGROUND_BIG_AVATAR;
+        if (listAdapter == null) {
+            if (!useAvatar) {
+                cellGroup.rows.remove(avatarBackgroundBlurRow);
+                cellGroup.rows.remove(avatarBackgroundDarkenRow);
+            }
+            return;
+        }
+        if (useAvatar) {
+            final int index = cellGroup.rows.indexOf(largeAvatarInDrawerRow);
+            if (!cellGroup.rows.contains(avatarBackgroundBlurRow)) {
+                cellGroup.rows.add(index + 1, avatarBackgroundBlurRow);
+                listAdapter.notifyItemInserted(index + 1);
+            }
+            if (!cellGroup.rows.contains(avatarBackgroundDarkenRow)) {
+                cellGroup.rows.add(index + 2, avatarBackgroundDarkenRow);
+                listAdapter.notifyItemInserted(index + 2);
+            }
+        } else {
+            int blurRowIndex = cellGroup.rows.indexOf(avatarBackgroundBlurRow);
+            if (blurRowIndex != -1) {
+                cellGroup.rows.remove(avatarBackgroundBlurRow);
+                listAdapter.notifyItemRemoved(blurRowIndex);
+            }
+            int darkenRowIndex = cellGroup.rows.indexOf(avatarBackgroundDarkenRow);
+            if (darkenRowIndex != -1) {
+                cellGroup.rows.remove(avatarBackgroundDarkenRow);
+                listAdapter.notifyItemRemoved(darkenRowIndex);
+            }
+        }
+        listAdapter.notifyItemChanged(cellGroup.rows.indexOf(profilePreviewRow));
     }
 }

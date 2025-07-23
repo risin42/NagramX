@@ -270,7 +270,7 @@
     <string name="useCustomEmojiInvalid">Недійсний набір емодзі.</string>
     <string name="repeatConfirm">Запитувати перед повтором</string>
     <string name="repeatConfirmText">Ви хочете повторити повідомлення?</string>
-    <string name="valuesLargeAvatarInDrawer">Типовий стиль\nАватар\nВеликий аватар</string>
+    <string name="valuesLargeAvatarInDrawer">Типовий стиль\nАватар\nВеликий аватар\nWallpaper</string>
     <string name="rememberAllBackMessages">Запам’ятати всі натиснуті відповіді</string>
     <string name="DisableInstantCamera">Приховати прев\'ю з камери на панелі «Прикріпити»</string>
     <string name="showSeconds">Показувати час у секундах</string>

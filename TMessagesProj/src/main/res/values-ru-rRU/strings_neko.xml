@@ -272,7 +272,7 @@
     <string name="useCustomEmojiInvalid">Недопустимый набор эмодзи.</string>
     <string name="repeatConfirm">Спрашивать перед повтором</string>
     <string name="repeatConfirmText">Вы хотите повторить сообщение?</string>
-    <string name="valuesLargeAvatarInDrawer">По умолчанию\nАватар\nУвеличенный аватар</string>
+    <string name="valuesLargeAvatarInDrawer">По умолчанию\nАватар\nУвеличенный аватар\nWallpaper</string>
     <string name="rememberAllBackMessages">Запомнить все нажатые ответы</string>
     <string name="DisableInstantCamera">Скрыть превью с камеры в панели «Прикрепить»</string>
     <string name="showSeconds">Время с секундами</string>

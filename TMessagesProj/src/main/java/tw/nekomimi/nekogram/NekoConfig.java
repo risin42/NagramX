@@ -43,6 +43,11 @@ public class NekoConfig {
     public static final int MARKDOWN_PARSER_TELEGRAM = 0;
     public static final int MARKDOWN_PARSER_NEKO = 1;
 
+    public static final int DRAWER_BACKGROUND_DEFAULT = 0;
+    public static final int DRAWER_BACKGROUND_AVATAR = 1;
+    public static final int DRAWER_BACKGROUND_BIG_AVATAR = 2;
+    public static final int DRAWER_BACKGROUND_WALLPAPER = 3;
+
     public static final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Context.MODE_PRIVATE);
     public static final Object sync = new Object();
     public static final String channelAliasPrefix = "channelAliasPrefix_";

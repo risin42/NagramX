@@ -74,6 +74,7 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.EmojiTextView;
 import org.telegram.ui.Components.FireworksEffect;
 import org.telegram.ui.Components.LayoutHelper;
+import org.telegram.ui.Components.MotionBackgroundDrawable;
 import org.telegram.ui.Components.Premium.PremiumGradient;
 import org.telegram.ui.Components.Premium.StarParticlesView;
 import org.telegram.ui.Components.RLottieDrawable;
@@ -591,9 +592,10 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int heightBase = NekoConfig.largeAvatarInDrawer.Int() == 2 ? MeasureSpec.getSize(widthMeasureSpec) : AndroidUtilities.dp(148);
+        boolean isBigAvatar = NekoConfig.largeAvatarInDrawer.Int() == NekoConfig.DRAWER_BACKGROUND_BIG_AVATAR;
+        int heightBase = isBigAvatar ? MeasureSpec.getSize(widthMeasureSpec) : AndroidUtilities.dp(148);
         if (Build.VERSION.SDK_INT >= 21) {
-            heightBase -= NekoConfig.largeAvatarInDrawer.Int() == 2 ? AndroidUtilities.statusBarHeight : 0;
+            heightBase -= isBigAvatar ? AndroidUtilities.statusBarHeight : 0;
             super.onMeasure(MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(heightBase + AndroidUtilities.statusBarHeight, MeasureSpec.EXACTLY));
         } else {
             try {
@@ -605,8 +607,9 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
         }
     }
 
-    private boolean useAdb() {
-        return NekoConfig.largeAvatarInDrawer.Int() > 0 && ImageLocation.isUserHasPhoto(user);
+    private boolean useAvatarAsDrawerBackground() {
+        int backgroundType = NekoConfig.largeAvatarInDrawer.Int();
+        return (backgroundType == NekoConfig.DRAWER_BACKGROUND_AVATAR || backgroundType == NekoConfig.DRAWER_BACKGROUND_BIG_AVATAR) && ImageLocation.isUserHasPhoto(user);
     }
 
     @Override
@@ -627,12 +630,17 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
 
     @Override
     protected void onDraw(Canvas canvas) {
+        int backgroundType = NekoConfig.largeAvatarInDrawer.Int();
         Drawable backgroundDrawable = Theme.getCachedWallpaper();
-        int backgroundKey = applyBackground(false);
-        boolean useImageBackground = backgroundKey != Theme.key_chats_menuTopBackground && Theme.isCustomTheme() && !Theme.isPatternWallpaper() && backgroundDrawable != null && !(backgroundDrawable instanceof ColorDrawable) && !(backgroundDrawable instanceof GradientDrawable);
+        boolean useImageBackground = backgroundDrawable != null;
+        if (backgroundType != NekoConfig.DRAWER_BACKGROUND_WALLPAPER) {
+            int backgroundKey = applyBackground(false);
+            useImageBackground = backgroundKey != Theme.key_chats_menuTopBackground && Theme.isCustomTheme() && !Theme.isPatternWallpaper() && backgroundDrawable != null && !(backgroundDrawable instanceof ColorDrawable) && !(backgroundDrawable instanceof GradientDrawable);
+        }
+
         boolean drawCatsShadow = false;
         int color;
-        if (!useAdb() && !useImageBackground && Theme.hasThemeKey(Theme.key_chats_menuTopShadowCats)) {
+        if (!useAvatarAsDrawerBackground() && !useImageBackground && Theme.hasThemeKey(Theme.key_chats_menuTopShadowCats)) {
             color = Theme.getColor(Theme.key_chats_menuTopShadowCats);
             drawCatsShadow = true;
         } else {
@@ -644,12 +652,12 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
         }
         if (currentColor == null || currentColor != color) {
             currentColor = color;
-            shadowView.getDrawable().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+            shadowView.getDrawable().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
         }
         nameTextView.setTextColor(Theme.getColor(Theme.key_chats_menuName));
         phoneTextView.getTextView().setTextColor(Theme.getColor(Theme.key_chats_menuName));
 
-        if (useAdb()) {
+        if (useAvatarAsDrawerBackground()) {
             phoneTextView.getTextView().setTextColor(Theme.getColor(Theme.key_chats_menuPhone));
             if (shadowView.getVisibility() != VISIBLE) {
                 shadowView.setVisibility(VISIBLE);
@@ -661,7 +669,7 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
             if (shadowView.getVisibility() != VISIBLE) {
                 shadowView.setVisibility(VISIBLE);
             }
-            if (backgroundDrawable instanceof ColorDrawable || backgroundDrawable instanceof GradientDrawable) {
+            if (backgroundDrawable instanceof ColorDrawable || backgroundDrawable instanceof GradientDrawable || backgroundDrawable instanceof MotionBackgroundDrawable) {
                 backgroundDrawable.setBounds(0, 0, getMeasuredWidth(), getMeasuredHeight());
                 backgroundDrawable.draw(canvas);
             } else if (backgroundDrawable instanceof BitmapDrawable) {
@@ -701,7 +709,7 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
 //                canvas.drawCircle(darkThemeView.getX() + darkThemeView.getMeasuredWidth() / 2, darkThemeView.getY() + darkThemeView.getMeasuredHeight() / 2, AndroidUtilities.dp(17), backPaint);
 //            }
 //        }
-        if(NekoConfig.largeAvatarInDrawer.Int() == 0) {
+        if (backgroundType == NekoConfig.DRAWER_BACKGROUND_DEFAULT) {
             if (drawPremium && drawPremiumProgress != 1f) {
                 drawPremiumProgress += 16 / 220f;
             } else if (!drawPremium && drawPremiumProgress != 0) {
@@ -746,7 +754,7 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
     }
 
     public boolean isInAvatar(float x, float y) {
-        if (useAdb()) {
+        if (useAvatarAsDrawerBackground()) {
             return y <= arrowView.getTop();
         } else {
             return x >= avatarImageView.getLeft() && x <= avatarImageView.getRight() && y >= avatarImageView.getTop() && y <= avatarImageView.getBottom();
@@ -837,21 +845,22 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
         AvatarDrawable avatarDrawable = new AvatarDrawable(user);
         avatarDrawable.setColor(Theme.getColor(Theme.key_avatar_backgroundInProfileBlue));
         avatarImageView.setForUserOrChat(user, avatarDrawable);
-        if (NekoConfig.largeAvatarInDrawer.Int() > 0) {
+        int backgroundType = NekoConfig.largeAvatarInDrawer.Int();
+        if (backgroundType == NekoConfig.DRAWER_BACKGROUND_AVATAR || backgroundType == NekoConfig.DRAWER_BACKGROUND_BIG_AVATAR) {
             ImageLocation imageLocation = ImageLocation.getForUser(user, ImageLocation.TYPE_BIG);
-            allowInvalidate = !useAdb() || !(NekoConfig.avatarBackgroundDarken.Bool() || NekoConfig.avatarBackgroundBlur.Bool());
+            allowInvalidate = !useAvatarAsDrawerBackground() || !(NekoConfig.avatarBackgroundDarken.Bool() || NekoConfig.avatarBackgroundBlur.Bool());
             imageReceiver.setImage(imageLocation, "512_512", null, null, new ColorDrawable(0x00000000), 0, null, user, 1);
             avatarImageView.setVisibility(INVISIBLE);
         } else {
             avatarImageView.setVisibility(VISIBLE);
         }
-        if (NekoConfig.largeAvatarInDrawer.Int() == 2) {
+        if (backgroundType == NekoConfig.DRAWER_BACKGROUND_BIG_AVATAR) {
             // add shadow
 //            nameTextView.setShadowLayer(6.0f, 2.0f, 2.0f, Color.BLACK);
             phoneTextView.getTextView().setShadowLayer(6.0f, 2.0f, 2.0f, Color.BLACK);
 
             // correct the position of night button
-            LayoutParams lp = NekoConfig.largeAvatarInDrawer.Int() == 2 ?
+            LayoutParams lp = backgroundType == NekoConfig.DRAWER_BACKGROUND_BIG_AVATAR ?
                     LayoutHelper.createFrame(48, 48, Gravity.RIGHT | Gravity.TOP, 0, AndroidUtilities.statusBarHeight / getResources().getDisplayMetrics().density, 6, 0) :
                     LayoutHelper.createFrame(48, 48, Gravity.RIGHT | Gravity.BOTTOM, 0, 10, 6, 90);
             darkThemeView.setLayoutParams(lp);

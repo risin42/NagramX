@@ -263,7 +263,7 @@
     <string name="useCustomEmojiInvalid">No es un paquete de emoji válido.</string>
     <string name="repeatConfirm">Preguntar antes del reenvío</string>
     <string name="repeatConfirmText">¿Estás seguro de que quieres volver a publicar?</string>
-    <string name="valuesLargeAvatarInDrawer">Telegram predeterminado\nAvatar como fondo\nGran avatar como fondo</string>
+    <string name="valuesLargeAvatarInDrawer">Telegram predeterminado\nAvatar como fondo\nGran avatar como fondo\nWallpaper</string>
     <string name="rememberAllBackMessages">Recordar todas las respuestas pulsadas</string>
     <string name="DisableInstantCamera">Deshabilitar cámara instantánea</string>
     <string name="showSeconds">Mostrar los segundos en la marca de tiempo</string>

@@ -270,7 +270,7 @@
     <string name="useCustomEmojiInvalid">Geçerli bir emoji paketi değil.</string>
     <string name="repeatConfirm">Yeniden Göndermeden Önce Sor</string>
     <string name="repeatConfirmText">Yeniden göndermek istediğinizden emin misiniz?</string>
-    <string name="valuesLargeAvatarInDrawer">Telegram Varsayılanı\nArka plan olarak avatar\nArka plan olarak büyük avatar</string>
+    <string name="valuesLargeAvatarInDrawer">Telegram Varsayılanı\nArka plan olarak avatar\nArka plan olarak büyük avatar\nWallpaper</string>
     <string name="rememberAllBackMessages">Tıklanan Tüm Yanıtları Hatırla</string>
     <string name="DisableInstantCamera">Anlık Kamerayı Devre Dışı Bırak</string>
     <string name="showSeconds">Zaman Damgasını Saniye Olarak Göster</string>

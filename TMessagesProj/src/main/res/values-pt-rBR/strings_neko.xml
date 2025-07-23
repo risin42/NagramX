@@ -271,7 +271,7 @@
     <string name="useCustomEmojiInvalid">Não é um pacote de emojis válido.</string>
     <string name="repeatConfirm">Perguntar antes de repostar</string>
     <string name="repeatConfirmText">Você tem certeza de que deseja repostar?</string>
-    <string name="valuesLargeAvatarInDrawer">Avatar padrão do Telegram\nAvatar como plano de fundo\nAvatar grande como plano de fundo</string>
+    <string name="valuesLargeAvatarInDrawer">Avatar padrão do Telegram\nAvatar como plano de fundo\nAvatar grande como plano de fundo\nWallpaper</string>
     <string name="rememberAllBackMessages">Lembrar todas as respostas clicadas</string>
     <string name="DisableInstantCamera">Desativar câmera instantânea</string>
     <string name="showSeconds">Mostrar data/hora em segundos</string>
