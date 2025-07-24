@@ -24,6 +24,7 @@ jobs:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_HARDLINK: "true"
       CCACHE_NOHASHDIR: "true"
+      NATIVE_TARGET: "arm64-v8a"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -48,7 +49,7 @@ jobs:
           echo "Detected memory size: ${MEMORY_GB}GB"
           if [ $MEMORY_GB -ge 12 ]; then
             sed -i '/^org\.gradle\.jvmargs=/d' gradle.properties
-            echo "org.gradle.jvmargs=-Xmx8G -XX:MaxMetaspaceSize=2G -XX:+UseParallelGC -Dfile.encoding=UTF-8" >> gradle.properties
+            echo "org.gradle.jvmargs=-Xmx8G -Dfile.encoding=UTF-8" >> gradle.properties
           fi
           cat gradle.properties
       - name: Enable Optimization

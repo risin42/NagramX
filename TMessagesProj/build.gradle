@@ -43,7 +43,7 @@ pwd = pwd ?: System.getenv("ALIAS_PASS")
 def nativeTarget = System.getenv("NATIVE_TARGET") ?: ""
 
 android {
-    defaultConfig.applicationId = "nu.gpu.nagram"
+    defaultConfig.applicationId = APP_PACKAGE
 
     packagingOptions {
         resources {
@@ -59,7 +59,7 @@ android {
             if (!nativeTarget.isBlank()) {
                 include nativeTarget
             } else {
-                include 'arm64-v8a'
+                include 'arm64-v8a', 'x86_64'
             }
         }
     }
