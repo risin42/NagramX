@@ -7767,6 +7767,9 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                                     }
                                     AnimatedEmojiDrawable.getDocumentFetcher(currentAccount).putDocuments(emojis);
                                     for (TLRPC.Document emoji : emojis) {
+                                        if (!UserConfig.getInstance(currentAccount).isRealPremium() && !MessageObject.isFreeEmoji(emoji) && !(delegate != null && delegate.isUserSelf())) {
+                                            continue;
+                                        }
                                         MediaDataController.KeywordResult keywordResult = new MediaDataController.KeywordResult();
                                         keywordResult.emoji = "animated_" + emoji.id;
                                         keywordResult.keyword = null;
