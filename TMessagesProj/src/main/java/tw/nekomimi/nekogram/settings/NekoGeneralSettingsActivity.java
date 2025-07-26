@@ -54,6 +54,7 @@ import org.telegram.ui.Components.SeekBarView;
 import org.telegram.ui.Components.UndoView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.config.CellGroup;
@@ -266,6 +267,8 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell preferCommonGroupsTabRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getPreferCommonGroupsTab(), getString(R.string.PreferCommonGroupsTabNotice)));
     private final AbstractConfigCell autoPauseVideoRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.autoPauseVideo, getString(R.string.AutoPauseVideoAbout)));
     private final AbstractConfigCell disableNumberRoundingRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableNumberRounding, "4.8K -> 4777"));
+    private final AbstractConfigCell usePersianCalendarRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.usePersianCalendar, getString(R.string.UsePersianCalendarInfo)));
+    private final AbstractConfigCell displayPersianCalendarByLatinRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.displayPersianCalendarByLatin));
     private final AbstractConfigCell nameOrderRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NekoConfig.nameOrder, new String[]{
             getString(R.string.LastFirst),
             getString(R.string.FirstLast)
@@ -294,6 +297,10 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     public NekoGeneralSettingsActivity() {
         if (!NaConfig.INSTANCE.getCenterActionBarTitle().Bool()) {
             NaConfig.INSTANCE.getCenterActionBarTitleType().setConfigInt(0);
+        }
+        if (!shouldShowPersian()) {
+            cellGroup.rows.remove(usePersianCalendarRow);
+            cellGroup.rows.remove(displayPersianCalendarByLatinRow);
         }
 
         checkProfileConfigCellRows();
@@ -502,6 +509,8 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                     parentLayout.rebuildFragments(INavigationLayout.REBUILD_FLAG_REBUILD_LAST);
                     listView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
                 }
+            } else if (key.equals(NekoConfig.usePersianCalendar.getKey())) {
+                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             }
         };
 
@@ -795,5 +804,10 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             }
         }
         listAdapter.notifyItemChanged(cellGroup.rows.indexOf(profilePreviewRow));
+    }
+
+    private boolean shouldShowPersian() {
+        Locale locale = LocaleController.getInstance().getCurrentLocale();
+        return locale != null && locale.getLanguage().equals("fa");
     }
 }

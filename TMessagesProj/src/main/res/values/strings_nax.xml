@@ -234,4 +234,7 @@
     <string name="MarkdownParser">Markdown Parser</string>
     <string name="KeepTranslatorPreferences">Keep Translator Preferences</string>
     <string name="KeepTranslatorPreferencesNotice">Preserve the current translator settings when changing App language.</string>
+    <string name="UsePersianCalendar">Use Persian Calendar</string>
+    <string name="UsePersianCalendarInfo">Display date with Solar Hijri calendar</string>
+    <string name="DisplayPersianCalendarByLatin">Display Persian calendar by Latin</string>
 </resources>

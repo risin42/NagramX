@@ -170,10 +170,11 @@ public class NekoConfig {
     public static ConfigItem useOSMDroidMap = addConfig("useOSMDroidMap", configTypeBool, false);
     public static ConfigItem mapDriftingFixForGoogleMaps = addConfig("mapDriftingFixForGoogleMaps", configTypeBool, true);
 
-    // priv branch changes
     public static ConfigItem localPremium = addConfig("localPremium", configTypeBool, false);
-
     public static ConfigItem localeToDBC = addConfig("LocaleToDBC", configTypeBool, false);
+
+    public static ConfigItem usePersianCalendar = addConfig("UsePersianCalendar", configTypeBool, false);
+    public static ConfigItem displayPersianCalendarByLatin = addConfig("DisplayPersianCalendarByLatin", configTypeBool, false);
 
     // --- Ghost Mode ---
     public static ConfigItem sendReadMessagePackets = addConfig("sendReadMessagePackets", configTypeBool, true);
