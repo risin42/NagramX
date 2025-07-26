@@ -10130,8 +10130,6 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         } else {
             AlertUtil.showToast(error);
             exportLoginTokenRequest = null;
-            if (!error.text.contains("CONNECTION_NOT_INITED"))
-                regenerateLoginToken(false);
         }
     }
 
