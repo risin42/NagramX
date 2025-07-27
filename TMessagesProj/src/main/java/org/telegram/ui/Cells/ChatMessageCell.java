@@ -15493,7 +15493,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             firstVisibleBlockNum = 0;
             lastVisibleBlockNum = textLayoutBlocks.size();
         }
-        boolean translating = MessagesController.getInstance(currentAccount).getTranslateController().isTranslating(getMessageObject());
+
+        boolean translating = getMessageObject().translating || MessagesController.getInstance(currentAccount).getTranslateController().isTranslating(getMessageObject());
         if (!origin == (currentMessageObject != null && currentMessageObject.translated)) {
             if (translationLoadingFloat == null) {
                 translationLoadingFloat = new AnimatedFloat(this, 350, CubicBezierInterpolator.EASE_OUT_QUINT);
@@ -18450,9 +18451,10 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 h = view.getMeasuredHeight();
             }
         }
-        if (drawable != null)
-        drawable.setTop((int) (parentViewTopOffset + offset), w, h, (int) parentViewTopOffset, blurredViewTopOffset, blurredViewBottomOffset, pinnedTop, pinnedBottom || transitionParams.changePinnedBottomProgress != 1);
-        drawable.setBotButtonsBottom(currentMessageObject != null && currentMessageObject.hasInlineBotButtons());
+        if (drawable != null) {
+            drawable.setTop((int) (parentViewTopOffset + offset), w, h, (int) parentViewTopOffset, blurredViewTopOffset, blurredViewBottomOffset, pinnedTop, pinnedBottom || transitionParams.changePinnedBottomProgress != 1);
+            drawable.setBotButtonsBottom(currentMessageObject != null && currentMessageObject.hasInlineBotButtons());
+        }
     }
 
     public float transitionYOffsetForDrawables;

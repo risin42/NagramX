@@ -3513,7 +3513,7 @@ public class MessageObject {
             ) &&
 //            !translateController.isTranslateDialogHidden(getDialogId()) &&
             messageOwner != null &&
-            (messageOwner.translatedText != null || messageOwner.translatedPoll != null || messageOwner.translatedMessage != null) &&
+            (messageOwner.translatedText != null || messageOwner.translatedPoll != null) &&
             (translateController.isManualTranslated(this) ||
                 TextUtils.equals(translateController.isManualTranslated(this) ? NekoConfig.translateToLang.String() : translateController.getDialogTranslateTo(getDialogId()), messageOwner.translatedToLanguage)
             )
@@ -3522,12 +3522,8 @@ public class MessageObject {
                 return replyUpdated || false;
             }
             translated = true;
-            int translatorMode = NaConfig.INSTANCE.getTranslatorMode().Int();
-            if (messageOwner.translatedText != null && (translatorMode == MessageTransKt.TRANSLATE_MODE_REPLACE || translateController.isTranslatingDialog(getDialogId()))) {
+            if (messageOwner.translatedText != null) {
                 applyNewText(messageOwner.translatedText.text);
-                generateCaption();
-            } else if (messageOwner.translatedMessage != null && !messageOwner.translatedMessage.isEmpty() && translatorMode == MessageTransKt.TRANSLATE_MODE_APPEND) {
-                applyNewText(messageOwner.translatedMessage);
                 generateCaption();
             }
             return replyUpdated || true;
@@ -6725,7 +6721,7 @@ public class MessageObject {
         } else if (hasExtendedMedia()) {
             text = messageOwner.message = messageOwner.media.description;
         }
-        if (messageOwner.translatedText != null && (captionTranslated = translated) && (NaConfig.INSTANCE.getTranslatorMode().Int() == MessageTransKt.TRANSLATE_MODE_REPLACE || MessagesController.getInstance(currentAccount).getTranslateController().isTranslatingDialog(getDialogId()))) {
+        if (messageOwner.translatedText != null && (captionTranslated = translated)) {
             text = messageOwner.translatedText.text;
             // entities = messageOwner.translatedText.entities;
             entities = reparseMessageEntities(messageOwner.translatedText.entities);
@@ -7038,11 +7034,8 @@ public class MessageObject {
                 if (messageOwner.translatedText == null) {
                     entities = null;
                 } else {
-                    if (NaConfig.INSTANCE.getTranslatorMode().Int() == MessageTransKt.TRANSLATE_MODE_REPLACE || MessagesController.getInstance(currentAccount).getTranslateController().isTranslatingDialog(getDialogId())) {
-                        entities = reparseMessageEntities(messageOwner.translatedText.entities);
-                    } else {
-                        entities = messageOwner.entities;
-                    }
+                    // entities = messageOwner.translatedText.entities;
+                    entities = reparseMessageEntities(messageOwner.translatedText.entities);
                 }
             } else {
                 entities = messageOwner.entities;
