@@ -98,8 +98,6 @@
     <string name="UseMediaStreamInVoip">Использовать медиапоток в VoIP</string>
     <string name="HideTimeForSticker">Скрыть время на стикерах</string>
     <string name="hideGroupSticker">Скрыть стикер группы</string>
-    <string name="useSystemDNS">Системный DNS</string>
-    <string name="customDoH">Пользовательский DoH</string>
     <string name="customGroupVoipAudioBitrate">Битрейт VoIP-аудио для группы</string>
     <string name="maxRecentStickerCount">Максимум недавних стикеров</string>
     <string name="disableSwipeToNextChannel">Отключить переход на следующий канал пролистыванием</string>
@@ -194,7 +192,6 @@
     <string name="CustomApi">Выбрать API</string>
     <string name="UseCustomApiNotice">Войдите в систему, используя пользовательский API. Если вы не можете зарегистрироваться или войти в систему, это может помочь.\n\nПримечание: FCM не будет работать, если вы используете пользовательский API.</string>
     <string name="CustomApiNo">Не использовать (рекомендуется)</string>
-    <string name="CustomApiTGX">Telegram X</string>
     <string name="CustomApiInput">Ввести вручную</string>
     <string name="LinkedGroupChat">Привязанная группа</string>
     <string name="LinkedChannelChat">Привязанный канал</string>

@@ -19,6 +19,7 @@ import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
+import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.TextCheckCell;
@@ -58,7 +59,7 @@ public class NekoPasscodeSettingsActivity extends BaseNekoSettingsActivity {
 
     @Override
     public boolean onFragmentCreate() {
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             var u = AccountInstance.getInstance(a).getUserConfig().getCurrentUser();
             if (u != null) {
                 accounts.add(a);

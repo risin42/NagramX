@@ -722,7 +722,7 @@ public class FragmentContextView extends FrameLayout implements NotificationCent
                 }
                 builder.setPositiveButton(getString(R.string.Stop), (dialogInterface, i) -> {
                     if (fragment instanceof DialogsActivity) {
-                        for (int a : SharedConfig.activeAccounts) {
+                        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                             LocationController.getInstance(a).removeAllLocationSharings();
                         }
                     } else {
@@ -781,7 +781,7 @@ public class FragmentContextView extends FrameLayout implements NotificationCent
                     did = chatActivity.getDialogId();
                     account = fragment.getCurrentAccount();
                 } else if (LocationController.getLocationsCount() == 1) {
-                    for (int a : SharedConfig.activeAccounts) {
+                    for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                         ArrayList<LocationController.SharingLocationInfo> arrayList = LocationController.getInstance(a).sharingLocationsUI;
                         if (!arrayList.isEmpty()) {
                             LocationController.SharingLocationInfo info = LocationController.getInstance(a).sharingLocationsUI.get(0);
@@ -1315,7 +1315,7 @@ public class FragmentContextView extends FrameLayout implements NotificationCent
             NotificationCenter.getGlobalInstance().removeObserver(this, NotificationCenter.liveLocationsChanged);
             NotificationCenter.getGlobalInstance().removeObserver(this, NotificationCenter.liveLocationsCacheChanged);
         } else {
-            for (int a : SharedConfig.activeAccounts) {
+            for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                 NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.messagePlayingDidReset);
                 NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.messagePlayingPlayStateChanged);
                 NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.messagePlayingDidStart);
@@ -1351,7 +1351,7 @@ public class FragmentContextView extends FrameLayout implements NotificationCent
             }
             checkLiveLocation(true);
         } else {
-            for (int a : SharedConfig.activeAccounts) {
+            for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                 NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.messagePlayingDidReset);
                 NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.messagePlayingPlayStateChanged);
                 NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.messagePlayingDidStart);
@@ -1587,7 +1587,7 @@ public class FragmentContextView extends FrameLayout implements NotificationCent
                 String param;
                 String str;
                 ArrayList<LocationController.SharingLocationInfo> infos = new ArrayList<>();
-                for (int a : SharedConfig.activeAccounts) {
+                for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                     infos.addAll(LocationController.getInstance(a).sharingLocationsUI);
                 }
                 if (infos.size() == 1) {

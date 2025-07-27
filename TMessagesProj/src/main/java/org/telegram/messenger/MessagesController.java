@@ -225,7 +225,7 @@ public class MessagesController extends BaseController implements NotificationCe
         if (channelBoostsControler != null) {
             return channelBoostsControler;
         }
-        synchronized (lockObject) {
+        synchronized (lockObjects[currentAccount]) {
             if (channelBoostsControler != null) {
                 return channelBoostsControler;
             }
@@ -1488,15 +1488,21 @@ public class MessagesController extends BaseController implements NotificationCe
         return 0;
     };
 
-    private static final Object lockObject = new Object();
-    private static SparseArray<MessagesController> Instance = new SparseArray<>();
+    private static volatile MessagesController[] Instance = new MessagesController[UserConfig.MAX_ACCOUNT_COUNT];
+    private static final Object[] lockObjects = new Object[UserConfig.MAX_ACCOUNT_COUNT];
+    static {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
+            lockObjects[i] = new Object();
+        }
+    }
+
     public static MessagesController getInstance(int num) {
-        MessagesController localInstance = Instance.get(num);
+        MessagesController localInstance = Instance[num];
         if (localInstance == null) {
-            synchronized (lockObject) {
-                localInstance = Instance.get(num);
+            synchronized (lockObjects[num]) {
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new MessagesController(num));
+                    Instance[num] = localInstance = new MessagesController(num);
                 }
             }
         }
@@ -1796,7 +1802,7 @@ public class MessagesController extends BaseController implements NotificationCe
             }
         }
         scheduleTranscriptionUpdate();
-//        BuildVars.GOOGLE_AUTH_CLIENT_ID = mainPreferences.getString("googleAuthClientId", BuildVars.GOOGLE_AUTH_CLIENT_ID);
+        BuildVars.GOOGLE_AUTH_CLIENT_ID = mainPreferences.getString("googleAuthClientId", BuildVars.GOOGLE_AUTH_CLIENT_ID);
         if (mainPreferences.contains("dcDomainName2")) {
             dcDomainName = mainPreferences.getString("dcDomainName2", "apv3.stel.com");
         } else {
@@ -2795,11 +2801,11 @@ public class MessagesController extends BaseController implements NotificationCe
                 case "login_google_oauth_client_id": {
                     if (value.value instanceof TLRPC.TL_jsonString) {
                         String str = ((TLRPC.TL_jsonString) value.value).value;
-                        /*if (!Objects.equals(BuildVars.GOOGLE_AUTH_CLIENT_ID, str)) {
+                        if (!Objects.equals(BuildVars.GOOGLE_AUTH_CLIENT_ID, str)) {
                             BuildVars.GOOGLE_AUTH_CLIENT_ID = str;
                             editor.putString("googleAuthClientId", BuildVars.GOOGLE_AUTH_CLIENT_ID);
                             changed = true;
-                        }*/
+                        }
                     }
                     break;
                 }
@@ -6323,7 +6329,7 @@ public class MessagesController extends BaseController implements NotificationCe
 
         showFiltersTooltip = false;
 
-        DialogsActivity.dialogsLoaded.put(currentAccount, false);
+        DialogsActivity.dialogsLoaded[currentAccount] = false;
 
         SharedPreferences.Editor editor = notificationsPreferences.edit();
         editor.clear().commit();
@@ -15264,7 +15270,7 @@ public class MessagesController extends BaseController implements NotificationCe
             TL_account.unregisterDevice req = new TL_account.unregisterDevice();
             req.token = SharedConfig.pushString;
             req.token_type = SharedConfig.pushType;
-            for (int a : SharedConfig.activeAccounts) {
+            for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                 UserConfig userConfig = UserConfig.getInstance(a);
                 if (a != currentAccount && userConfig.isClientActivated()) {
                     req.other_uids.add(userConfig.getClientUserId());
@@ -15309,7 +15315,7 @@ public class MessagesController extends BaseController implements NotificationCe
         if (shouldHandle) {
             if (UserConfig.selectedAccount == currentAccount) {
                 int account = -1;
-                for (int a : SharedConfig.activeAccounts) {
+                for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                     if (UserConfig.getInstance(a).isClientActivated()) {
                         account = a;
                         break;
@@ -15326,11 +15332,6 @@ public class MessagesController extends BaseController implements NotificationCe
         getMessagesStorage().cleanup(false);
         cleanup();
         getContactsController().deleteUnknownAppAccounts();
-        if (ConnectionsManager.native_isTestBackend(currentAccount) != 0) {
-            ConnectionsManager.native_switchBackend(currentAccount, false);
-        }
-        SharedConfig.activeAccounts.remove(currentAccount);
-        SharedConfig.saveAccounts();
     }
 
     public void registerForPush(@PushListenerController.PushType int pushType, String regid) {
@@ -15352,7 +15353,7 @@ public class MessagesController extends BaseController implements NotificationCe
         req.token = regid;
         req.no_muted = false;
         req.secret = SharedConfig.pushAuthKey;
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             UserConfig userConfig = UserConfig.getInstance(a);
             if (a != currentAccount && userConfig.isClientActivated()) {
                 long uid = userConfig.getClientUserId();
@@ -20524,6 +20525,9 @@ public class MessagesController extends BaseController implements NotificationCe
                 if (res.peers.isEmpty()) {
                     result = null;
                 } else {
+                    if (!getUserConfig().isRealPremium()) {
+                        res.peers.removeIf((peer) -> peer.premium_required);
+                    }
                     result = res;
                     AndroidUtilities.runOnUIThread(() -> {
                         putUsers(res.users, false);
@@ -21263,7 +21267,19 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public static void showCantOpenAlert(BaseFragment fragment, String reason) {
-        AlertUtil.showToast(reason);
+        if (fragment == null || fragment.getParentActivity() == null) {
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getParentActivity(), fragment.getResourceProvider());
+        builder.setTitle(LocaleController.getString(R.string.DialogNotAvailable));
+        Map<String, Integer> colorsReplacement = new HashMap<>();
+        colorsReplacement.put("info1.**", fragment.getThemedColor(Theme.key_dialogTopBackground));
+        colorsReplacement.put("info2.**", fragment.getThemedColor(Theme.key_dialogTopBackground));
+        builder.setTopAnimation(R.raw.not_available, AlertsCreator.NEW_DENY_DIALOG_TOP_ICON_SIZE, false, fragment.getThemedColor(Theme.key_dialogTopBackground), colorsReplacement);
+        builder.setTopAnimationIsNew(true);
+        builder.setPositiveButton(LocaleController.getString(R.string.Close), null);
+        builder.setMessage(reason);
+        fragment.showDialog(builder.create());
     }
 
     public boolean checkCanOpenChat(Bundle bundle, BaseFragment fragment) {
@@ -22172,7 +22188,7 @@ public class MessagesController extends BaseController implements NotificationCe
         if (storiesController != null) {
             return storiesController;
         }
-        synchronized (lockObject) {
+        synchronized (lockObjects[currentAccount]) {
             if (storiesController != null) {
                 return storiesController;
             }
@@ -22185,7 +22201,7 @@ public class MessagesController extends BaseController implements NotificationCe
         if (savedMessagesController != null) {
             return savedMessagesController;
         }
-        synchronized (lockObject) {
+        synchronized (lockObjects[currentAccount]) {
             if (savedMessagesController != null) {
                 return savedMessagesController;
             }
@@ -22198,7 +22214,7 @@ public class MessagesController extends BaseController implements NotificationCe
         if (unconfirmedAuthController != null) {
             return unconfirmedAuthController;
         }
-        synchronized (lockObject) {
+        synchronized (lockObjects[currentAccount]) {
             if (unconfirmedAuthController != null) {
                 return unconfirmedAuthController;
             }

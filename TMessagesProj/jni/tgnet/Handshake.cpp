@@ -407,8 +407,6 @@ void Handshake::processHandshakeResponse_resPQ(TLObject *message, int64_t messag
                 loadCdnConfig(currentDatacenter);
             } else {
                 if (LOGS_ENABLED) DEBUG_E("account%u dc%u handshake: can't find valid server public key, type = %d", currentDatacenter->instanceNum, currentDatacenter->datacenterId, handshakeType);
-                serverPublicKeys.clear();
-                serverPublicKeysFingerprints.clear();
                 beginHandshake(false);
             }
             return;
@@ -926,10 +924,9 @@ void Handshake::processHandshakeResponse_serverDHParamsAnswer(TLObject *message,
 }
 
 void Handshake::sendAckRequest(int64_t messageId) {
-    /*
     auto msgsAck = new TL_msgs_ack();
     msgsAck->msg_ids.push_back(messageId);
-    sendRequestData(msgsAck, false);*/
+    sendRequestData(msgsAck, false);
 }
 
 TLObject *Handshake::getCurrentHandshakeRequest() {

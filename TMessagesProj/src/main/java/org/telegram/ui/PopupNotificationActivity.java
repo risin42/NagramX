@@ -165,7 +165,7 @@ public class PopupNotificationActivity extends Activity implements NotificationC
         Theme.createChatResources(this, false);
 
         AndroidUtilities.fillStatusBarHeight(this, false);
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.appDidLogout);
             NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.updateInterfaces);
             NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.messagePlayingProgressDidChanged);
@@ -1199,7 +1199,7 @@ public class PopupNotificationActivity extends Activity implements NotificationC
             }
             popupMessages.addAll(NotificationsController.getInstance(account).popupReplyMessages);
         } else {
-            for (int a : SharedConfig.activeAccounts) {
+            for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                 if (UserConfig.getInstance(a).isClientActivated()) {
                     popupMessages.addAll(NotificationsController.getInstance(a).popupMessages);
                 }
@@ -1469,7 +1469,7 @@ public class PopupNotificationActivity extends Activity implements NotificationC
         } else if (id == NotificationCenter.pushMessagesUpdated) {
             if (!isReply) {
                 popupMessages.clear();
-                for (int a : SharedConfig.activeAccounts) {
+                for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                     if (UserConfig.getInstance(a).isClientActivated()) {
                         popupMessages.addAll(NotificationsController.getInstance(a).popupMessages);
                     }
@@ -1585,7 +1585,7 @@ public class PopupNotificationActivity extends Activity implements NotificationC
         if (isReply) {
             popupMessages.clear();
         }
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.appDidLogout);
             NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.updateInterfaces);
             NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.messagePlayingProgressDidChanged);

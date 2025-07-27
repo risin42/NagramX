@@ -451,25 +451,17 @@ public class LocaleController {
         }
 
         public File getPathToFile() {
-
-            File baseDir = new File(ApplicationLoader.getDataDirFixed(), "languages");
-
-            FileUtil.initDir(baseDir);
-
             if (isRemote()) {
-                return new File(baseDir, "remote_" + shortName + ".xml");
+                return new File(ApplicationLoader.getFilesDirFixed(), "remote_" + shortName + ".xml");
             } else if (isUnofficial()) {
-                return new File(baseDir, "unofficial_" + shortName + ".xml");
+                return new File(ApplicationLoader.getFilesDirFixed(), "unofficial_" + shortName + ".xml");
             }
             return !TextUtils.isEmpty(pathToFile) ? new File(pathToFile) : null;
         }
 
         public File getPathToBaseFile() {
             if (isUnofficial()) {
-                File baseDir = new File(ApplicationLoader.getDataDirFixed(), "languages");
-
-                FileUtil.initDir(baseDir);
-                return new File(baseDir, "unofficial_base_" + shortName + ".xml");
+                return new File(ApplicationLoader.getFilesDirFixed(), "unofficial_base_" + shortName + ".xml");
             }
             return null;
         }
@@ -3259,7 +3251,7 @@ public class LocaleController {
                     }
                 }, ConnectionsManager.RequestFlagWithoutLogin);
             } else {
-                for (int a : SharedConfig.activeAccounts) {
+                for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                     ConnectionsManager.setLangCode(localeInfo.getLangCode());
                 }
                 FileLog.d("applyRemoteLanguage getLangPack");

@@ -6330,7 +6330,7 @@ public class AlertsCreator {
 
         final LinearLayout linearLayout = new LinearLayout(parentActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             if (PasscodeHelper.isAccountHidden(a)) continue;
             TLRPC.User u = UserConfig.getInstance(a).getCurrentUser();
             if (u != null) {

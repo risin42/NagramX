@@ -98,8 +98,6 @@
     <string name="UseMediaStreamInVoip">Використовувати медіапотік у VoIP</string>
     <string name="HideTimeForSticker">Приховати час на наліпках</string>
     <string name="hideGroupSticker">Приховати наліпку групи</string>
-    <string name="useSystemDNS">Використати системний DNS</string>
-    <string name="customDoH">Власний DoH</string>
     <string name="customGroupVoipAudioBitrate">Бітрейт аудіо VoIP для груп</string>
     <string name="maxRecentStickerCount">Максимум останніх наліпок</string>
     <string name="disableSwipeToNextChannel">Вимкнути перехід на наступний канал свайпом</string>

@@ -92,7 +92,7 @@ public class ProxyRotationController implements NotificationCenter.NotificationC
     }
 
     private void initInternal() {
-        for (int i : SharedConfig.activeAccounts) {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
             NotificationCenter.getInstance(i).addObserver(this, NotificationCenter.didUpdateConnectionState);
         }
         NotificationCenter.getGlobalInstance().addObserver(this, NotificationCenter.proxyCheckDone);

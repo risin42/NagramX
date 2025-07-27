@@ -98,8 +98,6 @@
     <string name="UseMediaStreamInVoip">Use o Stream de Mídia no VoIP</string>
     <string name="HideTimeForSticker">Ocultar Horário nos Stickers</string>
     <string name="hideGroupSticker">Ocultar Sticker do Grupo</string>
-    <string name="useSystemDNS">Usar DNS do sistema</string>
-    <string name="customDoH">DoH Personalizado</string>
     <string name="customGroupVoipAudioBitrate">Taxa de bits de áudio VoIP do grupo</string>
     <string name="maxRecentStickerCount">Máximo de Stickers Recentes</string>
     <string name="disableSwipeToNextChannel">Desativar Deslizar para o Próximo Canal</string>

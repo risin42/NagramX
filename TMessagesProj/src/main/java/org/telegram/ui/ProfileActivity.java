@@ -13344,20 +13344,16 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     new SearchResult(500, LocaleController.getString(R.string.EditName), 0, () -> presentFragment(new ChangeNameActivity(resourcesProvider))),
                     new SearchResult(501, LocaleController.getString(R.string.ChangePhoneNumber), 0, () -> presentFragment(new ActionIntroActivity(ActionIntroActivity.ACTION_TYPE_CHANGE_PHONE_NUMBER))),
                     new SearchResult(502, LocaleController.getString(R.string.AddAnotherAccount), 0, () -> {
-                        int freeAccount;
-                        int freeAccounts = UserConfig.MAX_ACCOUNT_COUNT - SharedConfig.activeAccounts.size();
-                        for (int account = 0; ; account++) {
-                            if (!SharedConfig.activeAccounts.contains(account)) {
-                                freeAccount = account;
-                                break;
-                            }
+                    int freeAccount = -1;
+                    for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
+                        if (!UserConfig.getInstance(a).isClientActivated()) {
+                            freeAccount = a;
+                            break;
                         }
-                        if (!UserConfig.hasPremiumOnAccounts()) {
-                            freeAccounts -= (UserConfig.MAX_ACCOUNT_COUNT - UserConfig.MAX_ACCOUNT_DEFAULT_COUNT);
-                        }
-                        if (freeAccounts > 0 && freeAccount >= 0) {
-                            presentFragment(new LoginActivity(freeAccount));
-                        }
+                    }
+                    if (freeAccount >= 0) {
+                        presentFragment(new LoginActivity(freeAccount));
+                    }
                 }),
                 new SearchResult(503, getString(R.string.UserBio), 0, () -> {
                     if (userInfo != null) {
@@ -13402,7 +13398,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     if (!getUserConfig().isPremium()) {
                         try {
                             if (!NekoConfig.disableVibration.Bool())
-                            fragmentView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                                fragmentView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                         } catch (Exception ignored) {}
                         BulletinFactory.of(ProfileActivity.this).createRestrictVoiceMessagesPremiumBulletin().show();
                         return;
@@ -13912,10 +13908,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         }
                         if (stringBuilder != null && i == searchArgs.length - 1) {
                             if (result.guid == 502) {
-                                int freeAccount;
-                                for (int account = 0; ; account++) {
-                                    if (!SharedConfig.activeAccounts.contains(account)) {
-                                        freeAccount = account;
+                                int freeAccount = -1;
+                                for (int b = 0; b < UserConfig.MAX_ACCOUNT_COUNT; b++) {
+                                    if (!UserConfig.getInstance(b).isClientActivated()) {
+                                        freeAccount = b;
                                         break;
                                     }
                                 }

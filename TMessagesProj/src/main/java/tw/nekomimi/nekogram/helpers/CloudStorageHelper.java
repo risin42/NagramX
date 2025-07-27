@@ -1,11 +1,10 @@
 package tw.nekomimi.nekogram.helpers;
 
-import android.util.SparseArray;
-
 import com.google.gson.Gson;
 
 import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.tl.TL_bots;
@@ -14,7 +13,7 @@ import java.util.HashMap;
 
 public class CloudStorageHelper extends AccountInstance {
 
-    private static final SparseArray<CloudStorageHelper> Instance = new SparseArray<>();
+    private static final CloudStorageHelper[] Instance = new CloudStorageHelper[UserConfig.MAX_ACCOUNT_COUNT];
     private static final long WEBVIEW_BOT_ID = 1433866570L;
     private static final String WEBVIEW_BOT = "NextAloneBot";
 
@@ -25,12 +24,12 @@ public class CloudStorageHelper extends AccountInstance {
     }
 
     public static CloudStorageHelper getInstance(int num) {
-        CloudStorageHelper localInstance = Instance.get(num);
+        CloudStorageHelper localInstance = Instance[num];
         if (localInstance == null) {
             synchronized (CloudStorageHelper.class) {
-                localInstance = Instance.get(num);
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new CloudStorageHelper(num));
+                    Instance[num] = localInstance = new CloudStorageHelper(num);
                 }
             }
         }

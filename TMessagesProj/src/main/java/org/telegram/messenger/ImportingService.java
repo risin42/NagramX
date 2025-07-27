@@ -21,7 +21,7 @@ public class ImportingService extends Service implements NotificationCenter.Noti
 
     public ImportingService() {
         super();
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.historyImportProgressChanged);
             NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.stickersImportProgressChanged);
         }
@@ -39,7 +39,7 @@ public class ImportingService extends Service implements NotificationCenter.Noti
 
         }
         NotificationManagerCompat.from(ApplicationLoader.applicationContext).cancel(5);
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.historyImportProgressChanged);
             NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.stickersImportProgressChanged);
         }
@@ -58,7 +58,7 @@ public class ImportingService extends Service implements NotificationCenter.Noti
     }
 
     private boolean hasImportingHistory() {
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             if (SendMessagesHelper.getInstance(a).isImportingHistory()) {
                 return true;
             }
@@ -67,7 +67,7 @@ public class ImportingService extends Service implements NotificationCenter.Noti
     }
 
     private boolean hasImportingStickers() {
-        for(int a : SharedConfig.activeAccounts){
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             if (SendMessagesHelper.getInstance(a).isImportingStickers()) {
                 return true;
             }

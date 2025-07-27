@@ -98,8 +98,6 @@
     <string name="UseMediaStreamInVoip">VoIP\'de Medya Akışını Kullan</string>
     <string name="HideTimeForSticker">Çıkartmalarda Zamanı Gizle</string>
     <string name="hideGroupSticker">Grup Çıkartmasını Gizle</string>
-    <string name="useSystemDNS">Sistem DNS\'ini Kullan</string>
-    <string name="customDoH">Özel DoH</string>
     <string name="customGroupVoipAudioBitrate">Grup VoIP Ses Bit Hızı</string>
     <string name="maxRecentStickerCount">Maksimum Son Çıkartma Sayısı</string>
     <string name="disableSwipeToNextChannel">Sonraki Kanala Kaydırmayı Devre Dışı Bırak</string>

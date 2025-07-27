@@ -112,8 +112,13 @@ public class MessagesStorage extends BaseController {
 
     private final CountDownLatch openSync = new CountDownLatch(1);
 
-    private static SparseArray<MessagesStorage> Instance = new SparseArray();
-    private static final Object lockObject = new Object();
+    private static volatile MessagesStorage[] Instance = new MessagesStorage[UserConfig.MAX_ACCOUNT_COUNT];
+    private static final Object[] lockObjects = new Object[UserConfig.MAX_ACCOUNT_COUNT];
+    static {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
+            lockObjects[i] = new Object();
+        }
+    }
 
     public final static int LAST_DB_VERSION = 165;
     private boolean databaseMigrationInProgress;
@@ -123,12 +128,12 @@ public class MessagesStorage extends BaseController {
     private final LongSparseIntArray dialogIsForumOrMonoForumWithTabs = new LongSparseIntArray();
 
     public static MessagesStorage getInstance(int num) {
-        MessagesStorage localInstance = Instance.get(num);
+        MessagesStorage localInstance = Instance[num];
         if (localInstance == null) {
-            synchronized (lockObject) {
-                localInstance = Instance.get(num);
+            synchronized (lockObjects[num]) {
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new MessagesStorage(num));
+                    Instance[num] = localInstance = new MessagesStorage(num);
                 }
             }
         }

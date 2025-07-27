@@ -497,7 +497,7 @@ public class BotBiometry {
     public static void clear() {
         Context context = ApplicationLoader.applicationContext;
         if (context == null) return;
-        for (int i: SharedConfig.activeAccounts) {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; ++i) {
             final SharedPreferences prefs = context.getSharedPreferences(PREF + i, Activity.MODE_PRIVATE);
             prefs.edit().clear().apply();
         }

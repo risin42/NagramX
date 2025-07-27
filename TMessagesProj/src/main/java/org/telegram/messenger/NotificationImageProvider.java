@@ -44,26 +44,26 @@ public class NotificationImageProvider extends ContentProvider implements Notifi
 			matcher.addURI(getAuthority(), "msg_media_raw/#/*", 1); // content://org.telegram..../msg_media_raw/account/filename.ext
 		}
 		return matcher;
-	}@Override
-    public boolean onCreate() {
-        Utilities.stageQueue.postRunnable(() -> {
-            SharedConfig.loadConfig();
-            AndroidUtilities.runOnUIThread(() -> {
-                for (int i : SharedConfig.activeAccounts) {
-                    NotificationCenter.getInstance(i).addObserver(this, NotificationCenter.fileLoaded);
-                }
-            });
-        },10000);
+	}
 
-        return true;
-    }
+	@Override
+	public boolean onCreate() {
+		for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
+			if (UserConfig.getInstance(i).isClientActivated()) {
+				NotificationCenter.getInstance(i).addObserver(this, NotificationCenter.fileLoaded);
+			}
+		}
+		return true;
+	}
 
-    @Override
-    public void shutdown() {
-        for (int i : SharedConfig.activeAccounts) {
-            NotificationCenter.getInstance(i).removeObserver(this, NotificationCenter.fileLoaded);
-        }
-    }
+	@Override
+	public void shutdown() {
+		for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
+			if (UserConfig.getInstance(i).isClientActivated()) {
+				NotificationCenter.getInstance(i).removeObserver(this, NotificationCenter.fileLoaded);
+			}
+		}
+	}
 
     @Nullable
     @Override

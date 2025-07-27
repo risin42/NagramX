@@ -1,7 +1,6 @@
 package org.telegram.ui.Business;
 
 import android.text.TextUtils;
-import android.util.SparseArray;
 
 import org.telegram.SQLite.SQLiteCursor;
 import org.telegram.SQLite.SQLiteDatabase;
@@ -25,16 +24,22 @@ import java.util.ArrayList;
 
 public class BusinessLinksController {
 
-    private static volatile SparseArray<BusinessLinksController> Instance = new SparseArray<>();
-    private static final Object lockObject = new Object();
+    private static volatile BusinessLinksController[] Instance = new BusinessLinksController[UserConfig.MAX_ACCOUNT_COUNT];
+    private static final Object[] lockObjects = new Object[UserConfig.MAX_ACCOUNT_COUNT];
+
+    static {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
+            lockObjects[i] = new Object();
+        }
+    }
 
     public static BusinessLinksController getInstance(int num) {
-        BusinessLinksController localInstance = Instance.get(num);
+        BusinessLinksController localInstance = Instance[num];
         if (localInstance == null) {
-            synchronized (lockObject) {
-                localInstance = Instance.get(num);
+            synchronized (lockObjects[num]) {
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new BusinessLinksController(num));
+                    Instance[num] = localInstance = new BusinessLinksController(num);
                 }
             }
         }

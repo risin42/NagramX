@@ -618,19 +618,21 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 switchToAccount(((DrawerUserCell) view).getAccountNumber(), true);
                 drawerLayoutContainer.closeDrawer(false);
             } else if (view instanceof DrawerAddCell) {
-                int freeAccount;
-                int freeAccounts = UserConfig.MAX_ACCOUNT_COUNT - SharedConfig.activeAccounts.size();
-                for (int account = 0; ; account++) {
-                    if (!SharedConfig.activeAccounts.contains(account)) {
-                        freeAccount = account;
-                        break;
+                int freeAccounts = 0;
+                Integer availableAccount = null;
+                for (int a = UserConfig.MAX_ACCOUNT_COUNT - 1; a >= 0; a--) {
+                    if (!UserConfig.getInstance(a).isClientActivated()) {
+                        freeAccounts++;
+                        if (availableAccount == null) {
+                            availableAccount = a;
+                        }
                     }
                 }
                 if (!UserConfig.hasPremiumOnAccounts()) {
                     freeAccounts -= (UserConfig.MAX_ACCOUNT_COUNT - UserConfig.MAX_ACCOUNT_DEFAULT_COUNT);
                 }
-                if (freeAccounts > 0 && freeAccount >= 0) {
-                    presentFragment(new LoginActivity(freeAccount));
+                if (freeAccounts > 0 && availableAccount != null) {
+                    presentFragment(new LoginActivity(availableAccount));
                     drawerLayoutContainer.closeDrawer(false);
                 } else if (!UserConfig.hasPremiumOnAccounts()) {
                     if (actionBarLayout.getFragmentStack().size() > 0) {
@@ -1670,7 +1672,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
     private void switchToAvailableAccountOrLogout() {
         int account = -1;
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             if (UserConfig.getInstance(a).isClientActivated()) {
                 account = a;
                 break;
@@ -3232,10 +3234,10 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                                         if (cursor.moveToFirst()) {
                                             long userId = cursor.getLong(cursor.getColumnIndex(ContactsContract.Data.DATA4));
                                             int accountId = Utilities.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.RawContacts.ACCOUNT_NAME)));
-                                            for (int a = -1; a < SharedConfig.activeAccounts.size(); a++) {
+                                            for (int a = -1; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                                                 int i = a == -1 ? intentAccount[0] : a;
                                                 if ((a == -1 && MessagesStorage.getInstance(i).containsLocalDialog(userId)) || UserConfig.getInstance(i).getClientUserId() == accountId) {
-                                                    intentAccount[0] = a;
+                                                    intentAccount[0] = i;
                                                     switchToAccount(intentAccount[0], true);
                                                     break;
                                                 }
@@ -8536,7 +8538,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 drawerLayoutContainer.setAllowOpenDrawer(false, true);
 
                 int account = -1;
-                for (int a : SharedConfig.activeAccounts) {
+                for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                     if (UserConfig.getInstance(a).isClientActivated()) {
                         account = a;
                         break;
@@ -8619,7 +8621,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 drawerLayoutContainer.setAllowOpenDrawer(false, true);
 
                 int account = -1;
-                for (int a : SharedConfig.activeAccounts) {
+                for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                     if (UserConfig.getInstance(a).isClientActivated()) {
                         account = a;
                         break;

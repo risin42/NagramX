@@ -98,8 +98,6 @@
     <string name="UseMediaStreamInVoip">通話でメディアストリームを使用</string>
     <string name="HideTimeForSticker">ステッカーの送信時間を非表示</string>
     <string name="hideGroupSticker">グループステッカーを非表示</string>
-    <string name="useSystemDNS">システム DNS を使用</string>
-    <string name="customDoH">カスタム DoH</string>
     <string name="customGroupVoipAudioBitrate">グループ通話の音声ビットレート</string>
     <string name="maxRecentStickerCount">最近使用したステッカーの数の上限</string>
     <string name="disableSwipeToNextChannel">次のチャンネルへのスワイプを無効にする</string>

@@ -237,4 +237,8 @@
     <string name="UsePersianCalendar">Use Persian Calendar</string>
     <string name="UsePersianCalendarInfo">Display date with Solar Hijri calendar</string>
     <string name="DisplayPersianCalendarByLatin">Display Persian calendar by Latin</string>
+    <string name="TestBackendOn">This account will connect to the test backend.</string>
+    <string name="TestBackendOff">This account will connect to the production backend.</string>
+    <string name="DidNotGetTheCodeBlameDurov">If you didn\'t get the code on another device or you don\'t have Telegram logged in on another device, please use the official Telegram app to receive the code.\n\nTelegram has **disabled the ability to log in with SMS** on third-party apps. Users logging into third-party apps are only able to receive login codes via Telegram.\n\nWe cannot help you with this, if you have any issues with logging in, please contact Telegram Support.</string>
+    <string name="QRLoginMessage">Scan QRCode with another device to login.</string>
 </resources>

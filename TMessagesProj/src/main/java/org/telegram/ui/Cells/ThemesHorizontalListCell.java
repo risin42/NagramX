@@ -44,6 +44,7 @@ import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
+import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
@@ -63,10 +64,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import androidx.annotation.Keep;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import tw.nekomimi.nekogram.NekoConfig;
 
@@ -369,8 +366,8 @@ public class ThemesHorizontalListCell extends RecyclerListView implements Notifi
         }
 
         private void applyTheme() {
-            inDrawable.setColorFilter(new PorterDuffColorFilter(themeInfo.getPreviewInColor(), PorterDuff.Mode.SRC_IN));
-            outDrawable.setColorFilter(new PorterDuffColorFilter(themeInfo.getPreviewOutColor(), PorterDuff.Mode.SRC_IN));
+            inDrawable.setColorFilter(new PorterDuffColorFilter(themeInfo.getPreviewInColor(), PorterDuff.Mode.MULTIPLY));
+            outDrawable.setColorFilter(new PorterDuffColorFilter(themeInfo.getPreviewOutColor(), PorterDuff.Mode.MULTIPLY));
             if (themeInfo.pathToFile == null) {
                 updateColors(false);
                 optionsDrawable = null;
@@ -552,8 +549,8 @@ public class ThemesHorizontalListCell extends RecyclerListView implements Notifi
                 paint.setColor(blend(oldBackColor, backColor));
 
                 if (accentColorChanged) {
-                    inDrawable.setColorFilter(new PorterDuffColorFilter(blend(oldInColor, inColor), PorterDuff.Mode.SRC_IN));
-                    outDrawable.setColorFilter(new PorterDuffColorFilter(blend(oldOutColor, outColor), PorterDuff.Mode.SRC_IN));
+                    inDrawable.setColorFilter(new PorterDuffColorFilter(blend(oldInColor, inColor), PorterDuff.Mode.MULTIPLY));
+                    outDrawable.setColorFilter(new PorterDuffColorFilter(blend(oldOutColor, outColor), PorterDuff.Mode.MULTIPLY));
                     accentColorChanged = false;
                 }
 
@@ -819,7 +816,7 @@ public class ThemesHorizontalListCell extends RecyclerListView implements Notifi
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.fileLoaded);
             NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.fileLoadFailed);
         }
@@ -828,7 +825,7 @@ public class ThemesHorizontalListCell extends RecyclerListView implements Notifi
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.fileLoaded);
             NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.fileLoadFailed);
         }

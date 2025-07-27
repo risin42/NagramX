@@ -34,7 +34,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
@@ -138,8 +137,8 @@ public class SessionCell extends FrameLayout {
         detailTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, type == 0 ? 13 : 14);
         detailTextView.setLines(1);
         detailTextView.setMaxLines(1);
-        //detailTextView.setSingleLine(true);
-        //detailTextView.setEllipsize(TextUtils.TruncateAt.END);
+        detailTextView.setSingleLine(true);
+        detailTextView.setEllipsize(TextUtils.TruncateAt.END);
         detailTextView.setGravity((LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP);
         addView(detailTextView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, leftMargin, type == 0 ? 28 : 36, rightMargin, 0));
 
@@ -216,21 +215,6 @@ public class SessionCell extends FrameLayout {
                 timeText = LocaleController.stringForMessageListDate(session.date_active);
             }
 
-            if (!session.official_app && session.api_id != BuildConfig.APP_ID) {
-                if (stringBuilder.length() != 0) {
-                    stringBuilder.append(", ");
-                }
-                stringBuilder.append(LocaleController.getString(R.string.UnofficialApp));
-                stringBuilder.append(" (ID: ");
-                stringBuilder.append(session.api_id);
-                stringBuilder.append(")");
-            }
-            stringBuilder = new StringBuilder();
-            stringBuilder.append(session.app_name);
-            stringBuilder.append(" ").append(session.app_version);
-
-            detailTextView.setText(stringBuilder);
-
             SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
             if (session.country.length() != 0) {
                 spannableStringBuilder.append(session.country);
@@ -243,6 +227,11 @@ public class SessionCell extends FrameLayout {
             spannableStringBuilder.append(timeText);
             detailExTextView.setText(spannableStringBuilder);
 
+            stringBuilder = new StringBuilder();
+            stringBuilder.append(session.app_name);
+            stringBuilder.append(" ").append(session.app_version);
+
+            detailTextView.setText(stringBuilder);
         } else if (object instanceof TLRPC.TL_webAuthorization) {
             TLRPC.TL_webAuthorization session = (TLRPC.TL_webAuthorization) object;
             TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(session.bot_id);
@@ -351,6 +340,10 @@ public class SessionCell extends FrameLayout {
             iconId = R.drawable.device_desktop_osx;
             colorKey = Theme.key_avatar_backgroundCyan;
             colorKey2 = Theme.key_avatar_background2Cyan;
+        } else if (session.app_name.contains("Nagram X")) {
+            iconId = R.drawable.nagramx_notification;
+            colorKey = Theme.key_avatar_backgroundBlue;
+            colorKey2 = Theme.key_avatar_background2Blue;
         } else if (platform.contains("android")) {
             iconId = deviceModel.contains("tab") ? R.drawable.device_tablet_android : R.drawable.device_phone_android;
             colorKey = Theme.key_avatar_backgroundGreen;
@@ -487,9 +480,9 @@ public class SessionCell extends FrameLayout {
         this.globalGradient = globalGradient;
         showStub = true;
 
-        Drawable iconDrawable = ContextCompat.getDrawable(ApplicationLoader.applicationContext, AndroidUtilities.isTablet() ? R.drawable.device_tablet_android : R.drawable.device_phone_android).mutate();
+        Drawable iconDrawable = ContextCompat.getDrawable(ApplicationLoader.applicationContext, R.drawable.notification).mutate();
         iconDrawable.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_avatar_text), PorterDuff.Mode.SRC_IN));
-        CombinedDrawable combinedDrawable = new CombinedDrawable(Theme.createCircleDrawable(dp(42), Theme.getColor(Theme.key_avatar_backgroundGreen)), iconDrawable);
+        CombinedDrawable combinedDrawable = new CombinedDrawable(Theme.createCircleDrawable(AndroidUtilities.dp(42), Theme.getColor(Theme.key_avatar_backgroundBlue)), iconDrawable);
         if (placeholderImageView != null) {
             placeholderImageView.setImageDrawable(combinedDrawable);
         } else {

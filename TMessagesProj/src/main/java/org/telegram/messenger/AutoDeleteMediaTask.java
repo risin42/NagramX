@@ -31,7 +31,7 @@ public class AutoDeleteMediaTask {
             }
             boolean hasExceptions = false;
             ArrayList<CacheByChatsController> cacheByChatsControllers = new ArrayList<>();
-            for (int account : SharedConfig.activeAccounts) {
+            for (int account = 0; account < UserConfig.MAX_ACCOUNT_COUNT; account++) {
                 if (UserConfig.getInstance(account).isClientActivated()) {
                     CacheByChatsController cacheByChatsController = UserConfig.getInstance(account).getMessagesController().getCacheByChatsController();
                     cacheByChatsControllers.add(cacheByChatsController);

@@ -1,7 +1,6 @@
 package org.telegram.ui.Business;
 
 import android.text.TextUtils;
-import android.util.SparseArray;
 
 import org.telegram.SQLite.SQLiteCursor;
 import org.telegram.SQLite.SQLiteDatabase;
@@ -34,16 +33,20 @@ public class QuickRepliesController {
         return GREETING.equalsIgnoreCase(name) || AWAY.equalsIgnoreCase(name);
     }
 
-    private static volatile SparseArray<QuickRepliesController> Instance = new SparseArray<>();
-    private static final Object lockObject = new Object();
-
+    private static volatile QuickRepliesController[] Instance = new QuickRepliesController[UserConfig.MAX_ACCOUNT_COUNT];
+    private static final Object[] lockObjects = new Object[UserConfig.MAX_ACCOUNT_COUNT];
+    static {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
+            lockObjects[i] = new Object();
+        }
+    }
     public static QuickRepliesController getInstance(int num) {
-        QuickRepliesController localInstance = Instance.get(num);
+        QuickRepliesController localInstance = Instance[num];
         if (localInstance == null) {
-            synchronized (lockObject) {
-                localInstance = Instance.get(num);
+            synchronized (lockObjects[num]) {
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new QuickRepliesController(num));
+                    Instance[num] = localInstance = new QuickRepliesController(num);
                 }
             }
         }

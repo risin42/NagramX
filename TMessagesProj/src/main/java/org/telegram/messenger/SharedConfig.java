@@ -249,7 +249,6 @@ public class SharedConfig {
     public static boolean allowScreenCapture;
     public static int lastPauseTime;
     public static boolean isWaitingForPasscodeEnter;
-    public static String lastUpdateVersion;
     public static boolean useFingerprintLock = true;
     public static boolean useFaceLock = true;
     public static int suggestStickers;
@@ -271,7 +270,7 @@ public class SharedConfig {
     public static boolean storiesIntroShown;
     public static boolean disableVoiceAudioEffects;
     public static boolean forceDisableTabletMode;
-    public static boolean updateStickersOrderOnSend = false;
+    public static boolean updateStickersOrderOnSend = true;
     public static boolean bigCameraForRound;
     public static Boolean useCamera2Force;
     public static boolean useNewBlur;
@@ -301,7 +300,7 @@ public class SharedConfig {
     public static boolean nextMediaTap = true;
     public static boolean recordViaSco = false;
     public static boolean customTabs = true;
-    public static boolean inappBrowser = false;
+    public static boolean inappBrowser = true;
     public static boolean adaptableColorInBrowser = true;
     public static boolean onlyLocalInstantView = false;
     public static boolean directShare = true;
@@ -331,7 +330,7 @@ public class SharedConfig {
     public static int fontSize = 16;
     public static boolean fontSizeIsDefault;
     public static int bubbleRadius = 17;
-    public static int ivFontSize = 12;
+    public static int ivFontSize = 16;
     public static boolean proxyRotationEnabled;
     public static int proxyRotationTimeout;
     public static int messageSeenHintCount;
@@ -364,9 +363,6 @@ public class SharedConfig {
     public static boolean multipleReactionsPromoShowed;
 
     public static boolean translateChats = true;
-
-    public static CopyOnWriteArraySet<Integer> activeAccounts;
-    public static int loginingAccount = -1;
 
     public static boolean isFloatingDebugActive;
     public static LiteMode liteMode;
@@ -453,21 +449,14 @@ public class SharedConfig {
         }
     }
 
-    public static LinkedList<ProxyInfo> proxyList = new LinkedList<>();
-
+    public static ArrayList<ProxyInfo> proxyList = new ArrayList<>();
     public static LinkedList<ProxyInfo> getProxyList() {
-
         while (true) {
-
             try {
-
                 return new LinkedList<>(proxyList);
-
             } catch (Exception ignored) {
             }
-
         }
-
     }
 
     private static boolean proxyListLoaded;
@@ -548,13 +537,6 @@ public class SharedConfig {
         return value;
     }
 
-    public static void saveAccounts() {
-        FileLog.e("Save accounts: " + activeAccounts, new Exception());
-        ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE).edit()
-                .putString("active_accounts", TextUtils.join(",", activeAccounts))
-                .apply();
-    }
-
     public static void loadConfig() {
         synchronized (sync) {
             if (configLoaded || ApplicationLoader.applicationContext == null) {
@@ -573,7 +555,6 @@ public class SharedConfig {
             badPasscodeTries = preferences.getInt("badPasscodeTries", 0);
             autoLockIn = preferences.getInt("autoLockIn", 60 * 60);
             lastPauseTime = preferences.getInt("lastPauseTime", 0);
-            lastUpdateVersion = preferences.getString("lastUpdateVersion2", "3.5");
             useFingerprintLock = preferences.getBoolean("useFingerprint", true);
             allowScreenCapture = preferences.getBoolean("allowScreenCapture", false);
             lastLocalId = preferences.getInt("lastLocalId", -210000);
@@ -657,7 +638,7 @@ public class SharedConfig {
             hasCameraCache = preferences.contains("cameraCache");
             roundCamera16to9 = true;
             repeatMode = preferences.getInt("repeatMode", 0);
-            fontSize = preferences.getInt("fons_size", AndroidUtilities.isTablet() ? 16 : 16);
+            fontSize = preferences.getInt("fons_size", AndroidUtilities.isTablet() ? 18 : 16);
             fontSizeIsDefault = !preferences.contains("fons_size");
             bubbleRadius = preferences.getInt("bubbleRadius", 17);
             ivFontSize = preferences.getInt("iv_font_size", fontSize);
@@ -708,38 +689,6 @@ public class SharedConfig {
             messageSeenHintCount = preferences.getInt("messageSeenCount", 3);
             emojiInteractionsHintCount = preferences.getInt("emojiInteractionsHintCount", 3);
             dayNightThemeSwitchHintCount = preferences.getInt("dayNightThemeSwitchHintCount", 3);
-            activeAccounts = Arrays.stream(preferences.getString("active_accounts", "").split(",")).filter(str -> str != null && !str.trim().isEmpty()).map(Integer::parseInt).collect(Collectors.toCollection(CopyOnWriteArraySet::new));
-
-            if (!preferences.contains("activeAccountsLoaded")) {
-                int maxAccounts;
-
-                File filesDir = ApplicationLoader.applicationContext.getFilesDir();
-                if (new File(filesDir, "account31").isDirectory()) {
-                    maxAccounts = 32;
-                } else if (new File(filesDir, "account15").isDirectory()) {
-                    maxAccounts = 16;
-                } else {
-                    maxAccounts = -1;
-                }
-
-                for (int i = 0; i < maxAccounts; i++) {
-                    SharedPreferences perf;
-                    if (i == 0) {
-                        perf = ApplicationLoader.applicationContext.getSharedPreferences("userconfing", Context.MODE_PRIVATE);
-                    } else {
-                        perf = ApplicationLoader.applicationContext.getSharedPreferences("userconfig" + i, Context.MODE_PRIVATE);
-                    }
-                    if (!TextUtils.isEmpty(perf.getString("user", null))) {
-                        activeAccounts.add(i);
-                    }
-                }
-
-                if (!SharedConfig.activeAccounts.isEmpty()) {
-                    preferences.edit().putString("active_accounts", TextUtils.join(",", activeAccounts)).apply();
-                }
-
-                preferences.edit().putBoolean("activeAccountsLoaded", true).apply();
-            }
             stealthModeSendMessageConfirm = preferences.getInt("stealthModeSendMessageConfirm", 2);
             mediaColumnsCount = preferences.getInt("mediaColumnsCount", 3);
             storiesColumnsCount = preferences.getInt("storiesColumnsCount", 3);
@@ -747,7 +696,7 @@ public class SharedConfig {
             dontAskManageStorage = preferences.getBoolean("dontAskManageStorage", false);
             hasEmailLogin = preferences.getBoolean("hasEmailLogin", false);
             isFloatingDebugActive = preferences.getBoolean("floatingDebugActive", false);
-            updateStickersOrderOnSend = preferences.getBoolean("updateStickersOrderOnSend", false);
+            updateStickersOrderOnSend = preferences.getBoolean("updateStickersOrderOnSend", true);
             dayNightWallpaperSwitchHint = preferences.getInt("dayNightWallpaperSwitchHint", 0);
             bigCameraForRound = preferences.getBoolean("bigCameraForRound", false);
             useNewBlur = preferences.getBoolean("useNewBlur", true);
@@ -766,7 +715,6 @@ public class SharedConfig {
 
             configLoaded = true;
         }
-
     }
 
     public static int buildVersion() {
@@ -1480,13 +1428,6 @@ public class SharedConfig {
         editor.apply();
     }
 
-    public static void setInappCamera(boolean inappCamera) {
-       SharedPreferences preferences = MessagesController.getGlobalMainSettings();
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("inappCamera", inappCamera);
-        editor.commit();
-    }
-
     public static void toggleRoundCamera16to9() {
         roundCamera16to9 = !roundCamera16to9;
         SharedPreferences preferences = MessagesController.getGlobalMainSettings();
@@ -1606,23 +1547,6 @@ public class SharedConfig {
         }
     }
 
-    public static class InvalidProxyException extends Exception {
-
-        public InvalidProxyException() {
-        }
-
-        public InvalidProxyException(String messsage) {
-            super(messsage);
-        }
-
-        public InvalidProxyException(Throwable cause) {
-
-            super(cause);
-
-        }
-
-    }
-
     public static void saveProxyList() {
         List<ProxyInfo> infoToSerialize = new ArrayList<>(proxyList);
         Collections.sort(infoToSerialize, (o1, o2) -> {
@@ -1715,7 +1639,7 @@ public class SharedConfig {
     public static void checkSaveToGalleryFiles() {
         Utilities.globalQueue.postRunnable(() -> {
             try {
-                File telegramPath = new File(Environment.getExternalStorageDirectory(), "Telegram");
+                File telegramPath = SharedConfig.getTelegramPath();
                 File imagePath = new File(telegramPath, "Telegram Images");
                 imagePath.mkdir();
                 File videoPath = new File(telegramPath, "Telegram Video");

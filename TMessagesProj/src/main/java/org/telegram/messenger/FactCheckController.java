@@ -16,7 +16,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.LongSparseArray;
-import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.Gravity;
@@ -57,16 +56,21 @@ import java.util.HashMap;
 
 public class FactCheckController {
 
-    private static volatile SparseArray<FactCheckController> Instance = new SparseArray<>();
-    private static final Object lockObject = new Object();
+    private static volatile FactCheckController[] Instance = new FactCheckController[UserConfig.MAX_ACCOUNT_COUNT];
+    private static final Object[] lockObjects = new Object[UserConfig.MAX_ACCOUNT_COUNT];
+    static {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
+            lockObjects[i] = new Object();
+        }
+    }
 
     public static FactCheckController getInstance(int num) {
-        FactCheckController localInstance = Instance.get(num);
+        FactCheckController localInstance = Instance[num];
         if (localInstance == null) {
-            synchronized (lockObject) {
-                localInstance = Instance.get(num);
+            synchronized (lockObjects[num]) {
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.set(num, localInstance = new FactCheckController(num));
+                    Instance[num] = localInstance = new FactCheckController(num);
                 }
             }
         }

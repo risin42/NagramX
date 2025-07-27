@@ -1,7 +1,5 @@
 package org.telegram.ui.Business;
 
-import android.util.SparseArray;
-
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.UserConfig;
@@ -13,16 +11,20 @@ import java.util.ArrayList;
 
 public class BusinessChatbotController {
 
-    private static volatile SparseArray<BusinessChatbotController> Instance = new SparseArray<>();
-    private static final Object lockObject = new Object();
-
+    private static volatile BusinessChatbotController[] Instance = new BusinessChatbotController[UserConfig.MAX_ACCOUNT_COUNT];
+    private static final Object[] lockObjects = new Object[UserConfig.MAX_ACCOUNT_COUNT];
+    static {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
+            lockObjects[i] = new Object();
+        }
+    }
     public static BusinessChatbotController getInstance(int num) {
-        BusinessChatbotController localInstance = Instance.get(num);
+        BusinessChatbotController localInstance = Instance[num];
         if (localInstance == null) {
-            synchronized (lockObject) {
-                localInstance = Instance.get(num);
+            synchronized (lockObjects[num]) {
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new BusinessChatbotController(num));
+                    Instance[num] = localInstance = new BusinessChatbotController(num);
                 }
             }
         }

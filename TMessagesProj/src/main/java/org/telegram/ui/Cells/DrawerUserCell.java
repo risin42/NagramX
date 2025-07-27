@@ -99,7 +99,7 @@ public class DrawerUserCell extends FrameLayout implements NotificationCenter.No
         textView.setTextColor(Theme.getColor(Theme.key_chats_menuItemText));
         status.attach();
         botVerification.attach();
-        for (int i : SharedConfig.activeAccounts) {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++){
             NotificationCenter.getInstance(i).addObserver(this, NotificationCenter.currentUserPremiumStatusChanged);
             NotificationCenter.getInstance(i).addObserver(this, NotificationCenter.updateInterfaces);
         }
@@ -111,7 +111,7 @@ public class DrawerUserCell extends FrameLayout implements NotificationCenter.No
         super.onDetachedFromWindow();
         status.detach();
         botVerification.detach();
-        for (int i : SharedConfig.activeAccounts)  {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++){
             NotificationCenter.getInstance(i).removeObserver(this, NotificationCenter.currentUserPremiumStatusChanged);
             NotificationCenter.getInstance(i).removeObserver(this, NotificationCenter.updateInterfaces);
         }

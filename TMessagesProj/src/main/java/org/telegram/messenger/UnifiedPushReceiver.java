@@ -69,7 +69,7 @@ public class UnifiedPushReceiver extends MessagingReceiver {
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d("UP START PROCESSING");
                 }
-                for (int a : SharedConfig.activeAccounts) {
+                for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                     if (UserConfig.getInstance(a).isClientActivated()) {
                         ConnectionsManager.onInternalPushReceived(a);
                         ConnectionsManager.getInstance(a).resumeNetworkMaybe();

@@ -98,8 +98,6 @@
     <string name="UseMediaStreamInVoip">在通话中使用媒体流</string>
     <string name="HideTimeForSticker">隐藏贴纸发送时间</string>
     <string name="hideGroupSticker">隐藏群组贴纸</string>
-    <string name="useSystemDNS">使用系统 DNS</string>
-    <string name="customDoH">自定义 DoH</string>
     <string name="customGroupVoipAudioBitrate">群组通话音频比特率</string>
     <string name="maxRecentStickerCount">最近贴纸数量上限</string>
     <string name="disableSwipeToNextChannel">禁用滑动到下个频道</string>
@@ -194,8 +192,6 @@
     <string name="CustomApi">自定义 API</string>
     <string name="UseCustomApiNotice">使用自定义 API 登录，如果您无法注册或登录，这可能会有帮助。\n\n注意：如果您使用自定义 API，FCM 将无法工作。</string>
     <string name="CustomApiNo">不使用自定义 API</string>
-    <string name="CustomApiOfficial">Telegram Android</string>
-    <string name="CustomApiTGX">Telegram Android X</string>
     <string name="CustomApiInput">手动输入</string>
     <string name="LinkedGroupChat">链接的群组</string>
     <string name="LinkedChannelChat">链接的频道</string>

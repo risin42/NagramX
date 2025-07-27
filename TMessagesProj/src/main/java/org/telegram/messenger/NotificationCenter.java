@@ -402,18 +402,17 @@ public class NotificationCenter {
 
     private int currentAccount;
     private int currentHeavyOperationFlags;
+    private static volatile NotificationCenter[] Instance = new NotificationCenter[UserConfig.MAX_ACCOUNT_COUNT];
     private static volatile NotificationCenter globalInstance;
-    private static SparseArray<NotificationCenter> Instance = new SparseArray<>();
 
     @UiThread
     public static NotificationCenter getInstance(int num) {
-        NotificationCenter localInstance = Instance.get(num);
+        NotificationCenter localInstance = Instance[num];
         if (localInstance == null) {
             synchronized (NotificationCenter.class) {
-                localInstance = Instance.get(num);
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new NotificationCenter(num));
-
+                    Instance[num] = localInstance = new NotificationCenter(num);
                 }
             }
         }

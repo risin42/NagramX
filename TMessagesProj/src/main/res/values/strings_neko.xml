@@ -98,8 +98,6 @@
     <string name="UseMediaStreamInVoip">Use Media Stream in VoIP</string>
     <string name="HideTimeForSticker">Hide Time on Stickers</string>
     <string name="hideGroupSticker">Hide Group Sticker</string>
-    <string name="useSystemDNS">Use System DNS</string>
-    <string name="customDoH">Custom DoH</string>
     <string name="customGroupVoipAudioBitrate">Group VoIP Audio Bitrate</string>
     <string name="maxRecentStickerCount">Max Recent Stickers</string>
     <string name="disableSwipeToNextChannel">Disable Swipe to Next Channel</string>
@@ -196,8 +194,6 @@
     <string name="CustomApi">Custom API</string>
     <string name="UseCustomApiNotice">Log in using the custom API, if you are unable to register or log in, this may help.\n\nNote: FCM will not work if you are using a custom API.</string>
     <string name="CustomApiNo">Don\'t use custom API</string>
-    <string name="CustomApiOfficial">Telegram Android</string>
-    <string name="CustomApiTGX">Telegram Android X</string>
     <string name="CustomApiInput">Manual input</string>
     <string name="LinkedGroupChat">Linked Group</string>
     <string name="LinkedChannelChat">Linked Channel</string>

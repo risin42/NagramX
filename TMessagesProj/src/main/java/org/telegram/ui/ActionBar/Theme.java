@@ -97,7 +97,6 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.SvgHelper;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
-import org.telegram.messenger.support.SparseLongArray;
 import org.telegram.messenger.time.SunDate;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.SerializedData;
@@ -1331,7 +1330,9 @@ public class Theme {
                     dst.compress(Bitmap.CompressFormat.JPEG, 87, stream);
                 } else {
                     FileOutputStream stream = new FileOutputStream(toFile);
-                    patternBitmap.compress(Bitmap.CompressFormat.PNG, 87, stream);
+                    Bitmap bitmap = patternBitmap.copy(Bitmap.Config.ARGB_8888, true);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 87, stream);
+                    bitmap.recycle();
                     stream.close();
                 }
             } catch (Throwable e) {
@@ -2513,7 +2514,7 @@ public class Theme {
             } else if ("Blue".equals(name) || "Arctic Blue".equals(name) || "Day".equals(name) || "Monet Light".equals(name)) {
                 isDark = LIGHT;
             }
-            if (isDark == UNKNOWN && pathToFile != null) {
+            if (isDark == UNKNOWN) {
                 String[] wallpaperLink = new String[1];
                 SparseIntArray colors = getThemeFileValues(new File(pathToFile), null, wallpaperLink);
                 checkIsDark(colors, this);
@@ -2522,7 +2523,7 @@ public class Theme {
         }
 
         public boolean isLight() {
-            return !isDark();
+            return pathToFile == null && !isDark();
         }
 
         public String getKey() {
@@ -3070,13 +3071,11 @@ public class Theme {
 
     private static int loadingCurrentTheme;
     private static int lastLoadingCurrentThemeTime;
-    private static SparseBooleanArray loadingRemoteThemes = new SparseBooleanArray();
-    private static SparseIntArray lastLoadingThemesTime = new SparseIntArray();
-    private static SparseLongArray remoteThemesHash = new SparseLongArray();
+    private static boolean[] loadingRemoteThemes = new boolean[UserConfig.MAX_ACCOUNT_COUNT];
+    private static int[] lastLoadingThemesTime = new int[UserConfig.MAX_ACCOUNT_COUNT];
+    private static long[] remoteThemesHash = new long[UserConfig.MAX_ACCOUNT_COUNT];
 
     public static ArrayList<ThemeInfo> themes;
-    public static final ArrayList<ChatThemeBottomSheet.ChatThemeItem> defaultEmojiThemes = new ArrayList<>();
-    private static boolean tryToFixMissingEmojiThemes = false;
     private static ArrayList<ThemeInfo> otherThemes;
     private static HashMap<String, ThemeInfo> themesDict;
     private static ThemeInfo currentTheme;
@@ -3193,6 +3192,7 @@ public class Theme {
     public static TextPaint profile_aboutTextPaint;
     public static Drawable profile_verifiedDrawable;
     public static Drawable profile_verifiedCheckDrawable;
+    public static Drawable profile_verifiedCatDrawable;
 
     public static Paint chat_docBackPaint;
     public static Paint chat_deleteProgressPaint;
@@ -3349,7 +3349,7 @@ public class Theme {
     public static Drawable[] chat_pollCrossDrawable = new Drawable[2];
     public static Drawable[] chat_pollHintDrawable = new Drawable[2];
     public static Drawable[] chat_psaHelpDrawable = new Drawable[2];
-
+    public static Drawable chat_arrowDrawable;
     public static Drawable chat_editDrawable;
 
     public static Drawable chat_timeHintSentDrawable;
@@ -4792,9 +4792,9 @@ public class Theme {
         int remoteVersion = themeConfig.getInt("remote_version", 0);
         int appRemoteThemesVersion = 1;
         if (remoteVersion == appRemoteThemesVersion) {
-            for (int a : SharedConfig.activeAccounts) {
-                remoteThemesHash.put(a, themeConfig.getLong("2remoteThemesHash" + (a != 0 ? a : ""), 0));
-                lastLoadingThemesTime.put(a, themeConfig.getInt("lastLoadingThemesTime" + (a != 0 ? a : ""), 0));
+            for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
+                remoteThemesHash[a] = themeConfig.getLong("2remoteThemesHash" + (a != 0 ? a : ""), 0);
+                lastLoadingThemesTime[a] = themeConfig.getInt("lastLoadingThemesTime" + (a != 0 ? a : ""), 0);
             }
         }
         themeConfig.edit().putInt("remote_version", appRemoteThemesVersion).apply();
@@ -5179,43 +5179,6 @@ public class Theme {
             }
             return null;
         }
-    }
-
-    public static Drawable createEmojiIconSelectorDrawableWithPressedResources(Context context, int resource, int pressedResource, int defaultColor, int pressedColor) {
-        Resources resources = context.getResources();
-        Drawable defaultDrawable = resources.getDrawable(resource).mutate();
-        if (defaultColor != 0) {
-            defaultDrawable.setColorFilter(new PorterDuffColorFilter(defaultColor, PorterDuff.Mode.MULTIPLY));
-        }
-        Drawable pressedDrawable = resources.getDrawable(pressedResource).mutate();
-        if (pressedColor != 0) {
-            pressedDrawable.setColorFilter(new PorterDuffColorFilter(pressedColor, PorterDuff.Mode.MULTIPLY));
-        }
-        StateListDrawable stateListDrawable = new StateListDrawable() {
-            @Override
-            public boolean selectDrawable(int index) {
-                if (Build.VERSION.SDK_INT < 21) {
-                    Drawable drawable = Theme.getStateDrawable(this, index);
-                    ColorFilter colorFilter = null;
-                    if (drawable instanceof BitmapDrawable) {
-                        colorFilter = ((BitmapDrawable) drawable).getPaint().getColorFilter();
-                    } else if (drawable instanceof NinePatchDrawable) {
-                        colorFilter = ((NinePatchDrawable) drawable).getPaint().getColorFilter();
-                    }
-                    boolean result = super.selectDrawable(index);
-                    if (colorFilter != null) {
-                        drawable.setColorFilter(colorFilter);
-                    }
-                    return result;
-                }
-                return super.selectDrawable(index);
-            }
-        };
-        stateListDrawable.setEnterFadeDuration(1);
-        stateListDrawable.setExitFadeDuration(200);
-        stateListDrawable.addState(new int[]{android.R.attr.state_selected}, pressedDrawable);
-        stateListDrawable.addState(new int[]{}, defaultDrawable);
-        return stateListDrawable;
     }
 
     public static Drawable createEmojiIconSelectorDrawable(Context context, int resource, int defaultColor, int pressedColor) {
@@ -6835,7 +6798,7 @@ public class Theme {
         applyProfileTheme();
         applyChatTheme(false, bg);
         boolean checkNavigationBarColor = !hasPreviousTheme;
-        AndroidUtilities.runOnUIThread(() -> NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.didSetNewTheme, false, checkNavigationBarColor));
+        AndroidUtilities.runOnUIThread(() -> NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.didSetNewTheme, false, checkNavigationBarColor, true));
     }
 
     public static boolean hasHue(int color) {
@@ -7097,9 +7060,9 @@ public class Theme {
             }
             editor.putString("themes2", array.toString());
         }
-        for (int a : SharedConfig.activeAccounts) {
-            editor.putLong("2remoteThemesHash" + (a != 0 ? a : ""), remoteThemesHash.get(a, 0));
-            editor.putInt("lastLoadingThemesTime" + (a != 0 ? a : ""), lastLoadingThemesTime.get(a, 0));
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
+            editor.putLong("2remoteThemesHash" + (a != 0 ? a : ""), remoteThemesHash[a]);
+            editor.putInt("lastLoadingThemesTime" + (a != 0 ? a : ""), lastLoadingThemesTime[a]);
         }
 
         editor.putInt("lastLoadingCurrentThemeTime", lastLoadingCurrentThemeTime);
@@ -7683,24 +7646,24 @@ public class Theme {
     }
 
     public static void loadRemoteThemes(final int currentAccount, boolean force) {
-        if (loadingRemoteThemes.get(currentAccount) || !force && Math.abs(System.currentTimeMillis() / 1000 - lastLoadingThemesTime.get(currentAccount)) < 60 * 60 || !UserConfig.getInstance(currentAccount).isClientActivated()) {
+        if (loadingRemoteThemes[currentAccount] || !force && Math.abs(System.currentTimeMillis() / 1000 - lastLoadingThemesTime[currentAccount]) < 60 * 60 || !UserConfig.getInstance(currentAccount).isClientActivated()) {
             return;
         }
-        loadingRemoteThemes.put(currentAccount, true);
+        loadingRemoteThemes[currentAccount] = true;
         TL_account.getThemes req = new TL_account.getThemes();
         req.format = "android";
         if (!MediaDataController.getInstance(currentAccount).defaultEmojiThemes.isEmpty()) {
-            req.hash = remoteThemesHash.get(currentAccount);
+            req.hash = remoteThemesHash[currentAccount];
         }
         if (BuildVars.LOGS_ENABLED) {
             Log.i("theme", "loading remote themes, hash " + req.hash);
         }
         ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
-            loadingRemoteThemes.put(currentAccount, false);
+            loadingRemoteThemes[currentAccount] = false;
             if (response instanceof TL_account.TL_themes) {
                 TL_account.TL_themes res = (TL_account.TL_themes) response;
-                remoteThemesHash.put(currentAccount, res.hash);
-                lastLoadingThemesTime.put(currentAccount, (int) (System.currentTimeMillis() / 1000));
+                remoteThemesHash[currentAccount] = res.hash;
+                lastLoadingThemesTime[currentAccount] = (int) (System.currentTimeMillis() / 1000);
                 ArrayList<TLRPC.TL_theme> emojiPreviewThemes = new ArrayList<>();
                 ArrayList<Object> oldServerThemes = new ArrayList<>();
                 for (int a = 0, N = themes.size(); a < N; a++) {
@@ -7823,13 +7786,6 @@ public class Theme {
                     PatternsLoader.createLoader(true);
                 }
                 MediaDataController.getInstance(currentAccount).generateEmojiPreviewThemes(emojiPreviewThemes, currentAccount);
-            } else if (response instanceof TL_account.TL_themesNotModified) {
-                if (defaultEmojiThemes.isEmpty() && !tryToFixMissingEmojiThemes) {
-                    // Fix Missing Emoji Themes in v8.3.0-preview01?
-                    remoteThemesHash.put(currentAccount, 0);
-                    tryToFixMissingEmojiThemes = true;
-                    loadRemoteThemes(currentAccount, true);
-                }
             }
         }));
     }
@@ -7959,7 +7915,7 @@ public class Theme {
     }
 
     public static File getAssetFile(String assetName) {
-        File file = new File(ApplicationLoader.getCacheDirFixed(), assetName);
+        File file = new File(ApplicationLoader.getFilesDirFixed(), assetName);
         long size;
         try {
             InputStream stream = ApplicationLoader.applicationContext.getAssets().open(assetName);
@@ -8957,7 +8913,7 @@ public class Theme {
                 chat_pollHintDrawable[a] = resources.getDrawable(R.drawable.msg_emoji_objects).mutate();
                 chat_psaHelpDrawable[a] = resources.getDrawable(R.drawable.msg_psa).mutate();
             }
-
+            chat_arrowDrawable = resources.getDrawable(R.drawable.search_arrow).mutate();
             chat_editDrawable = resources.getDrawable(R.drawable.edit_pencil).mutate();
 
             chat_timeHintSentDrawable = resources.getDrawable(R.drawable.msg_check_s).mutate();
@@ -10182,6 +10138,7 @@ public class Theme {
                     settings.isCustomTheme = true;
                 } catch (Throwable e) {
                     FileLog.e(e);
+                    bitmapCreated = false;
                 }
             }
             if (bitmapCreated) {

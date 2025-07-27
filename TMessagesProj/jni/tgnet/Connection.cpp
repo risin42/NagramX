@@ -129,7 +129,7 @@ void Connection::onReceivedData(NativeByteBuffer *buffer) {
             currentDatacenter->storeCurrentAddressAndPortNum();
             isTryingNextPort = false;
             if (connectionType == ConnectionTypeProxy) {
-                setTimeout(25);
+                setTimeout(5);
             } else if (connectionType == ConnectionTypePush) {
                 setTimeout(60 * 15);
             } else if (connectionType == ConnectionTypeUpload) {
@@ -281,15 +281,13 @@ void Connection::connect() {
         ConnectionsManager::getInstance(currentDatacenter->instanceNum).onConnectionClosed(this, 0);
         return;
     }
-    if (connectionState == TcpConnectionStageConnected ||
-        connectionState == TcpConnectionStageConnecting) {
+    if (connectionState == TcpConnectionStageConnected || connectionState == TcpConnectionStageConnecting) {
         return;
     }
     connectionInProcess = true;
     connectionState = TcpConnectionStageConnecting;
     isMediaConnection = false;
-    uint8_t strategy = ConnectionsManager::getInstance(
-            currentDatacenter->instanceNum).getIpStratagy();
+    uint8_t strategy = ConnectionsManager::getInstance(currentDatacenter->instanceNum).getIpStratagy();
     uint32_t ipv6;
     if (strategy == USE_IPV6_ONLY) {
         ipv6 = TcpAddressFlagIpv6;
@@ -308,8 +306,7 @@ void Connection::connect() {
     } else {
         ipv6 = 0;
     }
-    uint32_t isStatic = connectionType == ConnectionTypeProxy || !ConnectionsManager::getInstance(
-            currentDatacenter->instanceNum).proxyAddress.empty() ? TcpAddressFlagStatic : 0;
+    uint32_t isStatic = connectionType == ConnectionTypeProxy || !ConnectionsManager::getInstance(currentDatacenter->instanceNum).proxyAddress.empty() ? TcpAddressFlagStatic : 0;
     TcpAddress *tcpAddress = nullptr;
     if (isMediaConnectionType(connectionType)) {
         currentAddressFlags = TcpAddressFlagDownload | isStatic;
@@ -369,7 +366,7 @@ void Connection::connect() {
     hasSomeDataSinceLastConnect = false;
     openConnection(hostAddress, hostPort, secret, ipv6 != 0, ConnectionsManager::getInstance(currentDatacenter->instanceNum).currentNetworkType);
     if (connectionType == ConnectionTypeProxy) {
-        setTimeout(25);
+        setTimeout(5);
     } else if (connectionType == ConnectionTypePush) {
         if (isTryingNextPort) {
             setTimeout(20);

@@ -33,6 +33,7 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.multidex.MultiDex;
 
-import androidx.multidex.MultiDex;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import org.json.JSONObject;
 import org.telegram.messenger.voip.VideoCapturerDevice;
@@ -59,14 +61,11 @@ import org.telegram.ui.IUpdateLayout;
 import org.telegram.ui.LauncherIconController;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.NekoXConfig;
-import tw.nekomimi.nekogram.utils.FileUtil;
 import xyz.nextalone.nagram.NaConfig;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
@@ -80,9 +79,9 @@ public class ApplicationLoader extends Application {
 
     @SuppressLint("StaticFieldLeak")
     public static volatile Context applicationContext;
-
     public static volatile NetworkInfo currentNetworkInfo;
     public static volatile Handler applicationHandler;
+    public static final CountDownLatch countDownLatch = new CountDownLatch(1);
 
     private static ConnectivityManager connectivityManager;
     private static volatile boolean applicationInited = false;
@@ -147,32 +146,27 @@ public class ApplicationLoader extends Application {
     }
 
     public static boolean isHuaweiStoreBuild() {
-        return false;
+        return applicationLoaderInstance.isHuaweiBuild();
     }
 
     public static boolean isStandaloneBuild() {
-        return true;
+        return applicationLoaderInstance.isStandalone();
     }
 
     public static boolean isBetaBuild() {
-        return BuildConfig.DEBUG;
+        return applicationLoaderInstance.isBeta();
     }
 
-    @SuppressLint("SdCardPath")
-    public static File getDataDirFixed() {
-        try {
-            File path = applicationContext.getFilesDir();
-            if (path != null) {
-                return path.getParentFile();
-            }
-        } catch (Exception ignored) {
-        }
-        try {
-            ApplicationInfo info = applicationContext.getApplicationInfo();
-            return new File(info.dataDir);
-        } catch (Exception ignored) {
-        }
-        return new File("/data/data/" + BuildConfig.APPLICATION_ID + "/");
+    protected boolean isHuaweiBuild() {
+        return false;
+    }
+
+    protected boolean isStandalone() {
+        return true;
+    }
+
+    protected boolean isBeta() {
+        return BuildConfig.DEBUG;
     }
 
     public static File getFilesDirFixed() {
@@ -193,12 +187,6 @@ public class ApplicationLoader extends Application {
         return new File("/data/data/" + BuildConfig.APPLICATION_ID + "/files");
     }
 
-    public static File getCacheDirFixed() {
-        File filesDir = new File(getDataDirFixed(), "cache");
-        FileUtil.initDir(filesDir);
-        return filesDir;
-    }
-
     public static void postInitApplication() {
         if (applicationInited || applicationContext == null) {
             return;
@@ -206,17 +194,11 @@ public class ApplicationLoader extends Application {
         applicationInited = true;
         NativeLoader.initNativeLibs(ApplicationLoader.applicationContext);
 
-        SharedConfig.loadConfig();
-
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!NaConfig.INSTANCE.getDisableCrashlyticsCollection().Bool());
-
         try {
             LocaleController.getInstance(); //TODO improve
         } catch (Exception e) {
             e.printStackTrace();
         }
-        SharedPrefsHelper.init(applicationContext);
-        UserConfig.getInstance(0).loadConfig();
 
         try {
             connectivityManager = (ConnectivityManager) ApplicationLoader.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -230,14 +212,9 @@ public class ApplicationLoader extends Application {
                     }
 
                     boolean isSlow = isConnectionSlow();
-                    for (int a : SharedConfig.activeAccounts) {
+                    for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                         ConnectionsManager.getInstance(a).checkConnection();
                         FileLoader.getInstance(a).onNetworkChanged(isSlow);
-                    }
-
-                    if (SharedConfig.loginingAccount != -1) {
-                        ConnectionsManager.getInstance(SharedConfig.loginingAccount).checkConnection();
-                        FileLoader.getInstance(SharedConfig.loginingAccount).onNetworkChanged(isSlow);
                     }
                 }
             };
@@ -266,50 +243,36 @@ public class ApplicationLoader extends Application {
             e.printStackTrace();
         }
 
-        LinkedList<Runnable> postRun = new LinkedList<>();
-        for (int a : SharedConfig.activeAccounts) {
-            final int finalA = a;
-            Runnable initRunnable = () -> loadAccount(finalA);
-            if (finalA == UserConfig.selectedAccount) {
-                initRunnable.run();
-                ChatThemeController.getInstance(finalA);
+        SharedConfig.loadConfig();
+        SharedPrefsHelper.init(applicationContext);
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!NaConfig.INSTANCE.getDisableCrashlyticsCollection().Bool());
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) { //TODO improve account
+            UserConfig.getInstance(a).loadConfig();
+            MessagesController.getInstance(a);
+            if (a == 0) {
+                SharedConfig.pushStringStatus = "__FIREBASE_GENERATING_SINCE_" + ConnectionsManager.getInstance(a).getCurrentTime() + "__";
+            } else {
+                ConnectionsManager.getInstance(a);
             }
-            else postRun.add(initRunnable);
+            TLRPC.User user = UserConfig.getInstance(a).getCurrentUser();
+            if (user != null) {
+                MessagesController.getInstance(a).putUser(user, true);
+                SendMessagesHelper.getInstance(a).checkUnsentMessages();
+            }
         }
-        for (Runnable runnable : postRun) {
-            Utilities.stageQueue.postRunnable(runnable);
-        }
+
         // init fcm
         initPushServices();
         if (BuildVars.LOGS_ENABLED) {
             FileLog.d("app initied");
         }
-    }
 
-    public static void loadAccount(int account) {
-        UserConfig inst = UserConfig.getInstance(account);
-        inst.loadConfig();
-        if (!inst.isClientActivated()) {
-            if (SharedConfig.activeAccounts.remove(account)) {
-                SharedConfig.saveAccounts();
-            }
+        MediaController.getInstance();
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) { //TODO improve account
+            ContactsController.getInstance(a).checkAppAccount();
+            DownloadController.getInstance(a);
         }
-
-        MessagesController.getInstance(account);
-        if ("".equals(SharedConfig.pushStringStatus)) {
-            SharedConfig.pushStringStatus = "__FIREBASE_GENERATING_SINCE_" + ConnectionsManager.getInstance(account).getCurrentTime() + "__";
-        } else {
-            ConnectionsManager.getInstance(account);
-        }
-        TLRPC.User user = UserConfig.getInstance(account).getCurrentUser();
-        if (user != null) {
-            MessagesController.getInstance(account).putUser(user, true);
-        }
-        Utilities.stageQueue.postRunnable(() -> {
-            SendMessagesHelper.getInstance(account).checkUnsentMessages();
-            ContactsController.getInstance(account).checkAppAccount();
-            DownloadController.getInstance(account);
-        });
+        BillingController.getInstance().startConnection();
     }
 
     public ApplicationLoader() {
@@ -322,6 +285,7 @@ public class ApplicationLoader extends Application {
         try {
             applicationContext = getApplicationContext();
         } catch (Throwable ignore) {
+
         }
 
         super.onCreate();
@@ -329,7 +293,23 @@ public class ApplicationLoader extends Application {
         if (BuildVars.LOGS_ENABLED) {
             FileLog.d("app start time = " + (startTime = SystemClock.elapsedRealtime()));
             try {
-                FileLog.d("buildVersion = " + ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0).versionCode);
+                final PackageInfo info = ApplicationLoader.applicationContext.getPackageManager().getPackageInfo(ApplicationLoader.applicationContext.getPackageName(), 0);
+                final String abi;
+                switch (info.versionCode % 10) {
+                    case 1:
+                    case 2:
+                        abi = "store bundled " + Build.CPU_ABI + " " + Build.CPU_ABI2;
+                        break;
+                    default:
+                    case 9:
+                        if (ApplicationLoader.isStandaloneBuild()) {
+                            abi = "direct " + Build.CPU_ABI + " " + Build.CPU_ABI2;
+                        } else {
+                            abi = "universal " + Build.CPU_ABI + " " + Build.CPU_ABI2;
+                        }
+                        break;
+                }
+                FileLog.d("buildVersion = " + String.format(Locale.US, "v%s (%d[%d]) %s", info.versionName, info.versionCode / 10, info.versionCode % 10, abi));
             } catch (Exception e) {
                 FileLog.e(e);
             }
@@ -345,7 +325,6 @@ public class ApplicationLoader extends Application {
         } catch (UnsatisfiedLinkError error) {
             throw new RuntimeException("can't load native libraries " +  Build.CPU_ABI + " lookup folder " + NativeLoader.getAbiFolder());
         }
-
         new ForegroundDetector(this) {
             @Override
             public void onActivityStarted(Activity activity) {
@@ -425,6 +404,19 @@ public class ApplicationLoader extends Application {
         });
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        try {
+            LocaleController.getInstance().onDeviceConfigurationChange(newConfig);
+            AndroidUtilities.checkDisplaySize(applicationContext, newConfig);
+            VideoCapturerDevice.checkScreenCapturerSize();
+            AndroidUtilities.resetTabletFlag();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void initPushServices() {
         AndroidUtilities.runOnUIThread(() -> {
             if (getPushProvider().hasServices()) {
@@ -438,19 +430,6 @@ public class ApplicationLoader extends Application {
                 startPushService();
             }
         }, 1000);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        try {
-            LocaleController.getInstance().onDeviceConfigurationChange(newConfig);
-            AndroidUtilities.checkDisplaySize(applicationContext, newConfig);
-            VideoCapturerDevice.checkScreenCapturerSize();
-            AndroidUtilities.resetTabletFlag();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private static long lastNetworkCheck = -1;
@@ -644,17 +623,17 @@ public class ApplicationLoader extends Application {
         return result;
     }
 
-//    public static void startAppCenter(Activity context) {
-//        applicationLoaderInstance.startAppCenterInternal(context);
-//    }
-//
-//    public static void checkForUpdates() {
-//        applicationLoaderInstance.checkForUpdatesInternal();
-//    }
-//
-//    public static void appCenterLog(Throwable e) {
-//        applicationLoaderInstance.appCenterLogInternal(e);
-//    }
+    public static void startAppCenter(Activity context) {
+        applicationLoaderInstance.startAppCenterInternal(context);
+    }
+
+    public static void checkForUpdates() {
+        applicationLoaderInstance.checkForUpdatesInternal();
+    }
+
+    public static void appCenterLog(Throwable e) {
+        applicationLoaderInstance.appCenterLogInternal(e);
+    }
 
     protected void appCenterLogInternal(Throwable e) {
 

@@ -9,7 +9,6 @@ import android.util.Base64;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessagesController;
-import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.ui.LaunchActivity;
@@ -24,7 +23,7 @@ public class PasscodeHelper {
             String passcodeHash = preferences.getString("passcodeHash" + Integer.MAX_VALUE, "");
             String passcodeSaltString = preferences.getString("passcodeSalt" + Integer.MAX_VALUE, "");
             if (checkPasscodeHash(passcode, passcodeHash, passcodeSaltString)) {
-                for (int a : SharedConfig.activeAccounts) {
+                for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                     if (UserConfig.getInstance(a).isClientActivated() && isAccountAllowPanic(a)) {
                         MessagesController.getInstance(a).performLogout(1);
                     }
@@ -32,13 +31,12 @@ public class PasscodeHelper {
                 return false;
             }
         }
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             if (UserConfig.getInstance(a).isClientActivated() && hasPasscodeForAccount(a)) {
                 String passcodeHash = preferences.getString("passcodeHash" + a, "");
                 String passcodeSaltString = preferences.getString("passcodeSalt" + a, "");
                 if (checkPasscodeHash(passcode, passcodeHash, passcodeSaltString)) {
-                    if (activity instanceof LaunchActivity) {
-                        LaunchActivity launchActivity = (LaunchActivity) activity;
+                    if (activity instanceof LaunchActivity launchActivity) {
                         launchActivity.switchToAccount(a, true);
                         return true;
                     }
@@ -146,7 +144,7 @@ public class PasscodeHelper {
     }
 
     public static boolean isEnabled() {
-        return preferences.getAll().size() != 0;
+        return !preferences.getAll().isEmpty();
     }
 
     public static void clearAll() {

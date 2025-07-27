@@ -57,7 +57,6 @@ import android.transition.ChangeBounds;
 import android.transition.TransitionManager;
 import android.util.LongSparseArray;
 import android.util.Property;
-import android.util.SparseArray;
 import android.util.StateSet;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
@@ -253,7 +252,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
-import tw.nekomimi.nekogram.utils.AndroidUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, FloatingDebugProvider {
@@ -565,7 +563,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private String addToGroupAlertString;
     public boolean resetDelegate = true;
 
-    public static SparseArray<Boolean> dialogsLoaded = new SparseArray<>();
+    public static boolean[] dialogsLoaded = new boolean[UserConfig.MAX_ACCOUNT_COUNT];
     private boolean searching;
     private boolean searchWas;
     private boolean onlySelect;
@@ -2849,7 +2847,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
     public static void loadDialogs(AccountInstance accountInstance) {
         int currentAccount = accountInstance.getCurrentAccount();
-        if (!dialogsLoaded.get(currentAccount, false)) {
+        if (!dialogsLoaded[currentAccount]) {
             MessagesController messagesController = accountInstance.getMessagesController();
             messagesController.loadGlobalNotificationsSettings();
             messagesController.loadDialogs(0, 0, 100, true);
@@ -2861,7 +2859,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             for (String emoji : messagesController.diceEmojies) {
                 accountInstance.getMediaDataController().loadStickersByEmojiOrName(emoji, true, true);
             }
-            dialogsLoaded.put(currentAccount, true);
+            dialogsLoaded[currentAccount] = true;
         }
     }
 
@@ -3066,7 +3064,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         return actionBar;
     }
 
-    private int accounts;
     private String actionBarTitleNax;
 
     @Override
@@ -3743,18 +3740,15 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             Drawable thumb = user != null && user.photo != null && user.photo.strippedBitmap != null ? user.photo.strippedBitmap : avatarDrawable;
             imageView.setImage(ImageLocation.getForUserOrChat(user, ImageLocation.TYPE_SMALL), "50_50", ImageLocation.getForUserOrChat(user, ImageLocation.TYPE_STRIPPED), "50_50", thumb, user);
 
-            int accounts = 0;
-            for (int a : SharedConfig.activeAccounts) {
+            for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                 if (PasscodeHelper.isAccountHidden(a)) continue;
                 TLRPC.User u = AccountInstance.getInstance(a).getUserConfig().getCurrentUser();
                 if (u != null) {
                     AccountSelectCell cell = new AccountSelectCell(context, false);
                     cell.setAccount(a, true);
                     switchItem.addSubItem(10 + a, cell, dp(230), dp(48));
-                    accounts = a > accounts + 1 ? a + 1 : accounts + 1;
                 }
             }
-            this.accounts = accounts;
         }
         actionBar.setAllowOverlayTitle(true);
 
@@ -3822,7 +3816,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     presentFragment(new ArchiveSettingsActivity());
                 } else if (id == 6) {
                     showArchiveHelp();
-                } else if (id >= 10 && id < 10 + accounts) {
+                } else if (id >= 10 && id < 10 + UserConfig.MAX_ACCOUNT_COUNT) {
                     if (getParentActivity() == null) {
                         return;
                     }
@@ -10511,6 +10505,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             permissons.add(Manifest.permission.READ_EXTERNAL_STORAGE);
             permissons.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && activity.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            permissons.add(Manifest.permission.POST_NOTIFICATIONS);
+        }
         if (permissons.isEmpty()) {
             if (askingForPermissions) {
                 askingForPermissions = false;
@@ -10721,7 +10718,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             }
             updateStatus(UserConfig.getInstance(account).getCurrentUser(), true);
         } else if (id == NotificationCenter.appDidLogout) {
-            dialogsLoaded.put(currentAccount, false);
+            dialogsLoaded[currentAccount] = false;
         } else if (id == NotificationCenter.encryptedChatUpdated) {
             updateVisibleRows(0);
         } else if (id == NotificationCenter.contactsDidLoad) {
@@ -10923,7 +10920,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             updateStatus(UserConfig.getInstance(account).getCurrentUser(), true);
             updateStoriesPosting();
         } else if (id == NotificationCenter.onDatabaseReset) {
-            dialogsLoaded.set(currentAccount, false);
+            dialogsLoaded[currentAccount] = false;
             loadDialogs(getAccountInstance());
             getMessagesController().loadPinnedDialogs(folderId, 0, null);
         } else if (id == NotificationCenter.chatlistFolderUpdate) {

@@ -111,7 +111,7 @@ public class NotificationPermissionDialog extends BottomSheet implements Notific
         });
         linearLayout.addView(textView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 14, 14, 14, 10));
 
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             try {
                 NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.updateInterfaces);
             } catch (Exception ignore) {}
@@ -130,7 +130,7 @@ public class NotificationPermissionDialog extends BottomSheet implements Notific
 
     public void updateCounter() {
         int counter = 0;
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             MessagesStorage messagesStorage = MessagesStorage.getInstance(a);
             if (messagesStorage != null) {
                 counter += messagesStorage.getMainUnreadCount();
@@ -160,7 +160,7 @@ public class NotificationPermissionDialog extends BottomSheet implements Notific
             whenGranted = null;
             askLater();
         }
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             try {
                 NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.updateInterfaces);
             } catch (Exception ignore) {}

@@ -2,7 +2,6 @@ package org.telegram.messenger;
 
 import android.os.SystemClock;
 import android.util.Pair;
-import android.util.SparseArray;
 
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
@@ -57,15 +56,15 @@ public class FileRefController extends BaseController {
     private ArrayList<Waiter> recentStickersWaiter = new ArrayList<>();
     private ArrayList<Waiter> favStickersWaiter = new ArrayList<>();
 
-    private static SparseArray<FileRefController> Instance = new SparseArray<>();
+    private static volatile FileRefController[] Instance = new FileRefController[UserConfig.MAX_ACCOUNT_COUNT];
 
     public static FileRefController getInstance(int num) {
-        FileRefController localInstance = Instance.get(num);
+        FileRefController localInstance = Instance[num];
         if (localInstance == null) {
             synchronized (FileRefController.class) {
-                localInstance =Instance.get(num);
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new FileRefController(num));
+                    Instance[num] = localInstance = new FileRefController(num);
                 }
             }
         }
@@ -568,16 +567,6 @@ public class FileRefController extends BaseController {
                 }
                 favStickersWaiter.add(new Waiter(locationKey, parentKey));
             } else if ("update".equals(string)) {
-//                TLRPC.TL_help_getAppUpdate req = new TLRPC.TL_help_getAppUpdate();
-//                try {
-//                    req.source = ApplicationLoader.applicationContext.getPackageManager().getInstallerPackageName(ApplicationLoader.applicationContext.getPackageName());
-//                } catch (Exception ignore) {
-//
-//                }
-//                if (req.source == null) {
-//                    req.source = "";
-//                }
-//                getConnectionsManager().sendRequest(req, (response, error) -> onRequestComplete(locationKey, parentKey, response, error, true, false));
                 UpdateHelper.getInstance().checkNewVersionAvailable((response, error) -> {
                     if (error != null) {
                         TLRPC.TL_error error1 = new TLRPC.TL_error();

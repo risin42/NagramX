@@ -5,22 +5,15 @@ import static org.telegram.messenger.LocaleController.getString;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Typeface;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildConfig;
-import org.telegram.messenger.BuildVars;
-import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.Theme;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import xyz.nextalone.nagram.NaConfig;
 
@@ -40,22 +33,18 @@ public class NekoXConfig {
 
     public static int currentAppId() {
         return switch (customApi) {
-            case 0 -> BuildConfig.APP_ID;
-            case 1 -> BuildVars.OFFICAL_APP_ID;
-            case 2 -> BuildVars.TGX_APP_ID;
-            default -> customAppId;
+            case 3 -> customAppId;
+            default -> BuildConfig.APP_ID;
         };
     }
-    
+
     public static String currentAppHash() {
         return switch (customApi) {
-            case 0 -> BuildConfig.APP_HASH;
-            case 1 -> BuildVars.OFFICAL_APP_HASH;
-            case 2 -> BuildVars.TGX_APP_HASH;
-            default -> customAppHash;
+            case 3 -> customAppHash;
+            default -> BuildConfig.APP_HASH;
         };
     }
-    
+
     public static void saveCustomApi() {
         preferences.edit()
                 .putInt("custom_api", customApi)

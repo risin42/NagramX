@@ -255,7 +255,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
 
     private void resetItems() {
         accountNumbers.clear();
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             if (PasscodeHelper.isAccountHidden(a)) continue;
             if (UserConfig.getInstance(a).isClientActivated()) {
                 accountNumbers.add(a);

@@ -109,7 +109,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell useIPv6Row = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useIPv6));
     private final AbstractConfigCell useProxyItemRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useProxyItem));
     private final AbstractConfigCell hideProxyByDefaultRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.hideProxyByDefault));
-    private final AbstractConfigCell useSystemDNSRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useSystemDNS));
     private final AbstractConfigCell disableProxyWhenVpnEnabledRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableProxyWhenVpnEnabled()));
     private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getDefaultHlsVideoQuality(), new String[]{
             getString(R.string.QualityAuto),
@@ -119,7 +118,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             getString(R.string.Quality720),
             getString(R.string.Quality144),
     }, null));
-    private final AbstractConfigCell customDoHRow = cellGroup.appendCell(new ConfigCellTextInput(null, NekoConfig.customDoH, "https://1.0.0.1/dns-query", null));
     private final AbstractConfigCell dividerConnection = cellGroup.appendCell(new ConfigCellDivider());
 
     // Folder
@@ -395,13 +393,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
 
         // Cells: Set OnSettingChanged Callbacks
         cellGroup.callBackSettingsChanged = (key, newValue) -> {
-            if (key.equals(NekoConfig.useIPv6.getKey())) {
-                for (int a : SharedConfig.activeAccounts) {
-                    if (UserConfig.getInstance(a).isClientActivated()) {
-                        ConnectionsManager.native_setIpStrategy(a, ConnectionsManager.getIpStrategy());
-                    }
-                }
-            } else if (key.equals(NekoConfig.hidePhone.getKey())) {
+            if (key.equals(NekoConfig.hidePhone.getKey())) {
                 parentLayout.rebuildFragments(0);
                 getNotificationCenter().postNotificationName(NotificationCenter.mainUserInfoChanged);
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(profilePreviewRow));
@@ -419,7 +411,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                 if ((boolean) newValue) {
                     getContactsController().deleteUnknownAppAccounts();
                 } else {
-                    for (int a : SharedConfig.activeAccounts) {
+                    for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                         ContactsController.getInstance(a).checkAppAccount();
                     }
                 }

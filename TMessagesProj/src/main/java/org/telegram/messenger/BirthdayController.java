@@ -1,8 +1,6 @@
 package org.telegram.messenger;
 
 import android.content.SharedPreferences;
-import android.os.Build;
-import android.util.SparseArray;
 
 import org.telegram.tgnet.AbstractSerializedData;
 import org.telegram.tgnet.ConnectionsManager;
@@ -20,16 +18,21 @@ import java.util.Set;
 
 public class BirthdayController {
 
-    private static volatile SparseArray<BirthdayController> Instance = new SparseArray<>();
-    private static final Object lockObject = new Object();
+    private static volatile BirthdayController[] Instance = new BirthdayController[UserConfig.MAX_ACCOUNT_COUNT];
+    private static final Object[] lockObjects = new Object[UserConfig.MAX_ACCOUNT_COUNT];
+    static {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
+            lockObjects[i] = new Object();
+        }
+    }
 
     public static BirthdayController getInstance(int num) {
-        BirthdayController localInstance = Instance.get(num);
+        BirthdayController localInstance = Instance[num];
         if (localInstance == null) {
-            synchronized (lockObject) {
-                localInstance = Instance.get(num);
+            synchronized (lockObjects[num]) {
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new BirthdayController(num));
+                    Instance[num] = localInstance = new BirthdayController(num);
                 }
             }
         }

@@ -32,7 +32,6 @@ import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
-import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.TranslateController;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
@@ -556,7 +555,7 @@ public class RestrictedLanguagesSelectActivity extends BaseFragment implements N
                 edit.putInt("translate_button_restricted_languages_version", LAST_DO_NOT_TRANSLATE_VERSION).apply();
                 invalidateRestrictedLanguages();
 
-                for (int i : SharedConfig.activeAccounts) {
+                for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; ++i) {
                     final int account = i;
                     try {
                         MessagesController.getInstance(account).getTranslateController().checkRestrictedLanguagesUpdate();

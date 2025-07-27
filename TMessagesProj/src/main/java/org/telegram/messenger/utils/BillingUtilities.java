@@ -16,7 +16,6 @@ import org.json.JSONObject;
 import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
-import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.AbstractSerializedData;
@@ -211,7 +210,7 @@ public class BillingUtilities {
 
     private static AccountInstance findAccountById(long accountId) {
         AccountInstance result = null;
-        for (int i : SharedConfig.activeAccounts) {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
             AccountInstance acc = AccountInstance.getInstance(i);
             if (acc.getUserConfig().getClientUserId() == accountId) {
                 result = acc;

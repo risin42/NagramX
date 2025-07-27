@@ -34,6 +34,7 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SendMessagesHelper;
+import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.NativeByteBuffer;
@@ -66,9 +67,8 @@ import tw.nekomimi.nekogram.utils.AlertUtil;
 
 public class MessageHelper extends BaseController {
 
+    private static final MessageHelper[] Instance = new MessageHelper[UserConfig.MAX_ACCOUNT_COUNT];
     private static final CharsetDecoder utf8Decoder = StandardCharsets.UTF_8.newDecoder();
-
-    private static SparseArray<MessageHelper> Instance = new SparseArray<>();
 
     public MessageHelper(int num) {
         super(num);
@@ -94,13 +94,12 @@ public class MessageHelper extends BaseController {
     }
 
     public static MessageHelper getInstance(int num) {
-        MessageHelper localInstance = Instance.get(num);
+        MessageHelper localInstance = Instance[num];
         if (localInstance == null) {
             synchronized (MessageHelper.class) {
-                localInstance = Instance.get(num);
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new MessageHelper(num));
-
+                    Instance[num] = localInstance = new MessageHelper(num);
                 }
             }
         }

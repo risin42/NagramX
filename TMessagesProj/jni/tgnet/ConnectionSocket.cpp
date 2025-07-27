@@ -444,20 +444,15 @@ void ConnectionSocket::openConnection(std::string address, uint16_t port, std::s
     std::string *proxyAddress = &overrideProxyAddress;
     std::string *proxySecret = &overrideProxySecret;
     uint16_t proxyPort = overrideProxyPort;
-    bool isProxyIpv6 = false;
     if (proxyAddress->empty()) {
         proxyAddress = &ConnectionsManager::getInstance(instanceNum).proxyAddress;
         proxyPort = ConnectionsManager::getInstance(instanceNum).proxyPort;
         proxySecret = &ConnectionsManager::getInstance(instanceNum).proxySecret;
-
-        // NekoX: Check whether proxyAddress is an ipv6 addr
-        struct sockaddr_in6 addr;
-        isProxyIpv6 = inet_pton(AF_INET6, proxyAddress->c_str(), &(addr.sin6_addr)) != 0;
     }
 
     if (!proxyAddress->empty()) {
-        if (LOGS_ENABLED) DEBUG_D("connection(%p) connecting via proxy %s:%d secret[%d] ipv6:%d", this, proxyAddress->c_str(), proxyPort, (int) proxySecret->size(), isProxyIpv6);
-        if ((socketFd = socket(isProxyIpv6 ? AF_INET6 : AF_INET, SOCK_STREAM, 0)) < 0) {
+        if (LOGS_ENABLED) DEBUG_D("connection(%p) connecting via proxy %s:%d secret[%d]", this, proxyAddress->c_str(), proxyPort, (int) proxySecret->size());
+        if ((socketFd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             if (LOGS_ENABLED) DEBUG_E("connection(%p) can't create proxy socket", this);
             closeSocket(1, -1);
             return;
@@ -485,8 +480,6 @@ void ConnectionSocket::openConnection(std::string address, uint16_t port, std::s
         }
         socketAddress.sin_family = AF_INET;
         socketAddress.sin_port = htons(proxyPort);
-        socketAddress6.sin6_family = AF_INET6;
-        socketAddress6.sin6_port = htons(proxyPort);
         bool continueCheckAddress;
         if (inet_pton(AF_INET, proxyAddress->c_str(), &socketAddress.sin_addr.s_addr) != 1) {
             continueCheckAddress = true;
@@ -596,8 +589,6 @@ void ConnectionSocket::openConnectionInternal(bool ipv6) {
         closeSocket(1, -1);
         return;
     }
-
-    if(LOGS_ENABLED) DEBUG_D("connection(%p) socketAddress6, port: %d, family:%d", this, socketAddress6.sin6_port, socketAddress6.sin6_family);
 
     if (connect(socketFd, (ipv6 ? (sockaddr *) &socketAddress6 : (sockaddr *) &socketAddress), (socklen_t) (ipv6 ? sizeof(sockaddr_in6) : sizeof(sockaddr_in))) == -1 && errno != EINPROGRESS) {
         closeSocket(1, -1);
@@ -1123,26 +1114,12 @@ void ConnectionSocket::onHostNameResolved(std::string host, std::string ip, bool
     ConnectionsManager::getInstance(instanceNum).scheduleTask([&, host, ip, ipv6] {
         if (waitingForHostResolve == host) {
             waitingForHostResolve = "";
-            if (ip.empty() || (inet_pton(AF_INET, ip.c_str(), &socketAddress.sin_addr.s_addr) != 1 && inet_pton(AF_INET6, ip.c_str(), &socketAddress6.sin6_addr.s6_addr) != 1)) {
+            if (ip.empty() || inet_pton(AF_INET, ip.c_str(), &socketAddress.sin_addr.s_addr) != 1) {
                 if (LOGS_ENABLED) DEBUG_E("connection(%p) can't resolve host %s address via delegate", this, host.c_str());
                 closeSocket(1, -1);
                 return;
             }
-            if (LOGS_ENABLED) DEBUG_D("connection(%p) resolved host %s address %s via delegate ipv6:%d", this, host.c_str(), ip.c_str(), ipv6);
-            // NekoX: ipv6 Proxy with domain resolved, fix socket
-            // Since default socket type is IPv4 (isProxyIPv6 == false)
-            if (!ConnectionsManager::getInstance(instanceNum).proxyAddress.empty() && ipv6) {
-                if (LOGS_ENABLED) DEBUG_D("connection(%p) recreate proxy socket when use resolved ipv6 address, host:%s, ip:%s, port:%d isIPv6: %d", this, host.c_str(), ip.c_str(), ConnectionsManager::getInstance(instanceNum).proxyPort, ipv6);
-                // recreate socket
-                close(socketFd);
-                if ((socketFd = socket(AF_INET6 , SOCK_STREAM, 0)) < 0) {
-                    if (LOGS_ENABLED) DEBUG_E("connection(%p) can't recreate proxy socket when use resolved ipv6 address", this);
-                    closeSocket(1, -1);
-                    return;
-                }
-                socketAddress6.sin6_port = htons(ConnectionsManager::getInstance(instanceNum).proxyPort);
-                socketAddress6.sin6_family = AF_INET6;
-            }
+            if (LOGS_ENABLED) DEBUG_D("connection(%p) resolved host %s address %s via delegate", this, host.c_str(), ip.c_str());
             openConnectionInternal(ipv6);
         }
     });

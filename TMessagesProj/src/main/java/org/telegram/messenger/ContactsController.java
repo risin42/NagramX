@@ -54,8 +54,6 @@ import java.util.regex.Pattern;
 import tw.nekomimi.nekogram.NekoConfig;
 import xyz.nextalone.nagram.helper.MessageHelper;
 
-import androidx.collection.LongSparseArray;
-
 public class ContactsController extends BaseController {
 
     private Account systemAccount;
@@ -113,14 +111,10 @@ public class ContactsController extends BaseController {
     private class MyContentObserver extends ContentObserver {
 
         private Runnable checkRunnable = () -> {
-            for (int a : SharedConfig.activeAccounts) {
+            for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                 if (UserConfig.getInstance(a).isClientActivated()) {
                     ConnectionsManager.getInstance(a).resumeNetworkMaybe();
                     ContactsController.getInstance(a).checkContacts();
-                }
-                if (SharedConfig.loginingAccount != -1) {
-                    ConnectionsManager.getInstance(SharedConfig.loginingAccount).resumeNetworkMaybe();
-                    ContactsController.getInstance(SharedConfig.loginingAccount).checkContacts();
                 }
             }
         };
@@ -254,15 +248,14 @@ public class ContactsController extends BaseController {
 
     private int completedRequestsCount;
 
-    private static SparseArray<ContactsController> Instance = new SparseArray();
-
+    private static volatile ContactsController[] Instance = new ContactsController[UserConfig.MAX_ACCOUNT_COUNT];
     public static ContactsController getInstance(int num) {
-        ContactsController localInstance = Instance.get(num);
+        ContactsController localInstance = Instance[num];
         if (localInstance == null) {
             synchronized (ContactsController.class) {
-                localInstance = Instance.get(num);
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new ContactsController(num));
+                    Instance[num] = localInstance = new ContactsController(num);
                 }
             }
         }
@@ -456,7 +449,7 @@ public class ContactsController extends BaseController {
                     }
                 } else {
                     boolean found = false;
-                    for (int b : SharedConfig.activeAccounts) {
+                    for (int b = 0; b < UserConfig.MAX_ACCOUNT_COUNT; b++) {
                         TLRPC.User user = UserConfig.getInstance(b).getCurrentUser();
                         if (user != null) {
                             if (acc.name.equals(formatName(user.first_name, user.last_name))) {
@@ -533,7 +526,7 @@ public class ContactsController extends BaseController {
                         systemAccount = null;
                         for (int a = 0; a < accounts.length; a++) {
                             Account acc = accounts[a];
-                            for (int b : SharedConfig.activeAccounts) {
+                            for (int b = 0; b < UserConfig.MAX_ACCOUNT_COUNT; b++) {
                                 TLRPC.User user = UserConfig.getInstance(b).getCurrentUser();
                                 if (user != null) {
                                     if (acc.name.equals("" + user.id)) {
@@ -547,7 +540,7 @@ public class ContactsController extends BaseController {
 
                     }
                     try {
-                        systemAccount = new Account("" + UserConfig.getInstance(currentAccount).getClientUserId(), BuildConfig.APPLICATION_ID);
+                        systemAccount = new Account("" + getUserConfig().getClientUserId(), BuildConfig.APPLICATION_ID);
                         am.addAccountExplicitly(systemAccount, "", null);
                     } catch (Exception ignore) {
 

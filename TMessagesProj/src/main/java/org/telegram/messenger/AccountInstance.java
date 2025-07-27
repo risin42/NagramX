@@ -1,12 +1,9 @@
 package org.telegram.messenger;
 
 import android.content.SharedPreferences;
-import android.util.SparseArray;
 
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.ui.Components.Paint.PersistColorPalette;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 import tw.nekomimi.nekogram.helpers.CloudStorageHelper;
 import tw.nekomimi.nekogram.helpers.UserHelper;
@@ -15,14 +12,14 @@ import tw.nekomimi.nekogram.ui.MessageHelper;
 public class AccountInstance {
 
     private int currentAccount;
-    private static SparseArray<AccountInstance> Instance = new SparseArray<>();
+    private static volatile AccountInstance[] Instance = new AccountInstance[UserConfig.MAX_ACCOUNT_COUNT];
     public static AccountInstance getInstance(int num) {
-        AccountInstance localInstance = Instance.get(num);
+        AccountInstance localInstance = Instance[num];
         if (localInstance == null) {
             synchronized (AccountInstance.class) {
-                localInstance = Instance.get(num);
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new AccountInstance(num));
+                    Instance[num] = localInstance = new AccountInstance(num);
                 }
             }
         }

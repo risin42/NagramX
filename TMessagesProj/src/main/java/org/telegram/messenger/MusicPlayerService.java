@@ -92,7 +92,7 @@ public class MusicPlayerService extends Service implements NotificationCenter.No
     public void onCreate() {
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         NotificationCenter.getGlobalInstance().addObserver(this, NotificationCenter.accountLogin);
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.messagePlayingDidSeek);
             NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.messagePlayingPlayStateChanged);
             NotificationCenter.getInstance(a).addObserver(this, NotificationCenter.httpFileDidLoad);
@@ -689,7 +689,7 @@ public class MusicPlayerService extends Service implements NotificationCenter.No
             mediaSession.release();
         }
         NotificationCenter.getGlobalInstance().removeObserver(this, NotificationCenter.accountLogin);
-        for (int a : SharedConfig.activeAccounts) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.messagePlayingDidSeek);
             NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.messagePlayingPlayStateChanged);
             NotificationCenter.getInstance(a).removeObserver(this, NotificationCenter.httpFileDidLoad);

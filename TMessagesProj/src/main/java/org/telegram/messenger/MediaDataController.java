@@ -71,8 +71,8 @@ import org.telegram.ui.Components.AnimatedEmojiSpan;
 import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.Bulletin;
-import org.telegram.ui.Components.ChatThemeBottomSheet;
 import org.telegram.ui.Components.EditTextBoldCursor;
+import org.telegram.ui.Components.ChatThemeBottomSheet;
 import org.telegram.ui.Components.QuoteSpan;
 import org.telegram.ui.Components.Reactions.ReactionsLayoutInBubble;
 import org.telegram.ui.Components.StickerSetBulletinLayout;
@@ -107,7 +107,6 @@ import java.util.regex.Pattern;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.EntitiesHelper;
 import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.helper.ExternalStickerCacheHelper;
 
 @SuppressWarnings("unchecked")
 public class MediaDataController extends BaseController {
@@ -128,17 +127,23 @@ public class MediaDataController extends BaseController {
 
     public static String SHORTCUT_CATEGORY = "org.telegram.messenger.SHORTCUT_SHARE";
 
-    private static final SparseArray<MediaDataController> Instance = new SparseArray<>();
-    private static final Object lockObject = new Object();
+    private static volatile MediaDataController[] Instance = new MediaDataController[UserConfig.MAX_ACCOUNT_COUNT];
+    private static final Object[] lockObjects = new Object[UserConfig.MAX_ACCOUNT_COUNT];
+
+    static {
+        for (int i = 0; i < UserConfig.MAX_ACCOUNT_COUNT; i++) {
+            lockObjects[i] = new Object();
+        }
+    }
 
 
     public static MediaDataController getInstance(int num) {
-        MediaDataController localInstance = Instance.get(num);
+        MediaDataController localInstance = Instance[num];
         if (localInstance == null) {
-            synchronized (lockObject) {
-                localInstance = Instance.get(num);
+            synchronized (lockObjects) {
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new MediaDataController(num));
+                    Instance[num] = localInstance = new MediaDataController(num);
                 }
             }
         }

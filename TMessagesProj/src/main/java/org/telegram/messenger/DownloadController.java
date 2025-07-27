@@ -245,15 +245,15 @@ public class DownloadController extends BaseController implements NotificationCe
     public int currentWifiPreset;
     public int currentRoamingPreset;
 
-    private static SparseArray<DownloadController> Instance = new SparseArray<>();
+    private static volatile DownloadController[] Instance = new DownloadController[UserConfig.MAX_ACCOUNT_COUNT];
 
     public static DownloadController getInstance(int num) {
-        DownloadController localInstance = Instance.get(num);
+        DownloadController localInstance = Instance[num];
         if (localInstance == null) {
             synchronized (DownloadController.class) {
-                localInstance = Instance.get(num);
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new DownloadController(num));
+                    Instance[num] = localInstance = new DownloadController(num);
                 }
             }
         }
@@ -891,12 +891,10 @@ public class DownloadController extends BaseController implements NotificationCe
         }
 
         // --- AyuGram hook
-
         var isFiltered = AyuFilter.isFiltered(new MessageObject(currentAccount, message, false, false), null);
         if (isFiltered) {
             return 0;
         }
-
         // --- AyuGram hook
 
         int type;

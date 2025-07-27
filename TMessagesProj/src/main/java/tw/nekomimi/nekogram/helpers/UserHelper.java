@@ -4,24 +4,25 @@ import android.util.SparseArray;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BaseController;
+import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.TLRPC;
 
 public class UserHelper extends BaseController {
 
-    private static final SparseArray<UserHelper> Instance = new SparseArray<>();
+    private static final UserHelper[] Instance = new UserHelper[UserConfig.MAX_ACCOUNT_COUNT];
 
     public UserHelper(int num) {
         super(num);
     }
 
     public static UserHelper getInstance(int num) {
-        UserHelper localInstance = Instance.get(num);
+        UserHelper localInstance = Instance[num];
         if (localInstance == null) {
             synchronized (UserHelper.class) {
-                localInstance = Instance.get(num);
+                localInstance = Instance[num];
                 if (localInstance == null) {
-                    Instance.put(num, localInstance = new UserHelper(num));
+                    Instance[num] = localInstance = new UserHelper(num);
                 }
             }
         }
