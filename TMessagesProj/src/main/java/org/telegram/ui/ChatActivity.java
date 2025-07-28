@@ -21818,7 +21818,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
                         TLRPC.TL_forumTopic topic = null;
                         if (isTopic) {
-                            topic = getMessagesController().getTopicsController().findTopic(getCurrentChatInfo().id, getTopicId());
+                            TLRPC.ChatFull chatFull = getCurrentChatInfo();
+                            if (chatFull != null) {
+                                topic = getMessagesController().getTopicsController().findTopic(chatFull.id, getTopicId());
+                            } else if (currentChat != null) {
+                                topic = getMessagesController().getTopicsController().findTopic(currentChat.id, getTopicId());
+                            }
                         }
 
                         // todo: check if these's any messages between current loaded and newly loaded
