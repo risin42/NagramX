@@ -88,7 +88,7 @@
     <string name="AutoPauseVideoAbout">При блокуванні екрана або згортанні програми.</string>
     <string name="DisableProximityEvents">Вимкнути датчик наближення</string>
     <string name="SelectBetween">Виберіть діапазон</string>
-    <string name="AvatarAsBackground">Зображення профілю як фон</string>
+    <string name="AvatarAsBackground">Тип фону</string>
     <string name="BlurAvatarBackground">Розмиття фону</string>
     <string name="DarkenAvatarBackground">Затемнення фону</string>
     <string name="ProviderDeepLTranslate">DeepL Перекладач</string>
@@ -268,7 +268,7 @@
     <string name="useCustomEmojiInvalid">Недійсний набір емодзі.</string>
     <string name="repeatConfirm">Запитувати перед повтором</string>
     <string name="repeatConfirmText">Ви хочете повторити повідомлення?</string>
-    <string name="valuesLargeAvatarInDrawer">Типовий стиль\nАватар\nВеликий аватар\nWallpaper</string>
+    <string name="valuesLargeAvatarInDrawer">Типовий\nАватар\nВеликий Аватар\nШпалери</string>
     <string name="rememberAllBackMessages">Запам’ятати всі натиснуті відповіді</string>
     <string name="DisableInstantCamera">Приховати прев\'ю з камери на панелі «Прикріпити»</string>
     <string name="showSeconds">Показувати час у секундах</string>

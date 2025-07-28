@@ -220,4 +220,11 @@
     <string name="MarkdownParser">Парсер разметки</string>
     <string name="KeepTranslatorPreferences">Сохранять настройки переводчика</string>
     <string name="KeepTranslatorPreferencesNotice">Сохранять текущие настройки переводчика при смене языка приложения.</string>
+    <string name="UsePersianCalendar">Иранский календарь</string>
+    <string name="UsePersianCalendarInfo">Отображать даты по солнечному календарю Хиджри</string>
+    <string name="DisplayPersianCalendarByLatin">Иранский календарь латиницей&lt;</string>
+    <string name="TestBackendOn">Этот аккаунт будет подключаться к тестовому серверу.</string>
+    <string name="TestBackendOff">Этот аккаунт будет подключаться к основному серверу.</string>
+    <string name="DidNotGetTheCodeBlameDurov">Если вы не получили код или вы не входили в Telegram аккаунт на другом устройстве, воспользуйтесь официальным приложением Telegram, чтобы получить код.\n\nTelegram **отключил возможность авторизации через СМС** для альтернативных приложений. Согласно новым правилам, пользователи альтернативных клиентов больше не могут получить СМС-код для авторизации. Теперь для получения кода требуется использовать официальное приложение Telegram.\n\nЕсли у вас возникла проблема со входом в аккаунт, пожалуйста, обратитесь в службу поддержки Telegram.</string>
+    <string name="QRLoginMessage">Отсканируйте QR код с помощью другого устройства для входа в систему.</string>
 </resources>

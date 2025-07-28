@@ -220,4 +220,11 @@
     <string name="MarkdownParser">Analisador de Markdown</string>
     <string name="KeepTranslatorPreferences">Manter Preferências do Tradutor</string>
     <string name="KeepTranslatorPreferencesNotice">Manter configurações do tradutor ao mudar o idioma do aplicativo.</string>
+    <string name="UsePersianCalendar">Usar calendário Persa</string>
+    <string name="UsePersianCalendarInfo">Exibe a data de acordo com o calendário Solar Hijri</string>
+    <string name="DisplayPersianCalendarByLatin">Exibir calendário Persa utilizando Latim</string>
+    <string name="TestBackendOn">Esta conta se conectará ao servidor de testes do Telegram.</string>
+    <string name="TestBackendOff">Esta conta se conectará ao back-end de produção.</string>
+    <string name="DidNotGetTheCodeBlameDurov">Se você não recebeu o código em outro dispositivo ou não tem Telegram com sessão ativa em outro dispositivo, inicie sua sessão no client oficial do Telegram usando SMS para receber o código.\n\nO Telegram **desabilitou o login com SMS** em clients customizados. Usuários que usam clients de terceiros só podem receber códigos de login através do client oficial do Telegram. Não é mais possível solicitar SMS para iniciar a sua sessão.\n\nNão poderemos te ajudar com isso. Em caso de problemas ao iniciar a sua sessão, contate o Suporte do Telegram.</string>
+    <string name="QRLoginMessage">Leia o QRCode com outro dispositivo para fazer o login.</string>
 </resources>

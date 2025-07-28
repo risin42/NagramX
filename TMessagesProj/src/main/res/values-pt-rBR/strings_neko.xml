@@ -88,7 +88,7 @@
     <string name="AutoPauseVideoAbout">Quando bloquear tela/alternar para plano de fundo.</string>
     <string name="DisableProximityEvents">Desativar Eventos de Proximidade</string>
     <string name="SelectBetween">Selecionar intervalo</string>
-    <string name="AvatarAsBackground">Foto de Perfil como Plano de Fundo</string>
+    <string name="AvatarAsBackground">Tipo de Fundo</string>
     <string name="BlurAvatarBackground">Fundo Desfocado</string>
     <string name="DarkenAvatarBackground">Escurecer Fundo</string>
     <string name="ProviderDeepLTranslate">DeepL Tradutor</string>
@@ -269,7 +269,7 @@
     <string name="useCustomEmojiInvalid">Não é um pacote de emojis válido.</string>
     <string name="repeatConfirm">Perguntar antes de repostar</string>
     <string name="repeatConfirmText">Você tem certeza de que deseja repostar?</string>
-    <string name="valuesLargeAvatarInDrawer">Avatar padrão do Telegram\nAvatar como plano de fundo\nAvatar grande como plano de fundo\nWallpaper</string>
+    <string name="valuesLargeAvatarInDrawer">Padrão\nAvatar\nAvatar Grande\nPapel de Parede</string>
     <string name="rememberAllBackMessages">Lembrar todas as respostas clicadas</string>
     <string name="DisableInstantCamera">Desativar câmera instantânea</string>
     <string name="showSeconds">Mostrar data/hora em segundos</string>

@@ -10,8 +10,6 @@
     <string name="DeleteAllFromSelfBefore">Tarihten Önce...</string>
     <string name="DeleteAllFromSelfAdmin">Yönetici yetkileriyle</string>
     <string name="DeleteAllFromSelfDone">Tüm mesajlarınız silindi</string>
-    <string name="BotLogin">Bot Girişi</string>
-    <string name="InvalidAccessToken">Geçersiz erişim anahtarı</string>
     <string name="IgnoreBlocked">Engellenen Kullanıcıların Mesajlarını Gizle</string>
     <string name="Connection">Bağlantılar</string>
     <string name="NameOrder">İsim Sıralaması</string>

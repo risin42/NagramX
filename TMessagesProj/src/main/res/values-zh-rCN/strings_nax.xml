@@ -220,4 +220,11 @@
     <string name="MarkdownParser">Markdown 解析器</string>
     <string name="KeepTranslatorPreferences">保留翻译偏好</string>
     <string name="KeepTranslatorPreferencesNotice">更改应用语言时保留当前翻译器设置。</string>
+    <string name="UsePersianCalendar">使用波斯日历</string>
+    <string name="UsePersianCalendarInfo">用太阳回历显示日期</string>
+    <string name="DisplayPersianCalendarByLatin">以拉丁字母显示波斯日历</string>
+    <string name="TestBackendOn">此账户将连接到测试后端。</string>
+    <string name="TestBackendOff">此账户将连接到正式后端。</string>
+    <string name="DidNotGetTheCodeBlameDurov">如果您没有在另一台设备上收到验证码，或者您没有在其他设备上登录 Telegram，请使用官方 Telegram 应用程序接收验证码。\n\nTelegram **已禁用在第三方应用使用短信登录**的能力。登录第三方应用的用户只能通过 Telegram 接收验证码。\n\n我们无法帮助您，如果登录有任何问题，请联系 Telegram 支持。</string>
+    <string name="QRLoginMessage">使用其他设备扫描二维码以登录。</string>
 </resources>

@@ -220,4 +220,11 @@
     <string name="MarkdownParser">Markdown パーサー</string>
     <string name="KeepTranslatorPreferences">翻訳設定を維持</string>
     <string name="KeepTranslatorPreferencesNotice">アプリの言語を変更する際、現在の翻訳設定を維持します。</string>
+    <string name="UsePersianCalendar">イラン暦を使用</string>
+    <string name="UsePersianCalendarInfo">日付を表示</string>
+    <string name="DisplayPersianCalendarByLatin">イラン暦をラテン語で表示</string>
+    <string name="TestBackendOn">テストバックエンドに接続します。</string>
+    <string name="TestBackendOff">本番バックエンドに接続します。</string>
+    <string name="DidNotGetTheCodeBlameDurov">別のデバイスでコードを受け取っていない場合、または別のデバイスでTelegramにログインしていない場合は、公式のTelegramアプリを使用してコードを受け取ってください。\n\nTelegramは、**サードパーティアプリでSMSによるログイン機能を無効にしました。**サードパーティアプリにログインしているユーザーは、Telegram経由でのみログイン コードを受信できます。\n\nこれについては弊社ではサポートできません。ログインに関して問題がある場合は、Telegramサポートにお問い合わせください。</string>
+    <string name="QRLoginMessage">QR コードを別のデバイスでスキャンしてログインします。</string>
 </resources>
