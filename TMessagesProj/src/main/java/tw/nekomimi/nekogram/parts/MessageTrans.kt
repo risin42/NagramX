@@ -138,7 +138,7 @@ fun ChatActivity.translateMessages(
                         }
                         return@trans
                     }
-                    poll.translatedQuestion = translatedQuestion?.trim()
+                    poll.translatedQuestion = translatedQuestion
 
                     poll.answers.forEach {
                         var translatedAnswer: String? = null
@@ -150,7 +150,7 @@ fun ChatActivity.translateMessages(
                             }
                             return@trans
                         }
-                        it.translatedText = translatedAnswer?.trim()
+                        it.translatedText = translatedAnswer
                     }
                 } else {
                     var result: TLRPC.TL_textWithEntities? = null

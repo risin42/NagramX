@@ -225,7 +225,7 @@ object LLMTranslator : Translator {
             val message = firstChoice.getJSONObject("message")
             val content = message.getString("content")
 
-            return content
+            return content.trim()
         }
     }
 
