@@ -420,6 +420,7 @@ public class NekoSettingsActivity extends BaseFragment {
                             getString(R.string.Reset),
                             true,
                             () -> {
+                                ApplicationLoader.applicationContext.getSharedPreferences("nekocloud", Activity.MODE_PRIVATE).edit().clear().commit();
                                 ApplicationLoader.applicationContext.getSharedPreferences("nekox_config", Activity.MODE_PRIVATE).edit().clear().commit();
                                 ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Activity.MODE_PRIVATE).edit().clear().commit();
                                 AppRestartHelper.triggerRebirth(context, new Intent(context, LaunchActivity.class));
