@@ -14198,6 +14198,9 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             currentVideoSpeed = preferences.getFloat("speed" + messageObject.getDialogId() + "_" + messageObject.getId(), 1.0f);
         } else {
             currentVideoSpeed = 1.0f;
+
+            menuItem.hideSubItem(gallery_menu_send_forward);
+            menuItem.hideSubItem(gallery_menu_send_noquote);
         }
         setMenuItemIcon(false, true);
 
