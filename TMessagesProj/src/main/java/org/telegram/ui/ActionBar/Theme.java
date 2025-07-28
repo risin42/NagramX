@@ -2514,7 +2514,7 @@ public class Theme {
             } else if ("Blue".equals(name) || "Arctic Blue".equals(name) || "Day".equals(name) || "Monet Light".equals(name)) {
                 isDark = LIGHT;
             }
-            if (isDark == UNKNOWN) {
+            if (isDark == UNKNOWN && pathToFile != null) {
                 String[] wallpaperLink = new String[1];
                 SparseIntArray colors = getThemeFileValues(new File(pathToFile), null, wallpaperLink);
                 checkIsDark(colors, this);
@@ -2523,7 +2523,7 @@ public class Theme {
         }
 
         public boolean isLight() {
-            return pathToFile == null && !isDark();
+            return !isDark();
         }
 
         public String getKey() {
@@ -7395,7 +7395,7 @@ public class Theme {
 
     public static ThemeInfo createNewTheme(String name) {
         ThemeInfo newTheme = new ThemeInfo();
-        newTheme.pathToFile = new File(ApplicationLoader.getFilesDirFixed(), "theme" + Utilities.random.nextLong() + ".attheme").getAbsolutePath();
+        newTheme.pathToFile = new File(AndroidUtilities.getCacheDir(), "theme" + Utilities.random.nextLong() + ".attheme").getAbsolutePath();
         newTheme.name = name;
         themedWallpaperLink = getWallpaperUrl(currentTheme.overrideWallpaper);
         newTheme.account = UserConfig.selectedAccount;
