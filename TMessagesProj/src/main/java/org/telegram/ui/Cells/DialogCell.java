@@ -2398,6 +2398,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                 messageWidth -= showUserIconsW;
             }
         }
+        messageWidth = Math.max(dp(12), messageWidth);
         // --- ShowUserAvatarsInChatList ---
 
         if (checkMessage) {
@@ -3503,10 +3504,11 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
         if (customC) {
             return message.getSenderId();
-        } else if (message.isForwarded() && (ChatObject.isChannelOrGiga(chat) || (chat == null && user != null))) {
+        } else if (message.isForwarded() && ((ChatObject.isChannelOrGiga(chat) && !ChatObject.isMonoForum(chat)) || (chat == null && user != null))) {
             // show forwarded channel image just in channels/gigagroups or private chats
             boolean canTryToShowForwarded = drawAvatar;
             canTryToShowForwarded &= !message.isOut();
+            canTryToShowForwarded &= !message.isSaved;
             canTryToShowForwarded &= draftMessage == null;
             canTryToShowForwarded &= message.messageOwner.fwd_from.from_id instanceof TLRPC.TL_peerChannel;
 
