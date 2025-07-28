@@ -270,7 +270,7 @@ public class SharedConfig {
     public static boolean storiesIntroShown;
     public static boolean disableVoiceAudioEffects;
     public static boolean forceDisableTabletMode;
-    public static boolean updateStickersOrderOnSend = true;
+    public static boolean updateStickersOrderOnSend = false;
     public static boolean bigCameraForRound;
     public static Boolean useCamera2Force;
     public static boolean useNewBlur;
