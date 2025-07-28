@@ -7550,14 +7550,14 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     String languageText = NekoConfig.translateInputLang.String().toUpperCase();
                     String text = getString(R.string.TranslateMessage) + ' ' + "(" + languageText + ")";
                     cell.setTextAndIcon(text, R.drawable.ic_translate);
-                    cell.setVisibility(captionEdit != null && !captionEdit.getText().isEmpty());
+                    cell.setVisibility(captionEdit != null && captionEdit.getText().length() > 0);
                 } else if (a == 6) {
                     cell.setTextAndIcon(LocaleController.getString(spoilerEnabled ? R.string.DisablePhotoSpoiler : R.string.EnablePhotoSpoiler), spoilerEnabled ? R.drawable.msg_spoiler_off : R.drawable.msg_spoiler);
                 } else if (a == 7) {
                     String languageText = NekoConfig.translateInputLang.String().toUpperCase();
                     String text = getString(R.string.TranslateMessageLLM) + ' ' + "(" + languageText + ")";
                     cell.setTextAndIcon(text, R.drawable.magic_stick_solar);
-                    cell.setVisibility(captionEdit != null && !captionEdit.getText().isEmpty() && NaConfig.INSTANCE.isLLMTranslatorAvailable());
+                    cell.setVisibility(captionEdit != null && captionEdit.getText().length() > 0 && NaConfig.INSTANCE.isLLMTranslatorAvailable());
                 }
                 cell.setMinimumWidth(dp(196));
                 cell.setColors(0xffffffff, 0xffffffff);
