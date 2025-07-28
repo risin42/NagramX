@@ -10,8 +10,6 @@
     <string name="DeleteAllFromSelfBefore">До...</string>
     <string name="DeleteAllFromSelfAdmin">С правами администратора</string>
     <string name="DeleteAllFromSelfDone">Все ваши сообщения удалены</string>
-    <string name="BotLogin">Вход по токену</string>
-    <string name="InvalidAccessToken">Недопустимый токен</string>
     <string name="IgnoreBlocked">Скрыть сообщения от заблокированных пользователей</string>
     <string name="Connection">Сеть</string>
     <string name="NameOrder">Сортировать контакты</string>

@@ -10,8 +10,6 @@
     <string name="DeleteAllFromSelfBefore">Before...</string>
     <string name="DeleteAllFromSelfAdmin">With admin rights</string>
     <string name="DeleteAllFromSelfDone">All your messages are deleted</string>
-    <string name="BotLogin">Bot Login</string>
-    <string name="InvalidAccessToken">Invalid access token</string>
     <string name="IgnoreBlocked">Hide Messages from Blocked Users</string>
     <string name="Connection">Connections</string>
     <string name="NameOrder">Name Order</string>

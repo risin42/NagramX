@@ -10,8 +10,6 @@
     <string name="DeleteAllFromSelfBefore">До...</string>
     <string name="DeleteAllFromSelfAdmin">З правами адміністратора</string>
     <string name="DeleteAllFromSelfDone">Усі ваші повідомлення видалені</string>
-    <string name="BotLogin">Bot Login</string>
-    <string name="InvalidAccessToken">Недійсний токен доступу</string>
     <string name="IgnoreBlocked">Приховати повідомлення від заблокованих користувачів</string>
     <string name="Connection">З\'єднання</string>
     <string name="NameOrder">Порядок імен</string>
