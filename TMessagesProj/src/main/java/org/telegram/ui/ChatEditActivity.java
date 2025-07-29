@@ -985,6 +985,9 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
                 final long dialogId = -currentChat.id;
                 autoTranslationCell = new TextCell(context, 23, false, true, resourceProvider);
                 autoTranslationCell.setBackground(Theme.getSelectorDrawable(true));
+                if (ChatObject.isChannelAndNotMegaGroup(currentChat) && (!ChatObject.hasAdminRights(currentChat))) {
+                    autoTranslationCell.setVisibility(View.GONE);
+                }
                 autoTranslationCell.setTextAndCheckAndIcon(getString(R.string.ChannelAutotranslation), currentChat.autotranslation, R.drawable.msg_translate, false);
                 getMessagesController().getBoostsController().getBoostsStats(dialogId, boostsStatus -> {
                     autoTranslationCell.getCheckBox().setIcon(boostsStatus.level < getMessagesController().channelAutotranslationLevelMin ? R.drawable.permission_locked : 0);
