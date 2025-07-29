@@ -2491,7 +2491,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
         };
         backspaceButton.setHapticFeedbackEnabled(true);
         backspaceButton.setImageResource(R.drawable.smiles_tab_clear);
-        backspaceButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.SRC_IN));
+        backspaceButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelBackspace), PorterDuff.Mode.MULTIPLY));
         backspaceButton.setScaleType(ImageView.ScaleType.CENTER);
         backspaceButton.setContentDescription(LocaleController.getString(R.string.AccDescrBackspace));
         backspaceButton.setFocusable(true);
@@ -2628,7 +2628,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
 
             searchButton = new ImageView(context);
             searchButton.setImageResource(R.drawable.smiles_tab_search);
-            searchButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.SRC_IN));
+            searchButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelBackspace), PorterDuff.Mode.MULTIPLY));
             searchButton.setScaleType(ImageView.ScaleType.CENTER);
             searchButton.setContentDescription(LocaleController.getString(R.string.Search));
             searchButton.setFocusable(true);
@@ -2667,7 +2667,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
             Drawable drawable = Theme.createSimpleSelectorCircleDrawable(AndroidUtilities.dp(56), getThemedColor(Theme.key_chat_emojiPanelBackground), getThemedColor(Theme.key_chat_emojiPanelBackground));
             if (Build.VERSION.SDK_INT < 21) {
                 Drawable shadowDrawable = context.getResources().getDrawable(R.drawable.floating_shadow).mutate();
-                shadowDrawable.setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.SRC_IN));
+                shadowDrawable.setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.MULTIPLY));
                 CombinedDrawable combinedDrawable = new CombinedDrawable(shadowDrawable, drawable, 0, 0);
                 combinedDrawable.setIconSize(AndroidUtilities.dp(36), AndroidUtilities.dp(36));
                 drawable = combinedDrawable;
@@ -5326,8 +5326,8 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                     stickerSets.remove(0);
                     a--;
                 } else {
-                        hasChatStickers = true;
-                        stickersTab.addStickerTab(chat);
+                    hasChatStickers = true;
+                    stickersTab.addStickerTab(chat);
                 }
             } else {
                 TLRPC.TL_messages_stickerSet stickerSet = stickerSets.get(a);
@@ -5475,7 +5475,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
         } else if (AndroidUtilities.isInMultiwindow || forseMultiwindowLayout) {
             Drawable background = getBackground();
             if (background != null) {
-                background.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelBackground), PorterDuff.Mode.SRC_IN));
+                background.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelBackground), PorterDuff.Mode.MULTIPLY));
             }
         } else {
             setBackgroundColor(getThemedColor(Theme.key_chat_emojiPanelBackground));
@@ -5546,17 +5546,17 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
             }
         }
         if (backspaceButton != null) {
-            backspaceButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelBackspace), PorterDuff.Mode.SRC_IN));
+            backspaceButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelBackspace), PorterDuff.Mode.MULTIPLY));
             if (emojiSearchField == null) {
                 Theme.setSelectorDrawableColor(backspaceButton.getBackground(), getThemedColor(Theme.key_chat_emojiPanelBackground), false);
                 Theme.setSelectorDrawableColor(backspaceButton.getBackground(), getThemedColor(Theme.key_chat_emojiPanelBackground), true);
             }
         }
         if (stickerSettingsButton != null) {
-            stickerSettingsButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelBackspace), PorterDuff.Mode.SRC_IN));
+            stickerSettingsButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelBackspace), PorterDuff.Mode.MULTIPLY));
         }
         if (searchButton != null) {
-            searchButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelBackspace), PorterDuff.Mode.SRC_IN));
+            searchButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelBackspace), PorterDuff.Mode.MULTIPLY));
         }
         if (shadowLine != null) {
             shadowLine.setBackgroundColor(getThemedColor(Theme.key_chat_emojiPanelShadowLine));
@@ -5566,7 +5566,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
             mediaBanTooltip.setTextColor(getThemedColor(Theme.key_chat_gifSaveHintText));
         }
         if (gifSearchAdapter != null) {
-            gifSearchAdapter.progressEmptyView.imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelEmptyText), PorterDuff.Mode.SRC_IN));
+            gifSearchAdapter.progressEmptyView.imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelEmptyText), PorterDuff.Mode.MULTIPLY));
             gifSearchAdapter.progressEmptyView.textView.setTextColor(getThemedColor(Theme.key_chat_emojiPanelEmptyText));
             gifSearchAdapter.progressEmptyView.progressView.setProgressColor(getThemedColor(Theme.key_progressCircle));
         }
@@ -5846,7 +5846,6 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                     }
                 }
             }
-            recentStickers = new ArrayList<>(recentStickers.subList(0, Math.min(recentStickers.size(), NekoConfig.maxRecentStickerCount.Int())));
             if (MessagesController.getInstance(currentAccount).premiumFeaturesBlocked()) {
                 for (int a = 0; a < favouriteStickers.size(); a++) {
                     if (MessageObject.isPremiumSticker(favouriteStickers.get(a))) {
@@ -6482,7 +6481,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                         MediaDataController mediaDataController = MediaDataController.getInstance(currentAccount);
                         ArrayList<TLRPC.StickerSetCovered> featured = mediaDataController.getFeaturedStickerSets();
                         if (!featured.isEmpty()) {
-                            MessagesController.getEmojiSettings(currentAccount).edit().putLong("featured_hidden", featured.get(0).set.id).commit();
+                            MessagesController.getEmojiSettings(currentAccount).edit().putLong("featured_hidden", featured.get(0).set.id).apply();
                             if (stickersGridAdapter != null) {
                                 stickersGridAdapter.notifyItemRangeRemoved(1, 2);
                             }
@@ -6520,6 +6519,11 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                         if (fragment instanceof ChatActivity) {
                             ((ChatActivity) fragment).openAttachMenuForCreatingSticker();
                         }
+                    });
+                    btnView.setOnLongClickListener(v -> {
+                        NekoConfig.minimizedStickerCreator.toggleConfigBool();
+                        checkDocuments(false);
+                        return true;
                     });
                     ScaleStateListAnimator.apply(btnView);
                     containerLayout.addView(btnView, LayoutHelper.createFrame(56, 56, Gravity.CENTER));
@@ -6602,6 +6606,17 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                             }
                         } else if (object == recentStickers) {
                             cell.setText(LocaleController.getString(R.string.RecentStickers), R.drawable.msg_close, LocaleController.getString(R.string.ClearRecentStickersAlertTitle));
+                            if (NekoConfig.minimizedStickerCreator.Bool()) {
+                                cell.setCreate(v -> {
+                                    if (fragment instanceof ChatActivity) {
+                                        ((ChatActivity) fragment).openAttachMenuForCreatingSticker();
+                                    }
+                                }, v -> {
+                                    NekoConfig.minimizedStickerCreator.toggleConfigBool();
+                                    checkDocuments(false);
+                                    return true;
+                                });
+                            }
                         } else if (object == favouriteStickers) {
                             cell.setText(LocaleController.getString(R.string.FavoriteStickers), 0);
                         } else if (object == premiumStickers) {
@@ -6666,9 +6681,9 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                     packStartPosition.put(key = "fav", totalItems);
                 } else if (a == -2) {
                     documents = recentStickers;
-//                    if (!documents.isEmpty() && !StickersAlert.DISABLE_STICKER_EDITOR) {
-//                        isAddedStickerBtnSet = true;
-//                    }
+                    if (!documents.isEmpty() && !StickersAlert.DISABLE_STICKER_EDITOR) {
+                        isAddedStickerBtnSet = true;
+                    }
                     packStartPosition.put(key = "recent", totalItems);
                 } else if (a == -1) {
                     continue;
@@ -6852,7 +6867,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                             return;
                         }
                         long lastSetId = featuredEmojiSets.get(0).set.id;
-                        MessagesController.getEmojiSettings(currentAccount).edit().putLong("emoji_featured_hidden", lastSetId).commit();
+                        MessagesController.getEmojiSettings(currentAccount).edit().putLong("emoji_featured_hidden", lastSetId).apply();
                         if (emojiAdapter != null) {
                             emojiAdapter.notifyItemRangeRemoved(1, 3);
                         }
@@ -7525,7 +7540,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                     ImageView imageView = new ImageView(getContext());
                     imageView.setScaleType(ImageView.ScaleType.CENTER);
                     imageView.setImageResource(R.drawable.msg_emoji_question);
-                    imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelEmptyText), PorterDuff.Mode.SRC_IN));
+                    imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelEmptyText), PorterDuff.Mode.MULTIPLY));
                     frameLayout.addView(imageView, LayoutHelper.createFrame(48, 48, Gravity.BOTTOM | Gravity.RIGHT));
                     imageView.setOnClickListener(new OnClickListener() {
                         @Override
@@ -8511,7 +8526,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
             imageView = new ImageView(getContext());
             imageView.setScaleType(ImageView.ScaleType.CENTER);
             imageView.setImageResource(R.drawable.gif_empty);
-            imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelEmptyText), PorterDuff.Mode.SRC_IN));
+            imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelEmptyText), PorterDuff.Mode.MULTIPLY));
             addView(imageView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 0, 8, 0, 0));
 
             textView = new TextView(getContext());
@@ -8990,7 +9005,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                     ImageView imageView = new ImageView(context);
                     imageView.setScaleType(ImageView.ScaleType.CENTER);
                     imageView.setImageResource(R.drawable.stickers_empty);
-                    imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelEmptyText), PorterDuff.Mode.SRC_IN));
+                    imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelEmptyText), PorterDuff.Mode.MULTIPLY));
                     imageView.setTranslationY(-AndroidUtilities.dp(24));
                     frameLayout.addView(imageView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 0, 42, 0, 28));
 

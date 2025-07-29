@@ -902,19 +902,15 @@ public class MediaDataController extends BaseController {
     }
 
     public ArrayList<TLRPC.Document> getRecentStickers(int type, boolean firstEmpty) {
-        return getRecentStickers(type, false, 0);
-    }
-
-    public ArrayList<TLRPC.Document> getRecentStickers(int type, boolean firstEmpty, int padding) {
         ArrayList<TLRPC.Document> arrayList = recentStickers[type];
         if (type == TYPE_PREMIUM_STICKERS) {
             return new ArrayList<>(recentStickers[type]);
         }
-        ArrayList<TLRPC.Document> result = new ArrayList<>(arrayList.subList(0, Math.min(arrayList.size(), 20)));
-        if (firstEmpty && !result.isEmpty() && !StickersAlert.DISABLE_STICKER_EDITOR) {
+        ArrayList<TLRPC.Document> result = new ArrayList<>(arrayList.subList(0, Math.min(arrayList.size(), NekoConfig.maxRecentStickerCount.Int())));
+        if (firstEmpty && !result.isEmpty() && !StickersAlert.DISABLE_STICKER_EDITOR && !NekoConfig.minimizedStickerCreator.Bool()) {
             result.add(0, new TLRPC.TL_documentEmpty());
         }
-        return new ArrayList<>(arrayList.subList(0, Math.min(arrayList.size(), NekoConfig.maxRecentStickerCount.Int() + padding)));
+        return result;
     }
 
     public ArrayList<TLRPC.Document> getRecentStickersNoCopy(int type) {
@@ -1016,7 +1012,7 @@ public class MediaDataController extends BaseController {
                     }
                 });
             }
-            maxCount = getMessagesController().maxRecentStickersCount;
+            maxCount = NekoConfig.maxRecentStickerCount.Int()/*getMessagesController().maxRecentStickersCount*/;
         }
         if (recentStickers[type].size() > maxCount || remove) {
             TLRPC.Document old = remove ? document : recentStickers[type].remove(recentStickers[type].size() - 1);
@@ -2073,7 +2069,7 @@ public class MediaDataController extends BaseController {
                         } else if (type == TYPE_FAVE) {
                             maxCount = NekoConfig.unlimitedFavedStickers.Bool() ? Integer.MAX_VALUE : getUserConfig().isRealPremium() ? 10 : getMessagesController().maxFaveStickersCount;
                         } else {
-                            maxCount = getMessagesController().maxRecentStickersCount;
+                            maxCount = NekoConfig.maxRecentStickerCount.Int()/*getMessagesController().maxRecentStickersCount*/;
                         }
                     }
                     database.beginTransaction();

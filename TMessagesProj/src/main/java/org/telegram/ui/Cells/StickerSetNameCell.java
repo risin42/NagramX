@@ -33,7 +33,6 @@ import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ActionBar.ThemeDescription;
 import org.telegram.ui.Components.ColorSpanUnderline;
-import org.telegram.ui.Components.EmojiTextView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.ScaleStateListAnimator;
@@ -74,7 +73,7 @@ public class StickerSetNameCell extends FrameLayout {
         layout.setOrientation(LinearLayout.HORIZONTAL);
         layout.setGravity(Gravity.CENTER);
 
-        textView = new EmojiTextView(context);
+        textView = new TextView(context);
         textView.setTextColor(getThemedColor(Theme.key_chat_emojiPanelStickerSetName));
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
         textView.setTypeface(AndroidUtilities.bold());
@@ -125,7 +124,7 @@ public class StickerSetNameCell extends FrameLayout {
 
         buttonView = new ImageView(context);
         buttonView.setScaleType(ImageView.ScaleType.CENTER);
-        buttonView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelStickerSetNameIcon), PorterDuff.Mode.SRC_IN));
+        buttonView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelStickerSetNameIcon), PorterDuff.Mode.MULTIPLY));
         buttonView.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_listSelector), Theme.RIPPLE_MASK_CIRCLE_TO_BOUND_EDGE));
         if (supportRtl) {
             lp = LayoutHelper.createFrameRelatively(24, 24, Gravity.TOP | Gravity.END, 0, 0, isEmoji ? 0 : 10, 0);
@@ -201,6 +200,14 @@ public class StickerSetNameCell extends FrameLayout {
         editView.setVisibility(View.VISIBLE);
         editView.setText(LocaleController.getString(R.string.EditPack));
         editView.setOnClickListener(whenClickedEdit);
+        editView.setOnLongClickListener(null);
+    }
+
+    public void setCreate(View.OnClickListener whenClickedEdit, View.OnLongClickListener whenLongClickedEdit) {
+        editView.setVisibility(View.VISIBLE);
+        editView.setText(LocaleController.getString(R.string.Create).toLowerCase());
+        editView.setOnClickListener(whenClickedEdit);
+        editView.setOnLongClickListener(whenLongClickedEdit);
     }
 
     public void setHeaderOnClick(View.OnClickListener listener) {

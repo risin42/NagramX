@@ -174,6 +174,8 @@ public class NekoConfig {
     public static ConfigItem usePersianCalendar = addConfig("UsePersianCalendar", configTypeBool, false);
     public static ConfigItem displayPersianCalendarByLatin = addConfig("DisplayPersianCalendarByLatin", configTypeBool, false);
 
+    public static ConfigItem minimizedStickerCreator = addConfig("minimizedStickerCreator", configTypeBool, false);
+
     // --- Ghost Mode ---
     public static ConfigItem sendReadMessagePackets = addConfig("sendReadMessagePackets", configTypeBool, true);
     public static ConfigItem sendReadStoriesPackets = addConfig("sendReadStoriesPackets", configTypeBool, true);
