@@ -10314,7 +10314,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             NekoXConfig.customApi = target;
             NekoXConfig.saveCustomApi();
             AlertDialog restart = new AlertDialog(getContext(), 0);
-            restart.setTitle(getString(R.string.NekoX));
+            restart.setTitle(getString(R.string.NagramX));
             restart.setMessage(getString(R.string.RestartAppToTakeEffect));
             restart.setPositiveButton(getString(R.string.OK), (__, ___) -> {
                 AppRestartHelper.triggerRebirth(getContext(), new Intent(getContext(), LaunchActivity.class));
