@@ -143,7 +143,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import xyz.nextalone.nagram.NaConfig;
 
 public class SelectAnimatedEmojiDialog extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
 
@@ -3609,13 +3608,13 @@ public class SelectAnimatedEmojiDialog extends FrameLayout implements Notificati
         }
     }
 
-    private static SparseArray<Boolean> preloaded = new SparseArray();
+    private static boolean[] preloaded = new boolean[UserConfig.MAX_ACCOUNT_COUNT];
 
     public static void preload(int account) {
-        if (preloaded.get(account, false) || MediaDataController.getInstance(account) == null) {
+        if (preloaded[account] || MediaDataController.getInstance(account) == null) {
             return;
         }
-        preloaded.put(account, true);
+        preloaded[account] = true;
         MediaDataController.getInstance(account).checkStickers(MediaDataController.TYPE_EMOJIPACKS);
         MediaDataController.getInstance(account).fetchEmojiStatuses(0, true);
         MediaDataController.getInstance(account).checkReactions();
