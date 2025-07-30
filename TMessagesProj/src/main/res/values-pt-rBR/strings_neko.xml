@@ -86,7 +86,7 @@
     <string name="AutoPauseVideoAbout">Quando bloquear tela/alternar para plano de fundo.</string>
     <string name="DisableProximityEvents">Desativar Eventos de Proximidade</string>
     <string name="SelectBetween">Selecionar intervalo</string>
-    <string name="AvatarAsBackground">Tipo de Fundo</string>
+    <string name="AvatarAsBackground">Tipo de Plano de Fundo</string>
     <string name="BlurAvatarBackground">Fundo Desfocado</string>
     <string name="DarkenAvatarBackground">Escurecer Fundo</string>
     <string name="ProviderDeepLTranslate">DeepL Tradutor</string>
