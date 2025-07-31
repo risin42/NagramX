@@ -7,7 +7,7 @@ import org.telegram.ui.Components.Paint.PersistColorPalette;
 
 import tw.nekomimi.nekogram.helpers.CloudStorageHelper;
 import tw.nekomimi.nekogram.helpers.UserHelper;
-import tw.nekomimi.nekogram.ui.MessageHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 
 public class AccountInstance {
 

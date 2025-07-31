@@ -28,6 +28,7 @@ import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.AlertsCreator;
@@ -283,5 +284,20 @@ public class ChatsHelper extends BaseController {
             chatActivity.clearSelectionMode();
             Toast.makeText(chatActivity.getParentActivity(), getString(R.string.ErrorOccurred), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public static long getChatId() {
+        long chatId = -1;
+        final BaseFragment lastFragment = LaunchActivity.getSafeLastFragment();
+        if (lastFragment instanceof ChatActivity) {
+            TLRPC.Chat chat = ((ChatActivity) lastFragment).getCurrentChat();
+            TLRPC.User user = ((ChatActivity) lastFragment).getCurrentUser();
+            if (chat != null) {
+                chatId = chat.id;
+            } else if (user != null) {
+                chatId = user.id;
+            }
+        }
+        return chatId;
     }
 }

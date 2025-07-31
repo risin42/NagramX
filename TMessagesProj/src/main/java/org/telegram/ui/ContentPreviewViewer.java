@@ -105,7 +105,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.ui.MessageHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.utils.VibrateUtil;
 import xyz.nextalone.nagram.NaConfig;
 

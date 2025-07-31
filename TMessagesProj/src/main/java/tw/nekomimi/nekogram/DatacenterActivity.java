@@ -34,7 +34,6 @@ import org.telegram.ui.Components.RecyclerListView;
 
 import java.util.Locale;
 
-import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.settings.BaseNekoSettingsActivity;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 
@@ -354,7 +353,7 @@ public class DatacenterActivity extends BaseNekoSettingsActivity implements Noti
         }
 
         public void setDC(NekoConfig.DatacenterInfo info, boolean divider) {
-            textView.setText(String.format(Locale.US, "DC%d %s, %s", info.id, MessageHelper.getDCName(info.id), MessageHelper.getDCLocation(info.id)));
+            textView.setText(String.format(Locale.US, "DC%d %s, %s", info.id, getDCName(info.id), getDCLocation(info.id)));
             currentInfo = info;
             needDivider = divider;
             setWillNotDraw(!needDivider);
@@ -386,11 +385,31 @@ public class DatacenterActivity extends BaseNekoSettingsActivity implements Noti
         }
 
         @Override
-        protected void onDraw(Canvas canvas) {
+        protected void onDraw(@NonNull Canvas canvas) {
             if (needDivider) {
                 canvas.drawLine(LocaleController.isRTL ? 0 : AndroidUtilities.dp(20), getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? AndroidUtilities.dp(20) : 0), getMeasuredHeight() - 1, Theme.dividerPaint);
             }
         }
+    }
+
+    public static String getDCLocation(int dc) {
+        return switch (dc) {
+            case 1, 3 -> "Miami";
+            case 2, 4 -> "Amsterdam";
+            case 5 -> "Singapore";
+            default -> "Unknown";
+        };
+    }
+
+    public static String getDCName(int dc) {
+        return switch (dc) {
+            case 1 -> "Pluto";
+            case 2 -> "Venus";
+            case 3 -> "Aurora";
+            case 4 -> "Vesta";
+            case 5 -> "Flora";
+            default -> "Unknown";
+        };
     }
 
 }

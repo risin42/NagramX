@@ -65,7 +65,7 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.CloudStorageHelper;
 import tw.nekomimi.nekogram.helpers.UserHelper;
 import tw.nekomimi.nekogram.utils.VibrateUtil;
-import tw.nekomimi.nekogram.ui.MessageHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 import xyz.nextalone.nagram.NaConfig;
 
 public abstract class BaseFragment {
