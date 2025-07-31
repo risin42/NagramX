@@ -2823,12 +2823,26 @@ public class ImageLoader {
         }
         WebInstantView.cancelLoadPhoto(imageReceiver);
         ArrayList<Runnable> runnables = imageReceiver.getLoadingOperations();
-        if (!runnables.isEmpty()) {
+        ArrayList<Runnable> runnablesCopy;
+        synchronized (runnables) {
+            if (!runnables.isEmpty()) {
+                runnablesCopy = new ArrayList<>(runnables);
+                runnables.clear();
+            } else {
+                runnablesCopy = null;
+            }
+        }
+        if (runnablesCopy != null) {
+            for (Runnable runnable : runnablesCopy) {
+                imageLoadQueue.cancelRunnable(runnable);
+            }
+        }
+        /*if (!runnables.isEmpty()) {
             for (int i = 0; i < runnables.size(); i++) {
                 imageLoadQueue.cancelRunnable(runnables.get(i));
             }
             runnables.clear();
-        }
+        }*/
         imageReceiver.addLoadingImageRunnable(null);
         imageLoadQueue.postRunnable(() -> {
             for (int a = 0; a < 3; a++) {

@@ -142,10 +142,12 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
                 ImageReceiver.BitmapHolder bmp = imageReceiver.getBitmapSafe();
                 if (bmp != null) {
                     new Thread(() -> {
-                        if (lastBitmap != null) {
-                            imageReceiver.setCrossfadeWithOldImage(false);
-                            imageReceiver.setImageBitmap(new BitmapDrawable(null, lastBitmap), false);
-                        }
+                        AndroidUtilities.runOnUIThread(() -> {
+                            if (lastBitmap != null) {
+                                imageReceiver.setCrossfadeWithOldImage(false);
+                                imageReceiver.setImageBitmap(new BitmapDrawable(null, lastBitmap), false);
+                            }
+                        });
                         int width = NekoConfig.avatarBackgroundBlur.Bool() ? 150 : bmp.bitmap.getWidth();
                         int height = NekoConfig.avatarBackgroundBlur.Bool() ? 150 : bmp.bitmap.getHeight();
                         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
