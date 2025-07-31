@@ -149,6 +149,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -3576,7 +3577,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                 messageSendPreview.setStars(amount);
             }
             if (chatActivity != null && commentTextView != null && commentTextView.getText().length() > 0) {
-                String languageText = NekoConfig.translateInputLang.String().toUpperCase();
+                String languageText = Translator.getInputTranslateLangForChat(ChatsHelper.getChatId()).toUpperCase();
                 StringBuilder sb;
                 if (NaConfig.INSTANCE.isLLMTranslatorAvailable()) {
                     sb = new StringBuilder();
@@ -3593,12 +3594,12 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                                     messageSendPreview.dismiss();
                                 }
                                 translateComment(parentFragment.getParentActivity(), locale, Translator.providerLLMTranslator);
-                                NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
+                                Translator.setInputTranslateLangForChat(ChatsHelper.getChatId(), TranslatorKt.getLocale2code(locale));
                                 return Unit.INSTANCE;
                             });
                         },
                         () -> {
-                            translateComment(parentFragment.getParentActivity(), TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()), Translator.providerLLMTranslator);
+                            translateComment(parentFragment.getParentActivity(), Translator.getInputTranslateLangLocaleForChat(ChatsHelper.getChatId()), Translator.providerLLMTranslator);
                             if (messageSendPreview != null) {
                                 messageSendPreview.dismiss(false);
                                 messageSendPreview = null;
@@ -3620,12 +3621,12 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                                     messageSendPreview.dismiss();
                                 }
                                 translateComment(parentFragment.getParentActivity(), locale);
-                                NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
+                                Translator.setInputTranslateLangForChat(ChatsHelper.getChatId(), TranslatorKt.getLocale2code(locale));
                                 return Unit.INSTANCE;
                             });
                         },
                         () -> {
-                            translateComment(parentFragment.getParentActivity(), TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()));
+                            translateComment(parentFragment.getParentActivity(), Translator.getInputTranslateLangLocaleForChat(ChatsHelper.getChatId()));
                             if (messageSendPreview != null) {
                                 messageSendPreview.dismiss(false);
                                 messageSendPreview = null;

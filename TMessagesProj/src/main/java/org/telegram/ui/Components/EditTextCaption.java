@@ -60,9 +60,8 @@ import org.telegram.ui.ActionBar.Theme;
 import java.util.List;
 import java.util.Locale;
 
-import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.translate.Translator;
-import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -305,17 +304,18 @@ public class EditTextCaption extends EditTextBoldCursor {
     }
 
     public void makeSelectedTranslate() {
+        String text = getText().toString();
+        if (TextUtils.isEmpty(text)) return;
+
+        Locale toLocale = Translator.getInputTranslateLangLocaleForChat(ChatsHelper.getChatId());
+
         int start = getSelectionStart();
         int end = getSelectionEnd();
+        String selectedText = getText().subSequence(start, end).toString();
 
-        String origin = getText().toString();
-        String text = getText().subSequence(start, end).toString();
+        int provider = NaConfig.INSTANCE.isLLMTranslatorAvailable() ? Translator.providerLLMTranslator : 0;
 
-        if (TextUtils.isEmpty(origin)) return;
-
-        Locale to = TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String());
-        Translator.translate(to, text, NaConfig.INSTANCE.isLLMTranslatorAvailable() ? Translator.providerLLMTranslator : 0, new Translator.Companion.TranslateCallBack() {
-
+        Translator.translate(toLocale, selectedText, provider, new Translator.Companion.TranslateCallBack() {
             AlertDialog status = AlertUtil.showProgress(getContext());
 
             {
@@ -325,7 +325,7 @@ public class EditTextCaption extends EditTextBoldCursor {
             @Override
             public void onSuccess(@NotNull String translation) {
                 status.dismiss();
-                setText(replaceAt(origin, start, end, translation));
+                setText(replaceAt(text, start, end, translation));
             }
 
             @Override

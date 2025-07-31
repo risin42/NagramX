@@ -84,6 +84,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -505,20 +506,12 @@ public class PhotoAlbumPickerActivity extends BaseFragment implements Notificati
 
                     sendPopupLayout.addView(itemCells[a], LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
 
-                    long chatId;
-                    if (chat != null) {
-                        chatId = chat.id;
-                    } else if (user != null) {
-                        chatId = user.id;
-                    } else {
-                        chatId = -1;
-                    }
                     itemCells[a].setOnClickListener(v -> {
                         if (sendPopupWindow != null && sendPopupWindow.isShowing()) {
                             sendPopupWindow.dismiss();
                         }
                         if (num == 0) {
-                            translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()));
+                            translateComment(Translator.getInputTranslateLangLocaleForChat(ChatsHelper.getChatId()));
                         } else if (num == 1) {
                             AlertsCreator.createScheduleDatePickerDialog(getParentActivity(), chatActivity.getDialogId(), (notify, scheduleDate) -> {
                                 sendSelectedPhotos(selectedPhotos, selectedPhotosOrder, notify, scheduleDate);
@@ -536,7 +529,7 @@ public class PhotoAlbumPickerActivity extends BaseFragment implements Notificati
                                     sendPopupWindow.dismiss();
                                 }
                                 translateComment(locale);
-                                NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
+                                Translator.setInputTranslateLangForChat(ChatsHelper.getChatId(), TranslatorKt.getLocale2code(locale));
                                 return Unit.INSTANCE;
                             });
                             return true;

@@ -110,6 +110,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -1139,12 +1140,12 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
                             boolean sendWithoutSoundNax = NaConfig.INSTANCE.getSilentMessageByDefault().Bool();
                             itemCells[a].setTextAndIcon(sendWithoutSoundNax ? getString(R.string.SendWithSound) : getString(R.string.SendWithoutSound), sendWithoutSoundNax ? R.drawable.input_notify_on : R.drawable.input_notify_off);
                         } else if (num == 2) {
-                            String languageText = NekoConfig.translateInputLang.String().toUpperCase();
+                            String languageText = Translator.getInputTranslateLangForChat(ChatsHelper.getChatId()).toUpperCase();
                             String text = getString(R.string.TranslateMessageLLM) + ' ' + "(" + languageText + ")";
                             itemCells[a].setTextAndIcon(text, R.drawable.magic_stick_solar);
                             itemCells[a].setVisibility(NaConfig.INSTANCE.isLLMTranslatorAvailable());
                         } else if (num == 3) {
-                            String languageText = NekoConfig.translateInputLang.String().toUpperCase();
+                            String languageText = Translator.getInputTranslateLangForChat(ChatsHelper.getChatId()).toUpperCase();
                             String text = getString(R.string.TranslateMessage) + ' ' + "(" + languageText + ")";
                             itemCells[a].setTextAndIcon(text, R.drawable.ic_translate);
                         }
@@ -1161,7 +1162,7 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
                             } else if (num == 1) {
                                 sendSelectedPhotos(NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0); // sendSelectedPhotos(true, 0); ← Telegram bug
                             } else if (num == 2 || num == 3) {
-                                translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()), num == 3 ? 0 : Translator.providerLLMTranslator);
+                                translateComment(Translator.getInputTranslateLangLocaleForChat(ChatsHelper.getChatId()), num == 3 ? 0 : Translator.providerLLMTranslator);
                             }
                         });
                         itemCells[a].setOnLongClickListener(v -> {
@@ -1171,7 +1172,7 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
                                         sendPopupWindow.dismiss();
                                     }
                                     translateComment(locale);
-                                    NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
+                                    Translator.setInputTranslateLangForChat(ChatsHelper.getChatId(), TranslatorKt.getLocale2code(locale));
                                     return Unit.INSTANCE;
                                 });
                                 return true;

@@ -101,6 +101,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -733,21 +734,12 @@ public class DocumentSelectActivity extends BaseFragment {
 
                     sendPopupLayout.addView(itemCells[a], LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 0, 48 * a, 0, 0));
 
-                    long chatId;
-                    if (chat != null) {
-                        chatId = chat.id;
-                    } else if (user != null) {
-                        chatId = user.id;
-                    } else {
-                        chatId = -1;
-                    }
-
                     itemCells[a].setOnClickListener(v -> {
                         if (sendPopupWindow != null && sendPopupWindow.isShowing()) {
                             sendPopupWindow.dismiss();
                         }
                         if (num == 0) {
-                            translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()));
+                            translateComment(Translator.getInputTranslateLangLocaleForChat(ChatsHelper.getChatId()));
                         } else if (num == 1) {
                             AlertsCreator.createScheduleDatePickerDialog(getParentActivity(), chatActivity.getDialogId(), this::sendSelectedFiles);
                         } else if (num == 2) {
@@ -761,7 +753,7 @@ public class DocumentSelectActivity extends BaseFragment {
                                     sendPopupWindow.dismiss();
                                 }
                                 translateComment(locale);
-                                NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
+                                Translator.setInputTranslateLangForChat(ChatsHelper.getChatId(), TranslatorKt.getLocale2code(locale));
                                 return Unit.INSTANCE;
                             });
                             return true;
@@ -829,7 +821,6 @@ public class DocumentSelectActivity extends BaseFragment {
 
         return fragmentView;
     }
-
 
     private void translateComment(Locale target) {
         String origin = commentTextView.getText().toString();

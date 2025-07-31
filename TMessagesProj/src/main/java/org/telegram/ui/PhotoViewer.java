@@ -325,6 +325,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
+import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -7547,14 +7548,14 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                         cell.setTextAndIcon(getString(R.string.SendAsFile), R.drawable.msg_sendfile);
                     }
                 } else if (a == 5) {
-                    String languageText = NekoConfig.translateInputLang.String().toUpperCase();
+                    String languageText = Translator.getInputTranslateLangForChat(ChatsHelper.getChatId()).toUpperCase();
                     String text = getString(R.string.TranslateMessage) + ' ' + "(" + languageText + ")";
                     cell.setTextAndIcon(text, R.drawable.ic_translate);
                     cell.setVisibility(captionEdit != null && captionEdit.getText().length() > 0);
                 } else if (a == 6) {
                     cell.setTextAndIcon(LocaleController.getString(spoilerEnabled ? R.string.DisablePhotoSpoiler : R.string.EnablePhotoSpoiler), spoilerEnabled ? R.drawable.msg_spoiler_off : R.drawable.msg_spoiler);
                 } else if (a == 7) {
-                    String languageText = NekoConfig.translateInputLang.String().toUpperCase();
+                    String languageText = Translator.getInputTranslateLangForChat(ChatsHelper.getChatId()).toUpperCase();
                     String text = getString(R.string.TranslateMessageLLM) + ' ' + "(" + languageText + ")";
                     cell.setTextAndIcon(text, R.drawable.magic_stick_solar);
                     cell.setVisibility(captionEdit != null && captionEdit.getText().length() > 0 && NaConfig.INSTANCE.isLLMTranslatorAvailable());
@@ -7578,7 +7579,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     } else if (a == 4) {
                         sendPressed(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, false, true, false);
                     } else if (a == 5) {
-                        translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()));
+                        translateComment(Translator.getInputTranslateLangLocaleForChat(ChatsHelper.getChatId()));
                     } else if (a == 6) {
                         if (placeProvider != null && !placeProvider.isPhotoChecked(currentIndex)) {
                             setPhotoChecked();
@@ -7587,7 +7588,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                         entry.hasSpoiler = !entry.hasSpoiler;
                         if (placeProvider != null) placeProvider.spoilerPressed();
                     } else if (a == 7) {
-                        translateComment(TranslatorKt.getCode2Locale(NekoConfig.translateInputLang.String()), Translator.providerLLMTranslator);
+                        translateComment(Translator.getInputTranslateLangLocaleForChat(ChatsHelper.getChatId()), Translator.providerLLMTranslator);
                     }
                 });
                 cell.setOnLongClickListener(v -> {
@@ -7597,7 +7598,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                                 sendPopupWindow.dismiss();
                             }
                             translateComment(locale, a == 5 ? 0 : Translator.providerLLMTranslator);
-                            NekoConfig.translateInputLang.setConfigString(TranslatorKt.getLocale2code(locale));
+                            Translator.setInputTranslateLangForChat(ChatsHelper.getChatId(), TranslatorKt.getLocale2code(locale));
                             return Unit.INSTANCE;
                         });
                         return true;
