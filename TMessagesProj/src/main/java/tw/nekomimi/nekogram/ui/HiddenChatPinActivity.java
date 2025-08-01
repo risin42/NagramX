@@ -13,8 +13,10 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
+import android.widget.Toast;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
@@ -120,7 +122,7 @@ public class HiddenChatPinActivity extends BaseFragment {
         
         if (savedPin.isEmpty()) {
             // No PIN set
-            AndroidUtilities.showToast(LocaleController.getString("HiddenChatPinSetFirst", R.string.HiddenChatPinSetFirst));
+            Toast.makeText(ApplicationLoader.applicationContext, LocaleController.getString("HiddenChatPinSetFirst", R.string.HiddenChatPinSetFirst), Toast.LENGTH_SHORT).show();
             finishFragment();
             if (callback != null) {
                 callback.onPinFailure();
@@ -138,8 +140,8 @@ public class HiddenChatPinActivity extends BaseFragment {
         } else {
             // Incorrect PIN
             pinEditText.setText("");
-            AndroidUtilities.showToast(LocaleController.getString("HiddenChatPinIncorrect", R.string.HiddenChatPinIncorrect));
-            AndroidUtilities.shakeView(pinEditText, 2, 0);
+            Toast.makeText(ApplicationLoader.applicationContext, LocaleController.getString("HiddenChatPinIncorrect", R.string.HiddenChatPinIncorrect), Toast.LENGTH_SHORT).show();
+            AndroidUtilities.shakeView(pinEditText);
         }
     }
 
