@@ -3,6 +3,7 @@ package tw.nekomimi.nekogram.helpers;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.Toast;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
@@ -11,7 +12,6 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
-import android.widget.Toast;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ChatActivity;
@@ -55,7 +55,7 @@ public class HiddenChatManager {
     
     public void enterHiddenMode(Context context, Runnable onSuccess) {
         if (!isHiddenChatEnabled()) {
-            Toast.makeText(ApplicationLoader.applicationContext, LocaleController.getString("HiddenChatPinSetFirst", R.string.HiddenChatPinSetFirst), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, LocaleController.getString("HiddenChatPinSetFirst", R.string.HiddenChatPinSetFirst), Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -73,7 +73,7 @@ public class HiddenChatManager {
                     onSuccess.run();
                 }
                 
-                Toast.makeText(ApplicationLoader.applicationContext, "Entered Hidden Chat Mode", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Entered Hidden Chat Mode", Toast.LENGTH_SHORT).show();
             }
             
             @Override
@@ -101,7 +101,7 @@ public class HiddenChatManager {
         // Show all chats again
         refreshDialogsList();
         
-        Toast.makeText(ApplicationLoader.applicationContext, "Exited Hidden Chat Mode", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LaunchActivity.instance, "Exited Hidden Chat Mode", Toast.LENGTH_SHORT).show();
     }
     
     public void addChatToHidden(long dialogId) {
@@ -144,7 +144,7 @@ public class HiddenChatManager {
         int autoExitSeconds = NekoConfig.hiddenChatAutoExitTime.Int();
         autoExitRunnable = () -> {
             if (isInHiddenMode && System.currentTimeMillis() - lastActivityTime >= autoExitSeconds * 1000) {
-                Toast.makeText(ApplicationLoader.applicationContext, LocaleController.getString("HiddenChatExiting", R.string.HiddenChatExiting), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LaunchActivity.instance, LocaleController.getString("HiddenChatExiting", R.string.HiddenChatExiting), Toast.LENGTH_SHORT).show();
                 exitHiddenMode();
             }
         };
