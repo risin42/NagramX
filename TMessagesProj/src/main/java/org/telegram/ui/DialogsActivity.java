@@ -496,6 +496,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     @Nullable
     private ActionBarMenuSubItem clearItem;
     @Nullable
+    private ActionBarMenuSubItem readItem;
+    @Nullable
     private ActionBarMenuSubItem blockItem;
     private IUpdateButton updateButton;
     private float additionalFloatingTranslation;
@@ -8862,9 +8864,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             ActionBarMenuSubItem hiddenChatItem = new ActionBarMenuSubItem(getParentActivity(), false, false);
             boolean isHidden = HiddenChatManager.getInstance().isChatHidden(dialogId);
             if (isHidden) {
-                hiddenChatItem.setTextAndIcon(LocaleController.getString("RemoveFromHidden", R.string.RemoveFromHidden), R.drawable.msg_view);
+                hiddenChatItem.setTextAndIcon(LocaleController.getString("RemoveFromHidden", R.string.RemoveFromHidden), R.drawable.msg_show);
             } else {
-                hiddenChatItem.setTextAndIcon(LocaleController.getString("AddToHidden", R.string.AddToHidden), R.drawable.msg_hide);
+                hiddenChatItem.setTextAndIcon(LocaleController.getString("AddToHidden", R.string.AddToHidden), R.drawable.msg_secret);
             }
             hiddenChatItem.setMinimumWidth(160);
             hiddenChatItem.setOnClickListener(e -> {

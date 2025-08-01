@@ -3,6 +3,7 @@ package tw.nekomimi.nekogram.helpers;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.Toast;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
@@ -53,7 +54,7 @@ public class HiddenChatManager {
     
     public void enterHiddenMode(Context context, Runnable onSuccess) {
         if (!isHiddenChatEnabled()) {
-            AndroidUtilities.showToast(LocaleController.getString("HiddenChatPinSetFirst", R.string.HiddenChatPinSetFirst));
+            Toast.makeText(context, LocaleController.getString("HiddenChatPinSetFirst", R.string.HiddenChatPinSetFirst), Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -71,7 +72,7 @@ public class HiddenChatManager {
                     onSuccess.run();
                 }
                 
-                AndroidUtilities.showToast("Entered Hidden Chat Mode");
+                Toast.makeText(context, "Entered Hidden Chat Mode", Toast.LENGTH_SHORT).show();
             }
             
             @Override
@@ -99,7 +100,7 @@ public class HiddenChatManager {
         // Show all chats again
         refreshDialogsList();
         
-        AndroidUtilities.showToast("Exited Hidden Chat Mode");
+        Toast.makeText(LaunchActivity.instance, "Exited Hidden Chat Mode", Toast.LENGTH_SHORT).show();
     }
     
     public void addChatToHidden(long dialogId) {
@@ -142,7 +143,7 @@ public class HiddenChatManager {
         int autoExitSeconds = NekoConfig.hiddenChatAutoExitTime.Int();
         autoExitRunnable = () -> {
             if (isInHiddenMode && System.currentTimeMillis() - lastActivityTime >= autoExitSeconds * 1000) {
-                AndroidUtilities.showToast(LocaleController.getString("HiddenChatExiting", R.string.HiddenChatExiting));
+                Toast.makeText(LaunchActivity.instance, LocaleController.getString("HiddenChatExiting", R.string.HiddenChatExiting), Toast.LENGTH_SHORT).show();
                 exitHiddenMode();
             }
         };

@@ -329,7 +329,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     // Extra Settings
     private final AbstractConfigCell headerExtraSettings = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.ExtraSettings)));
     private final AbstractConfigCell hiddenChatEnabledRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.hiddenChatEnabled, getString(R.string.HiddenChatDescription)));
-    private final AbstractConfigCell hiddenChatPinRow = cellGroup.appendCell(new ConfigCellTextInput(NekoConfig.hiddenChatPin, null, getString(R.string.HiddenChatPin), getString(R.string.HiddenChatPinHint), input -> input.length() == 4 && input.matches("\\d+") ? input : null));
+    private final AbstractConfigCell hiddenChatPinRow = cellGroup.appendCell(new ConfigCellTextInput(getString(R.string.HiddenChatPin), NekoConfig.hiddenChatPin, getString(R.string.HiddenChatPinHint), null, input -> input.length() == 4 && input.matches("\\d+") ? input : null));
     private final AbstractConfigCell hiddenChatAutoExitTimeRow = cellGroup.appendCell(new ConfigCellCustom("HiddenChatAutoExitTime", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell dividerExtraSettings = cellGroup.appendCell(new ConfigCellDivider());
 

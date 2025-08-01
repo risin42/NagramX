@@ -41,7 +41,6 @@ import android.location.Location;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.StatFs;
 import android.os.StrictMode;
@@ -239,6 +238,7 @@ import kotlin.text.StringsKt;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
+import tw.nekomimi.nekogram.helpers.HiddenChatManager;
 import tw.nekomimi.nekogram.helpers.MonetHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
@@ -1377,11 +1377,11 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         FloatingDebugController.setActive(this, SharedConfig.isFloatingDebugActive, false);
     }
 
-    public void addOnUserLeaveHintListener(Runnable callback) {
+    public void addOnUserLeaveHintListeners(Runnable callback) {
         onUserLeaveHintListeners.add(callback);
     }
 
-    public void removeOnUserLeaveHintListener(Runnable callback) {
+    public void removeOnUserLeaveHintListeners(Runnable callback) {
         onUserLeaveHintListeners.remove(callback);
     }
 
@@ -3258,7 +3258,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                                     }
                                 } catch (Exception e) {
                                     FileLog.e(e);
-                                }
+                                 }
                             }
                         }
                     }
