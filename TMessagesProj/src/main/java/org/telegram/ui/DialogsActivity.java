@@ -499,6 +499,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private ActionBarMenuSubItem readItem;
     @Nullable
     private ActionBarMenuSubItem blockItem;
+    @Nullable
+    private ActionBarMenuSubItem readItem;
     private IUpdateButton updateButton;
     private float additionalFloatingTranslation;
     private float additionalFloatingTranslation2;

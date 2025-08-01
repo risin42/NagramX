@@ -97,6 +97,7 @@ import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChannelBoostsController;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.ContactsController;
+import tw.nekomimi.nekogram.helpers.HiddenChatManager;
 import org.telegram.messenger.ContactsLoadingObserver;
 import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLoader;
