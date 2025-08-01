@@ -395,7 +395,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         }
         return customResources;
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         isActive = true;
@@ -1155,6 +1154,11 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         BackupAgent.requestBackup(this);
 
         RestrictedLanguagesSelectActivity.checkRestrictedLanguages(false);
+
+        // Initialize HiddenChatManager
+        HiddenChatManager.getInstance().loadHiddenChats();
+        
+        handleIntent(getIntent(), false, savedInstanceState != null, false, null, true, true);
     }
 
     private void showAttachMenuBot(TLRPC.TL_attachMenuBot attachMenuBot, String startApp, boolean sidemenu) {
@@ -4039,7 +4043,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             return content;
         }
     }
-
     private void runImportRequest(final Uri importUri,
                                   ArrayList<Uri> documents) {
         final int intentAccount = UserConfig.selectedAccount;
@@ -6272,7 +6275,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         super.onNewIntent(intent);
         handleIntent(intent, true, false, false, progress, true, false);
     }
-
     @Override
     public boolean didSelectDialogs(DialogsActivity dialogsFragment, ArrayList<MessagesStorage.TopicKey> dids, CharSequence message, boolean param, boolean _notify, int _scheduleDate, TopicsFragment topicsFragment) {
         final int account = dialogsFragment != null ? dialogsFragment.getCurrentAccount() : currentAccount;
@@ -7063,7 +7065,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             whenResumed = null;
         }
     }
-
     public static Runnable whenResumed;
 
     private void invalidateTabletMode() {
@@ -7833,7 +7834,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         loadingThemeFileName = null;
         loadingTheme = null;
     }
-
     private boolean checkFreeDiscSpaceShown;
     private long alreadyShownFreeDiscSpaceAlertForced;
     private long lastSpaceAlert;
@@ -8570,7 +8570,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         }
         return true;
     }
-
     @Override
     public boolean needAddFragmentToStack(BaseFragment fragment, INavigationLayout layout) {
         if (AndroidUtilities.isTablet()) {
@@ -9138,5 +9137,12 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
     @Override
     public PipActivityController getPipController() {
         return pipActivityController;
+    }
+    
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        // Update hidden chat activity timer
+        HiddenChatManager.getInstance().onUserActivity();
     }
 }

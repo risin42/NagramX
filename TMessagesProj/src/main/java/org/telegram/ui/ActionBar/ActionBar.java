@@ -70,6 +70,7 @@ import org.telegram.ui.Components.SnowflakesEffect;
 import java.util.ArrayList;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.HiddenChatManager;
 import xyz.nextalone.nagram.NaConfig;
 
 public class ActionBar extends FrameLayout {
@@ -207,6 +208,13 @@ public class ActionBar extends FrameLayout {
                 actionBarMenuOnItemClick.onItemClick(-1);
             }
         });
+        
+        // Add long press listener for hidden chat
+        backButtonImageView.setOnLongClickListener(v -> {
+            HiddenChatManager.getInstance().enterHiddenMode(getContext(), null);
+            return true;
+        });
+        
         backButtonImageView.setContentDescription(LocaleController.getString(R.string.AccDescrGoBack));
     }
 

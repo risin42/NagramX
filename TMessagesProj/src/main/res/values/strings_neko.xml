@@ -295,4 +295,23 @@
     <string name="EmojiUseDefault">Use system emoji</string>
     <string name="Chat">Chats</string>
     <string name="Appearance">Appearance</string>
+    
+    <!-- Hidden Chat -->
+    <string name="HiddenChat">Hidden Chat</string>
+    <string name="HiddenChatDescription">Access hidden chat by holding hamburger menu for 2 seconds</string>
+    <string name="HiddenChatEnabled">Enable Hidden Chat</string>
+    <string name="HiddenChatPin">Hidden Chat PIN</string>
+    <string name="HiddenChatPinHint">Enter 4-digit PIN for hidden chat access</string>
+    <string name="HiddenChatAutoExit">Auto exit time (seconds)</string>
+    <string name="HiddenChatAutoExitDescription">Automatically exit hidden chat after inactivity</string>
+    <string name="HiddenChatPinPrompt">Enter PIN to access Hidden Chat</string>
+    <string name="HiddenChatPinIncorrect">Incorrect PIN. Please try again.</string>
+    <string name="HiddenChatPinSetFirst">Please set a PIN first in Settings</string>
+    <string name="ExtraSettings">Extra Settings</string>
+    <string name="EnterHiddenChatPin">Enter Hidden Chat PIN</string>
+    <string name="ConfirmHiddenChatPin">Confirm Hidden Chat PIN</string>
+    <string name="HiddenChatPinMismatch">PINs do not match. Please try again.</string>
+    <string name="HiddenChatExiting">Exiting hidden chat due to inactivity...</string>
+    <string name="AddToHidden">Add to Hidden</string>
+    <string name="RemoveFromHidden">Remove from Hidden</string>
 </resources>

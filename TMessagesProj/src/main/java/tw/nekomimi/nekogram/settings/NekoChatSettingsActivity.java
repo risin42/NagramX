@@ -326,6 +326,13 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell searchHashtagDefaultPageChatRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getSearchHashtagDefaultPageChat(), searchPagesString, null));
     private final AbstractConfigCell dividerSearchTag  = cellGroup.appendCell(new ConfigCellDivider());
 
+    // Extra Settings
+    private final AbstractConfigCell headerExtraSettings = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.ExtraSettings)));
+    private final AbstractConfigCell hiddenChatEnabledRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.hiddenChatEnabled, getString(R.string.HiddenChatDescription)));
+    private final AbstractConfigCell hiddenChatPinRow = cellGroup.appendCell(new ConfigCellTextInput(NekoConfig.hiddenChatPin, null, getString(R.string.HiddenChatPin), getString(R.string.HiddenChatPinHint), input -> input.length() == 4 && input.matches("\\d+") ? input : null));
+    private final AbstractConfigCell hiddenChatAutoExitTimeRow = cellGroup.appendCell(new ConfigCellCustom("HiddenChatAutoExitTime", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
+    private final AbstractConfigCell dividerExtraSettings = cellGroup.appendCell(new ConfigCellDivider());
+
     private ListAdapter listAdapter;
     private ActionBarMenuItem menuItem;
     private StickerSizeCell stickerSizeCell;
@@ -433,6 +440,16 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                     PopupBuilder builder = new PopupBuilder(view);
                     builder.setItems(types, (i, str) -> {
                         NekoConfig.maxRecentStickerCount.setConfigInt(Integer.parseInt(str.toString()));
+                        listAdapter.notifyItemChanged(position);
+                        return Unit.INSTANCE;
+                    });
+                    builder.show();
+                } else if (position == cellGroup.rows.indexOf(hiddenChatAutoExitTimeRow)) {
+                    final int[] times = {5, 10, 15, 30, 60, 120, 300}; // seconds
+                    List<String> timeLabels = Arrays.asList("5s", "10s", "15s", "30s", "1m", "2m", "5m");
+                    PopupBuilder builder = new PopupBuilder(view);
+                    builder.setItems(timeLabels, (i, str) -> {
+                        NekoConfig.hiddenChatAutoExitTime.setConfigInt(times[i]);
                         listAdapter.notifyItemChanged(position);
                         return Unit.INSTANCE;
                     });
@@ -768,6 +785,10 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                     if (holder.itemView instanceof TextSettingsCell textCell) {
                         if (position == cellGroup.rows.indexOf(maxRecentStickerCountRow)) {
                             textCell.setTextAndValue(getString(R.string.maxRecentStickerCount), String.valueOf(NekoConfig.maxRecentStickerCount.Int()), true);
+                        } else if (position == cellGroup.rows.indexOf(hiddenChatAutoExitTimeRow)) {
+                            int timeValue = NekoConfig.hiddenChatAutoExitTime.Int();
+                            String timeLabel = timeValue < 60 ? timeValue + "s" : (timeValue / 60) + "m";
+                            textCell.setTextAndValue(getString(R.string.HiddenChatAutoExit), timeLabel, true);
                         } else if (position == cellGroup.rows.indexOf(doubleTapActionRow)) {
                             textCell.setTextAndValue(getString(R.string.DoubleTapIncoming), DoubleTap.doubleTapActionMap.get(NaConfig.INSTANCE.getDoubleTapAction().Int()), true);
                         } else if (position == cellGroup.rows.indexOf(doubleTapActionOutRow)) {
@@ -855,5 +876,10 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
 
         enabled = NekoConfig.labelChannelUser.Bool();
         ((ConfigCellTextCheck) channelAliasRow).setEnabled(enabled);
+        
+        // Hidden chat dependencies
+        enabled = NekoConfig.hiddenChatEnabled.Bool();
+        ((ConfigCellTextInput) hiddenChatPinRow).setEnabled(enabled);
+        ((ConfigCellCustom) hiddenChatAutoExitTimeRow).setEnabled(enabled);
     }
 }

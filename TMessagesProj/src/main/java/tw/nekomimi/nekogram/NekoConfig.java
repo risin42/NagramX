@@ -191,6 +191,12 @@ public class NekoConfig {
     public static ConfigItem sendOfflinePacketAfterOnlineLocked = addConfig("sendOfflinePacketAfterOnlineLocked", configTypeBool, false);
     // --- Ghost Mode ---
 
+    // --- Hidden Chat ---
+    public static ConfigItem hiddenChatEnabled = addConfig("hiddenChatEnabled", configTypeBool, false);
+    public static ConfigItem hiddenChatPin = addConfig("hiddenChatPin", configTypeString, "");
+    public static ConfigItem hiddenChatAutoExitTime = addConfig("hiddenChatAutoExitTime", configTypeInt, 15); // seconds
+    // --- Hidden Chat ---
+
     static {
         loadConfig(false);
         checkMigration();

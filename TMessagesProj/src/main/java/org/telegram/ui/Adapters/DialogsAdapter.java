@@ -82,6 +82,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 
+import tw.nekomimi.nekogram.helpers.HiddenChatManager;
+
 public class DialogsAdapter extends RecyclerListView.SelectionAdapter implements DialogCell.DialogCellDelegate {
     public final static int VIEW_TYPE_DIALOG = 0,
             VIEW_TYPE_FLICKER = 1,
@@ -1433,6 +1435,19 @@ public class DialogsAdapter extends RecyclerListView.SelectionAdapter implements
         if (array == null) {
             array = new ArrayList<>();
         }
+        
+        // Apply hidden chat filtering
+        HiddenChatManager hiddenChatManager = HiddenChatManager.getInstance();
+        if (hiddenChatManager.isHiddenChatEnabled()) {
+            ArrayList<TLRPC.Dialog> filteredArray = new ArrayList<>();
+            for (TLRPC.Dialog dialog : array) {
+                if (hiddenChatManager.shouldShowDialog(dialog)) {
+                    filteredArray.add(dialog);
+                }
+            }
+            array = filteredArray;
+        }
+        
         dialogsCount = array.size();
         isEmpty = false;
         if (dialogsCount == 0 && parentFragment.isArchive()) {

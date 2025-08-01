@@ -251,6 +251,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.HiddenChatManager;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -474,7 +475,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private BackDrawable backDrawable;
 
     private final Paint actionBarDefaultPaint = new Paint();
-
     private NumberTextView selectedDialogsCountTextView;
     private final ArrayList<View> actionModeViews = new ArrayList<>();
     @Nullable
@@ -496,10 +496,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     @Nullable
     private ActionBarMenuSubItem clearItem;
     @Nullable
-    private ActionBarMenuSubItem readItem;
-    @Nullable
     private ActionBarMenuSubItem blockItem;
-
     private IUpdateButton updateButton;
     private float additionalFloatingTranslation;
     private float additionalFloatingTranslation2;
@@ -846,7 +843,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             }
             return result;
         }
-
         @Override
         protected void dispatchDraw(Canvas canvas) {
             if (invalidateScrollY && !rightSlidingDialogContainer.hasFragment() && hasStories && progressToActionMode == 0) {
@@ -1345,7 +1341,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             }
             super.requestDisallowInterceptTouchEvent(disallowIntercept);
         }
-
         @Override
         public boolean onTouchEvent(MotionEvent ev) {
             if (
@@ -1723,7 +1718,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             actionBar.getTitlesContainer().setAlpha(1f - progressToActionMode);
         }
     }
-
     public static float viewOffset = 0.0f;
 
     public class DialogsRecyclerView extends BlurredRecyclerView implements StoriesListPlaceProvider.ClippedView {
@@ -2513,7 +2507,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             }
             return super.convertToAbsoluteDirection(flags, layoutDirection);
         }
-
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             if (viewHolder != null) {
@@ -3002,7 +2995,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     public boolean dismissDialogOnPause(Dialog dialog) {
         return !(dialog instanceof BotWebViewSheet) && super.dismissDialogOnPause(dialog);
     }
-
     @Override
     public ActionBar createActionBar(Context context) {
         ActionBar actionBar = new ActionBar(context) {
@@ -3415,7 +3407,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 scrollToTop(true, true);
             }
         });
-
         if (
             (initialDialogsType == DIALOGS_TYPE_DEFAULT && !onlySelect || initialDialogsType == DIALOGS_TYPE_FORWARD) &&
             folderId == 0 && TextUtils.isEmpty(searchString)
@@ -3757,7 +3748,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             sideMenu.setGlowColor(Theme.getColor(Theme.key_chats_menuBackground));
             sideMenu.getAdapter().notifyDataSetChanged();
         }
-
 //        createActionMode(null);
 
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -4724,7 +4714,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         floatingButtonContainer.addView(floatingButton, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         updateFloatingButtonColor();
         updateStoriesPosting();
-
         searchTabsView = null;
 
         if (!onlySelect && initialDialogsType == DIALOGS_TYPE_DEFAULT) {
@@ -5217,7 +5206,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             actionBar.setSearchTextColor(Theme.getColor(Theme.key_actionBarDefaultArchivedSearch), false);
             actionBar.setSearchTextColor(Theme.getColor(Theme.key_actionBarDefaultArchivedSearchPlaceholder), true);
         }
-
         if (!onlySelect && initialDialogsType == DIALOGS_TYPE_DEFAULT) {
             blurredView = new View(context) {
                 @Override
@@ -5668,7 +5656,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private void clearCacheHintVisible() {
         MessagesController.getGlobalMainSettings().edit().remove("cache_hint_showafter").remove("cache_hint_period").apply();
     }
-
 //    @Override
 //    public ActionBar getActionBar() {
 //        return rightSlidingDialogContainer != null && rightSlidingDialogContainer.currentActionBarView != null && rightSlidingDialogContainer.isOpenned ? rightSlidingDialogContainer.currentActionBarView : super.getActionBar();
@@ -6606,7 +6593,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         actionBar.setSearchFieldText("");
         updateFiltersView(true, null, null, false, true);
     }
-
     public void updateSpeedItem(boolean visibleByPosition) {
         if (speedItem == null) {
             return;
@@ -6993,7 +6979,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             filterOptions.dismiss();
         }
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -7437,7 +7422,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private void showSearch(boolean show, boolean startFromDownloads, boolean animated) {
         showSearch(show, startFromDownloads, animated, false);
     }
-
     private void showSearch(boolean show, boolean startFromDownloads, boolean animated, boolean forceNotOnlyDialogs) {
         if (!show) {
             updateSpeedItem(false);
@@ -8873,6 +8857,32 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             previewMenu[0].addView(muteItem);
         }
 
+        // Hidden chat menu item
+        if (HiddenChatManager.getInstance().isHiddenChatEnabled()) {
+            ActionBarMenuSubItem hiddenChatItem = new ActionBarMenuSubItem(getParentActivity(), false, false);
+            boolean isHidden = HiddenChatManager.getInstance().isChatHidden(dialogId);
+            if (isHidden) {
+                hiddenChatItem.setTextAndIcon(LocaleController.getString("RemoveFromHidden", R.string.RemoveFromHidden), R.drawable.msg_view);
+            } else {
+                hiddenChatItem.setTextAndIcon(LocaleController.getString("AddToHidden", R.string.AddToHidden), R.drawable.msg_hide);
+            }
+            hiddenChatItem.setMinimumWidth(160);
+            hiddenChatItem.setOnClickListener(e -> {
+                HiddenChatManager.getInstance().toggleChatHidden(dialogId);
+                HiddenChatManager.getInstance().saveHiddenChats();
+                finishPreviewFragment();
+                // Refresh dialog list
+                if (viewPages != null) {
+                    for (ViewPage viewPage : viewPages) {
+                        if (viewPage.dialogsAdapter != null) {
+                            viewPage.dialogsAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            });
+            previewMenu[0].addView(hiddenChatItem);
+        }
+
         ActionBarMenuSubItem deleteItem = new ActionBarMenuSubItem(getParentActivity(), false, true);
         deleteItem.setIconColor(getThemedColor(Theme.key_text_RedRegular));
         deleteItem.setTextColor(getThemedColor(Theme.key_text_RedBold));
@@ -9205,7 +9215,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private void performSelectedDialogsAction(ArrayList<Long> selectedDialogs, int action, boolean alert, boolean longPress) {
         performSelectedDialogsAction(selectedDialogs, action, alert, longPress, null);
     }
-
     private void performSelectedDialogsAction(ArrayList<Long> selectedDialogs, int action, boolean alert, boolean longPress, HashSet<Long> dialogsIdsToRevoke) {
         if (getParentActivity() == null) {
             return;
@@ -9664,7 +9673,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             getMessagesController().checkIfFolderEmpty(folderId);
         }
     }
-
     private void pinDialog(long selectedDialog, boolean pin, MessagesController.DialogFilter filter, int minPinnedNum, boolean animated) {
 
         int selectedDialogIndex = -1;
@@ -10165,7 +10173,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     protected RecyclerListView getListView() {
         return viewPages[0].listView;
     }
-
     protected RecyclerListView getSearchListView() {
         createSearchViewPager();
         return searchViewPager != null ? searchViewPager.searchListView : null;
@@ -10641,7 +10648,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         floatingButtonPanOffset = y;
         updateFloatingButtonOffset();
     }
-
     @SuppressWarnings("unchecked")
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
@@ -11105,7 +11111,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             this.headerType = type;
         }
     }
-
     public static final int DIALOGS_TYPE_DEFAULT = 0;
     public static final int DIALOGS_TYPE_BOT_SHARE = 1; // selecting group to write with inline bot query, including sharing a game
     public static final int DIALOGS_TYPE_ADD_USERS_TO = 2; // Chats + My channels + My groups
@@ -11123,9 +11128,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     public static final int DIALOGS_TYPE_START_ATTACH_BOT = 14;
     public static final int DIALOGS_TYPE_BOT_REQUEST_PEER = 15;
     public static final int DIALOGS_TYPE_BOT_SELECT_VERIFY = 16;
-
     private ArrayList<TLRPC.Dialog> botShareDialogs;
-
     @NonNull
     public ArrayList<TLRPC.Dialog> getDialogsArray(int currentAccount, int dialogsType, int folderId, boolean frozen) {
         if (frozen && frozenDialogsList != null) {
@@ -11874,8 +11877,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     public RLottieImageView getFloatingButton() {
         return floatingButton;
     }
-
-
     private ActionBarPopupWindow sendPopupWindow;
 
     private boolean onSendLongClick(View view) {
@@ -12301,7 +12302,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
             arrayList.add(new ThemeDescription(list, ThemeDescription.FLAG_TEXTCOLOR, new Class[]{TextCell.class}, new String[]{"textView"}, null, null, null, Theme.key_windowBackgroundWhiteBlueText2));
         }
-
         arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_avatar_backgroundRed));
         arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_avatar_backgroundOrange));
         arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_avatar_backgroundViolet));
@@ -12321,15 +12321,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_avatar_background2Saved));
         arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_avatar_backgroundArchived));
         arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_avatar_backgroundArchivedHidden));
-
-        arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_chats_nameMessage));
-        arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_chats_draft));
-        arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_chats_attachMessage));
-
-        arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_chats_nameArchived));
-        arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_chats_nameMessageArchived));
-        arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_chats_nameMessageArchived_threeLines));
-        arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_chats_messageArchived));
+        arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_chats_nameMessage_threeLines));
+        arrayList.add(new ThemeDescription(null, 0, null, null, null, cellDelegate, Theme.key_chats_message));
 
         if (viewPages != null) {
             for (int a = 0; a < viewPages.length; a++) {
@@ -13091,7 +13084,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 //                setSearchAnimationProgress(1f - progress, true);
 //                return true;
             }
-
 //            @Override
 //            protected void onBack() {
 //                actionBar.onSearchFieldVisibilityChanged(searchItem.toggleSearch(false));
@@ -13586,7 +13578,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         args.putBoolean("destroyAfterSelect", true);
         presentFragment(new ContactsActivity(args));
     }
-
     private void openStoriesRecorder() {
         if (!storiesEnabled) {
             if (storyPremiumHint != null) {
