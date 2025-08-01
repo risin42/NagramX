@@ -14743,12 +14743,16 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     } else {
                         menuItem.hideSubItem(gallery_menu_masks2);
                     }
+                    menuItem.hideSubItem(gallery_menu_copy);
+                    menuItem.hideSubItem(gallery_menu_set_photo);
                     menuItem.checkHideMenuItem();
                 } else {
                     speedItem.setVisibility(View.GONE);
                     videoItem.setVisibility(View.GONE);
                     speedGap.setVisibility(View.GONE);
                     menuItem.showSubItem(gallery_menu_openin);
+                    menuItem.showSubItem(gallery_menu_copy);
+                    menuItem.showSubItem(gallery_menu_set_photo);
                     menuItem.checkHideMenuItem();
                     final boolean pipItemVisible = pipItem.getVisibility() == View.VISIBLE;
                     final boolean shouldMasksItemBeVisible = newMessageObject.hasAttachedStickers() && !DialogObject.isEncryptedDialog(newMessageObject.getDialogId());
@@ -14854,7 +14858,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                         menuItem.showSubItem(gallery_menu_set_photo);
                     } else {
                         menuItem.hideSubItem(gallery_menu_copy);
-                        menuItem.showSubItem(gallery_menu_set_photo);
+                        menuItem.hideSubItem(gallery_menu_set_photo);
                     }
                 }
             } else if (slideshowMessageId == 0 && MessageObject.getMedia(newMessageObject.messageOwner) instanceof TLRPC.TL_messageMediaWebPage) {
