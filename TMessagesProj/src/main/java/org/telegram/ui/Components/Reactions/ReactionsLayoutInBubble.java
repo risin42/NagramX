@@ -66,6 +66,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
 
+import xyz.nextalone.nagram.NaConfig;
+
 public class ReactionsLayoutInBubble {
 
     private final static int ANIMATION_TYPE_IN = 1;
@@ -180,6 +182,9 @@ public class ReactionsLayoutInBubble {
                 for (int i = 0; i < messageObject.messageOwner.reactions.results.size(); i++) {
                     TLRPC.ReactionCount reactionCount = messageObject.messageOwner.reactions.results.get(i);
                     ReactionButton old = null;
+                    if (!NaConfig.INSTANCE.getPremiumItemStarInReactions().Bool() && reactionCount.reaction instanceof TLRPC.TL_reactionPaid) {
+                        continue;
+                    }
                     for (int j = 0; j < oldButtons.size(); ++j) {
                         ReactionButton btn = oldButtons.get(j);
                         if (btn.reaction.equals(reactionCount.reaction)) {
