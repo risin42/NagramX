@@ -2509,7 +2509,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                 });
             }
 
-            final boolean allowTestBackend = BuildConfig.DEBUG || newAccount;
+            final boolean allowTestBackend = true;
             if (allowTestBackend && activityMode == MODE_LOGIN) {
                 testBackendCheckBox = new CheckBoxCell(context, 2);
                 testBackendCheckBox.setText(getString(R.string.TestBackend), "", testBackend = getConnectionsManager().isTestBackend(), false);
