@@ -1083,11 +1083,14 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
             fillRecentReactionsList(visibleReactions);
         } else if (hitLimit) {
             allReactionsAvailable = false;
-            if (reactionsChat != null && reactionsChat.paid_reactions_available) {
+            if (NaConfig.INSTANCE.getPremiumItemStarInReactions().Bool() && reactionsChat != null && reactionsChat.paid_reactions_available) {
                 hasStar = true;
                 visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.asStar());
             }
             for (TLRPC.ReactionCount result : messageObject.messageOwner.reactions.results) {
+                if (!NaConfig.INSTANCE.getPremiumItemStarInReactions().Bool() && result.reaction instanceof TLRPC.TL_reactionPaid) {
+                    continue;
+                }
                 visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.fromTL(result.reaction));
             }
         } else if (reactionsChat != null) {
