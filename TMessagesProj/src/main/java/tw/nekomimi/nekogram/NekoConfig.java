@@ -31,6 +31,7 @@ import tw.nekomimi.nekogram.config.ConfigItem;
 import tw.nekomimi.nekogram.helpers.CloudSettingsHelper;
 
 @SuppressLint("ApplySharedPref")
+@SuppressWarnings("unused")
 public class NekoConfig {
 
     public static final int TABLET_AUTO = 0;
@@ -47,6 +48,11 @@ public class NekoConfig {
     public static final int DRAWER_BACKGROUND_AVATAR = 1;
     public static final int DRAWER_BACKGROUND_BIG_AVATAR = 2;
     public static final int DRAWER_BACKGROUND_WALLPAPER = 3;
+
+    public static final int DNS_TYPE_DEFAULT = 0;
+    public static final int DNS_TYPE_NAX = 1;
+    public static final int DNS_TYPE_SYSTEM = 2;
+    public static final int DNS_TYPE_CUSTOM_DOH = 3;
 
     public static final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Context.MODE_PRIVATE);
     public static final Object sync = new Object();
@@ -129,6 +135,8 @@ public class NekoConfig {
     public static ConfigItem askBeforeCall = addConfig("AskBeforeCalling", configTypeBool, true);
     public static ConfigItem disableNumberRounding = addConfig("DisableNumberRounding", configTypeBool, false);
 
+    public static ConfigItem dnsType = addConfig("DnsType", configTypeInt, DNS_TYPE_DEFAULT);
+    public static ConfigItem customDoH = addConfig("CustomDoH", configTypeString, "");
     public static ConfigItem hideProxyByDefault = addConfig("HideProxyByDefault", configTypeBool, true);
     public static ConfigItem useProxyItem = addConfig("UseProxyItem", configTypeBool, true);
 

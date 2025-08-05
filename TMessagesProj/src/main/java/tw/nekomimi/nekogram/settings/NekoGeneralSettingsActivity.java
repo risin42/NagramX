@@ -30,9 +30,7 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.NotificationsService;
 import org.telegram.messenger.R;
-import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
-import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarLayout;
 import org.telegram.ui.ActionBar.INavigationLayout;
@@ -118,6 +116,13 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             getString(R.string.Quality720),
             getString(R.string.Quality144),
     }, null));
+    private final AbstractConfigCell dnsTypeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NekoConfig.dnsType, new String[]{
+            getString(R.string.MapPreviewProviderTelegram),
+            getString(R.string.NagramX),
+            getString(R.string.DnsTypeSystem),
+            getString(R.string.CustomDoH),
+    }, null));
+    private final AbstractConfigCell customDoHRow = cellGroup.appendCell(new ConfigCellTextInput(null, NekoConfig.customDoH, "https://1.0.0.1/dns-query", null));
     private final AbstractConfigCell dividerConnection = cellGroup.appendCell(new ConfigCellDivider());
 
     // Folder
@@ -207,7 +212,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             getString(R.string.DecorationNone),
     }, null));
     private final AbstractConfigCell notificationIconRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getNotificationIcon(), new String[]{
-            getString(R.string.Official),
+            getString(R.string.MapPreviewProviderTelegram),
             getString(R.string.NagramX),
             getString(R.string.Nagram),
             getString(R.string.NekoX)
@@ -302,6 +307,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
         }
 
         checkProfileConfigCellRows();
+        checkCustomDoHCellRows();
         addRowsToMap(cellGroup);
     }
 
@@ -502,6 +508,9 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                     listView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
                 }
             } else if (key.equals(NekoConfig.usePersianCalendar.getKey())) {
+                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
+            } else if (key.equals(NekoConfig.dnsType.getKey())) {
+                checkCustomDoHCellRows();
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             }
         };
@@ -796,6 +805,29 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             }
         }
         listAdapter.notifyItemChanged(cellGroup.rows.indexOf(profilePreviewRow));
+    }
+
+    private void checkCustomDoHCellRows() {
+        boolean useDoH = NekoConfig.dnsType.Int() == NekoConfig.DNS_TYPE_CUSTOM_DOH;
+        if (listAdapter == null) {
+            if (!useDoH) {
+                cellGroup.rows.remove(customDoHRow);
+            }
+            return;
+        }
+        if (useDoH) {
+            final int index = cellGroup.rows.indexOf(dnsTypeRow);
+            if (!cellGroup.rows.contains(customDoHRow)) {
+                cellGroup.rows.add(index + 1, customDoHRow);
+                listAdapter.notifyItemInserted(index + 1);
+            }
+        } else {
+            int customDoHRowIndex = cellGroup.rows.indexOf(customDoHRow);
+            if (customDoHRowIndex != -1) {
+                cellGroup.rows.remove(customDoHRow);
+                listAdapter.notifyItemRemoved(customDoHRowIndex);
+            }
+        }
     }
 
     private boolean shouldShowPersian() {

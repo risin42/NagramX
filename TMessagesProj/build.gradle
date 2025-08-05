@@ -231,6 +231,7 @@ dependencies {
     implementation 'org.osmdroid:osmdroid-android:6.1.20'
     // network
     implementation 'com.squareup.okhttp3:okhttp:5.1.0'
+    implementation 'dnsjava:dnsjava:3.6.3'
     // add for emoji
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
     // add for UnifiedPush

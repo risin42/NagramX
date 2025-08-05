@@ -77,6 +77,7 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.ErrorDatabase;
 
 import tw.nekomimi.nekogram.NekoXConfig;
+import tw.nekomimi.nekogram.utils.DnsFactory;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -159,6 +160,10 @@ public class ConnectionsManager extends BaseController {
         }
     }
 
+    public boolean getForceTryIPv6() {
+        return forceTryIpV6;
+    }
+
     public void discardConnection(int dcId, int connectionType) {
         Utilities.stageQueue.postRunnable(() -> {
             native_discardConnection(currentAccount, dcId, connectionType);
@@ -182,6 +187,7 @@ public class ConnectionsManager extends BaseController {
         }
 
         public String getAddress() {
+            if (addresses.isEmpty()) return "";
             return addresses.get(Utilities.random.nextInt(addresses.size()));
         }
     }
@@ -833,6 +839,15 @@ public class ConnectionsManager extends BaseController {
                     return;
                 }
                 lastDnsRequestTime = System.currentTimeMillis();
+
+                if (NekoConfig.dnsType.Int() == NekoConfig.DNS_TYPE_NAX || NekoConfig.dnsType.Int() == NekoConfig.DNS_TYPE_CUSTOM_DOH) {
+                    FileLog.d("start custom dns txt task");
+                    DnsTxtLoadTask task = new DnsTxtLoadTask(currentAccount);
+                    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
+                    currentTask = task;
+                    return;
+                }
+
                 if (second == 2) {
                     if (BuildVars.LOGS_ENABLED) {
                         FileLog.d("start mozilla txt task");
@@ -1063,14 +1078,12 @@ public class ConnectionsManager extends BaseController {
                 }
             }
             if (hasIpv6) {
-                if (NekoConfig.useIPv6.Bool() || forceTryIpV6) {
+                if (!hasIpv4 || forceTryIpV6) {
                     return USE_IPV6_ONLY;
-                }
-                if (hasStrangeIpv4) {
+                } else if (hasStrangeIpv4 || NekoConfig.useIPv6.Bool()) {
                     return USE_IPV4_IPV6_RANDOM;
-                }
-                if (!hasIpv4) {
-                    return USE_IPV6_ONLY;
+                } else {
+                    return USE_IPV4_ONLY;
                 }
             }
         } catch (Throwable e) {
@@ -1097,7 +1110,23 @@ public class ConnectionsManager extends BaseController {
             addresses.add(address);
         }
 
+        private ResolvedDomain dnsFactoryLookup() {
+            ArrayList<String> addresses = new ArrayList<>();
+            try {
+                InetAddress[] resolvedAddresses = DnsFactory.lookup(currentHostName).toArray(new InetAddress[0]);
+                for (InetAddress address : resolvedAddresses) {
+                    addresses.add(address.getHostAddress());
+                }
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
+            return new ResolvedDomain(addresses, SystemClock.elapsedRealtime());
+        }
+
         protected ResolvedDomain doInBackground(Void... voids) {
+            if (NekoConfig.dnsType.Int() != NekoConfig.DNS_TYPE_DEFAULT) {
+                return dnsFactoryLookup();
+            }
             ByteArrayOutputStream outbuf = null;
             InputStream httpConnectionStream = null;
             boolean done = false;
@@ -1465,6 +1494,61 @@ public class ConnectionsManager extends BaseController {
         @Override
         protected void onPostExecute(NativeByteBuffer result) {
 
+        }
+    }
+
+    private static class DnsTxtLoadTask extends AsyncTask<Void, Void, NativeByteBuffer> {
+
+        private int currentAccount;
+        private int responseDate;
+
+        public DnsTxtLoadTask(int instance) {
+            super();
+            currentAccount = instance;
+        }
+
+        protected NativeByteBuffer doInBackground(Void... voids) {
+            String domain = native_isTestBackend(currentAccount) != 0 ? "tapv3.stel.com" : AccountInstance.getInstance(currentAccount).getMessagesController().dcDomainName;
+            try {
+                List<String> arrayList = DnsFactory.getTxtRecords(domain);
+                Collections.sort(arrayList, (o1, o2) -> {
+                    int l1 = o1.length();
+                    int l2 = o2.length();
+                    if (l1 > l2) {
+                        return -1;
+                    } else if (l1 < l2) {
+                        return 1;
+                    }
+                    return 0;
+                });
+                StringBuilder builder = new StringBuilder();
+                for (int a = 0; a < arrayList.size(); a++) {
+                    builder.append(arrayList.get(a).replace("\"", ""));
+                }
+                byte[] bytes = Base64.decode(builder.toString(), Base64.DEFAULT);
+                NativeByteBuffer buffer = new NativeByteBuffer(bytes.length);
+                buffer.writeBytes(bytes);
+                return buffer;
+            } catch (Throwable e) {
+                FileLog.e(e, false);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final NativeByteBuffer result) {
+            Utilities.stageQueue.postRunnable(() -> {
+                currentTask = null;
+                if (result != null) {
+                    native_applyDnsConfig(currentAccount, result.address, AccountInstance.getInstance(currentAccount).getUserConfig().getClientPhone(), responseDate);
+                } else {
+                    FileLog.d("failed to get custom dns txt result");
+                    FileLog.d("start google task");
+                    GoogleDnsLoadTask task = new GoogleDnsLoadTask(currentAccount);
+                    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
+                    currentTask = task;
+                }
+            });
         }
     }
 
