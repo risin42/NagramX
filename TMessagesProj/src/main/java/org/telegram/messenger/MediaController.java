@@ -534,6 +534,23 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
             highQuality = NaConfig.INSTANCE.getSendHighQualityPhoto().Bool();
         }
 
+        public void resetEdit() {
+            thumbPath = null;
+            filterPath = null;
+            imagePath = null;
+            paintPath = null;
+            croppedPaintPath = null;
+            isFiltered = false;
+            isPainted = false;
+            isCropped = false;
+            mediaEntities = null;
+            editedInfo = null;
+            entities = null;
+            savedFilterState = null;
+            stickers = null;
+            cropState = null;
+        }
+
         public void copyFrom(MediaEditState state) {
             caption = state.caption;
 
@@ -6318,14 +6335,22 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
         float compressFactor;
         float minCompressFactor;
         int maxBitrate;
-        if (Math.min(height, width) >= 1080) {
+        if (Math.min(height, width) >= 2160) {
+            maxBitrate = 12000_000;
+            compressFactor = 1f;
+            minCompressFactor = 1f;
+        } else if (Math.min(height, width) >= 1440) {
+            maxBitrate = 8000_000;
+            compressFactor = 1f;
+            minCompressFactor = 1f;
+        } else if (Math.min(height, width) >= 1080) {
             maxBitrate = 6800_000;
             compressFactor = 1f;
             minCompressFactor = 1f;
         } else if (Math.min(height, width) >= 720) {
-            maxBitrate = 3200_000;
-            compressFactor = 1.0f;
-            minCompressFactor = 1.0f;
+            maxBitrate = 2600_000;
+            compressFactor = 1f;
+            minCompressFactor = 1f;
         } else if (Math.min(height, width) >= 480) {
             maxBitrate = 1000_000;
             compressFactor = 0.75f;
