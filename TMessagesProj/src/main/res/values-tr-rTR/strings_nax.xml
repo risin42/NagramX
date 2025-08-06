@@ -227,4 +227,6 @@
     <string name="TestBackendOff">Bu hesap üretim arka ucuna bağlanacaktır.</string>
     <string name="DidNotGetTheCodeBlameDurov">Eğer başka bir cihazda kodu almadıysanız veya Telegram\'a başka bir cihazda giriş yapmadıysanız, kodu almak için lütfen resmi Telegram uygulamasını kullanın.\n\nTelegram, üçüncü taraf uygulamalarda SMS ile giriş yapma özelliğini **devre dışı bıraktı**. Üçüncü taraf uygulamalara giriş yapan kullanıcılar, yalnızca Telegram üzerinden giriş kodu alabilirler.\n\nBu konuda size yardımcı olamıyoruz. Giriş yaparken herhangi bir sorun yaşarsanız lütfen Telegram Destek ile iletişime geçin.</string>
     <string name="QRLoginMessage">Giriş yapmak için başka bir cihazla QR kodunu tarayın.</string>
+    <string name="DnsTypeSystem">Sistem</string>
+    <string name="CustomDoH">Özel DoH</string>
 </resources>

@@ -227,4 +227,7 @@
     <string name="TestBackendOff">本番バックエンドに接続します。</string>
     <string name="DidNotGetTheCodeBlameDurov">別のデバイスでコードを受け取っていない場合、または別のデバイスでTelegramにログインしていない場合は、公式のTelegramアプリを使用してコードを受け取ってください。\n\nTelegramは、**サードパーティアプリでSMSによるログイン機能を無効にしました。**サードパーティアプリにログインしているユーザーは、Telegram経由でのみログイン コードを受信できます。\n\nこれについては弊社ではサポートできません。ログインに関して問題がある場合は、Telegramサポートにお問い合わせください。</string>
     <string name="QRLoginMessage">QR コードを別のデバイスでスキャンしてログインします。</string>
+    <string name="DnsType">DNS リゾルバ</string>
+    <string name="DnsTypeSystem">システム</string>
+    <string name="CustomDoH">カスタム DoH</string>
 </resources>

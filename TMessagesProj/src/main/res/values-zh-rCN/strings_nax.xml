@@ -227,4 +227,7 @@
     <string name="TestBackendOff">此账户将连接到正式后端。</string>
     <string name="DidNotGetTheCodeBlameDurov">如果您没有在另一台设备上收到验证码，或者您没有在其他设备上登录 Telegram，请使用官方 Telegram 应用程序接收验证码。\n\nTelegram **已禁用在第三方应用使用短信登录**的能力。登录第三方应用的用户只能通过 Telegram 接收验证码。\n\n我们无法帮助您，如果登录有任何问题，请联系 Telegram 支持。</string>
     <string name="QRLoginMessage">使用其他设备扫描二维码以登录。</string>
+    <string name="DnsType">DNS 解析器</string>
+    <string name="DnsTypeSystem">系统</string>
+    <string name="CustomDoH">自定义 DoH</string>
 </resources>

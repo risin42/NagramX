@@ -227,4 +227,7 @@
     <string name="TestBackendOff">Цей обліковий запис буде підключений до тестового сервера.</string>
     <string name="DidNotGetTheCodeBlameDurov">Якщо ви не отримали код на інший пристрій або ви не входили у Telegram на інших пристроях, будь ласка, скористайтеся офіційним клієнтом Telegram для отримання коду.\n\nTelegram **заблокував можливість входу через СМС** для сторонніх додатків. При вході через сторонні додатки користувачі можуть отримувати коди лише безпосередньо у Telegram.\n\nМи не можемо з цим нічого зробити, якщо у вас виникли будь-які складнощі зі входом, будь ласка, зверніться до служби підтримки Telegram.</string>
     <string name="QRLoginMessage">Для входу проскануйте QR-код з іншого пристрою.</string>
+    <string name="DnsType">DNS-резолвер</string>
+    <string name="DnsTypeSystem">Системний</string>
+    <string name="CustomDoH">Власний DoH</string>
 </resources>
