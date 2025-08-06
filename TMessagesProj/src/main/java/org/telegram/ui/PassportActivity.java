@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
@@ -68,7 +69,6 @@ import org.json.JSONObject;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.DownloadController;
 import org.telegram.messenger.FileLoader;
@@ -143,7 +143,7 @@ import java.util.TimerTask;
 
 import javax.crypto.Cipher;
 
-import tw.nekomimi.nekogram.utils.VibrateUtil;
+import tw.nekomimi.nekogram.ui.EditTextAutoFill;
 
 public class PassportActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -474,7 +474,7 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
             addView(valueTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, (LocaleController.isRTL ? padding : 21), 35, (LocaleController.isRTL ? 21 : padding), 0));
 
             checkImageView = new ImageView(context);
-            checkImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_featuredStickers_addedIcon), PorterDuff.Mode.SRC_IN));
+            checkImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_featuredStickers_addedIcon), PorterDuff.Mode.MULTIPLY));
             checkImageView.setImageResource(R.drawable.sticker_added);
             addView(checkImageView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.TOP, 21, 25, 21, 0));
         }
@@ -508,7 +508,7 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
         @Override
         protected void onDraw(Canvas canvas) {
             if (needDivider) {
-                canvas.drawLine(0, getMeasuredHeight() - 1, getMeasuredWidth(), getMeasuredHeight() - 1, Theme.dividerPaint);
+                canvas.drawLine(LocaleController.isRTL ? 0 : AndroidUtilities.dp(20), getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? AndroidUtilities.dp(20) : 0), getMeasuredHeight() - 1, Theme.dividerPaint);
             }
         }
     }
@@ -639,7 +639,7 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
 
         @Override
         protected void onDraw(Canvas canvas) {
-            canvas.drawLine(0, getMeasuredHeight() - 1, getMeasuredWidth(), getMeasuredHeight() - 1, Theme.dividerPaint);
+            canvas.drawLine(LocaleController.isRTL ? 0 : AndroidUtilities.dp(20), getMeasuredHeight() - 1, getMeasuredWidth() - (LocaleController.isRTL ? AndroidUtilities.dp(20) : 0), getMeasuredHeight() - 1, Theme.dividerPaint);
         }
 
         @Override
@@ -1578,7 +1578,7 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
             linearLayout2.addView(inputFieldContainers[a], LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 50));
             inputFieldContainers[a].setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
 
-            inputFields[a] = new EditTextBoldCursor(context);
+            inputFields[a] = new EditTextAutoFill(context);
             inputFields[a].setTag(a);
             inputFields[a].setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             inputFields[a].setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteHintText));
@@ -2235,14 +2235,20 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
 
                 TLRPC.TL_secureValue value = getValueByType(requiredType, true);
                 if (value == null) {
-                    VibrateUtil.vibrate();
+                    Vibrator v = (Vibrator) getParentActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                    if (v != null) {
+                        v.vibrate(200);
+                    }
                     AndroidUtilities.shakeView(getViewByType(requiredType));
                     return;
                 }
                 String key = getNameForType(requiredType.type);
                 HashMap<String, String> errors = errorsMap.get(key);
                 if (errors != null && !errors.isEmpty()) {
-                    VibrateUtil.vibrate();
+                    Vibrator v = (Vibrator) getParentActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                    if (v != null) {
+                        v.vibrate(200);
+                    }
                     AndroidUtilities.shakeView(getViewByType(requiredType));
                     return;
                 }
@@ -2493,7 +2499,7 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
 
         emptyImageView = new ImageView(context);
         emptyImageView.setImageResource(R.drawable.no_passport);
-        emptyImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_sessions_devicesImage), PorterDuff.Mode.SRC_IN));
+        emptyImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_sessions_devicesImage), PorterDuff.Mode.MULTIPLY));
         emptyLayout.addView(emptyImageView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT));
 
         emptyTextView1 = new TextView(context);
@@ -3577,7 +3583,10 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
         if (field == null) {
             return;
         }
-        VibrateUtil.vibrate();
+        Vibrator v = (Vibrator) getParentActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        if (v != null) {
+            v.vibrate(200);
+        }
         AndroidUtilities.shakeView(field);
         scrollToField(field);
     }
@@ -6254,7 +6263,10 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
         if (getParentActivity() == null) {
             return;
         }
-        VibrateUtil.vibrate();
+        Vibrator v = (Vibrator) getParentActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        if (v != null) {
+            v.vibrate(200);
+        }
         if (clear) {
             inputFields[FIELD_PASSWORD].setText("");
         }
@@ -6890,13 +6902,13 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 File image = AndroidUtilities.generatePicturePath();
                 if (image != null) {
-                    if (Build.VERSION.SDK_INT >= 24) {
+                    //if (Build.VERSION.SDK_INT >= 24) {
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getParentActivity(), ApplicationLoader.getApplicationId() + ".provider", image));
                         takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                         takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    } else {
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));
-                    }
+                    //} else {
+                    //    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));
+                    //}
                     currentPicturePath = image.getAbsolutePath();
                 }
                 startActivityForResult(takePictureIntent, 0);
@@ -7285,19 +7297,19 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
                 if (verificationType == 1) {
                     blackImageView = new ImageView(context);
                     blackImageView.setImageResource(R.drawable.sms_devices);
-                    blackImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText), PorterDuff.Mode.SRC_IN));
+                    blackImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText), PorterDuff.Mode.MULTIPLY));
                     frameLayout.addView(blackImageView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 0, 0, 0, 0));
 
                     blueImageView = new ImageView(context);
                     blueImageView.setImageResource(R.drawable.sms_bubble);
-                    blueImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_actionBackground), PorterDuff.Mode.SRC_IN));
+                    blueImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_actionBackground), PorterDuff.Mode.MULTIPLY));
                     frameLayout.addView(blueImageView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 0, 0, 0, 0));
 
                     titleTextView.setText(LocaleController.getString(R.string.SentAppCodeTitle));
                 } else {
                     blueImageView = new ImageView(context);
                     blueImageView.setImageResource(R.drawable.sms_code);
-                    blueImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_actionBackground), PorterDuff.Mode.SRC_IN));
+                    blueImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_actionBackground), PorterDuff.Mode.MULTIPLY));
                     frameLayout.addView(blueImageView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 0, 0, 0, 0));
 
                     titleTextView.setText(LocaleController.getString(R.string.SentSmsCodeTitle));
@@ -7492,7 +7504,7 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
                     codeField[a].setCursorWidth(1.5f);
 
                     Drawable pressedDrawable = getResources().getDrawable(R.drawable.search_dark_activated).mutate();
-                    pressedDrawable.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteInputFieldActivated), PorterDuff.Mode.SRC_IN));
+                    pressedDrawable.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteInputFieldActivated), PorterDuff.Mode.MULTIPLY));
 
                     codeField[a].setBackgroundDrawable(pressedDrawable);
                     codeField[a].setImeOptions(EditorInfo.IME_ACTION_NEXT | EditorInfo.IME_FLAG_NO_EXTRACT_UI);

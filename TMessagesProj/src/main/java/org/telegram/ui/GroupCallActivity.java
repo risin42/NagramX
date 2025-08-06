@@ -203,8 +203,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import tw.nekomimi.nekogram.NekoConfig;
-
 public class GroupCallActivity extends BottomSheet implements NotificationCenter.NotificationCenterDelegate, VoIPService.StateListener {
 
     public final static int TABLET_LIST_SIZE = 320;
@@ -489,11 +487,9 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
         if (call == null || !scheduled || VoIPService.getSharedInstance() == null) {
             return;
         }
-        if (!NekoConfig.disableVibration.Bool()) {
-            try {
-                muteButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-            } catch (Exception ignored) {}
-        }
+        try {
+            muteButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+        } catch (Exception ignored) {}
         updateMuteButton(MUTE_BUTTON_STATE_MUTE, true);
         AndroidUtilities.runOnUIThread(unmuteRunnable, 80);
         scheduled = false;
@@ -2217,11 +2213,9 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
                                 ignoreTextChange = true;
                                 s.delete(40, s.length());
                                 AndroidUtilities.shakeView(editText);
-                                if (!NekoConfig.disableVibration.Bool()) {
-                                    try {
-                                        editText.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                                    } catch (Exception ignored) {}
-                                }
+                                try {
+                                    editText.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                                } catch (Exception ignored) {}
                                 ignoreTextChange = false;
                             }
                         }
@@ -4677,11 +4671,9 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
                         updateMuteButton(MUTE_BUTTON_STATE_UNMUTE, true);
                         if (VoIPService.getSharedInstance() != null) {
                             VoIPService.getSharedInstance().setMicMute(true, true, false);
-                            if (!NekoConfig.disableVibration.Bool()) {
-                                try {
-                                    muteButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                                } catch (Exception ignored) {}
-                            }
+                            try {
+                                muteButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                            } catch (Exception ignored) {}
                         }
                         attachedRenderersTmp.clear();
                         attachedRenderersTmp.addAll(attachedRenderers);
@@ -4762,11 +4754,9 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
                     if (startingGroupCall) {
                         return;
                     }
-                    if (!NekoConfig.disableVibration.Bool()) {
-                        try {
-                            v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                        } catch (Exception ignored) {}
-                    }
+                    try {
+                        v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                    } catch (Exception ignored) {}
                     startingGroupCall = true;
                     TL_phone.startScheduledGroupCall req = new TL_phone.startScheduledGroupCall();
                     req.call = call.getInputGroupCall();
@@ -4804,11 +4794,9 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
                         }
                         playingHandAnimation = true;
                         AndroidUtilities.shakeView(muteLabel[0]);
-                        if (!NekoConfig.disableVibration.Bool()) {
-                            try {
-                                v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                            } catch (Exception ignored) {}
-                        }
+                        try {
+                            v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                        } catch (Exception ignored) {}
                         int num = Utilities.random.nextInt(100);
                         int endFrame;
                         int startFrame;
@@ -4856,19 +4844,15 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
                         }
                         updateMuteButton(MUTE_BUTTON_STATE_MUTE, true);
                         VoIPService.getSharedInstance().setMicMute(false, false, true);
-                        if (!NekoConfig.disableVibration.Bool()) {
-                            try {
-                                muteButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                            } catch (Exception ignored) {}
-                        }
+                        try {
+                            muteButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                        } catch (Exception ignored) {}
                     } else {
                         updateMuteButton(MUTE_BUTTON_STATE_UNMUTE, true);
                         VoIPService.getSharedInstance().setMicMute(true, false, true);
-                        if (!NekoConfig.disableVibration.Bool()) {
-                            try {
-                                muteButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                            } catch (Exception ignored) {}
-                        }
+                        try {
+                            muteButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                        } catch (Exception ignored) {}
                     }
                 }
             }
@@ -5244,11 +5228,9 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
         });
         fullscreenUsersListView.setOnItemLongClickListener((view, position) -> {
             if (showMenuForCell(view)) {
-                if (!NekoConfig.disableVibration.Bool()) {
-                    try {
-                        listView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                    } catch (Exception ignored) {}
-                }
+                try {
+                    listView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                } catch (Exception ignored) {}
             }
             return false;
         });
@@ -5726,11 +5708,9 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
                 }
             });
             final NumberPicker.OnValueChangeListener onValueChangeListener = (picker, oldVal, newVal) -> {
-                if (!NekoConfig.disableVibration.Bool()) {
-                    try {
-                        container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                    } catch (Exception ignore) {}
-                }
+                try {
+                    container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                } catch (Exception ignore) {}
                 AlertsCreator.checkScheduleDate(scheduleButtonTextView, scheduleInfoTextView, 7 * 24 * 60 * 60, 2, dayPicker, hourPicker, minutePicker);
             };
             dayPicker.setOnValueChangedListener(onValueChangeListener);

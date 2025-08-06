@@ -49,8 +49,6 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import tw.nekomimi.nekogram.NekoConfig;
-
 public class RLottieDrawable extends BitmapDrawable implements Animatable, BitmapsCache.Cacheable {
 
     public boolean skipFrameUpdate;
@@ -1248,7 +1246,7 @@ public class RLottieDrawable extends BitmapDrawable implements Animatable, Bitma
             } else if (nextRenderingBitmap != null && (renderingBitmap == null || (timeDiff >= timeCheck && !skipFrameUpdate))) {
                 if (vibrationPattern != null && allowVibration) {
                     Integer force = vibrationPattern.get(currentFrame - 1);
-                    if (force != null && !NekoConfig.disableVibration.Bool()) {
+                    if (force != null) {
                         try {
                             Activity activity = LaunchActivity.instance;
                             if (activity == null) activity = BubbleActivity.instance;

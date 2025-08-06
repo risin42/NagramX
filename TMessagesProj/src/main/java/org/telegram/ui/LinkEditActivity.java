@@ -60,8 +60,6 @@ import org.telegram.ui.Stories.recorder.KeyboardNotifier;
 
 import java.util.ArrayList;
 
-import tw.nekomimi.nekogram.utils.VibrateUtil;
-
 public class LinkEditActivity extends BaseFragment {
 
     public final static int CREATE_TYPE = 0;

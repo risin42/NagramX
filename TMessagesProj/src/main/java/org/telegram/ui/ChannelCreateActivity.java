@@ -22,6 +22,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -78,10 +79,6 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.EditTextEmoji;
 import org.telegram.ui.Components.ImageUpdater;
-import org.telegram.ui.Components.BackupImageView;
-import org.telegram.ui.Components.EditTextBoldCursor;
-import org.telegram.ui.Components.EditTextEmoji;
-import org.telegram.ui.Components.ImageUpdater;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.LinkActionView;
 import org.telegram.ui.Components.LinkSpanDrawable;
@@ -93,10 +90,6 @@ import org.telegram.ui.Components.SizeNotifierFrameLayout;
 import org.telegram.ui.Components.TypefaceSpan;
 
 import java.util.ArrayList;
-
-import kotlin.Unit;
-import tw.nekomimi.nekogram.ui.BottomBuilder;
-import tw.nekomimi.nekogram.utils.VibrateUtil;
 
 public class ChannelCreateActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, ImageUpdater.ImageUpdaterDelegate {
 
@@ -349,7 +342,10 @@ public class ChannelCreateActivity extends BaseFragment implements NotificationC
                             return;
                         }
                         if (nameTextView.length() == 0) {
-                            VibrateUtil.vibrate();
+                            Vibrator v = (Vibrator) getParentActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                            if (v != null) {
+                                v.vibrate(200);
+                            }
                             AndroidUtilities.shakeView(nameTextView);
                             return;
                         }
@@ -371,7 +367,10 @@ public class ChannelCreateActivity extends BaseFragment implements NotificationC
                                 return;
                             } else {
                                 if (!lastNameAvailable) {
-                                    VibrateUtil.vibrate();
+                                    Vibrator v = (Vibrator) getParentActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                                    if (v != null) {
+                                        v.vibrate(200);
+                                    }
                                     AndroidUtilities.shakeView(checkTextView);
                                     return;
                                 } else {
@@ -1221,13 +1220,15 @@ public class ChannelCreateActivity extends BaseFragment implements NotificationC
                     AdminedChannelCell adminedChannelCell = new AdminedChannelCell(getParentActivity(), view -> {
                         AdminedChannelCell cell = (AdminedChannelCell) view.getParent();
                         final TLRPC.Chat channel = cell.getCurrentChannel();
-                        BottomBuilder builder = new BottomBuilder(getParentActivity());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+                        builder.setTitle(LocaleController.getString(R.string.AppName));
                         if (channel.megagroup) {
-                            builder.addTitle(AndroidUtilities.replaceTags(LocaleController.formatString(R.string.RevokeLinkAlert, MessagesController.getInstance(currentAccount).linkPrefix + "/" + ChatObject.getPublicUsername(channel), channel.title)));
+                            builder.setMessage(AndroidUtilities.replaceTags(LocaleController.formatString("RevokeLinkAlert", R.string.RevokeLinkAlert, MessagesController.getInstance(currentAccount).linkPrefix + "/" + ChatObject.getPublicUsername(channel), channel.title)));
                         } else {
-                            builder.addTitle(AndroidUtilities.replaceTags(LocaleController.formatString(R.string.RevokeLinkAlertChannel, MessagesController.getInstance(currentAccount).linkPrefix + "/" + ChatObject.getPublicUsername(channel), channel.title)));
+                            builder.setMessage(AndroidUtilities.replaceTags(LocaleController.formatString("RevokeLinkAlertChannel", R.string.RevokeLinkAlertChannel, MessagesController.getInstance(currentAccount).linkPrefix  + "/" + ChatObject.getPublicUsername(channel), channel.title)));
                         }
-                        builder.addItem(LocaleController.getString(R.string.RevokeButton), R.drawable.msg_delete_filled, (i) -> {
+                        builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+                        builder.setPositiveButton(LocaleController.getString(R.string.RevokeButton), (dialogInterface, i) -> {
                             TLRPC.TL_channels_updateUsername req1 = new TLRPC.TL_channels_updateUsername();
                             req1.channel = MessagesController.getInputChannel(channel);
                             req1.username = "";
@@ -1242,9 +1243,7 @@ public class ChannelCreateActivity extends BaseFragment implements NotificationC
                                     });
                                 }
                             }, ConnectionsManager.RequestFlagInvokeAfter);
-                            return Unit.INSTANCE;
                         });
-                        builder.addCancelItem();
                         showDialog(builder.create());
                     }, false, 0);
                     adminedChannelCell.setChannel(res.chats.get(a), a == res.chats.size() - 1);

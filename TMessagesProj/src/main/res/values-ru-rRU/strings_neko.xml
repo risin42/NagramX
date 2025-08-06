@@ -239,7 +239,6 @@
     <string name="DeveloperSettings">Настройки разработчика</string>
     <string name="TransSite">Платформа переводов</string>
     <string name="ShareMessages">Поделиться</string>
-    <string name="DisableVibration">Отключить вибрацию</string>
     <string name="SendCommentAfterForward">Комментарий после пересылаемого</string>
     <string name="ImportLogin">Вход по QR-коду</string>
     <string name="UserRestrictionsSendGames">Отправка игр</string>

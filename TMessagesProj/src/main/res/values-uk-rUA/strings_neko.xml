@@ -238,7 +238,6 @@
     <string name="DeveloperSettings">Налаштування розробника</string>
     <string name="TransSite">Допомогти з перекладом</string>
     <string name="ShareMessages">Поділитися</string>
-    <string name="DisableVibration">Вимкнути вібрацію</string>
     <string name="SendCommentAfterForward">Надіслати коментар після пересилання</string>
     <string name="ImportLogin">Вхід за QR-кодом</string>
     <string name="UserRestrictionsSendGames">Надіслати ігри</string>

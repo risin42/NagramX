@@ -38,8 +38,6 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Components.voip.RTMPStreamPipOverlay;
 import org.telegram.ui.GroupCallActivity;
 
-import tw.nekomimi.nekogram.NekoConfig;
-
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 
 public class GroupCallPip implements NotificationCenter.NotificationCenterDelegate {
@@ -132,11 +130,9 @@ public class GroupCallPip implements NotificationCenter.NotificationCenterDelega
                             return;
                         }
                         AndroidUtilities.runOnUIThread(micRunnable, 90);
-                        if (!NekoConfig.disableVibration.Bool()) {
-                            try {
-                                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                            } catch (Exception ignore) {}
-                        }
+                        try {
+                            performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                        } catch (Exception ignore) {}
                         pressed = true;
                     }
                 }
@@ -260,11 +256,9 @@ public class GroupCallPip implements NotificationCenter.NotificationCenterDelega
                         if (pressed) {
                             if (VoIPService.getSharedInstance() != null) {
                                 VoIPService.getSharedInstance().setMicMute(true, false, false);
-                                if (!NekoConfig.disableVibration.Bool()) {
-                                    try {
-                                        performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                                    } catch (Exception ignored) {}
-                                }
+                                try {
+                                    performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                                } catch (Exception ignored) {}
                             }
                             pressed = false;
                         } else if (event.getAction() == MotionEvent.ACTION_UP && !moving) {
@@ -899,11 +893,9 @@ public class GroupCallPip implements NotificationCenter.NotificationCenterDelega
                 iconView.playAnimation();
             }
             if (prepare) {
-                if (!NekoConfig.disableVibration.Bool()) {
-                    try {
-                        button.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                    } catch (Exception ignored) {}
-                }
+                try {
+                    button.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                } catch (Exception ignored) {}
             }
         }
         button.prepareToRemove(prepare);

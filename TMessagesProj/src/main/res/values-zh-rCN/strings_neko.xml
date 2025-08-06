@@ -239,7 +239,6 @@
     <string name="DeveloperSettings">开发者设置</string>
     <string name="TransSite">翻译平台</string>
     <string name="ShareMessages">分享</string>
-    <string name="DisableVibration">禁用振动</string>
     <string name="SendCommentAfterForward">转发后发送评论</string>
     <string name="ImportLogin">二维码登录</string>
     <string name="UserRestrictionsSendGames">发送游戏</string>

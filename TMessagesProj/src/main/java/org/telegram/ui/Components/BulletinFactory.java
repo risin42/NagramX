@@ -60,8 +60,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import tw.nekomimi.nekogram.NekoConfig;
-
 public final class BulletinFactory {
 
     public static BulletinFactory of(BaseFragment fragment) {
@@ -1206,9 +1204,7 @@ public final class BulletinFactory {
         layout.textView.setText(text);
         if (hapticDelay > 0) {
             layout.postDelayed(() -> {
-                if (!NekoConfig.disableVibration.Bool()) {
-                    layout.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                }
+                layout.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             }, hapticDelay);
         }
         return Bulletin.make(containerLayout, layout, Bulletin.DURATION_SHORT);
@@ -1349,9 +1345,7 @@ public final class BulletinFactory {
 
         if (hapticDelay > 0) {
             layout.postDelayed(() -> {
-                if (!NekoConfig.disableVibration.Bool()) {
-                    layout.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                }
+                layout.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             }, hapticDelay);
         }
 

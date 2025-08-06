@@ -6468,7 +6468,6 @@ public class AndroidUtilities {
             if (view == null || view.getContext() == null) return;
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
             if (!((Vibrator) view.getContext().getSystemService(Context.VIBRATOR_SERVICE)).hasAmplitudeControl()) return;
-            if (NekoConfig.disableVibration.Bool()) return;
             view.performHapticFeedback(HapticFeedbackConstants.TEXT_HANDLE_MOVE, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         } catch (Exception ignore) {}
     }
@@ -6478,7 +6477,6 @@ public class AndroidUtilities {
             if (view == null || view.getContext() == null) return;
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
             if (!((Vibrator) view.getContext().getSystemService(Context.VIBRATOR_SERVICE)).hasAmplitudeControl()) return;
-            if (NekoConfig.disableVibration.Bool()) return;
             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         } catch (Exception ignore) {}
     }

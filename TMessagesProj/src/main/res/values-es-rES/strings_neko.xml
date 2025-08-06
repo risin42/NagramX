@@ -231,7 +231,6 @@
     <string name="DeveloperSettings">Opciones de Desarrollo</string>
     <string name="TransSite">Ayúdanos con la traducción</string>
     <string name="ShareMessages">Compartir</string>
-    <string name="DisableVibration">Desactivar vibración</string>
     <string name="SendCommentAfterForward">Enviar comentario después del reenvío</string>
     <string name="ImportLogin">Inicio de sesión con QR</string>
     <string name="UserRestrictionsSendGames">Enviar Juegos</string>

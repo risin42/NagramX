@@ -238,7 +238,6 @@
     <string name="DeveloperSettings">開発者設定</string>
     <string name="TransSite">翻訳者になろう</string>
     <string name="ShareMessages">共有</string>
-    <string name="DisableVibration">バイブを無効にする</string>
     <string name="SendCommentAfterForward">転送後にコメントを送信する</string>
     <string name="ImportLogin">QR コードログイン</string>
     <string name="UserRestrictionsSendGames">ゲームを送る</string>

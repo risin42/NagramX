@@ -4606,12 +4606,9 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
         manualRecording = manual;
         requestRecordAudioFocus(true);
 
-        if (!NekoConfig.disableVibration.Bool()) {
-            try {
-                feedbackView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-            } catch (Exception ignore) {
-            }
-        }
+        try {
+            feedbackView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+        } catch (Exception ignore) {}
 
         recordQueue.postRunnable(recordStartRunnable = () -> {
             if (audioRecorder != null) {
@@ -4903,13 +4900,9 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
             if (send == 0) {
                 stopRecordingInternal(0, false, 0, false, 0);
             }
-            if (!NekoConfig.disableVibration.Bool()) {
-                try {
-                    feedbackView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                } catch (Exception ignore) {
-
-                }
-            }
+            try {
+                feedbackView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+            } catch (Exception ignore) {}
             AndroidUtilities.runOnUIThread(() -> NotificationCenter.getInstance(recordingCurrentAccount).postNotificationName(NotificationCenter.recordStopped, recordingGuid, send == 2 ? 1 : 0));
         });
     }

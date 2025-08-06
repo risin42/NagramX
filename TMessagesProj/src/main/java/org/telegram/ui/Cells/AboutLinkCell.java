@@ -402,11 +402,9 @@ public class AboutLinkCell extends FrameLayout {
                     url = pressedLink.getSpan().toString();
                 }
 
-                if (!NekoConfig.disableVibration.Bool()) {
-                    try {
-                        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                    } catch (Exception ignore) {}
-                }
+                try {
+                    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                } catch (Exception ignore) {}
 
                 final Layout layout = pressedLinkLayout;
                 final float yOffset = pressedLinkYOffset;

@@ -3306,11 +3306,9 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
                     if (cancelled) {
                         return;
                     }
-                    if (!NekoConfig.disableVibration.Bool()) {
-                        try {
-                            performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                        } catch (Exception ignore) {}
-                    }
+                    try {
+                        performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                    } catch (Exception ignore) {}
                     AndroidUtilities.lockOrientation(delegate.getParentActivity());
                     recordPlusTime = fromPause ? recordedTime : 0;
                     recordStartTime = System.currentTimeMillis();

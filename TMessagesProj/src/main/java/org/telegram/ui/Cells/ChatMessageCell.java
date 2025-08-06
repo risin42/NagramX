@@ -3724,7 +3724,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             }
             float p = a / 360f;
             if (Math.abs(currentMessageObject.audioProgress - p) > 0.9f) {
-                if (roundSeekbarOutAlpha == 0 && !NekoConfig.disableVibration.Bool()) {
+                if (roundSeekbarOutAlpha == 0) {
                     try {
                         performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                     } catch (Exception ignored) {}
@@ -8412,7 +8412,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 }
 
                 int maxVote = 0;
-                if (!animatePollAnswer && pollVoteInProgress && vibrateOnPollVote && !NekoConfig.disableVibration.Bool()) {
+                if (!animatePollAnswer && pollVoteInProgress && vibrateOnPollVote) {
                     try {
                         performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                     } catch (Exception ignored) {}

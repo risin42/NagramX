@@ -88,8 +88,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
-import tw.nekomimi.nekogram.NekoConfig;
-
 public class ManageLinksActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
     private ListAdapter listViewAdapter;
@@ -663,11 +661,9 @@ public class ManageLinksActivity extends BaseFragment implements NotificationCen
             if ((position >= linksStartRow && position < linksEndRow) || (position >= revokedLinksStartRow && position < revokedLinksEndRow)) {
                 LinkCell cell = (LinkCell) view;
                 cell.optionsView.callOnClick();
-                if (!NekoConfig.disableVibration.Bool()) {
-                    try {
-                        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                    } catch (Exception ignored) {}
-                }
+                try {
+                    view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                } catch (Exception ignored) {}
                 return true;
             }
             return false;

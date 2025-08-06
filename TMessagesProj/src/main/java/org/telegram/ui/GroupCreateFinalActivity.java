@@ -27,6 +27,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -74,15 +75,6 @@ import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.ListView.AdapterWithDiffUtils;
 import org.telegram.ui.Components.RLottieDrawable;
 import org.telegram.ui.Components.RLottieImageView;
-import org.telegram.ui.Components.VerticalPositionAutoAnimator;
-import org.telegram.ui.Components.ImageUpdater;
-import org.telegram.ui.Components.BackupImageView;
-import org.telegram.ui.Components.CombinedDrawable;
-import org.telegram.ui.Components.ContextProgressView;
-import org.telegram.ui.Components.EditTextEmoji;
-import org.telegram.ui.Components.GroupCreateDividerItemDecoration;
-import org.telegram.ui.Components.ImageUpdater;
-import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RadialProgressView;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;
@@ -90,8 +82,6 @@ import org.telegram.ui.Components.VerticalPositionAutoAnimator;
 
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
-
-import tw.nekomimi.nekogram.utils.VibrateUtil;
 
 public class GroupCreateFinalActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, ImageUpdater.ImageUpdaterDelegate {
 
@@ -678,7 +668,7 @@ public class GroupCreateFinalActivity extends BaseFragment implements Notificati
         Drawable drawable = Theme.createSimpleSelectorCircleDrawable(AndroidUtilities.dp(56), Theme.getColor(Theme.key_chats_actionBackground), Theme.getColor(Theme.key_chats_actionPressedBackground));
         if (Build.VERSION.SDK_INT < 21) {
             Drawable shadowDrawable = context.getResources().getDrawable(R.drawable.floating_shadow).mutate();
-            shadowDrawable.setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.SRC_IN));
+            shadowDrawable.setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.MULTIPLY));
             CombinedDrawable combinedDrawable = new CombinedDrawable(shadowDrawable, drawable, 0, 0);
             combinedDrawable.setIconSize(AndroidUtilities.dp(56), AndroidUtilities.dp(56));
             drawable = combinedDrawable;
@@ -704,7 +694,10 @@ public class GroupCreateFinalActivity extends BaseFragment implements Notificati
                 return;
             }
             if (editText.length() == 0) {
-                VibrateUtil.vibrate();
+                Vibrator v = (Vibrator) getParentActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                if (v != null) {
+                    v.vibrate(200);
+                }
                 AndroidUtilities.shakeView(editText);
                 return;
             }
@@ -722,7 +715,7 @@ public class GroupCreateFinalActivity extends BaseFragment implements Notificati
 
         floatingButtonIcon = new ImageView(context);
         floatingButtonIcon.setScaleType(ImageView.ScaleType.CENTER);
-        floatingButtonIcon.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_actionIcon), PorterDuff.Mode.SRC_IN));
+        floatingButtonIcon.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_actionIcon), PorterDuff.Mode.MULTIPLY));
         floatingButtonIcon.setImageResource(R.drawable.checkbig);
         floatingButtonIcon.setPadding(0, AndroidUtilities.dp(2), 0, 0);
         floatingButtonContainer.setContentDescription(LocaleController.getString(R.string.Done));

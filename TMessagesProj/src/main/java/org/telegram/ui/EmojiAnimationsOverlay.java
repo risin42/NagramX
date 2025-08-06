@@ -46,7 +46,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
-import tw.nekomimi.nekogram.NekoConfig;
 import xyz.nextalone.nagram.NaConfig;
 
 public class EmojiAnimationsOverlay implements NotificationCenter.NotificationCenterDelegate {
@@ -262,11 +261,9 @@ public class EmojiAnimationsOverlay implements NotificationCenter.NotificationCe
         if (bestView != null && chatActivity != null) {
             chatActivity.restartSticker(bestView);
             if (!EmojiData.hasEmojiSupportVibration(bestView.getMessageObject().getStickerEmoji()) && !bestView.getMessageObject().isPremiumSticker() && !bestView.getMessageObject().isAnimatedAnimatedEmoji()) {
-                if (!NekoConfig.disableVibration.Bool()) {
-                    try {
-                        bestView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-                    } catch (Exception ignored) {}
-                }
+                try {
+                    bestView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                } catch (Exception ignored) {}
             }
             showAnimationForCell(bestView, animation, false, true);
         }
@@ -440,11 +437,9 @@ public class EmojiAnimationsOverlay implements NotificationCenter.NotificationCe
         boolean show = showAnimationForCell(view, -1, userTapped, false);
 
         if (userTapped && show && !EmojiData.hasEmojiSupportVibration(view.getMessageObject().getStickerEmoji()) && !view.getMessageObject().isPremiumSticker() && !view.getMessageObject().isAnimatedAnimatedEmoji()) {
-            if (!NekoConfig.disableVibration.Bool()) {
-                try {
-                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-                } catch (Exception ignored) {}
-            }
+            try {
+                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+            } catch (Exception ignored) {}
         }
         if (view.getMessageObject().isPremiumSticker() || view.getEffect() != null || (!userTapped && view.getMessageObject().isAnimatedEmojiStickerSingle())) {
             view.getMessageObject().forcePlayEffect = false;
@@ -761,11 +756,9 @@ public class EmojiAnimationsOverlay implements NotificationCenter.NotificationCe
                         @Override
                         public void onAnimationReady(ImageReceiver imageReceiver) {
                             if (sendTap && messageObject != null && messageObject.isAnimatedAnimatedEmoji() && imageReceiver.getLottieAnimation() != null && !imageReceiver.getLottieAnimation().hasVibrationPattern()) {
-                                if (!NekoConfig.disableVibration.Bool()) {
-                                    try {
-                                        contentLayout.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                                    } catch (Exception ignored) {}
-                                }
+                                try {
+                                    contentLayout.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                                } catch (Exception ignored) {}
                             }
                         }
                     });

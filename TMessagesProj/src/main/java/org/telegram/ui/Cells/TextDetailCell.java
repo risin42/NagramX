@@ -31,8 +31,6 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.LinkSpanDrawable;
 
-import tw.nekomimi.nekogram.NekoConfig;
-
 public class TextDetailCell extends FrameLayout {
 
     public final LinkSpanDrawable.LinksTextView textView;
@@ -99,8 +97,7 @@ public class TextDetailCell extends FrameLayout {
         valueTextView.setOnLinkLongPressListener(span -> {
             if (span != null) {
                 try {
-                    if (!NekoConfig.disableVibration.Bool())
-                        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                 } catch (Exception ignore) {};
                 span.onClick(valueTextView);
             }

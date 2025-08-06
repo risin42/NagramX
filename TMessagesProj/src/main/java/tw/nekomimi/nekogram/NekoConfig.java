@@ -135,7 +135,6 @@ public class NekoConfig {
     public static ConfigItem disableAppBarShadow = addConfig("DisableAppBarShadow", configTypeBool, false);
     public static ConfigItem mediaPreview = addConfig("MediaPreview", configTypeBool, true);
 
-    public static ConfigItem disableVibration = addConfig("DisableVibration", configTypeBool, false);
     public static ConfigItem autoPauseVideo = addConfig("AutoPauseVideo", configTypeBool, false);
     public static ConfigItem disableProximityEvents = addConfig("DisableProximityEvents", configTypeBool, false);
 

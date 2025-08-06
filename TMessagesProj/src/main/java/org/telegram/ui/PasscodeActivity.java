@@ -97,7 +97,6 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
-import tw.nekomimi.nekogram.utils.VibrateUtil;
 
 public class PasscodeActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
     public final static int TYPE_MANAGE_CODE_SETTINGS = 0,
@@ -1119,7 +1118,9 @@ public class PasscodeActivity extends BaseFragment implements NotificationCenter
 
     private void onPasscodeError() {
         if (getParentActivity() == null) return;
-        VibrateUtil.vibrate();
+        try {
+            fragmentView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+        } catch (Exception ignore) {}
         if (isPinCode()) {
             for (CodeNumberField f : codeFieldContainer.codeField) {
                 f.animateErrorProgress(1f);

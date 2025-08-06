@@ -39,8 +39,6 @@ import org.telegram.ui.Components.voip.VoIPToggleButton;
 import org.telegram.ui.GroupCallActivity;
 import org.telegram.ui.LaunchActivity;
 
-import tw.nekomimi.nekogram.utils.VibrateUtil;
-
 public class GroupCallPipAlertView extends LinearLayout implements VoIPService.StateListener, NotificationCenter.NotificationCenterDelegate {
 
     public static final int POSITION_LEFT = 0;
@@ -144,7 +142,10 @@ public class GroupCallPipAlertView extends LinearLayout implements VoIPService.S
                 if (VoIPService.getSharedInstance().mutedByAdmin()) {
                     muteButton.shakeView();
                     try {
-                        VibrateUtil.vibrate();
+                        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                        if (vibrator != null) {
+                            vibrator.vibrate(200);
+                        }
                     } catch (Exception e) {
                         FileLog.e(e);
                     }

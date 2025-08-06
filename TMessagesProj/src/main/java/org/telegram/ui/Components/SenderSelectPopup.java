@@ -53,9 +53,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import tw.nekomimi.nekogram.NekoConfig;
-import xyz.nextalone.nagram.NaConfig;
-
 public class SenderSelectPopup extends ActionBarPopupWindow {
     public final static float SPRING_STIFFNESS = 750f;
     public final static int AVATAR_SIZE_DP = 40;
@@ -247,11 +244,9 @@ public class SenderSelectPopup extends ActionBarPopupWindow {
                 return;
             }
             if (peerObj.premium_required && !UserConfig.getInstance(UserConfig.selectedAccount).isRealPremium()) {
-                if (!NekoConfig.disableVibration.Bool()) {
-                    try {
-                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                    } catch (Exception ignored) {}
-                }
+                try {
+                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                } catch (Exception ignored) {}
 
                 WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
                 if (bulletinContainer == null) {

@@ -137,7 +137,6 @@ import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
-import tw.nekomimi.nekogram.NekoConfig;
 
 public class TopicsFragment extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, ChatActivityInterface, RightSlidingDialogContainer.BaseFragmentWithFullscreen {
 
@@ -982,11 +981,9 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
                 }
             }
             toggleSelection(view);
-            if (!NekoConfig.disableVibration.Bool()) {
-                try {
-                    view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                } catch (Exception ignored) {}
-            }
+            try {
+                view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            } catch (Exception ignored) {}
             return true;
         });
         recyclerListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -1114,11 +1111,9 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
                         if (canShowHiddenArchive != canShowInternal) {
                             canShowHiddenArchive = canShowInternal;
                             if (pullViewState == ARCHIVE_ITEM_STATE_HIDDEN) {
-                                if (!NekoConfig.disableVibration.Bool()) {
-                                    try {
-                                        recyclerListView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                                    } catch (Exception ignored) {}
-                                }
+                                try {
+                                    recyclerListView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                                } catch (Exception ignored) {}
                                 if (pullForegroundDrawable != null) {
                                     pullForegroundDrawable.colorize(canShowInternal);
                                 }
@@ -1793,11 +1788,9 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
                                 }
                                 if (!canShowHiddenArchive) {
                                     canShowHiddenArchive = true;
-                                    if (!NekoConfig.disableVibration.Bool()) {
-                                        try {
-                                            performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                                        } catch (Exception ignored) {}
-                                    }
+                                    try {
+                                        performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                                    } catch (Exception ignored) {}
                                     if (pullForegroundDrawable != null) {
                                         pullForegroundDrawable.colorize(true);
                                     }
@@ -1896,11 +1889,9 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
     }
 
     private boolean showChatPreview(DialogCell cell) {
-        if (!NekoConfig.disableVibration.Bool()) {
-            try {
-                cell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            } catch (Exception ignored) {}
-        }
+        try {
+            cell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        } catch (Exception ignored) {}
         final ActionBarPopupWindow.ActionBarPopupWindowLayout[] previewMenu = new ActionBarPopupWindow.ActionBarPopupWindowLayout[1];
         int flags = ActionBarPopupWindow.ActionBarPopupWindowLayout.FLAG_USE_SWIPEBACK;
         previewMenu[0] = new ActionBarPopupWindow.ActionBarPopupWindowLayout(getParentActivity(), R.drawable.popup_fixed_alert, getResourceProvider(), flags);

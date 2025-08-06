@@ -61,10 +61,8 @@ import org.telegram.ui.bots.BotWebViewAttachedSheet;
 
 import java.util.ArrayList;
 
-import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.CloudStorageHelper;
 import tw.nekomimi.nekogram.helpers.UserHelper;
-import tw.nekomimi.nekogram.utils.VibrateUtil;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -348,9 +346,6 @@ public abstract class BaseFragment {
     public void setParentFragment(BaseFragment fragment) {
         setParentLayout(fragment.parentLayout);
         fragmentView = createView(parentLayout.getView().getContext());
-        if (NekoConfig.disableVibration.Bool()) {
-            VibrateUtil.disableHapticFeedback(fragmentView);
-        }
     }
 
     public void setParentLayout(INavigationLayout layout) {

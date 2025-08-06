@@ -17,7 +17,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -50,8 +49,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.ImageLoader;
-import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MediaDataController;
 import org.telegram.messenger.DocumentObject;
 import org.telegram.messenger.Emoji;
@@ -76,7 +73,6 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
 import org.telegram.ui.ActionBar.ActionBarMenuSubItem;
 import org.telegram.ui.ActionBar.ActionBarPopupWindow;
-import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.ActionBar.SimpleTextView;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.ContextLinkCell;
@@ -100,13 +96,10 @@ import org.telegram.ui.Components.StickersDialogs;
 import org.telegram.ui.Components.SuggestEmojiView;
 import org.telegram.ui.Stories.DarkThemeResourceProvider;
 
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
-import tw.nekomimi.nekogram.utils.VibrateUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 public class ContentPreviewViewer {
@@ -506,11 +499,9 @@ public class ContentPreviewViewer {
                     showUnlockPremiumView();
                     menuVisible = true;
                     containerView.invalidate();
-                    if (!NekoConfig.disableVibration.Bool()) {
-                        try {
-                            containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                        } catch (Exception ignored) {}
-                    }
+                    try {
+                        containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    } catch (Exception ignored) {}
                     return;
                 }
                 final boolean inFavs = MediaDataController.getInstance(currentAccount).isStickerInFavorites(currentDocument);
@@ -706,11 +697,9 @@ public class ContentPreviewViewer {
                 }
                 popupWindow.showAtLocation(containerView, 0, (int) ((containerView.getMeasuredWidth() - previewMenu.getMeasuredWidth()) / 2f), y);
 
-                if (!NekoConfig.disableVibration.Bool()) {
-                    try {
-                        containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                    } catch (Exception ignored) {}
-                }
+                try {
+                    containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                } catch (Exception ignored) {}
             } else if (currentContentType == CONTENT_TYPE_EMOJI && delegate != null) {
                 ArrayList<CharSequence> items = new ArrayList<>();
                 final ArrayList<Integer> actions = new ArrayList<>();
@@ -828,11 +817,9 @@ public class ContentPreviewViewer {
                 popupWindow.showAtLocation(containerView, 0, (int) ((containerView.getMeasuredWidth() - previewMenu.getMeasuredWidth()) / 2f), y);
                 ActionBarPopupWindow.startAnimation(previewMenu);
 
-                if (!NekoConfig.disableVibration.Bool()) {
-                    try {
-                        containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                    } catch (Exception ignored) {}
-                }
+                try {
+                    containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                } catch (Exception ignored) {}
 
                 if (moveY != 0) {
                     if (finalMoveY == 0) {
@@ -976,11 +963,10 @@ public class ContentPreviewViewer {
                 y += AndroidUtilities.dp(24) - moveY;
                 popupWindow.showAtLocation(containerView, 0, (int) ((containerView.getMeasuredWidth() - previewMenu.getMeasuredWidth()) / 2f), y);
 
-                if (!NekoConfig.disableVibration.Bool()) {
-                    try {
-                        containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                    } catch (Exception ignored) {}
-                }
+                try {
+                    containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                } catch (Exception ignored) {}
+
                 if (moveY != 0) {
                     if (finalMoveY == 0) {
                         finalMoveY = 0;
@@ -1331,11 +1317,13 @@ public class ContentPreviewViewer {
 
     protected void runSmoothHaptic() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            final Vibrator vibrator = (Vibrator) containerView.getContext().getSystemService(Context.VIBRATOR_SERVICE);
             if (vibrationEffect == null) {
                 long[] vibrationWaveFormDurationPattern = {0, 2};
                 vibrationEffect = VibrationEffect.createWaveform(vibrationWaveFormDurationPattern, -1);
             }
-            VibrateUtil.vibrate(200L, vibrationEffect);
+            vibrator.cancel();
+            vibrator.vibrate(vibrationEffect);
         }
     }
 
@@ -1473,11 +1461,9 @@ public class ContentPreviewViewer {
                         }
                     }
                     if (opened) {
-                        if (!NekoConfig.disableVibration.Bool()) {
-                            try {
-                                currentPreviewCell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                            } catch (Exception ignored) {}
-                        }
+                        try {
+                            currentPreviewCell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                        } catch (Exception ignored) {}
                         if (delegate != null) {
                             delegate.resetTouch();
                         }

@@ -241,7 +241,6 @@
     <string name="DeveloperSettings">Developer Settings</string>
     <string name="TransSite">Help with Translation</string>
     <string name="ShareMessages">Share</string>
-    <string name="DisableVibration">Disable Vibration</string>
     <string name="SendCommentAfterForward">Send Comment After Forwarding</string>
     <string name="ImportLogin">QR Login</string>
     <string name="UserRestrictionsSendGames">Send Games</string>

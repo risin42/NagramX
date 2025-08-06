@@ -82,9 +82,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import tw.nekomimi.nekogram.utils.ProxyUtil;
-import tw.nekomimi.nekogram.utils.VibrateUtil;
-
 public class ChatEditTypeActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
     private EditTextBoldCursor usernameTextView;
@@ -1158,7 +1155,10 @@ public class ChatEditTypeActivity extends BaseFragment implements NotificationCe
         String wasUsername = ChatObject.getPublicUsername(currentChat, true);
         if (!isPrivate && ((wasUsername == null && usernameTextView.length() != 0) || (wasUsername != null && !wasUsername.equalsIgnoreCase(usernameTextView.getText().toString())))) {
             if (usernameTextView.length() != 0 && !lastNameAvailable) {
-                VibrateUtil.vibrate();
+                Vibrator v = (Vibrator) getParentActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                if (v != null) {
+                    v.vibrate(200);
+                }
                 AndroidUtilities.shakeView(checkTextView);
                 updateDoneProgress(false);
                 return false;
@@ -1368,7 +1368,7 @@ public class ChatEditTypeActivity extends BaseFragment implements NotificationCe
             }
             publicContainer.setVisibility(isPrivate ? View.GONE : View.VISIBLE);
             privateContainer.setVisibility(isPrivate ? View.VISIBLE : View.GONE);
-            //saveContainer.setVisibility(View.VISIBLE);
+            saveContainer.setVisibility(View.VISIBLE);
             manageLinksTextView.setVisibility(View.VISIBLE);
             manageLinksInfoCell.setVisibility(View.VISIBLE);
             linkContainer.setPadding(0, 0, 0, isPrivate ? 0 : AndroidUtilities.dp(7));

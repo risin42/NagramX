@@ -74,6 +74,7 @@ import androidx.core.util.Consumer;
 import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.DialogObject;
@@ -156,12 +157,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import kotlin.Unit;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
-import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.utils.AlertUtil;
-import tw.nekomimi.nekogram.utils.VibrateUtil;
 import static tw.nekomimi.nekogram.settings.NekoChatSettingsActivity.getDeleteMenuChecks;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -670,34 +667,6 @@ public class AlertsCreator {
            builder.setNegativeButton(LocaleController.getString(R.string.UpdateApp), (dialog, which) -> Browser.openUrl(context, BuildVars.PLAYSTORE_APP_URL));
         }*/
         return builder.show();
-    }
-
-    private static SpannableStringBuilder mkTransSpan(String str, TLRPC.TL_langPackLanguage language, BottomBuilder builder) {
-        SpannableStringBuilder spanned = new SpannableStringBuilder(AndroidUtilities.replaceTags(str));
-
-        int start = TextUtils.indexOf(spanned, '[');
-        int end;
-        if (start != -1) {
-            end = TextUtils.indexOf(spanned, ']', start + 1);
-            if (start != -1 && end != -1) {
-                spanned.delete(end, end + 1);
-                spanned.delete(start, start + 1);
-            }
-        } else {
-            end = -1;
-        }
-
-        if (start != -1 && end != -1) {
-            spanned.setSpan(new URLSpanNoUnderline(language.translations_url) {
-                @Override
-                public void onClick(View widget) {
-                    builder.dismiss();
-                    super.onClick(widget);
-                }
-            }, start, end - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-
-        return spanned;
     }
 
     public static AlertDialog createLanguageAlert(LaunchActivity activity, final TLRPC.TL_langPackLanguage language) {
@@ -6979,7 +6948,10 @@ public class AlertsCreator {
                 return;
             }
             if (editText.length() == 0) {
-                VibrateUtil.vibrate();
+                Vibrator vibrator = (Vibrator) ApplicationLoader.applicationContext.getSystemService(Context.VIBRATOR_SERVICE);
+                if (vibrator != null) {
+                    vibrator.vibrate(200);
+                }
                 AndroidUtilities.shakeView(editText);
                 return;
             }

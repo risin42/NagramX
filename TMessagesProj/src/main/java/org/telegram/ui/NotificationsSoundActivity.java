@@ -72,8 +72,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import tw.nekomimi.nekogram.NekoConfig;
-
 public class NotificationsSoundActivity extends BaseFragment implements ChatAttachAlertDocumentLayout.DocumentSelectActivityDelegate, NotificationCenter.NotificationCenterDelegate {
 
     ArrayList<Tone> serverTones = new ArrayList<>();
@@ -415,8 +413,7 @@ public class NotificationsSoundActivity extends BaseFragment implements ChatAtta
             if (view instanceof ToneCell) {
                 ToneCell cell = (ToneCell) view;
                 checkSelection(cell.tone);
-                if (!NekoConfig.disableVibration.Bool())
-                    cell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                cell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             }
             return false;
         });

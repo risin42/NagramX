@@ -41,9 +41,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.utils.VibrateUtil;
-
 public abstract class BaseChartView<T extends ChartData, L extends LineViewData> extends View implements ChartPickerDelegate.Listener {
 
     public SharedUiComponents sharedUiComponents;
@@ -1099,11 +1096,13 @@ public abstract class BaseChartView<T extends ChartData, L extends LineViewData>
 
     protected void runSmoothHaptic() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            final Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
             if (vibrationEffect == null) {
                 long[] vibrationWaveFormDurationPattern = {0, 2};
                 vibrationEffect = VibrationEffect.createWaveform(vibrationWaveFormDurationPattern, -1);
             }
-            VibrateUtil.vibrate(200L, vibrationEffect);
+            vibrator.cancel();
+            vibrator.vibrate(vibrationEffect);
         }
     }
 
@@ -1514,11 +1513,9 @@ public abstract class BaseChartView<T extends ChartData, L extends LineViewData>
         legendSignatureView.setVisibility(VISIBLE);
         selectionA = 1f;
         moveLegend(chartFullWidth * (pickerDelegate.pickerStart) - HORIZONTAL_PADDING);
-        if (!NekoConfig.disableVibration.Bool()) {
-            try {
-                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-            } catch (Exception ignored) {}
-        }
+        try {
+            performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+        } catch (Exception ignored) {}
     }
 
     public long getStartDate() {

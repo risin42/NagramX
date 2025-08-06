@@ -238,7 +238,6 @@
     <string name="DeveloperSettings">Geliştirici Ayarları</string>
     <string name="TransSite">Çeviriye Yardım Edin</string>
     <string name="ShareMessages">Paylaş</string>
-    <string name="DisableVibration">Titreşimi Devre Dışı Bırak</string>
     <string name="SendCommentAfterForward">İlettikten Sonra Yorum Gönder</string>
     <string name="ImportLogin">QR ile Giriş</string>
     <string name="UserRestrictionsSendGames">Oyun Gönderme</string>
