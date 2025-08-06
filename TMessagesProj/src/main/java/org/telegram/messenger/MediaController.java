@@ -70,7 +70,6 @@ import android.webkit.MimeTypeMap;
 import android.widget.FrameLayout;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.FileProvider;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -130,11 +129,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.SaveToDownloadReceiver;
+import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.AudioEnhance;
-import xyz.nextalone.nagram.NaConfig;
 
 public class MediaController implements AudioManager.OnAudioFocusChangeListener, NotificationCenter.NotificationCenterDelegate, SensorEventListener {
 
@@ -1748,10 +1746,6 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                 SendMessagesHelper.getInstance(lastChatAccount).sendScreenshotMessage(lastUser, lastMessageId, null);
             }
         }
-    }
-
-    public ArrayList<Long> getLastVisibleMessageIds() {
-        return lastChatVisibleMessages;
     }
 
     public void setLastVisibleMessageIds(int account, long enterTime, long leaveTime, TLRPC.User user, TLRPC.EncryptedChat encryptedChat, ArrayList<Long> visibleMessages, int visibleMessage) {
@@ -5019,7 +5013,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                         File dir;
                         String folderName = NekoConfig.customSavePath.String();
                         if (messageObjects.get(0) != null && NaConfig.INSTANCE.getSaveToChatSubfolder().Bool()) {
-                            String chatFolderName = getChatFolderName(messageObjects.get(0));
+                            String chatFolderName = ChatsHelper.getChatFolderName(messageObjects.get(0));
                             folderName = folderName + File.separator + chatFolderName;
                         }
                         if (isMusic) {
@@ -5285,7 +5279,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                     boolean result = true;
                     String folderName = NekoConfig.customSavePath.String();
                     if (selectedObject != null && NaConfig.INSTANCE.getSaveToChatSubfolder().Bool()) {
-                        String chatFolderName = getChatFolderName(selectedObject);
+                        String chatFolderName = ChatsHelper.getChatFolderName(selectedObject);
                         folderName = folderName + File.separator + chatFolderName;
                     }
                     if (Build.VERSION.SDK_INT >= 29) {
@@ -5417,7 +5411,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
             }
             String folderName = NekoConfig.customSavePath.String();
             if (messageObject != null && NaConfig.INSTANCE.getSaveToChatSubfolder().Bool()) {
-                String chatFolderName = getChatFolderName(messageObject);
+                String chatFolderName = ChatsHelper.getChatFolderName(messageObject);
                 folderName = folderName + File.separator + chatFolderName;
             }
             if (selectedType == 0) {
@@ -6441,49 +6435,6 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
     public boolean currentPlaylistIsGlobalSearch() {
         return playlistGlobalSearchParams != null;
     }
-
-    private static String getChatFolderName(MessageObject message) {
-        String chatName = "Unknown";
-
-        if (message == null) {
-            return chatName;
-        }
-
-        long peerId = MessageObject.getPeerId(message.messageOwner.peer_id);
-        int currentAccount = message.currentAccount;
-
-        if (DialogObject.isUserDialog(peerId)) {
-            TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(peerId);
-            if (user != null) {
-                chatName = UserObject.getUserName(user);
-            }
-        } else {
-            TLRPC.Chat chat = MessagesController.getInstance(currentAccount).getChat(-peerId);
-            if (chat != null) {
-                chatName = chat.title;
-            }
-        }
-
-        // Normalize Unicode to avoid issues with combined characters
-        chatName = Normalizer.normalize(chatName, Normalizer.Form.NFKC);
-
-        // Remove all invisible characters (U+200B - U+206F)
-        chatName = chatName.replaceAll("[\\u200B-\\u206F]", "");
-
-        // Replace invalid file system characters
-        chatName = chatName.replaceAll("[\\p{Cc}\\p{Cf}\\\\/:*?\"<>|]", "_");
-
-        // Trim spaces and remove leading/trailing dots (Windows does not allow filenames ending with '.')
-        chatName = chatName.trim().replaceAll("^\\.+|\\.+$", "");
-
-        // If the cleaned name is empty, use the peer ID instead
-        if (TextUtils.isEmpty(chatName)) {
-            chatName = String.valueOf(peerId);
-        }
-
-        return chatName;
-    }
-
 
     /* */
 

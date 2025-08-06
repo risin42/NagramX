@@ -16,6 +16,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,9 +25,12 @@ import androidx.collection.LongSparseArray;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BaseController;
 import org.telegram.messenger.ChatObject;
+import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.MessageObject;
+import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
@@ -37,6 +41,7 @@ import org.telegram.ui.Components.ShareAlert;
 import org.telegram.ui.Components.UndoView;
 import org.telegram.ui.LaunchActivity;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -299,5 +304,47 @@ public class ChatsHelper extends BaseController {
             }
         }
         return chatId;
+    }
+
+    public static String getChatFolderName(MessageObject message) {
+        String chatName = "Unknown";
+
+        if (message == null) {
+            return chatName;
+        }
+
+        long peerId = MessageObject.getPeerId(message.messageOwner.peer_id);
+        int currentAccount = message.currentAccount;
+
+        if (DialogObject.isUserDialog(peerId)) {
+            TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(peerId);
+            if (user != null) {
+                chatName = UserObject.getUserName(user);
+            }
+        } else {
+            TLRPC.Chat chat = MessagesController.getInstance(currentAccount).getChat(-peerId);
+            if (chat != null) {
+                chatName = chat.title;
+            }
+        }
+
+        // Normalize Unicode to avoid issues with combined characters
+        chatName = Normalizer.normalize(chatName, Normalizer.Form.NFKC);
+
+        // Remove all invisible characters (U+200B - U+206F)
+        chatName = chatName.replaceAll("[\\u200B-\\u206F]", "");
+
+        // Replace invalid file system characters
+        chatName = chatName.replaceAll("[\\p{Cc}\\p{Cf}\\\\/:*?\"<>|]", "_");
+
+        // Trim spaces and remove leading/trailing dots (Windows does not allow filenames ending with '.')
+        chatName = chatName.trim().replaceAll("^\\.+|\\.+$", "");
+
+        // If the cleaned name is empty, use the peer ID instead
+        if (TextUtils.isEmpty(chatName)) {
+            chatName = String.valueOf(peerId);
+        }
+
+        return chatName;
     }
 }
