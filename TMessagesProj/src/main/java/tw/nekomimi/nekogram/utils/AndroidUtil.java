@@ -1,8 +1,12 @@
 package tw.nekomimi.nekogram.utils;
 
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
+import android.view.View;
 
+import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.BotWebViewVibrationEffect;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.UserConfig;
@@ -75,6 +79,24 @@ public class AndroidUtil {
         }
         final Pattern FORMAT_CONTROL_CHARS_PATTERN = Pattern.compile("\\p{Cf}");
         return FORMAT_CONTROL_CHARS_PATTERN.matcher(input).replaceAll("");
+    }
+
+    public static void showInputError(View view) {
+        AndroidUtilities.shakeViewSpring(view, -6);
+        BotWebViewVibrationEffect.APP_ERROR.vibrate();
+    }
+
+    public static void setPushService(boolean fcm) {
+        if (fcm) {
+            NaConfig.INSTANCE.getPushServiceType().setConfigInt(1);
+            NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(false);
+        } else {
+            NaConfig.INSTANCE.getPushServiceType().setConfigInt(0);
+            NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(true);
+            SharedPreferences.Editor editor = MessagesController.getGlobalNotificationsSettings().edit();
+            editor.putBoolean("pushService", true).apply();
+            editor.putBoolean("pushConnection", true).apply();
+        }
     }
 
 }

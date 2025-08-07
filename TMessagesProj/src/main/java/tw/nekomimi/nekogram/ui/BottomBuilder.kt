@@ -153,7 +153,7 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
     }
 
     @JvmOverloads
-    fun addRadioItem(text: String, value: Boolean, valueText: String? = null, listener: (cell: RadioButtonCell) -> Unit): RadioButtonCell {
+    fun addRadioItem(text: String, checked: Boolean, valueText: String? = null, listener: (cell: RadioButtonCell) -> Unit): RadioButtonCell {
 
         val checkBoxCell = RadioButtonCell(ctx, true)
         checkBoxCell.background = Theme.getSelectorDrawable(false)
@@ -161,9 +161,9 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
         rootView.addView(checkBoxCell, LayoutHelper.createLinear(-1, -2))
 
         if (valueText == null) {
-            checkBoxCell.setTextAndValue(text, true, value)
+            checkBoxCell.setTextAndValue(text, true, checked)
         } else {
-            checkBoxCell.setTextAndValueAndCheck(text, valueText, true, value)
+            checkBoxCell.setTextAndValueAndCheck(text, valueText, true, checked)
         }
         radioButtonGroup.add(checkBoxCell)
         checkBoxCell.setOnClickListener {

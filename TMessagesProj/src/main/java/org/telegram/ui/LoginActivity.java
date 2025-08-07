@@ -129,7 +129,6 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.AuthTokensHelper;
 import org.telegram.messenger.BillingController;
-import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.CallReceiver;
 import org.telegram.messenger.ContactsController;
@@ -774,7 +773,11 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             } else if (id == 1) {
                 setPage(VIEW_QR_LOGIN, true, null, false);
             } else if (id == 2) {
-                doCustomApi();
+                try {
+                    NekoXConfig.showCustomApiBottomSheet(this);
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
             } else if (id == 3) {
                 PhoneView phoneView = (PhoneView)views[VIEW_PHONE_INPUT];
                 if (phoneView.testBackendCheckBox != null) {
@@ -10226,109 +10229,6 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         }
         clearSheets();
         parentLayout = null;
-    }
-
-    public void doCustomApi() {
-        AtomicInteger targetApi = new AtomicInteger(-1);
-        BottomBuilder builder = new BottomBuilder(getParentActivity());
-        EditText[] inputs = new EditText[2];
-        builder.addTitle(getString(R.string.CustomApi),
-                true,
-                getString(R.string.UseCustomApiNotice));
-        builder.addRadioItem(getString(R.string.CustomApiNo), NekoXConfig.customApi == 0, (cell) -> {
-            targetApi.set(0);
-            builder.doRadioCheck(cell);
-            for (EditText input : inputs) {
-                input.setVisibility(View.GONE);
-            }
-            return Unit.INSTANCE;
-        });
-        builder.addRadioItem(getString(R.string.CustomApiInput), NekoXConfig.customApi > 2, (cell) -> {
-            targetApi.set(3);
-            builder.doRadioCheck(cell);
-            for (EditText input : inputs) {
-                input.setVisibility(View.VISIBLE);
-            }
-            return Unit.INSTANCE;
-        });
-        inputs[0] = builder.addEditText("App ID");
-        inputs[0].setInputType(InputType.TYPE_CLASS_NUMBER);
-        if (NekoXConfig.customAppId != 0) {
-            inputs[0].setText(NekoXConfig.customAppId + "");
-        }
-        inputs[0].addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (TextUtils.isEmpty(s.toString().trim())) {
-                    NekoXConfig.customAppId = 0;
-                } else {
-                    try {
-                        NekoXConfig.customAppId = Integer.parseInt(s.toString());
-                    } catch (NumberFormatException e) {
-                        inputs[0].setText("0");
-                        NekoXConfig.customAppId = 0;
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        inputs[1] = builder.addEditText("App Hash");
-        inputs[1].setFilters(new InputFilter[]{new InputFilter.LengthFilter(BuildVars.APP_HASH.length())});
-        if (!TextUtils.isEmpty(NekoXConfig.customAppHash)) {
-            inputs[1].setText(NekoXConfig.customAppHash);
-        }
-        inputs[1].addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                NekoXConfig.customAppHash = s.toString();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        if (NekoXConfig.customApi <= 2) {
-            for (EditText input : inputs) {
-                input.setVisibility(View.GONE);
-            }
-        }
-        builder.addCancelButton();
-        builder.addButton(getString(R.string.Set), (it) -> {
-            int target = targetApi.get();
-            if (target > 2) {
-                if (NekoXConfig.customAppId == 0) {
-                    inputs[0].requestFocus();
-                    AndroidUtilities.showKeyboard(inputs[0]);
-                    return Unit.INSTANCE;
-                } else if (TextUtils.isEmpty(NekoXConfig.customAppHash)) {
-                    inputs[1].requestFocus();
-                    AndroidUtilities.showKeyboard(inputs[1]);
-                    return Unit.INSTANCE;
-                }
-            }
-            NekoXConfig.customApi = target;
-            NekoXConfig.saveCustomApi();
-            AlertDialog restart = new AlertDialog(getContext(), 0);
-            restart.setTitle(getString(R.string.NagramX));
-            restart.setMessage(getString(R.string.RestartAppToTakeEffect));
-            restart.setPositiveButton(getString(R.string.OK), (__, ___) -> {
-                AppRestartHelper.triggerRebirth(getContext(), new Intent(getContext(), LaunchActivity.class));
-            });
-            restart.show();
-            return Unit.INSTANCE;
-        });
-        builder.show();
     }
 
     @Override
