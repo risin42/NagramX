@@ -62,6 +62,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
     public static int nkbtnRestartApp = 1004;
     public static int nkbtnBrowser = 1005;
     public static int nkbtnGhostMode = 1006;
+    public static int nkbtnSessions = 1007;
 
     public DrawerLayoutAdapter(Context context, SideMenultItemAnimator animator, DrawerLayoutContainer drawerLayoutContainer) {
         mContext = context;
@@ -412,12 +413,14 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         boolean showNSettings = NaConfig.INSTANCE.getDrawerItemNSettings().Bool();
         boolean showBrowser = NaConfig.INSTANCE.getDrawerItemBrowser().Bool();
         boolean showQrLogin = NaConfig.INSTANCE.getDrawerItemQrLogin().Bool();
-        boolean restartApp = NaConfig.INSTANCE.getDrawerItemRestartApp().Bool();
-        if (showNSettings || showBrowser || showQrLogin) items.add(null); // divider
+        boolean showSessions = NaConfig.INSTANCE.getDrawerItemSessions().Bool();
+        boolean showRestartApp = NaConfig.INSTANCE.getDrawerItemRestartApp().Bool();
+        if (showNSettings || showBrowser || showQrLogin || showSessions) items.add(null); // divider
         if (showNSettings) items.add(new Item(nkbtnSettings, LocaleController.getString(R.string.NekoSettings), R.drawable.nagramx_outline));
         if (showBrowser) items.add(new Item(nkbtnBrowser, LocaleController.getString(R.string.InappBrowser), R.drawable.web_browser));
         if (showQrLogin) items.add(new Item(nkbtnQrLogin, LocaleController.getString(R.string.ImportLogin), R.drawable.msg_qrcode));
-        if (restartApp) {
+        if (showSessions) items.add(new Item(nkbtnSessions, LocaleController.getString(R.string.Devices), R.drawable.msg2_devices));
+        if (showRestartApp) {
             items.add(null); // divider
             items.add(new Item(nkbtnRestartApp, LocaleController.getString(R.string.RestartApp), R.drawable.msg_retry));
         }
