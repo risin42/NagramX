@@ -5,6 +5,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -56,19 +57,33 @@ object DnsFactory {
 
     private val cache = Cache()
 
-    private fun providers() =
-        if (NekoConfig.dnsType.Int() == NekoConfig.DNS_TYPE_CUSTOM_DOH && NekoConfig.customDoH.String().isNotBlank()) {
-            arrayOf(
-                NekoConfig.customDoH.String()
-            )
-        } else arrayOf(
-            // behavior: try all concurrently and stop when the first result returns.
-            "https://1.1.1.1/dns-query",
-            "https://1.0.0.1/dns-query",
-            "https://8.8.8.8/dns-query",
-            "https://[2606:4700:4700::1001]/dns-query", // Cloudflare IPv6
-            "https://[2001:4860:4860::8844]/dns-query", // Google IPv6
-        )
+    private val DEFAULT_DOH_PROVIDERS = arrayOf(
+        "https://1.1.1.1/dns-query",
+        "https://1.0.0.1/dns-query",
+        "https://8.8.8.8/dns-query",
+        "https://8.8.4.4/dns-query",
+        "https://[2606:4700:4700::1001]/dns-query", // Cloudflare IPv6
+        "https://[2001:4860:4860::8844]/dns-query", // Google IPv6
+    )
+
+    private fun providers(): Array<String> {
+        if (NekoConfig.dnsType.Int() != NekoConfig.DNS_TYPE_CUSTOM_DOH) {
+            return DEFAULT_DOH_PROVIDERS
+        }
+
+        val validCustomProviders = NekoConfig.customDoH.String()
+            .split(",")
+            .map { it.trim() }
+            .filter { url ->
+                url.toHttpUrlOrNull()?.isHttps == true
+            }
+
+        return if (validCustomProviders.isNotEmpty()) {
+            validCustomProviders.toTypedArray()
+        } else {
+            DEFAULT_DOH_PROVIDERS
+        }
+    }
 
     class CustomException(message: String) : Exception(message)
 
@@ -182,7 +197,7 @@ object DnsFactory {
             FileLog.d("System DNS resolved '$domain' to: ${addresses.map { it.hostAddress }}")
             return addresses
         } catch (e: Exception) {
-            FileLog.w("System DNS lookup for '$domain' failed: ${e.message ?: e.javaClass.simpleName}")
+            FileLog.e("System DNS lookup for '$domain' failed: ${e.message ?: e.javaClass.simpleName}")
         }
 
         FileLog.e("All DNS resolution methods failed for '$domain'.")

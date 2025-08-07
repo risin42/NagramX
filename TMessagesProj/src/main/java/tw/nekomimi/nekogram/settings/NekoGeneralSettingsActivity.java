@@ -66,6 +66,7 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheckIcon;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
+import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput2;
 import tw.nekomimi.nekogram.ui.cells.DrawerProfilePreviewCell;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 import xyz.nextalone.nagram.NaConfig;
@@ -122,7 +123,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             getString(R.string.DnsTypeSystem),
             getString(R.string.CustomDoH),
     }, null));
-    private final AbstractConfigCell customDoHRow = cellGroup.appendCell(new ConfigCellTextInput(null, NekoConfig.customDoH, "https://1.0.0.1/dns-query", null));
+    private final AbstractConfigCell customDoHRow = cellGroup.appendCell(new ConfigCellTextInput2(null, NekoConfig.customDoH, "https://1.0.0.1/dns-query, https://...", null));
     private final AbstractConfigCell dividerConnection = cellGroup.appendCell(new ConfigCellDivider());
 
     // Folder
@@ -371,6 +372,8 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                 ((ConfigCellSelectBox) a).onClick(view);
             } else if (a instanceof ConfigCellTextInput) {
                 ((ConfigCellTextInput) a).onClick();
+            } else if  (a instanceof ConfigCellTextInput2) {
+                ((ConfigCellTextInput2) a).onClick();
             } else if (a instanceof ConfigCellTextDetail) {
                 RecyclerListView.OnItemClickListener o = ((ConfigCellTextDetail) a).onItemClickListener;
                 if (o != null) {
