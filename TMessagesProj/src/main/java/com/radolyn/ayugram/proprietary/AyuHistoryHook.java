@@ -170,14 +170,9 @@ public abstract class AyuHistoryHook {
         };
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "before i6 messArr.size(): " + messArr.size());
 
-        if (isSecretChat) {
-            // TODO: not sure if it's needed
-            // but .reversed() method doesn't
-            // affect comparator2 :thinking:
-            comparator2 = comparator2.reversed();
-        }
+        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "isSecretChat: " + isSecretChat); // TODO: fix save deleted in secret chats
 
-        if (load_type == 1) { // NagramX: check if load_type is 1
+        if (load_type == 1) {
             if (BuildVars.LOGS_ENABLED) Log.d(NAX, "load_type 1, do reverse");
             comparator2 = comparator2.reversed();
         }
