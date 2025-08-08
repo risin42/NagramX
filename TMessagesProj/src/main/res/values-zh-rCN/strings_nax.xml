@@ -16,7 +16,6 @@
     <string name="LlmApiUrlHint">e.g. https://api.openai.com/v1</string>
     <string name="LlmApiKey">API 密钥</string>
     <string name="LlmModelName">模型</string>
-    <string name="LlmModelNameHint">e.g. gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">API 基本 URL，支持任何与 OpenAI 兼容的端点。例如 Gemini、xAI (Grok)、Groq、Mistral、DeepSeek 等。\n\n如果留空将默认使用 Gemini 的 OpenAI 兼容端点。</string>
     <string name="LlmApiKeyNotice">API 密钥将用于向 API URL 发送请求。\n\n输入多个密钥，以逗号分隔（例如：key1, key2, key3）。\n如果提供多个密钥，它们将轮流使用。</string>
     <string name="LlmModelNameNotice">如果留空将默认使用 `gemini-2.5-flash`。\n\n为了更快的响应，可以考虑使用更小的模型，例如 gpt-nano 或 gemini-flash。</string>

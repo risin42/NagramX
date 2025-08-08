@@ -17,24 +17,18 @@
     <string name="LlmApiUrlHint">e.g. https://api.openai.com/v1</string>
     <string name="LlmApiKey">API Key</string>
     <string name="LlmModelName">Model</string>
-    <string name="LlmModelNameHint">e.g. gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">API base URL for OpenAI-compatible endpoints such as Gemini, xAI (Grok), Groq, Mistral, DeepSeek, etc.\n\nLeaving this blank will default to the Gemini OpenAI-compatible endpoint.</string>
     <string name="LlmApiKeyNotice">The API Key will be used to send requests to the API URL.\n\nEnter multiple keys separated by commas (e.g., key1, key2, key3).\nIf you provide multiple keys, they will be used in rotation.</string>
-    <string name="LlmModelNameNotice">Leaving this blank will default to `gemini-2.5-flash`.\n\nFor faster responses, consider smaller models like gpt-4.1-nano or gemini-flash.</string>
+    <string name="LlmModelNameNotice">Leaving this blank will default to `gemini-2.5-flash`.\n\nFor faster responses, consider smaller models like gpt-nano or gemini-flash.</string>
     <string name="LlmApiUrlDefault" translatable="false">https://generativelanguage.googleapis.com/v1beta/openai</string>
     <string name="LlmModelNameDefault" translatable="false">gemini-2.5-flash</string>
-    <string name="LlmProviderOpenAIModel" translatable="false">gpt-4.1-nano</string>
+    <string name="LlmProviderOpenAIModel" translatable="false">gpt-5-nano</string>
     <string name="LlmProviderGeminiModel" translatable="false">gemini-2.5-flash-lite</string>
     <string name="LlmProviderGroqModel" translatable="false">meta-llama/llama-4-maverick-17b-128e-instruct</string>
     <string name="LlmProviderDeepSeekModel" translatable="false">deepseek-chat</string>
     <string name="LlmProviderXAIModel" translatable="false">grok-4</string>
     <string name="LlmProviderPreset">Model Provider</string>
     <string name="LlmProviderCustom">Custom</string>
-    <string name="LlmProviderOpenAI" translatable="false">OpenAI gpt-4.1-nano</string>
-    <string name="LlmProviderGemini" translatable="false">Google gemini-2.5-flash-lite</string>
-    <string name="LlmProviderGroq" translatable="false">Groq llama-4-maverick</string>
-    <string name="LlmProviderDeepSeek" translatable="false">DeepSeek deepseek-v3</string>
-    <string name="LlmProviderXAI" translatable="false">xAI grok-4</string>
     <string name="LlmProviderOpenAIKey">OpenAI API Key</string>
     <string name="LlmProviderGeminiKey">Gemini API Key</string>
     <string name="LlmProviderGroqKey">Groq API Key</string>

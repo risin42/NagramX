@@ -16,7 +16,6 @@
     <string name="LlmApiUrlHint">ex. https://api.openai.com/v1</string>
     <string name="LlmApiKey">Chave API</string>
     <string name="LlmModelName">Modelo</string>
-    <string name="LlmModelNameHint">ex. gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">URL base da API para endpoints compatíveis com OpenAI, como Gemini, xAI (Grok), Groq, Mistral, DeepSeek, etc.\n\nDeixar este campo em branco utilizará, por padrão, o endpoint compatível com OpenAI do Gemini.</string>
     <string name="LlmApiKeyNotice">A chave de API será usada para enviar solicitações para a URL da API.\n\nInsira várias chaves separadas por vírgulas (e.., chave1, chave2, chave3).\nSe você fornecer várias chaves, elas serão utilizadas na rotação.</string>
     <string name="LlmModelNameNotice">Deixar isto em branco fará com que o padrão seja gemini-2.5-flash.\n\nPara respostas mais rápidas, considere modelos menores como gpt-nano ou gemini-flash.</string>

@@ -115,11 +115,11 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell headerAITranslatorSettings = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.AITranslatorSettings)));
     private final AbstractConfigCell llmProviderRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getLlmProviderPreset(), new String[]{
             getString(R.string.LlmProviderCustom),
-            getString(R.string.LlmProviderOpenAI),
-            getString(R.string.LlmProviderGemini),
-            getString(R.string.LlmProviderGroq),
-            getString(R.string.LlmProviderDeepSeek),
-            getString(R.string.LlmProviderXAI),
+            "OpenAI " + getString(R.string.LlmProviderOpenAIModel),
+            "Google " + getString(R.string.LlmProviderGeminiModel),
+            "Groq " + "llama-4-maverick",
+            "DeepSeek " + "DeepSeek-V3",
+            "xAI " + getString(R.string.LlmProviderXAIModel),
     }, null));
 
     private final Map<Integer, List<AbstractConfigCell>> llmProviderConfigMap = new HashMap<>();
@@ -128,7 +128,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         llmProviderConfigMap.put(0, List.of(  // Custom
                 new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true),
                 new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiUrl(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiUrl(), getString(R.string.LlmApiUrlNotice), getString(R.string.LlmApiUrlHint)), getString(R.string.LlmApiUrlDefault)),
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmModelName(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmModelName(), getString(R.string.LlmModelNameNotice), getString(R.string.LlmModelNameHint)), getString(R.string.LlmModelNameDefault))));
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmModelName(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmModelName(), getString(R.string.LlmModelNameNotice), getString(R.string.LlmModelNameDefault)), getString(R.string.LlmModelNameDefault))));
         llmProviderConfigMap.put(1, List.of( // OpenAI
                 new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderOpenAIKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderOpenAIKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true)));
         llmProviderConfigMap.put(2, List.of( // Gemini

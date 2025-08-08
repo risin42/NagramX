@@ -16,7 +16,6 @@
     <string name="LlmApiUrlHint">örn: https://api.openai.com/v1</string>
     <string name="LlmApiKey">API Anahtarı</string>
     <string name="LlmModelName">Model</string>
-    <string name="LlmModelNameHint">örn: gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">Gemini, xAI (Grok), Groq, Mistral, DeepSeek vb. gibi OpenAI uyumlu uç noktalar için API temel URL\'si.\n\nBu alanı boş bırakmak, varsayılan olarak Gemini OpenAI uyumlu uç noktasını kullanacaktır.</string>
     <string name="LlmApiKeyNotice">API Anahtarı, API URL\'sine istek göndermek için kullanılacaktır.\n\nBirden fazla anahtarı virgülle ayırarak girin (örn: anahtar1, anahtar2, anahtar3).\nBirden fazla anahtar sağlarsanız, sırayla kullanılacaktır.</string>
     <string name="LlmModelNameNotice">Bu alanı boş bırakmak, varsayılan olarak `gemini-2.5-flash` modelini kullanacaktır.\n\nDaha hızlı yanıtlar için gpt-nano veya gemini-flash gibi daha küçük modelleri düşünebilirsiniz.</string>

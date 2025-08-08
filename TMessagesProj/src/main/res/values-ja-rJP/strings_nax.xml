@@ -16,7 +16,6 @@
     <string name="LlmApiUrlHint">e.g. https://api.openai.com/v1</string>
     <string name="LlmApiKey">API キー</string>
     <string name="LlmModelName">モデル</string>
-    <string name="LlmModelNameHint">e.g. gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">API ベース URL。Gemini、xAI (Grok)、Groq、Mistral、DeepSeek など OpenAI 互換エンドポイントに対応しています。\n\n空白のままにすると、デフォルトで Gemini の OpenAI 互換エンドポイントが使用されます。</string>
     <string name="LlmApiKeyNotice">API キーは、API URL にリクエストを送信するために使用されます。\n\n複数のキーをコンマで区切って入力してください（例：key1, key2, key3）。\n複数のキーが提供された場合、それらは順番に使用されます。</string>
     <string name="LlmModelNameNotice">空白のままにすると、デフォルトで `gemini-2.5-flash` が使用されます。\n\nより速い応答には、gpt-nano や gemini-flash などの小型モデルの使用をお勧めします。</string>

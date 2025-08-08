@@ -16,7 +16,6 @@
     <string name="LlmApiUrlHint">напр. https://api.openai.com/v1</string>
     <string name="LlmApiKey">Ключ API</string>
     <string name="LlmModelName">Модель</string>
-    <string name="LlmModelNameHint">напр. gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">URL базової URL-адреси для кінцевих точок OpenAI — сумісних, таких як Gemini, xAI (Grok), Groq, Mistral, DeepSeek та ін.\n\nзалишаючи це поле порожнім, за замовчуванням буде кінцева точка сумісності Gemini OpenAI.</string>
     <string name="LlmApiKeyNotice">Ключ API буде використовуватися для надсилання запитів на URL API.\n\nВведіть кілька ключів, розділених комами (наприклад, key1, key2, key3).\nЯкщо ви надасте кілька ключів, вони будуть використовуватися по черзі.</string>
     <string name="LlmModelNameNotice">Якщо залишити це поле порожнім, за замовчуванням буде використовуватися `gemini-2.5-flash`.\n\nДля швидшого відгуку розгляньте менші моделі, такі як gpt-nano або gemini-flash.</string>
