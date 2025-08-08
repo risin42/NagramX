@@ -19,7 +19,7 @@
     <string name="LlmModelNameHint">Например: gpt-4.1-nano</string>
     <string name="LlmApiUrlNotice">Базовый URL API для конечных точек, совместимых с OpenAI, таких как Gemini, xAI (Grok), Groq, Mistral, DeepSeek и т. д.\n\nЕсли оставить это поле пустым, по умолчанию будет использоваться конечная точка, совместимая с Gemini OpenAI.</string>
     <string name="LlmApiKeyNotice">Ключ API будет использоваться для отправки запросов на URL API.\n\nВведите несколько ключей, разделённых запятыми (например: ключ1, ключ2, ключ3).\nЕсли вы предоставите несколько ключей, они будут использоваться по очереди.</string>
-    <string name="LlmModelNameNotice">Если оставить это поле пустым, по умолчанию будет использоваться `gemini-2.5-flash`.\n\nДля более быстрого отклика рассмотрите меньшие модели, такие как like gpt-4.1-nano или gemini-flash.</string>
+    <string name="LlmModelNameNotice">Если оставить это поле пустым, по умолчанию будет использоваться `gemini-2.5-flash`.\n\nДля более быстрого отклика рассмотрите меньшие модели, такие как like gpt-nano или gemini-flash.</string>
     <string name="LlmProviderPreset">Поставщик модели</string>
     <string name="LlmProviderCustom">Пользовательский</string>
     <string name="LlmProviderOpenAIKey">Ключ API OpenAI</string>
@@ -227,6 +227,7 @@
     <string name="TestBackendOff">Этот аккаунт будет подключаться к основному серверу.</string>
     <string name="DidNotGetTheCodeBlameDurov">Если вы не получили код на другом устройстве или у вас не выполнен вход в Telegram на другом устройстве, воспользуйтесь официальным приложением Telegram для получения кода.\n\nTelegram **отключил возможность входа с помощью SMS** в сторонних приложениях. Пользователи, входящие в сторонние приложения, могут получать коды для входа только через Telegram.\n\nМы не можем вам в этом помочь. Если у вас возникли проблемы со входом, обратитесь в службу поддержки Telegram.</string>
     <string name="QRLoginMessage">Отсканируйте QR-код с помощью другого устройства для входа.</string>
+    <string name="DnsType">DNS-резолвер</string>
     <string name="DnsTypeSystem">Системный</string>
     <string name="CustomDoH">Пользовательский DoH</string>
 </resources>
