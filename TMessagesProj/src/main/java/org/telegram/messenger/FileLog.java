@@ -471,8 +471,8 @@ public class FileLog {
     }
 
     private static long dumpedHeap;
-    private void dumpMemory() {
-        if (System.currentTimeMillis() - dumpedHeap < 30_000) return;
+    public void dumpMemory(boolean force) {
+        if (!force && System.currentTimeMillis() - dumpedHeap < 30_000) return;
         dumpedHeap = System.currentTimeMillis();
         try {
             Debug.dumpHprofData(new File(AndroidUtilities.getLogsDir(), getInstance().dateFormat.format(System.currentTimeMillis()) + "_heap.hprof").getAbsolutePath());
@@ -497,7 +497,7 @@ public class FileLog {
         }
 
         FileLog.e("ANR thread dump\n" + sb.toString());
-        dumpMemory();
+        dumpMemory(false);
     }
 
     public static void fatal(final Throwable e, boolean logToAppCenter) {
@@ -505,7 +505,7 @@ public class FileLog {
             return;
         }
         if (e instanceof OutOfMemoryError) {
-            getInstance().dumpMemory();
+            getInstance().dumpMemory(false);
         }
 //        if (logToAppCenter && BuildVars.DEBUG_VERSION && needSent(e)) {
 //            AndroidUtilities.appCenterLog(e);
