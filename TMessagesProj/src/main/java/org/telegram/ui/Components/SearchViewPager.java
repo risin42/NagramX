@@ -1,6 +1,7 @@
 package org.telegram.ui.Components;
 
 import static org.telegram.messenger.LocaleController.getString;
+import static org.telegram.ui.PremiumPreviewFragment.applyNewSpan;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -96,6 +97,9 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
     private LinearLayoutManager botsSearchLayoutManager;
     public RecyclerListView botsSearchListView;
     public DialogsBotsAdapter botsSearchAdapter;
+
+    public boolean postsAreNew;
+    public PostsSearchContainer postsSearchContainer;
 
     public boolean expandedPublicPosts = false;
     private DefaultItemAnimator hashtagItemAnimator;
@@ -579,6 +583,9 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
 
         itemsEnterAnimator = new RecyclerItemsEnterAnimator(searchListView, true);
 
+        postsAreNew = MessagesController.getGlobalMainSettings().getInt("searchpostsnew", 0) < 3;
+        postsSearchContainer = new PostsSearchContainer(context, fragment);
+
         setAdapter(viewPagerAdapter = new ViewPagerAdapter());
     }
 
@@ -671,6 +678,8 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
             if (TextUtils.isEmpty(query)) {
                 botsSearchAdapter.checkBottom();
             }
+        } else if (view == postsSearchContainer) {
+            postsSearchContainer.search(query);
         } else if (view == hashtagSearchContainer) {
             if (hashtagSearchAdapter.getHashtag(query) == null) {
                 return;
@@ -1153,6 +1162,9 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
                 }
             }
         }
+        if (postsSearchContainer != null) {
+            postsSearchContainer.updateColors();
+        }
     }
 
     public void reset() {
@@ -1320,7 +1332,7 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
     }
 
     public void showDownloads() {
-        setPosition((expandedPublicPosts ? 1 : 0) + 4);
+        setPosition((expandedPublicPosts ? 1 : 0) + 5);
     }
 
     public int getPositionForType(int initialSearchType) {
@@ -1342,6 +1354,7 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
         private final static int FILTER_TYPE = 3;
         private final static int BOTS_TYPE = 4;
         private final static int PUBLIC_POSTS_TYPE = 5;
+        private final static int POSTS_TYPE = 6;
 
         public ViewPagerAdapter() {
             updateItems();
@@ -1355,6 +1368,7 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
             }
             items.add(new Item(CHANNELS_TYPE));
             items.add(new Item(BOTS_TYPE));
+            items.add(new Item(POSTS_TYPE));
             if (!showOnlyDialogsAdapter) {
                 Item item = new Item(FILTER_TYPE);
                 item.filterIndex = 0;
@@ -1378,13 +1392,19 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
         }
 
         @Override
-        public String getItemTitle(int position) {
+        public CharSequence getItemTitle(int position) {
             if (items.get(position).type == DIALOGS_TYPE) {
                 return getString(R.string.SearchAllChatsShort);
             } else if (items.get(position).type == CHANNELS_TYPE) {
                 return getString(R.string.ChannelsTab);
             } else if (items.get(position).type == BOTS_TYPE) {
                 return getString(R.string.AppsTab);
+            } else if (items.get(position).type == POSTS_TYPE) {
+                if (postsAreNew) {
+                    return applyNewSpan(getString(R.string.SearchPosts));
+                } else {
+                    return getString(R.string.SearchPosts);
+                }
             } else if (items.get(position).type == DOWNLOADS_TYPE) {
                 return getString(R.string.DownloadsTabs);
             } else if (items.get(position).type == PUBLIC_POSTS_TYPE) {
@@ -1420,6 +1440,8 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
                 });
                 downloadsContainer.setUiCallback(SearchViewPager.this);
                 return downloadsContainer;
+            } else if (viewType == 6) {
+                return postsSearchContainer;
             } else {
                 FilteredSearchView filteredSearchView = new FilteredSearchView(parent);
                 filteredSearchView.setChatPreviewDelegate(chatPreviewDelegate);
@@ -1451,6 +1473,9 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
             }
             if (items.get(position).type == PUBLIC_POSTS_TYPE) {
                 return 5;
+            }
+            if (items.get(position).type == POSTS_TYPE) {
+                return 6;
             }
             return items.get(position).type + position;
         }
