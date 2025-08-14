@@ -21,6 +21,8 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.voip.VoIPService;
 import org.telegram.ui.PhotoViewer;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class EarListener implements SensorEventListener {
 
     private final Context context;
@@ -51,7 +53,7 @@ public class EarListener implements SensorEventListener {
         }
 
         powerManager = (PowerManager) ApplicationLoader.applicationContext.getSystemService(Context.POWER_SERVICE);
-        proximityWakeLock = powerManager.newWakeLock(0x00000020, "telegram:proximity_lock2");
+        proximityWakeLock = NekoConfig.disableProximityEvents.Bool() ? null : powerManager.newWakeLock(0x00000020, "telegram:proximity_lock2");
 
         audioManager = (AudioManager) ApplicationLoader.applicationContext.getSystemService(Context.AUDIO_SERVICE);
     }
@@ -285,7 +287,7 @@ public class EarListener implements SensorEventListener {
     }
 
     private boolean isNearToSensor(float value) {
-        return value < 5.0f && value != proximitySensor.getMaximumRange();
+        return !NekoConfig.disableProximityEvents.Bool() && value < 5.0f && value != proximitySensor.getMaximumRange();
     }
 
     @Override

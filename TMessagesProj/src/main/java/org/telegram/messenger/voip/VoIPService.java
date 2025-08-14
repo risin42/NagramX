@@ -4899,7 +4899,7 @@ public class VoIPService extends Service implements SensorEventListener, AudioMa
 		SensorManager sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 		Sensor proximity = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 		try {
-			if (proximity != null) {
+			if (proximity != null && !NekoConfig.disableProximityEvents.Bool()) {
 				proximityWakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PROXIMITY_SCREEN_OFF_WAKE_LOCK, "telegram-voip-prx");
 				sm.registerListener(this, proximity, SensorManager.SENSOR_DELAY_NORMAL);
 			}
@@ -4938,7 +4938,7 @@ public class VoIPService extends Service implements SensorEventListener, AudioMa
 			if (audioRouteToSet != AUDIO_ROUTE_EARPIECE || isHeadsetPlugged || vam.isSpeakerphoneOn() || (isBluetoothHeadsetConnected() && am.isBluetoothScoOn())) {
 				return;
 			}
-			boolean newIsNear = event.values[0] < Math.min(event.sensor.getMaximumRange(), 3);
+			boolean newIsNear = !NekoConfig.disableProximityEvents.Bool() && event.values[0] < Math.min(event.sensor.getMaximumRange(), 3);
 			checkIsNear(newIsNear);
 			NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.nearEarEvent, newIsNear);
 		}
@@ -4951,6 +4951,7 @@ public class VoIPService extends Service implements SensorEventListener, AudioMa
 	}
 
 	private void checkIsNear(boolean newIsNear) {
+		if (proximityWakelock == null) return;
 		if (newIsNear != isProximityNear) {
 			if (BuildVars.LOGS_ENABLED) {
 				FileLog.d("proximity " + newIsNear);
