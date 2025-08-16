@@ -1332,7 +1332,7 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
     }
 
     public void showDownloads() {
-        setPosition((expandedPublicPosts ? 1 : 0) + 5);
+        setPosition((expandedPublicPosts ? 1 : 0) + (UserConfig.getInstance(currentAccount).isRealPremium() ? 5 : 4));
     }
 
     public int getPositionForType(int initialSearchType) {
@@ -1368,7 +1368,7 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
             }
             items.add(new Item(CHANNELS_TYPE));
             items.add(new Item(BOTS_TYPE));
-            items.add(new Item(POSTS_TYPE));
+            if (UserConfig.getInstance(currentAccount).isRealPremium()) items.add(new Item(POSTS_TYPE));
             if (!showOnlyDialogsAdapter) {
                 Item item = new Item(FILTER_TYPE);
                 item.filterIndex = 0;
@@ -1440,7 +1440,7 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
                 });
                 downloadsContainer.setUiCallback(SearchViewPager.this);
                 return downloadsContainer;
-            } else if (viewType == 6) {
+            } else if (viewType == 6 && UserConfig.getInstance(currentAccount).isRealPremium()) {
                 return postsSearchContainer;
             } else {
                 FilteredSearchView filteredSearchView = new FilteredSearchView(parent);
