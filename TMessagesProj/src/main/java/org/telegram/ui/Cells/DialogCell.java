@@ -1626,6 +1626,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                                         messageNameString = nameSpannableString;
                                     }
                                 }
+                                messageNameString = xyz.nextalone.nagram.helper.MessageHelper.INSTANCE.zalgoFilter(messageNameString);
                                 messageNameString = AndroidUtil.sanitizeString(messageNameString);
                                 checkMessage = false;
                                 SpannableStringBuilder stringBuilder = getMessageStringFormatted(messageFormatType, restrictionReason, messageNameString, false);
@@ -2068,7 +2069,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             }
         }
 
-        if (NaConfig.INSTANCE.getZalgoFilter().Bool() && topicIconInName == null) {
+        if (topicIconInName == null) {
             nameString = xyz.nextalone.nagram.helper.MessageHelper.INSTANCE.zalgoFilter(nameString);
         }
         int timeWidth;
