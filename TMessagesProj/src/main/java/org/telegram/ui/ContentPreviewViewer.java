@@ -99,6 +99,7 @@ import org.telegram.ui.Stories.DarkThemeResourceProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -500,7 +501,7 @@ public class ContentPreviewViewer {
                     menuVisible = true;
                     containerView.invalidate();
                     try {
-                        containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                        if (!NekoConfig.disableVibration.Bool()) containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                     } catch (Exception ignored) {}
                     return;
                 }
@@ -698,7 +699,7 @@ public class ContentPreviewViewer {
                 popupWindow.showAtLocation(containerView, 0, (int) ((containerView.getMeasuredWidth() - previewMenu.getMeasuredWidth()) / 2f), y);
 
                 try {
-                    containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    if (!NekoConfig.disableVibration.Bool()) containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 } catch (Exception ignored) {}
             } else if (currentContentType == CONTENT_TYPE_EMOJI && delegate != null) {
                 ArrayList<CharSequence> items = new ArrayList<>();
@@ -818,7 +819,7 @@ public class ContentPreviewViewer {
                 ActionBarPopupWindow.startAnimation(previewMenu);
 
                 try {
-                    containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    if (!NekoConfig.disableVibration.Bool()) containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 } catch (Exception ignored) {}
 
                 if (moveY != 0) {
@@ -964,7 +965,7 @@ public class ContentPreviewViewer {
                 popupWindow.showAtLocation(containerView, 0, (int) ((containerView.getMeasuredWidth() - previewMenu.getMeasuredWidth()) / 2f), y);
 
                 try {
-                    containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    if (!NekoConfig.disableVibration.Bool()) containerView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 } catch (Exception ignored) {}
 
                 if (moveY != 0) {
@@ -1462,7 +1463,7 @@ public class ContentPreviewViewer {
                     }
                     if (opened) {
                         try {
-                            currentPreviewCell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                            if (!NekoConfig.disableVibration.Bool()) currentPreviewCell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                         } catch (Exception ignored) {}
                         if (delegate != null) {
                             delegate.resetTouch();

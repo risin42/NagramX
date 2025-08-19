@@ -49,6 +49,8 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class RLottieDrawable extends BitmapDrawable implements Animatable, BitmapsCache.Cacheable {
 
     public boolean skipFrameUpdate;
@@ -1250,7 +1252,7 @@ public class RLottieDrawable extends BitmapDrawable implements Animatable, Bitma
                         try {
                             Activity activity = LaunchActivity.instance;
                             if (activity == null) activity = BubbleActivity.instance;
-                            activity.getWindow().getDecorView().performHapticFeedback(force == 1 ? HapticFeedbackConstants.LONG_PRESS : HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                            if (!NekoConfig.disableVibration.Bool()) activity.getWindow().getDecorView().performHapticFeedback(force == 1 ? HapticFeedbackConstants.LONG_PRESS : HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                         } catch (Exception ignored) {}
                     }
                 }

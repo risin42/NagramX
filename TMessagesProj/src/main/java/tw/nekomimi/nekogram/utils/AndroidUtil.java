@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BotWebViewVibrationEffect;
@@ -96,6 +97,17 @@ public class AndroidUtil {
             SharedPreferences.Editor editor = MessagesController.getGlobalNotificationsSettings().edit();
             editor.putBoolean("pushService", true).apply();
             editor.putBoolean("pushConnection", true).apply();
+        }
+    }
+
+    public static void disableHapticFeedback(View view) {
+        if (view != null) {
+            view.setHapticFeedbackEnabled(false);
+            if (view instanceof ViewGroup group) {
+                for (int i = 0; i < group.getChildCount(); i++) {
+                    disableHapticFeedback(group.getChildAt(i));
+                }
+            }
         }
     }
 

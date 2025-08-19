@@ -6465,6 +6465,7 @@ public class AndroidUtilities {
     }
 
     public static void vibrateCursor(View view) {
+        if (NekoConfig.disableVibration.Bool()) return;
         try {
             if (view == null || view.getContext() == null) return;
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
@@ -6474,6 +6475,7 @@ public class AndroidUtilities {
     }
 
     public static void vibrate(View view) {
+        if (NekoConfig.disableVibration.Bool()) return;
         try {
             if (view == null || view.getContext() == null) return;
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;

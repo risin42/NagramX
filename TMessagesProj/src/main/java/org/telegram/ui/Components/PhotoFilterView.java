@@ -61,6 +61,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 @SuppressLint("NewApi")
 public class PhotoFilterView extends FrameLayout implements FilterShaders.FilterShadersDelegate, StoryRecorder.Touchable {
 
@@ -1465,7 +1467,7 @@ public class PhotoFilterView extends FrameLayout implements FilterShaders.Filter
                         int newValueInt = Math.round(newValue * 100), lastValueInt = Math.round(value * 100), lastVibrateValueInt = Math.round(lastVibrateValue * 100);
                         if (newValueInt != lastValueInt && (newValueInt == 100 || newValueInt == 0)) {
                             try {
-                                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                                if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                             } catch (Exception ignore) {}
                             lastVibrateValue = newValue;
                         } else if (Math.abs(newValueInt - lastVibrateValueInt) > (SharedConfig.getDevicePerformanceClass() == SharedConfig.PERFORMANCE_CLASS_HIGH ? 5 : 10)) {

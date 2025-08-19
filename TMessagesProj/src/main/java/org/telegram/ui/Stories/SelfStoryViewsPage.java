@@ -89,6 +89,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class SelfStoryViewsPage extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
 
     private final View shadowView;
@@ -393,7 +395,7 @@ public class SelfStoryViewsPage extends FrameLayout implements NotificationCente
                 itemOptions.show();
 
                 try {
-                    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                 } catch (Exception ignore) {}
 
                 return true;

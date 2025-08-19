@@ -5447,7 +5447,7 @@ public class VoIPService extends Service implements SensorEventListener, AudioMa
 					wasEstablished = true;
 					if (!isProximityNear && !privateCall.video) {
 						try {
-							LaunchActivity.getLastFragment().getFragmentView().performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+							if (!NekoConfig.disableVibration.Bool()) LaunchActivity.getLastFragment().getFragmentView().performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
 						} catch (Exception ignore) {}
 					}
 					AndroidUtilities.runOnUIThread(new Runnable() {

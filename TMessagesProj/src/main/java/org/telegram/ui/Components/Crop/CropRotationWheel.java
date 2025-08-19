@@ -21,6 +21,8 @@ import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.LayoutHelper;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class CropRotationWheel extends FrameLayout {
 
     public interface RotationWheelListener {
@@ -193,7 +195,7 @@ public class CropRotationWheel extends FrameLayout {
                     if (Math.abs(newAngle - MAX_ANGLE) < 0.001f && Math.abs(this.rotation - MAX_ANGLE) >= 0.001f ||
                         Math.abs(newAngle - -MAX_ANGLE) < 0.001f && Math.abs(this.rotation - -MAX_ANGLE) >= 0.001f) {
                         try {
-                            performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                            if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                         } catch (Exception ignored) {}
                     } else if (Math.floor(this.rotation / 2.5f) != Math.floor(newAngle / 2.5f)) {
                         AndroidUtilities.vibrateCursor(this);

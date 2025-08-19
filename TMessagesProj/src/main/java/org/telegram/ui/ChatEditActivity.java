@@ -120,6 +120,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
+import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 
 public class ChatEditActivity extends BaseFragment implements ImageUpdater.ImageUpdaterDelegate, NotificationCenter.NotificationCenterDelegate {
@@ -1142,7 +1143,7 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
                         }
                         BulletinFactory.of(this).createSimpleBulletin(R.raw.topics, text).show();
                         try {
-                            frameLayout.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                            if (!NekoConfig.disableVibration.Bool()) frameLayout.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                         } catch (Exception ignored) {}
                         return;
                     }
@@ -2734,7 +2735,7 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
             });
             finishFragment();
             try {
-                Objects.requireNonNull(LaunchActivity.getLastFragment()).getFragmentView().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                if (!NekoConfig.disableVibration.Bool()) Objects.requireNonNull(LaunchActivity.getLastFragment()).getFragmentView().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             } catch (Exception ignored) {}
         }
     }

@@ -2480,7 +2480,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                     if (!backspaceOnce) {
                         if (delegate != null && delegate.onBackspace()) {
                             try {
-                                backspaceButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                                if (!NekoConfig.disableVibration.Bool()) backspaceButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                             } catch (Exception ignore) {}
                         }
                     }
@@ -2815,7 +2815,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                             emojiTouchedView.setImageDrawable(Emoji.getEmojiBigDrawable(code), emojiTouchedView.isRecent);
                             sendEmoji(emojiTouchedView, null);
                             try {
-                                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                                if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                             } catch (Exception ignore) {}
 
                             Emoji.saveEmojiColors();
@@ -3248,13 +3248,13 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                             ImageViewEmoji viewEmoji = (ImageViewEmoji) view;
                             sendEmoji(viewEmoji, null);
                             try {
-                                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                                if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                             } catch (Exception ignore) {}
                         } else if (view instanceof EmojiPackExpand) {
                             EmojiPackExpand button = (EmojiPackExpand) view;
                             emojiAdapter.expand(position, button);
                             try {
-                                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                                if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                             } catch (Exception ignore) {}
                         } else if (view != null) {
                             view.callOnClick();
@@ -5155,7 +5155,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
             }
             if (delegate != null && delegate.onBackspace()) {
                 try {
-                    backspaceButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                    if (!NekoConfig.disableVibration.Bool()) backspaceButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                 } catch (Exception ignore) {}
             }
             backspaceOnce = true;

@@ -1253,7 +1253,7 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
                 checkingForLongPress = false;
                 if (pressedLink != null) {
                     try {
-                        windowView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                        if (!NekoConfig.disableVibration.Bool()) windowView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                     } catch (Exception ignored) {}
                     showCopyPopup(pressedLink.getSpan().getUrl());
                     pressedLink = null;
@@ -1269,12 +1269,12 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
                     }
                     if (textSelectionHelper.isInSelectionMode()) {
                         try {
-                            windowView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                            if (!NekoConfig.disableVibration.Bool()) windowView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                         } catch (Exception ignored) {}
                     }
                 } else if (pressedLinkOwnerLayout != null && pressedLinkOwnerView != null) {
                     try {
-                        windowView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                        if (!NekoConfig.disableVibration.Bool()) windowView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                     } catch (Exception ignored) {}
 
                     int[] location = new int[2];

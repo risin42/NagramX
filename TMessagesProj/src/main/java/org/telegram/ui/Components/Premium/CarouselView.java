@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class CarouselView extends View implements PagerHeaderView {
 
     private final ArrayList<? extends DrawingObject> drawingObjects;
@@ -102,7 +104,7 @@ public class CarouselView extends View implements PagerHeaderView {
                             }
                             scrollToInternal(offsetAngle + (float) toAngle);
                             try {
-                                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                                if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                             } catch (Exception ignored) {}
                         }
                         return true;
@@ -159,7 +161,7 @@ public class CarouselView extends View implements PagerHeaderView {
         if (lastSelected != selected) {
             lastSelected = selected;
             try {
-                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
             } catch (Exception ignored) {}
         }
     }

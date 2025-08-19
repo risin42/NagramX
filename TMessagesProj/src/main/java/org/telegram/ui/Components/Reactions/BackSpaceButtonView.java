@@ -23,6 +23,8 @@ import org.telegram.ui.Components.CombinedDrawable;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Stories.RoundRectOutlineProvider;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 @SuppressLint("ViewConstructor")
 public class BackSpaceButtonView extends FrameLayout {
 
@@ -56,7 +58,7 @@ public class BackSpaceButtonView extends FrameLayout {
                         if (onBackspace != null) {
                             onBackspace.run(false);
                             try {
-                                backspaceButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                                if (!NekoConfig.disableVibration.Bool()) backspaceButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                             } catch (Exception ignored) {}
                         }
                     }
@@ -115,7 +117,7 @@ public class BackSpaceButtonView extends FrameLayout {
             if (onBackspace != null) {
                 onBackspace.run(time < 300);
                 try {
-                    backspaceButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                    if (!NekoConfig.disableVibration.Bool()) backspaceButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                 } catch (Exception ignored) {}
             }
             backspaceOnce = true;

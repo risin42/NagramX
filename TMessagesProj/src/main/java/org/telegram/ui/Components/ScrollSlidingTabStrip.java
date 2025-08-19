@@ -55,6 +55,8 @@ import org.telegram.ui.ActionBar.Theme;
 
 import java.util.HashMap;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class ScrollSlidingTabStrip extends HorizontalScrollView {
 
     private int imageReceiversPlayingNum = 1;
@@ -137,7 +139,7 @@ public class ScrollSlidingTabStrip extends HorizontalScrollView {
             }
             if (p >= 0 && p < tabsContainer.getChildCount()) {
                 try {
-                    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 } catch (Exception ignored) {}
 
                 draggindViewDxOnScreen = 0f;

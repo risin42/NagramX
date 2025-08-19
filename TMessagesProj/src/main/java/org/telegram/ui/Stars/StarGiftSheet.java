@@ -143,6 +143,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class StarGiftSheet extends BottomSheetWithRecyclerListView implements NotificationCenter.NotificationCenterDelegate {
 
     private final long dialogId;
@@ -955,7 +957,7 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
                         bulletinFactory.createSimpleBulletin(R.raw.forward, AndroidUtilities.replaceTags(LocaleController.formatPluralString("LinkSharedToManyChats", dids.size(), dids.size()))).hideAfterBottomSheet(false).ignoreDetach().show();
                     }
                     try {
-                        container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                        if (!NekoConfig.disableVibration.Bool()) container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                     } catch (Exception ignored) {}
                 }
             }

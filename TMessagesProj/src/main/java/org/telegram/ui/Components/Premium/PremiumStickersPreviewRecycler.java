@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class PremiumStickersPreviewRecycler extends RecyclerListView implements NotificationCenter.NotificationCenterDelegate, PagerHeaderView {
 
     private final ArrayList<TLRPC.Document> premiumStickers = new ArrayList<>();
@@ -206,7 +208,7 @@ public class PremiumStickersPreviewRecycler extends RecyclerListView implements 
             oldSelectedView = sortedView.get(sortedView.size() - 1);
             if (haptic) {
                 try {
-                    performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                    if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                 } catch (Exception ignored) {}
             }
         }

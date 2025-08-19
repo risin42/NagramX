@@ -167,6 +167,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class StoryRecorder implements NotificationCenter.NotificationCenterDelegate {
 
     private final Theme.ResourcesProvider resourcesProvider = new DarkThemeResourceProvider();
@@ -3654,7 +3656,7 @@ public class StoryRecorder implements NotificationCenter.NotificationCenterDeleg
                 takingPhoto = CameraController.getInstance().takePicture(outputFile, true, cameraView.getCameraSessionObject(), (orientation) -> {
                     if (useDisplayFlashlight()) {
                         try {
-                            windowView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                            if (!NekoConfig.disableVibration.Bool()) windowView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                         } catch (Exception ignore) {}
                     }
                     takingPhoto = false;

@@ -470,7 +470,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                         likeStory(newReaction);
                     }
                 }
-                v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                if (!NekoConfig.disableVibration.Bool()) v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                 v.playAnimation();
                 emojiAnimationsOverlay.showAnimationForWidget(v);
             }
@@ -919,7 +919,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                     FileLog.e(e);
                 }
                 try {
-                    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                 } catch (Exception ignore) {}
                 BottomSheet.Builder builder = new BottomSheet.Builder(getContext(), false, resourcesProvider);
                 builder.setTitle(formattedUrl);
@@ -1805,7 +1805,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                                 ActionBarMenuSubItem item = ActionBarMenuItem.addItem(popupLayout, R.drawable.msg_gallery, getString(R.string.SaveToGallery), false, resourcesProvider);
                                 item.setIcon(combinedDrawable);
                                 item.setOnClickListener(v -> {
-                                    item.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                                    if (!NekoConfig.disableVibration.Bool()) item.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                                     BulletinFactory bulletinFactory = BulletinFactory.global();
                                     if (bulletinFactory != null) {
                                         bulletinFactory.createSimpleBulletin(R.raw.ic_save_to_gallery, AndroidUtilities.replaceSingleTag(
@@ -2258,7 +2258,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
             }
             storiesLikeButton.setReaction(ReactionsLayoutInBubble.VisibleReaction.fromTL(currentStory.storyItem.sent_reaction));
             try {
-                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
             } catch (Exception ignored) {}
             added = true;
         }
@@ -3339,7 +3339,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                                 bulletinFactory.createSimpleBulletin(R.raw.forward, AndroidUtilities.replaceTags(LocaleController.formatPluralString("StorySharedToManyChats", dids.size(), dids.size()))).hideAfterBottomSheet(false).show();
                             }
                             try {
-                                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                                if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                             } catch (Exception ignored) {}
                         }
                     }
@@ -6803,7 +6803,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                         ReactionsEffectOverlay effectOverlay;
                         if (longpress && visibleReaction.emojicon != null) {
                             try {
-                                performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                                if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                             } catch (Exception ignored) {}
                             effectOverlay = new ReactionsEffectOverlay(
                                     view.getContext(), null,
@@ -6993,7 +6993,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                                 effectStarted[0] = true;
                                 drawReactionEffect = true;
                                 try {
-                                    performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                                    if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                                 } catch (Exception ignored) {}
                             }
                         });
@@ -7007,7 +7007,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                                     effectStarted[0] = true;
                                     drawReactionEffect = true;
                                     try {
-                                        performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                                        if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                                     } catch (Exception ignored) {}
                                 }
                                 storiesLikeButtonFinal.setAllowDrawReaction(true);

@@ -24,6 +24,8 @@ import org.telegram.ui.Cells.BaseCell;
 
 import java.util.ArrayList;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class CanvasButton {
 
     CornerPath drawingPath;
@@ -42,7 +44,7 @@ public class CanvasButton {
         @Override
         public void run() {
             checkTouchEvent(MotionEvent.obtain(0, 0, MotionEvent.ACTION_CANCEL, 0, 0, 0));
-            parent.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            if (!NekoConfig.disableVibration.Bool()) parent.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             if (longPressRunnable != null) {
                 longPressRunnable.run();
             }

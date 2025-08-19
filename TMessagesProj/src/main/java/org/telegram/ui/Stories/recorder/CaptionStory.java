@@ -50,6 +50,8 @@ import org.telegram.ui.Components.SizeNotifierFrameLayout;
 import org.telegram.ui.Components.Text;
 import org.telegram.ui.Components.WaveDrawable;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class CaptionStory extends CaptionContainerView {
 
     public ButtonBounce roundButtonBounce;
@@ -653,7 +655,7 @@ public class CaptionStory extends CaptionContainerView {
                     locked = true;
 
                     try {
-                        performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                        if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     } catch (Exception ignore) {}
                 }
                 invalidate();

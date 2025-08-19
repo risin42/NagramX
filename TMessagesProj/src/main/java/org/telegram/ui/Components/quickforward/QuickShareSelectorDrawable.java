@@ -46,6 +46,8 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 
 import java.util.List;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class QuickShareSelectorDrawable extends Drawable implements Animator.AnimatorListener {
     public static class Sizes {
         public static int PADDING_H = 9;
@@ -135,7 +137,7 @@ public class QuickShareSelectorDrawable extends Drawable implements Animator.Ani
 
         cell.setHideSideButtonByQuickShare(true);
 
-        parent.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+        if (!NekoConfig.disableVibration.Bool()) parent.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
 
         updateColors();
 
@@ -585,7 +587,7 @@ public class QuickShareSelectorDrawable extends Drawable implements Animator.Ani
             return;
         }
 
-        parent.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+        if (!NekoConfig.disableVibration.Bool()) parent.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         selectedIndex = index;
         for (int i = 0; i < avatarCells.length; i++) {
             avatarCells[i].setSelected(index == i, true);

@@ -15,6 +15,8 @@ import android.view.View;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.R;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class ZoomControlView extends View {
 
     private Drawable minusDrawable;
@@ -130,7 +132,7 @@ public class ZoomControlView extends View {
             } else if (x >= minusCx - AndroidUtilities.dp(16) && x <= minusCx + AndroidUtilities.dp(16) && y >= minusCy - AndroidUtilities.dp(16) && y <= minusCy + AndroidUtilities.dp(16)) {
                 if (action == MotionEvent.ACTION_UP && animateToZoom((float) Math.floor(getZoom() / 0.25f) * 0.25f - 0.25f)) {
                     try {
-                        performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                        if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                     } catch (Exception ignored) {}
                 } else {
                     pressed = true;
@@ -139,7 +141,7 @@ public class ZoomControlView extends View {
             } else if (x >= plusCx - AndroidUtilities.dp(16) && x <= plusCx + AndroidUtilities.dp(16) && y >= plusCy - AndroidUtilities.dp(16) && y <= plusCy + AndroidUtilities.dp(16)) {
                 if (action == MotionEvent.ACTION_UP && animateToZoom((float) Math.floor(getZoom() / 0.25f) * 0.25f + 0.25f)) {
                     try {
-                        performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                        if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                     } catch (Exception ignored) {}
                 } else {
                     pressed = true;

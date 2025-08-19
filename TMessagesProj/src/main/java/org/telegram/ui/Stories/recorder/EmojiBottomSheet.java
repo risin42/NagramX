@@ -129,6 +129,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class EmojiBottomSheet extends BottomSheet implements NotificationCenter.NotificationCenterDelegate {
 
     private static final int PAGE_TYPE_EMOJI = 0;
@@ -1419,7 +1421,7 @@ public class EmojiBottomSheet extends BottomSheet implements NotificationCenter.
 
     public void showPremiumBulletin(String text) {
         try {
-            container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+            if (!NekoConfig.disableVibration.Bool()) container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
         } catch (Exception ignored) {}
         BulletinFactory.of(container, resourcesProvider).createSimpleBulletin(
                 R.raw.star_premium_2,

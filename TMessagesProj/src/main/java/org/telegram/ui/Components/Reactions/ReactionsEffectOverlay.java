@@ -42,6 +42,8 @@ import org.telegram.ui.SelectAnimatedEmojiDialog;
 import java.util.ArrayList;
 import java.util.Random;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class ReactionsEffectOverlay {
 
     public final static int LONG_ANIMATION = 0;
@@ -464,7 +466,7 @@ public class ReactionsEffectOverlay {
                                 if (!isFinished) {
                                     isFinished = true;
                                     try {
-                                        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                                        if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                                     } catch (Exception ignored) {}
 
                                     ViewGroup viewGroup = (ViewGroup) getParent();
@@ -795,7 +797,7 @@ public class ReactionsEffectOverlay {
             currentOverlay.startTime = System.currentTimeMillis();
             if (currentOverlay.animationType == LONG_ANIMATION && System.currentTimeMillis() - lastHapticTime > 200) {
                 lastHapticTime = System.currentTimeMillis();
-                currentOverlay.cell.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                if (!NekoConfig.disableVibration.Bool()) currentOverlay.cell.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
             }
         } else {
             startShortAnimation();
@@ -815,7 +817,7 @@ public class ReactionsEffectOverlay {
             currentShortOverlay.startTime = System.currentTimeMillis();
             if (currentShortOverlay.animationType == SHORT_ANIMATION && System.currentTimeMillis() - lastHapticTime > 200) {
                 lastHapticTime = System.currentTimeMillis();
-                currentShortOverlay.cell.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                if (!NekoConfig.disableVibration.Bool()) currentShortOverlay.cell.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
             }
         }
     }

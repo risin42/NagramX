@@ -33,6 +33,8 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public abstract class BaseCell extends ViewGroup implements SizeNotifierFrameLayout.IViewWithInvalidateCallback {
 
     private final class CheckForTap implements Runnable {
@@ -53,7 +55,7 @@ public abstract class BaseCell extends ViewGroup implements SizeNotifierFrameLay
                 checkingForLongPress = false;
                 if (onLongPress()) {
                     try {
-                        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                        if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                     } catch (Exception ignore) {}
                     MotionEvent event = MotionEvent.obtain(0, 0, MotionEvent.ACTION_CANCEL, 0, 0, 0);
                     onTouchEvent(event);

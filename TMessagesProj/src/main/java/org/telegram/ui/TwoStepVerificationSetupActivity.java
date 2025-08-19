@@ -92,6 +92,7 @@ import org.telegram.ui.Components.spoilers.SpoilersTextView;
 
 import java.util.ArrayList;
 
+import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.ui.EditTextAutoFill;
 
 public class TwoStepVerificationSetupActivity extends BaseFragment {
@@ -1456,7 +1457,7 @@ public class TwoStepVerificationSetupActivity extends BaseFragment {
                 if (!editTextFirstRow.getText().toString().equals(firstPassword) && currentType == TYPE_CREATE_PASSWORD_STEP_2) {
                     AndroidUtilities.shakeViewSpring(outlineTextFirstRow, 5);
                     try {
-                        outlineTextFirstRow.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                        if (!NekoConfig.disableVibration.Bool()) outlineTextFirstRow.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                     } catch (Exception ignored) {}
                     try {
                         Toast.makeText(getParentActivity(), LocaleController.getString(R.string.PasswordDoNotMatch), Toast.LENGTH_SHORT).show();
@@ -2120,7 +2121,7 @@ public class TwoStepVerificationSetupActivity extends BaseFragment {
             return;
         }
         try {
-            field.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+            if (!NekoConfig.disableVibration.Bool()) field.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
         } catch (Exception ignored) {}
         if (clear) {
             field.setText("");

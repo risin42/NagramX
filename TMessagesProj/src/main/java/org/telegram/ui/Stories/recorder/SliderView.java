@@ -29,6 +29,8 @@ import org.telegram.ui.Components.AnimatedFloat;
 import org.telegram.ui.Components.AnimatedTextView;
 import org.telegram.ui.Components.CubicBezierInterpolator;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class SliderView extends View {
 
     public static final int TYPE_VOLUME = 0;
@@ -214,7 +216,7 @@ public class SliderView extends View {
             if (vibrate) {
                 if (volume <= this.minVolume && pastVolume > volume || volume >= this.maxVolume && pastVolume < volume) {
                     try {
-                        performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                        if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     } catch (Exception ignored) {}
                 } else if (Math.floor(pastVolume * 5) != Math.floor(volume * 5)) {
                     AndroidUtilities.vibrateCursor(this);

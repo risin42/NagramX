@@ -64,6 +64,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class FloatingDebugView extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
     private FrameLayout floatingButtonContainer;
     private Drawable floatingButtonBackground;
@@ -79,7 +81,7 @@ public class FloatingDebugView extends FrameLayout implements NotificationCenter
     private Runnable onLongPress = () -> {
         inLongPress = true;
         try {
-            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         } catch (Exception ignored) {}
     };
 

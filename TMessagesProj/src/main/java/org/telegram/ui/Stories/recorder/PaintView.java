@@ -158,6 +158,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class PaintView extends SizeNotifierFrameLayoutPhoto implements IPhotoPaintView, PaintToolsView.Delegate, EntityView.EntityViewDelegate, PaintTextOptionsView.Delegate, SizeNotifierFrameLayout.SizeNotifierFrameLayoutDelegate, StoryRecorder.Touchable {
     private PaintCancelView cancelButton;
     private PaintDoneView doneButton;
@@ -1952,7 +1954,7 @@ public class PaintView extends SizeNotifierFrameLayoutPhoto implements IPhotoPai
                     }
                     if (widgetsCount >= MessagesController.getInstance(currentAccount).storiesSuggestedReactionsLimitPremium) {
                         try {
-                            container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                            if (!NekoConfig.disableVibration.Bool()) container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                         } catch (Exception ignored) {}
                         BulletinFactory.of(container, resourcesProvider).createSimpleBulletin(R.raw.chats_infotip,
                                 getString("LimitReached", R.string.LimitReached),
@@ -2019,7 +2021,7 @@ public class PaintView extends SizeNotifierFrameLayoutPhoto implements IPhotoPai
             } else if (widgetId == EmojiBottomSheet.WIDGET_LINK) {
                 if (!UserConfig.getInstance(currentAccount).isPremium()) {
                     try {
-                        alert.container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                        if (!NekoConfig.disableVibration.Bool()) alert.container.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                     } catch (Exception ignored) {}
                     BulletinFactory.of(alert.container, resourcesProvider).createSimpleBulletin(R.raw.star_premium_2,
                         AndroidUtilities.premiumText(getString(R.string.StoryLinkPremium), () -> {

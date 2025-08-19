@@ -49,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class SuggestEmojiView extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
 
     public final static int DIRECTION_TO_BOTTOM = 0;
@@ -725,7 +727,7 @@ public class SuggestEmojiView extends FrameLayout implements NotificationCenter.
             }
         }
         try {
-            performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+            if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         } catch (Exception ignore) {}
         Emoji.addRecentEmoji(emojiSource);
         show = false;

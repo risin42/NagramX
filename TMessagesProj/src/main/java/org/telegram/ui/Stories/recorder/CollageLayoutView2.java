@@ -56,6 +56,8 @@ import org.telegram.ui.Components.LayoutHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public class CollageLayoutView2 extends FrameLayout implements ItemOptions.ScrimView {
 
     private final FrameLayout containerView;
@@ -881,7 +883,7 @@ public class CollageLayoutView2 extends FrameLayout implements ItemOptions.Scrim
             })
             .show();
         try {
-            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+            if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         } catch (Exception ignored) {}
     }
 
