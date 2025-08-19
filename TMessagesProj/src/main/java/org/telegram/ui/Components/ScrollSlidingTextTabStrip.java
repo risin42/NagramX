@@ -603,11 +603,15 @@ public class ScrollSlidingTextTabStrip extends HorizontalScrollView {
     }
 
     public void selectTabWithId(int id, float progress) {
+        selectTabWithId(id, progress, false);
+    }
+
+    public void selectTabWithId(int id, float progress, boolean force) {
         int position = idToPosition.get(id, -1);
         if (position < 0) {
             return;
         }
-        if (currentPosition == position) {
+        if (currentPosition == position && !force) {
             return;
         }
         if (progress < 0) {
