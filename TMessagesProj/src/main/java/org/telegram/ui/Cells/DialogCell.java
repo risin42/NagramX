@@ -4325,8 +4325,9 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
             // --- ShowUserAvatarsInChatList ---
             Layout layoutToCheck = SharedConfig.useThreeLinesLayout ? messageNameLayout : messageLayout;
-            boolean isTextRtl = (layoutToCheck != null && layoutToCheck.getParagraphDirection(0) == Layout.DIR_RIGHT_TO_LEFT);
-            if (handleCurrentPreviewData() != null && avatarGroupSenderImage.hasImageSet() && !useForceThreeLines && (!LocaleController.isRTL || !isTextRtl)) {
+            boolean hasNameLine = layoutToCheck != null && layoutToCheck.getLineCount() > 0;
+            boolean isTextRtl = layoutToCheck != null && layoutToCheck.getParagraphDirection(0) == Layout.DIR_RIGHT_TO_LEFT;
+            if (handleCurrentPreviewData() != null && avatarGroupSenderImage.hasImageSet() && !useForceThreeLines && (!LocaleController.isRTL || !isTextRtl) && (!SharedConfig.useThreeLinesLayout || hasNameLine)) {
                 int cTop;
                 int cLeft;
                 int showUserIconsW = dp(18) + dp(4); // 4 => padding
