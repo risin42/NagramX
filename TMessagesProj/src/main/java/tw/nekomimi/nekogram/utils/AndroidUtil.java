@@ -74,11 +74,12 @@ public class AndroidUtil {
         return 0;
     }
 
+    private static final Pattern FORMAT_CONTROL_CHARS_PATTERN = Pattern.compile("\\p{Cf}");
+
     public static CharSequence sanitizeString(CharSequence input) {
         if (TextUtils.isEmpty(input)) {
             return input;
         }
-        final Pattern FORMAT_CONTROL_CHARS_PATTERN = Pattern.compile("\\p{Cf}");
         return FORMAT_CONTROL_CHARS_PATTERN.matcher(input).replaceAll("");
     }
 

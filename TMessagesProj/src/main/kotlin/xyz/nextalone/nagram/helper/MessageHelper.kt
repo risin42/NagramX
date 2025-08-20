@@ -15,7 +15,6 @@ import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.BuildConfig
 import org.telegram.messenger.ChatObject
 import org.telegram.messenger.DialogObject
-import org.telegram.messenger.Emoji
 import org.telegram.messenger.FileLoader
 import org.telegram.messenger.FileLog
 import org.telegram.messenger.LocaleController
@@ -24,16 +23,6 @@ import org.telegram.messenger.MessageObject
 import org.telegram.messenger.R
 import org.telegram.messenger.UserConfig
 import org.telegram.tgnet.TLRPC.Chat
-import org.telegram.tgnet.TLRPC.TL_messageEntityBankCard
-import org.telegram.tgnet.TLRPC.TL_messageEntityBotCommand
-import org.telegram.tgnet.TLRPC.TL_messageEntityCashtag
-import org.telegram.tgnet.TLRPC.TL_messageEntityEmail
-import org.telegram.tgnet.TLRPC.TL_messageEntityHashtag
-import org.telegram.tgnet.TLRPC.TL_messageEntityMention
-import org.telegram.tgnet.TLRPC.TL_messageEntityPhone
-import org.telegram.tgnet.TLRPC.TL_messageEntitySpoiler
-import org.telegram.tgnet.TLRPC.TL_messageEntityUrl
-import org.telegram.tgnet.TLRPC.TL_messageMediaPoll
 import org.telegram.ui.ActionBar.Theme
 import org.telegram.ui.ChatActivity
 import org.telegram.ui.Components.ColoredImageSpan
@@ -147,32 +136,19 @@ object MessageHelper {
         }
     }
 
-    fun zalgoFilter(
-        text: String
-    ): String {
+    private val ZALGO_PATTERN = Regex("\\p{M}{4}")
+    private val ZALGO_CLEANUP = Regex("\\p{M}+")
+
+    fun zalgoFilter(text: String): String {
         return zalgoFilter(text as CharSequence).toString()
     }
 
-    fun zalgoFilter(
-        text: CharSequence?
-    ): CharSequence {
-        return if (text == null) {
-            ""
-        } else if (NaConfig.zalgoFilter.Bool() && text.matches(
-                ".*\\p{Mn}{4}.*".toRegex()
-            )
-        ) {
-            text.replace(
-                "(?i)([aeiouy]̈)|[̀-ͯ҉]".toRegex(),
-                ""
-            )
-                .replace(
-                    "[\\p{Mn}]".toRegex(),
-                    ""
-                )
-        } else {
-            text
-        }
+    fun zalgoFilter(text: CharSequence?): CharSequence {
+        if (text.isNullOrEmpty()) return ""
+        if (!NaConfig.zalgoFilter.Bool()) return text
+        if (text.length < 4 || text.length > 2048) return text
+        if (!ZALGO_PATTERN.containsMatchIn(text)) return text
+        return ZALGO_CLEANUP.replace(text, "")
     }
 
     @JvmStatic
