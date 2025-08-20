@@ -5,7 +5,7 @@ plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
-    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
 }
 
 def buildTimestamp = System.getenv("BUILD_TIMESTAMP") ?: "0"
@@ -66,9 +66,9 @@ android {
 
     splits {
         abi {
-            enable true
+            enable = true
             reset()
-            universalApk false
+            universalApk = false
             if (!nativeTarget.isBlank()) {
                 include nativeTarget
             } else {
@@ -126,8 +126,8 @@ android {
 
     externalNativeBuild {
         cmake {
-            version '3.31.6+'
-            path "jni/CMakeLists.txt"
+            version = '3.31.6+'
+            path = "jni/CMakeLists.txt"
         }
     }
 
@@ -142,33 +142,33 @@ android {
 
     buildTypes {
         debug {
-            isDefault true
-            debuggable true
-            jniDebuggable true
-            multiDexEnabled true
-            signingConfig signingConfigs.release
+            isDefault = true
+            debuggable = true
+            jniDebuggable = true
+            multiDexEnabled = true
+            signingConfig = signingConfigs.release
         }
 
         staging {
-            debuggable false
-            jniDebuggable false
-            minifyEnabled true
-            shrinkResources true
-            multiDexEnabled true
+            debuggable = false
+            jniDebuggable = false
+            minifyEnabled = true
+            shrinkResources = true
+            multiDexEnabled = true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             matchingFallbacks = ["release", "staging", "debug"]
-            signingConfig signingConfigs.release
+            signingConfig = signingConfigs.release
         }
 
         release {
-            debuggable false
-            jniDebuggable false
-            minifyEnabled true
-            shrinkResources true
-            multiDexEnabled true
+            debuggable = false
+            jniDebuggable = false
+            minifyEnabled = true
+            shrinkResources = true
+            multiDexEnabled = true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             matchingFallbacks = ["release", "staging", "debug"]
-            signingConfig signingConfigs.release
+            signingConfig = signingConfigs.release
         }
     }
 
@@ -185,7 +185,7 @@ android {
         }
     }
 
-    namespace 'org.telegram.messenger'
+    namespace = 'org.telegram.messenger'
 }
 
 configurations.configureEach {

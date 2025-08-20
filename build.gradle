@@ -11,20 +11,20 @@ subprojects {
     afterEvaluate {
         if (plugins.hasPlugin("com.android.library") || plugins.hasPlugin("com.android.application")) {
             android {
-                compileSdkVersion 36
-                buildToolsVersion "36.0.0"
-                ndkVersion "27.2.12479018"
+                compileSdk = 36
+                buildToolsVersion = "36.0.0"
+                ndkVersion = "27.2.12479018"
 
                 lint {
-                    checkReleaseBuilds false
+                    checkReleaseBuilds = false
                     disable 'MissingTranslation', 'ExtraTranslation', 'BlockedPrivateApi'
                 }
 
                 compileOptions {
-                    sourceCompatibility JavaVersion.VERSION_21
-                    targetCompatibility JavaVersion.VERSION_21
+                    sourceCompatibility = JavaVersion.VERSION_21
+                    targetCompatibility = JavaVersion.VERSION_21
 
-                    coreLibraryDesugaringEnabled true
+                    coreLibraryDesugaringEnabled = true
                 }
 
                 kotlin {
@@ -34,8 +34,8 @@ subprojects {
                 }
 
                 defaultConfig {
-                    minSdkVersion 21
-                    targetSdkVersion 34
+                    minSdk = 21
+                    targetSdk = 34
                 }
 
                 buildFeatures.buildConfig = true
