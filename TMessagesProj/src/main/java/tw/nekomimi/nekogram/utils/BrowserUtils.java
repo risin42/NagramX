@@ -31,7 +31,8 @@ public class BrowserUtils {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(LaunchActivity.instance);
         alertBuilder.setTitle(getString(R.string.TgBrowserOpenFail));
         alertBuilder.setMessage(getString(R.string.TgBrowserOpenFail_Desc));
-        alertBuilder.setPositiveButton(getString(R.string.OK), null);
+        alertBuilder.setPositiveButton(getString(R.string.Enable), (__, ___) -> SharedConfig.toggleInappBrowser());
+        alertBuilder.setNegativeButton(getString(R.string.Cancel), null);
         alertBuilder.show();
     }
 
