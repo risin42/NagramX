@@ -5642,7 +5642,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         avatarContainer2.addView(animatedStatusView);
 
         ratingView = new StarRatingView(context);
-        ratingView.setLayoutParams(LayoutHelper.createFrame(32, 32, Gravity.LEFT, 118 - 6, -2, 0, 0));
+        ratingView.setLayoutParams(LayoutHelper.createFrame(32, 32, Gravity.LEFT, 118 - 8, -4, 0, 0));
         checkStarRatingVisible();
         ratingView.setDelegate(visibility -> {
             final float nX = onlineTextView[1].getTranslationX() + getRatingViewTranslationXOffset() - lastRatingViewTranslationXOffset;
