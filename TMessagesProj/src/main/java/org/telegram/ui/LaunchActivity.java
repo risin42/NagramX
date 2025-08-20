@@ -220,6 +220,7 @@ import org.telegram.ui.TON.TONIntroActivity;
 import org.telegram.ui.bots.BotWebViewAttachedSheet;
 import org.telegram.ui.bots.BotWebViewSheet;
 import org.telegram.ui.bots.WebViewRequestProps;
+import org.telegram.ui.web.WebBrowserSettings;
 import org.webrtc.voiceengine.WebRtcAudioTrack;
 
 import java.io.BufferedReader;
@@ -954,6 +955,10 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                     return true;
                 } else if (id == DrawerLayoutAdapter.nkbtnGhostMode) {
                     presentFragment(new GhostModeActivity());
+                    drawerLayoutContainer.closeDrawer(false);
+                    return true;
+                } else if (id == DrawerLayoutAdapter.nkbtnBrowser) {
+                    presentFragment(new WebBrowserSettings(null));
                     drawerLayoutContainer.closeDrawer(false);
                     return true;
                 }
