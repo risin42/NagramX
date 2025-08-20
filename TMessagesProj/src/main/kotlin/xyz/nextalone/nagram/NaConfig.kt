@@ -494,7 +494,7 @@ object NaConfig {
         addConfig(
             "DefaultHlsVideoQuality",
             ConfigItem.configTypeInt,
-            1
+            0
         )
     val disableBotOpenButton =
         addConfig(
