@@ -5009,7 +5009,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 }
             });
         }
-        if (sendWithoutSoundButtonValue) {
+        if (messageEditText != null && messageEditText.getText().length() > 0) {
             if (containsMarkdown(messageEditText.getText())) {
                 boolean withoutMarkdown = NaConfig.INSTANCE.getDisableMarkdown().Bool();
                 int markdownButtonDrawable = withoutMarkdown ? R.drawable.round_code_white : R.drawable.round_code_off_white;
@@ -5053,8 +5053,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     }
                 });
             }
-        }
-        if (messageEditText != null && messageEditText.getText().length() > 0) {
+
             long chatId = ChatsHelper.getChatId();
             String languageText = Translator.getInputTranslateLangForChat(chatId).toUpperCase();
             StringBuilder sb;
