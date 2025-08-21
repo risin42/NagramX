@@ -238,4 +238,12 @@
     <string name="DnsType">DNS Resolver</string>
     <string name="DnsTypeSystem">System</string>
     <string name="CustomDoH">Custom DoH</string>
+    <string name="PinnedReactions">Pinned Reactions</string>
+    <string name="PinnedReactions_Status_Chats">Enable Pinned Reactions in Chats</string>
+    <string name="PinnedReactions_Status_Channels">Enable Pinned Reactions in Channels</string>
+    <string name="PinnedReactions_Description">You can pin reactions from any pack.</string>
+    <string name="PinnedReactions_Description_Channels">You can pin just default reactions.</string>
+    <string name="PinnedReactions_Limit">You can select up to %d reactions.</string>
+    <string name="PinnedReactions_Type">This emoji is unsupported.</string>
+    <string name="PinnedReactions_Apply">Update Pinned Reactions</string>
 </resources>

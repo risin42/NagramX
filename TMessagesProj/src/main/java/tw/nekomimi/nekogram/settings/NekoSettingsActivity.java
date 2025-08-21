@@ -48,7 +48,6 @@ import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.FilledTabsView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
-import org.telegram.ui.Components.ViewPagerFixed;
 import org.telegram.ui.DocumentSelectActivity;
 import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.PeerColorActivity;
@@ -69,6 +68,7 @@ import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 import tw.nekomimi.nekogram.helpers.CloudSettingsHelper;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
+import tw.nekomimi.nekogram.ui.components.ViewPagerFixedLegacy;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.GsonUtil;
@@ -84,7 +84,7 @@ public class NekoSettingsActivity extends BaseFragment {
     private Page typePage;
     private Page abountPage;
 
-    private ViewPagerFixed viewPager;
+    private ViewPagerFixedLegacy viewPager;
 
     private ImageView backButton;
     private ImageView syncButton;
@@ -136,13 +136,13 @@ public class NekoSettingsActivity extends BaseFragment {
         };
         frameLayout.addView(colorBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.FILL_HORIZONTAL));
 
-        viewPager = new ViewPagerFixed(context) {
+        viewPager = new ViewPagerFixedLegacy(context) {
             @Override
             public void onTabAnimationUpdate(boolean manual) {
                 tabsView.setSelected(viewPager.getPositionAnimated());
             }
         };
-        viewPager.setAdapter(new ViewPagerFixed.Adapter() {
+        viewPager.setAdapter(new ViewPagerFixedLegacy.Adapter() {
             @Override
             public int getItemCount() {
                 return 2;

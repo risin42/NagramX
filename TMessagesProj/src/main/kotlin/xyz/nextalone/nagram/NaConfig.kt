@@ -1291,6 +1291,30 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val usePinnedReactionsChats =
+        addConfig(
+            "UsePinnedReactionsChats",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val pinnedReactionsChats =
+        addConfig(
+            "PinnedReactionsChats",
+            ConfigItem.configTypeString,
+            "[]"
+        )
+    val usePinnedReactionsChannels =
+        addConfig(
+            "UsePinnedReactionsChannels",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val pinnedReactionsChannels =
+        addConfig(
+            "PinnedReactionsChannels",
+            ConfigItem.configTypeString,
+            "[]"
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {

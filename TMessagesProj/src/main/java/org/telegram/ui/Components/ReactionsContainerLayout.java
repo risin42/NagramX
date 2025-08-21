@@ -91,6 +91,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.PinnedElementsHelper;
 import xyz.nextalone.nagram.NaConfig;
 
 public class ReactionsContainerLayout extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
@@ -451,6 +452,11 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
         return showExpandableReactions;
     }
 
+    public void setShowExpandableReactions(boolean showExpandableReactions) {
+        this.showExpandableReactions = showExpandableReactions;
+        invalidate();
+    }
+
     public List<ReactionsLayoutInBubble.VisibleReaction> getVisibleReactionsList() {
         return visibleReactionsList;
     }
@@ -578,7 +584,7 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void setVisibleReactionsList(List<ReactionsLayoutInBubble.VisibleReaction> visibleReactionsList, boolean animated) {
+    public void setVisibleReactionsList(List<ReactionsLayoutInBubble.VisibleReaction> visibleReactionsList, boolean animated) {
         this.visibleReactionsList.clear();
         if (showCustomEmojiReaction()) {
             int i = 0;
@@ -1104,12 +1110,45 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
                 fillRecentReactionsList(visibleReactions);
             } else if (reactionsChat.available_reactions instanceof TLRPC.TL_chatReactionsSome) {
                 TLRPC.TL_chatReactionsSome reactionsSome = (TLRPC.TL_chatReactionsSome) reactionsChat.available_reactions;
+
+                ArrayList<String> emoticons = new ArrayList<>();
+                ArrayList<Long> documentIds = new ArrayList<>();
+
+                if (type == TYPE_DEFAULT) {
+                    for (ReactionsLayoutInBubble.VisibleReaction visibleReaction : PinnedElementsHelper.getFavoriteReactions(channelReactions)) {
+                        boolean isSupported = false;
+                        for (TLRPC.Reaction s : reactionsSome.reactions) {
+                            if (visibleReaction.emojicon != null && s instanceof TLRPC.TL_reactionEmoji && visibleReaction.emojicon.equals(((TLRPC.TL_reactionEmoji) s).emoticon)) {
+                                isSupported = true;
+                                emoticons.add(visibleReaction.emojicon);
+                                break;
+                            } else if (visibleReaction.documentId != 0 && s instanceof TLRPC.TL_reactionCustomEmoji && visibleReaction.documentId == ((TLRPC.TL_reactionCustomEmoji) s).document_id) {
+                                isSupported = true;
+                                documentIds.add(visibleReaction.documentId);
+                                break;
+                            }
+                        }
+
+                        if (isSupported) {
+                            visibleReactions.add(visibleReaction);
+                        }
+                    }
+                }
+
                 for (TLRPC.Reaction s : reactionsSome.reactions) {
                     for (TLRPC.TL_availableReaction a : MediaDataController.getInstance(currentAccount).getEnabledReactionsList()) {
                         if (s instanceof TLRPC.TL_reactionEmoji && a.reaction.equals(((TLRPC.TL_reactionEmoji) s).emoticon)) {
+                            if (emoticons.contains(a.reaction)) {
+                                break;
+                            }
+
                             visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.fromTL(s));
                             break;
-                        } else if (s instanceof TLRPC.TL_reactionCustomEmoji) {
+                        } else if (s instanceof TLRPC.TL_reactionCustomEmoji s2) {
+                            if (documentIds.contains(s2.document_id)) {
+                                break;
+                            }
+
                             visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.fromTL(s));
                             break;
                         }
@@ -1327,11 +1366,26 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
                 }
             } else {
                 //fill default reactions
+                if (type == TYPE_DEFAULT) {
+                    for (ReactionsLayoutInBubble.VisibleReaction visibleReaction : PinnedElementsHelper.getFavoriteReactions(channelReactions)) {
+                        if (!hashSet.contains(visibleReaction) && visibleReaction.documentId == 0) {
+                            hashSet.add(visibleReaction);
+                            visibleReactions.add(visibleReaction);
+                        }
+                    }
+                }
+
                 List<TLRPC.TL_availableReaction> enabledReactions = MediaDataController.getInstance(currentAccount).getEnabledReactionsList();
                 for (int i = 0; i < enabledReactions.size(); i++) {
                     ReactionsLayoutInBubble.VisibleReaction visibleReaction = ReactionsLayoutInBubble.VisibleReaction.fromEmojicon(enabledReactions.get(i));
+                    if (hashSet.contains(visibleReaction)) {
+                        continue;
+                    }
                     visibleReactions.add(visibleReaction);
+                    hashSet.add(visibleReaction);
                 }
+
+                hashSet.clear();
             }
             return;
         }
@@ -1379,6 +1433,16 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
                 }
             }
         } else {
+            if (type == TYPE_DEFAULT) {
+                for (ReactionsLayoutInBubble.VisibleReaction visibleReaction : PinnedElementsHelper.getFavoriteReactions(channelReactions)) {
+                    if (!hashSet.contains(visibleReaction) && (UserConfig.getInstance(currentAccount).isPremium() || visibleReaction.documentId == 0)) {
+                        hashSet.add(visibleReaction);
+                        visibleReactions.add(visibleReaction);
+                        added++;
+                    }
+                }
+            }
+
             for (int i = 0; i < topReactions.size(); i++) {
                 ReactionsLayoutInBubble.VisibleReaction visibleReaction = ReactionsLayoutInBubble.VisibleReaction.fromTL(topReactions.get(i));
                 if (!hashSet.contains(visibleReaction) && (type == TYPE_TAGS || UserConfig.getInstance(currentAccount).isPremium() || visibleReaction.documentId == 0)) {
@@ -1442,6 +1506,28 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
             animator.setInterpolator(new OvershootInterpolator(0.5f));
         } else {
             animator = ObjectAnimator.ofFloat(this, ReactionsContainerLayout.TRANSITION_PROGRESS_VALUE, 0f, 1f).setDuration(250);
+            animator.setInterpolator(new OvershootInterpolator(0.5f));
+        }
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                notificationsLocker.unlock();
+            }
+        });
+        animator.start();
+    }
+
+    public void startCloseAnimation() {
+        setTransitionProgress(0);
+        setAlpha(1f);
+        notificationsLocker.lock();
+        ObjectAnimator animator;
+        if (allowSmoothEnterTransition()) {
+            animator = ObjectAnimator.ofFloat(this, ReactionsContainerLayout.TRANSITION_PROGRESS_VALUE, 1f, 0f).setDuration(250);
+            animator.setInterpolator(new OvershootInterpolator(0.5f));
+        } else {
+            animator = ObjectAnimator.ofFloat(this, ReactionsContainerLayout.TRANSITION_PROGRESS_VALUE, 1f, 0f).setDuration(250);
             animator.setInterpolator(new OvershootInterpolator(0.5f));
         }
         animator.addListener(new AnimatorListenerAdapter() {

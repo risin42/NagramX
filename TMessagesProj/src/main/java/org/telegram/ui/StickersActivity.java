@@ -114,6 +114,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
+import tw.nekomimi.nekogram.ui.PinnedReactionsActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
@@ -161,6 +162,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
     private int featuredRow;
     private int masksRow;
     private int emojiPacksRow;
+    private int pinnedReactionsListRow;
     private int masksInfoRow;
     private int archivedRow;
     private int archivedInfoRow;
@@ -512,6 +514,8 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                 presentFragment(new StickersActivity(MediaDataController.TYPE_MASK, null));
             } else if (position == emojiPacksRow) {
                 presentFragment(new StickersActivity(MediaDataController.TYPE_EMOJIPACKS, null));
+            } else if (position == pinnedReactionsListRow) {
+                presentFragment(new PinnedReactionsActivity());
             } else if (position == suggestRow) {
                 if (getParentActivity() == null) {
                     return;
@@ -913,8 +917,10 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
         if (currentType == MediaDataController.TYPE_IMAGE) {
             reactionsDoubleTapRow = rowCount++;
+            pinnedReactionsListRow = rowCount++;
         } else {
             reactionsDoubleTapRow = -1;
+            pinnedReactionsListRow = -1;
         }
 
         stickersBotInfo = -1;
@@ -1420,6 +1426,9 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                             int count = mediaDataController.getStickerSets(type).size();
                             settingsCell.imageView.setTranslationX(-AndroidUtilities.dp(2));
                             settingsCell.setTextAndValueAndIcon(getString(R.string.Emoji), count > 0 ? Integer.toString(count) : "", R.drawable.msg2_smile_status, true);
+                        } else if (position == pinnedReactionsListRow) {
+                            settingsCell.imageView.setTranslationX(-AndroidUtilities.dp(2));
+                            settingsCell.setTextAndValueAndIcon(getString(R.string.PinnedReactions), PinnedReactionsActivity.getRowDescription(), R.drawable.msg_pin, true);
                         } else if (position == suggestRow) {
                             String value;
                             switch (SharedConfig.suggestStickers) {
@@ -1645,7 +1654,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                 return TYPE_STICKER_SET;
             } else if (i == stickersBotInfo || i == archivedInfoRow || i == loopInfoRow || i == suggestAnimatedEmojiInfoRow || i == masksInfoRow || i == dynamicPackOrderInfo) {
                 return TYPE_INFO;
-            } else if (i == archivedRow || i == masksRow || i == featuredRow || i == emojiPacksRow || i == suggestRow || i == featuredStickersShowMoreRow) {
+            } else if (i == archivedRow || i == masksRow || i == featuredRow || i == emojiPacksRow || i == suggestRow || i == featuredStickersShowMoreRow || i == pinnedReactionsListRow) {
                 return TYPE_TEXT_AND_VALUE;
             } else if (i == stickersShadowRow || i == featuredStickersShadowRow) {
                 return TYPE_SHADOW;
