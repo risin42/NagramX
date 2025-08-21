@@ -3226,9 +3226,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 if (viewPages[0] != null) {
                     viewPages[0].listView.setEmptyView(folderId == 0 ? viewPages[0].progressView : null);
                     if (!onlySelect) {
-                        floatingButtonContainer.setVisibility(View.VISIBLE);
+                        floatingButtonContainer.setVisibility(NaConfig.INSTANCE.getDisableDialogsFloatingButton().Bool() ? View.GONE : View.VISIBLE);
                         if (floatingButton2Container != null) {
-                            floatingButton2Container.setVisibility(storiesEnabled ? View.VISIBLE : View.GONE);
+                            floatingButton2Container.setVisibility(!storiesEnabled || NaConfig.INSTANCE.getDisableDialogsFloatingButton().Bool() ? View.GONE : View.VISIBLE);
                         }
                         if (updateButton != null) {
                             updateButton.setVisibility(View.VISIBLE);
@@ -4600,7 +4600,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
         if (initialDialogsType != DIALOGS_TYPE_WIDGET) {
             floatingButton2Container = new FrameLayout(context);
-            floatingButton2Container.setVisibility(onlySelect && initialDialogsType != 10 || folderId != 0 || !storiesEnabled ? View.GONE : View.VISIBLE);
+            floatingButton2Container.setVisibility(onlySelect && initialDialogsType != 10 || folderId != 0 || !storiesEnabled || NaConfig.INSTANCE.getDisableDialogsFloatingButton().Bool() ? View.GONE : View.VISIBLE);
             contentView.addView(floatingButton2Container, LayoutHelper.createFrame((Build.VERSION.SDK_INT >= 21 ? 36 : 40), (Build.VERSION.SDK_INT >= 21 ? 36 : 40), (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.BOTTOM, LocaleController.isRTL ? 24 : 0, 0, LocaleController.isRTL ? 0 : 24, 14 + 60 + 8));
             floatingButton2Container.setOnClickListener(v -> {
                 if (parentLayout != null && parentLayout.isInPreviewMode()) {
@@ -4650,7 +4650,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         }
 
         floatingButtonContainer = new FrameLayout(context);
-        floatingButtonContainer.setVisibility(onlySelect && initialDialogsType != 10 || folderId != 0 ? View.GONE : View.VISIBLE);
+        floatingButtonContainer.setVisibility(onlySelect && initialDialogsType != 10 || folderId != 0 || NaConfig.INSTANCE.getDisableDialogsFloatingButton().Bool() ? View.GONE : View.VISIBLE);
         contentView.addView(floatingButtonContainer, LayoutHelper.createFrame((Build.VERSION.SDK_INT >= 21 ? 56 : 60), (Build.VERSION.SDK_INT >= 21 ? 56 : 60), (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.BOTTOM, LocaleController.isRTL ? 14 : 0, 0, LocaleController.isRTL ? 0 : 14, 14));
         floatingButtonContainer.setOnClickListener(v -> {
             if (parentLayout != null && parentLayout.isInPreviewMode()) {
@@ -7403,10 +7403,10 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             }
         }
         if (floatingButtonContainer != null) {
-            floatingButtonContainer.setVisibility(onlySelect && initialDialogsType != 10 || folderId != 0 || isInPreviewMode ? View.GONE : View.VISIBLE);
+            floatingButtonContainer.setVisibility(onlySelect && initialDialogsType != 10 || folderId != 0 || isInPreviewMode || NaConfig.INSTANCE.getDisableDialogsFloatingButton().Bool() ? View.GONE : View.VISIBLE);
         }
         if (floatingButton2Container != null) {
-            floatingButton2Container.setVisibility(onlySelect && initialDialogsType != 10 || folderId != 0 || !storiesEnabled || (searchItem != null && searchItem.isSearchFieldVisible()) || isInPreviewMode ? View.GONE : View.VISIBLE);
+            floatingButton2Container.setVisibility(onlySelect && initialDialogsType != 10 || folderId != 0 || !storiesEnabled || (searchItem != null && searchItem.isSearchFieldVisible()) || isInPreviewMode || NaConfig.INSTANCE.getDisableDialogsFloatingButton().Bool() ? View.GONE : View.VISIBLE);
         }
         updateDialogsHint();
     }
@@ -8948,7 +8948,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         final boolean storiesEnabled = getMessagesController().storiesEnabled();
         if (this.storiesEnabled != storiesEnabled) {
             if (floatingButton2Container != null) {
-                floatingButton2Container.setVisibility(onlySelect && initialDialogsType != 10 || folderId != 0 || !storiesEnabled || (searchItem != null && searchItem.isSearchFieldVisible()) || isInPreviewMode() ? View.GONE : View.VISIBLE);
+                floatingButton2Container.setVisibility(onlySelect && initialDialogsType != 10 || folderId != 0 || !storiesEnabled || (searchItem != null && searchItem.isSearchFieldVisible()) || isInPreviewMode() || NaConfig.INSTANCE.getDisableDialogsFloatingButton().Bool() ? View.GONE : View.VISIBLE);
             }
             updateFloatingButtonOffset();
             if (!this.storiesEnabled && storiesEnabled && storyHint != null) {
@@ -11419,6 +11419,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
     private void hideFloatingButton(boolean hide) {
         if (NaConfig.INSTANCE.getDisableDialogsFloatingButton().Bool()) {
+            floatingHidden = false;
+            floatingForceVisible = false;
             hide = true;
         }
 
