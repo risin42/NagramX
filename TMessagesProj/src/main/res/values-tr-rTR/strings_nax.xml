@@ -229,4 +229,12 @@
     <string name="DnsType">DNS Çözümleyici</string>
     <string name="DnsTypeSystem">Sistem</string>
     <string name="CustomDoH">Özel DoH</string>
+    <string name="PinnedReactions">Sabitlenmiş Tepkiler</string>
+    <string name="PinnedReactions_Status_Chats">Sohbetlerde Sabitlenmiş Tepkileri Etkinleştir</string>
+    <string name="PinnedReactions_Status_Channels">Kanallarda Sabitlenmiş Tepkileri Etkinleştir</string>
+    <string name="PinnedReactions_Description">Herhangi bir paketten tepki sabitleyebilirsiniz.</string>
+    <string name="PinnedReactions_Description_Channels">Sadece varsayılan tepkileri sabitleyebilirsiniz.</string>
+    <string name="PinnedReactions_Limit">En fazla %d tepki seçebilirsiniz.</string>
+    <string name="PinnedReactions_Type">Bu emoji desteklenmiyor.</string>
+    <string name="PinnedReactions_Apply">Sabitlenmiş Tepkileri Güncelle</string>
 </resources>

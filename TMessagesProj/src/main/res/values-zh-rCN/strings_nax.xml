@@ -229,4 +229,12 @@
     <string name="DnsType">DNS 解析器</string>
     <string name="DnsTypeSystem">系统</string>
     <string name="CustomDoH">自定义 DoH</string>
+    <string name="PinnedReactions">置顶的表情回应</string>
+    <string name="PinnedReactions_Status_Chats">在聊天中启用置顶的表情回应</string>
+    <string name="PinnedReactions_Status_Channels">在频道中启用置顶的表情回应</string>
+    <string name="PinnedReactions_Description">您可以从任意表情包中选择置的顶表情回应。</string>
+    <string name="PinnedReactions_Description_Channels">您只能从默认 Emoji 中选择置顶的表情回应。</string>
+    <string name="PinnedReactions_Limit">最多可以选择 %d 个表情回应。</string>
+    <string name="PinnedReactions_Type">不支持此 Emoji。</string>
+    <string name="PinnedReactions_Apply">更新置顶的表情回应</string>
 </resources>

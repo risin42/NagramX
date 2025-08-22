@@ -38,7 +38,7 @@
     <string name="HideTitle">隐藏标题和头像</string>
     <string name="IgnoreUnreadCount">忽略未读计数</string>
     <string name="SendWithoutMarkdown">发送时禁用 Markdown</string>
-    <string name="SendAsEmoji">以 emoji 发送</string>
+    <string name="SendAsEmoji">以 Emoji 发送</string>
     <string name="CustomArtworkApi">自定义音乐封面 API</string>
     <string name="CustomEditedMessage">自定义已编辑消息标记</string>
     <string name="DisableEmojiDrawLimit">解除 Emoji 渲染上限</string>

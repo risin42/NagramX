@@ -229,4 +229,12 @@
     <string name="DnsType">DNS リゾルバ</string>
     <string name="DnsTypeSystem">システム</string>
     <string name="CustomDoH">カスタム DoH</string>
+    <string name="PinnedReactions">ピン留めされたアクション</string>
+    <string name="PinnedReactions_Status_Chats">チャットでピン留めリアクションを有効にする</string>
+    <string name="PinnedReactions_Status_Channels">チャンネルでピン留めリアクションを有効にする</string>
+    <string name="PinnedReactions_Description">どのパックからもリアクションをピン留めできます。</string>
+    <string name="PinnedReactions_Description_Channels">デフォルトのリアクションのみをピン留めできます。</string>
+    <string name="PinnedReactions_Limit">最大 %d つのリアクションを選択できます。</string>
+    <string name="PinnedReactions_Type">この絵文字は使用できません。</string>
+    <string name="PinnedReactions_Apply">ピン留めされたアクションを更新</string>
 </resources>
