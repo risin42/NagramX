@@ -112,7 +112,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -174,6 +173,7 @@ import org.telegram.messenger.HashtagSearchController;
 import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.ImageReceiver;
+import org.telegram.messenger.LanguageDetector;
 import org.telegram.messenger.LiteMode;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MediaController;
@@ -359,7 +359,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             DEBUG_SHARE_ALERT_MODE_MORE = 2;
 
     // buttons by Neko
-
     private final static int nkactionbarbtn_reply = 2000;
     private final static int nkactionbarbtn_selectBetween = 2001;
     private final static int nkactionbarbtn_action_mode_other = 2002;
@@ -1248,7 +1247,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
     private final static int OPTION_COPY_PHOTO = 150;
     private final static int OPTION_COPY_PHOTO_AS_STICKER = 151;
-    private final static int OPTION_HISTORY = 205;
 
     private boolean isChannelBottomMuteView = false;
 
@@ -7037,7 +7035,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
         contentView.addView(chatListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
-        if (false && getDialogId() != getUserConfig().getClientUserId()) { // Nagram X: disable this stupid feature
+        if (false/* && getDialogId() != getUserConfig().getClientUserId()*/) { // Nagram X: disable this stupid feature
             selectionReactionsOverlay = new ChatSelectionReactionMenuOverlay(this, context);
             contentView.addView(selectionReactionsOverlay, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         }
@@ -7781,8 +7779,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     showDialog(builder.create());
                     return true;
                 }
-            } else if (object instanceof TLRPC.User) {
-                TLRPC.User user = (TLRPC.User) object;
+            } else if (object instanceof TLRPC.User user) {
                 if (!(searchingForUser && searchContainer.getVisibility() == View.VISIBLE) && user != null) {
                     String name = UserObject.getFirstName(user, false);
                     Spannable spannable = new SpannableString("@" + name + " ");
@@ -12975,9 +12972,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
     private boolean hasSelectedAyuDeletedMessage() {
         try {
-            for (int i = 0; i < selectedMessagesIds.length; ++i) {
-                for (int j = 0; j < selectedMessagesIds[i].size(); ++j) {
-                    MessageObject msg = selectedMessagesIds[i].valueAt(j);
+            for (SparseArray<MessageObject> selectedMessagesId : selectedMessagesIds) {
+                for (int j = 0; j < selectedMessagesId.size(); ++j) {
+                    MessageObject msg = selectedMessagesId.valueAt(j);
                     if (msg != null && msg.messageOwner != null && msg.messageOwner.ayuDeleted) {
                         return true;
                     }
@@ -21208,13 +21205,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             SendMessagesHelper.prepareSendingPhoto(getAccountInstance(), null, uri, dialog_id, replyingMessageObject, getThreadMessage(), replyingQuote, null, null, null, null, 0, editingMessageObject, notify, scheduleDate, chatMode, quickReplyShortcut, getQuickReplyId());
                         }, themeDelegate);
                     } else {
-                        ArrayList<SendMessagesHelper.SendingMediaInfo> photos = new ArrayList<>();
-                        SendMessagesHelper.SendingMediaInfo info = new SendMessagesHelper.SendingMediaInfo();
-                        info.uri = uri;
-                        photos.add(info);
-                        openPhotosEditor(photos, null);
-                        // fillEditingMediaWithCaption(null, null);
-                        // SendMessagesHelper.prepareSendingPhoto(getAccountInstance(), null, uri, dialog_id, replyingMessageObject, getThreadMessage(), replyingQuote, null, null, null, null, 0, editingMessageObject, true, 0, chatMode, quickReplyShortcut, getQuickReplyId());
+                        fillEditingMediaWithCaption(null, null);
+                        SendMessagesHelper.prepareSendingPhoto(getAccountInstance(), null, uri, dialog_id, replyingMessageObject, getThreadMessage(), replyingQuote, null, null, null, null, 0, editingMessageObject, true, 0, chatMode, quickReplyShortcut, getQuickReplyId());
                     }
                 }
                 afterMessageSend();
@@ -25479,10 +25471,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (cellMessageObject == null) {
                     continue;
                 }
-                boolean update = false;
-                if (lazyUpdaterList.contains(cellMessageObject.getId())) {
-                    update = true;
-                }
+                boolean update = lazyUpdaterList.contains(cellMessageObject.getId());
                 if (cellMessageObject.getId() == messageObject.getId()) {
                     cellMessageObject.messageOwner.translatedText = messageObject.messageOwner.translatedText;
                     cellMessageObject.messageOwner.translatedToLanguage = messageObject.messageOwner.translatedToLanguage;
@@ -34727,9 +34716,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     bulletin.show();
                     View view = bulletin.getLayout();
                     view.postDelayed(() -> {
-                            try {
-                                if (!NekoConfig.disableVibration.Bool()) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                            } catch (Exception ignored) {}
+                        try {
+                            if (!NekoConfig.disableVibration.Bool()) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                        } catch (Exception ignored) {}
                     }, 550);
                 });
                 builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
@@ -42582,11 +42571,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     public static boolean isClickableLink(String str) {
-        return str.startsWith("https://")
-                || str.startsWith("@")
-                || str.startsWith("#")
-                || str.startsWith("$")
-                || str.startsWith("video?");
+        return str.startsWith("https://") || str.startsWith("@") || str.startsWith("#") || str.startsWith("$") || str.startsWith("video?");
     }
 
     public SimpleTextView getReplyNameTextView() {
@@ -43259,8 +43244,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             @Override
             public void didSetRights(int rights, TLRPC.TL_chatAdminRights rightsAdmin, TLRPC.TL_chatBannedRights rightsBanned, String rank) {
                 if (action == 0) {
-                    if (participant instanceof TLRPC.TL_chatChannelParticipant) {
-                        TLRPC.TL_chatChannelParticipant channelParticipant1 = ((TLRPC.TL_chatChannelParticipant) participant);
+                    if (participant instanceof TLRPC.TL_chatChannelParticipant channelParticipant1) {
                         if (rights == 1) {
                             channelParticipant1.channelParticipant = new TLRPC.TL_channelParticipantAdmin();
                             channelParticipant1.channelParticipant.flags |= 4;
@@ -43342,16 +43326,16 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         if (action == 1 && (channelParticipant instanceof TLRPC.TL_channelParticipantAdmin || participant instanceof TLRPC.TL_chatParticipantAdmin)) {
             AlertDialog.Builder builder2 = new AlertDialog.Builder(getParentActivity());
-            builder2.setTitle(LocaleController.getString(R.string.NagramX));
-            builder2.setMessage(LocaleController.formatString("AdminWillBeRemoved", R.string.AdminWillBeRemoved, ContactsController.formatName(user.first_name, user.last_name)));
-            builder2.setPositiveButton(LocaleController.getString("OK", R.string.OK), (dialog, which) -> {
+            builder2.setTitle(getString(R.string.NagramX));
+            builder2.setMessage(formatString(R.string.AdminWillBeRemoved, ContactsController.formatName(user.first_name, user.last_name)));
+            builder2.setPositiveButton(getString(R.string.OK), (dialog, which) -> {
                 if (channelParticipant != null) {
                     openRightsEdit(action, user, participant, channelParticipant.admin_rights, channelParticipant.banned_rights, channelParticipant.rank, editingAdmin);
                 } else {
                     openRightsEdit(action, user, participant, null, null, "", editingAdmin);
                 }
             });
-            builder2.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
+            builder2.setNegativeButton(getString(R.string.Cancel), null);
             showDialog(builder2.create());
         } else {
             if (channelParticipant != null) {
@@ -44504,9 +44488,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 layout.addView(translateLlmButton);
 
                 ActionBarPopupWindow window = new ActionBarPopupWindow(layout, LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT);
-                dismiss[0] = () -> window.dismiss();
-                dismiss[1] = () -> window.dismiss();
-                dismiss[2] = () -> window.dismiss();
+                dismiss[0] = window::dismiss;
+                dismiss[1] = window::dismiss;
+                dismiss[2] = window::dismiss;
                 window.setPauseNotifications(true);
                 window.setDismissAnimationDuration(220);
                 window.setOutsideTouchable(true);

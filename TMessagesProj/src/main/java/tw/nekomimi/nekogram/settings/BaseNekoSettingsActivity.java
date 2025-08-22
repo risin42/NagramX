@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarLayout;
@@ -200,10 +199,6 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
 
     protected abstract String getActionBarTitle();
 
-    protected void showRestartBulletin() {
-        BulletinFactory.of(this).createErrorBulletin(LocaleController.formatString(R.string.RestartAppToTakeEffect)).show();
-    }
-
     private class BlurContentView extends SizeNotifierFrameLayout {
 
         public BlurContentView(Context context) {
@@ -252,15 +247,15 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
         return true;
     }
 
-    protected CharSequence getSpannedString(String key, int id, String url) {
-        var text = getString(key, id);
+    protected CharSequence getSpannedString(int id) {
+        var text = getString(id);
         var builder = new SpannableStringBuilder(text);
         int index1 = text.indexOf("**");
         int index2 = text.lastIndexOf("**");
         if (index1 >= 0 && index2 >= 0 && index1 != index2) {
             builder.replace(index2, index2 + 2, "");
             builder.replace(index1, index1 + 2, "");
-            builder.setSpan(new URLSpanNoUnderline(url), index1, index2 - 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            builder.setSpan(new URLSpanNoUnderline("https://core.telegram.org/api/datacenter"), index1, index2 - 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return builder;
     }

@@ -8714,7 +8714,7 @@ public class MessagesController extends BaseController implements NotificationCe
         }
 
         if (retry) {
-            unblockAllUsers(isDeleted, isDeleted ? false : retry);
+            unblockAllUsers(isDeleted, !isDeleted && retry);
         }
 
     }
@@ -9155,7 +9155,7 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
 
                 var existingMessageIds = ayuMessagesController.getExistingMessageIds(userId, dialogId, permittedForAyuDeletion);
-                if (existingMessageIds.size() > 0) {
+                if (!existingMessageIds.isEmpty()) {
                     Utilities.globalQueue.postRunnable(() -> ayuMessagesController.deleteMessages(userId, dialogId, existingMessageIds));
                     ayuDeletedMessagesCount = existingMessageIds.size();
                 }

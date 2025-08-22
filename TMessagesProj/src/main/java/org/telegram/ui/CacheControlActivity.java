@@ -15,9 +15,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -33,7 +30,6 @@ import android.os.StatFs;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.util.LongSparseArray;
@@ -53,10 +49,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.core.widget.NestedScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.ColorUtils;
@@ -74,16 +67,8 @@ import org.telegram.messenger.BotWebViewVibrationEffect;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.CacheByChatsController;
 import org.telegram.messenger.Emoji;
-import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
-import org.telegram.messenger.BotWebViewVibrationEffect;
-import org.telegram.messenger.CacheByChatsController;
-import org.telegram.messenger.Emoji;
-import org.telegram.messenger.FileLoader;
-import org.telegram.messenger.FileLog;
-import org.telegram.messenger.FilePathDatabase;
 import org.telegram.messenger.FilePathDatabase;
 import org.telegram.messenger.FilesMigrationService;
 import org.telegram.messenger.ImageLoader;
@@ -96,9 +81,6 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.Utilities;
-import org.telegram.tgnet.ConnectionsManager;
-import org.telegram.tgnet.NativeByteBuffer;
-import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
@@ -113,7 +95,6 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ActionBar.ThemeDescription;
 import org.telegram.ui.Cells.CheckBoxCell;
 import org.telegram.ui.Cells.HeaderCell;
-import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextCheckBoxCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
@@ -124,8 +105,6 @@ import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.CacheChart;
 import org.telegram.ui.Components.CheckBox2;
-import org.telegram.ui.Components.AlertsCreator;
-import org.telegram.ui.Components.AnimatedFloat;
 import org.telegram.ui.Components.AnimatedTextView;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.CacheChart;
@@ -202,7 +181,6 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
     private long totalSize = -1;
     private long totalDeviceSize = -1;
     private long totalDeviceFreeSize = -1;
-
     private long migrateOldFolderRow = -1;
     private boolean calculating = true;
     private boolean collapsed = true;
@@ -385,7 +363,6 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
 
         Utilities.globalQueue.postRunnable(() -> {
             cacheSize = getDirectorySize(FileLoader.checkDirectory(FileLoader.MEDIA_DIR_CACHE), 5);
-
             if (canceled) {
                 return;
             }
@@ -555,13 +532,13 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
             fillDialogsEntitiesRecursive(FileLoader.checkDirectory(FileLoader.MEDIA_DIR_DOCUMENT), TYPE_DOCUMENTS, dilogsFilesEntities, cacheModel);
             fillDialogsEntitiesRecursive(FileLoader.checkDirectory(FileLoader.MEDIA_DIR_FILES), TYPE_DOCUMENTS, dilogsFilesEntities, cacheModel);
 
-            // ----- Nagram Hook start -----
+            // ----- feat: shortcut to clear cache for current chat -----
             if (targetDialogId != -1) {
                 DialogFileEntities entities = dilogsFilesEntities.get(targetDialogId, null);
                 if (entities != null) AndroidUtilities.runOnUIThread(() -> showClearCacheDialog(entities), 100);
                 targetDialogId = -1;
             }
-            // ----- Nagram Hook end -----
+            // ----- feat: shortcut to clear cache for current chat -----
 
             ArrayList<DialogFileEntities> entities = new ArrayList<>();
             ArrayList<Long> unknownUsers = new ArrayList<>();
@@ -2511,16 +2488,16 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
                     view = cacheChart = new CacheChart(mContext) {
                         @Override
                         protected void onSectionClick(int index) {
-                            //                            if (index == 8) {
-                            //                                index = -1;
-                            //                            }
-                            //                            for (int i = 0; i < itemInners.size(); ++i) {
-                            //                                ItemInner item = itemInners.get(i);
-                            //                                if (item != null && item.index == index) {
-                            //                                    toggleSection(item, null);
-                            //                                    return;
-                            //                                }
-                            //                            }
+//                            if (index == 8) {
+//                                index = -1;
+//                            }
+//                            for (int i = 0; i < itemInners.size(); ++i) {
+//                                ItemInner item = itemInners.get(i);
+//                                if (item != null && item.index == index) {
+//                                    toggleSection(item, null);
+//                                    return;
+//                                }
+//                            }
                         }
 
                         @Override
@@ -2644,9 +2621,9 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
 
                     float totalSizeInGb = (int) (totalDeviceSize / 1024L / 1024L) / 1000.0f;
                     ArrayList<Integer> options = new ArrayList<>();
-                    //                    if (BuildVars.DEBUG_PRIVATE_VERSION) {
-                    //                        options.add(1);
-                    //                    }
+//                    if (BuildVars.DEBUG_PRIVATE_VERSION) {
+//                        options.add(1);
+//                    }
                     if (totalSizeInGb <= 17) {
                         options.add(2);
                     }
@@ -3086,9 +3063,9 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
                     break;
                 }
             }
-           if (allGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && FilesMigrationService.filesMigrationBottomSheet != null) {
-               FilesMigrationService.filesMigrationBottomSheet.migrateOldFolder();
-           }
+            if (allGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && FilesMigrationService.filesMigrationBottomSheet != null) {
+                FilesMigrationService.filesMigrationBottomSheet.migrateOldFolder();
+            }
 
         }
     }
