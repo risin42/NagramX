@@ -6,6 +6,7 @@ import org.telegram.tgnet.TLRPC
 import org.telegram.ui.Components.TranslateAlert2
 import tw.nekomimi.nekogram.translate.HTMLKeeper
 import tw.nekomimi.nekogram.translate.Translator
+import tw.nekomimi.nekogram.translate.source.fallback.DeepLTranslatorNeko
 
 object DeepLTranslator : Translator {
 

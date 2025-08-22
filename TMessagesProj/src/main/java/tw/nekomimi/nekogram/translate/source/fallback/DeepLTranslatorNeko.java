@@ -1,4 +1,4 @@
-package tw.nekomimi.nekogram.translate.source;
+package tw.nekomimi.nekogram.translate.source.fallback;
 
 import app.nekogram.translator.DeepLTranslator;
 
