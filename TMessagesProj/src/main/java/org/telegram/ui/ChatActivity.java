@@ -46581,6 +46581,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     icons.add(deleteIconRes);
                 }
             }
+            boolean allowViewHistory = currentChat != null && chatMode == 0 && !currentChat.broadcast && !(threadMessageObjects != null && threadMessageObjects.contains(message));
+            if (allowViewHistory && NekoConfig.showViewHistory.Bool()) {
+                items.add(LocaleController.getString(R.string.ViewHistory));
+                options.add(nkbtn_view_history);
+                icons.add(R.drawable.menu_recent);
+            }
         } else if (type == 20) {
             items.add(LocaleController.getString(R.string.Retry));
             options.add(OPTION_RETRY);
