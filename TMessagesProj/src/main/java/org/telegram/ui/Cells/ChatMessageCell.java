@@ -17188,14 +17188,23 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             }
             ((SpannableStringBuilder) timeString).append(" | ").append(String.valueOf(messageObject.messageOwner.id));
         }
-        if (!MessagesController.getInstance(currentAccount).getTranslateController().isTranslatingDialog(messageObject.getDialogId())) {
-            if (messageObject.translated || messageObject.messageOwner.translated){
+        // Show language marker for all translated messages (single-message or translate-all)
+        if (messageObject.translated || messageObject.messageOwner.translated) {
                 if (!(timeString instanceof SpannableStringBuilder)) {
                     timeString = new SpannableStringBuilder(timeString);
                 }
-                ((SpannableStringBuilder) timeString).append(" | ").append(LocaleController.getString(R.string.Translated));
+            String fromCode = messageObject.messageOwner.originalLanguage;
+            String toCode = messageObject.messageOwner.translatedToLanguage;
+            String fromName = org.telegram.ui.Components.TranslateAlert2.languageNameCapital(fromCode);
+            String toName = org.telegram.ui.Components.TranslateAlert2.languageNameCapital(toCode);
+            if (TextUtils.isEmpty(fromName)) {
+                fromName = !TextUtils.isEmpty(fromCode) ? fromCode.toUpperCase() : "?";
             }
-        }
+            if (TextUtils.isEmpty(toName)) {
+                toName = !TextUtils.isEmpty(toCode) ? toCode.toUpperCase() : "?";
+            }
+            ((SpannableStringBuilder) timeString).append(" | ").append(fromName).append("→").append(toName);
+        }   
         currentTimeString = new SpannableStringBuilder(timeString);
         if (signString != null) {
             if (messageObject.messageOwner.via_business_bot_id != 0) {
