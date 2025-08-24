@@ -67,6 +67,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import xyz.nextalone.nagram.NaConfig;
@@ -892,7 +893,7 @@ public class TranslateController extends BaseController {
         long dialogId = message.getDialogId();
 
         // --- NagramX Start ---
-        if (shouldSkipTranslation(message.messageOwner.message)) {
+        if (MessageHelper.shouldSkipTranslation(message.messageOwner.message)) {
             return;
         }
 
@@ -2237,16 +2238,6 @@ public class TranslateController extends BaseController {
 //        layout.subtitleTextView.setText(subtitle);
 //        layout.setProgress(percent);
 //    }
-
-    private boolean shouldSkipTranslation(String message) {
-        String pattern = "^(https?://|ftp://|@|#|/).*$";
-        for (String line : message.split("\\s+")) {
-            if (!line.matches(pattern)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public boolean isManualTranslated(MessageObject messageObject) {
         if (manualTranslationsList.containsKey(messageObject.getDialogId())) {

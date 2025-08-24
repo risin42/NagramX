@@ -565,4 +565,47 @@ public class MessageHelper extends BaseController {
         }
         return files;
     }
+
+    public static boolean shouldSkipTranslation(String message) {
+        if (TextUtils.isEmpty(message)) {
+            return true;
+        }
+        final int len = message.length();
+        int wordStart = 0;
+        for (int i = 0; i <= len; i++) {
+            if (i == len || Character.isWhitespace(message.charAt(i))) {
+                if (wordStart < i) {
+                    if (!isSkippedWord(message, wordStart, i)) {
+                        return false;
+                    }
+                }
+                wordStart = i + 1;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isSkippedWord(String message, int start, int end) {
+        int wordLen = end - start;
+        if (wordLen == 0) return true;
+        char firstChar = message.charAt(start);
+        return switch (firstChar) {
+            case '@', '#', '/' -> true;
+            case 'h' -> {
+                if (wordLen >= 8) {
+                    yield message.startsWith("http://", start) || message.startsWith("https://", start);
+                } else if (wordLen == 7) {
+                    yield message.startsWith("http://", start);
+                }
+                yield false;
+            }
+            case 'f' -> {
+                if (wordLen >= 6) {
+                    yield message.startsWith("ftp://", start);
+                }
+                yield false;
+            }
+            default -> false;
+        };
+    }
 }
