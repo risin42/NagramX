@@ -229,4 +229,12 @@
     <string name="DnsType">DNS-резолвер</string>
     <string name="DnsTypeSystem">Системний</string>
     <string name="CustomDoH">Власний DoH</string>
+    <string name="PinnedReactions">Закріплені реакції</string>
+    <string name="PinnedReactions_Status_Chats">Увімкнути закріплені реакції в чатах</string>
+    <string name="PinnedReactions_Status_Channels">Увімкнути закріплені реакції в каналах</string>
+    <string name="PinnedReactions_Description">Ви можете закріпити реакції з будь-якого пакету.</string>
+    <string name="PinnedReactions_Description_Channels">Ви можете закріпити лише реакції за замовчуванням.</string>
+    <string name="PinnedReactions_Limit">Ви можете вибрати до %d реакцій.</string>
+    <string name="PinnedReactions_Type">Цей емодзі не підтримується.</string>
+    <string name="PinnedReactions_Apply">Оновити закріплені реакції</string>
 </resources>

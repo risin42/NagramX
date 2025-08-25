@@ -229,4 +229,12 @@
     <string name="DnsType">DNS-резолвер</string>
     <string name="DnsTypeSystem">Системный</string>
     <string name="CustomDoH">Пользовательский DoH</string>
+    <string name="PinnedReactions">Закреплённые реакции</string>
+    <string name="PinnedReactions_Status_Chats">Включить закреплённые реакции в чатах</string>
+    <string name="PinnedReactions_Status_Channels">Включить закреплённые реакции в каналах</string>
+    <string name="PinnedReactions_Description">Вы можете закрепить реакции из любого набора.</string>
+    <string name="PinnedReactions_Description_Channels">Вы можете закрепить только стандартные реакции.</string>
+    <string name="PinnedReactions_Limit">Вы можете выбрать до %d реакций.</string>
+    <string name="PinnedReactions_Type">Этот эмодзи не поддерживается.</string>
+    <string name="PinnedReactions_Apply">Обновить закреплённые реакции</string>
 </resources>
