@@ -16,6 +16,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.text.Editable;
 import android.text.Layout;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -68,6 +69,8 @@ import org.telegram.ui.SelectAnimatedEmojiDialog;
 import org.telegram.ui.Stories.recorder.ButtonWithCounterView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -601,7 +604,16 @@ public class PinnedReactionsActivity extends BaseFragment {
                             AnimatedEmojiSpan span = createAnimatedEmojiSpan(document, documentId, editText.getFontMetricsInt());
                             span.cacheType = AnimatedEmojiDrawable.getCacheTypeForEnterView();
                             span.setAdded();
-                            selectedCustomEmojisList.add(documentId);
+                            Spannable text = editText.getText();
+                            AnimatedEmojiSpan[] allSpans = text.getSpans(0, text.length(), AnimatedEmojiSpan.class);
+                            Arrays.sort(allSpans, Comparator.comparingInt(text::getSpanStart));
+                            int insertionIndex = 0;
+                            for (AnimatedEmojiSpan s : allSpans) {
+                                if (text.getSpanStart(s) < selectionEnd) {
+                                    insertionIndex++;
+                                }
+                            }
+                            selectedCustomEmojisList.add(insertionIndex, documentId);
                             selectedEmojisMap.put(documentId, span);
                             spannable.setSpan(span, 0, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                             editText.getText().insert(selectionEnd, spannable);
