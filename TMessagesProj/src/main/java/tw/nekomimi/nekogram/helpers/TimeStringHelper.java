@@ -10,6 +10,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.ReplacementSpan;
 import android.view.Gravity;
 import android.view.View;
@@ -22,14 +23,19 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessageObject;
+import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
+import org.telegram.messenger.TranslateController;
+import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.AnimatedTextView;
 import org.telegram.ui.Components.ColoredImageSpan;
 
+import java.util.Locale;
 import java.util.Objects;
 
+import tw.nekomimi.nekogram.ui.icons.IconsResources;
 import xyz.nextalone.nagram.NaConfig;
 
 public class TimeStringHelper {
@@ -39,9 +45,13 @@ public class TimeStringHelper {
     public static Drawable editedDrawable;
     public static SpannableStringBuilder channelLabelSpan;
     public static Drawable channelLabelDrawable;
+    public static SpannableStringBuilder translatedSpan;
+    public static Drawable translatedDrawable;
+    public static SpannableStringBuilder arrowSpan;
+    public static Drawable arrowDrawable;
     public ChatActivity.ThemeDelegate themeDelegate;
 
-    public static CharSequence createDeletedString(MessageObject messageObject, boolean isEdited) {
+    public static CharSequence createDeletedString(MessageObject messageObject, boolean isEdited, boolean isTranslated) {
         String editedStr = NaConfig.INSTANCE.getCustomEditedMessage().String();
         String editedStrFin = editedStr.isEmpty() ? getString(R.string.EditedMessage) : editedStr;
         String deletedStr = NaConfig.INSTANCE.getCustomDeletedMark().String();
@@ -56,11 +66,13 @@ public class TimeStringHelper {
                 .append("  ")
                 .append(isEdited ? (NaConfig.INSTANCE.getUseEditedIcon().Bool() ? editedSpan : editedStrFin) : "")
                 .append(isEdited ? "  " : "")
+                .append(isTranslated ? createTranslatedString(messageObject, true) : "")
+                .append(isTranslated ? "  " : "")
                 .append(LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000));
         return spannableStringBuilder;
     }
 
-    public static CharSequence createEditedString(MessageObject messageObject) {
+    public static CharSequence createEditedString(MessageObject messageObject, boolean isTranslated) {
         String editedStr = NaConfig.INSTANCE.getCustomEditedMessage().String();
         String editedStrFin = editedStr.isEmpty() ? getString(R.string.EditedMessage) : editedStr;
 
@@ -71,8 +83,48 @@ public class TimeStringHelper {
                 .append(messageObject.messageOwner.post_author != null ? " " : "")
                 .append(NaConfig.INSTANCE.getUseEditedIcon().Bool() ? editedSpan : editedStrFin)
                 .append("  ")
+                .append(isTranslated ? createTranslatedString(messageObject, true) : "")
+                .append(isTranslated ? "  " : "")
                 .append(LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000));
         return spannableStringBuilder;
+    }
+
+    public static CharSequence createTranslatedString(MessageObject messageObject, boolean internal) {
+        createSpan();
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+
+        if (canShowLanguage(messageObject)) {
+            spannableStringBuilder
+                    .append(Locale.forLanguageTag(messageObject.messageOwner.originalLanguage).getDisplayName())
+                    .append(" ")
+                    .append(arrowSpan)
+                    .append(" ")
+                    .append(Locale.forLanguageTag(messageObject.messageOwner.translatedToLanguage).getDisplayName())
+                    .append(internal ? "" : "  ")
+                    .append(internal ? "" : LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000));
+        } else {
+            spannableStringBuilder
+                    .append(internal || messageObject.messageOwner.post_author == null ? "" : " ")
+                    .append(translatedSpan)
+                    .append(internal ? "" : "  ")
+                    .append(internal ? "" : LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000));
+        }
+        return spannableStringBuilder;
+    }
+
+    private static boolean canShowLanguage(MessageObject messageObject) {
+        String fromCode = messageObject.messageOwner.originalLanguage;
+        String toCode = messageObject.messageOwner.translatedToLanguage;
+        if (TextUtils.isEmpty(fromCode) || TextUtils.isEmpty(toCode)) {
+            return false;
+        }
+        if (messageObject.messageOwner.originalLanguage.equals(TranslateController.UNKNOWN_LANGUAGE)) {
+            return false;
+        }
+        if (messageObject.messageOwner.post_author != null) {
+            return false;
+        }
+        return MessagesController.getInstance(UserConfig.selectedAccount).getTranslateController().isManualTranslated(messageObject);
     }
 
     private static void createSpan() {
@@ -90,6 +142,26 @@ public class TimeStringHelper {
         if (deletedSpan == null) {
             deletedSpan = new SpannableStringBuilder("\u200B");
             deletedSpan.setSpan(new ColoredImageSpan(deletedDrawable, true), 0, 1, 0);
+        }
+
+        if (translatedDrawable == null) {
+            if (NaConfig.INSTANCE.getIconReplacements().Int() == IconsResources.ICON_REPLACE_SOLAR) {
+                translatedDrawable = Objects.requireNonNull(ContextCompat.getDrawable(ApplicationLoader.applicationContext, R.drawable.msg_translate_solar_12)).mutate();
+            } else {
+                translatedDrawable = Objects.requireNonNull(ContextCompat.getDrawable(ApplicationLoader.applicationContext, R.drawable.msg_translate_12)).mutate();
+            }
+        }
+        if (translatedSpan == null) {
+            translatedSpan = new SpannableStringBuilder("\u200B");
+            translatedSpan.setSpan(new ColoredImageSpan(translatedDrawable, true), 0, 1, 0);
+        }
+
+        if (arrowDrawable == null) {
+            arrowDrawable = Objects.requireNonNull(ContextCompat.getDrawable(ApplicationLoader.applicationContext, R.drawable.search_arrow));
+        }
+        if (arrowSpan == null) {
+            arrowSpan = new SpannableStringBuilder("\u200B");
+            arrowSpan.setSpan(new ColoredImageSpan(arrowDrawable, true), 0, 1, 0);
         }
     }
 

@@ -17136,6 +17136,11 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         boolean hasReplies = messageObject.hasReplies();
 
         var ayuDeletedVal = messageObject.messageOwner.ayuDeleted;
+        var translated = messageObject.translated || messageObject.messageOwner.translated;
+        if (currentMessagesGroup != null) {
+            MessageObject captionMessage = currentMessagesGroup.findCaptionMessageObject();
+            translated = captionMessage != null && (captionMessage.translated || captionMessage.messageOwner.translated);
+        }
         if (messageObject.scheduled || messageObject.isLiveLocation() || messageObject.messageOwner.edit_hide || messageObject.getDialogId() == 777000 || messageObject.messageOwner.via_bot_id != 0 || messageObject.messageOwner.via_bot_name != null || author != null && author.bot) {
             edited = false;
             ayuDeleted = ayuDeletedVal && !(currentChat instanceof TLRPC.TL_chat && author != null && author.bot); // ensure we're not in PM with bot, as it can screw experience
@@ -17165,11 +17170,13 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         } else if (currentMessageObject.isRepostPreview) {
             timeString = LocaleController.formatSmallDateChat(messageObject.messageOwner.date) + ", " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
         } else if (edited && !ayuDeleted) {
-            timeString = TimeStringHelper.createEditedString(currentMessageObject);
+            timeString = TimeStringHelper.createEditedString(currentMessageObject, translated);
         } else if (!edited && ayuDeleted) {
-            timeString = TimeStringHelper.createDeletedString(currentMessageObject, edited);
+            timeString = TimeStringHelper.createDeletedString(currentMessageObject, edited, translated);
         } else if (edited && ayuDeleted) {
-            timeString = TimeStringHelper.createDeletedString(currentMessageObject, edited);
+            timeString = TimeStringHelper.createDeletedString(currentMessageObject, edited, translated);
+        } else if (translated) {
+            timeString = TimeStringHelper.createTranslatedString(currentMessageObject, false);
         } else if (currentMessageObject.isSaved && currentMessageObject.messageOwner.fwd_from != null && (currentMessageObject.messageOwner.fwd_from.date != 0 || currentMessageObject.messageOwner.fwd_from.saved_date != 0)) {
             int date = currentMessageObject.messageOwner.fwd_from.saved_date;
             if (date == 0) {
@@ -17187,24 +17194,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 timeString = new SpannableStringBuilder(timeString);
             }
             ((SpannableStringBuilder) timeString).append(" | ").append(String.valueOf(messageObject.messageOwner.id));
-        }
-        if (!MessagesController.getInstance(currentAccount).getTranslateController().isTranslatingDialog(messageObject.getDialogId())) {
-            if (messageObject.translated || messageObject.messageOwner.translated) {
-                if (!(timeString instanceof SpannableStringBuilder)) {
-                    timeString = new SpannableStringBuilder(timeString);
-                }
-                String fromCode = messageObject.messageOwner.originalLanguage;
-                String toCode = messageObject.messageOwner.translatedToLanguage;
-                String fromName = org.telegram.ui.Components.TranslateAlert2.languageNameCapital(fromCode);
-                String toName = org.telegram.ui.Components.TranslateAlert2.languageNameCapital(toCode);
-                if (TextUtils.isEmpty(fromName)) {
-                    fromName = !TextUtils.isEmpty(fromCode) ? fromCode.toUpperCase() : "?";
-                }
-                if (TextUtils.isEmpty(toName)) {
-                    toName = !TextUtils.isEmpty(toCode) ? toCode.toUpperCase() : "?";
-                }
-                ((SpannableStringBuilder) timeString).append(" | ").append(fromName).append("→").append(toName);
-            }
         }
         currentTimeString = new SpannableStringBuilder(timeString);
         if (signString != null) {
@@ -17230,6 +17219,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             }
             if (ayuDeleted && NaConfig.INSTANCE.getUseDeletedIcon().Bool() && TimeStringHelper.deletedDrawable != null) {
                 timeTextWidth = timeWidth += TimeStringHelper.deletedDrawable.getIntrinsicWidth();
+            }
+            if (translated && TimeStringHelper.translatedDrawable != null) {
+                timeTextWidth = timeWidth += TimeStringHelper.translatedDrawable.getIntrinsicWidth();
             }
         }
         if (currentMessageObject.scheduled && currentMessageObject.messageOwner.date == 0x7FFFFFFE || currentMessageObject.notime) {
