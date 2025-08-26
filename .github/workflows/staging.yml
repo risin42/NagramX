@@ -32,15 +32,19 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          cache: 'gradle'
           distribution: 'temurin'
           java-version: '21'
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
       - name: Set up Ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
           append-timestamp: false
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Set up Gradle cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle
+          key: gradle-${{ hashFiles('**/*.gradle') }}
       - name: Set up Android SDK Tools
         uses: android-actions/setup-android@v3
         with:
