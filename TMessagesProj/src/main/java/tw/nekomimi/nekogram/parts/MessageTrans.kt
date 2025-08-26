@@ -20,6 +20,7 @@ import org.telegram.messenger.TranslateController
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ChatActivity
 import tw.nekomimi.nekogram.NekoConfig
+import tw.nekomimi.nekogram.helpers.MessageHelper
 import tw.nekomimi.nekogram.translate.Translator
 import tw.nekomimi.nekogram.translate.code2Locale
 import tw.nekomimi.nekogram.translate.locale2code
@@ -115,6 +116,7 @@ fun ChatActivity.translateMessages(
     }
 
     messagesToTranslate.forEach { messageObject ->
+        MessageHelper.getInstance(currentAccount).detectLanguageNow(messageObject)
         controller.addAsTranslatingItem(messageObject)
         controller.addAsManualTranslate(messageObject)
         messageObject.translating = true

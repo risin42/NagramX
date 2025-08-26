@@ -1,6 +1,7 @@
 package tw.nekomimi.nekogram.helpers;
 
 import static org.telegram.messenger.LocaleController.getString;
+import static org.telegram.messenger.TranslateController.UNKNOWN_LANGUAGE;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -25,6 +26,7 @@ import org.telegram.messenger.BaseController;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.LanguageDetector;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MediaDataController;
@@ -608,4 +610,20 @@ public class MessageHelper extends BaseController {
             default -> false;
         };
     }
+
+    public void detectLanguageNow(MessageObject messageObject) {
+        final long dialogId = messageObject.getDialogId();
+        LanguageDetector.detectLanguage(messageObject.messageOwner.message, lng -> AndroidUtilities.runOnUIThread(() -> {
+            String detectedLanguage = lng;
+            if (detectedLanguage == null) {
+                detectedLanguage = UNKNOWN_LANGUAGE;
+            }
+            messageObject.messageOwner.originalLanguage = detectedLanguage;
+            getMessagesStorage().updateMessageCustomParams(dialogId, messageObject.messageOwner);
+        }), err -> AndroidUtilities.runOnUIThread(() -> {
+            messageObject.messageOwner.originalLanguage = UNKNOWN_LANGUAGE;
+            getMessagesStorage().updateMessageCustomParams(dialogId, messageObject.messageOwner);
+        }));
+    }
+
 }
