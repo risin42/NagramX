@@ -616,6 +616,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private final static int add_to_folder = 109;
     private final static int remove_from_folder = 110;
 
+    private final static int select_all = 1000;
+
     private final static int ARCHIVE_ITEM_STATE_PINNED = 0;
     private final static int ARCHIVE_ITEM_STATE_SHOWED = 1;
     private final static int ARCHIVE_ITEM_STATE_HIDDEN = 2;
@@ -3926,6 +3928,30 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     hideActionMode(false);
                 } else if (id == pin || id == read || id == delete || id == clear || id == mute || id == archive || id == block || id == archive2 || id == pin2) {
                     performSelectedDialogsAction(selectedDialogs, id, true, false);
+                } else if (id == select_all) {
+                    final int initialSelectedCount = selectedDialogs.size();
+                    Runnable selectAllAction = () -> {
+                        handleSelectAllDialogs();
+                        if (selectedDialogs.size() != initialSelectedCount) {
+                            AndroidUtilities.runOnUIThread(() -> this.onItemClick(id), 300);
+                        }
+                    };
+                    if (getMessagesController().isDialogsEndReached(folderId)) {
+                        selectAllAction.run();
+                    } else {
+                        NotificationCenter.getInstance(currentAccount).addObserver(new NotificationCenter.NotificationCenterDelegate() {
+                            @Override
+                            public void didReceivedNotification(int id, int account, Object... args) {
+                                if (id == NotificationCenter.dialogsNeedReload) {
+                                    AndroidUtilities.runOnUIThread(() -> {
+                                        NotificationCenter.getInstance(currentAccount).removeObserver(this, NotificationCenter.dialogsNeedReload);
+                                        selectAllAction.run();
+                                    });
+                                }
+                            }
+                        }, NotificationCenter.dialogsNeedReload);
+                        checkListLoad(viewPages[0], 0, viewPages[0].dialogsAdapter.getCurrentCount(), true);
+                    }
                 }
             }
         });
@@ -6715,6 +6741,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         readItem = otherItem.addSubItem(read, R.drawable.msg_markread, LocaleController.getString(R.string.MarkAsRead));
         clearItem = otherItem.addSubItem(clear, R.drawable.msg_clear, LocaleController.getString(R.string.ClearHistory));
         blockItem = otherItem.addSubItem(block, R.drawable.msg_block, LocaleController.getString(R.string.BlockUser));
+        otherItem.addSubItem(select_all, R.drawable.msg_select_between_solar, LocaleController.getString(R.string.SelectAll));
 
         muteItem.setOnLongClickListener(e -> {
             performSelectedDialogsAction(selectedDialogs, mute, true, true);
@@ -7968,6 +7995,10 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     }
 
     private void checkListLoad(ViewPage viewPage, int firstVisibleItem, int lastVisibleItem) {
+        checkListLoad(viewPage, firstVisibleItem, lastVisibleItem, false);
+    }
+
+    private void checkListLoad(ViewPage viewPage, int firstVisibleItem, int lastVisibleItem, boolean loadAll) {
         if (tabsAnimationInProgress || startedTracking || filterTabsView != null && filterTabsView.getVisibility() == View.VISIBLE && filterTabsView.isAnimatingIndicator()) {
             return;
         }
@@ -7999,7 +8030,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
             }
         }
-        if (visibleItemCount > 0 && lastVisibleItem >= getDialogsArray(currentAccount, viewPage.dialogsType, folderId, dialogsListFrozen).size() - 10 ||
+        if (loadAll || visibleItemCount > 0 && lastVisibleItem >= getDialogsArray(currentAccount, viewPage.dialogsType, folderId, dialogsListFrozen).size() - 10 ||
                 visibleItemCount == 0 && (viewPage.dialogsType == 7 || viewPage.dialogsType == 8) && !getMessagesController().isDialogsEndReached(folderId)) {
             loadFromCache = !getMessagesController().isDialogsEndReached(folderId);
             if (loadFromCache || !getMessagesController().isServerDialogsEndReached(folderId)) {
@@ -8013,7 +8044,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             boolean loadArchivedFromCacheFinal = loadArchivedFromCache;
             AndroidUtilities.runOnUIThread(() -> {
                 if (loadFinal) {
-                    getMessagesController().loadDialogs(folderId, -1, 100, loadFromCacheFinal);
+                    int count = 100;
+                    if (loadAll) {
+                        count = getUserConfig().isRealPremium() ? getMessagesController().dialogFiltersChatsLimitPremium : getMessagesController().dialogFiltersChatsLimitDefault;
+                    }
+                    getMessagesController().loadDialogs(folderId, -1, count, loadFromCacheFinal);
                 }
                 if (loadArchivedFinal) {
                     getMessagesController().loadDialogs(1, -1, 100, loadArchivedFromCacheFinal);
@@ -13687,4 +13722,20 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     public boolean isActionBarCrossfadeEnabled() {
         return super.isActionBarCrossfadeEnabled() && actionBar.getTranslationY() == 0 && !rightSlidingDialogContainer.isOpenned;
     }
+
+    private void handleSelectAllDialogs() {
+        DialogsAdapter adapter = viewPages[0].dialogsAdapter;
+        for (int i = 0; i < adapter.getItemCount(); i++) {
+            Object item = adapter.getItem(i);
+            if (item instanceof TLRPC.Dialog dialog && !selectedDialogs.contains(dialog.id)) {
+                View view = null;
+                RecyclerView.ViewHolder holder = viewPages[0].listView.findViewHolderForAdapterPosition(i);
+                if (holder != null) {
+                    view = holder.itemView;
+                }
+                showOrUpdateActionMode(dialog.id, view);
+            }
+        }
+    }
+
 }
