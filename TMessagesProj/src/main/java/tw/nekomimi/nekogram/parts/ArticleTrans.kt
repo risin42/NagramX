@@ -1,6 +1,7 @@
 package tw.nekomimi.nekogram.parts
 
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -18,32 +19,40 @@ import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
-fun HashSet<Any>.filterBaseTexts(): HashSet<Any> {
-    var hasNext: Boolean
-    do {
-        hasNext = false
-        HashSet(this).forEach { item ->
-            when (item) {
-                is TLRPC.TL_textConcat -> {
-                    remove(item)
-                    addAll(item.texts)
-                    hasNext = true
-                }
+private fun extractTextPlainLeaves(
+    richText: TLRPC.RichText,
+    leaves: MutableList<TLRPC.TL_textPlain>
+) {
+    when (richText) {
+        is TLRPC.TL_textPlain -> {
+            if (richText.text.isNotBlank()) {
+                leaves.add(richText)
             }
         }
-    } while (hasNext)
 
-    return this
+        is TLRPC.TL_textConcat -> richText.texts.forEach { extractTextPlainLeaves(it, leaves) }
+        is TLRPC.TL_textBold -> extractTextPlainLeaves(richText.text, leaves)
+        is TLRPC.TL_textItalic -> extractTextPlainLeaves(richText.text, leaves)
+        is TLRPC.TL_textUnderline -> extractTextPlainLeaves(richText.text, leaves)
+        is TLRPC.TL_textStrike -> extractTextPlainLeaves(richText.text, leaves)
+        is TLRPC.TL_textFixed -> extractTextPlainLeaves(richText.text, leaves)
+        is TLRPC.TL_textUrl -> extractTextPlainLeaves(richText.text, leaves)
+        is TLRPC.TL_textEmail -> extractTextPlainLeaves(richText.text, leaves)
+        is TLRPC.TL_textPhone -> extractTextPlainLeaves(richText.text, leaves)
+        is TLRPC.TL_textMarked -> extractTextPlainLeaves(richText.text, leaves)
+        is TLRPC.TL_textSubscript -> extractTextPlainLeaves(richText.text, leaves)
+        is TLRPC.TL_textSuperscript -> extractTextPlainLeaves(richText.text, leaves)
+        is TLRPC.TL_textAnchor -> extractTextPlainLeaves(richText.text, leaves)
+    }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 fun ArticleViewer.doTransLATE() {
     val status = AlertUtil.showProgress(parentActivity)
     status.show()
 
     val transPool = newFixedThreadPoolContext(5, "Article Trans Pool")
-
     val cancel = AtomicBoolean(false)
-
     val adapter = pages[0].adapter
     val translatedTextCache = adapter.translatedTextCache
 
@@ -55,85 +64,83 @@ fun ArticleViewer.doTransLATE() {
     }
 
     GlobalScope.launch(Dispatchers.IO) {
-        val copy = HashMap(pages[0].adapter.textToBlocks)
-        val array = HashSet(pages[0].adapter.textBlocks).filterBaseTexts()
+        val textsToTranslate = HashSet<String>()
+        pages[0].adapter.textBlocks.forEach { item ->
+            when (item) {
+                is TLRPC.RichText -> {
+                    val leaves = mutableListOf<TLRPC.TL_textPlain>()
+                    extractTextPlainLeaves(item, leaves)
+                    leaves.forEach { plainText ->
+                        textsToTranslate.add(plainText.text)
+                    }
+                }
+
+                is String -> {
+                    if (item.isNotBlank()) {
+                        textsToTranslate.add(item)
+                    }
+                }
+            }
+        }
 
         val errorCount = AtomicInteger()
-
         val deferreds = LinkedList<Deferred<Unit>>()
-
-        val all = array.size
-        val taskCount = AtomicInteger(array.size)
+        val all = textsToTranslate.size
+        val taskCount = AtomicInteger(all)
 
         status.uUpdate("0 / $all")
 
-        array.forEach { item ->
-            when (item) {
-                is TLRPC.RichText -> getText(
-                    adapter,
-                    null,
-                    item,
-                    item,
-                    copy[item] ?: copy[item.parentRichText],
-                    1000,
-                    true
-                ).takeIf { it.isNotBlank() }?.toString()
-                is String -> item
-                else -> null
-            }?.also { str ->
-                deferreds.add(async(transPool) {
-                    if (translatedTextCache.containsKey(str)) {
-                        status.uUpdate("${all - taskCount.get()} / $all")
-                        if (taskCount.decrementAndGet() % 10 == 0) UIUtil.runOnUIThread(Runnable {
-                            updatePaintSize()
-                        })
+        textsToTranslate.forEach { str ->
+            deferreds.add(async(transPool) {
+                if (cancel.get()) return@async
 
-                        return@async
+                if (translatedTextCache.containsKey(str)) {
+                    taskCount.decrementAndGet()
+                    status.uUpdate("${all - taskCount.get()} / $all")
+                    return@async
+                }
+
+                runCatching {
+                    val translatedResult = Translator.translateArticle(str)
+                    translatedTextCache[str] = translatedResult
+
+                    status.uUpdate("${all - taskCount.get()} / $all")
+
+                    if (taskCount.decrementAndGet() % 10 == 0) {
+                        UIUtil.runOnUIThread { updatePaintSize() }
                     }
-                    runCatching {
-                        if (cancel.get()) return@async
+                }.onFailure {
+                    if (cancel.get()) return@async
 
-                        val translatedResult = Translator.translateArticle(str)
-                        translatedTextCache[str] = translatedResult
-
-                        status.uUpdate((all - taskCount.get()).toString() + " / " + all)
-
-                        if (taskCount.decrementAndGet() % 10 == 0) UIUtil.runOnUIThread(Runnable {
+                    if (errorCount.incrementAndGet() > 3) {
+                        cancel.set(true)
+                        UIUtil.runOnUIThread {
+                            status.dismiss()
                             updatePaintSize()
-                        })
-                    }.onFailure {
-                        if (cancel.get()) return@async
-
-                        if (errorCount.incrementAndGet() > 3) {
-                            cancel.set(true)
-                            UIUtil.runOnUIThread(Runnable {
-                                cancel.set(true)
-                                status.dismiss()
-                                updatePaintSize()
-                                updateTranslateButton(false)
-                                translatedTextCache.clear()
-                                AlertUtil.showTransFailedDialog(
-                                    parentActivity,
-                                    it is UnsupportedOperationException,
-                                    it.message ?: it.javaClass.simpleName
-                                ) {
-                                    doTransLATE()
-                                }
-                            })
+                            updateTranslateButton(false)
+                            translatedTextCache.clear()
+                            AlertUtil.showTransFailedDialog(
+                                parentActivity,
+                                it is UnsupportedOperationException,
+                                it.message ?: it.javaClass.simpleName
+                            ) {
+                                doTransLATE()
+                            }
                         }
                     }
-                })
-            }.also {
-                if (it == null) taskCount.decrementAndGet()
-            }
+                }
+            })
         }
 
         deferreds.awaitAll()
         transPool.cancel()
+        transPool.close()
 
-        if (!cancel.get()) UIUtil.runOnUIThread {
-            updatePaintSize()
-            status.dismiss()
+        if (!cancel.get()) {
+            UIUtil.runOnUIThread {
+                updatePaintSize()
+                status.dismiss()
+            }
         }
     }
 }
