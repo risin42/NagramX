@@ -1,7 +1,10 @@
 package tw.nekomimi.nekogram.settings;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -34,6 +37,7 @@ import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarLayout;
 import org.telegram.ui.ActionBar.INavigationLayout;
+import org.telegram.ui.ActionBar.SimpleTextView;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ActionBar.ThemeDescription;
 import org.telegram.ui.Cells.EmptyCell;
@@ -50,6 +54,7 @@ import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.SeekBarView;
 import org.telegram.ui.Components.UndoView;
+import org.telegram.ui.LaunchActivity;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -81,6 +86,10 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private ChatBlurAlphaSeekBar chatBlurAlphaSeekbar;
     private UndoView restartTooltip;
     private Parcelable recyclerViewState = null;
+
+    private boolean wasCentered = false;
+    private boolean wasCenteredAtBeginning = false;
+    private float centeredMeasure = -1;
 
     private final CellGroup cellGroup = new CellGroup(this);
 
@@ -307,6 +316,8 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             cellGroup.rows.remove(usePersianCalendarRow);
             cellGroup.rows.remove(displayPersianCalendarByLatinRow);
         }
+        wasCentered = isCentered();
+        wasCenteredAtBeginning = wasCentered;
 
         checkProfileConfigCellRows();
         checkCustomDoHCellRows();
@@ -495,6 +506,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             } else if (key.equals(NaConfig.INSTANCE.getCenterActionBarTitleType().getKey())) {
                 int value = (int) newValue;
                 NaConfig.INSTANCE.getCenterActionBarTitle().setConfigBool(value != 0);
+                animateActionBarUpdate(this);
             } else if (key.equals(NaConfig.INSTANCE.getHideArchive().getKey())) {
                 setCanNotChange();
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(openArchiveOnPullRow));
@@ -734,7 +746,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             setClickable(true);
 
             textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-            textPaint.setTextSize(AndroidUtilities.dp(16));
+            textPaint.setTextSize(dp(16));
 
             sizeBar = new SeekBarView(context);
             sizeBar.setReportChanges(true);
@@ -751,7 +763,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
         @Override
         protected void onDraw(Canvas canvas) {
             textPaint.setColor(Theme.getColor(Theme.key_windowBackgroundWhiteValueText));
-            canvas.drawText(String.valueOf(NekoConfig.chatBlueAlphaValue.Int()), getMeasuredWidth() - AndroidUtilities.dp(39), AndroidUtilities.dp(28), textPaint);
+            canvas.drawText(String.valueOf(NekoConfig.chatBlueAlphaValue.Int()), getMeasuredWidth() - dp(39), dp(28), textPaint);
         }
 
         @Override
@@ -838,4 +850,43 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
         Locale locale = LocaleController.getInstance().getCurrentLocale();
         return locale != null && locale.getLanguage().equals("fa");
     }
+
+    private boolean isCentered() {
+        return NaConfig.INSTANCE.getCenterActionBarTitle().Bool() && NaConfig.INSTANCE.getCenterActionBarTitleType().Int() != 3;
+    }
+
+    private void animateActionBarUpdate(BaseNekoXSettingsActivity fragment) {
+        boolean centered = isCentered();
+        ActionBar actionBar = fragment.getActionBar();
+        if (wasCentered == centered) {
+            return;
+        }
+        if (actionBar != null) {
+            SimpleTextView titleTextView = actionBar.getTitleTextView();
+            if (centeredMeasure == -1) {
+                centeredMeasure = actionBar.getMeasuredWidth() / 2f - titleTextView.getTextWidth() / 2f - dp((AndroidUtilities.isTablet() ? 80 : 72));
+            }
+            titleTextView.animate().translationX(centeredMeasure * (centered ? 1 : 0) - (wasCenteredAtBeginning ? Math.abs(centeredMeasure) : 0)).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    wasCentered = centered;
+                    reloadUI(0);
+                    LaunchActivity.makeRipple(centered ? (actionBar.getMeasuredWidth() / 2f) : 0, 0, centered ? 1.3f : 0.1f);
+                }
+            }).start();
+        } else {
+            reloadUI(INavigationLayout.REBUILD_FLAG_REBUILD_LAST);
+        }
+    }
+
+    private void reloadUI(int flags) {
+        RecyclerView.LayoutManager layoutManager = listView.getLayoutManager();
+        if (layoutManager != null) {
+            recyclerViewState = layoutManager.onSaveInstanceState();
+            parentLayout.rebuildFragments(flags);
+            layoutManager.onRestoreInstanceState(recyclerViewState);
+        }
+    }
+
 }
