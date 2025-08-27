@@ -10772,11 +10772,6 @@ public class MessagesController extends BaseController implements NotificationCe
                 newStrings.put(key, newPrintingStrings);
                 newTypes.put(key, newPrintingStringsTypes);
 
-                if (NekoConfig.ignoreBlocked.Bool()) {
-                    arr = arr.stream().filter(it -> getMessagesController().blockePeers.indexOfKey(it.userId) == -1).collect(Collectors.toCollection(ArrayList::new));
-                }
-                if (arr.isEmpty()) continue;
-
                 int type = 0;
                 CharSequence text = null;
                 if (key > 0 || isEncryptedChat || arr.size() == 1) {
