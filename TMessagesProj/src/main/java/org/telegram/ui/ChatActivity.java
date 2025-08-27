@@ -44733,7 +44733,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             if (hideTitleItem != null) hideTitleItem.setVisibility(android.view.View.GONE);
         } else if (id == nkbtn_detail) {
-            presentFragment(new MessageDetailsActivity(getSelectedMessages().get(0)));
+            presentFragment(new MessageDetailsActivity(getSelectedMessages().get(0), getValidGroupedMessage(getSelectedMessages().get(0))));
         } else if (id == nkbtn_sharemessage) {
             var selected = getSelectedMessages();
             if (selected.isEmpty()) return;
@@ -44875,7 +44875,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 break;
             }
             case nkbtn_detail: {
-                presentFragment(new MessageDetailsActivity(selectedObject));
+                presentFragment(new MessageDetailsActivity(selectedObject, selectedObjectGroup));
                 break;
             }
             case nkbtn_view_history: {

@@ -626,4 +626,24 @@ public class MessageHelper extends BaseController {
         }));
     }
 
+    public static String getMessagePlainText(MessageObject messageObject, MessageObject.GroupedMessages messageGroup) {
+        if (messageObject.isPoll()) {
+            TLRPC.Poll poll = ((TLRPC.TL_messageMediaPoll) messageObject.messageOwner.media).poll;
+            StringBuilder pollText = new StringBuilder(poll.question.text).append("\n");
+            for (TLRPC.PollAnswer answer : poll.answers) {
+                pollText.append("\n\uD83D\uDD18 ");
+                pollText.append(answer.text.text);
+            }
+            return pollText.toString();
+        } else if (messageObject.isVoiceTranscriptionOpen()) {
+            return messageObject.messageOwner.voiceTranscription;
+        } else if (messageGroup != null) {
+            MessageObject captionMessage = messageGroup.findCaptionMessageObject();
+            if (captionMessage != null && !TextUtils.isEmpty(captionMessage.caption)) {
+                return captionMessage.caption.toString();
+            }
+        }
+        return messageObject.messageOwner.message;
+    }
+
 }
