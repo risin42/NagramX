@@ -37,8 +37,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
-import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AyuFilter;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 
 public class DownloadController extends BaseController implements NotificationCenter.NotificationCenterDelegate {
 
@@ -613,14 +613,8 @@ public class DownloadController extends BaseController implements NotificationCe
 
     public boolean canDownloadMedia(MessageObject messageObject) {
         if (messageObject.getDocument() != null) {
-            String documentName = messageObject.getDocumentName();
-            if (!TextUtils.isEmpty(documentName)) {
-                if ((NekoConfig.disableAutoDownloadingWin32Executable.Bool() &&
-                        documentName.toLowerCase().matches(".*\\.(cmd|bat|com|exe|lnk|msi|ps1|reg|vb|vbe|vbs|vbscript)")
-                ) || (NekoConfig.disableAutoDownloadingArchive.Bool() &&
-                        documentName.toLowerCase().matches(".*\\.(apk|zip|7z|tar|gz|zst|iso|xz|lha|lzh)")
-                )
-                ) return false;
+            if (AndroidUtil.isAutoDownloadDisabledFor(messageObject.getDocumentName())) {
+                return false;
             }
         }
         if (messageObject.type == MessageObject.TYPE_STORY) {
@@ -681,14 +675,8 @@ public class DownloadController extends BaseController implements NotificationCe
         if (messageObject.isHiddenSensitive())
             return 0;
         if (messageObject.getDocument() != null) {
-            String documentName = messageObject.getDocumentName();
-            if (!TextUtils.isEmpty(documentName)) {
-                if ((NekoConfig.disableAutoDownloadingWin32Executable.Bool() &&
-                        documentName.toLowerCase().matches(".*\\.(cmd|bat|com|exe|lnk|msi|ps1|reg|vb|vbe|vbs|vbscript)")
-                    ) || (NekoConfig.disableAutoDownloadingArchive.Bool() &&
-                        documentName.toLowerCase().matches(".*\\.(apk|zip|7z|tar|gz|zst|iso|xz|lha|lzh)")
-                    )
-                ) return 0;
+            if (AndroidUtil.isAutoDownloadDisabledFor(messageObject.getDocumentName())) {
+                return 0;
             }
         }
         return canDownloadMediaInternal(messageObject);
