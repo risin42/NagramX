@@ -66,7 +66,7 @@ public class SharingLocationsAlert extends BottomSheet implements NotificationCe
         fixNavigationBar();
 
         shadowDrawable = context.getResources().getDrawable(R.drawable.sheet_shadow_round).mutate();
-        shadowDrawable.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogBackground), PorterDuff.Mode.SRC_IN));
+        shadowDrawable.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogBackground), PorterDuff.Mode.MULTIPLY));
 
         containerView = new FrameLayout(context) {
 

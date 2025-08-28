@@ -422,7 +422,7 @@ public class FiltersListBottomSheet extends BottomSheet implements NotificationC
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             BottomSheet.BottomSheetCell cell = (BottomSheet.BottomSheetCell) holder.itemView;
             if (position < dialogFilters.size()) {
-                cell.getImageView().setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_dialogIcon), PorterDuff.Mode.SRC_IN));
+                cell.getImageView().setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_dialogIcon), PorterDuff.Mode.MULTIPLY));
                 MessagesController.DialogFilter filter = dialogFilters.get(position);
                 cell.setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
                 CharSequence title = filter.name;
@@ -442,8 +442,8 @@ public class FiltersListBottomSheet extends BottomSheet implements NotificationC
                 cell.getImageView().setColorFilter(null);
                 Drawable drawable1 = context.getResources().getDrawable(R.drawable.poll_add_circle);
                 Drawable drawable2 = context.getResources().getDrawable(R.drawable.poll_add_plus);
-                drawable1.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_switchTrackChecked), PorterDuff.Mode.SRC_IN));
-                drawable2.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_checkboxCheck), PorterDuff.Mode.SRC_IN));
+                drawable1.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_switchTrackChecked), PorterDuff.Mode.MULTIPLY));
+                drawable2.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_checkboxCheck), PorterDuff.Mode.MULTIPLY));
                 CombinedDrawable combinedDrawable = new CombinedDrawable(drawable1, drawable2);
                 cell.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlueText4));
                 cell.setTextAndIcon(LocaleController.getString(R.string.CreateNewFilter), combinedDrawable);

@@ -596,7 +596,7 @@ public class VideoTimelineView extends View {
         public void updateColors() {
             tooltipPaint.setColor(Theme.getColor(Theme.key_chat_gifSaveHintText));
             tooltipBackground = Theme.createRoundRectDrawable(AndroidUtilities.dp(5), Theme.getColor(Theme.key_chat_gifSaveHintBackground));
-            tooltipBackgroundArrow.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_gifSaveHintBackground), PorterDuff.Mode.SRC_IN));
+            tooltipBackgroundArrow.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_gifSaveHintBackground), PorterDuff.Mode.MULTIPLY));
         }
 
         public void setCx(float v) {

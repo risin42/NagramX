@@ -3360,8 +3360,8 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
 
         Drawable drawable1 = getContext().getResources().getDrawable(R.drawable.input_calendar1).mutate();
         Drawable drawable2 = getContext().getResources().getDrawable(R.drawable.input_calendar2).mutate();
-        drawable1.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.SRC_IN));
-        drawable2.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_recordedVoiceDot), PorterDuff.Mode.SRC_IN));
+        drawable1.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.MULTIPLY));
+        drawable2.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_recordedVoiceDot), PorterDuff.Mode.MULTIPLY));
         CombinedDrawable combinedDrawable = new CombinedDrawable(drawable1, drawable2);
 
         scheduledButton = new ImageView(getContext());
@@ -3488,7 +3488,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
         }
         botButton = new ImageView(getContext());
         botButton.setImageDrawable(botButtonDrawable = new ReplaceableIconDrawable(getContext()));
-        botButtonDrawable.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.SRC_IN));
+        botButtonDrawable.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.MULTIPLY));
         botButtonDrawable.setIcon(R.drawable.input_bot2, false);
         botButton.setScaleType(ImageView.ScaleType.CENTER);
         if (Build.VERSION.SDK_INT >= 21) {
@@ -10417,7 +10417,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
         int color = getThemedColor(Theme.key_chat_messagePanelVoicePressed);
         int defaultAlpha = Color.alpha(color);
         if (doneCheckDrawable != null) {
-            doneCheckDrawable.setColorFilter(new PorterDuffColorFilter(ColorUtils.setAlphaComponent(color, (int) (defaultAlpha * (0.58f + 0.42f * doneButtonEnabledProgress))), PorterDuff.Mode.SRC_IN));
+            doneCheckDrawable.setColorFilter(new PorterDuffColorFilter(ColorUtils.setAlphaComponent(color, (int) (defaultAlpha * (0.58f + 0.42f * doneButtonEnabledProgress))), PorterDuff.Mode.MULTIPLY));
         }
         if (botCommandsMenuContainer != null) {
             botCommandsMenuContainer.updateColors();

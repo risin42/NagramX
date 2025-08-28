@@ -27,7 +27,7 @@ public class ArchiveHintInnerCell extends FrameLayout {
         super(context);
 
         imageView = new ImageView(context);
-        imageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_nameMessage_threeLines), PorterDuff.Mode.SRC_IN));
+        imageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_nameMessage_threeLines), PorterDuff.Mode.MULTIPLY));
 
         headerTextView = new TextView(context);
         headerTextView.setTextColor(Theme.getColor(Theme.key_chats_nameMessage_threeLines));
@@ -48,7 +48,7 @@ public class ArchiveHintInnerCell extends FrameLayout {
 
                 imageView2 = new ImageView(context);
                 imageView2.setImageResource(R.drawable.chats_archive_arrow);
-                imageView2.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_unreadCounter), PorterDuff.Mode.SRC_IN));
+                imageView2.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_unreadCounter), PorterDuff.Mode.MULTIPLY));
                 addView(imageView2, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 20, 8, 0));
 
                 headerTextView.setText(LocaleController.getString(R.string.ArchiveHintHeader1));

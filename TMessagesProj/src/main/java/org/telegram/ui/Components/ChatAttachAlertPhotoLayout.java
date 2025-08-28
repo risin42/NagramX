@@ -1150,7 +1150,7 @@ public class ChatAttachAlertPhotoLayout extends ChatAttachAlert.AttachAlertLayou
         };
         AndroidUtilities.updateViewVisibilityAnimated(recordTime, false, 1f, false);
         recordTime.setBackgroundResource(R.drawable.system);
-        recordTime.getBackground().setColorFilter(new PorterDuffColorFilter(0x66000000, PorterDuff.Mode.SRC_IN));
+        recordTime.getBackground().setColorFilter(new PorterDuffColorFilter(0x66000000, PorterDuff.Mode.MULTIPLY));
         recordTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
         recordTime.setTypeface(AndroidUtilities.bold());
         recordTime.setAlpha(0.0f);
@@ -3750,7 +3750,7 @@ public class ChatAttachAlertPhotoLayout extends ChatAttachAlert.AttachAlertLayou
         gridView.setGlowColor(getThemedColor(Theme.key_dialogScrollGlow));
         RecyclerView.ViewHolder holder = gridView.findViewHolderForAdapterPosition(0);
         if (holder != null && holder.itemView instanceof PhotoAttachCameraCell) {
-            ((PhotoAttachCameraCell) holder.itemView).getImageView().setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogCameraIcon), PorterDuff.Mode.SRC_IN));
+            ((PhotoAttachCameraCell) holder.itemView).getImageView().setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogCameraIcon), PorterDuff.Mode.MULTIPLY));
         }
 
         dropDown.setTextColor(getThemedColor(textColor));

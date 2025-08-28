@@ -131,7 +131,7 @@ public class EmptyTextProgressView extends FrameLayout {
         } else {
             Drawable drawable = getContext().getResources().getDrawable(resId).mutate();
             if (drawable != null) {
-                drawable.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_emptyListPlaceholder), PorterDuff.Mode.SRC_IN));
+                drawable.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_emptyListPlaceholder), PorterDuff.Mode.MULTIPLY));
             }
             textView.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
             textView.setCompoundDrawablePadding(AndroidUtilities.dp(1));

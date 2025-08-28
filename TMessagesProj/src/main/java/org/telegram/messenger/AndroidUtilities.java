@@ -137,13 +137,14 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.android.internal.telephony.ITelephony;
 import com.google.android.exoplayer2.util.Consumer;
-
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.Task;
 
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.messenger.utils.CustomHtml;
 import org.telegram.tgnet.ConnectionsManager;
-import org.telegram.tgnet.RequestTimeDelegate;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.AlertDialog;
@@ -213,7 +214,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -900,7 +900,6 @@ public class AndroidUtilities {
         } catch (Exception e) {
 
         }
-//        ApplicationLoader.appCenterLog(new RuntimeException("can't create logs directory"));
         return null;
     }
 
@@ -1714,6 +1713,28 @@ public class AndroidUtilities {
 
     public static boolean isMapsInstalled(BaseFragment fragment) {
         return true;
+        /*String pkg = ApplicationLoader.getMapsProvider().getMapsAppPackageName();
+        try {
+            ApplicationLoader.applicationContext.getPackageManager().getApplicationInfo(pkg, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            if (fragment.getParentActivity() == null) {
+                return false;
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getParentActivity());
+            builder.setMessage(getString(ApplicationLoader.getMapsProvider().getInstallMapsString()));
+            builder.setPositiveButton(getString(R.string.OK), (dialogInterface, i) -> {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + pkg));
+                    fragment.getParentActivity().startActivityForResult(intent, 500);
+                } catch (Exception e1) {
+                    FileLog.e(e1);
+                }
+            });
+            builder.setNegativeButton(getString(R.string.Cancel), null);
+            fragment.showDialog(builder.create());
+            return false;
+        }*/
     }
 
     public static int[] toIntArray(List<Integer> integers) {
@@ -3520,10 +3541,6 @@ public class AndroidUtilities {
             window.clearFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         }
     }*/
-
-//    public static void appCenterLog(Throwable e) {
-//        ApplicationLoader.appCenterLog(e);
-//    }
 
     public static boolean shouldShowClipboardToast() {
         boolean origin = (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || !OneUIUtilities.hasBuiltInClipboardToasts()) && Build.VERSION.SDK_INT < 32;

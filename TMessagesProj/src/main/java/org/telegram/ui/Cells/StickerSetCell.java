@@ -106,7 +106,7 @@ public class StickerSetCell extends FrameLayout {
                 optionsButton.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_stickers_menuSelector)));
             }
             if (option == 1) {
-                optionsButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_stickers_menu), PorterDuff.Mode.SRC_IN));
+                optionsButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_stickers_menu), PorterDuff.Mode.MULTIPLY));
                 optionsButton.setImageResource(R.drawable.msg_actions);
                 optionsButton.setContentDescription(LocaleController.getString(R.string.AccDescrMoreOptions));
                 addView(optionsButton, LayoutHelper.createFrame(40, 40, (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.CENTER_VERTICAL));
@@ -116,7 +116,7 @@ public class StickerSetCell extends FrameLayout {
                 reorderButton.setVisibility(GONE);
                 reorderButton.setScaleType(ImageView.ScaleType.CENTER);
                 reorderButton.setImageResource(R.drawable.list_reorder);
-                reorderButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_stickers_menu), PorterDuff.Mode.SRC_IN));
+                reorderButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_stickers_menu), PorterDuff.Mode.MULTIPLY));
                 addView(reorderButton, LayoutHelper.createFrameRelatively(58, 58, Gravity.END));
 
                 checkBox = new CheckBox2(context, 21);
@@ -125,7 +125,7 @@ public class StickerSetCell extends FrameLayout {
                 checkBox.setDrawBackgroundAsArc(3);
                 addView(checkBox, LayoutHelper.createFrameRelatively(24, 24, Gravity.START, 34, 30, 0, 0));
             } else if (option == 3) {
-                optionsButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_featuredStickers_addedIcon), PorterDuff.Mode.SRC_IN));
+                optionsButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_featuredStickers_addedIcon), PorterDuff.Mode.MULTIPLY));
                 optionsButton.setImageResource(R.drawable.floating_check);
                 addView(optionsButton, LayoutHelper.createFrame(40, 40, (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.TOP, (LocaleController.isRTL ? 10 : 0), 9, (LocaleController.isRTL ? 0 : 10), 0));
             }

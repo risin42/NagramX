@@ -639,14 +639,6 @@ public class ApplicationLoader extends Application {
         applicationLoaderInstance.checkForUpdatesInternal();
     }
 
-    public static void appCenterLog(Throwable e) {
-        applicationLoaderInstance.appCenterLogInternal(e);
-    }
-
-    protected void appCenterLogInternal(Throwable e) {
-
-    }
-
     protected void checkForUpdatesInternal() {
 
     }

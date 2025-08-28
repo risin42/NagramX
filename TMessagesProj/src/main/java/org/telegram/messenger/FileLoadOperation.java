@@ -49,7 +49,6 @@ public class FileLoadOperation {
     private boolean forceSmallChunk;
     private Runnable fileWriteRunnable;
     public boolean isStory;
-    public boolean isVideo;
 
     public volatile boolean caughtPremiumFloodWait;
     public void setStream(FileLoadOperationStream stream, boolean streamPriority, long streamOffset) {
@@ -441,7 +440,6 @@ public class FileLoadOperation {
                     }
                 }
             }
-            isVideo = (MessageObject.isVideoDocument(documentLocation));
             ungzip = "application/x-tgsticker".equals(documentLocation.mime_type) || "application/x-tgwallpattern".equals(documentLocation.mime_type);
             totalBytesCount = documentLocation.size;
             if (key != null) {
@@ -784,7 +782,7 @@ public class FileLoadOperation {
             }
             FileLog.e("FileLoadOperation " + getFileName() + " removing stream listener " + operation);
             streamListeners.remove(operation);
-//            if (!isStory && !isVideo && streamListeners.isEmpty()) {
+//            if (!isStory && streamListeners.isEmpty()) {
 //                Utilities.stageQueue.cancelRunnable(cancelAfterNoStreamListeners);
 //                Utilities.stageQueue.postRunnable(cancelAfterNoStreamListeners, 1200);
 //            } else if (!streamListeners.isEmpty()) {
@@ -1001,8 +999,6 @@ public class FileLoadOperation {
         if (parentObject instanceof TLRPC.TL_theme) {
             TLRPC.TL_theme theme = (TLRPC.TL_theme) parentObject;
             cacheFileFinal = new File(ApplicationLoader.getFilesDirFixed(), "remote" + theme.id + ".attheme");
-        } else if (fileName != null && !encryptFile) {
-            cacheFileFinal = new File(storePath, fileName);
         } else {
             if (!encryptFile) {
                 cacheFileFinal = new File(storePath, storeFileName);

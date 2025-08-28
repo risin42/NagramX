@@ -85,7 +85,7 @@ public class AccountSelectCell extends FrameLayout {
             checkImageView = new ImageView(context);
             checkImageView.setImageResource(R.drawable.account_check);
             checkImageView.setScaleType(ImageView.ScaleType.CENTER);
-            checkImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_menuItemCheck), PorterDuff.Mode.SRC_IN));
+            checkImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_menuItemCheck), PorterDuff.Mode.MULTIPLY));
             addView(checkImageView, LayoutHelper.createFrame(40, LayoutHelper.MATCH_PARENT, Gravity.RIGHT | Gravity.TOP, 0, 0, 6, 0));
         }
     }

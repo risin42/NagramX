@@ -775,7 +775,7 @@ public class EmbedBottomSheet extends BottomSheet {
         pipButton.setContentDescription(LocaleController.getString(R.string.AccDescrPipMode));
         pipButton.setEnabled(false);
         pipButton.setAlpha(0.5f);
-        pipButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_dialogTextBlue4), PorterDuff.Mode.SRC_IN));
+        pipButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_dialogTextBlue4), PorterDuff.Mode.MULTIPLY));
         pipButton.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.getColor(Theme.key_dialogButtonSelector), 0));
         imageButtonsContainer.addView(pipButton, LayoutHelper.createFrame(48, 48, Gravity.TOP | Gravity.LEFT, 0, 0, 4, 0));
         pipButton.setOnClickListener(v -> {

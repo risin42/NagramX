@@ -241,7 +241,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
 
             imageView = new ImageView(context);
             imageView.setScaleType(ImageView.ScaleType.CENTER);
-            imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogIcon), PorterDuff.Mode.SRC_IN));
+            imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogIcon), PorterDuff.Mode.MULTIPLY));
             addView(imageView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 40, Gravity.CENTER_VERTICAL | (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT)));
 
             textView = new TextView(context);
@@ -1543,7 +1543,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
         }
         AlertDialogCell cell = itemViews.get(item);
         cell.textView.setTextColor(color);
-        cell.imageView.setColorFilter(new PorterDuffColorFilter(icon, PorterDuff.Mode.SRC_IN));
+        cell.imageView.setColorFilter(new PorterDuffColorFilter(icon, PorterDuff.Mode.MULTIPLY));
     }
 
     public int getItemsCount() {

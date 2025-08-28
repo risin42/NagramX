@@ -2431,7 +2431,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
 
         shadow = new View(context);
         shadow.setBackgroundResource(R.drawable.attach_shadow);
-        shadow.getBackground().setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.SRC_IN));
+        shadow.getBackground().setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.MULTIPLY));
         containerView.addView(shadow, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 2, Gravity.BOTTOM | Gravity.LEFT, 0, 0, 0, 84));
 
         buttonsRecyclerView = new RecyclerListView(context) {

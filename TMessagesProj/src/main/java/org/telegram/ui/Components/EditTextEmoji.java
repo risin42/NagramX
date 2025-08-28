@@ -520,7 +520,7 @@ public class EditTextEmoji extends FrameLayout implements NotificationCenter.Not
             editText.setHintTextColor(getThemedColor(Theme.key_dialogTextHint));
             editText.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
         }
-        emojiIconDrawable.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chats_menuItemText), PorterDuff.Mode.SRC_IN));
+        emojiIconDrawable.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chats_menuItemText), PorterDuff.Mode.MULTIPLY));
         if (emojiView != null) {
             emojiView.updateColors();
         }

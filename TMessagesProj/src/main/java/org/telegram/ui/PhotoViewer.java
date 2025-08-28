@@ -2082,8 +2082,6 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
     private boolean shownControlsByEnd = false;
     private boolean actionBarWasShownBeforeByEnd = false;
 
-    private boolean bottomTouchEnabled = true;
-
     private final ArrayList<MessageObject> imagesArrTemp = new ArrayList<>();
     private final SparseArray<MessageObject>[] imagesByIdsTemp = new SparseArray[] {new SparseArray<>(), new SparseArray<>()};
     private final ArrayList<MessageObject> imagesArr = new ArrayList<>();
@@ -2102,25 +2100,15 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
 
     public interface PageBlocksAdapter {
         int getItemsCount();
-
         TLRPC.PageBlock get(int index);
-
         List<TLRPC.PageBlock> getAll();
-
         boolean isVideo(int index);
-
         TLObject getMedia(int index);
-
         File getFile(int index);
-
         String getFileName(int index);
-
         CharSequence getCaption(int index);
-
         TLRPC.PhotoSize getFileLocation(TLObject media, int[] size);
-
         void updateSlideshowCell(TLRPC.PageBlock currentPageBlock);
-
         Object getParentObject();
         boolean isHardwarePlayer(int index);
     }
@@ -2892,74 +2880,42 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         public void onClose() {
 
         }
-
     }
 
     public interface PhotoViewerProvider {
         default void spoilerPressed() { }
-
         PlaceProviderObject getPlaceForPhoto(MessageObject messageObject, TLRPC.FileLocation fileLocation, int index, boolean needPreview, boolean closing);
-
         ImageReceiver.BitmapHolder getThumbForPhoto(MessageObject messageObject, TLRPC.FileLocation fileLocation, int index);
-
         void willSwitchFromPhoto(MessageObject messageObject, TLRPC.FileLocation fileLocation, int index);
-
         void willHidePhotoViewer();
-
         boolean isPhotoChecked(int index);
-
         int setPhotoChecked(int index, VideoEditedInfo videoEditedInfo);
-
         int setPhotoUnchecked(Object photoEntry);
-
         boolean cancelButtonPressed();
-
         void needAddMorePhotos();
-
         void sendButtonPressed(int index, VideoEditedInfo videoEditedInfo, boolean notify, int scheduleDate, boolean forceDocument);
         void replaceButtonPressed(int index, VideoEditedInfo videoEditedInfo);
-
         boolean canEdit(int index);
         boolean canReplace(int index);
-
         int getSelectedCount();
-
         void updatePhotoAtIndex(int index);
-
         boolean allowSendingSubmenu();
-
         boolean allowCaption();
-
         boolean scaleToFill();
-
         ArrayList<Object> getSelectedPhotosOrder();
-
         HashMap<Object, Object> getSelectedPhotos();
-
         boolean canScrollAway();
-
         int getPhotoIndex(int index);
-
         void deleteImageAtIndex(int index);
-
         String getDeleteMessageString();
-
         boolean canCaptureMorePhotos();
-
         void openPhotoForEdit(String file, String thumb, boolean isVideo);
-
         int getTotalImageCount();
-
         boolean loadMore();
-
         CharSequence getTitleFor(int index);
-
         CharSequence getSubtitleFor(int index);
-
         MessageObject getEditingMessageObject();
-
         void onCaptionChanged(CharSequence caption);
-
         boolean closeKeyboard();
         boolean validateGroupId(long groupId);
         void onApplyCaption(CharSequence caption);
@@ -4454,11 +4410,11 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             if (scheduled) {
                 return;
             }
-            // --- Nagram X hook
+
             if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
                 return;
             }
-            // --- Nagram X hook
+
             long channelId = (Long) args[1];
             ArrayList<Integer> markAsDeletedMessages = (ArrayList<Integer>) args[0];
             boolean reset = false;
@@ -6090,9 +6046,9 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         navigationBar.setBackgroundColor((sendPhotoType == SELECT_TYPE_STICKER ? 0xFF000000 : 0x7f000000));
         windowView.addView(navigationBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, navigationBarHeight / AndroidUtilities.density, Gravity.BOTTOM | Gravity.FILL_HORIZONTAL));
 
-        pressedDrawable[0] = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[]{0x32000000, 0});
+        pressedDrawable[0] = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[] {0x32000000, 0});
         pressedDrawable[0].setShape(GradientDrawable.RECTANGLE);
-        pressedDrawable[1] = new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, new int[]{0x32000000, 0});
+        pressedDrawable[1] = new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, new int[] {0x32000000, 0});
         pressedDrawable[1].setShape(GradientDrawable.RECTANGLE);
 
         groupedPhotosListView = new GroupedPhotosListView(activityContext, dp(10));
@@ -7594,7 +7550,6 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                 cell.setMinimumWidth(dp(196));
                 cell.setColors(0xffffffff, 0xffffffff);
                 sendPopupLayout.addView(cell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
-
                 cell.setOnClickListener(v -> {
                     if (sendPopupWindow != null && sendPopupWindow.isShowing()) {
                         sendPopupWindow.dismiss();
@@ -7660,6 +7615,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             try {
                 if (!NekoConfig.disableVibration.Bool()) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             } catch (Exception ignored) {}
+
             return false;
         });
 
@@ -11198,7 +11154,9 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         if (aspectRatioFrameLayout != null) {
             try {
                 containerView.removeView(aspectRatioFrameLayout);
-            } catch (Throwable ignore) {}
+            } catch (Throwable ignore) {
+
+            }
             aspectRatioFrameLayout = null;
         }
         cancelFlashAnimations();
@@ -15837,7 +15795,6 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             if (sharedMediaType == MediaDataController.MEDIA_FILE) {
                 if (canZoom = newMessageObject.canPreviewDocument()) {
                     menuItem.showSubItem(gallery_menu_scan);
-                    // TODO: NekoX Fix allowShare
                     if (allowShare) {
                         galleryButton.setVisibility(View.VISIBLE);
                         galleryGap.setVisibility(View.VISIBLE);
@@ -17113,7 +17070,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         if (Instance != null) {
             result = Instance.isVisible && !Instance.disableShowCheck && object != null &&
                     ((Instance.currentFileLocation != null && object.local_id == Instance.currentFileLocation.location.local_id && object.volume_id == Instance.currentFileLocation.location.volume_id && object.dc_id == Instance.currentFileLocation.dc_id) ||
-                            (Instance.currentFileLocationVideo != null && object.local_id == Instance.currentFileLocationVideo.location.local_id && object.volume_id == Instance.currentFileLocationVideo.location.volume_id && object.dc_id == Instance.currentFileLocationVideo.dc_id));
+                     (Instance.currentFileLocationVideo != null && object.local_id == Instance.currentFileLocationVideo.location.local_id && object.volume_id == Instance.currentFileLocationVideo.location.volume_id && object.dc_id == Instance.currentFileLocationVideo.dc_id));
         }
         return result;
     }
@@ -17165,18 +17122,15 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         return openPhoto(messageObject, null, null, null, null, null, null, 0, provider, null, dialogId, mergeDialogId, topicId, fullScreenVideo, null, null);
     }
 
-    public boolean openPhoto(final TLRPC.FileLocation fileLocation,
-                             final PhotoViewerProvider provider) {
+    public boolean openPhoto(final TLRPC.FileLocation fileLocation, final PhotoViewerProvider provider) {
         return openPhoto(null, fileLocation, null, null, null, null, null, 0, provider, null, 0, 0, 0, true, null, null);
     }
 
-    public boolean openPhotoWithVideo(final TLRPC.FileLocation fileLocation, ImageLocation
-            videoLocation, final PhotoViewerProvider provider) {
+    public boolean openPhotoWithVideo(final TLRPC.FileLocation fileLocation, ImageLocation videoLocation, final PhotoViewerProvider provider) {
         return openPhoto(null, fileLocation, null, videoLocation, null, null, null, 0, provider, null, 0, 0, 0, true, null, null);
     }
 
-    public boolean openPhoto(final TLRPC.FileLocation fileLocation,
-                             final ImageLocation imageLocation, final PhotoViewerProvider provider) {
+    public boolean openPhoto(final TLRPC.FileLocation fileLocation, final ImageLocation imageLocation, final PhotoViewerProvider provider) {
         return openPhoto(null, fileLocation, imageLocation, null, null, null, null, 0, provider, null, 0, 0, 0, true, null, null);
     }
 
@@ -17184,13 +17138,11 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         return openPhoto(messages.get(index), null, null, null, messages, null, null, index, provider, null, dialogId, mergeDialogId, topicId, true, null, null);
     }
 
-    public boolean openPhoto(final ArrayList<SecureDocument> documents, final int index,
-                             final PhotoViewerProvider provider) {
+    public boolean openPhoto(final ArrayList<SecureDocument> documents, final int index, final PhotoViewerProvider provider) {
         return openPhoto(null, null, null, null, null, documents, null, index, provider, null, 0, 0, 0, true, null, null);
     }
 
-    public boolean openPhoto(int index, PageBlocksAdapter
-            pageBlocksAdapter, PhotoViewerProvider provider) {
+    public boolean openPhoto(int index, PageBlocksAdapter pageBlocksAdapter, PhotoViewerProvider provider) {
         return openPhoto(null, null, null, null, null, null, null, index, provider, null, 0, 0, 0, true, pageBlocksAdapter, null);
     }
 
@@ -17476,12 +17428,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         padImageForHorizontalInsets = true;
     }
 
-    public boolean openPhoto(final MessageObject messageObject,
-                             final TLRPC.FileLocation fileLocation, final ImageLocation imageLocation,
-                             final ImageLocation videoLocation, final ArrayList<MessageObject> messages,
-                             final ArrayList<SecureDocument> documents, final ArrayList<Object> photos, final int index,
-                             final PhotoViewerProvider provider, ChatActivity chatActivity, long dialogId, long mDialogId,
-                             long topicId, boolean fullScreenVideo, PageBlocksAdapter pageBlocksAdapter, Integer embedSeekTime) {
+    public boolean openPhoto(final MessageObject messageObject, final TLRPC.FileLocation fileLocation, final ImageLocation imageLocation, final ImageLocation videoLocation, final ArrayList<MessageObject> messages, final ArrayList<SecureDocument> documents, final ArrayList<Object> photos, final int index, final PhotoViewerProvider provider, ChatActivity chatActivity, long dialogId, long mDialogId, long topicId, boolean fullScreenVideo, PageBlocksAdapter pageBlocksAdapter, Integer embedSeekTime) {
         if (parentActivity == null || isVisible || provider == null && checkAnimation() || messageObject == null && fileLocation == null && messages == null && photos == null && documents == null && imageLocation == null && pageBlocksAdapter == null) {
             return false;
         }
@@ -19391,8 +19338,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         animateTo(newScale, newTx, newTy, isZoom, 250);
     }
 
-    private void animateTo(float newScale, float newTx, float newTy, boolean isZoom,
-                           int duration) {
+    private void animateTo(float newScale, float newTx, float newTy, boolean isZoom, int duration) {
         if (scale == newScale && translationX == newTx && translationY == newTy) {
             return;
         }
@@ -21577,7 +21523,6 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     .setDuration(200);
         }
     }
-
 
     private ByteArrayInputStream cleanBuffer(byte[] data) {
         byte[] output = new byte[data.length];

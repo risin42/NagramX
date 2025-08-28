@@ -52,7 +52,7 @@ public class SearchField extends FrameLayout {
         searchIconImageView = new ImageView(context);
         searchIconImageView.setScaleType(ImageView.ScaleType.CENTER);
         searchIconImageView.setImageResource(R.drawable.smiles_inputsearch);
-        searchIconImageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogSearchIcon), PorterDuff.Mode.SRC_IN));
+        searchIconImageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_dialogSearchIcon), PorterDuff.Mode.MULTIPLY));
         if (supportRtl) {
             lp = LayoutHelper.createFrameRelatively(36, 36, Gravity.START | Gravity.TOP, horizontalMargin + 2, 11, 0, 0);
         } else {

@@ -184,7 +184,7 @@ public class PollEditTextCell extends FrameLayout implements SuggestEmojiView.An
             moveImageView.setFocusable(false);
             moveImageView.setScaleType(ImageView.ScaleType.CENTER);
             moveImageView.setImageResource(R.drawable.poll_reorder);
-            moveImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayIcon, resourcesProvider), PorterDuff.Mode.SRC_IN));
+            moveImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayIcon, resourcesProvider), PorterDuff.Mode.MULTIPLY));
             addView(moveImageView, LayoutHelper.createFrame(48, 48, (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.TOP, 6, 2, 6, 0));
 
             deleteImageView = new ImageView(context);

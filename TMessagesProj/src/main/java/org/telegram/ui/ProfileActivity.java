@@ -5738,7 +5738,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 writeButton.setContentDescription(LocaleController.getString(R.string.ViewDiscussion));
             }
         }
-        writeButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_profile_actionIcon), PorterDuff.Mode.SRC_IN));
         writeButton.setScaleType(ImageView.ScaleType.CENTER);
 
         frameLayout.addView(writeButton, LayoutHelper.createFrame(60, 60, Gravity.RIGHT | Gravity.TOP, 0, 0, 16, 0));
@@ -7380,7 +7379,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             int c = AndroidUtilities.getOffsetColor(color1, color2, value, 1.0f);
             nameTextView[1].setTextColor(c);
             if (lockIconDrawable != null) {
-                lockIconDrawable.setColorFilter(c, PorterDuff.Mode.SRC_IN);
+                lockIconDrawable.setColorFilter(c, PorterDuff.Mode.MULTIPLY);
             }
             if (scamDrawable != null) {
                 color1 = getThemedColor(Theme.key_avatar_subtitleInProfileBlue);
@@ -14249,7 +14248,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     }
                 }
                 if (lockIconDrawable != null) {
-                    lockIconDrawable.setColorFilter(getThemedColor(Theme.key_chat_lockIcon), PorterDuff.Mode.SRC_IN);
+                    lockIconDrawable.setColorFilter(getThemedColor(Theme.key_chat_lockIcon), PorterDuff.Mode.MULTIPLY);
                 }
                 if (scamDrawable != null) {
                     scamDrawable.setColor(getThemedColor(Theme.key_avatar_subtitleInProfileBlue));

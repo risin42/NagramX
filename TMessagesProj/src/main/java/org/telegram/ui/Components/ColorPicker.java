@@ -790,7 +790,7 @@ public class ColorPicker extends FrameLayout {
 
         LinearGradient gradientShader = new LinearGradient(0, 0, width, 0, new int[]{Color.RED, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA, Color.RED}, null, Shader.TileMode.CLAMP);
         LinearGradient alphaShader = new LinearGradient(0, (height / 3), 0, height, new int[]{Color.WHITE, Color.TRANSPARENT}, null, Shader.TileMode.CLAMP);
-        ComposeShader composeShader = new ComposeShader(alphaShader, gradientShader, PorterDuff.Mode.SRC_IN);
+        ComposeShader composeShader = new ComposeShader(alphaShader, gradientShader, PorterDuff.Mode.MULTIPLY);
 
         colorWheelPaint.setShader(composeShader);
 

@@ -1466,7 +1466,7 @@ public class ChannelAdminLogActivity extends BaseFragment implements Notificatio
 
         bottomOverlayImage = new ImageView(context);
         bottomOverlayImage.setImageResource(R.drawable.msg_help);
-        bottomOverlayImage.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_fieldOverlayText), PorterDuff.Mode.SRC_IN));
+        bottomOverlayImage.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_fieldOverlayText), PorterDuff.Mode.MULTIPLY));
         bottomOverlayImage.setScaleType(ImageView.ScaleType.CENTER);
         bottomOverlayChat.addView(bottomOverlayImage, LayoutHelper.createFrame(48, 48, Gravity.RIGHT | Gravity.TOP, 3, 0, 0, 0));
         bottomOverlayImage.setContentDescription(getString("BotHelp", R.string.BotHelp));
@@ -1502,7 +1502,7 @@ public class ChannelAdminLogActivity extends BaseFragment implements Notificatio
         /*searchUpButton = new ImageView(context);
         searchUpButton.setScaleType(ImageView.ScaleType.CENTER);
         searchUpButton.setImageResource(R.drawable.msg_go_up);
-        searchUpButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_searchPanelIcons), PorterDuff.Mode.SRC_IN));
+        searchUpButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_searchPanelIcons), PorterDuff.Mode.MULTIPLY));
         searchContainer.addView(searchUpButton, LayoutHelper.createFrame(48, 48));
         searchUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1514,7 +1514,7 @@ public class ChannelAdminLogActivity extends BaseFragment implements Notificatio
         searchDownButton = new ImageView(context);
         searchDownButton.setScaleType(ImageView.ScaleType.CENTER);
         searchDownButton.setImageResource(R.drawable.msg_go_down);
-        searchDownButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_searchPanelIcons), PorterDuff.Mode.SRC_IN));
+        searchDownButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_searchPanelIcons), PorterDuff.Mode.MULTIPLY));
         searchContainer.addView(searchDownButton, LayoutHelper.createFrame(48, 48, Gravity.LEFT | Gravity.TOP, 48, 0, 0, 0));
         searchDownButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1526,7 +1526,7 @@ public class ChannelAdminLogActivity extends BaseFragment implements Notificatio
         searchCalendarButton = new ImageView(context);
         searchCalendarButton.setScaleType(ImageView.ScaleType.CENTER);
         searchCalendarButton.setImageResource(R.drawable.msg_calendar);
-        searchCalendarButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_searchPanelIcons), PorterDuff.Mode.SRC_IN));
+        searchCalendarButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_searchPanelIcons), PorterDuff.Mode.MULTIPLY));
         searchContainer.addView(searchCalendarButton, LayoutHelper.createFrame(48, 48, Gravity.RIGHT | Gravity.TOP));
         searchCalendarButton.setOnClickListener(view -> {
             if (getParentActivity() == null) {

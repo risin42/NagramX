@@ -1309,7 +1309,7 @@ public class Bulletin {
             final int undoInfoColor = getThemedColor(Theme.key_undo_infoColor);
 
             imageView = new ImageView(context);
-            imageView.setColorFilter(new PorterDuffColorFilter(undoInfoColor, PorterDuff.Mode.SRC_IN));
+            imageView.setColorFilter(new PorterDuffColorFilter(undoInfoColor, PorterDuff.Mode.MULTIPLY));
             addView(imageView, LayoutHelper.createFrameRelatively(24, 24, Gravity.START | Gravity.CENTER_VERTICAL, 16, 12, 16, 12));
 
             textView = new LinkSpanDrawable.LinksTextView(context);

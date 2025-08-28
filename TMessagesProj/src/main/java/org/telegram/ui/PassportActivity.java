@@ -1547,7 +1547,7 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
 
         noPasswordImageView = new ImageView(context);
         noPasswordImageView.setImageResource(R.drawable.no_password);
-        noPasswordImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.SRC_IN));
+        noPasswordImageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.MULTIPLY));
         linearLayout2.addView(noPasswordImageView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 13, 0, 0));
 
         noPasswordTextView = new TextView(context);

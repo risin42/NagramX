@@ -45,7 +45,7 @@ public class LocationPoweredCell extends FrameLayout {
 
         imageView = new ImageView(context);
         imageView.setImageResource(R.drawable.foursquare);
-        imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_windowBackgroundWhiteGrayText3), PorterDuff.Mode.SRC_IN));
+        imageView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_windowBackgroundWhiteGrayText3), PorterDuff.Mode.MULTIPLY));
         imageView.setPadding(0, AndroidUtilities.dp(2), 0, 0);
         linearLayout.addView(imageView, LayoutHelper.createLinear(35, LayoutHelper.WRAP_CONTENT));
 

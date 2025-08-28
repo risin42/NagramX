@@ -166,7 +166,7 @@ public class CropRotationWheel extends FrameLayout {
     }
 
     public void setAspectLock(boolean enabled) {
-        aspectRatioButton.setColorFilter(enabled ? new PorterDuffColorFilter(0xff51bdf3, PorterDuff.Mode.SRC_IN) : null);
+        aspectRatioButton.setColorFilter(enabled ? new PorterDuffColorFilter(0xff51bdf3, PorterDuff.Mode.MULTIPLY) : null);
     }
 
     @Override

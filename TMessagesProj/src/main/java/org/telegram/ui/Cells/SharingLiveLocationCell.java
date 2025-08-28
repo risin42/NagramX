@@ -304,7 +304,7 @@ public class SharingLiveLocationCell extends FrameLayout {
             }
 
             Drawable drawable = getResources().getDrawable(R.drawable.pin);
-            drawable.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_location_sendLocationIcon), PorterDuff.Mode.SRC_IN));
+            drawable.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_location_sendLocationIcon), PorterDuff.Mode.MULTIPLY));
             int color = getThemedColor(Theme.key_location_placeLocationBackground);
             Drawable circle = Theme.createSimpleSelectorCircleDrawable(dp(42), color, color);
             CombinedDrawable combinedDrawable = new CombinedDrawable(circle, drawable);
