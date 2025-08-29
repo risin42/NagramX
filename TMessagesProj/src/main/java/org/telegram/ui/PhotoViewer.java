@@ -7537,7 +7537,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                 } else if (a == 5) {
                     String languageText = Translator.getInputTranslateLangForChat(ChatsHelper.getChatId()).toUpperCase();
                     String text = getString(R.string.TranslateMessage) + ' ' + "(" + languageText + ")";
-                    cell.setTextAndIcon(text, R.drawable.ic_translate);
+                    cell.setTextAndIcon(text, NaConfig.INSTANCE.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate);
                     cell.setVisibility(captionEdit != null && captionEdit.getText().length() > 0);
                 } else if (a == 6) {
                     cell.setTextAndIcon(LocaleController.getString(spoilerEnabled ? R.string.DisablePhotoSpoiler : R.string.EnablePhotoSpoiler), spoilerEnabled ? R.drawable.msg_spoiler_off : R.drawable.msg_spoiler);
@@ -7545,7 +7545,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     String languageText = Translator.getInputTranslateLangForChat(ChatsHelper.getChatId()).toUpperCase();
                     String text = getString(R.string.TranslateMessageLLM) + ' ' + "(" + languageText + ")";
                     cell.setTextAndIcon(text, R.drawable.magic_stick_solar);
-                    cell.setVisibility(captionEdit != null && captionEdit.getText().length() > 0 && NaConfig.INSTANCE.isLLMTranslatorAvailable());
+                    cell.setVisibility(captionEdit != null && captionEdit.getText().length() > 0 && NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider());
                 }
                 cell.setMinimumWidth(dp(196));
                 cell.setColors(0xffffffff, 0xffffffff);

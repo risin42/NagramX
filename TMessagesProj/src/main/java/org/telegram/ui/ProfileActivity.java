@@ -7139,7 +7139,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 return Unit.INSTANCE;
             });
-            builder.addItem(LocaleController.getString(R.string.Translate), R.drawable.ic_translate, __ -> {
+            builder.addItem(LocaleController.getString(R.string.Translate), NaConfig.INSTANCE.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate, __ -> {
                 try {
                     if (!TextUtils.isEmpty(about)) {
                         DialogTransKt.startTrans(getParentActivity(), about);
@@ -7149,7 +7149,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 return Unit.INSTANCE;
             });
-            if (NaConfig.INSTANCE.isLLMTranslatorAvailable()) {
+            if (NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider()) {
                 builder.addItem(LocaleController.getString(R.string.TranslateMessageLLM), R.drawable.magic_stick_solar, __ -> {
                     try {
                         if (!TextUtils.isEmpty(about)) {

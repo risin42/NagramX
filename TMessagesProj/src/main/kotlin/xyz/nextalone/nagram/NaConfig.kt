@@ -13,6 +13,7 @@ import org.telegram.messenger.R
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.config.ConfigItem
 import tw.nekomimi.nekogram.config.ConfigItemKeyLinked
+import tw.nekomimi.nekogram.translate.Translator
 import java.io.ByteArrayInputStream
 import java.io.ObjectInputStream
 
@@ -1344,6 +1345,10 @@ object NaConfig {
             else -> llmApiKey
         }
         return keyConfig.String().isNotEmpty()
+    }
+
+    fun llmIsDefaultProvider(): Boolean {
+        return NekoConfig.translationProvider.Int() == Translator.providerLLMTranslator
     }
 
     private fun getIgnoreMutedCountLegacy(): Int {

@@ -3607,7 +3607,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
             if (chatActivity != null && commentTextView != null && commentTextView.getText().length() > 0) {
                 String languageText = Translator.getInputTranslateLangForChat(ChatsHelper.getChatId()).toUpperCase();
                 StringBuilder sb;
-                if (NaConfig.INSTANCE.isLLMTranslatorAvailable()) {
+                if (NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider()) {
                     sb = new StringBuilder();
                     sb.append(getString(R.string.TranslateMessageLLM));
                     sb.append(' ').append("(").append(languageText).append(")");
@@ -3638,7 +3638,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                 sb = new StringBuilder();
                 sb.append(getString(R.string.TranslateMessage));
                 sb.append(' ').append("(").append(languageText).append(")");
-                options.add(R.drawable.ic_translate, sb,
+                options.add(NaConfig.INSTANCE.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate, sb,
                         () -> {
                             if (messageSendPreview != null) {
                                 messageSendPreview.dismiss(false);
