@@ -352,9 +352,16 @@ public class WebBrowserSettings extends UniversalFragment implements Notificatio
             });
             presentFragment(fragment[0]);
         } else if (item.id == BUTTON_CLEAR_LIST) {
-            RestrictedDomainsList.getInstance().restrictedDomains.clear();
-            RestrictedDomainsList.getInstance().scheduleSave();
-            listView.adapter.update(true);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+            builder.setTitle(getString(R.string.BrowserSettingsNeverOpenInClearList));
+            builder.setMessage(LocaleController.getString(R.string.AreYouSure));
+            builder.setPositiveButton(LocaleController.getString(R.string.OK), (dialogInterface, which) -> {
+                RestrictedDomainsList.getInstance().restrictedDomains.clear();
+                RestrictedDomainsList.getInstance().scheduleSave();
+                listView.adapter.update(true);
+            });
+            builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+            showDialog(builder.create());
         } else if (item.instanceOf(WebsiteView.Factory.class)) {
             final WebsiteView websiteView = (WebsiteView) view;
             final ArrayList<String> domains = websiteView.domains;
