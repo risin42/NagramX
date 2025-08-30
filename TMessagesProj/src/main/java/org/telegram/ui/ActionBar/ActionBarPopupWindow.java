@@ -931,6 +931,16 @@ public class ActionBarPopupWindow extends PopupWindow {
             content.setPivotX(content.getMeasuredWidth());
             content.setPivotY(0);
             int count = content.getItemsCount();
+            if (count > 100) {
+                int height = AndroidUtilities.displayMetrics.heightPixels;
+                int item = content.getItemAt(0).getMeasuredHeight();
+                if (item > 0) {
+                    int maxItems = height / item;
+                    if (count > maxItems) {
+                        count = maxItems;
+                    }
+                }
+            }
             content.positions.clear();
             int visibleCount = 0;
             for (int a = 0; a < count; a++) {
