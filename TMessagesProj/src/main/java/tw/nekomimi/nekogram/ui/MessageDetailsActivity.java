@@ -320,7 +320,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
         idRow = rowCount++;
         scheduledRow = messageObject.scheduled ? rowCount++ : -1;
         messageRow = TextUtils.isEmpty(messageObject.messageText) ? -1 : rowCount++;
-        captionRow = !TextUtils.isEmpty(messageObject.caption) || messageGroup != null && !TextUtils.isEmpty(messageGroup.findCaptionMessageObject().caption) ? rowCount++ : -1;
+        captionRow = !TextUtils.isEmpty(messageObject.caption) || messageGroup != null && messageGroup.findCaptionMessageObject() != null && !TextUtils.isEmpty(messageGroup.findCaptionMessageObject().caption) ? rowCount++ : -1;
         groupRow = fromChat != null && !fromChat.broadcast ? rowCount++ : -1;
         channelRow = fromChat != null && fromChat.broadcast ? rowCount++ : -1;
         fromRow = fromUser != null || messageObject.messageOwner.post_author != null ? rowCount++ : -1;
