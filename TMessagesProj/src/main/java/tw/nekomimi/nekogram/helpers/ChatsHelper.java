@@ -161,7 +161,7 @@ public class ChatsHelper extends BaseController {
             if (chatActivity.replyButton == null) return;
 
             if (chatActivity.bottomMessagesActionContainer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                LaunchActivity.makeRipple(chatActivity.bottomMessagesActionContainer.getLeft(), chatActivity.bottomMessagesActionContainer.getBottom(), 5);
+                LaunchActivity.makeRipple(chatActivity.bottomMessagesActionContainer.getLeft(), chatActivity.bottomMessagesActionContainer.getBottom(), 2);
             }
 
             chatActivity.replyButton.setText(getLeftButtonText(noForwards));
