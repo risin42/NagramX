@@ -31,7 +31,6 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.SvgHelper;
 import org.telegram.messenger.TranslateController;
 import org.telegram.messenger.Utilities;
-import org.telegram.messenger.utils.tlutils.AmountUtils;
 import org.telegram.tgnet.tl.TL_account;
 import org.telegram.tgnet.tl.TL_bots;
 import org.telegram.tgnet.tl.TL_payments;
@@ -61,7 +60,7 @@ public class TLRPC {
     public static final int MESSAGE_FLAG_HAS_BOT_ID         = 0x00000800;
     public static final int MESSAGE_FLAG_EDITED             = 0x00008000;
 
-    public static final int LAYER = 211;
+    public static final int LAYER = 214;
 
     public static abstract class EmailVerifyPurpose extends TLObject {
 
@@ -8695,20 +8694,26 @@ public class TLRPC {
     }
 
     public static class TL_auth_sentCodePaymentRequired extends auth_SentCode {
-        public static final int constructor = 0xd7cef980;
+        public static final int constructor = 0xd7a2fcf9;
 
         public String store_product;
         public String phone_code_hash;
+        public String support_email_address;
+        public String support_email_subject;
 
         public void readParams(InputSerializedData stream, boolean exception) {
             store_product = stream.readString(exception);
             phone_code_hash = stream.readString(exception);
+            support_email_address = stream.readString(exception);
+            support_email_subject = stream.readString(exception);
         }
 
         public void serializeToStream(OutputSerializedData stream) {
             stream.writeInt32(constructor);
             stream.writeString(store_product);
             stream.writeString(phone_code_hash);
+            stream.writeString(support_email_address);
+            stream.writeString(support_email_subject);
         }
     }
 
@@ -11370,6 +11375,7 @@ public class TLRPC {
         public TL_bots.botVerification bot_verification;
         public int stargifts_count;
         public long send_paid_messages_stars;
+        public ProfileTab main_tab;
         public long inviterId; //custom
         public int invitesCount; //custom
 
@@ -11381,6 +11387,9 @@ public class TLRPC {
                     break;
                 case TL_channelFull.constructor:
                     result = new TL_channelFull();
+                    break;
+                case TL_channelFull_layer212.constructor:
+                    result = new TL_channelFull_layer212();
                     break;
                 case TL_channelFull_layer204.constructor:
                     result = new TL_channelFull_layer204();
@@ -13255,6 +13264,7 @@ public class TLRPC {
             stream.writeInt32(constructor);
             flags = can_set_username ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 256) : (flags &~ 256);
+            flags = setFlag(flags, FLAG_16, theme_emoticon != null);
             stream.writeInt32(flags);
             stream.writeInt64(id);
             stream.writeString(about);
@@ -13497,6 +13507,299 @@ public class TLRPC {
     }
 
     public static class TL_channelFull extends ChatFull {
+        public static final int constructor = 0xe4e0b29d;
+
+        public void readParams(InputSerializedData stream, boolean exception) {
+            flags = stream.readInt32(exception);
+            can_view_participants = (flags & 8) != 0;
+            can_set_username = (flags & 64) != 0;
+            can_set_stickers = (flags & 128) != 0;
+            hidden_prehistory = (flags & 1024) != 0;
+            can_set_location = (flags & 65536) != 0;
+            has_scheduled = (flags & 524288) != 0;
+            can_view_stats = (flags & 1048576) != 0;
+            blocked = (flags & 4194304) != 0;
+            flags2 = stream.readInt32(exception);
+            can_delete_channel = (flags2 & 1) != 0;
+            antispam = (flags2 & 2) != 0;
+            participants_hidden = (flags2 & 4) != 0;
+            translations_disabled = (flags2 & 8) != 0;
+            stories_pinned_available = (flags2 & 32) != 0;
+            view_forum_as_messages = (flags2 & 64) != 0;
+            restricted_sponsored = (flags2 & 2048) != 0;
+            can_view_revenue = (flags2 & 4096) != 0;
+            can_view_stars_revenue = (flags2 & 32768) != 0;
+            paid_media_allowed = (flags2 & 16384) != 0;
+            paid_reactions_available = (flags2 & 65536) != 0;
+            stargifts_available = (flags2 & 524288) != 0;
+            paid_messages_available = (flags2 & 1048576) != 0;
+            id = stream.readInt64(exception);
+            about = stream.readString(exception);
+            if ((flags & 1) != 0) {
+                participants_count = stream.readInt32(exception);
+            }
+            if ((flags & 2) != 0) {
+                admins_count = stream.readInt32(exception);
+            }
+            if ((flags & 4) != 0) {
+                kicked_count = stream.readInt32(exception);
+            }
+            if ((flags & 4) != 0) {
+                banned_count = stream.readInt32(exception);
+            }
+            if ((flags & 8192) != 0) {
+                online_count = stream.readInt32(exception);
+            }
+            read_inbox_max_id = stream.readInt32(exception);
+            read_outbox_max_id = stream.readInt32(exception);
+            unread_count = stream.readInt32(exception);
+            chat_photo = Photo.TLdeserialize(stream, stream.readInt32(exception), exception);
+            notify_settings = PeerNotifySettings.TLdeserialize(stream, stream.readInt32(exception), exception);
+            if ((flags & 8388608) != 0) {
+                exported_invite = ExportedChatInvite.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            bot_info = Vector.deserialize(stream, TL_bots.BotInfo::TLdeserialize, exception);
+            if ((flags & 16) != 0) {
+                migrated_from_chat_id = stream.readInt64(exception);
+            }
+            if ((flags & 16) != 0) {
+                migrated_from_max_id = stream.readInt32(exception);
+            }
+            if ((flags & 32) != 0) {
+                pinned_msg_id = stream.readInt32(exception);
+            }
+            if ((flags & 256) != 0) {
+                stickerset = StickerSet.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 512) != 0) {
+                available_min_id = stream.readInt32(exception);
+            }
+            if ((flags & 2048) != 0) {
+                folder_id = stream.readInt32(exception);
+            }
+            if ((flags & 16384) != 0) {
+                linked_chat_id = stream.readInt64(exception);
+            }
+            if ((flags & 32768) != 0) {
+                location = ChannelLocation.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 131072) != 0) {
+                slowmode_seconds = stream.readInt32(exception);
+            }
+            if ((flags & 262144) != 0) {
+                slowmode_next_send_date = stream.readInt32(exception);
+            }
+            if ((flags & 4096) != 0) {
+                stats_dc = stream.readInt32(exception);
+            }
+            pts = stream.readInt32(exception);
+            if ((flags & 2097152) != 0) {
+                call = InputGroupCall.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 16777216) != 0) {
+                ttl_period = stream.readInt32(exception);
+            }
+            if ((flags & 33554432) != 0) {
+                pending_suggestions = Vector.deserializeString(stream, exception);
+            }
+            if ((flags & 67108864) != 0) {
+                groupcall_default_join_as = Peer.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 134217728) != 0) {
+                theme_emoticon = stream.readString(exception);
+            }
+            if ((flags & 268435456) != 0) {
+                requests_pending = stream.readInt32(exception);
+            }
+            if ((flags & 268435456) != 0) {
+                recent_requesters = Vector.deserializeLong(stream, exception);
+            }
+            if ((flags & 536870912) != 0) {
+                default_send_as = Peer.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 1073741824) != 0) {
+                available_reactions = ChatReactions.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 8192) != 0) {
+                reactions_limit = stream.readInt32(exception);
+            }
+            if ((flags2 & 16) != 0) {
+                stories = TL_stories.PeerStories.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 128) != 0) {
+                wallpaper = WallPaper.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 256) != 0) {
+                boosts_applied = stream.readInt32(exception);
+            }
+            if ((flags2 & 512) != 0) {
+                boosts_unrestrict = stream.readInt32(exception);
+            }
+            if ((flags2 & 1024) != 0) {
+                emojiset = StickerSet.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 131072) != 0) {
+                bot_verification = TL_bots.botVerification.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 262144) != 0) {
+                stargifts_count = stream.readInt32(exception);
+            }
+            if (hasFlag(flags2, FLAG_21)) {
+                send_paid_messages_stars = stream.readInt64(exception);
+            }
+            if (hasFlag(flags2, FLAG_22)) {
+                main_tab = ProfileTab.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+        }
+
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            flags = can_view_participants ? (flags | 8) : (flags &~ 8);
+            flags = can_set_username ? (flags | 64) : (flags &~ 64);
+            flags = can_set_stickers ? (flags | 128) : (flags &~ 128);
+            flags = hidden_prehistory ? (flags | 1024) : (flags &~ 1024);
+            flags = can_set_location ? (flags | 65536) : (flags &~ 65536);
+            flags = has_scheduled ? (flags | 524288) : (flags &~ 524288);
+            flags = can_view_stats ? (flags | 1048576) : (flags &~ 1048576);
+            flags = blocked ? (flags | 4194304) : (flags &~ 4194304);
+            stream.writeInt32(flags);
+            flags2 = can_delete_channel ? (flags2 | 1) : (flags2 &~ 1);
+            flags2 = antispam ? (flags2 | 2) : (flags2 &~ 2);
+            flags2 = participants_hidden ? (flags2 | 4) : (flags2 &~ 4);
+            flags2 = translations_disabled ? (flags2 | 8) : (flags2 &~ 8);
+            flags2 = stories_pinned_available ? (flags2 | 32) : (flags2 &~ 32);
+            flags2 = view_forum_as_messages ? (flags2 | 64) : (flags2 &~ 64);
+            flags2 = restricted_sponsored ? (flags2 | 2048) : (flags2 &~ 2048);
+            flags2 = can_view_revenue ? (flags2 | 4096) : (flags2 &~ 4096);
+            flags2 = paid_media_allowed ? (flags2 | 16384) : (flags2 &~ 16384);
+            flags2 = can_view_stars_revenue ? (flags2 | 32768) : (flags2 &~ 32768);
+            flags2 = paid_reactions_available ? (flags2 | 65536) : (flags2 &~ 65536);
+            flags2 = stargifts_available ? (flags2 | 524288) : (flags2 &~ 524288);
+            flags2 = paid_messages_available ? (flags2 | 1048576) : (flags2 &~ 1048576);
+            flags2 = setFlag(flags2, FLAG_22, main_tab != null);
+            stream.writeInt32(flags2);
+            stream.writeInt64(id);
+            stream.writeString(about);
+            if ((flags & 1) != 0) {
+                stream.writeInt32(participants_count);
+            }
+            if ((flags & 2) != 0) {
+                stream.writeInt32(admins_count);
+            }
+            if ((flags & 4) != 0) {
+                stream.writeInt32(kicked_count);
+            }
+            if ((flags & 4) != 0) {
+                stream.writeInt32(banned_count);
+            }
+            if ((flags & 8192) != 0) {
+                stream.writeInt32(online_count);
+            }
+            stream.writeInt32(read_inbox_max_id);
+            stream.writeInt32(read_outbox_max_id);
+            stream.writeInt32(unread_count);
+            chat_photo.serializeToStream(stream);
+            notify_settings.serializeToStream(stream);
+            if ((flags & 8388608) != 0) {
+                exported_invite.serializeToStream(stream);
+            }
+            Vector.serialize(stream, bot_info);
+            if ((flags & 16) != 0) {
+                stream.writeInt64(migrated_from_chat_id);
+            }
+            if ((flags & 16) != 0) {
+                stream.writeInt32(migrated_from_max_id);
+            }
+            if ((flags & 32) != 0) {
+                stream.writeInt32(pinned_msg_id);
+            }
+            if ((flags & 256) != 0) {
+                stickerset.serializeToStream(stream);
+            }
+            if ((flags & 512) != 0) {
+                stream.writeInt32(available_min_id);
+            }
+            if ((flags & 2048) != 0) {
+                stream.writeInt32(folder_id);
+            }
+            if ((flags & 16384) != 0) {
+                stream.writeInt64(linked_chat_id);
+            }
+            if ((flags & 32768) != 0) {
+                location.serializeToStream(stream);
+            }
+            if ((flags & 131072) != 0) {
+                stream.writeInt32(slowmode_seconds);
+            }
+            if ((flags & 262144) != 0) {
+                stream.writeInt32(slowmode_next_send_date);
+            }
+            if ((flags & 4096) != 0) {
+                stream.writeInt32(stats_dc);
+            }
+            stream.writeInt32(pts);
+            if ((flags & 2097152) != 0) {
+                call.serializeToStream(stream);
+            }
+            if ((flags & 16777216) != 0) {
+                stream.writeInt32(ttl_period);
+            }
+            if ((flags & 33554432) != 0) {
+                Vector.serializeString(stream, pending_suggestions);
+            }
+            if ((flags & 67108864) != 0) {
+                groupcall_default_join_as.serializeToStream(stream);
+            }
+            if ((flags & 134217728) != 0) {
+                stream.writeString(theme_emoticon);
+            }
+            if ((flags & 268435456) != 0) {
+                stream.writeInt32(requests_pending);
+            }
+            if ((flags & 268435456) != 0) {
+                Vector.serializeLong(stream, recent_requesters);
+            }
+            if ((flags & 536870912) != 0) {
+                default_send_as.serializeToStream(stream);
+            }
+            if ((flags & 1073741824) != 0) {
+                available_reactions.serializeToStream(stream);
+            }
+            if ((flags2 & 8192) != 0) {
+                stream.writeInt32(reactions_limit);
+            }
+            if ((flags2 & 16) != 0) {
+                stories.serializeToStream(stream);
+            }
+            if ((flags2 & 128) != 0) {
+                wallpaper.serializeToStream(stream);
+            }
+            if ((flags2 & 256) != 0) {
+                stream.writeInt32(boosts_applied);
+            }
+            if ((flags2 & 512) != 0) {
+                stream.writeInt32(boosts_unrestrict);
+            }
+            if ((flags2 & 1024) != 0) {
+                emojiset.serializeToStream(stream);
+            }
+            if ((flags2 & 131072) != 0) {
+                bot_verification.serializeToStream(stream);
+            }
+            if ((flags2 & 262144) != 0) {
+                stream.writeInt32(stargifts_count);
+            }
+            if (hasFlag(flags2, FLAG_21)) {
+                stream.writeInt64(send_paid_messages_stars);
+            }
+            if (hasFlag(flags2, FLAG_22)) {
+                // Vector.serialize(stream, tabs_order);
+                main_tab.serializeToStream(stream);
+            }
+        }
+    }
+
+    public static class TL_channelFull_layer212 extends TL_channelFull {
         public static final int constructor = 0xe07429de;
 
         public void readParams(InputSerializedData stream, boolean exception) {
@@ -22152,6 +22455,7 @@ public class TLRPC {
             contact_require_premium = (flags2 & 1024) != 0;
             bot_business = (flags2 & 2048) != 0;
             bot_has_main_app = (flags2 & 8192) != 0;
+
             id = stream.readInt64(exception);
             if ((flags & 1) != 0) {
                 access_hash = stream.readInt64(exception);
@@ -25139,8 +25443,8 @@ public class TLRPC {
                 case 0x7a0d7f42:
                     result = new TL_messageActionGroupCall();
                     break;
-                case 0xaa786345:
-                    result = new TL_messageActionSetChatTheme();
+                case TL_messageActionSetChatTheme_layer213.constructor:
+                    result = new TL_messageActionSetChatTheme_layer213();
                     break;
                 case 0x4792929b:
                     result = new TL_messageActionScreenshotTaken();
@@ -25201,6 +25505,9 @@ public class TLRPC {
                     break;
                 case TL_messageActionChatAddUser_old.constructor:
                     result = new TL_messageActionChatAddUser_old();
+                    break;
+                case TL_messageActionSetChatTheme.constructor:
+                    result = new TL_messageActionSetChatTheme();
                     break;
                 case TL_messageActionTTLChange.constructor:
                     result = new TL_messageActionTTLChange();
@@ -25324,6 +25631,9 @@ public class TLRPC {
                     break;
                 case TL_messageActionStarGift.constructor:
                     result = new TL_messageActionStarGift();
+                    break;
+                case TL_messageActionStarGift_layer211.constructor:
+                    result = new TL_messageActionStarGift_layer211();
                     break;
                 case TL_messageActionStarGift_layer197.constructor:
                     result = new TL_messageActionStarGift_layer197();
@@ -25641,18 +25951,20 @@ public class TLRPC {
         }
     }
 
-    public static class TL_messageActionSetChatTheme extends MessageAction {
+    public static class TL_messageActionSetChatTheme_layer213 extends TL_messageActionSetChatTheme {
         public static final int constructor = 0xaa786345;
 
-        public String emoticon;
-
         public void readParams(InputSerializedData stream, boolean exception) {
-            emoticon = stream.readString(exception);
+            this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
         }
 
         public void serializeToStream(OutputSerializedData stream) {
             stream.writeInt32(constructor);
-            stream.writeString(emoticon);
+            if (theme instanceof TL_chatTheme) {
+                stream.writeString(((TL_chatTheme) theme).emoticon);
+            } else {
+                stream.writeString("");
+            }
         }
     }
 
@@ -25700,6 +26012,21 @@ public class TLRPC {
         public void serializeToStream(OutputSerializedData stream) {
             stream.writeInt32(constructor);
             stream.writeInt64(user_id);
+        }
+    }
+
+    public static class TL_messageActionSetChatTheme extends MessageAction {
+        public static final int constructor = 0xb91bbd3a;
+
+        public ChatTheme theme;
+
+        public void readParams(InputSerializedData stream, boolean exception) {
+            theme = ChatTheme.TLdeserialize(stream, stream.readInt32(exception), exception);
+        }
+
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            theme.serializeToStream(stream);
         }
     }
 
@@ -42568,6 +42895,9 @@ public class TLRPC {
                 case TL_channel.constructor:
                     result = new TL_channel();
                     break;
+                case TL_channel_layer212.constructor:
+                    result = new TL_channel_layer212();
+                    break;
                 case TL_channel_layer203.constructor:
                     result = new TL_channel_layer203();
                     break;
@@ -43306,6 +43636,187 @@ public class TLRPC {
     }
 
     public static class TL_channel extends Chat {
+        public static final int constructor = 0xa7df8c67;
+
+        public void readParams(InputSerializedData stream, boolean exception) {
+            flags = stream.readInt32(exception);
+            creator = (flags & 1) != 0;
+            left = (flags & 4) != 0;
+            broadcast = (flags & 32) != 0;
+            verified = (flags & 128) != 0;
+            megagroup = (flags & 256) != 0;
+            restricted = (flags & 512) != 0;
+            signatures = (flags & 2048) != 0;
+            min = (flags & 4096) != 0;
+            scam = (flags & 524288) != 0;
+            has_link = (flags & 1048576) != 0;
+            has_geo = (flags & 2097152) != 0;
+            slowmode_enabled = (flags & 4194304) != 0;
+            call_active = (flags & 8388608) != 0;
+            call_not_empty = (flags & 16777216) != 0;
+            fake = (flags & 33554432) != 0;
+            gigagroup = (flags & 67108864) != 0;
+            noforwards = (flags & 134217728) != 0;
+            join_to_send = (flags & 268435456) != 0;
+            join_request = (flags & 536870912) != 0;
+            forum = (flags & 1073741824) != 0;
+            flags2 = stream.readInt32(exception);
+            stories_hidden = (flags2 & 2) != 0;
+            stories_hidden_min = (flags2 & 4) != 0;
+            stories_unavailable = (flags2 & 8) != 0;
+            signature_profiles = (flags2 & 4096) != 0;
+            autotranslation = (flags2 & 32768) != 0;
+            broadcast_messages_allowed = (flags2 & 65536) != 0;
+            monoforum = (flags2 & 131072) != 0;
+            forum_tabs = (flags2 & 524288) != 0;
+            id = stream.readInt64(exception);
+            if ((flags & 8192) != 0) {
+                access_hash = stream.readInt64(exception);
+            }
+            title = stream.readString(exception);
+            if ((flags & 64) != 0) {
+                username = stream.readString(exception);
+            }
+            photo = ChatPhoto.TLdeserialize(stream, stream.readInt32(exception), exception);
+            date = stream.readInt32(exception);
+            if ((flags & 512) != 0) {
+                restriction_reason = Vector.deserialize(stream, RestrictionReason::TLdeserialize, exception);
+            }
+            if ((flags & 16384) != 0) {
+                admin_rights = TL_chatAdminRights.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 32768) != 0) {
+                banned_rights = TL_chatBannedRights.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 262144) != 0) {
+                default_banned_rights = TL_chatBannedRights.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 131072) != 0) {
+                participants_count = stream.readInt32(exception);
+            }
+            if ((flags2 & 1) != 0) {
+                usernames = Vector.deserialize(stream, TL_username::TLdeserialize, exception);
+            }
+            if ((flags2 & 16) != 0) {
+                stories_max_id = stream.readInt32(exception);
+            }
+            if ((flags2 & 128) != 0) {
+                color = TL_peerColor.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 256) != 0) {
+                profile_color = TL_peerColor.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 512) != 0) {
+                emoji_status = EmojiStatus.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 1024) != 0) {
+                level = stream.readInt32(exception);
+            }
+            if ((flags2 & 2048) != 0) {
+                subscription_until_date = stream.readInt32(exception);
+            }
+            if ((flags2 & 8192) != 0) {
+                bot_verification_icon = stream.readInt64(exception);
+            }
+            if ((flags2 & 16384) != 0) {
+                send_paid_messages_stars = stream.readInt64(exception);
+            }
+            if ((flags2 & 262144) != 0) {
+                linked_monoforum_id = stream.readInt64(exception);
+            }
+        }
+
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            flags = creator ? (flags | 1) : (flags &~ 1);
+            flags = left ? (flags | 4) : (flags &~ 4);
+            flags = broadcast ? (flags | 32) : (flags &~ 32);
+            flags = verified ? (flags | 128) : (flags &~ 128);
+            flags = megagroup ? (flags | 256) : (flags &~ 256);
+            flags = restricted ? (flags | 512) : (flags &~ 512);
+            flags = signatures ? (flags | 2048) : (flags &~ 2048);
+            flags = min ? (flags | 4096) : (flags &~ 4096);
+            flags = scam ? (flags | 524288) : (flags &~ 524288);
+            flags = has_link ? (flags | 1048576) : (flags &~ 1048576);
+            flags = has_geo ? (flags | 2097152) : (flags &~ 2097152);
+            flags = slowmode_enabled ? (flags | 4194304) : (flags &~ 4194304);
+            flags = call_active ? (flags | 8388608) : (flags &~ 8388608);
+            flags = call_not_empty ? (flags | 16777216) : (flags &~ 16777216);
+            flags = fake ? (flags | 33554432) : (flags &~ 33554432);
+            flags = gigagroup ? (flags | 67108864) : (flags &~ 67108864);
+            flags = noforwards ? (flags | 134217728) : (flags &~ 134217728);
+            flags = join_to_send ? (flags | 268435456) : (flags &~ 268435456);
+            flags = join_request ? (flags | 536870912) : (flags &~ 536870912);
+            flags = forum ? (flags | 1073741824) : (flags &~ 1073741824);
+            stream.writeInt32(flags);
+            flags2 = stories_hidden ? (flags2 | 2) : (flags2 &~ 2);
+            flags2 = stories_hidden_min ? (flags2 | 4) : (flags2 &~ 4);
+            flags2 = stories_unavailable ? (flags2 | 8) : (flags2 &~ 8);
+            flags2 = signature_profiles ? (flags2 | 4096) : (flags2 &~ 4096);
+            flags2 = autotranslation ? (flags2 | 32768) : (flags2 &~ 32768);
+            flags2 = broadcast_messages_allowed ? (flags2 | 65536) : (flags2 &~ 65536);
+            flags2 = monoforum ? (flags2 | 131072) : (flags2 &~ 131072);
+            flags2 = forum_tabs ? (flags2 | 524288) : (flags2 &~ 524288);
+            stream.writeInt32(flags2);
+            stream.writeInt64(id);
+            if ((flags & 8192) != 0) {
+                stream.writeInt64(access_hash);
+            }
+            stream.writeString(title);
+            if ((flags & 64) != 0) {
+                stream.writeString(username);
+            }
+            photo.serializeToStream(stream);
+            stream.writeInt32(date);
+            if ((flags & 512) != 0) {
+                Vector.serialize(stream, restriction_reason);
+            }
+            if ((flags & 16384) != 0) {
+                admin_rights.serializeToStream(stream);
+            }
+            if ((flags & 32768) != 0) {
+                banned_rights.serializeToStream(stream);
+            }
+            if ((flags & 262144) != 0) {
+                default_banned_rights.serializeToStream(stream);
+            }
+            if ((flags & 131072) != 0) {
+                stream.writeInt32(participants_count);
+            }
+            if ((flags2 & 1) != 0) {
+                Vector.serialize(stream, usernames);
+            }
+            if ((flags2 & 16) != 0) {
+                stream.writeInt32(stories_max_id);
+            }
+            if ((flags2 & 128) != 0) {
+                color.serializeToStream(stream);
+            }
+            if ((flags2 & 256) != 0) {
+                profile_color.serializeToStream(stream);
+            }
+            if ((flags2 & 512) != 0) {
+                emoji_status.serializeToStream(stream);
+            }
+            if ((flags2 & 1024) != 0) {
+                stream.writeInt32(level);
+            }
+            if ((flags2 & 2048) != 0) {
+                stream.writeInt32(subscription_until_date);
+            }
+            if ((flags2 & 8192) != 0) {
+                stream.writeInt64(bot_verification_icon);
+            }
+            if ((flags2 & 16384) != 0) {
+                stream.writeInt64(send_paid_messages_stars);
+            }
+            if ((flags2 & 262144) != 0) {
+                stream.writeInt64(linked_monoforum_id);
+            }
+        }
+    }
+
+    public static class TL_channel_layer212 extends TL_channel {
         public static final int constructor = 0xfe685355;
 
         public void readParams(InputSerializedData stream, boolean exception) {
@@ -48055,7 +48566,7 @@ public class TLRPC {
         public int folder_id;
         public int ttl_period;
         public PeerSettings settings;
-        public String theme_emoticon;
+        public ChatTheme theme;
         public long id;
         public String private_forward_name;
         public TL_chatAdminRights bot_group_admin_rights;
@@ -48080,12 +48591,20 @@ public class TLRPC {
         public TL_stars.Tl_starsRating stars_rating;
         public TL_stars.Tl_starsRating stars_my_pending_rating;
         public int stars_my_pending_rating_date;
+        public ProfileTab main_tab;
+        public TLRPC.Document saved_music;
 
         public static UserFull TLdeserialize(InputSerializedData stream, int constructor, boolean exception) {
             UserFull result = null;
             switch (constructor) {
                 case TL_userFull.constructor:
                     result = new TL_userFull();
+                    break;
+                case TL_userFull_layer213.constructor:
+                    result = new TL_userFull_layer213();
+                    break;
+                case TL_userFull_layer212.constructor:
+                    result = new TL_userFull_layer212();
                     break;
                 case TL_userFull_layer210.constructor:
                     result = new TL_userFull_layer210();
@@ -48168,9 +48687,508 @@ public class TLRPC {
             }
             return result;
         }
+
+        @Deprecated
+        public String getTheme_emoticon() {
+            if (theme instanceof TL_chatTheme) {
+                return ((TL_chatTheme) theme).emoticon;
+            }
+            return null;
+        }
     }
 
     public static class TL_userFull extends UserFull {
+        public static final int constructor = 0xc577b5ad;
+
+        public void readParams(InputSerializedData stream, boolean exception) {
+            flags = stream.readInt32(exception);
+            blocked = (flags & 1) != 0;
+            phone_calls_available = (flags & 16) != 0;
+            phone_calls_private = (flags & 32) != 0;
+            can_pin_message = (flags & 128) != 0;
+            has_scheduled = (flags & 4096) != 0;
+            video_calls_available = (flags & 8192) != 0;
+            voice_messages_forbidden = (flags & 1048576) != 0;
+            translations_disabled = (flags & 8388608) != 0;
+            stories_pinned_available = (flags & 67108864) != 0;
+            blocked_my_stories_from = (flags & 134217728) != 0;
+            wallpaper_overridden = (flags & 268435456) != 0;
+            contact_require_premium = (flags & 536870912) != 0;
+            read_dates_private = (flags & 1073741824) != 0;
+            flags2 = stream.readInt32(exception);
+            sponsored_enabled = (flags2 & 128) != 0;
+            can_view_revenue = (flags2 & 512) != 0;
+            bot_can_manage_emoji_status = (flags2 & 1024) != 0;
+            display_gifts_button = (flags2 & 65536) != 0;
+            id = stream.readInt64(exception);
+            if ((flags & 2) != 0) {
+                about = stream.readString(exception);
+            }
+            settings = PeerSettings.TLdeserialize(stream, stream.readInt32(exception), exception);
+            if ((flags & 2097152) != 0) {
+                personal_photo = Photo.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 4) != 0) {
+                profile_photo = Photo.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 4194304) != 0) {
+                fallback_photo = Photo.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            notify_settings = PeerNotifySettings.TLdeserialize(stream, stream.readInt32(exception), exception);
+            if ((flags & 8) != 0) {
+                bot_info = TL_bots.BotInfo.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 64) != 0) {
+                pinned_msg_id = stream.readInt32(exception);
+            }
+            common_chats_count = stream.readInt32(exception);
+            if ((flags & 2048) != 0) {
+                folder_id = stream.readInt32(exception);
+            }
+            if ((flags & 16384) != 0) {
+                ttl_period = stream.readInt32(exception);
+            }
+            if (hasFlag(flags, FLAG_15)) {
+                theme = ChatTheme.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 65536) != 0) {
+                private_forward_name = stream.readString(exception);
+            }
+            if ((flags & 131072) != 0) {
+                bot_group_admin_rights = TL_chatAdminRights.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 262144) != 0) {
+                bot_broadcast_admin_rights = TL_chatAdminRights.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 16777216) != 0) {
+                wallpaper = WallPaper.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 33554432) != 0) {
+                stories = TL_stories.PeerStories.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 1) != 0) {
+                business_work_hours = TL_account.TL_businessWorkHours.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 2) != 0) {
+                business_location = TL_businessLocation.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 4) != 0) {
+                business_greeting_message = TL_account.TL_businessGreetingMessage.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 8) != 0) {
+                business_away_message = TL_account.TL_businessAwayMessage.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 16) != 0) {
+                business_intro = TL_account.TL_businessIntro.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 32) != 0) {
+                birthday = TL_account.TL_birthday.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 64) != 0) {
+                personal_channel_id = stream.readInt64(exception);
+                personal_channel_message = stream.readInt32(exception);
+            }
+            if ((flags2 & 256) != 0) {
+                stargifts_count = stream.readInt32(exception);
+            }
+            if ((flags2 & 2048) != 0) {
+                starref_program = TL_payments.starRefProgram.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 4096) != 0) {
+                bot_verification = TL_bots.botVerification.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 16384) != 0) {
+                send_paid_messages_stars = stream.readInt64(exception);
+            }
+            if ((flags2 & 32768) != 0) {
+                disallowed_stargifts = DisallowedGiftsSettings.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if (hasFlag(flags2, FLAG_17)) {
+                stars_rating = TL_stars.Tl_starsRating.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if (hasFlag(flags2, FLAG_18)) {
+                stars_my_pending_rating = TL_stars.Tl_starsRating.TLdeserialize(stream, stream.readInt32(exception), exception);
+                stars_my_pending_rating_date = stream.readInt32(exception);
+            }
+            if (hasFlag(flags2, FLAG_20)) {
+                main_tab = ProfileTab.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if (hasFlag(flags2, FLAG_21)) {
+                saved_music = Document.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+        }
+
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            flags = blocked ? (flags | 1) : (flags &~ 1);
+            flags = phone_calls_available ? (flags | 16) : (flags &~ 16);
+            flags = phone_calls_private ? (flags | 32) : (flags &~ 32);
+            flags = can_pin_message ? (flags | 128) : (flags &~ 128);
+            flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
+            flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            flags = setFlag(flags, FLAG_15, theme != null);
+            flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
+            flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
+            flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
+            flags = blocked_my_stories_from ? (flags | 134217728) : (flags &~ 134217728);
+            flags = wallpaper_overridden ? (flags | 268435456) : (flags &~ 268435456);
+            flags = contact_require_premium ? (flags | 536870912) : (flags &~ 536870912);
+            flags = read_dates_private ? (flags | 1073741824) : (flags &~ 1073741824);
+            stream.writeInt32(flags);
+            flags2 = sponsored_enabled ? (flags2 | 128) : (flags2 &~ 128);
+            flags2 = can_view_revenue ? (flags2 | 512) : (flags2 &~ 512);
+            flags2 = bot_can_manage_emoji_status ? (flags2 | 1024) : (flags2 &~ 1024);
+            flags2 = display_gifts_button ? (flags2 | 65536) : (flags2 &~ 65536);
+            flags2 = setFlag(flags2, FLAG_17, stars_rating != null);
+            flags2 = setFlag(flags2, FLAG_18, stars_my_pending_rating != null);
+            flags2 = setFlag(flags2, FLAG_20,  main_tab != null);
+            stream.writeInt32(flags2);
+            stream.writeInt64(id);
+            if ((flags & 2) != 0) {
+                stream.writeString(about);
+            }
+            settings.serializeToStream(stream);
+            if ((flags & 2097152) != 0) {
+                personal_photo.serializeToStream(stream);
+            }
+            if ((flags & 4) != 0) {
+                profile_photo.serializeToStream(stream);
+            }
+            if ((flags & 4194304) != 0) {
+                fallback_photo.serializeToStream(stream);
+            }
+            notify_settings.serializeToStream(stream);
+            if ((flags & 8) != 0) {
+                bot_info.serializeToStream(stream);
+            }
+            if ((flags & 64) != 0) {
+                stream.writeInt32(pinned_msg_id);
+            }
+            stream.writeInt32(common_chats_count);
+            if ((flags & 2048) != 0) {
+                stream.writeInt32(folder_id);
+            }
+            if ((flags & 16384) != 0) {
+                stream.writeInt32(ttl_period);
+            }
+            if (hasFlag(flags, FLAG_15)) {
+                theme.serializeToStream(stream);
+            }
+            if ((flags & 65536) != 0) {
+                stream.writeString(private_forward_name);
+            }
+            if ((flags & 131072) != 0) {
+                bot_group_admin_rights.serializeToStream(stream);
+            }
+            if ((flags & 262144) != 0) {
+                bot_broadcast_admin_rights.serializeToStream(stream);
+            }
+            if ((flags & 16777216) != 0) {
+                wallpaper.serializeToStream(stream);
+            }
+            if ((flags & 33554432) != 0) {
+                stories.serializeToStream(stream);
+            }
+            if ((flags2 & 1) != 0) {
+                business_work_hours.serializeToStream(stream);
+            }
+            if ((flags2 & 2) != 0) {
+                business_location.serializeToStream(stream);
+            }
+            if ((flags2 & 4) != 0) {
+                business_greeting_message.serializeToStream(stream);
+            }
+            if ((flags2 & 8) != 0) {
+                business_away_message.serializeToStream(stream);
+            }
+            if ((flags2 & 16) != 0) {
+                business_intro.serializeToStream(stream);
+            }
+            if ((flags2 & 32) != 0) {
+                birthday.serializeToStream(stream);
+            }
+            if ((flags2 & 64) != 0) {
+                stream.writeInt64(personal_channel_id);
+                stream.writeInt32(personal_channel_message);
+            }
+            if ((flags2 & 256) != 0) {
+                stream.writeInt32(stargifts_count);
+            }
+            if ((flags2 & 2048) != 0) {
+                starref_program.serializeToStream(stream);
+            }
+            if ((flags2 & 4096) != 0) {
+                bot_verification.serializeToStream(stream);
+            }
+            if ((flags2 & 16384) != 0) {
+                stream.writeInt64(send_paid_messages_stars);
+            }
+            if ((flags2 & 32768) != 0) {
+                disallowed_stargifts.serializeToStream(stream);
+            }
+            if (hasFlag(flags2, FLAG_17)) {
+                stars_rating.serializeToStream(stream);
+            }
+            if (hasFlag(flags2, FLAG_18)) {
+                stars_my_pending_rating.serializeToStream(stream);
+                stream.writeInt32(stars_my_pending_rating_date);
+            }
+            if (hasFlag(flags2, FLAG_20)) {
+                main_tab.serializeToStream(stream);
+            }
+            if (hasFlag(flags2, FLAG_21)) {
+                saved_music.serializeToStream(stream);
+            }
+        }
+    }
+
+    public static class TL_userFull_layer213 extends TL_userFull {
+        public static final int constructor = 0x3fd81e28;
+
+        public void readParams(InputSerializedData stream, boolean exception) {
+            flags = stream.readInt32(exception);
+            blocked = (flags & 1) != 0;
+            phone_calls_available = (flags & 16) != 0;
+            phone_calls_private = (flags & 32) != 0;
+            can_pin_message = (flags & 128) != 0;
+            has_scheduled = (flags & 4096) != 0;
+            video_calls_available = (flags & 8192) != 0;
+            voice_messages_forbidden = (flags & 1048576) != 0;
+            translations_disabled = (flags & 8388608) != 0;
+            stories_pinned_available = (flags & 67108864) != 0;
+            blocked_my_stories_from = (flags & 134217728) != 0;
+            wallpaper_overridden = (flags & 268435456) != 0;
+            contact_require_premium = (flags & 536870912) != 0;
+            read_dates_private = (flags & 1073741824) != 0;
+            flags2 = stream.readInt32(exception);
+            sponsored_enabled = (flags2 & 128) != 0;
+            can_view_revenue = (flags2 & 512) != 0;
+            bot_can_manage_emoji_status = (flags2 & 1024) != 0;
+            display_gifts_button = (flags2 & 65536) != 0;
+            id = stream.readInt64(exception);
+            if ((flags & 2) != 0) {
+                about = stream.readString(exception);
+            }
+            settings = PeerSettings.TLdeserialize(stream, stream.readInt32(exception), exception);
+            if ((flags & 2097152) != 0) {
+                personal_photo = Photo.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 4) != 0) {
+                profile_photo = Photo.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 4194304) != 0) {
+                fallback_photo = Photo.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            notify_settings = PeerNotifySettings.TLdeserialize(stream, stream.readInt32(exception), exception);
+            if ((flags & 8) != 0) {
+                bot_info = TL_bots.BotInfo.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 64) != 0) {
+                pinned_msg_id = stream.readInt32(exception);
+            }
+            common_chats_count = stream.readInt32(exception);
+            if ((flags & 2048) != 0) {
+                folder_id = stream.readInt32(exception);
+            }
+            if ((flags & 16384) != 0) {
+                ttl_period = stream.readInt32(exception);
+            }
+            if ((flags & 32768) != 0) {
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
+            }
+            if ((flags & 65536) != 0) {
+                private_forward_name = stream.readString(exception);
+            }
+            if ((flags & 131072) != 0) {
+                bot_group_admin_rights = TL_chatAdminRights.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 262144) != 0) {
+                bot_broadcast_admin_rights = TL_chatAdminRights.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 16777216) != 0) {
+                wallpaper = WallPaper.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 33554432) != 0) {
+                stories = TL_stories.PeerStories.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 1) != 0) {
+                business_work_hours = TL_account.TL_businessWorkHours.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 2) != 0) {
+                business_location = TL_businessLocation.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 4) != 0) {
+                business_greeting_message = TL_account.TL_businessGreetingMessage.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 8) != 0) {
+                business_away_message = TL_account.TL_businessAwayMessage.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 16) != 0) {
+                business_intro = TL_account.TL_businessIntro.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 32) != 0) {
+                birthday = TL_account.TL_birthday.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 64) != 0) {
+                personal_channel_id = stream.readInt64(exception);
+                personal_channel_message = stream.readInt32(exception);
+            }
+            if ((flags2 & 256) != 0) {
+                stargifts_count = stream.readInt32(exception);
+            }
+            if ((flags2 & 2048) != 0) {
+                starref_program = TL_payments.starRefProgram.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 4096) != 0) {
+                bot_verification = TL_bots.botVerification.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags2 & 16384) != 0) {
+                send_paid_messages_stars = stream.readInt64(exception);
+            }
+            if ((flags2 & 32768) != 0) {
+                disallowed_stargifts = DisallowedGiftsSettings.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if (hasFlag(flags2, FLAG_17)) {
+                stars_rating = TL_stars.Tl_starsRating.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if (hasFlag(flags2, FLAG_18)) {
+                stars_my_pending_rating = TL_stars.Tl_starsRating.TLdeserialize(stream, stream.readInt32(exception), exception);
+                stars_my_pending_rating_date = stream.readInt32(exception);
+            }
+            if (hasFlag(flags2, FLAG_20)) {
+                main_tab = ProfileTab.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if (hasFlag(flags2, FLAG_21)) {
+                saved_music = Document.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+        }
+
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            flags = blocked ? (flags | 1) : (flags &~ 1);
+            flags = phone_calls_available ? (flags | 16) : (flags &~ 16);
+            flags = phone_calls_private ? (flags | 32) : (flags &~ 32);
+            flags = can_pin_message ? (flags | 128) : (flags &~ 128);
+            flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
+            flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
+            flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
+            flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
+            flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
+            flags = blocked_my_stories_from ? (flags | 134217728) : (flags &~ 134217728);
+            flags = wallpaper_overridden ? (flags | 268435456) : (flags &~ 268435456);
+            flags = contact_require_premium ? (flags | 536870912) : (flags &~ 536870912);
+            flags = read_dates_private ? (flags | 1073741824) : (flags &~ 1073741824);
+            stream.writeInt32(flags);
+            flags2 = sponsored_enabled ? (flags2 | 128) : (flags2 &~ 128);
+            flags2 = can_view_revenue ? (flags2 | 512) : (flags2 &~ 512);
+            flags2 = bot_can_manage_emoji_status ? (flags2 | 1024) : (flags2 &~ 1024);
+            flags2 = display_gifts_button ? (flags2 | 65536) : (flags2 &~ 65536);
+            flags2 = setFlag(flags2, FLAG_17, stars_rating != null);
+            flags2 = setFlag(flags2, FLAG_18, stars_my_pending_rating != null);
+            flags2 = setFlag(flags2, FLAG_20,  main_tab != null);
+            stream.writeInt32(flags2);
+            stream.writeInt64(id);
+            if ((flags & 2) != 0) {
+                stream.writeString(about);
+            }
+            settings.serializeToStream(stream);
+            if ((flags & 2097152) != 0) {
+                personal_photo.serializeToStream(stream);
+            }
+            if ((flags & 4) != 0) {
+                profile_photo.serializeToStream(stream);
+            }
+            if ((flags & 4194304) != 0) {
+                fallback_photo.serializeToStream(stream);
+            }
+            notify_settings.serializeToStream(stream);
+            if ((flags & 8) != 0) {
+                bot_info.serializeToStream(stream);
+            }
+            if ((flags & 64) != 0) {
+                stream.writeInt32(pinned_msg_id);
+            }
+            stream.writeInt32(common_chats_count);
+            if ((flags & 2048) != 0) {
+                stream.writeInt32(folder_id);
+            }
+            if ((flags & 16384) != 0) {
+                stream.writeInt32(ttl_period);
+            }
+            if ((flags & 32768) != 0) {
+                stream.writeString(emoticon);
+            }
+            if ((flags & 65536) != 0) {
+                stream.writeString(private_forward_name);
+            }
+            if ((flags & 131072) != 0) {
+                bot_group_admin_rights.serializeToStream(stream);
+            }
+            if ((flags & 262144) != 0) {
+                bot_broadcast_admin_rights.serializeToStream(stream);
+            }
+            if ((flags & 16777216) != 0) {
+                wallpaper.serializeToStream(stream);
+            }
+            if ((flags & 33554432) != 0) {
+                stories.serializeToStream(stream);
+            }
+            if ((flags2 & 1) != 0) {
+                business_work_hours.serializeToStream(stream);
+            }
+            if ((flags2 & 2) != 0) {
+                business_location.serializeToStream(stream);
+            }
+            if ((flags2 & 4) != 0) {
+                business_greeting_message.serializeToStream(stream);
+            }
+            if ((flags2 & 8) != 0) {
+                business_away_message.serializeToStream(stream);
+            }
+            if ((flags2 & 16) != 0) {
+                business_intro.serializeToStream(stream);
+            }
+            if ((flags2 & 32) != 0) {
+                birthday.serializeToStream(stream);
+            }
+            if ((flags2 & 64) != 0) {
+                stream.writeInt64(personal_channel_id);
+                stream.writeInt32(personal_channel_message);
+            }
+            if ((flags2 & 256) != 0) {
+                stream.writeInt32(stargifts_count);
+            }
+            if ((flags2 & 2048) != 0) {
+                starref_program.serializeToStream(stream);
+            }
+            if ((flags2 & 4096) != 0) {
+                bot_verification.serializeToStream(stream);
+            }
+            if ((flags2 & 16384) != 0) {
+                stream.writeInt64(send_paid_messages_stars);
+            }
+            if ((flags2 & 32768) != 0) {
+                disallowed_stargifts.serializeToStream(stream);
+            }
+            if (hasFlag(flags2, FLAG_17)) {
+                stars_rating.serializeToStream(stream);
+            }
+            if (hasFlag(flags2, FLAG_18)) {
+                stars_my_pending_rating.serializeToStream(stream);
+                stream.writeInt32(stars_my_pending_rating_date);
+            }
+            if (hasFlag(flags2, FLAG_20)) {
+                main_tab.serializeToStream(stream);
+            }
+            if (hasFlag(flags2, FLAG_21)) {
+                saved_music.serializeToStream(stream);
+            }
+        }
+    }
+
+    public static class TL_userFull_layer212 extends TL_userFull {
         public static final int constructor = 0x7e63ce1f;
 
         public void readParams(InputSerializedData stream, boolean exception) {
@@ -48222,7 +49240,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -48293,6 +49311,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -48337,7 +49357,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -48453,7 +49473,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -48520,6 +49540,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -48563,7 +49585,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -48675,7 +49697,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -48739,6 +49761,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -48781,7 +49805,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -48889,7 +49913,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -48950,6 +49974,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -48991,7 +50017,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -49096,7 +50122,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -49160,6 +50186,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -49201,7 +50229,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -49309,7 +50337,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -49370,6 +50398,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -49411,7 +50441,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -49516,7 +50546,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -49573,6 +50603,8 @@ public class TLRPC {
             flags = phone_calls_private ? (flags | 32) : (flags &~ 32);
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
@@ -49615,7 +50647,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -49717,7 +50749,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -49772,6 +50804,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -49813,7 +50847,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -49910,7 +50944,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -49962,6 +50996,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -50001,7 +51037,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -50094,7 +51130,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -50142,6 +51178,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -50180,7 +51218,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -50269,7 +51307,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -50314,6 +51352,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -50352,7 +51392,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -50438,7 +51478,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -50480,6 +51520,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -50518,7 +51560,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -50599,7 +51641,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -50629,6 +51671,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -50666,7 +51710,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -50733,7 +51777,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -50763,6 +51807,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             flags = stories_pinned_available ? (flags | 67108864) : (flags &~ 67108864);
@@ -50797,7 +51843,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -50862,7 +51908,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -50889,6 +51935,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             stream.writeInt32(flags);
@@ -50921,7 +51969,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -50983,7 +52031,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -51007,6 +52055,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             flags = translations_disabled ? (flags | 8388608) : (flags &~ 8388608);
             stream.writeInt32(flags);
@@ -51039,7 +52089,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -51094,7 +52144,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -51118,6 +52168,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             stream.writeInt32(flags);
             stream.writeInt64(id);
@@ -51146,7 +52198,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -51198,7 +52250,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -51222,6 +52274,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             flags = voice_messages_forbidden ? (flags | 1048576) : (flags &~ 1048576);
             stream.writeInt32(flags);
             stream.writeInt64(id);
@@ -51247,7 +52301,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -51298,7 +52352,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -51319,6 +52373,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             stream.writeInt32(flags);
             stream.writeInt64(id);
             if ((flags & 2) != 0) {
@@ -51343,7 +52399,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -51391,7 +52447,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
             if ((flags & 65536) != 0) {
                 private_forward_name = stream.readString(exception);
@@ -51406,6 +52462,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             stream.writeInt32(flags);
             stream.writeInt64(id);
             if ((flags & 2) != 0) {
@@ -51430,7 +52488,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
             if ((flags & 65536) != 0) {
                 stream.writeString(private_forward_name);
@@ -51472,7 +52530,7 @@ public class TLRPC {
                 ttl_period = stream.readInt32(exception);
             }
             if ((flags & 32768) != 0) {
-                theme_emoticon = stream.readString(exception);
+                this.theme = ChatTheme.ofEmoticon(stream.readString(exception));
             }
         }
 
@@ -51484,6 +52542,8 @@ public class TLRPC {
             flags = can_pin_message ? (flags | 128) : (flags &~ 128);
             flags = has_scheduled ? (flags | 4096) : (flags &~ 4096);
             flags = video_calls_available ? (flags | 8192) : (flags &~ 8192);
+            final String emoticon = getTheme_emoticon();
+            flags = setFlag(flags, FLAG_15, emoticon != null);
             stream.writeInt32(flags);
             user.serializeToStream(stream);
             if ((flags & 2) != 0) {
@@ -51508,7 +52568,7 @@ public class TLRPC {
                 stream.writeInt32(ttl_period);
             }
             if ((flags & 32768) != 0) {
-                stream.writeString(theme_emoticon);
+                stream.writeString(emoticon);
             }
         }
     }
@@ -58883,20 +59943,22 @@ public class TLRPC {
         }
     }
 
-    public static class TL_messages_setChatTheme extends TLObject {
-        public static final int constructor = 0xe63be13f;
+    public static class TL_messages_setChatTheme extends TLMethod<Updates> {
+        public static final int constructor = 0x81202c9;
 
         public InputPeer peer;
-        public String emoticon;
+        public InputChatTheme theme;
 
-        public TLObject deserializeResponse(InputSerializedData stream, int constructor, boolean exception) {
-            return Updates.TLdeserialize(stream, constructor, exception);
-        }
-
+        @Override
         public void serializeToStream(OutputSerializedData stream) {
             stream.writeInt32(constructor);
             peer.serializeToStream(stream);
-            stream.writeString(emoticon);
+            theme.serializeToStream(stream);
+        }
+
+        @Override
+        public Updates deserializeResponseT(InputSerializedData stream, int constructor, boolean exception) {
+            return Updates.TLdeserialize(stream, constructor, exception);
         }
     }
 
@@ -60334,6 +61396,9 @@ public class TLRPC {
                     break;
                 case TL_inputStorePaymentStarsTopup.constructor:
                     result = new TL_inputStorePaymentStarsTopup();
+                    break;
+                case TL_inputStorePaymentStarsTopup_layer212.constructor:
+                    result = new TL_inputStorePaymentStarsTopup_layer212();
                     break;
                 case TL_inputStorePaymentStarsGiveaway.constructor:
                     result = new TL_inputStorePaymentStarsGiveaway();
@@ -67893,6 +68958,9 @@ public class TLRPC {
                 case TL_inputInvoiceStarGiftResale.constructor:
                     result = new TL_inputInvoiceStarGiftResale();
                     break;
+                case TL_inputInvoiceStarGiftPrepaidUpgrade.constructor:
+                    result = new TL_inputInvoiceStarGiftPrepaidUpgrade();
+                    break;
             }
             if (result == null && exception) {
                 throw new RuntimeException(String.format("can't parse magic %x in InputInvoice", constructor));
@@ -70194,12 +71262,43 @@ public class TLRPC {
         }
     }
 
+
     public static class TL_inputStorePaymentStarsTopup extends InputStorePaymentPurpose {
-        public static final int constructor = 0xdddd0f56;
+        public static final int constructor = 0xf9a2a6cb;
 
         public long stars;
         public String currency;
         public long amount;
+        public @Nullable InputPeer spend_purpose_peer;
+
+        public void readParams(InputSerializedData stream, boolean exception) {
+            final int flags = stream.readInt32(exception);
+            stars = stream.readInt64(exception);
+            currency = stream.readString(exception);
+            amount = stream.readInt64(exception);
+            if (hasFlag(flags, FLAG_0)) {
+                spend_purpose_peer = InputPeer.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+        }
+
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+
+            int flags = 0;
+            flags = setFlag(flags, FLAG_0, spend_purpose_peer != null);
+            stream.writeInt32(flags);
+
+            stream.writeInt64(stars);
+            stream.writeString(currency);
+            stream.writeInt64(amount);
+            if (hasFlag(flags, FLAG_0)) {
+                spend_purpose_peer.serializeToStream(stream);
+            }
+        }
+    }
+
+    public static class TL_inputStorePaymentStarsTopup_layer212 extends TL_inputStorePaymentStarsTopup {
+        public static final int constructor = 0xdddd0f56;
 
         public void readParams(InputSerializedData stream, boolean exception) {
             stars = stream.readInt64(exception);
@@ -70479,6 +71578,24 @@ public class TLRPC {
             if ((flags & 1) != 0) {
                 message.serializeToStream(stream);
             }
+        }
+    }
+
+    public static class TL_inputInvoiceStarGiftPrepaidUpgrade extends InputInvoice {
+        public static final int constructor = 0x9a0b48b8;
+        
+        public InputPeer peer;
+        public String hash;
+
+        public void readParams(InputSerializedData stream, boolean exception) {
+            peer = InputPeer.TLdeserialize(stream, stream.readInt32(exception), exception);
+            hash = stream.readString(exception);
+        }
+
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            peer.serializeToStream(stream);
+            stream.writeString(hash);
         }
     }
 
@@ -71284,6 +72401,111 @@ public class TLRPC {
     }
 
     public static class TL_messageActionStarGift extends MessageAction {
+        public static final int constructor = 0xf24de7fa;
+
+        public boolean name_hidden;
+        public boolean saved;
+        public boolean converted;
+        public boolean upgraded;
+        public boolean transferred;
+        public boolean can_upgrade;
+        public boolean refunded;
+        public boolean prepaid_upgrade;
+        public boolean upgrade_separate;
+        public TL_stars.StarGift gift;
+        public TL_textWithEntities message;
+        public long convert_stars;
+        public int upgrade_msg_id;
+        public long upgrade_stars;
+        public Peer from_id;
+        public long saved_id;
+        public String prepaid_upgrade_hash;
+        public int gift_msg_id;
+
+        public boolean forceIn; //custom
+
+        @Override
+        public void readParams(InputSerializedData stream, boolean exception) {
+            flags = stream.readInt32(exception);
+            name_hidden = (flags & 1) != 0;
+            saved = (flags & 4) != 0;
+            converted = (flags & 8) != 0;
+            upgraded = (flags & 32) != 0;
+            transferred = (flags & 64) != 0;
+            can_upgrade = (flags & 1024) != 0;
+            refunded = (flags & 512) != 0;
+            prepaid_upgrade = (flags & 8192) != 0;
+            upgrade_separate = (flags & 65536) != 0;
+            gift = TL_stars.StarGift.TLdeserialize(stream, stream.readInt32(exception), exception);
+            if ((flags & 2) != 0) {
+                message = TL_textWithEntities.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 16) != 0) {
+                convert_stars = stream.readInt64(exception);
+            }
+            if ((flags & 32) != 0) {
+                upgrade_msg_id = stream.readInt32(exception);
+            }
+            if ((flags & 256) != 0) {
+                upgrade_stars = stream.readInt64(exception);
+            }
+            if ((flags & 2048) != 0) {
+                from_id = Peer.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            if ((flags & 4096) != 0) {
+                peer = Peer.TLdeserialize(stream, stream.readInt32(exception), exception);
+                saved_id = stream.readInt64(exception);
+            }
+            if ((flags & 16384) != 0) {
+                prepaid_upgrade_hash = stream.readString(exception);
+            }
+            if ((flags & 32768) != 0) {
+                gift_msg_id = stream.readInt32(exception);
+            }
+        }
+
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            flags = name_hidden ? (flags | 1) : (flags &~ 1);
+            flags = saved ? (flags | 4) : (flags &~ 4);
+            flags = converted ? (flags | 8) : (flags &~ 8);
+            flags = upgraded ? (flags | 32) : (flags &~ 32);
+            flags = transferred ? (flags | 64) : (flags &~ 64);
+            flags = can_upgrade ? (flags | 1024) : (flags &~ 1024);
+            flags = refunded ? (flags | 512) : (flags &~ 512);
+            flags = prepaid_upgrade ? (flags | 8192) : (flags &~ 8192);
+            flags = upgrade_separate ? (flags | 65536) : (flags &~ 65536);
+            stream.writeInt32(flags);
+            gift.serializeToStream(stream);
+            if ((flags & 2) != 0) {
+                message.serializeToStream(stream);
+            }
+            if ((flags & 16) != 0) {
+                stream.writeInt64(convert_stars);
+            }
+            if ((flags & 32) != 0) {
+                stream.writeInt32(upgrade_msg_id);
+            }
+            if ((flags & 256) != 0) {
+                stream.writeInt64(upgrade_stars);
+            }
+            if ((flags & 2048) != 0) {
+                from_id.serializeToStream(stream);
+            }
+            if ((flags & 4096) != 0) {
+                peer.serializeToStream(stream);
+                stream.writeInt64(saved_id);
+            }
+            if ((flags & 16384) != 0) {
+                stream.writeString(prepaid_upgrade_hash);
+            }
+            if ((flags & 32768) != 0) {
+                stream.writeInt32(gift_msg_id);
+            }
+        }
+    }
+
+    public static class TL_messageActionStarGift_layer211 extends TL_messageActionStarGift {
         public static final int constructor = 0x4717e8a4;
 
         public boolean name_hidden;
@@ -71293,6 +72515,7 @@ public class TLRPC {
         public boolean transferred;
         public boolean can_upgrade;
         public boolean refunded;
+        public boolean prepaid_upgrade;
         public TL_stars.StarGift gift;
         public TL_textWithEntities message;
         public long convert_stars;
@@ -71313,6 +72536,7 @@ public class TLRPC {
             transferred = (flags & 64) != 0;
             can_upgrade = (flags & 1024) != 0;
             refunded = (flags & 512) != 0;
+            prepaid_upgrade = (flags & 8192) != 0;
             gift = TL_stars.StarGift.TLdeserialize(stream, stream.readInt32(exception), exception);
             if ((flags & 2) != 0) {
                 message = TL_textWithEntities.TLdeserialize(stream, stream.readInt32(exception), exception);
@@ -71344,6 +72568,7 @@ public class TLRPC {
             flags = transferred ? (flags | 64) : (flags &~ 64);
             flags = can_upgrade ? (flags | 1024) : (flags &~ 1024);
             flags = refunded ? (flags | 512) : (flags &~ 512);
+            flags = prepaid_upgrade ? (flags | 8192) : (flags &~ 8192);
             stream.writeInt32(flags);
             gift.serializeToStream(stream);
             if ((flags & 2) != 0) {
@@ -71598,6 +72823,7 @@ public class TLRPC {
         public boolean transferred;
         public boolean saved;
         public boolean refunded;
+        public boolean prepaid_upgrade;
         public TL_stars.StarGift gift;
         public int can_export_at;
         public long transfer_stars;
@@ -71615,6 +72841,7 @@ public class TLRPC {
             transferred = (flags & 2) != 0;
             saved = (flags & 4) != 0;
             refunded = (flags & 32) != 0;
+            prepaid_upgrade = (flags & 2048) != 0;
             gift = TL_stars.StarGift.TLdeserialize(stream, stream.readInt32(exception), exception);
             if ((flags & 8) != 0) {
                 can_export_at = stream.readInt32(exception);
@@ -71647,6 +72874,7 @@ public class TLRPC {
             flags = saved ? (flags | 4) : (flags &~ 4);
             flags = refunded ? (flags | 32) : (flags &~ 32);
             flags = setFlag(flags, FLAG_8, resale_amount != null);
+            flags = setFlag(flags, FLAG_11, prepaid_upgrade);
             stream.writeInt32(flags);
             gift.serializeToStream(stream);
             if ((flags & 8) != 0) {
@@ -74371,6 +75599,372 @@ public class TLRPC {
             if ((flags & 1) != 0) {
                 stream.writeString(query);
             }
+        }
+    }
+
+    public static class ProfileTab extends TLObject {
+        public static ProfileTab TLdeserialize(InputSerializedData stream, int constructor, boolean exception) {
+            ProfileTab result = null;
+            switch (constructor) {
+                case TL_profileTabPosts.constructor:
+                    result = new TL_profileTabPosts();
+                    break;
+                case TL_profileTabGifts.constructor:
+                    result = new TL_profileTabGifts();
+                    break;
+                case TL_profileTabMedia.constructor:
+                    result = new TL_profileTabMedia();
+                    break;
+                case TL_profileTabFiles.constructor:
+                    result = new TL_profileTabFiles();
+                    break;
+                case TL_profileTabMusic.constructor:
+                    result = new TL_profileTabMusic();
+                    break;
+                case TL_profileTabVoice.constructor:
+                    result = new TL_profileTabVoice();
+                    break;
+                case TL_profileTabLinks.constructor:
+                    result = new TL_profileTabLinks();
+                    break;
+                case TL_profileTabGifs.constructor:
+                    result = new TL_profileTabGifs();
+                    break;
+            }
+            if (result == null && exception) {
+                throw new RuntimeException(String.format("can't parse magic %x in ProfileTab", constructor));
+            }
+            if (result != null) {
+                result.readParams(stream, exception);
+            }
+            return result;
+        }
+    }
+
+    public static class TL_profileTabPosts extends ProfileTab {
+        public static final int constructor = 0xb98cd696;
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+        }
+    }
+
+    public static class TL_profileTabGifts extends ProfileTab {
+        public static final int constructor = 0x4d4bd46a;
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+        }
+    }
+
+    public static class TL_profileTabMedia extends ProfileTab {
+        public static final int constructor = 0x72c64955;
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+        }
+    }
+
+    public static class TL_profileTabFiles extends ProfileTab {
+        public static final int constructor = 0xab339c00;
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+        }
+    }
+
+    public static class TL_profileTabMusic extends ProfileTab {
+        public static final int constructor = 0x9f27d26e;
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+        }
+    }
+
+    public static class TL_profileTabVoice extends ProfileTab {
+        public static final int constructor = 0xe477092e;
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+        }
+    }
+
+    public static class TL_profileTabLinks extends ProfileTab {
+        public static final int constructor = 0xd3656499;
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+        }
+    }
+
+    public static class TL_profileTabGifs extends ProfileTab {
+        public static final int constructor = 0xa2c0f695;
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+        }
+    }
+
+    public static class SavedMusic extends TLObject {
+
+        public int count;
+        public ArrayList<Document> documents = new ArrayList<>();
+
+        public static SavedMusic TLdeserialize(InputSerializedData stream, int constructor, boolean exception) {
+            SavedMusic result = null;
+            switch (constructor) {
+                case TL_savedMusicNotModified.constructor:
+                    result = new TL_savedMusicNotModified();
+                    break;
+                case TL_savedMusic.constructor:
+                    result = new TL_savedMusic();
+                    break;
+            }
+            if (result == null && exception) {
+                throw new RuntimeException(String.format("can't parse magic %x in SavedMusic", constructor));
+            }
+            if (result != null) {
+                result.readParams(stream, exception);
+            }
+            return result;
+        }
+    }
+
+    public static class TL_savedMusicNotModified extends SavedMusic {
+        public static final int constructor = 0xe3878aa4;
+
+        @Override
+        public void readParams(InputSerializedData stream, boolean exception) {
+            count = stream.readInt32(exception);
+        }
+
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            stream.writeInt32(count);
+        }
+    }
+
+    public static class TL_savedMusic extends SavedMusic {
+        public static final int constructor = 0x34a2f297;
+
+        @Override
+        public void readParams(InputSerializedData stream, boolean exception) {
+            count = stream.readInt32(exception);
+            documents = Vector.deserialize(stream, Document::TLdeserialize, exception);
+        }
+
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            stream.writeInt32(count);
+            Vector.serialize(stream, documents);
+        }
+    }
+    
+    public static class TL_getSavedMusic extends TLObject {
+        public static final int constructor = 0x788d7fe3;
+        
+        public InputUser id;
+        public int offset;
+        public int limit;
+        public long hash;
+
+        @Override
+        public TLObject deserializeResponse(InputSerializedData stream, int constructor, boolean exception) {
+            return SavedMusic.TLdeserialize(stream, constructor, exception);
+        }
+
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            id.serializeToStream(stream);
+            stream.writeInt32(offset);
+            stream.writeInt32(limit);
+            stream.writeInt64(hash);
+        }
+    }
+
+    public static class TL_account_setMainProfileTab extends TLObject {
+        public static final int constructor = 0x5dee78b0;
+
+        public ProfileTab tab;
+
+        @Override
+        public TLObject deserializeResponse(InputSerializedData stream, int constructor, boolean exception) {
+            return Bool.TLdeserialize(stream, constructor, exception);
+        }
+
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            tab.serializeToStream(stream);
+        }
+    }
+
+
+    public static class TL_channels_setMainProfileTab extends TLObject {
+        public static final int constructor = 0x3583fcb1;
+
+        public InputChannel channel;
+        public ProfileTab tab;
+
+        @Override
+        public TLObject deserializeResponse(InputSerializedData stream, int constructor, boolean exception) {
+            return Bool.TLdeserialize(stream, constructor, exception);
+        }
+
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            channel.serializeToStream(stream);
+            tab.serializeToStream(stream);
+        }
+    }
+
+    public static class TL_account_saveMusic extends TLObject {
+        public static final int constructor = 0xb26732a9;
+        
+        public int flags;
+        public boolean unsave;
+        public InputDocument id;
+        public InputDocument after_id;
+
+        @Override
+        public TLObject deserializeResponse(InputSerializedData stream, int constructor, boolean exception) {
+            return Bool.TLdeserialize(stream, constructor, exception);
+        }
+
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            flags = unsave ? flags | 1 : flags &~ 1;
+            stream.writeInt32(flags);
+            id.serializeToStream(stream);
+            if ((flags & 2) != 0) {
+                after_id.serializeToStream(stream);
+            }
+        }
+    }
+
+    public static class ChatTheme extends TLObject {
+        public static ChatTheme TLdeserialize(InputSerializedData stream, int constructor, boolean exception) {
+            return TLdeserialize(ChatTheme.class, fromConstructor(constructor), stream, constructor, exception);
+        }
+
+        private static ChatTheme fromConstructor(int constructor) {
+            switch (constructor) {
+                case TL_chatTheme.constructor:           return new TL_chatTheme();
+                case TL_chatThemeUniqueGift.constructor: return new TL_chatThemeUniqueGift();
+            }
+            return null;
+        }
+
+        public static ChatTheme ofEmoticon(String emoticon) {
+            TL_chatTheme theme = new TL_chatTheme();
+            theme.emoticon = emoticon;
+            return theme;
+        }
+    }
+
+    public static class TL_chatTheme extends ChatTheme {
+        public static final int constructor = 0xc3dffc04;
+
+        public String emoticon;
+
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            stream.writeString(emoticon);
+        }
+
+        @Override
+        public void readParams(InputSerializedData stream, boolean exception) {
+            emoticon = stream.readString(exception);
+        }
+    }
+
+    public static class TL_chatThemeUniqueGift extends ChatTheme {
+        public static final int constructor = 0x3458f9c8;
+
+        public TL_stars.StarGift gift;
+        public ArrayList<ThemeSettings> theme_settings;
+
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            gift.serializeToStream(stream);
+            Vector.serialize(stream, theme_settings);
+        }
+
+        @Override
+        public void readParams(InputSerializedData stream, boolean exception) {
+            gift = TL_stars.StarGift.TLdeserialize(stream, stream.readInt32(exception), exception);
+            theme_settings = Vector.deserialize(stream, ThemeSettings::TLdeserialize, exception);
+        }
+    }
+
+
+    public static class InputChatTheme extends TLObject {
+        public static InputChatTheme TLdeserialize(InputSerializedData stream, int constructor, boolean exception) {
+            return TLdeserialize(InputChatTheme.class, fromConstructor(constructor), stream, constructor, exception);
+        }
+
+        private static InputChatTheme fromConstructor(int constructor) {
+            switch (constructor) {
+                case Tl_inputChatThemeEmpty.constructor:      return new Tl_inputChatThemeEmpty();
+                case Tl_inputChatTheme.constructor:           return new Tl_inputChatTheme();
+                case Tl_inputChatThemeUniqueGift.constructor: return new Tl_inputChatThemeUniqueGift();
+            }
+            return null;
+        }
+    }
+
+    public static class Tl_inputChatThemeEmpty extends InputChatTheme {
+        public static final int constructor = 0x83268483;
+
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+        }
+
+        @Override
+        public void readParams(InputSerializedData stream, boolean exception) {
+
+        }
+    }
+
+    public static class Tl_inputChatTheme extends InputChatTheme {
+        public static final int constructor = 0xc93de95c;
+
+        public String emoticon;
+
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            stream.writeString(emoticon);
+        }
+
+        @Override
+        public void readParams(InputSerializedData stream, boolean exception) {
+            emoticon = stream.readString(exception);
+        }
+    }
+
+    public static class Tl_inputChatThemeUniqueGift extends InputChatTheme {
+        public static final int constructor = 0x87e5dfe4;
+
+        public String slug;
+
+        @Override
+        public void serializeToStream(OutputSerializedData stream) {
+            stream.writeInt32(constructor);
+            stream.writeString(slug);
+        }
+
+        @Override
+        public void readParams(InputSerializedData stream, boolean exception) {
+            slug = stream.readString(exception);
         }
     }
 }

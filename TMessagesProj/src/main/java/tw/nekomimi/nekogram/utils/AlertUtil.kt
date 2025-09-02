@@ -10,6 +10,8 @@ import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ActionBar.AlertDialog
+import org.telegram.ui.ActionBar.BaseFragment
+import org.telegram.ui.Components.BulletinFactory
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.translate.Translator
 import tw.nekomimi.nekogram.ui.BottomBuilder
@@ -21,13 +23,25 @@ object AlertUtil {
     @JvmStatic
     fun copyAndAlert(text: String) {
         AndroidUtilities.addToClipboard(text)
-        AlertUtil.showToast(getString(R.string.TextCopied))
+        showToast(getString(R.string.TextCopied))
+    }
+
+    @JvmStatic
+    fun copyAndAlert(text: String, fragment: BaseFragment? = null) {
+        AndroidUtilities.addToClipboard(text)
+        BulletinFactory.of(fragment).createCopyBulletin(getString(R.string.TextCopied)).show();
     }
 
     @JvmStatic
     fun copyLinkAndAlert(text: String) {
         AndroidUtilities.addToClipboard(text)
-        AlertUtil.showToast(getString(R.string.LinkCopied))
+        showToast(getString(R.string.LinkCopied))
+    }
+
+    @JvmStatic
+    fun copyLinkAndAlert(text: String, fragment: BaseFragment? = null) {
+        AndroidUtilities.addToClipboard(text)
+        BulletinFactory.of(fragment).createCopyBulletin(getString(R.string.LinkCopied)).show()
     }
 
     @JvmStatic
