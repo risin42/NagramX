@@ -7475,7 +7475,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         }, 250);
                     }
                 };
-                showDialog(shareAlert);
+                // showDialog(shareAlert);
                 if (usernameObj != null && !usernameObj.editable) {
                     TL_fragment.TL_getCollectibleInfo req = new TL_fragment.TL_getCollectibleInfo();
                     TL_fragment.TL_inputCollectibleUsername input = new TL_fragment.TL_inputCollectibleUsername();
