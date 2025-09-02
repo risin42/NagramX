@@ -44802,8 +44802,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         } else if (id == nkbtn_detail) {
             ArrayList<MessageObject> messageObjects = getSelectedMessages();
             if (!messageObjects.isEmpty()) {
-                MessageObject.GroupedMessages messageGroup = getValidGroupedMessage(messageObjects.getFirst());
-                presentFragment(new MessageDetailsActivity(messageObjects.getFirst(), messageGroup));
+                MessageObject.GroupedMessages messageGroup = getValidGroupedMessage(messageObjects.get(0));
+                presentFragment(new MessageDetailsActivity(messageObjects.get(0), messageGroup));
             }
         } else if (id == nkbtn_sharemessage) {
             var selected = getSelectedMessages();
