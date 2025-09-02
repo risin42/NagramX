@@ -409,7 +409,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
     private static class CustomExclusionStrategy implements com.google.gson.ExclusionStrategy {
         @Override
         public boolean shouldSkipField(com.google.gson.FieldAttributes f) {
-            return "parentRichText".equals(f.getName());
+            return "parentRichText".equals(f.getName()) || "mChangingConfigurations".equals(f.getName());
         }
 
         @Override
