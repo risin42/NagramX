@@ -17140,7 +17140,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 AlertUtil.copyLinkAndAlert("tg://openmessage?user_id=" + id, this);
                 return Unit.INSTANCE;
             });
-            builder.addItem(getString(R.string.CopyLink) + " (IOS)", R.drawable.profile_link, __ -> {
+            builder.addItem(getString(R.string.CopyLink) + " (iOS)", R.drawable.profile_link, __ -> {
                 AlertUtil.copyLinkAndAlert("https://t.me/@id" + id, this);
                 return Unit.INSTANCE;
             });
