@@ -65,6 +65,7 @@ import org.telegram.ui.Components.Reactions.BackSpaceButtonView;
 import org.telegram.ui.Components.Reactions.CustomReactionEditText;
 import org.telegram.ui.Components.Reactions.ReactionsLayoutInBubble;
 import org.telegram.ui.Components.ReactionsContainerLayout;
+import org.telegram.ui.Components.ViewPagerFixed;
 import org.telegram.ui.SelectAnimatedEmojiDialog;
 import org.telegram.ui.Stories.recorder.ButtonWithCounterView;
 
@@ -77,7 +78,6 @@ import java.util.List;
 import tw.nekomimi.nekogram.config.ConfigItem;
 import tw.nekomimi.nekogram.helpers.PinnedElementsHelper;
 import tw.nekomimi.nekogram.ui.cells.ReactionsContainerPreviewCell;
-import tw.nekomimi.nekogram.ui.components.ViewPagerFixedLegacy;
 import xyz.nextalone.nagram.NaConfig;
 
 public class PinnedReactionsActivity extends BaseFragment {
@@ -88,7 +88,7 @@ public class PinnedReactionsActivity extends BaseFragment {
     private final List<TLRPC.TL_availableReaction> allAvailableReactions = new ArrayList<>();
     private Page chatsPage;
     private Page channelsPage;
-    private ViewPagerFixedLegacy viewPager;
+    private ViewPagerFixed viewPager;
     private ImageView backButton;
     private FrameLayout actionBarContainer;
     private FilledTabsView tabsView;
@@ -138,7 +138,7 @@ public class PinnedReactionsActivity extends BaseFragment {
             }
         };
 
-        viewPager = new ViewPagerFixedLegacy(context) {
+        viewPager = new ViewPagerFixed(context) {
             @Override
             public void onTabAnimationUpdate(boolean manual) {
                 tabsView.setSelected(viewPager.getPositionAnimated());
@@ -150,7 +150,7 @@ public class PinnedReactionsActivity extends BaseFragment {
                 onScrollEndCallback.run(true, viewPager.currentPosition);
             }
         };
-        viewPager.setAdapter(new ViewPagerFixedLegacy.Adapter() {
+        viewPager.setAdapter(new ViewPagerFixed.Adapter() {
             @Override
             public int getItemCount() {
                 return 2;
