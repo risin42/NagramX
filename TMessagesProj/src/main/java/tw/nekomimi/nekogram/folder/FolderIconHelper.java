@@ -12,9 +12,6 @@ import java.util.LinkedHashMap;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
-import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.TabStyle;
-
 
 public class FolderIconHelper {
     public static LinkedHashMap<String, Integer> folderIcons = new LinkedHashMap<>();
