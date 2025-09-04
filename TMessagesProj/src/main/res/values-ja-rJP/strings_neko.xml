@@ -22,7 +22,7 @@
     <string name="CreateMention">\@メンションを作成</string>
     <string name="TransparentStatusBar">完全に透明なステータスバーを使用</string>
     <string name="ChristmasHat">常にサンタ帽子を表示</string>
-    <string name="ActionBarDecoration">タイトルバーの装飾</string>
+    <string name="ActionBarDecoration">タイトルデコレーション</string>
     <string name="DependsOnDate">日付に基づく</string>
     <string name="Christmas">クリスマス</string>
     <string name="Valentine">バレンタインデー</string>

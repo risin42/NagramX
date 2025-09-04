@@ -165,6 +165,7 @@
     <string name="DebugMenuForceForumTabs">Forum Sekmelerini Zorla</string>
     <string name="DebugMenuDoNotForceForumTabs">Forum Sekmelerini Zorlama</string>
     <string name="DebugMenuCleanAppUpdate">Temiz Uygulama Güncellemesi</string>
+    <string name="DebugMenuMakeMemoryDump">Bellek Dökümü Oluştur</string>
     <string name="TranslateMessageLLM">Yapay Zeka ile Çevir</string>
     <string name="ResetChatNameOverrides">Sohbet Adı Değişikliklerini Sıfırla</string>
     <string name="ResetChatNameNotification">Sohbet adı değişiklikleri temizlendi.</string>

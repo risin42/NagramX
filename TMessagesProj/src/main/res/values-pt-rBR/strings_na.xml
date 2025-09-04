@@ -108,7 +108,7 @@
     <string name="RegexFiltersEdit">Editar filtro</string>
     <string name="RegexFiltersAddDescription">Você pode usar o site <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> para testar completamente sua expressão regular. Também é possível usar texto simples, mas não se esqueça de escapar os colchetes.</string>
     <string name="RegexFiltersAddError">Erro de sintaxe Regex</string>
-    <string name="ShowTimeHint">Clique no Horário da Mensagem para Mostrar Detalhes</string>
+    <string name="ShowTimeHint">Toque no Horário para Ver Detalhes</string>
     <string name="SearchHashtagDefaultPageChannel">Página de busca de hashtag padrão nos canais</string>
     <string name="SearchHashtagDefaultPageChat">Página de busca de Hashtag padrão nos Chats</string>
     <string name="LocaleToDBC">Texto de localidade usando DBC Case</string>

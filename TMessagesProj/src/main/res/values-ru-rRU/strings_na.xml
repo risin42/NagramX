@@ -108,7 +108,7 @@
     <string name="RegexFiltersEdit">Изменить фильтр</string>
     <string name="RegexFiltersAddDescription">Вы можете использовать сайт <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> для проверки регулярного выражения. Вы также можете использовать простой текст, но не забывайте экранировать скобки.</string>
     <string name="RegexFiltersAddError">Синтаксическая ошибка регулярного выражения</string>
-    <string name="ShowTimeHint">Показывать подробности при нажатии на время сообщения</string>
+    <string name="ShowTimeHint">Подробности по нажатию на время</string>
     <string name="SearchHashtagDefaultPageChannel">Страница поиска по хэштегам в каналах по умолчанию</string>
     <string name="SearchHashtagDefaultPageChat">Страница поиска по хэштегам в чатах по умолчанию</string>
     <string name="LocaleToDBC">Текст локали с использованием регистра DBC</string>

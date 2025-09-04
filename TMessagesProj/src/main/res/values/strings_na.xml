@@ -113,7 +113,7 @@
     <string name="RegexFiltersEdit">Edit filter</string>
     <string name="RegexFiltersAddDescription">You can use site <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> to fully test your regular expression. You can also use plain text, but don\'t forget to escape brackets.</string>
     <string name="RegexFiltersAddError">Regex syntax error</string>
-    <string name="ShowTimeHint">Click Message Time to Show Details</string>
+    <string name="ShowTimeHint">Tap Time for Details</string>
     <string name="SearchHashtagDefaultPageChannel">Default Hashtag Search Page in Channels</string>
     <string name="SearchHashtagDefaultPageChat">Default Hashtag Search Page in Chats</string>
     <string name="LocaleToDBC">Locale Text Using DBC Case</string>

@@ -165,6 +165,7 @@
     <string name="DebugMenuForceForumTabs">話題タブを強制する</string>
     <string name="DebugMenuDoNotForceForumTabs">話題タブを強制しない</string>
     <string name="DebugMenuCleanAppUpdate">アプリの更新を消去</string>
+    <string name="DebugMenuMakeMemoryDump">メモリダンプを作成</string>
     <string name="TranslateMessageLLM">AI で翻訳</string>
     <string name="ResetChatNameOverrides">チャット名の上書きをリセット</string>
     <string name="ResetChatNameNotification">チャット名の上書きがクリアされました。</string>

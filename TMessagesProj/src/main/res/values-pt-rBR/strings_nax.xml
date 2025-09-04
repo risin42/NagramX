@@ -165,6 +165,7 @@
     <string name="DebugMenuForceForumTabs">Forçar Abas do Fórum</string>
     <string name="DebugMenuDoNotForceForumTabs">Não Forçar Abas do Fórum</string>
     <string name="DebugMenuCleanAppUpdate">Limpar Atualizações do App</string>
+    <string name="DebugMenuMakeMemoryDump">Fazer Despejo de Memória</string>
     <string name="TranslateMessageLLM">Traduzir com IA</string>
     <string name="ResetChatNameOverrides">Redefinir Substituições de Nome do Chat</string>
     <string name="ResetChatNameNotification">Substituições de nome do chat limpas.</string>

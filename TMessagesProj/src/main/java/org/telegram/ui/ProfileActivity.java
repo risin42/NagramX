@@ -4799,7 +4799,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? getString(SharedConfig.useSystemBoldFont ? R.string.DebugMenuDontUseSystemBoldFont : R.string.DebugMenuUseSystemBoldFont) : null,
                                 getString(R.string.DebugMenuReloadAppConfig),
                                 !SharedConfig.forceForumTabs ? getString(R.string.DebugMenuForceForumTabs) : getString(R.string.DebugMenuDoNotForceForumTabs),
-                                "Make Memory Dump"
+                                getString(R.string.DebugMenuMakeMemoryDump)
                         };
 
                         builder.setItems(items, (dialog, which) -> {

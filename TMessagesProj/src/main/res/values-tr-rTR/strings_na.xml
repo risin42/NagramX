@@ -107,7 +107,7 @@
     <string name="RegexFiltersEdit">Filtreyi düzenle</string>
     <string name="RegexFiltersAddDescription">Düzenli ifadenizi tam olarak test etmek için <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> sitesini kullanabilirsiniz. Düz metin de kullanabilirsiniz, ancak parantezleri escape etmeyi unutmayın.</string>
     <string name="RegexFiltersAddError">Regex sözdizimi hatası</string>
-    <string name="ShowTimeHint">Ayrıntıları Görmek için Mesaj Saatine Tıklayın</string>
+    <string name="ShowTimeHint">Ayrıntılar İçin Dokunma Süresi</string>
     <string name="SearchHashtagDefaultPageChannel">Kanallarda Varsayılan Hashtag Arama Sayfası</string>
     <string name="SearchHashtagDefaultPageChat">Sohbetlerde Varsayılan Hashtag Arama Sayfası</string>
     <string name="LocaleToDBC">Metni DBC Karakter Setiyle Yerelleştir</string>

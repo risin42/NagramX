@@ -173,6 +173,7 @@
     <string name="DebugMenuForceForumTabs">Force Forum Tabs</string>
     <string name="DebugMenuDoNotForceForumTabs">Do Not Force Forum Tabs</string>
     <string name="DebugMenuCleanAppUpdate">Clean App Update</string>
+    <string name="DebugMenuMakeMemoryDump">Make Memory Dump</string>
     <string name="TranslateMessageLLM">Translate with AI</string>
     <string name="ResetChatNameOverrides">Reset Chat Name Overrides</string>
     <string name="ResetChatNameNotification">Chat name overrides cleared.</string>

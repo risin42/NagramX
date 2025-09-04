@@ -55,13 +55,13 @@
     <string name="DisablePhotoViewerSideAction">禁用点按切换图片</string>
     <string name="BotToken">令牌</string>
     <string name="UnlimitedPinnedDialogs">无限的置顶聊天</string>
-    <string name="UnlimitedPinnedDialogsAbout">关闭同步以置顶无限聊天。</string>
+    <string name="UnlimitedPinnedDialogsAbout">关闭同步以无限置顶聊天。</string>
     <string name="OpenArchiveOnPull">下拉打开“已归档聊天”</string>
     <string name="HideKeyboardOnChatScroll">滚动浏览时隐藏键盘</string>
     <string name="UserRestrictionsSendStickers2">发送贴纸</string>
     <string name="UserRestrictionsSendGifs">发送 GIF</string>
     <string name="CheckAllAdministrated">添加管理的群组与频道</string>
-    <string name="RearVideoMessages">视频留言默认使用后置摄像头</string>
+    <string name="RearVideoMessages">拍摄视频默认使用后置摄像头</string>
     <string name="HideAllTab">隐藏“全部聊天”标签</string>
     <string name="HideAllTabAbout">在聊天列表长按标题可暂时显示全部聊天。</string>
     <string name="TabTitleType">在标签栏上显示</string>
@@ -99,7 +99,7 @@
     <string name="customGroupVoipAudioBitrate">群组通话音频比特率</string>
     <string name="maxRecentStickerCount">最近贴纸数量上限</string>
     <string name="disableSwipeToNextChannel">禁用滑动到下个频道</string>
-    <string name="disableChoosingSticker">选择贴纸时输入状态为输入中</string>
+    <string name="disableChoosingSticker">在选择贴纸时发送输入状态</string>
     <string name="hideSendAsChannel">隐藏以频道身份发送</string>
     <string name="showSpoilersDirectly">直接显示剧透信息</string>
     <string name="SaveToDownloadCount_zero">正在保存%1$d个文件到下载</string>
@@ -122,11 +122,11 @@
     <string name="enhancedFileLoader">下载加速</string>
     <string name="mapDriftingFixForGoogleMaps">修复 Google 地图在中国的漂移问题</string>
     <string name="useOSMDroidMap">使用 OSMDroid 地图</string>
-    <string name="UnknownNekoSettingsOption">没有这样的N-设置选项。</string>
+    <string name="UnknownNekoSettingsOption">找不到这个N-设置选项。</string>
     <string name="PasscodeNeeded">您必须先启用锁定码</string>
     <string name="PasscodeNeko">锁定码</string>
     <string name="PasscodeShowInSettings">在N-设置中显示</string>
-    <string name="PasscodeShowInSettingsAbout">隐藏后，您打开此页面**只能**通过链接：</string>
+    <string name="PasscodeShowInSettingsAbout">隐藏后，您**只能**通过该链接打开此页面：</string>
     <string name="PasscodeSet">设置锁定码</string>
     <string name="PasscodeEdit">更改锁定码</string>
     <string name="PasscodeRemove">移除锁定码</string>
@@ -139,7 +139,7 @@
     <string name="PasscodePanicCodeRemove">关闭紧急代码</string>
     <string name="PasscodePanicCodeRemoveConfirmMessage">您确定要关闭紧急代码吗？</string>
     <string name="PasscodeRemoveConfirmMessage">您确定要移除这个账户的锁定码吗？</string>
-    <string name="PasscodePanicCodeAbout">如果出现问题，使用紧急代码退出登录账户。</string>
+    <string name="PasscodePanicCodeAbout">在紧急情况下您可以使用紧急代码退出登录。</string>
     <string name="RestrictionReason">限制原因</string>
     <string name="InvalidCustomEmojiTypeface">无效的字体文件。</string>
     <string name="DownloadEmojiSet">下载 %s</string>
@@ -159,6 +159,7 @@
     <string name="EmojiSetApplied">Emoji 包已应用。</string>
     <string name="EmojiSetAppliedInfo">%1$s 现在是您的 Emoji 包。</string>
     <string name="EmojiSetAlreadyApplied">Emoji 包已经被应用。</string>
+    <string name="ProviderTelegramAPI">Telegram API</string>
     <string name="RecentChats">最近聊天</string>
     <string name="ClearRecentChats">清除最近聊天</string>
     <string name="ClearRecentChatAlert">您确定要清除您的最近聊天吗？</string>
@@ -196,7 +197,7 @@
     <string name="ChangeTranslateProvider">更换翻译源</string>
     <string name="ProviderYandexTranslate">Yandex 翻译</string>
     <string name="GoogleCloudTransKey">Google Cloud 翻译密钥</string>
-    <string name="GoogleCloudTransKeyNotice">如果您设置了一个 Google Cloud 密钥：云翻译 API 将被调用，而不是提交模拟表单到网页版 (更快速、稳定和节省流量)。</string>
+    <string name="GoogleCloudTransKeyNotice">如果您设置了一个 Google Cloud 密钥，云翻译 API 将被调用，而不是提交一个模拟表单 (更快速、稳定和节省流量)。</string>
     <string name="TransToLang">翻译目标语言</string>
     <string name="TransInputToLang">发送前翻译目标语言</string>
     <string name="More">更多</string>
@@ -216,7 +217,7 @@
     <string name="HideProxyByDefault">未连接时隐藏代理按钮</string>
     <string name="SkipOpenLinkConfirm">跳过打开链接确认</string>
     <string name="DeleteAllInChatAlert">警告！这将**删除此聊天中所有用户**的**所有消息**。</string>
-    <string name="UnblockAll">解禁所有</string>
+    <string name="UnblockAll">解除屏蔽所有账户</string>
     <string name="UnblockAllWarn">您确定要解除屏蔽**所有用户和机器人**吗？</string>
     <string name="BlockedListEmpty">您还没有屏蔽任何人 :)</string>
     <string name="AddProxySocks5">添加 SOCKS5 代理</string>
@@ -245,7 +246,7 @@
     <string name="UserRestrictionsSendGames">发送游戏</string>
     <string name="UserRestrictionsSendInline">通过内联机器人发送</string>
     <string name="TabletMode">平板模式</string>
-    <string name="TabletModeDefault">基于设备</string>
+    <string name="TabletModeDefault">自动</string>
     <string name="ReplaceText">替换文本</string>
     <string name="TextOrigin">原文</string>
     <string name="TextReplace">替换</string>
@@ -264,7 +265,7 @@
     <string name="DeleteDownloadedFileSucceed">已删除</string>
     <string name="DeleteDownloadedFileExternal">外部文件被跳过。</string>
     <string name="useCustomEmoji">使用自定义 Emoji</string>
-    <string name="useCustomEmojiInvalid">非有效 Emoji ZIP 文件。</string>
+    <string name="useCustomEmojiInvalid">不是有效的 Emoji Zip 文件。</string>
     <string name="repeatConfirm">复读前确认</string>
     <string name="repeatConfirmText">确定要复读这条消息？</string>
     <string name="valuesLargeAvatarInDrawer">默认\n头像\n大只头像\n聊天壁纸</string>
@@ -283,7 +284,7 @@
     <string name="UpgradeGroup">升级群组</string>
     <string name="AccDescrShowKeyboard">显示键盘</string>
     <string name="ConvertGroupAlertWarning">警告</string>
-    <string name="ConvertGroupAlert">此操作是不可逆的。无法将超级组降级为常规组。</string>
+    <string name="ConvertGroupAlert">该操作不可逆。您无法将超级群组降级为普通群组。</string>
     <string name="SharedPhotosAndVideos">照片和视频</string>
     <string name="UnofficialApp">非官方应用</string>
     <string name="FileUploadLimit">文件大小不能超过 %1$s</string>

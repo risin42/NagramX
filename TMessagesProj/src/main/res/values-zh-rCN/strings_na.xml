@@ -29,7 +29,7 @@
     <string name="AppIconDarkBlue">几何蓝</string>
     <string name="AppIconBlurBlue">轻盈</string>
     <string name="InputMessageId">输入消息 ID</string>
-    <string name="ToTheMessage">回到消息</string>
+    <string name="ToTheMessage">前往消息</string>
     <string name="ZalgoFilter">过滤 \"Zalgo\" 符号</string>
     <string name="ZalgoFilterNotice">昵称和消息中的 \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" 符号将被过滤。</string>
     <string name="labelChannelUser">标记频道身份发言用户</string>
@@ -87,7 +87,7 @@
     <string name="PushServiceType">推送服务类型</string>
     <string name="PushServiceTypeInApp">内置</string>
     <string name="PushServiceTypeInAppDialog">显示常驻通知</string>
-    <string name="PushServiceTypeUnifiedGateway">Unified Push Gateway</string>
+    <string name="PushServiceTypeUnifiedGateway">Unified Push 网关</string>
     <string name="SendMp4DocumentAsVideo">MP4 视频作为文件发送时可预览</string>
     <string name="StickersChooseShortNameForStickerPack">为您的包选择一个简短的名称。</string>
     <string name="StickersCopyStickerSet">复制整个贴纸包</string>
@@ -108,7 +108,7 @@
     <string name="RegexFiltersEdit">修改正则表达式</string>
     <string name="RegexFiltersAddDescription">您可以使用网站 <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> 来测试您的正则表达式。您也可以使用纯文本，但请不要忘记使用转义符号。</string>
     <string name="RegexFiltersAddError">正则表达式语法错误</string>
-    <string name="ShowTimeHint">点击消息时间显示详细信息</string>
+    <string name="ShowTimeHint">点击时间显示详细信息</string>
     <string name="SearchHashtagDefaultPageChannel">在频道中点击标签时默认的搜索页面</string>
     <string name="SearchHashtagDefaultPageChat">在聊天中点击标签时默认的搜索页面</string>
     <string name="LocaleToDBC">界面文本使用半角符号</string>

@@ -42,7 +42,7 @@
     <string name="CustomArtworkApi">カスタムアートワーク API</string>
     <string name="CustomEditedMessage">編集ありメッセージのマーク</string>
     <string name="DisableEmojiDrawLimit">絵文字のレンダリング制限を解除</string>
-    <string name="IconDecoration">アイコン装飾</string>
+    <string name="IconDecoration">アイコンデコレーション</string>
     <string name="NotificationIcon">通知アイコンスタイル</string>
     <string name="Official">公式</string>
     <string name="HalloWeen">ハロウィン</string>
@@ -55,7 +55,7 @@
     <string name="ShowSendAsUnderMessageHint">入力ヒントの下に送信者を表示</string>
     <string name="CheckAllForum">すべてのトピックモードグループを追加</string>
     <string name="DecorationNone">なし</string>
-    <string name="ChatDecoration">チャットの外観を装飾</string>
+    <string name="ChatDecoration">チャットデコレーション</string>
     <string name="NeedChangeNekoSettings">この設定はN-設定によって上書きされているため、変更できません</string>
     <string name="DoNotUnarchiveBySwipe">スワイプによるアーカイブ解除を無効にする</string>
     <string name="DoNotShareMyPhoneNumber">電話番号の共有を無効にする</string>
@@ -107,7 +107,7 @@
     <string name="RegexFiltersEdit">正規表現を編集</string>
     <string name="RegexFiltersAddDescription">ウェブサイト <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> を使用して、正規表現を完全にテストできます。プレーンテキストを使用することもできますが、括弧をエスケープすることを忘れないでください。</string>
     <string name="RegexFiltersAddError">構文エラー</string>
-    <string name="ShowTimeHint">メッセージ時間をクリックして詳細を表示</string>
+    <string name="ShowTimeHint">時間をタップして詳細を表示</string>
     <string name="SearchHashtagDefaultPageChannel">チャンネルでのハッシュタグ検索ページ</string>
     <string name="SearchHashtagDefaultPageChat">チャットでのハッシュタグ検索ページ</string>
     <string name="LocaleToDBC">インターフェーステキストに半角記号を使用</string>
