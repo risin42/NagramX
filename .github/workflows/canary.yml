@@ -40,6 +40,8 @@ jobs:
           append-timestamp: false
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
       - name: Set up Gradle cache
         uses: actions/cache@v4
         with:
