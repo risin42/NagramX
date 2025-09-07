@@ -228,6 +228,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.helpers.TimeStringHelper;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
@@ -2836,7 +2837,11 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                                 if (drawPhotoImage && photoImage.isInsideImage(x, y)) {
                                     delegate.didPressImage(this, lastTouchX, lastTouchY, false);
                                 } else {
-                                    delegate.didPressWebPage(this, webPage, webPage.url, MessageObject.getMedia(currentMessageObject.messageOwner).safe);
+                                    if (webPage.type.equals("document") && !TextUtils.isEmpty(MessageHelper.getPathToMessage(currentMessageObject))) {
+                                        delegate.didPressImage(this, lastTouchX, lastTouchY, false); // Open the locally downloaded document instead of opening the browser to download it again
+                                    } else {
+                                        delegate.didPressWebPage(this, webPage, webPage.url, MessageObject.getMedia(currentMessageObject.messageOwner).safe);
+                                    }
                                 }
                             } else {
                                 Browser.openUrl(getContext(), webPage.url);
