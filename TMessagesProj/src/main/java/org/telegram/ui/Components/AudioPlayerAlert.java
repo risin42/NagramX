@@ -1783,16 +1783,11 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
                 }
             }, false);
         } else if (id == 100) {
-            final ArrayList<MessageObject> fmessages = new ArrayList<>();
-            fmessages.add(messageObject);
             long myId = UserConfig.getInstance(currentAccount).getClientUserId();
-            Bundle args = new Bundle();
-            args.putLong("user_id", myId);
-            ChatActivity chatActivity = new ChatActivity(args);
-            ChatsHelper.getInstance(currentAccount).forwardMessages(chatActivity, fmessages, false, true, 0, myId);
+            forward(messageObject, myId);
             UndoView undoView = new UndoView(getContext(), null, false, resourcesProvider);
             containerView.addView(undoView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 0, 8, 8));
-            undoView.showWithAction(myId, UndoView.ACTION_FWD_MESSAGES, fmessages.size());
+            undoView.showWithAction(myId, UndoView.ACTION_FWD_MESSAGES, 1);
         }
     }
 
