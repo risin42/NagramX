@@ -528,6 +528,8 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             } else if (key.equals(NekoConfig.dnsType.getKey())) {
                 checkCustomDoHCellRows();
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
+            } else if (key.equals(NekoConfig.typeface.getKey())) {
+                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             }
         };
 

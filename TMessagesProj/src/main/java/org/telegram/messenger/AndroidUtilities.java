@@ -229,6 +229,7 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.TypefaceHelper;
 import tw.nekomimi.nekogram.utils.TelegramUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.ColorOsHelper;
@@ -247,6 +248,8 @@ public class AndroidUtilities {
     public final static String TYPEFACE_ROBOTO_MONO = "fonts/rmono.ttf";
     public final static String TYPEFACE_MERRIWEATHER_BOLD = "fonts/mw_bold.ttf";
     public final static String TYPEFACE_COURIER_NEW_BOLD = "fonts/courier_new_bold.ttf";
+    public static final String TYPEFACE_RITALIC = "fonts/ritalic.ttf";
+    public static final String TYPEFACE_RCONDENSED_BOLD = "fonts/rcondensedbold.ttf";
 
     public static Typeface mediumTypeface;
     public static ThreadLocal<byte[]> readBufferLocal = new ThreadLocal<>();
@@ -2304,50 +2307,17 @@ public class AndroidUtilities {
     }
 
     public static Typeface getTypeface(String assetPath) {
-        synchronized (typefaceCache) {
-            if (NekoConfig.typeface.Bool() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (assetPath.contains("medium") && assetPath.contains("italic")) {
-                    return Typeface.create("sans-serif-medium", Typeface.ITALIC);
+        return typefaceCache.computeIfAbsent(assetPath, path -> {
+            try {
+                if (NekoConfig.typeface.Bool()) {
+                    return TypefaceHelper.createTypeface(path);
                 }
-                if (assetPath.contains("medium")) {
-                    return Typeface.create("sans-serif-medium", Typeface.NORMAL);
-                }
-                if (assetPath.contains("italic")) {
-                    return Typeface.create((Typeface) null, Typeface.ITALIC);
-                }
-                if (assetPath.contains("mono")) {
-                    return Typeface.MONOSPACE;
-                }
-                if (assetPath.contains("mw_bold")) {
-                    return Typeface.create("serif", Typeface.BOLD);
-                }
-                //return Typeface.create((Typeface) null, Typeface.NORMAL);
+                return TypefaceHelper.createTypefaceFromAsset(path);
+            } catch (Exception e) {
+                FileLog.e("Could not get typeface '" + assetPath + "' because " + e.getMessage());
+                return null;
             }
-            if (!typefaceCache.containsKey(assetPath)) {
-                try {
-                    Typeface t;
-                    if (Build.VERSION.SDK_INT >= 26) {
-                        Typeface.Builder builder = new Typeface.Builder(ApplicationLoader.applicationContext.getAssets(), assetPath);
-                        if (assetPath.contains("medium")) {
-                            builder.setWeight(700);
-                        }
-                        if (assetPath.contains("italic")) {
-                            builder.setItalic(true);
-                        }
-                        t = builder.build();
-                    } else {
-                        t = Typeface.createFromAsset(ApplicationLoader.applicationContext.getAssets(), assetPath);
-                    }
-                    typefaceCache.put(assetPath, t);
-                } catch (Exception e) {
-                    if (BuildVars.LOGS_ENABLED) {
-                        FileLog.e("Could not get typeface '" + assetPath + "' because " + e.getMessage());
-                    }
-                    return null;
-                }
-            }
-            return typefaceCache.get(assetPath);
-        }
+        });
     }
 
     public static boolean isWaitingForSms() {

@@ -5088,6 +5088,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                 SharedConfig.toggleDebugVideoQualities();
                             } else if (which == 34) {
                                 SharedConfig.toggleUseSystemBoldFont();
+                                if (getUndoView() == null) {
+                                    undoView = new UndoView(context, null, false, resourcesProvider);
+                                }
+                                undoView.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
                             } else if (which == 35) {
                                 MessagesController.getInstance(currentAccount).loadAppConfig(true);
                             } else if (which == 36) {
