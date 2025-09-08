@@ -11172,15 +11172,15 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 if (ChatObject.isPublic(currentChat)) {
                     usernameRow = rowCount++;
                 }
-                if (NekoConfig.showIdAndDc.Bool()) {
-                    idDcRow = rowCount++;
-                }
                 if (!currentChat.restriction_reason.isEmpty()) {
                     restrictionReasonRow = rowCount++;
                 }
                 if (infoHeaderRowEmpty != -1) {
                     infoEndRowEmpty = rowCount++;
                 }
+            }
+            if (NekoConfig.showIdAndDc.Bool()) {
+                idDcRow = rowCount++;
             }
             if (actionsView == null) {
                 if (infoHeaderRow != -1) {
