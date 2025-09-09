@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.coroutines.withContext
 import org.telegram.messenger.AndroidUtilities
+import org.telegram.messenger.BuildVars
 import org.telegram.messenger.MessageObject
 import org.telegram.messenger.MessagesController
 import org.telegram.messenger.MessagesStorage
@@ -180,10 +181,9 @@ fun ChatActivity.translateMessages(
                 selectedObject.messageOwner.translated = true
                 selectedObject.messageOwner.translatedToLanguage = target.locale2code.lowercase(Locale.getDefault())
 
-                MessagesStorage.getInstance(currentAccount).updateMessageCustomParams(
-                    selectedObject.dialogId,
-                    selectedObject.messageOwner
-                )
+                if (!BuildVars.LOGS_ENABLED) {
+                    MessagesStorage.getInstance(currentAccount).updateMessageCustomParams(selectedObject.dialogId, selectedObject.messageOwner)
+                }
 
                 if (selectedObject.messageOwner.translatedText != null && translatorMode == TRANSLATE_MODE_REPLACE) {
                     AndroidUtilities.runOnUIThread {
