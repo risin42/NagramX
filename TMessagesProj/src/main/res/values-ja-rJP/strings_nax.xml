@@ -238,4 +238,5 @@
     <string name="PinnedReactions_Limit">最大 %d つのリアクションを選択できます。</string>
     <string name="PinnedReactions_Type">この絵文字は使用できません。</string>
     <string name="PinnedReactions_Apply">ピン留めされたアクションを更新</string>
+    <string name="HideStoriesFromHeader">ヘッダーから非表示</string>
 </resources>

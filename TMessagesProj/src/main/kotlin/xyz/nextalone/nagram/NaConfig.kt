@@ -336,7 +336,7 @@ object NaConfig {
         addConfig(
             "DisableStories",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val useLocalQuoteColorData =
         addConfig(
@@ -1315,6 +1315,12 @@ object NaConfig {
             "PinnedReactionsChannels",
             ConfigItem.configTypeString,
             "[]"
+        )
+    val hideStoriesFromHeader =
+        addConfig(
+            "HideStoriesFromHeader",
+            ConfigItem.configTypeBool,
+            true
         )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
