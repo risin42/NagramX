@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.radolyn.ayugram.messages.AyuSavePreferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,12 +61,15 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
 import kotlin.text.StringsKt;
 import tw.nekomimi.nekogram.DatacenterActivity;
+import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
+import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.helpers.CloudSettingsHelper;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
@@ -654,13 +658,42 @@ public class NekoSettingsActivity extends BaseFragment {
 
     @SuppressLint("ApplySharedPref")
     public static void importSettings(JsonObject configJson) throws JSONException {
+        SharedPreferences currentPreferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Activity.MODE_PRIVATE);
+        Set<String> currentKeys = currentPreferences.getAll().keySet();
+        String[] preservePrefixes = {
+                AyuSavePreferences.saveExclusionPrefix,
+                ChatNameHelper.chatNameOverridePrefix,
+                NekoConfig.channelAliasPrefix
+        };
 
         for (Map.Entry<String, JsonElement> element : configJson.entrySet()) {
-            SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences(element.getKey(), Activity.MODE_PRIVATE);
+            String spName = element.getKey();
+            SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences(spName, Activity.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             for (Map.Entry<String, JsonElement> config : ((JsonObject) element.getValue()).entrySet()) {
                 String key = config.getKey();
                 JsonPrimitive value = (JsonPrimitive) config.getValue();
+                if ("nkmrcfg".equals(spName)) {
+                    boolean shouldSkip = true;
+                    for (String prefix : preservePrefixes) {
+                        if (key.startsWith(prefix)) {
+                            shouldSkip = false;
+                            break;
+                        }
+                    }
+                    if (shouldSkip) {
+                        String actualKey = key;
+                        if (key.endsWith("_long")) {
+                            actualKey = StringsKt.substringBeforeLast(key, "_long", key);
+                        } else if (key.endsWith("_float")) {
+                            actualKey = StringsKt.substringBeforeLast(key, "_float", key);
+                        }
+                        shouldSkip = !currentKeys.contains(actualKey);
+                    }
+                    if (shouldSkip) {
+                        continue;
+                    }
+                }
                 if (value.isBoolean()) {
                     editor.putBoolean(key, value.getAsBoolean());
                 } else if (value.isNumber()) {
@@ -686,7 +719,6 @@ public class NekoSettingsActivity extends BaseFragment {
             }
             editor.commit();
         }
-
     }
 
     private void openFilePicker() {
