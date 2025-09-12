@@ -96,7 +96,7 @@ public class AndroidUtil {
         if (fcm) {
             NaConfig.INSTANCE.getPushServiceType().setConfigInt(1);
             NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(false);
-        } else {
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             NaConfig.INSTANCE.getPushServiceType().setConfigInt(0);
             NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(true);
             SharedPreferences.Editor editor = MessagesController.getGlobalNotificationsSettings().edit();

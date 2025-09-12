@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Parcelable;
 import android.text.TextPaint;
 import android.transition.TransitionManager;
@@ -74,6 +75,7 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput2;
 import tw.nekomimi.nekogram.ui.cells.DrawerProfilePreviewCell;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 @SuppressLint("RtlHardcoded")
@@ -316,6 +318,9 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             cellGroup.rows.remove(usePersianCalendarRow);
             cellGroup.rows.remove(displayPersianCalendarByLatinRow);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            cellGroup.rows.remove(pushServiceTypeInAppDialogRow);
+        }
         wasCentered = isCentered();
         wasCenteredAtBeginning = wasCentered;
 
@@ -459,23 +464,12 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
                 ((ConfigCellTextCheck) mapDriftingFixForGoogleMapsRow).setEnabled(!enabled);
                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(mapDriftingFixForGoogleMapsRow));
             } else if (key.equals(NaConfig.INSTANCE.getPushServiceType().getKey())) {
-                SharedPreferences preferences = MessagesController.getNotificationsSettings(UserConfig.selectedAccount);
-                SharedPreferences.Editor editor = preferences.edit();
-                boolean enabled;
-                if (preferences.contains("pushService")) {
-                    enabled = preferences.getBoolean("pushService", true);
-                } else {
-                    enabled = MessagesController.getMainSettings(UserConfig.selectedAccount).getBoolean("keepAliveService", false);
-                }
                 if ((int) newValue == 0) {
-                    NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(true);
-                    ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabledAndUpdateState(true);
-                    if (!enabled) {
-                        editor.putBoolean("pushService", true);
-                        editor.putBoolean("pushConnection", true);
-                        editor.apply();
+                    AndroidUtil.setPushService(false);
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                        ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabledAndUpdateState(true);
+                        ApplicationLoader.startPushService();
                     }
-                    ApplicationLoader.startPushService();
                 } else {
                     NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(false);
                     ((ConfigCellTextCheck) pushServiceTypeInAppDialogRow).setEnabledAndUpdateState(false);

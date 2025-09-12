@@ -3,6 +3,7 @@ package xyz.nextalone.nagram
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Build
 import android.util.Base64
 import androidx.core.net.toUri
 import org.telegram.messenger.AndroidUtilities
@@ -1368,6 +1369,9 @@ object NaConfig {
     private fun fixConfig() {
         if (translatorMode.Int() > 1) {
             translatorMode.setConfigInt(1)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            pushServiceTypeInAppDialog.setConfigBool(false)
         }
     }
 
