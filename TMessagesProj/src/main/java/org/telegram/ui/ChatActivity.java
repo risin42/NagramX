@@ -44928,21 +44928,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             case nkbtn_translate_llm:
             case nkbtn_translate: {
-                if (NaConfig.INSTANCE.getTranslatorMode().Int() == 2 && !selectedObject.isPoll()) {
-                    String toLang = NekoConfig.translateToLang.String()/*LocaleController.getInstance().getCurrentLocale().getLanguage()*/;
-                    int[] messageIdToTranslate = new int[] { selectedObject.getId() };
-                    final CharSequence finalMessageText = getMessageCaption(selectedObject, selectedObjectGroup, messageIdToTranslate);
-                    Utilities.CallbackReturn<URLSpan, Boolean> onLinkPress = (link) -> {
-                        didPressMessageUrl(link, false, selectedObject, null);
-                        return true;
-                    };
-                    TLRPC.InputPeer inputPeer = selectedObject != null && (selectedObject.isPoll() || selectedObject.isVoiceTranscriptionOpen() || selectedObject.isSponsored()) ? null : getMessagesController().getInputPeer(dialog_id);
-                    TranslateAlert2 alert = TranslateAlert2.showAlert(getParentActivity(), this, currentAccount, inputPeer, messageIdToTranslate[0], "und", toLang, finalMessageText, selectedObject.messageOwner.entities, false, onLinkPress, () -> dimBehindView(false));
-                    alert.setDimBehind(true);
-                    closeMenu(false);
-                } else {
-                    MessageTransKt.translateMessages(this, id == nkbtn_translate_llm ? Translator.providerLLMTranslator : 0);
-                }
+                MessageTransKt.translateMessages(this, id == nkbtn_translate_llm ? Translator.providerLLMTranslator : 0);
                 break;
             }
             case nkbtn_detail: {

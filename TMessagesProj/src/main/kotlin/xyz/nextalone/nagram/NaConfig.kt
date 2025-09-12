@@ -762,7 +762,7 @@ object NaConfig {
         addConfig(
             "TranslatorMode",
             ConfigItem.configTypeInt,
-            1 // 0: append; 1: replace; 2: pop-up
+            1 // 0: append; 1: replace
         )
     val centerActionBarTitleType =
         addConfig(
@@ -1365,6 +1365,12 @@ object NaConfig {
         }
     }
 
+    private fun fixConfig() {
+        if (translatorMode.Int() > 1) {
+            translatorMode.setConfigInt(1)
+        }
+    }
+
     private fun addConfig(
         k: String,
         t: Int,
@@ -1515,6 +1521,7 @@ object NaConfig {
             false
         )
         updatePreferredTranslateTargetLangList()
+        fixConfig()
         if (!BuildVars.LOGS_ENABLED) {
             showRPCError.setConfigBool(false)
         }

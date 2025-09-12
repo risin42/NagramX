@@ -90,7 +90,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell translatorModeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getTranslatorMode(), new String[]{
             getString(R.string.TranslatorModeAppend),
             getString(R.string.TranslatorModeInline),
-            getString(R.string.TranslatorModePopup),
     }, null));
     private final AbstractConfigCell translateToLangRow = cellGroup.appendCell(new ConfigCellCustom("TranslateToLang", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell doNotTranslateRow = cellGroup.appendCell(new ConfigCellCustom("DoNotTranslate", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
