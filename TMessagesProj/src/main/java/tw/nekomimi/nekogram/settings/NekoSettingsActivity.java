@@ -1,5 +1,6 @@
 package tw.nekomimi.nekogram.settings;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.Manifest;
@@ -20,6 +21,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import org.telegram.ui.Components.EditTextBoldCursor;
+import android.widget.LinearLayout;
+
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.InputType;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -77,6 +87,9 @@ import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.GsonUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
+import org.telegram.ui.Cells.SettingsSearchCell;
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
+import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
 
 public class NekoSettingsActivity extends BaseFragment {
     public static final int PAGE_TYPE = 0;
@@ -92,6 +105,7 @@ public class NekoSettingsActivity extends BaseFragment {
 
     private ImageView backButton;
     private ImageView syncButton;
+    private ImageView searchButton;
 
     private FrameLayout actionBarContainer;
     private FilledTabsView tabsView;
@@ -134,6 +148,10 @@ public class NekoSettingsActivity extends BaseFragment {
                     if (syncButton != null) {
                         lastBtnColor = btnColor;
                         syncButton.setColorFilter(new PorterDuffColorFilter(btnColor, PorterDuff.Mode.SRC_IN));
+                    }
+                    if (searchButton != null) {
+                        lastBtnColor = btnColor;
+                        searchButton.setColorFilter(new PorterDuffColorFilter(btnColor, PorterDuff.Mode.SRC_IN));
                     }
                 }
             }
@@ -210,9 +228,212 @@ public class NekoSettingsActivity extends BaseFragment {
         syncButton.setOnClickListener(v -> CloudSettingsHelper.getInstance().showDialog(NekoSettingsActivity.this));
         actionBarContainer.addView(syncButton, LayoutHelper.createFrame(54, 54, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
 
+        searchButton = new ImageView(context);
+        searchButton.setScaleType(ImageView.ScaleType.CENTER);
+        searchButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarWhiteSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
+        searchButton.setImageResource(R.drawable.ic_ab_search);
+        searchButton.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN));
+        searchButton.setOnClickListener(v -> showSettingsSearchDialog());
+        actionBarContainer.addView(searchButton, LayoutHelper.createFrame(54, 54, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 42, 0));
+
         fragmentView = contentView = frameLayout;
 
         return contentView;
+    }
+
+    /** @noinspection SizeReplaceableByIsEmpty*/
+    private void showSettingsSearchDialog() {
+        try {
+            Activity parent = getParentActivity();
+            if (parent == null) return;
+
+            ArrayList<SettingsSearchResult> results = SettingsHelper.onCreateSearchArray(fragment -> AndroidUtilities.runOnUIThread(() -> {
+                try {
+                    presentFragment(fragment);
+                } catch (Exception ignore) {
+                }
+            }));
+            LinearLayout containerLayout = new LinearLayout(parent);
+            containerLayout.setOrientation(LinearLayout.VERTICAL);
+            containerLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+            EditTextBoldCursor searchField = new EditTextBoldCursor(parent);
+            searchField.setHint(getString(R.string.Search));
+            searchField.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
+            searchField.setHintTextColor(getThemedColor(Theme.key_windowBackgroundWhiteHintText));
+            searchField.setSingleLine(true);
+            searchField.setInputType(InputType.TYPE_CLASS_TEXT);
+            int pad = dp(12);
+            searchField.setPadding(pad, pad / 2, pad, pad / 2);
+
+            try {
+                searchField.setLineColors(getThemedColor(org.telegram.ui.ActionBar.Theme.key_graySection), getThemedColor(org.telegram.ui.ActionBar.Theme.key_graySection), getThemedColor(org.telegram.ui.ActionBar.Theme.key_text_RedRegular));
+            } catch (Throwable ignore) {
+            }
+
+            searchField.setBackground(null);
+
+            int searchHeight = dp(36);
+            int clearSize = dp(36);
+
+            FrameLayout searchFrame = new FrameLayout(parent);
+            LinearLayout.LayoutParams frameLp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, searchHeight + dp(12));
+            frameLp.leftMargin = dp(10);
+            frameLp.rightMargin = dp(10);
+            frameLp.topMargin = dp(6);
+            frameLp.bottomMargin = dp(2);
+            searchFrame.setLayoutParams(frameLp);
+
+            try {
+                searchFrame.setClipToPadding(true);
+                searchFrame.setClipChildren(true);
+            } catch (Throwable ignore) {
+            }
+
+            ImageView searchIcon = new ImageView(parent);
+            searchIcon.setScaleType(ImageView.ScaleType.CENTER);
+            searchIcon.setImageResource(R.drawable.ic_ab_search);
+            searchIcon.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayIcon), PorterDuff.Mode.MULTIPLY));
+            searchFrame.addView(searchIcon, LayoutHelper.createFrame(48, 48, Gravity.LEFT | Gravity.CENTER_VERTICAL));
+
+            FrameLayout.LayoutParams searchLp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+            searchLp.gravity = Gravity.CENTER_VERTICAL;
+            searchField.setPadding(dp(61), pad / 2, dp(48), pad / 2);
+            searchField.setGravity(Gravity.CENTER_VERTICAL);
+            searchField.setLayoutParams(searchLp);
+            searchFrame.addView(searchField);
+
+            ImageView clearButton = new ImageView(parent);
+            clearButton.setScaleType(ImageView.ScaleType.CENTER);
+            clearButton.setImageResource(R.drawable.ic_close_white);
+            clearButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarWhiteSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
+            clearButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayIcon), PorterDuff.Mode.MULTIPLY));
+            FrameLayout.LayoutParams clearLp = new FrameLayout.LayoutParams(clearSize, clearSize);
+            clearLp.gravity = Gravity.END | Gravity.CENTER_VERTICAL;
+            clearButton.setLayoutParams(clearLp);
+            searchFrame.addView(clearButton);
+            containerLayout.addView(searchFrame);
+
+            RecyclerListView listView = new RecyclerListView(parent);
+            listView.setLayoutManager(new LinearLayoutManager(parent, LinearLayoutManager.VERTICAL, false));
+            final ArrayList<SettingsSearchResult> filtered = new ArrayList<>(results);
+            final String[] currentQuery = new String[]{""};
+
+            RecyclerView.Adapter<RecyclerListView.Holder> adapter = new RecyclerView.Adapter<>() {
+                @NonNull
+                @Override
+                public RecyclerListView.Holder onCreateViewHolder(@NonNull ViewGroup parent1, int viewType) {
+                    View view = new SettingsSearchCell(parent);
+                    view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
+                    return new RecyclerListView.Holder(view);
+                }
+
+                @Override
+                public void onBindViewHolder(@NonNull RecyclerListView.Holder holder, int position) {
+                    SettingsSearchCell cell = (SettingsSearchCell) holder.itemView;
+                    SettingsSearchResult r = filtered.get(position);
+                    String[] path = r.path2 != null ? new String[]{r.path1, r.path2} : new String[]{r.path1};
+                    CharSequence titleToSet = r.searchTitle == null ? "" : r.searchTitle;
+                    String q = currentQuery[0];
+                    if (q != null && !q.isEmpty() && titleToSet.length() > 0) {
+                        SpannableStringBuilder ss = new SpannableStringBuilder(titleToSet);
+                        String lower = titleToSet.toString().toLowerCase();
+                        String[] parts = q.split("\\s+");
+                        int highlightColor = Theme.getColor(org.telegram.ui.ActionBar.Theme.key_windowBackgroundWhiteBlueText4);
+                        for (String p : parts) {
+                            if (p.isEmpty()) continue;
+                            int idx = 0;
+                            while (true) {
+                                int found = lower.indexOf(p, idx);
+                                if (found == -1) break;
+                                try {
+                                    ss.setSpan(new ForegroundColorSpan(highlightColor), found, found + p.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                } catch (Exception ignore) {
+                                }
+                                idx = found + p.length();
+                            }
+                        }
+                        titleToSet = ss;
+                    }
+                    cell.setTextAndValueAndIcon(titleToSet, path, r.iconResId, position < filtered.size() - 1);
+                }
+
+                @Override
+                public int getItemCount() {
+                    return filtered.size();
+                }
+            };
+            containerLayout.addView(listView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(parent, resourceProvider);
+            builder.setView(containerLayout);
+            builder.setNegativeButton(getString(R.string.Close), null);
+            final AlertDialog dialog = builder.create();
+
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener((v, position) -> {
+                if (position < 0 || position >= filtered.size()) return;
+                SettingsSearchResult r = filtered.get(position);
+                try {
+                    if (r.openRunnable != null) r.openRunnable.run();
+                } catch (Exception ignore) {
+                }
+                dialog.dismiss();
+            });
+
+            searchField.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String q = s.toString().toLowerCase().trim();
+                    currentQuery[0] = q;
+                    filtered.clear();
+                    if (q.isEmpty()) {
+                        filtered.addAll(results);
+                    } else {
+                        String[] parts = q.split("\\s+");
+                        for (SettingsSearchResult item : results) {
+                            String title = item.searchTitle == null ? "" : item.searchTitle.toLowerCase();
+                            boolean ok = true;
+                            for (String p : parts) {
+                                if (!title.contains(p)) {
+                                    ok = false;
+                                    break;
+                                }
+                            }
+                            if (ok) filtered.add(item);
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                    clearButton.setVisibility(q.isEmpty() ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            clearButton.setOnClickListener(v -> {
+                searchField.setText("");
+                searchField.requestFocus();
+                AndroidUtilities.showKeyboard(searchField);
+            });
+            clearButton.setVisibility(View.GONE);
+
+            dialog.setOnShowListener(d -> {
+                try {
+                    searchField.requestFocus();
+                    AndroidUtilities.showKeyboard(searchField);
+                } catch (Exception ignore) {
+                }
+            });
+            showDialog(dialog);
+        } catch (Exception ignored) {
+        }
     }
 
     private @NonNull FrameLayout getFrameLayout(Context context) {
