@@ -308,11 +308,11 @@ public class AyuMessagesController {
 
         // Delete messages and their edit history from database
         deletedMessageDao.delete(dialogId);
-        editedMessageDao.deleteByDialogIdAndMessageIds(dialogId, messageIds);
+        editedMessageDao.delete(dialogId);
 
         if (mergeDialogId != 0) {
             deletedMessageDao.delete(mergeDialogId);
-            editedMessageDao.deleteByDialogIdAndMessageIds(mergeDialogId, messageIds);
+            editedMessageDao.delete(mergeDialogId);
         }
 
         // Clean up media files

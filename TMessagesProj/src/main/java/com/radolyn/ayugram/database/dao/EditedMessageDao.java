@@ -36,6 +36,9 @@ public interface EditedMessageDao {
     @Query("SELECT * FROM editedmessage WHERE userId = :userId AND entityCreateDate > :fromDate ORDER BY entityCreateDate LIMIT 50 OFFSET :offset")
     List<EditedMessage> getForSync(long userId, long fromDate, int offset);
 
+    @Query("DELETE FROM editedmessage WHERE dialogId = :dialogId")
+    void delete(long dialogId);
+
     @Query("DELETE FROM editedmessage WHERE dialogId = :dialogId AND messageId IN (:messageIds)")
     void deleteByDialogIdAndMessageIds(long dialogId, List<Integer> messageIds);
 
