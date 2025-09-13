@@ -107,7 +107,7 @@
     <string name="RegexFiltersEdit">Редагувати фільтр</string>
     <string name="RegexFiltersAddDescription">Ви можете скористатися сайтом <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> для повної перевірки вашого регулярного виразу. Ви також можете використовувати звичайний текст, але не забудьте екранувати дужки.</string>
     <string name="RegexFiltersAddError">Помилка синтаксису регулярного виразу</string>
-    <string name="ShowTimeHint">Показувати подробиці при натисканні на час повідомлення</string>
+    <string name="ShowTimeHint">Натисніть «Час» для детальної інформації</string>
     <string name="SearchHashtagDefaultPageChannel">Типовий пошук хештегів у каналах</string>
     <string name="SearchHashtagDefaultPageChat">Типовий пошук хештегів у чатах</string>
     <string name="LocaleToDBC">Текст локалізації з використанням регістру DBC</string>

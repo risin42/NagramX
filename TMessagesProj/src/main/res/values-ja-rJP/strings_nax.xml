@@ -149,7 +149,7 @@
     <string name="TranscribeProviderGeminiPrompt">プロンプト（任意）</string>
     <string name="uploadBoost">アップロード速度の高速化</string>
     <string name="HideDividers">区切り線を非表示</string>
-    <string name="IconReplacements">アイコンの置換</string>
+    <string name="IconReplacements">アイコンパック</string>
     <string name="IconReplacementSolar">Solar - @Design480</string>
     <string name="DebugMenuEnableInvoicePayment">請求書支払いを有効にする</string>
     <string name="DebugMenuDisableInvoicePayment">請求書支払いを無効にする</string>
