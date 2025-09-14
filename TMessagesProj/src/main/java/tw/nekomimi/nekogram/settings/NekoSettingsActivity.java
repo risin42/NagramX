@@ -16,20 +16,18 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.net.Uri;
 import android.os.Build;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import org.telegram.ui.Components.EditTextBoldCursor;
 import android.widget.LinearLayout;
-
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
-import android.text.InputType;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -53,9 +51,11 @@ import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.BasePermissionsActivity;
+import org.telegram.ui.Cells.SettingsSearchCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextSettingsCell;
+import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.FilledTabsView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
@@ -82,14 +82,13 @@ import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.helpers.CloudSettingsHelper;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
+import tw.nekomimi.nekogram.helpers.SettingsHelper;
+import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.GsonUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
-import org.telegram.ui.Cells.SettingsSearchCell;
-import tw.nekomimi.nekogram.helpers.SettingsHelper;
-import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
 
 public class NekoSettingsActivity extends BaseFragment {
     public static final int PAGE_TYPE = 0;
@@ -253,42 +252,26 @@ public class NekoSettingsActivity extends BaseFragment {
                 } catch (Exception ignore) {
                 }
             }));
+
+            final ArrayList<SettingsSearchResult> filtered = new ArrayList<>(results);
+            final String[] currentQuery = new String[]{""};
+            final int searchHeight = dp(36);
+            final int clearSize = dp(36);
+            final int pad = dp(12);
+
             LinearLayout containerLayout = new LinearLayout(parent);
             containerLayout.setOrientation(LinearLayout.VERTICAL);
             containerLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
-            EditTextBoldCursor searchField = new EditTextBoldCursor(parent);
-            searchField.setHint(getString(R.string.Search));
-            searchField.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
-            searchField.setHintTextColor(getThemedColor(Theme.key_windowBackgroundWhiteHintText));
-            searchField.setSingleLine(true);
-            searchField.setInputType(InputType.TYPE_CLASS_TEXT);
-            int pad = dp(12);
-            searchField.setPadding(pad, pad / 2, pad, pad / 2);
-
-            try {
-                searchField.setLineColors(getThemedColor(org.telegram.ui.ActionBar.Theme.key_graySection), getThemedColor(org.telegram.ui.ActionBar.Theme.key_graySection), getThemedColor(org.telegram.ui.ActionBar.Theme.key_text_RedRegular));
-            } catch (Throwable ignore) {
-            }
-
-            searchField.setBackground(null);
-
-            int searchHeight = dp(36);
-            int clearSize = dp(36);
-
             FrameLayout searchFrame = new FrameLayout(parent);
-            LinearLayout.LayoutParams frameLp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, searchHeight + dp(12));
-            frameLp.leftMargin = dp(10);
-            frameLp.rightMargin = dp(10);
-            frameLp.topMargin = dp(6);
-            frameLp.bottomMargin = dp(2);
-            searchFrame.setLayoutParams(frameLp);
-
-            try {
-                searchFrame.setClipToPadding(true);
-                searchFrame.setClipChildren(true);
-            } catch (Throwable ignore) {
-            }
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, searchHeight + dp(12));
+            layoutParams.leftMargin = dp(10);
+            layoutParams.rightMargin = dp(10);
+            layoutParams.topMargin = dp(6);
+            layoutParams.bottomMargin = dp(2);
+            searchFrame.setLayoutParams(layoutParams);
+            searchFrame.setClipToPadding(true);
+            searchFrame.setClipChildren(true);
 
             ImageView searchIcon = new ImageView(parent);
             searchIcon.setScaleType(ImageView.ScaleType.CENTER);
@@ -296,11 +279,16 @@ public class NekoSettingsActivity extends BaseFragment {
             searchIcon.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayIcon), PorterDuff.Mode.MULTIPLY));
             searchFrame.addView(searchIcon, LayoutHelper.createFrame(48, 48, Gravity.LEFT | Gravity.CENTER_VERTICAL));
 
-            FrameLayout.LayoutParams searchLp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-            searchLp.gravity = Gravity.CENTER_VERTICAL;
+            EditTextBoldCursor searchField = new EditTextBoldCursor(parent);
+            searchField.setHint(getString(R.string.Search));
+            searchField.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
+            searchField.setHintTextColor(getThemedColor(Theme.key_windowBackgroundWhiteHintText));
+            searchField.setSingleLine(true);
+            searchField.setBackground(null);
+            searchField.setInputType(InputType.TYPE_CLASS_TEXT);
+            searchField.setLineColors(getThemedColor(Theme.key_windowBackgroundWhiteInputField), getThemedColor(Theme.key_windowBackgroundWhiteInputFieldActivated), getThemedColor(Theme.key_text_RedRegular));
             searchField.setPadding(dp(61), pad / 2, dp(48), pad / 2);
-            searchField.setGravity(Gravity.CENTER_VERTICAL);
-            searchField.setLayoutParams(searchLp);
+            searchField.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER_VERTICAL));
             searchFrame.addView(searchField);
 
             ImageView clearButton = new ImageView(parent);
@@ -308,18 +296,31 @@ public class NekoSettingsActivity extends BaseFragment {
             clearButton.setImageResource(R.drawable.ic_close_white);
             clearButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarWhiteSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
             clearButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayIcon), PorterDuff.Mode.MULTIPLY));
-            FrameLayout.LayoutParams clearLp = new FrameLayout.LayoutParams(clearSize, clearSize);
-            clearLp.gravity = Gravity.END | Gravity.CENTER_VERTICAL;
-            clearButton.setLayoutParams(clearLp);
+            clearButton.setLayoutParams(new FrameLayout.LayoutParams(clearSize, clearSize, Gravity.END | Gravity.CENTER_VERTICAL));
             searchFrame.addView(clearButton);
             containerLayout.addView(searchFrame);
 
+            AlertDialog.Builder builder = new AlertDialog.Builder(parent, resourceProvider);
+            builder.setView(containerLayout);
+            builder.setNegativeButton(getString(R.string.Close), null);
+            final AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(d -> {
+                try {
+                    searchField.requestFocus();
+                    AndroidUtilities.showKeyboard(searchField);
+                } catch (Exception ignore) {
+                }
+            });
+
             RecyclerListView listView = new RecyclerListView(parent);
             listView.setLayoutManager(new LinearLayoutManager(parent, LinearLayoutManager.VERTICAL, false));
-            final ArrayList<SettingsSearchResult> filtered = new ArrayList<>(results);
-            final String[] currentQuery = new String[]{""};
 
-            RecyclerView.Adapter<RecyclerListView.Holder> adapter = new RecyclerView.Adapter<>() {
+            var adapter = new RecyclerListView.SelectionAdapter() {
+                @Override
+                public boolean isEnabled(RecyclerView.ViewHolder holder) {
+                    return true;
+                }
+
                 @NonNull
                 @Override
                 public RecyclerListView.Holder onCreateViewHolder(@NonNull ViewGroup parent1, int viewType) {
@@ -329,7 +330,7 @@ public class NekoSettingsActivity extends BaseFragment {
                 }
 
                 @Override
-                public void onBindViewHolder(@NonNull RecyclerListView.Holder holder, int position) {
+                public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
                     SettingsSearchCell cell = (SettingsSearchCell) holder.itemView;
                     SettingsSearchResult r = filtered.get(position);
                     String[] path = r.path2 != null ? new String[]{r.path1, r.path2} : new String[]{r.path1};
@@ -363,12 +364,6 @@ public class NekoSettingsActivity extends BaseFragment {
                     return filtered.size();
                 }
             };
-            containerLayout.addView(listView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(parent, resourceProvider);
-            builder.setView(containerLayout);
-            builder.setNegativeButton(getString(R.string.Close), null);
-            final AlertDialog dialog = builder.create();
 
             listView.setAdapter(adapter);
             listView.setOnItemClickListener((v, position) -> {
@@ -380,6 +375,8 @@ public class NekoSettingsActivity extends BaseFragment {
                 }
                 dialog.dismiss();
             });
+
+            containerLayout.addView(listView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
             searchField.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -413,6 +410,7 @@ public class NekoSettingsActivity extends BaseFragment {
                         }
                     }
                     adapter.notifyDataSetChanged();
+                    searchIcon.setVisibility(q.length() > 20 ? View.GONE : View.VISIBLE);
                     clearButton.setVisibility(q.isEmpty() ? View.GONE : View.VISIBLE);
                 }
             });
@@ -424,13 +422,6 @@ public class NekoSettingsActivity extends BaseFragment {
             });
             clearButton.setVisibility(View.GONE);
 
-            dialog.setOnShowListener(d -> {
-                try {
-                    searchField.requestFocus();
-                    AndroidUtilities.showKeyboard(searchField);
-                } catch (Exception ignore) {
-                }
-            });
             showDialog(dialog);
         } catch (Exception ignored) {
         }
