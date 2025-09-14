@@ -2824,7 +2824,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                         }
                     } else if (drawPhotoImage && (documentAttachType == DOCUMENT_ATTACH_TYPE_GIF || documentAttachType == DOCUMENT_ATTACH_TYPE_VIDEO || authorLayout == null && titleLayout == null && descriptionLayout == null && siteNameLayout == null)) {
                         if (delegate != null) {
-                            delegate.didPressImage(this, lastTouchX, lastTouchY, false);
+                            boolean isWebP = currentMessageObject.getDocumentName() != null && currentMessageObject.getDocumentName().toLowerCase().endsWith(".webp");
+                            delegate.didPressImage(this, lastTouchX, lastTouchY, isWebP);
                         }
                     } else if (!currentMessageObject.preview) {
                         TLRPC.WebPage webPage = MessageObject.getMedia(currentMessageObject.messageOwner).webpage;
