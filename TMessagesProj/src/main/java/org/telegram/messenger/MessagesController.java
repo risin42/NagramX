@@ -20525,9 +20525,6 @@ public class MessagesController extends BaseController implements NotificationCe
                 if (res.peers.isEmpty()) {
                     result = null;
                 } else {
-                    if (!getUserConfig().isRealPremium()) {
-                        res.peers.removeIf((peer) -> peer.premium_required);
-                    }
                     result = res;
                     AndroidUtilities.runOnUIThread(() -> {
                         putUsers(res.users, false);
