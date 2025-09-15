@@ -1051,6 +1051,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     blurEnabled && blurSizeFraction > 0f;
 
             ProfileGalleryBlurView blurView = null;
+            handleCustomColor(shouldDrawBlur);
             if (shouldDrawBlur) {
                 blurView = avatarsViewPager.getBlurDrawer();
                 shouldDrawBlur = blurView != null;
@@ -1135,6 +1136,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
             canvas.restore();
         }
+
+        protected void handleCustomColor(boolean blur) {}
 
         public void setProgressToStoriesInsets(float progressToInsets) {
             if (progressToInsets == this.progressToInsets) {
@@ -5443,6 +5446,13 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 super.dispatchDraw(canvas);
                 if (animatedEmojiDrawable != null && animatedEmojiDrawable.getImageReceiver() != null) {
                     animatedEmojiDrawable.getImageReceiver().startAnimation();
+                }
+            }
+
+            @Override
+            protected void handleCustomColor(boolean blur) {
+                if (musicView != null) {
+                    musicView.handleCustomColor(blur);
                 }
             }
         };
