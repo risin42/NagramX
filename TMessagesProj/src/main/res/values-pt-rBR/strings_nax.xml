@@ -238,4 +238,5 @@
     <string name="PinnedReactions_Limit">Você pode selecionar até %d reações.</string>
     <string name="PinnedReactions_Type">Este emoji não é suportado.</string>
     <string name="PinnedReactions_Apply">Atualizar Reações Fixadas</string>
+    <string name="HideStoriesFromHeader">Ocultar do Cabeçalho</string>
 </resources>
