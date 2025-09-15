@@ -31,6 +31,8 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.ui.ProfileActivity;
 
+import xyz.nextalone.nagram.NaConfig;
+
 public class ProfileGalleryBlurView extends View {
 
     private boolean usingRenderNode = Build.VERSION.SDK_INT >= 31;
@@ -145,6 +147,9 @@ public class ProfileGalleryBlurView extends View {
     }
 
     private void swap(int from, int to, int clear) {
+        if (NaConfig.INSTANCE.getDisableAvatarBlur().Bool()) {
+            return;
+        }
         synchronized (lock) {
             ProfileMetaballView.BlurBitmapHolder tmp2 = nextFrame[from];
             nextFrame[from] = nextFrame[to];
@@ -415,10 +420,9 @@ public class ProfileGalleryBlurView extends View {
     }
 
     public void draw(Canvas canvas, ProfileActivity.AvatarImageView avatarImageView, float width, float height, boolean translate, float fraction, float alpha) {
-        if (view == null || !view.isAttachedToWindow() || view.getVisibility() == GONE) {
+        if (view == null || !view.isAttachedToWindow() || view.getVisibility() == GONE || NaConfig.INSTANCE.getDisableAvatarBlur().Bool()) {
             return;
         }
-
         if (usingRenderNode && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (canvas.isHardwareAccelerated()) {
                 if (avatarImageView == null && getVisibility() == View.VISIBLE && getAlpha() > 0f) {

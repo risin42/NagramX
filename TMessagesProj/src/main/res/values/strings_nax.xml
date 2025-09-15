@@ -248,4 +248,5 @@
     <string name="PinnedReactions_Type">This emoji is unsupported.</string>
     <string name="PinnedReactions_Apply">Update Pinned Reactions</string>
     <string name="HideStoriesFromHeader">Hide from Header</string>
+    <string name="DisableAvatarBlur">Disable Avatar Blur</string>
 </resources>

@@ -1323,6 +1323,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val disableAvatarBlur =
+        addConfig(
+            "DisableAvatarBlur",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {
