@@ -635,7 +635,7 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
         int backgroundType = NekoConfig.largeAvatarInDrawer.Int();
         Drawable backgroundDrawable = Theme.getCachedWallpaper();
         boolean useImageBackground = backgroundDrawable != null;
-        if (backgroundType != NekoConfig.DRAWER_BACKGROUND_WALLPAPER) {
+        if (backgroundType != NekoConfig.DRAWER_BACKGROUND_WALLPAPER || Theme.getActiveTheme().isDay() || Theme.getActiveTheme().isMonetLight()) {
             int backgroundKey = applyBackground(false);
             useImageBackground = backgroundKey != Theme.key_chats_menuTopBackground && Theme.isCustomTheme() && !Theme.isPatternWallpaper() && backgroundDrawable != null && !(backgroundDrawable instanceof ColorDrawable) && !(backgroundDrawable instanceof GradientDrawable);
         }

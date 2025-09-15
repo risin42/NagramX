@@ -2522,6 +2522,14 @@ public class Theme {
             return "Monet Dark".equals(name) || "Monet Light".equals(name) || "Monet AMOLED".equals(name);
         }
 
+        public boolean isMonetLight() {
+            return "Monet Light".equals(name);
+        }
+
+        public boolean isDay() {
+            return "Day".equals(name);
+        }
+
         public boolean isDark() {
             if (isDark != UNKNOWN) {
                 return isDark == DARK;
