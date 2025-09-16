@@ -218,7 +218,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.3.0'
     implementation 'com.googlecode.mp4parser:isoparser:1.0.6'
     implementation 'com.google.mlkit:language-id:17.0.6'
-    implementation 'com.google.code.gson:gson:2.13.1'
+    implementation 'com.google.code.gson:gson:2.13.2'
     implementation ('com.google.guava:guava:33.4.8-android') { // 31.1
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
         exclude group: 'org.checkerframework', module: 'checker-compat-qual'
@@ -238,7 +238,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
 
     // kotlin
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.10'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.20'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
     // utilities 
     implementation 'org.osmdroid:osmdroid-android:6.1.20'
