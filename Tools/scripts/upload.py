@@ -54,9 +54,10 @@ def get_document() -> list["InputMediaDocument"]:
     return documents
 
 def get_metadata():
+    commit_id =  "`" + os.environ.get("COMMIT_ID", "")[:7] + "`"
     commit_message = "`" + os.environ.get("COMMIT_MESSAGE", "None") + "`"
     build_timestamp = "`" + os.environ.get("BUILD_TIMESTAMP", "None") + "`"
-    return commit_message + "\n" + build_timestamp
+    return build_timestamp + " " + commit_id + "\n" + commit_message
 
 def retry(func):
     async def wrapper(*args, **kwargs):
