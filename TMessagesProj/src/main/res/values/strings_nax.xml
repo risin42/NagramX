@@ -250,4 +250,5 @@
     <string name="HideStoriesFromHeader">Hide from Header</string>
     <string name="DisableAvatarBlur">Disable Avatar Blur</string>
     <string name="ExportSettingsIncludeApiKeys">Include API Keys</string>
+    <string name="DisableInAppBrowserGestures">Disable Gestures</string>
 </resources>

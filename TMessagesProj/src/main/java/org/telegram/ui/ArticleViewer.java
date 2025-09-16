@@ -224,6 +224,7 @@ import java.util.Locale;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.parts.ArticleTransKt;
+import xyz.nextalone.nagram.NaConfig;
 
 public class ArticleViewer implements NotificationCenter.NotificationCenterDelegate {
 
@@ -999,6 +1000,9 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
 
         private boolean lastWebviewAllowedScroll;
         public boolean handleTouchEvent(MotionEvent event) {
+            if (NaConfig.INSTANCE.getDisableInAppBrowserGestures().Bool()) {
+                return false;
+            }
             if (pageSwitchAnimation == null && !closeAnimationInProgress && fullscreenVideoContainer.getVisibility() != VISIBLE && !textSelectionHelper.isInSelectionMode()) {
                 if (event != null && event.getAction() == MotionEvent.ACTION_DOWN && !startedTracking && !maybeStartTracking) {
                     startedTrackingPointerId = event.getPointerId(0);

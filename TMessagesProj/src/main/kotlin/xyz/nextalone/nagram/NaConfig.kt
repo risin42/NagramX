@@ -1329,6 +1329,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val disableInAppBrowserGestures =
+        addConfig(
+            "DisableInAppBrowserGestures",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {

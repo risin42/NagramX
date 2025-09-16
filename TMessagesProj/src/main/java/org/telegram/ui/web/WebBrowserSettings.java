@@ -64,6 +64,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
+import xyz.nextalone.nagram.NaConfig;
+
 public class WebBrowserSettings extends UniversalFragment implements NotificationCenter.NotificationCenterDelegate {
 
     private Drawable addIcon;
@@ -242,6 +244,8 @@ public class WebBrowserSettings extends UniversalFragment implements Notificatio
             items.add(UItem.asCheck(12, "adaptable colors").setChecked(SharedConfig.adaptableColorInBrowser));
             items.add(UItem.asCheck(13, "only local IV").setChecked(SharedConfig.onlyLocalInstantView));
         }
+        items.add(UItem.asHeader(getString(R.string.NekoSettings)));
+        items.add(UItem.asCheck(14, getString(R.string.DisableInAppBrowserGestures)).setChecked(NaConfig.INSTANCE.getDisableInAppBrowserGestures().Bool()));
     }
 
     @Override
@@ -252,6 +256,8 @@ public class WebBrowserSettings extends UniversalFragment implements Notificatio
         } else if (item.id == 13) {
             SharedConfig.toggleLocalInstantView();
             ((TextCheckCell) view).setChecked(SharedConfig.onlyLocalInstantView);
+        } else if (item.id == 14) {
+            ((TextCheckCell) view).setChecked(NaConfig.INSTANCE.getDisableInAppBrowserGestures().toggleConfigBool());
         } else if (item.id == BUTTON_TOGGLE) {
             SharedConfig.toggleInappBrowser();
             ((TextCheckCell) view).setChecked(SharedConfig.inappBrowser);
@@ -352,16 +358,17 @@ public class WebBrowserSettings extends UniversalFragment implements Notificatio
             });
             presentFragment(fragment[0]);
         } else if (item.id == BUTTON_CLEAR_LIST) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-            builder.setTitle(getString(R.string.BrowserSettingsNeverOpenInClearList));
-            builder.setMessage(LocaleController.getString(R.string.AreYouSure));
-            builder.setPositiveButton(LocaleController.getString(R.string.OK), (dialogInterface, which) -> {
-                RestrictedDomainsList.getInstance().restrictedDomains.clear();
-                RestrictedDomainsList.getInstance().scheduleSave();
-                listView.adapter.update(true);
-            });
-            builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
-            showDialog(builder.create());
+            new AlertDialog.Builder(getContext(), getResourceProvider())
+                .setTitle(getString(R.string.BrowserSettingsNeverOpenInClearList))
+                .setMessage(getString(R.string.AreYouSure))
+                .setPositiveButton(getString(R.string.Clear), (di, w) -> {
+                    RestrictedDomainsList.getInstance().restrictedDomains.clear();
+                    RestrictedDomainsList.getInstance().scheduleSave();
+                    listView.adapter.update(true);
+                })
+                .setNegativeButton(getString(R.string.Cancel), null)
+                .makeRed(AlertDialog.BUTTON_POSITIVE)
+                .show();
         } else if (item.instanceOf(WebsiteView.Factory.class)) {
             final WebsiteView websiteView = (WebsiteView) view;
             final ArrayList<String> domains = websiteView.domains;
