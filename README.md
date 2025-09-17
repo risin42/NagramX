@@ -1,5 +1,5 @@
 # Nagram X
-
+[![Crowdin](https://badges.crowdin.net/NagramX/localized.svg)](https://crowdin.com/project/NagramX)  
 A variant of [Nagram](https://github.com/NextAlone/Nagram) with additional features.
 
 ## Download
