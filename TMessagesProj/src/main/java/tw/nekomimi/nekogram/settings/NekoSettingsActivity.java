@@ -276,7 +276,7 @@ public class NekoSettingsActivity extends BaseFragment {
             ImageView searchIcon = new ImageView(parent);
             searchIcon.setScaleType(ImageView.ScaleType.CENTER);
             searchIcon.setImageResource(R.drawable.ic_ab_search);
-            searchIcon.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayIcon), PorterDuff.Mode.MULTIPLY));
+            searchIcon.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_windowBackgroundWhiteGrayIcon), PorterDuff.Mode.MULTIPLY));
             searchFrame.addView(searchIcon, LayoutHelper.createFrame(48, 48, Gravity.LEFT | Gravity.CENTER_VERTICAL));
 
             EditTextBoldCursor searchField = new EditTextBoldCursor(parent);
@@ -295,7 +295,7 @@ public class NekoSettingsActivity extends BaseFragment {
             clearButton.setScaleType(ImageView.ScaleType.CENTER);
             clearButton.setImageResource(R.drawable.ic_close_white);
             clearButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarWhiteSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
-            clearButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayIcon), PorterDuff.Mode.MULTIPLY));
+            clearButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_windowBackgroundWhiteGrayIcon), PorterDuff.Mode.MULTIPLY));
             clearButton.setLayoutParams(new FrameLayout.LayoutParams(clearSize, clearSize, Gravity.END | Gravity.CENTER_VERTICAL));
             searchFrame.addView(clearButton);
             containerLayout.addView(searchFrame);
@@ -340,7 +340,7 @@ public class NekoSettingsActivity extends BaseFragment {
                         SpannableStringBuilder ss = new SpannableStringBuilder(titleToSet);
                         String lower = titleToSet.toString().toLowerCase();
                         String[] parts = q.split("\\s+");
-                        int highlightColor = Theme.getColor(org.telegram.ui.ActionBar.Theme.key_windowBackgroundWhiteBlueText4);
+                        int highlightColor = getThemedColor(Theme.key_windowBackgroundWhiteBlueText4);
                         for (String p : parts) {
                             if (p.isEmpty()) continue;
                             int idx = 0;
@@ -423,7 +423,7 @@ public class NekoSettingsActivity extends BaseFragment {
             clearButton.setVisibility(View.GONE);
 
             showDialog(dialog);
-        } catch (Exception ignored) {
+        } catch (Exception ignore) {
         }
     }
 
