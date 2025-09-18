@@ -54,7 +54,7 @@
     <string name="botCommandConfirmText">このコマンドを送信しますか？\n\n%s</string>
     <string name="DisableScreenshotDetection">スクリーンショット検出を無効にする</string>
     <string name="MessageSavingSaveMedia">メディアを保存</string>
-    <string name="MessageSavingSaveMediaHint">クリックしてその他のオプションを表示</string>
+    <string name="MessageSavingSaveMediaHint">詳細はこちらをタップ</string>
     <string name="MessageSavingSaveMediaInPrivateChats">プライベートチャットで保存</string>
     <string name="MessageSavingSaveMediaInPublicChannels">パブリックチャンネルで保存</string>
     <string name="MessageSavingSaveMediaInPrivateChannels">プライベートチャンネルで保存</string>
@@ -171,7 +171,7 @@
     <string name="ResetChatNameNotification">チャット名の上書きがクリアされました。</string>
     <string name="TabStyle">タブスタイル</string>
     <string name="TabStylePure">ピュア</string>
-    <string name="TabStylePills">ピル</string>
+    <string name="TabStylePills">カプセル</string>
     <string name="LeftBottomButtonAction">左ボタンの動作</string>
     <string name="TranscribeProviderOpenAI">OpenAI-Compatible API</string>
     <string name="OpenAiApiCredentialsDialog">OpenAI と互換性のある API を設定します。この**ドキュメント**を参照できます。\n</string>
@@ -240,4 +240,5 @@
     <string name="PinnedReactions_Apply">ピン留めされたアクションを更新</string>
     <string name="HideStoriesFromHeader">ヘッダーから非表示</string>
     <string name="DisableAvatarBlur">アバターぼかしを無効にする</string>
+    <string name="DisableInAppBrowserGestures">ジェスチャーを無効にする</string>
 </resources>

@@ -239,4 +239,5 @@
     <string name="PinnedReactions_Type">Bu emoji desteklenmiyor.</string>
     <string name="PinnedReactions_Apply">Sabitlenmiş Tepkileri Güncelle</string>
     <string name="HideStoriesFromHeader">Başlıktan Gizle</string>
+    <string name="DisableAvatarBlur">Avatar Bulanıklığını Devre Dışı Bırak</string>
 </resources>

@@ -239,4 +239,6 @@
     <string name="PinnedReactions_Type">Este emoji não é suportado.</string>
     <string name="PinnedReactions_Apply">Atualizar Reações Fixadas</string>
     <string name="HideStoriesFromHeader">Ocultar do Cabeçalho</string>
+    <string name="DisableAvatarBlur">Desativar Desfoque do Avatar</string>
+    <string name="DisableInAppBrowserGestures">Desativar Gestos</string>
 </resources>

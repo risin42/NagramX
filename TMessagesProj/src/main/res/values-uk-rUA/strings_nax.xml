@@ -239,4 +239,6 @@
     <string name="PinnedReactions_Type">Цей емодзі не підтримується.</string>
     <string name="PinnedReactions_Apply">Оновити закріплені реакції</string>
     <string name="HideStoriesFromHeader">Приховати з заголовка</string>
+    <string name="DisableAvatarBlur">Вимкнути розмиття аватара</string>
+    <string name="DisableInAppBrowserGestures">Вимкнути жести</string>
 </resources>
