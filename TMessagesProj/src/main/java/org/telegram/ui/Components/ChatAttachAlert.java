@@ -153,6 +153,7 @@ import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 import java.util.Objects;
@@ -4764,7 +4765,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
     }
 
     private void setNavBarAlpha(float alpha) {
-        navBarColor = ColorUtils.setAlphaComponent(getThemedColor(Theme.key_windowBackgroundGray), Math.min(255, Math.max(0, (int) (255 * alpha))));
+        navBarColor = ColorUtils.setAlphaComponent(AndroidUtil.getNavBarColor(getThemedColor(Theme.key_windowBackgroundGray)), Math.min(255, Math.max(0, (int) (255 * alpha))));
         AndroidUtilities.setNavigationBarColor(getWindow(), navBarColor, false);
         AndroidUtilities.setLightNavigationBar(getWindow(), AndroidUtilities.computePerceivedBrightness(navBarColor) > 0.721);
         getContainer().invalidate();

@@ -1094,6 +1094,7 @@ public abstract class BaseFragment {
 
     public int getNavigationBarColor() {
         int color = Theme.getColor(Theme.key_windowBackgroundGray, getResourceProvider());
+        color = AndroidUtil.getNavBarColor(color, getResourceProvider());
         if (sheetsStack != null) {
             for (int i = 0; i < sheetsStack.size(); ++i) {
                 AttachedSheet sheet = sheetsStack.get(i);
@@ -1106,6 +1107,7 @@ public abstract class BaseFragment {
     }
 
     public void setNavigationBarColor(int color) {
+        color = AndroidUtil.getNavBarColor(color, getResourceProvider());
         Activity activity = getParentActivity();
         if (activity instanceof LaunchActivity) {
             LaunchActivity launchActivity = (LaunchActivity) activity;

@@ -13,7 +13,9 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.LaunchActivity;
 
 import java.io.File;
 import java.util.Arrays;
@@ -30,7 +32,16 @@ public class AndroidUtil {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
             return color;
         }
-        return Theme.getColor(Theme.key_windowBackgroundWhite);
+        BaseFragment fragment = LaunchActivity.getLastFragment();
+        Theme.ResourcesProvider resourcesProvider = fragment != null ? fragment.getResourceProvider() : null;
+        return Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider);
+    }
+
+    public static int getNavBarColor(int color, Theme.ResourcesProvider resourcesProvider) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+            return color;
+        }
+        return Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider);
     }
 
     public static long getDirectorySize(File file) {
