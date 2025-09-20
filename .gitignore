@@ -15,6 +15,7 @@ build/
 release/
 __pycache__/
 **/.DS_Store
+TMessagesProj/release.keystore
 TMessagesProj/.cxx/
 TMessagesProj/jniLibs/
 TMessagesProj/jniRes/
