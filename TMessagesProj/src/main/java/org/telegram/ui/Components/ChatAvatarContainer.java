@@ -206,7 +206,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
 
             @Override
             protected void onDraw(Canvas canvas) {
-                if (allowDrawStories && animatedEmojiDrawable == null) {
+                if (allowDrawStories && animatedEmojiDrawable == null && !isCentered()) {
                     params.originalAvatarRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
                     params.drawSegments = true;
                     params.drawInside = true;
@@ -230,7 +230,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
 
             @Override
             public boolean onTouchEvent(MotionEvent event) {
-                if (allowDrawStories) {
+                if (allowDrawStories && !isCentered()) {
                     if (params.checkOnTouchEvent(event, this)) {
                         return true;
                     }
