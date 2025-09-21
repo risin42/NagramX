@@ -221,7 +221,7 @@ public class NekoSettingsActivity extends BaseFragment {
 
         syncButton = new ImageView(context);
         syncButton.setScaleType(ImageView.ScaleType.CENTER);
-        syncButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarWhiteSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
+        syncButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_listSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
         syncButton.setImageResource(R.drawable.cloud_sync);
         syncButton.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN));
         syncButton.setOnClickListener(v -> CloudSettingsHelper.getInstance().showDialog(NekoSettingsActivity.this));
@@ -229,7 +229,7 @@ public class NekoSettingsActivity extends BaseFragment {
 
         searchButton = new ImageView(context);
         searchButton.setScaleType(ImageView.ScaleType.CENTER);
-        searchButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarWhiteSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
+        searchButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_listSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
         searchButton.setImageResource(R.drawable.ic_ab_search);
         searchButton.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN));
         searchButton.setOnClickListener(v -> showSettingsSearchDialog());
