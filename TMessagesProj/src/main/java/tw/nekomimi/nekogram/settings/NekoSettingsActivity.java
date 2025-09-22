@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SendMessagesHelper;
@@ -51,6 +52,7 @@ import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.BasePermissionsActivity;
+import org.telegram.ui.Cells.CheckBoxCell;
 import org.telegram.ui.Cells.SettingsSearchCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCell;
@@ -701,18 +703,46 @@ public class NekoSettingsActivity extends BaseFragment {
     }
 
     private void backupSettings() {
+        Context context = getParentActivity();
+        if (context == null) return;
 
-        try {
-            File cacheFile = new File(AndroidUtilities.getCacheDir(), new Date().toLocaleString() + ".nekox-settings.json");
-            FileUtil.writeUtf8String(backupSettingsJson(false, 4), cacheFile);
-            ShareUtil.shareFile(getParentActivity(), cacheFile);
-        } catch (JSONException e) {
-            AlertUtil.showSimpleAlert(getParentActivity(), e);
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(getString(R.string.BackupSettings));
 
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        CheckBoxCell checkBoxCell = new CheckBoxCell(context, CheckBoxCell.TYPE_CHECK_BOX_DEFAULT, resourceProvider);
+        checkBoxCell.setBackground(Theme.getSelectorDrawable(false));
+        checkBoxCell.setText(getString(R.string.ExportSettingsIncludeApiKeys), "", true, false);
+        checkBoxCell.setPadding(LocaleController.isRTL ? AndroidUtilities.dp(16) : AndroidUtilities.dp(8), 0, LocaleController.isRTL ? AndroidUtilities.dp(8) : AndroidUtilities.dp(16), 0);
+        checkBoxCell.setChecked(true, false);
+        checkBoxCell.setOnClickListener(v -> {
+            CheckBoxCell cell = (CheckBoxCell) v;
+            cell.setChecked(!cell.isChecked(), true);
+        });
+        linearLayout.addView(checkBoxCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
+
+        builder.setView(linearLayout);
+        builder.setPositiveButton(getString(R.string.ExportTheme), (dialog, which) -> {
+            boolean includeApiKeys = checkBoxCell.isChecked();
+            try {
+                File cacheFile = new File(AndroidUtilities.getCacheDir(), new Date().toLocaleString() + ".nekox-settings.json");
+                FileUtil.writeUtf8String(backupSettingsJson(false, 4, includeApiKeys), cacheFile);
+                ShareUtil.shareFile(getParentActivity(), cacheFile);
+            } catch (JSONException e) {
+                AlertUtil.showSimpleAlert(getParentActivity(), e);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.Cancel), null);
+        builder.show();
     }
 
     public static String backupSettingsJson(boolean isCloud, int indentSpaces) throws JSONException {
+        return backupSettingsJson(isCloud, indentSpaces, true);
+    }
+
+    public static String backupSettingsJson(boolean isCloud, int indentSpaces, boolean includeApiKeys) throws JSONException {
 
         JSONObject configJson = new JSONObject();
 
@@ -786,19 +816,23 @@ public class NekoSettingsActivity extends BaseFragment {
         spToJSON("mainconfig", configJson, mainconfig::contains, isCloud);
         spToJSON("themeconfig", configJson, null, isCloud);
 
-        spToJSON("nkmrcfg", configJson, null, isCloud);
+        spToJSON("nkmrcfg", configJson, null, isCloud, includeApiKeys);
 
         return configJson.toString(indentSpaces);
     }
 
     private static void spToJSON(String sp, JSONObject object, Function<String, Boolean> filter, boolean isCloud) throws JSONException {
+        spToJSON(sp, object, filter, isCloud, true);
+    }
+
+    private static void spToJSON(String sp, JSONObject object, Function<String, Boolean> filter, boolean isCloud, boolean includeApiKeys) throws JSONException {
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences(sp, Activity.MODE_PRIVATE);
         JSONObject jsonConfig = new JSONObject();
         for (Map.Entry<String, ?> entry : preferences.getAll().entrySet()) {
             String key = entry.getKey();
-//            if (isCloud && key.endsWith("Key")) {
-//                continue;
-//            }
+            if (!includeApiKeys && (key.endsWith("Key") || key.contains("Token") || key.contains("AccountID"))) {
+                continue;
+            }
             if (isCloud && key.endsWith("Prompt")) {
                 continue;
             }
