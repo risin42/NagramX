@@ -349,4 +349,14 @@ public class NekoConfig {
             new Pair<>(sendOfflinePacketAfterOnline, sendOfflinePacketAfterOnlineLocked)
     );
     // --- Ghost Mode ---
+
+    public static Set<String> getAllKeys() {
+        synchronized (sync) {
+            Set<String> keys = new HashSet<>();
+            for (ConfigItem o : configs) {
+                keys.add(o.getKey());
+            }
+            return keys;
+        }
+    }
 }

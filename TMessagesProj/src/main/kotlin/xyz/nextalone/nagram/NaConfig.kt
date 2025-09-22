@@ -1526,6 +1526,12 @@ object NaConfig {
         }
     }
 
+    fun getAllKeys(): Set<String> {
+        synchronized(sync) {
+            return configs.map { it.key }.toSet()
+        }
+    }
+
     init {
         loadConfig(
             false

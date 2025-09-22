@@ -70,6 +70,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -78,6 +79,7 @@ import java.util.function.Function;
 import kotlin.text.StringsKt;
 import tw.nekomimi.nekogram.DatacenterActivity;
 import tw.nekomimi.nekogram.NekoConfig;
+import xyz.nextalone.nagram.NaConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.helpers.CloudSettingsHelper;
@@ -870,8 +872,12 @@ public class NekoSettingsActivity extends BaseFragment {
 
     @SuppressLint("ApplySharedPref")
     public static void importSettings(JsonObject configJson) throws JSONException {
-        SharedPreferences currentPreferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Activity.MODE_PRIVATE);
-        Set<String> currentKeys = currentPreferences.getAll().keySet();
+        Set<String> allowedKeys = new HashSet<>();
+        try {
+            allowedKeys.addAll(NekoConfig.getAllKeys());
+            allowedKeys.addAll(NaConfig.INSTANCE.getAllKeys());
+        } catch (Throwable ignore) {
+        }
         String[] preservePrefixes = {
                 AyuSavePreferences.saveExclusionPrefix,
                 ChatNameHelper.chatNameOverridePrefix,
@@ -900,7 +906,7 @@ public class NekoSettingsActivity extends BaseFragment {
                         } else if (key.endsWith("_float")) {
                             actualKey = StringsKt.substringBeforeLast(key, "_float", key);
                         }
-                        shouldSkip = !currentKeys.contains(actualKey);
+                        shouldSkip = !allowedKeys.contains(actualKey);
                     }
                     if (shouldSkip) {
                         continue;
