@@ -195,6 +195,7 @@ import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
 import xyz.nextalone.nagram.NaConfig;
 
 public class PeerStoriesView extends SizeNotifierFrameLayout implements NotificationCenter.NotificationCenterDelegate {
@@ -1880,6 +1881,42 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                         }
 
                         addViewStatistics(popupLayout, currentStory.storyItem);
+
+                        if (NekoConfig.showMessageDetails.Bool()) {
+                            ActionBarMenuItem.addItem(popupLayout, R.drawable.msg_info, getString(R.string.MessageDetails), false, resourcesProvider).setOnClickListener(v -> {
+                                TL_stories.StoryItem item = currentStory.storyItem;
+                                if (item != null && !(item instanceof TL_stories.TL_storyItemSkipped)) {
+                                    item.dialogId = dialogId;
+                                    item.messageId = item.id;
+                                    MessageObject msg = new MessageObject(currentAccount, item);
+                                    msg.generateThumbs(false);
+                                    // Populate peer_id and from_id so MessageDetailsActivity can resolve sender/chat
+                                    TLRPC.Peer peer = null;
+                                    if (dialogId > 0) {
+                                        TLRPC.TL_peerUser p = new TLRPC.TL_peerUser();
+                                        p.user_id = dialogId;
+                                        peer = p;
+                                    } else {
+                                        TLRPC.Chat chatPeer = MessagesController.getInstance(currentAccount).getChat(-dialogId);
+                                        if (ChatObject.isChannel(chatPeer)) {
+                                            TLRPC.TL_peerChannel p = new TLRPC.TL_peerChannel();
+                                            p.channel_id = -dialogId;
+                                            peer = p;
+                                        } else {
+                                            TLRPC.TL_peerChat p = new TLRPC.TL_peerChat();
+                                            p.chat_id = -dialogId;
+                                            peer = p;
+                                        }
+                                    }
+                                    msg.messageOwner.peer_id = peer;
+                                    msg.messageOwner.from_id = peer;
+                                    storyViewer.presentFragment(new MessageDetailsActivity(msg, null));
+                                    if (popupMenu != null) {
+                                        popupMenu.dismiss();
+                                    }
+                                }
+                            });
+                        }
 
                         if (!unsupported) {
                             if (!UserObject.isService(dialogId) && !isBotsPreview()) {
