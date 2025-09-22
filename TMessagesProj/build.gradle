@@ -238,7 +238,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
 
     // kotlin
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.20'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.10'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
     // utilities 
     implementation 'org.osmdroid:osmdroid-android:6.1.20'
