@@ -1,5 +1,7 @@
 package tw.nekomimi.nekogram.utils;
 
+import static org.telegram.messenger.LocaleController.getString;
+
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
@@ -10,11 +12,14 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BotWebViewVibrationEffect;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessagesController;
+import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.Components.AlertsCreator;
+import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.LaunchActivity;
 
 import java.io.File;
@@ -151,5 +156,18 @@ public class AndroidUtil {
                 ARCHIVE_EXTENSIONS.contains(extension);
 
         return isExecutable || isArchive;
+    }
+
+    public static void showErrorDialog(Exception e) {
+        var fragment = LaunchActivity.getSafeLastFragment();
+        var message = e.getLocalizedMessage();
+        if (!BulletinFactory.canShowBulletin(fragment) || message == null) {
+            return;
+        }
+        if (message.length() > 45) {
+            AlertsCreator.showSimpleAlert(fragment, getString(R.string.ErrorOccurred), e.getMessage());
+        } else {
+            BulletinFactory.of(fragment).createErrorBulletin(message).show();
+        }
     }
 }

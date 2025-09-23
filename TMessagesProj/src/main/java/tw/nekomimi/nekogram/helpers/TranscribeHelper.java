@@ -32,11 +32,8 @@ import org.telegram.messenger.browser.Browser;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
-import org.telegram.ui.Components.AlertsCreator;
-import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.LayoutHelper;
-import org.telegram.ui.LaunchActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,19 +89,6 @@ public class TranscribeHelper {
         int provider = NaConfig.INSTANCE.getTranscribeProvider().Int();
         return provider == TRANSCRIBE_WORKERSAI || provider == TRANSCRIBE_GEMINI || provider == TRANSCRIBE_OPENAI ||
                 (!UserConfig.getInstance(account).isRealPremium() && provider == TRANSCRIBE_AUTO);
-    }
-
-    public static void showErrorDialog(Exception e) {
-        var fragment = LaunchActivity.getSafeLastFragment();
-        var message = e.getLocalizedMessage();
-        if (!BulletinFactory.canShowBulletin(fragment) || message == null) {
-            return;
-        }
-        if (message.length() > 45) {
-            AlertsCreator.showSimpleAlert(fragment, getString(R.string.ErrorOccurred), e.getMessage());
-        } else {
-            BulletinFactory.of(fragment).createErrorBulletin(message).show();
-        }
     }
 
     private static EditTextBoldCursor createAndSetupEditText(Context context, Theme.ResourcesProvider resourcesProvider, String initialText, String hintText, int imeOptions, boolean requestFocus) {
