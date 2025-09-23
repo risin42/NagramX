@@ -635,7 +635,7 @@ public class MessageHelper extends BaseController {
                 pollText.append(answer.text.text);
             }
             return pollText.toString();
-        } else if (messageObject.isVoiceTranscriptionOpen()) {
+        } else if (!TextUtils.isEmpty(messageObject.getVoiceTranscription())) {
             return messageObject.messageOwner.voiceTranscription;
         } else if (messageGroup != null) {
             MessageObject captionMessage = messageGroup.findCaptionMessageObject();

@@ -28,6 +28,7 @@ import androidx.core.graphics.ColorUtils;
 import androidx.core.math.MathUtils;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
+import org.jetbrains.annotations.NotNull;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChatObject;
@@ -44,13 +45,20 @@ import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.ChatMessageCell;
+import org.telegram.ui.LaunchActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 
+import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
+import tw.nekomimi.nekogram.translate.Translator;
+import tw.nekomimi.nekogram.translate.TranslatorKt;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
+import xyz.nextalone.nagram.NaConfig;
 
 public class TranscribeButton {
 
@@ -713,7 +721,7 @@ public class TranscribeButton {
                                 }
                                 NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.voiceTranscriptionUpdate, messageObject);
                                 NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.updateTranscriptionLock);
-                                TranscribeHelper.showErrorDialog(exception);
+                                AndroidUtil.showErrorDialog(exception);
                             });
                         }
                     });
@@ -804,6 +812,127 @@ public class TranscribeButton {
                 NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.voiceTranscriptionUpdate, messageObject, null, null, (Boolean) false, null);
             });
         }
+    }
+
+    public static void retryOrTranslateVoiceTranscription(MessageObject messageObject, boolean retry, Locale locale) {
+        if (messageObject == null || messageObject.messageOwner == null || !messageObject.isSent()) {
+            return;
+        }
+        int account = messageObject.currentAccount;
+        final long start = SystemClock.elapsedRealtime(), minDuration = 350;
+        TLRPC.InputPeer peer = MessagesController.getInstance(account).getInputPeer(messageObject.messageOwner.peer_id);
+        long dialogId = DialogObject.getPeerDialogId(peer);
+        int messageId = messageObject.messageOwner.id;
+
+        if (messageObject.isVoiceTranscriptionOpen()) {
+            if (transcribeOperationsByDialogPosition != null) {
+                transcribeOperationsByDialogPosition.remove(reqInfoHash(messageObject));
+            }
+            messageObject.messageOwner.voiceTranscriptionOpen = false;
+            MessagesStorage.getInstance(account).updateMessageVoiceTranscriptionOpen(dialogId, messageId, messageObject.messageOwner);
+            AndroidUtilities.runOnUIThread(() -> {
+                NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.voiceTranscriptionUpdate, messageObject, null, null, (Boolean) false, null);
+            });
+        }
+
+        if (retry) {
+            if (TranscribeHelper.useTranscribeAI(account)) {
+                var path = MessageHelper.getPathToMessage(messageObject);
+                if (path == null) {
+                    NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.voiceTranscriptionUpdate, messageObject);
+                    NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.updateTranscriptionLock);
+                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, getString(R.string.PleaseDownload));
+                    return;
+                }
+                long id = Utilities.random.nextLong();
+                if (transcribeOperationsByDialogPosition == null) {
+                    transcribeOperationsByDialogPosition = new HashMap<>();
+                }
+                transcribeOperationsByDialogPosition.put(reqInfoHash(messageObject), messageObject);
+                TranscribeHelper.sendRequest(path, messageObject.isRoundVideo(), (text, exception) -> {
+                    if (text != null) {
+                        if (transcribeOperationsById == null) {
+                            transcribeOperationsById = new HashMap<>();
+                        }
+                        transcribeOperationsById.put(id, messageObject);
+                        messageObject.messageOwner.voiceTranscriptionId = id;
+
+                        final long duration = SystemClock.elapsedRealtime() - start;
+                        TranscribeButton.openVideoTranscription(messageObject);
+                        messageObject.messageOwner.voiceTranscriptionOpen = true;
+                        messageObject.messageOwner.voiceTranscriptionFinal = true;
+
+                        MessagesStorage.getInstance(account).updateMessageVoiceTranscription(dialogId, messageId, text, messageObject.messageOwner);
+                        AndroidUtilities.runOnUIThread(() -> finishTranscription(messageObject, id, text), Math.max(0, minDuration - duration));
+                    } else {
+                        AndroidUtilities.runOnUIThread(() -> {
+                            if (transcribeOperationsByDialogPosition != null) {
+                                transcribeOperationsByDialogPosition.remove(reqInfoHash(messageObject));
+                            }
+                            NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.voiceTranscriptionUpdate, messageObject);
+                            NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.updateTranscriptionLock);
+                            AndroidUtil.showErrorDialog(exception);
+                        });
+                    }
+                });
+                return;
+            }
+        }
+
+        var path = MessageHelper.getPathToMessage(messageObject);
+        if (path == null) {
+            NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.voiceTranscriptionUpdate, messageObject);
+            NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.updateTranscriptionLock);
+            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.showBulletin, Bulletin.TYPE_ERROR, getString(R.string.PleaseDownload));
+            return;
+        }
+        long id = Utilities.random.nextLong();
+        if (transcribeOperationsByDialogPosition == null) {
+            transcribeOperationsByDialogPosition = new HashMap<>();
+        }
+        transcribeOperationsByDialogPosition.put(reqInfoHash(messageObject), messageObject);
+
+        String textToTranslate = MessageHelper.getMessagePlainText(messageObject, null);
+        locale = locale != null ? locale : TranslatorKt.getCode2Locale(NekoConfig.translateToLang.String());
+        Translator.translate(locale, textToTranslate, NaConfig.INSTANCE.isLLMTranslatorAvailable() ? Translator.providerLLMTranslator : 0, new Translator.Companion.TranslateCallBack() {
+            @Override
+            public void onSuccess(@NonNull String translatedText) {
+                if (transcribeOperationsById == null) {
+                    transcribeOperationsById = new HashMap<>();
+                }
+                transcribeOperationsById.put(id, messageObject);
+                messageObject.messageOwner.voiceTranscriptionId = id;
+
+                final long duration = SystemClock.elapsedRealtime() - start;
+                TranscribeButton.openVideoTranscription(messageObject);
+                messageObject.messageOwner.voiceTranscriptionOpen = true;
+                messageObject.messageOwner.voiceTranscriptionFinal = true;
+
+                MessagesStorage.getInstance(account).updateMessageVoiceTranscription(dialogId, messageId, translatedText, messageObject.messageOwner);
+                AndroidUtilities.runOnUIThread(() -> finishTranscription(messageObject, id, translatedText), Math.max(0, minDuration - duration));
+            }
+
+            @Override
+            public void onFailed(boolean unsupported, @NotNull String message) {
+                AndroidUtilities.runOnUIThread(() -> {
+                    if (transcribeOperationsByDialogPosition != null) {
+                        transcribeOperationsByDialogPosition.remove(reqInfoHash(messageObject));
+                    }
+                    NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.voiceTranscriptionUpdate, messageObject);
+                    NotificationCenter.getInstance(account).postNotificationName(NotificationCenter.updateTranscriptionLock);
+
+                    var fragment = LaunchActivity.getSafeLastFragment();
+                    if (!BulletinFactory.canShowBulletin(fragment)) {
+                        return;
+                    }
+                    if (message.length() > 45) {
+                        AlertsCreator.showSimpleAlert(fragment, message);
+                    } else {
+                        BulletinFactory.of(fragment).createErrorBulletin(message).show();
+                    }
+                });
+            }
+        });
     }
 
     public static boolean finishTranscription(MessageObject messageObject, long transcription_id, String text) {
