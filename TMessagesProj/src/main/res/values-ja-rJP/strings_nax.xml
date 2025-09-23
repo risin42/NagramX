@@ -240,5 +240,6 @@
     <string name="PinnedReactions_Apply">ピン留めされたアクションを更新</string>
     <string name="HideStoriesFromHeader">ヘッダーから非表示</string>
     <string name="DisableAvatarBlur">アバターぼかしを無効にする</string>
+    <string name="ExportSettingsIncludeApiKeys">API キーを含める</string>
     <string name="DisableInAppBrowserGestures">ジェスチャーを無効にする</string>
 </resources>

@@ -240,5 +240,6 @@
     <string name="PinnedReactions_Apply">更新置顶的表情回应</string>
     <string name="HideStoriesFromHeader">在标题栏中隐藏动态</string>
     <string name="DisableAvatarBlur">禁用头像模糊</string>
+    <string name="ExportSettingsIncludeApiKeys">包含 API 密钥</string>
     <string name="DisableInAppBrowserGestures">禁用手势</string>
 </resources>
