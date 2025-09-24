@@ -126,6 +126,10 @@
   @com.google.gson.annotations.SerializedName <fields>;
 }
 
+# okhttp crashes on Android 16
+-keep class okhttp3.internal.idn.IdnaMappingTable { *; }
+-keep class okhttp3.internal.idn.IdnaMappingTableInstanceKt{ *; }
+
 # Keep all classes of Apache Commons
 -keep class org.apache.commons.text.** { *; }
 -dontwarn org.apache.commons.text.**
@@ -198,6 +202,10 @@
 -dontwarn org.osmdroid.tileprovider.modules.NetworkAvailabliltyCheck
 # Osmdroid
 -dontwarn org.osmdroid.**
+
+# dnsjava
+-dontwarn java.net.spi.InetAddressResolverProvider
+-dontwarn org.xbill.DNS.spi.DnsjavaInetAddressResolverProvider
 
 -dontwarn java.beans.**
 -dontwarn lombok.**
