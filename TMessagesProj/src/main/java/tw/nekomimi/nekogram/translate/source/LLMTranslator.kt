@@ -16,6 +16,7 @@ import org.telegram.tgnet.TLRPC
 import org.telegram.ui.Components.TranslateAlert2
 import tw.nekomimi.nekogram.translate.HTMLKeeper
 import tw.nekomimi.nekogram.translate.Translator
+import tw.nekomimi.nekogram.translate.code2Locale
 import xyz.nextalone.nagram.NaConfig
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -115,7 +116,7 @@ object LLMTranslator : Translator {
 
         while (retryCount < MAX_RETRY) {
             try {
-                val translatedText = doLLMTranslate(to, textToTranslate)
+                val translatedText = doLLMTranslate(to.code2Locale.displayName, textToTranslate)
                 finalString.append(translatedText)
 
                 var finalText = TLRPC.TL_textWithEntities()
