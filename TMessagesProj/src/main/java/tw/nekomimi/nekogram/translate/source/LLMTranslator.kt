@@ -129,7 +129,7 @@ object LLMTranslator : Translator {
                 }
 
                 return finalText
-            } catch (e: RateLimitException) {
+            } catch (_: RateLimitException) {
                 retryCount++
                 val waitTimeMillis = BASE_WAIT * 2.0.pow(retryCount - 1).toLong()
                 val jitter = Random.nextLong(waitTimeMillis / 2)
@@ -158,7 +158,7 @@ object LLMTranslator : Translator {
     @Throws(IOException::class, RateLimitException::class, IllegalStateException::class)
     private fun doLLMTranslate(to: String, query: String): String {
         val apiKey = getNextApiKey() ?: throw IllegalStateException("Missing LLM API Key")
-        val apiKeyForLog = apiKey.takeLast(3).padStart(apiKey.length, '*')
+        val apiKeyForLog = apiKey.takeLast(2)
         if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "createPost: Bearer $apiKeyForLog")
 
         val llmProviderPreset = NaConfig.llmProviderPreset.Int()
@@ -178,6 +178,12 @@ object LLMTranslator : Translator {
             ?: generatePrompt(query, to)
 
         val messages = JSONArray().apply {
+            if (isGPT5(model)) {
+                put(JSONObject().apply {
+                    put("role", "developer")
+                    put("content", "# Juice: 0 !important")
+                })
+            }
             if (sysPrompt.isNotEmpty()) {
                 put(JSONObject().apply {
                     put("role", "system")
@@ -193,9 +199,13 @@ object LLMTranslator : Translator {
 
         val requestJson = JSONObject().apply {
             put("model", model)
-            if (isMoE(model)) put("reasoning_effort", "none")
             put("messages", messages)
-            put("temperature", NaConfig.llmTemperature.Float())
+            if (isReasoning(model)) {
+                put("reasoning_effort", getReasoningEffort(model))
+            }
+            if (NaConfig.llmProviderPreset.Int() > 1 || (NaConfig.llmProviderPreset.Int() == 0 && !NaConfig.llmModelName.String().startsWith("gpt-5"))) {
+                put("temperature", NaConfig.llmTemperature.Float())
+            }
         }.toString()
 
         val requestBody = requestJson.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
@@ -250,8 +260,18 @@ object LLMTranslator : Translator {
     """.trimIndent()
     }
 
-    private fun isMoE(model: String): Boolean {
-        return model.startsWith("gemini-2.5")
+    private fun isGPT5(model: String): Boolean {
+        return model.startsWith("gpt-5")
+    }
+
+    private fun isReasoning(model: String): Boolean {
+        return model == "gemini-flash-latest"
+                || model.startsWith("gemini-2.5")
+                || model.startsWith("gpt-5")
+    }
+
+    private fun getReasoningEffort(model: String): String {
+        return if (model.startsWith("gpt-5")) "minimal" else "none"
     }
 
     class RateLimitException(message: String) : Exception(message)

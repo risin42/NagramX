@@ -165,6 +165,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
         oldLlmProvider = NaConfig.INSTANCE.getLlmProviderPreset().Int();
         rebuildRowsForLlmProvider(oldLlmProvider);
+        checkTemperatureRows();
         addRowsToMap(cellGroup);
     }
 
@@ -190,6 +191,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
             if (key.trim().isEmpty()) key = null;
             bind.setConfigString(key);
             listAdapter.notifyItemChanged(position);
+            AndroidUtilities.runOnUIThread(this::checkTemperatureRows, 445);
             return Unit.INSTANCE;
         });
         builder.show();
@@ -385,6 +387,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 if (newLlmProvider == oldLlmProvider) {
                     return;
                 }
+                checkTemperatureRows();
                 int providerRowIndex = cellGroup.rows.indexOf(llmProviderRow);
                 int startIndex = providerRowIndex + 1;
                 List<AbstractConfigCell> oldSpecificRowBlueprints = llmProviderConfigMap.getOrDefault(oldLlmProvider, List.of());
@@ -408,6 +411,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                         listAdapter.notifyItemRangeInserted(startIndex, newRowCount);
                     }
                 }
+                addRowsToMap(cellGroup);
                 oldLlmProvider = newLlmProvider;
             } else if (key.equals(NaConfig.INSTANCE.getGoogleTranslateExp().getKey())) {
                 if ((boolean) newValue) {
@@ -674,5 +678,32 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
             doNotTranslateCellValue = String.format(getPluralString("Languages", langCodes.size()), langCodes.size());
         }
         return doNotTranslateCellValue;
+    }
+
+    private void checkTemperatureRows() {
+        String modelName = NaConfig.INSTANCE.getLlmModelName().String();
+        boolean showTemperature = NaConfig.INSTANCE.getLlmProviderPreset().Int() > 1 || (NaConfig.INSTANCE.getLlmProviderPreset().Int() == 0 && !modelName.startsWith("gpt-5"));
+        if (listAdapter == null) {
+            if (!showTemperature) {
+                cellGroup.rows.remove(headerTemperature);
+                cellGroup.rows.remove(temperatureValueRow);
+            }
+            return;
+        }
+        if (showTemperature) {
+            final int index = cellGroup.rows.indexOf(llmUserPromptRow);
+            if (!cellGroup.rows.contains(headerTemperature)) {
+                cellGroup.rows.add(index + 1, headerTemperature);
+                cellGroup.rows.add(index + 2, temperatureValueRow);
+                listAdapter.notifyItemRangeInserted(index + 1, 2);
+            }
+        } else {
+            int temperatureRowIndex = cellGroup.rows.indexOf(headerTemperature);
+            if (temperatureRowIndex != -1) {
+                cellGroup.rows.remove(headerTemperature);
+                cellGroup.rows.remove(temperatureValueRow);
+                listAdapter.notifyItemRangeRemoved(temperatureRowIndex, 2);
+            }
+        }
     }
 }
