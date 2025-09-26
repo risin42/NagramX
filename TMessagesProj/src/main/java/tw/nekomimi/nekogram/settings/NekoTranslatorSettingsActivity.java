@@ -115,7 +115,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell llmProviderRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getLlmProviderPreset(), new String[]{
             getString(R.string.LlmProviderCustom),
             "OpenAI " + getString(R.string.LlmProviderOpenAIModel),
-            "Google " + getString(R.string.LlmProviderGeminiModel),
+            "Google " + "gemini-2.5-flash-lite",
             "Groq " + "meta/llama-4-maverick",
             "DeepSeek " + "DeepSeek-V3.1",
             "xAI " + "grok-4-fast",
