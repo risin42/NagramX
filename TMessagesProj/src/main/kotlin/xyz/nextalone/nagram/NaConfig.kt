@@ -907,7 +907,7 @@ object NaConfig {
         addConfig(
             "TranslatorKeepMarkdown",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val googleTranslateExp =
         addConfig(
