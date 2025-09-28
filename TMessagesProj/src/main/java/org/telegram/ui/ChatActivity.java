@@ -341,7 +341,6 @@ import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
-import tw.nekomimi.nekogram.utils.TelegramUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.DoubleTap;
 import xyz.nextalone.nagram.helper.MessageHelper;
@@ -47054,7 +47053,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         options.add(nkbtn_repeatascopy);
                         icons.add(R.drawable.msg_repeat);
                     }
-                    if (NekoConfig.showDeleteDownloadedFile.Bool() && TelegramUtil.messageObjectIsFile(type, selectedObject)) {
+                    if (NekoConfig.showDeleteDownloadedFile.Bool() && getMessageHelper().messageObjectIsFile(type, selectedObject)) {
                         items.add(LocaleController.getString(R.string.DeleteDownloadedFile));
                         options.add(nkbtn_deldlcache);
                         icons.add(R.drawable.msg_clear);

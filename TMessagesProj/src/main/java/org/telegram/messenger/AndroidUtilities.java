@@ -230,7 +230,7 @@ import java.util.zip.GZIPOutputStream;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.TypefaceHelper;
-import tw.nekomimi.nekogram.utils.TelegramUtil;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.ColorOsHelper;
 
@@ -4247,7 +4247,7 @@ public class AndroidUtilities {
         }
         if (f != null && !f.exists()) {
             String cacheFilePath = AndroidUtilities.getCacheDir().getAbsolutePath();
-            cacheFilePath += "/" + TelegramUtil.getFileNameWithoutEx(f.getName());
+            cacheFilePath += "/" + AndroidUtil.getFileNameWithoutEx(f.getName());
             List<String> suffix = Arrays.asList(".pt", ".temp");
             for (int ii = 0; ii < suffix.size(); ii++) {
                 f = new File(cacheFilePath + suffix.get(ii));

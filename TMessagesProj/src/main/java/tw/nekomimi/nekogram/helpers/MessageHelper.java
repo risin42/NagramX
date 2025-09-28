@@ -646,4 +646,12 @@ public class MessageHelper extends BaseController {
         return messageObject.messageOwner.message;
     }
 
+    public static boolean messageObjectIsFile(int type, MessageObject messageObject) {
+        boolean cansave = (type == 4 || type == 5 || type == 6 || type == 10);
+        boolean downloading = messageObject.loadedFileSize > 0;
+        if (type == 4 && messageObject.getDocument() == null) {
+            return false;
+        }
+        return cansave || downloading;
+    }
 }
