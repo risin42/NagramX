@@ -1,7 +1,10 @@
 package tw.nekomimi.nekogram.parts
 
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tw.nekomimi.nekogram.NekoConfig
@@ -23,7 +26,7 @@ fun startTrans(
     val canceled = AtomicBoolean(false)
     val finalToLang = toLang.code2Locale
     val finalProvider = provider.takeIf { it != 0 } ?: NekoConfig.translationProvider.Int()
-    val job = kotlinx.coroutines.Job()
+    val job = Job()
 
     dialog.show()
     dialog.setOnCancelListener {
@@ -31,7 +34,7 @@ fun startTrans(
         job.cancel()
     }
 
-    val scope = kotlinx.coroutines.CoroutineScope(Dispatchers.IO + job)
+    val scope = CoroutineScope(Dispatchers.IO + job)
     scope.launch {
         runCatching {
             val result = Translator.translate(finalToLang, text, finalProvider)
@@ -42,6 +45,7 @@ fun startTrans(
                 }
             }
         }.onFailure { e ->
+            scope.cancel()
             withContext(Dispatchers.Main) {
                 dialog.uDismiss()
                 if (!canceled.get()) {

@@ -3,6 +3,7 @@ package tw.nekomimi.nekogram.translate
 import android.text.TextUtils
 import android.view.View
 import androidx.core.content.edit
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
@@ -16,7 +17,7 @@ import org.telegram.tgnet.TLRPC
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.translate.source.*
 import tw.nekomimi.nekogram.ui.PopupBuilder
-import tw.nekomimi.nekogram.utils.UIUtil
+import tw.nekomimi.nekogram.utils.AppScope
 import tw.nekomimi.nekogram.utils.receiveLazy
 import xyz.nextalone.nagram.NaConfig
 import java.io.IOException
@@ -110,7 +111,7 @@ interface Translator {
             translateCallBack: TranslateCallBack
         ) {
 
-            UIUtil.runOnIoDispatcher {
+            AppScope.io.launch {
                 runCatching {
                     val result: String = translate(to, query, provider.takeIf { it != 0 } ?: NekoConfig.translationProvider.Int())
 
@@ -138,7 +139,7 @@ interface Translator {
             translateCallBack: TranslateCallBack2
         ) {
 
-            UIUtil.runOnIoDispatcher {
+            AppScope.io.launch {
                 runCatching {
                     val result = translateBase(
                         to, query, entities, NekoConfig.translationProvider.Int()
@@ -164,7 +165,7 @@ interface Translator {
             translateCallBack: TranslateCallBack3
         ) {
 
-            UIUtil.runOnIoDispatcher {
+            AppScope.io.launch {
                 runCatching {
                     var translatedPoll = TranslateController.PollText()
                     if (query.question != null) {
