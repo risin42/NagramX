@@ -258,9 +258,11 @@ public class TranslateController extends BaseController {
 
     public String getDialogTranslateTo(long dialogId) {
         String lang = translateDialogLanguage.get(dialogId);
-        if (lang == null) {
-            lang = NekoConfig.translateToLang.String();
-            if (lang == null || lang.equals(getDialogDetectedLanguage(dialogId))) {
+        if (TextUtils.isEmpty(lang)) {
+            String nekoTranslateToLang = NekoConfig.translateToLang.String();
+            if (!TextUtils.isEmpty(nekoTranslateToLang)) {
+                lang = nekoTranslateToLang;
+            } else {
                 lang = currentLanguage();
             }
         }

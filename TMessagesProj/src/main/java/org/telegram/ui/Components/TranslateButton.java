@@ -361,12 +361,11 @@ public class TranslateButton extends FrameLayout {
                 lng = "en";
             }
             String text;
-            String lang = TranslateAlert2.languageName(lng, accusative);
-            if (lang == null) {
-                if (TextUtils.isEmpty(NekoConfig.translateToLang.String())) {
+            String lang = NekoXConfig.formatLang(lng);
+            if (TextUtils.isEmpty(lang)) {
+                lang = TranslateAlert2.languageName(lng, accusative);
+                if (TextUtils.isEmpty(lang)) {
                     lang = LocaleController.getInstance().currentLocale.getDisplayName();
-                } else {
-                    lang = NekoXConfig.formatLang(NekoConfig.translateToLang.String());
                 }
             }
             if (accusative[0]) {
