@@ -9,11 +9,11 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
+import org.telegram.messenger.AndroidUtilities
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ArticleViewer
 import tw.nekomimi.nekogram.translate.Translator
 import tw.nekomimi.nekogram.utils.AlertUtil
-import tw.nekomimi.nekogram.utils.UIUtil
 import tw.nekomimi.nekogram.utils.uUpdate
 import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicBoolean
@@ -107,14 +107,14 @@ fun ArticleViewer.doTransLATE() {
                     status.uUpdate("${all - taskCount.get()} / $all")
 
                     if (taskCount.decrementAndGet() % 10 == 0) {
-                        UIUtil.runOnUIThread { updatePaintSize() }
+                        AndroidUtilities.runOnUIThread { updatePaintSize() }
                     }
                 }.onFailure {
                     if (cancel.get()) return@async
 
                     if (errorCount.incrementAndGet() > 3) {
                         cancel.set(true)
-                        UIUtil.runOnUIThread {
+                        AndroidUtilities.runOnUIThread {
                             status.dismiss()
                             updatePaintSize()
                             updateTranslateButton(false)
@@ -137,7 +137,7 @@ fun ArticleViewer.doTransLATE() {
         transPool.close()
 
         if (!cancel.get()) {
-            UIUtil.runOnUIThread {
+            AndroidUtilities.runOnUIThread {
                 updatePaintSize()
                 status.dismiss()
             }

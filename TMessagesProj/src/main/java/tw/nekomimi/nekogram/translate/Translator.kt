@@ -7,6 +7,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
+import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
@@ -113,16 +114,16 @@ interface Translator {
                 runCatching {
                     val result: String = translate(to, query, provider.takeIf { it != 0 } ?: NekoConfig.translationProvider.Int())
 
-                    UIUtil.runOnUIThread(Runnable {
+                    AndroidUtilities.runOnUIThread {
                         translateCallBack.onSuccess(result)
-                    })
+                    }
                 }.onFailure {
-                    UIUtil.runOnUIThread(Runnable {
+                    AndroidUtilities.runOnUIThread {
                         translateCallBack.onFailed(
                             it is UnsupportedOperationException,
                             it.message ?: it.javaClass.simpleName
                         )
-                    })
+                    }
                 }
             }
         }
@@ -143,14 +144,14 @@ interface Translator {
                         to, query, entities, NekoConfig.translationProvider.Int()
                     )
 
-                    UIUtil.runOnUIThread(Runnable { translateCallBack.onSuccess(result) })
+                    AndroidUtilities.runOnUIThread { translateCallBack.onSuccess(result) }
                 }.onFailure {
-                    UIUtil.runOnUIThread(Runnable {
+                    AndroidUtilities.runOnUIThread {
                         translateCallBack.onFailed(
                             it is UnsupportedOperationException,
                             it.message ?: it.javaClass.simpleName
                         )
-                    })
+                    }
                 }
             }
         }
@@ -185,14 +186,14 @@ interface Translator {
                         )
                     }
 
-                    UIUtil.runOnUIThread(Runnable { translateCallBack.onSuccess(translatedPoll) })
+                    AndroidUtilities.runOnUIThread { translateCallBack.onSuccess(translatedPoll) }
                 }.onFailure {
-                    UIUtil.runOnUIThread(Runnable {
+                    AndroidUtilities.runOnUIThread {
                         translateCallBack.onFailed(
                             it is UnsupportedOperationException,
                             it.message ?: it.javaClass.simpleName
                         )
-                    })
+                    }
                 }
             }
         }

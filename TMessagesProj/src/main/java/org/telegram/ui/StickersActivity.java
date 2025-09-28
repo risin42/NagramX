@@ -60,6 +60,7 @@ import org.telegram.messenger.SendMessagesHelper;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.SvgHelper;
 import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
@@ -119,7 +120,6 @@ import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
 import tw.nekomimi.nekogram.utils.StickersUtil;
-import tw.nekomimi.nekogram.utils.UIUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.ExternalStickerCacheHelper;
 
@@ -600,12 +600,12 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
         pro.setCancelable(true);
         pro.show();
 
-        UIUtil.runOnIoDispatcher(() -> {
+        Utilities.globalQueue.postRunnable(() -> {
             try {
                 JsonObject stickerObj = new Gson().fromJson(FileUtil.readUtf8String(file), JsonObject.class);
 
                 if (stickerObj == null || !stickerObj.has("stickerSets") && !stickerObj.has("archivedStickers")) {
-                    UIUtil.runOnUIThread(() -> {
+                    AndroidUtilities.runOnUIThread(() -> {
                         pro.dismiss();
                         showError("Not a valid sticker backup file.", exitOnFail);
                     });
@@ -614,7 +614,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
                 StickersUtil.importStickers(stickerObj, this, pro);
 
-                UIUtil.runOnUIThread(() -> {
+                AndroidUtilities.runOnUIThread(() -> {
                     pro.dismiss();
                     MediaDataController.getInstance(currentAccount).checkStickers(currentType);
                     updateRows(false);
@@ -672,7 +672,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
         pro.setCanCancel(false);
         pro.show();
 
-        UIUtil.runOnIoDispatcher(() -> {
+        Utilities.globalQueue.postRunnable(() -> {
             Activity ctx = getParentActivity();
             JsonObject exportObj = StickersUtil.exportStickers(currentAccount, exportSets, exportArchived);
             File cacheFile = new File(AndroidUtilities.getCacheDir(), new Date().toLocaleString() + ".nekox-stickers.json");
@@ -689,7 +689,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
             FileUtil.writeUtf8String(stringWriter.toString(), cacheFile);
 
-            UIUtil.runOnUIThread(() -> {
+            AndroidUtilities.runOnUIThread(() -> {
                 pro.dismiss();
                 ShareUtil.shareFile(ctx, cacheFile);
             });
@@ -1183,7 +1183,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                     pro.setCanCancel(false);
                     pro.show();
 
-                    UIUtil.runOnIoDispatcher(() -> {
+                    Utilities.globalQueue.postRunnable(() -> {
 
                         JsonObject exportObj = StickersUtil.exportStickers(stickerSetList);
 
@@ -1200,7 +1200,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
                         FileUtil.writeUtf8String(stringWriter.toString(), cacheFile);
 
-                        UIUtil.runOnUIThread(() -> {
+                        AndroidUtilities.runOnUIThread(() -> {
                             pro.dismiss();
                             ShareUtil.shareFile(getParentActivity(), cacheFile);
                         });

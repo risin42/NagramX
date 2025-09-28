@@ -1,5 +1,6 @@
 package tw.nekomimi.nekogram.utils
 
+import org.telegram.messenger.AndroidUtilities
 import org.telegram.ui.ActionBar.AlertDialog
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -71,5 +72,5 @@ operator fun AtomicLong.setValue(thisRef: Any?, property: KProperty<*>, value: L
 operator fun <T> AtomicReference<T>.getValue(thisRef: Any?, property: KProperty<*>): T = get()
 operator fun <T> AtomicReference<T>.setValue(thisRef: Any?, property: KProperty<*>, value: T) = set(value)
 
-fun AlertDialog.uUpdate(message: String) = UIUtil.runOnUIThread { setMessage(message) }
-fun AlertDialog.uDismiss() = UIUtil.runOnUIThread { dismiss() }
+fun AlertDialog.uUpdate(message: String) = AndroidUtilities.runOnUIThread { setMessage(message) }
+fun AlertDialog.uDismiss() = AndroidUtilities.runOnUIThread { dismiss() }

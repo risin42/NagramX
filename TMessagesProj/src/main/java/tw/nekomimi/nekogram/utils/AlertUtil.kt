@@ -65,14 +65,14 @@ object AlertUtil {
     }
 
     @JvmStatic
-    fun showToast(text: String) = UIUtil.runOnUIThread(Runnable {
+    fun showToast(text: String) = AndroidUtilities.runOnUIThread {
         Toast.makeText(
-                ApplicationLoader.applicationContext,
-                text.takeIf { it.isNotBlank() }
-                        ?: "喵 !",
-                Toast.LENGTH_LONG
+            ApplicationLoader.applicationContext,
+            text.takeIf { it.isNotBlank() }
+                ?: "喵 !",
+            Toast.LENGTH_LONG
         ).show()
-    })
+    }
 
     @JvmStatic
     fun showSimpleAlert(ctx: Context?, error: Throwable) {
@@ -87,7 +87,7 @@ object AlertUtil {
 
     @JvmStatic
     @JvmOverloads
-    fun showSimpleAlert(ctx: Context?, title: String?, text: String, listener: ((AlertDialog.Builder) -> Unit)? = null) = UIUtil.runOnUIThread(Runnable {
+    fun showSimpleAlert(ctx: Context?, title: String?, text: String, listener: ((AlertDialog.Builder) -> Unit)? = null) = AndroidUtilities.runOnUIThread(Runnable {
         if (ctx == null) return@Runnable
 
         val builder = AlertDialog.Builder(ctx)
@@ -102,7 +102,7 @@ object AlertUtil {
     })
 
     @JvmStatic
-    fun showCopyAlert(ctx: Context, text: String) = UIUtil.runOnUIThread(Runnable {
+    fun showCopyAlert(ctx: Context, text: String) = AndroidUtilities.runOnUIThread {
         val builder = AlertDialog.Builder(ctx)
         builder.setTitle(getString(R.string.Translate))
         builder.setMessage(text)
@@ -117,7 +117,7 @@ object AlertUtil {
         }
         builder.show()
 
-    })
+    }
 
     @JvmOverloads
     @JvmStatic
@@ -129,7 +129,7 @@ object AlertUtil {
 
     @JvmStatic
     @JvmOverloads
-    fun showConfirm(ctx: Context, title: String, text: String? = null, icon: Int, button: String, red: Boolean, listener: Runnable) = UIUtil.runOnUIThread(Runnable {
+    fun showConfirm(ctx: Context, title: String, text: String? = null, icon: Int, button: String, red: Boolean, listener: Runnable) = AndroidUtilities.runOnUIThread {
         val builder = BottomBuilder(ctx)
 
         if (text != null) {
@@ -144,11 +144,11 @@ object AlertUtil {
         builder.addCancelItem()
         builder.show()
 
-    })
+    }
 
     @JvmStatic
     @JvmOverloads
-    fun showTransFailedDialog(ctx: Context, noRetry: Boolean, message: String, retryRunnable: Runnable) = UIUtil.runOnUIThread(Runnable {
+    fun showTransFailedDialog(ctx: Context, noRetry: Boolean, message: String, retryRunnable: Runnable) = AndroidUtilities.runOnUIThread {
         ctx.setTheme(R.style.Theme_TMessages)
         val reference = AtomicReference<AlertDialog>()
 
@@ -197,7 +197,7 @@ object AlertUtil {
             setDismissDialogByButtons(false)
             show()
         })
-    })
+    }
 
     private data class ProviderInfo(
         val providerConstant: Int,

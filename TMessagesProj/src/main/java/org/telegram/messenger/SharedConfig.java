@@ -60,7 +60,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.utils.UIUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 import java.util.List;
@@ -1455,13 +1454,13 @@ public class SharedConfig {
 
         ProxyInfo finalInfo = currentProxy;
         boolean finalEnable = enable;
-        UIUtil.runOnIoDispatcher(() -> {
+        Utilities.globalQueue.postRunnable(() -> {
             if (finalEnable) {
                 ConnectionsManager.setProxySettings(true, finalInfo.address, finalInfo.port, finalInfo.username, finalInfo.password, finalInfo.secret);
             } else {
                 ConnectionsManager.setProxySettings(false, "", 0, "", "", "");
             }
-            UIUtil.runOnUIThread(() -> NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.proxySettingsChanged));
+            AndroidUtilities.runOnUIThread(() -> NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.proxySettingsChanged));
 
         });
 

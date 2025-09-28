@@ -84,7 +84,7 @@ object ProxyUtil {
                     }
                     if ((SharedConfig.isProxyEnabled() && vpn) || (!SharedConfig.isProxyEnabled() && !vpn)) {
                         SharedConfig.setProxyEnable(!vpn)
-                        UIUtil.runOnUIThread(Runnable {
+                        AndroidUtilities.runOnUIThread(Runnable {
                             NotificationCenter.getGlobalInstance()
                                 .postNotificationName(NotificationCenter.proxySettingsChanged)
                         })
@@ -389,7 +389,7 @@ object ProxyUtil {
 
         }
 
-        UIUtil.runOnUIThread {
+        AndroidUtilities.runOnUIThread {
 
             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.proxySettingsChanged)
 

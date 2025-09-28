@@ -360,7 +360,6 @@ import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.LangsKt;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
-import tw.nekomimi.nekogram.utils.UIUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.MessageHelper;
 
@@ -4441,12 +4440,12 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             } else if (position == clearLogsRow) {
                 AlertDialog pro = AlertUtil.showProgress(getParentActivity());
                 pro.show();
-                UIUtil.runOnIoDispatcher(() -> {
+                Utilities.globalQueue.postRunnable(() -> {
                     FileUtil.delete(AndroidUtilities.getLogsDir());
                     try {
                         Thread.sleep(100L);
                     } catch (InterruptedException ignored) {}
-                    LangsKt.uDismiss(pro);
+                    AndroidUtilities.runOnUIThread(() -> pro.dismiss());
                 });
             } else if (position == switchBackendRow) {
                 if (getParentActivity() == null) {

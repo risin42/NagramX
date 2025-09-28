@@ -220,7 +220,6 @@ import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.utils.AlertUtil;
-import tw.nekomimi.nekogram.utils.UIUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 public class ChatActivityEnterView extends BlurredFrameLayout implements NotificationCenter.NotificationCenterDelegate, SizeNotifierFrameLayout.SizeNotifierFrameLayoutDelegate, StickersAlert.StickersAlertDelegate, SuggestEmojiView.AnchorViewDelegate {
@@ -6065,20 +6064,20 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             boolean useRegex = regex.isChecked();
             AlertDialog progress = AlertUtil.showProgress(getContext());
             progress.show();
-            UIUtil.runOnIoDispatcher(() -> {
+            Utilities.globalQueue.postRunnable(() -> {
                 String replaced;
                 if (useRegex) {
                     try {
                         replaced = finalText.replaceAll(originText, replaceText);
                     } catch (Exception e) {
-                        UIUtil.runOnUIThread(progress::dismiss);
+                        AndroidUtilities.runOnUIThread(progress::dismiss);
                         AlertUtil.showToast(e);
                         return;
                     }
                 } else {
                     replaced = finalText.replace(originText, replaceText);
                 }
-                UIUtil.runOnUIThread(() -> {
+                AndroidUtilities.runOnUIThread(() -> {
                     if (start == end) messageEditText.setText(replaced);
                     else messageEditText.getText().replace(start, end, replaced);
                     progress.dismiss();
