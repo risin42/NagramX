@@ -240,5 +240,6 @@
     <string name="PinnedReactions_Apply">Обновить закреплённые реакции</string>
     <string name="HideStoriesFromHeader">Скрыть из заголовка</string>
     <string name="DisableAvatarBlur">Отключить размытие аватаров</string>
+    <string name="ExportSettingsIncludeApiKeys">Включать ключи API</string>
     <string name="DisableInAppBrowserGestures">Отключить жесты</string>
 </resources>

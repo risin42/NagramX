@@ -82,7 +82,7 @@
     <string name="TranslatorMinimized">A Barra de tradução foi minimizada para este chat.</string>
     <string name="UseDeletedIcon">Mostrar Ícone em Vez de \"excluído\"</string>
     <string name="UseEditedIcon">Mostrar ícone ao invés de \"editado\"</string>
-    <string name="SilentMessageByDefault">Enviar sem som</string>
+    <string name="SilentMessageByDefault">Enviar Sem Som</string>
     <string name="FolderNameAsTitle">Usar Nome da Pasta como Título</string>
     <string name="SaveDeletedMessageForBotUser">Salvar Mensagens do Bot</string>
     <string name="TranslatorKeepMarkdown">Manter Markdown</string>
@@ -117,24 +117,24 @@
     <string name="GhostModeEnabled">Modo fantasma ativado</string>
     <string name="GhostModeDisabled">Modo fantasma desativado</string>
     <string name="GhostModeInDrawer">Mostrar na Gaveta</string>
-    <string name="DontSendReadMessagePackets">Não visualizar mensagens</string>
-    <string name="DontReadStoriesPackets">Não visualizar Stories</string>
+    <string name="DontSendReadMessagePackets">Não Visualizar Mensagens</string>
+    <string name="DontReadStoriesPackets">Não Visualizar Stories</string>
     <string name="DontSendOnlinePackets">Ocultar Online</string>
     <string name="DontSendUploadProgress">Ocultar Digitando</string>
-    <string name="SendOfflinePacketAfterOnline">Ficar off-line automaticamente</string>
+    <string name="SendOfflinePacketAfterOnline">Ficar Offline Automaticamente</string>
     <string name="MarkReadAfterSend">Ler ao Interagir</string>
     <string name="GhostModeNotice">Toque e segure em qualquer opção para evitar que ela seja alterada ao ativar ou desativar o Modo Fantasma.</string>
     <string name="MarkReadAfterSendNotice">Lê automaticamente a mensagem quando você envia uma nova ou toca em uma reação.</string>
     <string name="SendWithoutSoundRowNotice">Envia automaticamente mensagens sem som.</string>
     <string name="GhostReadMessage">Ler Mensagem</string>
-    <string name="SendWithSound">Enviar com Som</string>
+    <string name="SendWithSound">Enviar Com Som</string>
     <string name="PerformanceClass">Classe de Desempenho do Dispositivo</string>
     <string name="PerformanceClassHigh">Alta</string>
     <string name="PerformanceClassAverage">Média</string>
     <string name="PerformanceClassLow">Baixa</string>
     <string name="PerformanceClassUnknown">Desconhecido</string>
     <string name="TranscribeProviderShort">Provedor</string>
-    <string name="TranscribeProviderAuto">Seleção automática</string>
+    <string name="TranscribeProviderAuto">Seleção Automática</string>
     <string name="TranscribeProviderWorkersAI">Whisper (Workers AI)</string>
     <string name="TranscribeProviderGemini">Gemini</string>
     <string name="CloudflareCredentials">Credenciais do Cloudflare</string>
@@ -227,7 +227,7 @@
     <string name="TestBackendOff">Esta conta se conectará ao backend de produção.</string>
     <string name="DidNotGetTheCodeBlameDurov">Se você não recebeu o código em outro aparelho ou não tem o Telegram logado em outro aparelho, por favor, use o aplicativo oficial do Telegram para receber o código.\n\nTelegram desativou a capacidade de fazer login com SMS em aplicativos de terceiros. Usuários que fazem login em aplicativos de terceiros só podem receber códigos de login via Telegram.\n\nNão podemos ajudar com isso. Se você tiver qualquer problema para fazer login, entre em contato com o Suporte do Telegram.</string>
     <string name="QRLoginMessage">Escaneie o QR Code com outro aparelho para fazer login.</string>
-    <string name="DnsType">DNS Resolver</string>
+    <string name="DnsType">Resolvedor DNS</string>
     <string name="DnsTypeSystem">Sistema</string>
     <string name="CustomDoH">DoH Personalizado</string>
     <string name="PinnedReactions">Reações Fixadas</string>
@@ -240,5 +240,6 @@
     <string name="PinnedReactions_Apply">Atualizar Reações Fixadas</string>
     <string name="HideStoriesFromHeader">Ocultar do Cabeçalho</string>
     <string name="DisableAvatarBlur">Desativar Desfoque do Avatar</string>
+    <string name="ExportSettingsIncludeApiKeys">Incluir Chaves de API</string>
     <string name="DisableInAppBrowserGestures">Desativar Gestos</string>
 </resources>

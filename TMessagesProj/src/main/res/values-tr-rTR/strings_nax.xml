@@ -240,4 +240,6 @@
     <string name="PinnedReactions_Apply">Sabitlenmiş Tepkileri Güncelle</string>
     <string name="HideStoriesFromHeader">Başlıktan Gizle</string>
     <string name="DisableAvatarBlur">Avatar Bulanıklığını Devre Dışı Bırak</string>
+    <string name="ExportSettingsIncludeApiKeys">API Anahtarlarını Dahil Et</string>
+    <string name="DisableInAppBrowserGestures">Hareketleri Devre Dışı Bırak</string>
 </resources>

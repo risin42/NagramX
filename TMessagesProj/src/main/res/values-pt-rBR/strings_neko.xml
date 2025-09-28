@@ -3,7 +3,7 @@
     <string name="NekoSettings">N-Configurações</string>
     <string name="IPv6">Preferir IPv6</string>
     <string name="MessageMenu">Menu de Mensagem</string>
-    <string name="HidePhone">Ocultar número de telefone</string>
+    <string name="HidePhone">Ocultar Número de Telefone</string>
     <string name="DeleteAllFromSelf">Excluir Minhas Mensagens</string>
     <string name="DeleteAllFromSelfAlert">Aviso! Isto irá **apagar todas as suas mensagens** neste chat, para **todos** os participantes.</string>
     <string name="DeleteAllFromSelfAlertBefore">Aviso! Isso irá **apagar todas as mensagens suas antes de %s** neste chat para **todos** os participantes.</string>
@@ -91,10 +91,10 @@
     <string name="DarkenAvatarBackground">Escurecer Fundo</string>
     <string name="ProviderDeepLTranslate">DeepL Tradutor</string>
     <string name="ProviderMicrosoftTranslator">Bing Tradutor</string>
-    <string name="DontSendGreetingSticker">Não envie Sticker de saudação</string>
+    <string name="DontSendGreetingSticker">Não Enviar Sticker de Saudação</string>
     <string name="TakeGIFasVideo">Tratar GIF como vídeo</string>
     <string name="UseMediaStreamInVoip">Use o Stream de Mídia no VoIP</string>
-    <string name="HideTimeForSticker">Ocultar Horário nos Stickers</string>
+    <string name="HideTimeForSticker">Ocultar Horário e Confirmações de Leitura em Stickers</string>
     <string name="hideGroupSticker">Ocultar Sticker do Grupo</string>
     <string name="customGroupVoipAudioBitrate">Taxa de bits de áudio VoIP do grupo</string>
     <string name="maxRecentStickerCount">Máximo de Stickers Recentes</string>
@@ -239,7 +239,7 @@
     <string name="DeveloperSettings">Configurações do desenvolvedor</string>
     <string name="TransSite">Traduzir Nagram X</string>
     <string name="ShareMessages">Compartilhar</string>
-    <string name="DisableVibration">Desativar vibração</string>
+    <string name="DisableVibration">Desativar Vibração</string>
     <string name="SendCommentAfterForward">Enviar Comentário Depois de Encaminhamento</string>
     <string name="ImportLogin">Login QR</string>
     <string name="UserRestrictionsSendGames">Enviar jogos</string>
@@ -269,7 +269,7 @@
     <string name="repeatConfirmText">Você tem certeza de que deseja repostar?</string>
     <string name="valuesLargeAvatarInDrawer">Padrão\nAvatar\nAvatar Grande\nPapel de Parede</string>
     <string name="rememberAllBackMessages">Lembrar todas as respostas clicadas</string>
-    <string name="DisableInstantCamera">Desativar câmera instantânea</string>
+    <string name="DisableInstantCamera">Desativar Câmera Instantânea</string>
     <string name="showSeconds">Mostrar data/hora em segundos</string>
     <string name="Name">Nome</string>
     <string name="channelAlias">Apelido do Canal</string>
