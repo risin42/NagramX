@@ -242,4 +242,5 @@
     <string name="DisableAvatarBlur">Вимкнути розмиття аватара</string>
     <string name="ExportSettingsIncludeApiKeys">Включити ключі API</string>
     <string name="DisableInAppBrowserGestures">Вимкнути жести</string>
+    <string name="HowToObtain">Як отримати?</string>
 </resources>

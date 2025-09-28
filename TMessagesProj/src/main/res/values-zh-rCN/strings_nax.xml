@@ -242,4 +242,5 @@
     <string name="DisableAvatarBlur">禁用头像模糊</string>
     <string name="ExportSettingsIncludeApiKeys">包含 API 密钥</string>
     <string name="DisableInAppBrowserGestures">禁用手势</string>
+    <string name="HowToObtain">如何获取?</string>
 </resources>

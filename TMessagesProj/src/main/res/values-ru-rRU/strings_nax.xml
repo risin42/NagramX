@@ -242,4 +242,5 @@
     <string name="DisableAvatarBlur">Отключить размытие аватаров</string>
     <string name="ExportSettingsIncludeApiKeys">Включать ключи API</string>
     <string name="DisableInAppBrowserGestures">Отключить жесты</string>
+    <string name="HowToObtain">Как получить?</string>
 </resources>

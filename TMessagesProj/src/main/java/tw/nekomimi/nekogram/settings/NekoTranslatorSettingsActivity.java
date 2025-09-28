@@ -32,6 +32,7 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BotWebViewVibrationEffect;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.browser.Browser;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.ShadowSectionCell;
@@ -180,7 +181,8 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     /** @noinspection deprecation*/
     private void customDialog_BottomInputString(int position, ConfigItem bind, String subtitle, String hint) {
         BottomBuilder builder = new BottomBuilder(getParentActivity());
-        builder.addTitle(getString(bind.getKey()), subtitle);
+        CharSequence enhancedSubtitle = getEnhancedSubtitleWithLink(bind, subtitle);
+        builder.addTitle(getString(bind.getKey()), enhancedSubtitle);
         var keyField = builder.addEditText(hint);
         if (!bind.String().trim().isEmpty()) {
             keyField.setText(bind.String());
@@ -197,6 +199,37 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         builder.show();
         keyField.requestFocus();
         AndroidUtilities.showKeyboard(keyField);
+    }
+
+    private CharSequence getEnhancedSubtitleWithLink(ConfigItem bind, CharSequence originalSubtitle) {
+        String providerUrl = getProviderKeyUrl(bind);
+        if (providerUrl != null) {
+            return AndroidUtilities.replaceSingleTag(
+                originalSubtitle + "\n**" + getString(R.string.HowToObtain) + "**",
+                -1,
+                AndroidUtilities.REPLACING_TAG_TYPE_LINKBOLD,
+                () -> Browser.openUrl(getParentActivity(), providerUrl),
+                getResourceProvider()
+            );
+        }
+        return originalSubtitle;
+    }
+
+    private String getProviderKeyUrl(ConfigItem bind) {
+        if (bind == NaConfig.INSTANCE.getLlmProviderOpenAIKey()) {
+            return "https://platform.openai.com/api-keys";
+        } else if (bind == NaConfig.INSTANCE.getLlmProviderGeminiKey()) {
+            return "https://aistudio.google.com/app/apikey";
+        } else if (bind == NaConfig.INSTANCE.getLlmProviderGroqKey()) {
+            return "https://console.groq.com/keys";
+        } else if (bind == NaConfig.INSTANCE.getLlmProviderDeepSeekKey()) {
+            return "https://platform.deepseek.com/api_keys";
+        } else if (bind == NaConfig.INSTANCE.getLlmProviderXAIKey()) {
+            return "https://console.x.ai";
+        } else if (bind == NekoConfig.googleCloudTranslateKey) {
+            return "https://console.cloud.google.com/apis/credentials";
+        }
+        return null;
     }
 
     private void showProviderSelectionPopup(View view, ConfigItem configItem, Runnable onSelected) {

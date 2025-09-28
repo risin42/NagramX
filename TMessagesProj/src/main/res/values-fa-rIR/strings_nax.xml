@@ -238,4 +238,5 @@
     <string name="PinnedReactions_Limit">شما می‌توانید تا %d واکنش را انتخاب کنید.</string>
     <string name="PinnedReactions_Type">این ایموجی پشتیبانی نمی‌شود.</string>
     <string name="PinnedReactions_Apply">به‌روزرسانی واکنش‌های پین‌شده</string>
+    <string name="HowToObtain">چگونه به دست آورم؟</string>
 </resources>

@@ -242,4 +242,5 @@
     <string name="DisableAvatarBlur">アバターぼかしを無効にする</string>
     <string name="ExportSettingsIncludeApiKeys">API キーを含める</string>
     <string name="DisableInAppBrowserGestures">ジェスチャーを無効にする</string>
+    <string name="HowToObtain">取得方法は？</string>
 </resources>

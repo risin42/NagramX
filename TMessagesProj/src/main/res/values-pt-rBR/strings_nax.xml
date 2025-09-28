@@ -242,4 +242,5 @@
     <string name="DisableAvatarBlur">Desativar Desfoque do Avatar</string>
     <string name="ExportSettingsIncludeApiKeys">Incluir Chaves de API</string>
     <string name="DisableInAppBrowserGestures">Desativar Gestos</string>
+    <string name="HowToObtain">Como obter?</string>
 </resources>
