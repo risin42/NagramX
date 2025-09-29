@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -158,6 +159,8 @@ public class RegexFilterEditActivity extends BaseFragment {
         helpTextView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText8));
         helpTextView.setGravity(LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT);
         helpTextView.setText(LocaleUtil.INSTANCE.htmlToString(getString(R.string.RegexFiltersAddDescription)));
+        helpTextView.setLinksClickable(true);
+        helpTextView.setMovementMethod(LinkMovementMethod.getInstance());
         linearLayout.addView(helpTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 24, 10, 24, 0));
 
         errorTextView = new TextView(context);
