@@ -1097,6 +1097,7 @@ public abstract class BaseChartView<T extends ChartData, L extends LineViewData>
     }
 
     protected void runSmoothHaptic() {
+        if (NekoConfig.disableVibration.Bool()) return;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             final Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
             if (vibrationEffect == null) {

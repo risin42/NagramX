@@ -1069,6 +1069,7 @@ public class CameraView extends FrameLayout implements TextureView.SurfaceTextur
     }
 
     public void runHaptic() {
+        if (NekoConfig.disableVibration.Bool()) return;
         long[] vibrationWaveFormDurationPattern = {0, 1};
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             final Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -1077,7 +1078,7 @@ public class CameraView extends FrameLayout implements TextureView.SurfaceTextur
             vibrator.vibrate(vibrationEffect);
         } else {
             try {
-                if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             } catch (Exception ignored) {}
         }
     }

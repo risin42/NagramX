@@ -1317,6 +1317,7 @@ public class ContentPreviewViewer {
     VibrationEffect vibrationEffect;
 
     protected void runSmoothHaptic() {
+        if (NekoConfig.disableVibration.Bool()) return;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             final Vibrator vibrator = (Vibrator) containerView.getContext().getSystemService(Context.VIBRATOR_SERVICE);
             if (vibrationEffect == null) {
