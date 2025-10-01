@@ -124,9 +124,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
-import tw.nekomimi.nekogram.NekoConfig;
-import xyz.nextalone.nagram.helper.Dialogs;
-
 public class ThemeActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
     public final static int THEME_TYPE_BASIC = 0;
@@ -1360,13 +1357,9 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 builder.setNegativeButton(getString("Cancel", R.string.Cancel), null);
                 showDialog(builder.create());
             } else if (position == chatBlurRow) {
-                if (NekoConfig.forceBlurInChat.Bool()) {
-                    Dialogs.createNeedChangeNekoSettingsAlert(getContext());
-                } else {
-                    SharedConfig.toggleChatBlur();
-                    if (view instanceof TextCheckCell) {
-                        ((TextCheckCell) view).setChecked(SharedConfig.chatBlurEnabled());
-                    }
+                SharedConfig.toggleChatBlur();
+                if (view instanceof TextCheckCell) {
+                    ((TextCheckCell) view).setChecked(SharedConfig.chatBlurEnabled());
                 }
             } else if (position == nightThemeRow) {
                 if (LocaleController.isRTL && x <= dp(76) || !LocaleController.isRTL && x >= view.getMeasuredWidth() - dp(76)) {
