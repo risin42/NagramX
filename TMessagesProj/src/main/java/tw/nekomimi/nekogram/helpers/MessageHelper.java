@@ -5,10 +5,15 @@ import static org.telegram.messenger.TranslateController.UNKNOWN_LANGUAGE;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.TypedValue;
@@ -19,11 +24,16 @@ import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
+
 import org.telegram.SQLite.SQLiteCursor;
 import org.telegram.SQLite.SQLiteException;
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BaseController;
 import org.telegram.messenger.ChatObject;
+import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LanguageDetector;
@@ -43,10 +53,12 @@ import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.CheckBoxCell;
+import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.AlertsCreator;
 import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.Bulletin;
+import org.telegram.ui.Components.ColoredImageSpan;
 import org.telegram.ui.Components.Forum.ForumUtilities;
 import org.telegram.ui.Components.LayoutHelper;
 
@@ -58,8 +70,12 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
+import java.util.regex.Pattern;
+
+import xyz.nextalone.nagram.NaConfig;
 
 public class MessageHelper extends BaseController {
 
@@ -231,7 +247,7 @@ public class MessageHelper extends BaseController {
         }
         File file = new File(path);
         if (file.exists()) {
-            xyz.nextalone.nagram.helper.MessageHelper.INSTANCE.addFileToClipboard(file, callback);
+            addFileToClipboard(file, callback);
         }
     }
 
@@ -377,17 +393,7 @@ public class MessageHelper extends BaseController {
                     callback.run(getConnectionsManager().getCurrentTime() - 60 * 60 * 24 * 30);
                     break;
                 case 3: {
-                    Calendar calendar = Calendar.getInstance();
-                    DatePickerDialog dateDialog = new DatePickerDialog(context, (view1, year1, month, dayOfMonth1) -> {
-                        TimePickerDialog timeDialog = new TimePickerDialog(context, (view11, hourOfDay, minute) -> {
-                            calendar.set(year1, month, dayOfMonth1, hourOfDay, minute);
-                            callback.run((int) (calendar.getTimeInMillis() / 1000));
-                        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
-                        timeDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.Set), timeDialog);
-                        timeDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Cancel), (dialog3, which3) -> {
-                        });
-                        fragment.showDialog(timeDialog);
-                    }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                    DatePickerDialog dateDialog = getDatePickerDialog(fragment, callback, context);
 
                     final DatePicker datePicker = dateDialog.getDatePicker();
 
@@ -413,6 +419,21 @@ public class MessageHelper extends BaseController {
             builder.getDismissRunnable().run();
         });
         fragment.showDialog(builder.create());
+    }
+
+    @NonNull
+    private static DatePickerDialog getDatePickerDialog(BaseFragment fragment, Utilities.Callback<Integer> callback, Context context) {
+        Calendar calendar = Calendar.getInstance();
+        return new DatePickerDialog(context, (view1, year1, month, dayOfMonth1) -> {
+            TimePickerDialog timeDialog = new TimePickerDialog(context, (view11, hourOfDay, minute) -> {
+                calendar.set(year1, month, dayOfMonth1, hourOfDay, minute);
+                callback.run((int) (calendar.getTimeInMillis() / 1000));
+            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+            timeDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.Set), timeDialog);
+            timeDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.Cancel), (dialog3, which3) -> {
+            });
+            fragment.showDialog(timeDialog);
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     public static void showDeleteHistoryBulletin(BaseFragment fragment, int count, boolean search, Runnable delayedAction, Theme.ResourcesProvider resourcesProvider) {
@@ -449,7 +470,7 @@ public class MessageHelper extends BaseController {
             try {
                 latch.await();
             } catch (Exception e) {
-                e.printStackTrace();
+                FileLog.e(e);
             }
             if (!messageIds.isEmpty()) {
                 ArrayList<ArrayList<Integer>> lists = new ArrayList<>();
@@ -489,8 +510,7 @@ public class MessageHelper extends BaseController {
         }
         req.hash = hash;
         getConnectionsManager().sendRequest(req, (response, error) -> {
-            if (response instanceof TLRPC.messages_Messages) {
-                var res = (TLRPC.messages_Messages) response;
+            if (response instanceof TLRPC.messages_Messages res) {
                 if (response instanceof TLRPC.TL_messages_messagesNotModified || res.messages.isEmpty()) {
                     latch.countDown();
                     return;
@@ -647,11 +667,174 @@ public class MessageHelper extends BaseController {
     }
 
     public static boolean messageObjectIsFile(int type, MessageObject messageObject) {
-        boolean cansave = (type == 4 || type == 5 || type == 6 || type == 10);
+        boolean canSave = (type == 4 || type == 5 || type == 6 || type == 10);
         boolean downloading = messageObject.loadedFileSize > 0;
         if (type == 4 && messageObject.getDocument() == null) {
             return false;
         }
-        return cansave || downloading;
+        return canSave || downloading;
+    }
+
+    // Merged from xyz.nextalone.nagram.helper.MessageHelper.kt
+
+    private static final SpannableStringBuilder[] spannedStrings = new SpannableStringBuilder[5];
+    private static final Pattern ZALGO_PATTERN = Pattern.compile("\\p{M}{4}");
+    private static final Pattern ZALGO_CLEANUP = Pattern.compile("\\p{M}+");
+    private static final char[] spoilerChars = new char[]{'⠌', '⡢', '⢑', '⠨', '⠥', '⠮', '⡑'};
+
+    public static void addMessageToClipboard(MessageObject selectedObject, Runnable callback) {
+        String path = getPathToMessage(selectedObject);
+        if (!TextUtils.isEmpty(path)) {
+            File file = new File(path);
+            if (file.exists()) {
+                addFileToClipboard(file, callback);
+            }
+        }
+    }
+
+    public static void addMessageToClipboardAsSticker(MessageObject selectedObject, Runnable callback) {
+        String path = getPathToMessage(selectedObject);
+        try {
+            if (!TextUtils.isEmpty(path)) {
+                Bitmap image = BitmapFactory.decodeFile(path);
+                if (image != null) {
+                    File file2 = path.endsWith(".jpg") ? new File(path.replace(".jpg", ".webp")) : new File(path + ".webp");
+                    FileOutputStream stream = new FileOutputStream(file2);
+                    if (Build.VERSION.SDK_INT >= 30) {
+                        image.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 100, stream);
+                    } else {
+                        image.compress(Bitmap.CompressFormat.WEBP, 100, stream);
+                    }
+                    stream.close();
+                    addFileToClipboard(file2, callback);
+                }
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    public static void addFileToClipboard(File file, Runnable callback) {
+        try {
+            Context context = ApplicationLoader.applicationContext;
+            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            android.net.Uri uri = FileProvider.getUriForFile(context, ApplicationLoader.getApplicationId() + ".provider", file);
+            ClipData clip = ClipData.newUri(context.getContentResolver(), "label", uri);
+            clipboard.setPrimaryClip(clip);
+            if (callback != null) callback.run();
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+    }
+
+    public static String showForwardDate(MessageObject obj, String orig) {
+        long date = obj.messageOwner != null && obj.messageOwner.fwd_from != null ? obj.messageOwner.fwd_from.date : 0;
+        String day = LocaleController.formatDate(date);
+        String time = LocaleController.getInstance().getFormatterDay().format(new Date(date * 1000L));
+        boolean enabled = NaConfig.INSTANCE.getDateOfForwardedMsg().Bool();
+        if (!enabled || date == 0) {
+            return orig;
+        } else {
+            if (day.equals(time)) {
+                return orig + " · " + day;
+            } else {
+                return orig + " · " + day + ' ' + time;
+            }
+        }
+    }
+
+    public static String zalgoFilter(String text) {
+        CharSequence res = zalgoFilter((CharSequence) text);
+        return res == null ? "" : res.toString();
+    }
+
+    public static CharSequence zalgoFilter(CharSequence text) {
+        if (TextUtils.isEmpty(text)) return "";
+        if (!NaConfig.INSTANCE.getZalgoFilter().Bool()) return text;
+        if (text.length() < 4 || text.length() > 2048) return text;
+        if (!ZALGO_PATTERN.matcher(text).find()) return text;
+        return ZALGO_CLEANUP.matcher(text).replaceAll("");
+    }
+
+    public static boolean containsMarkdown(CharSequence text) {
+        CharSequence newText = AndroidUtilities.getTrimmedString(text);
+        var message = new CharSequence[]{AndroidUtilities.getTrimmedString(newText)};
+        var entities = MediaDataController.getInstance(UserConfig.selectedAccount).getEntities(message, true);
+        return entities != null && !entities.isEmpty();
+    }
+
+    public static boolean canSendAsDice(String text, ChatActivity parentFragment, long dialog_id) {
+        boolean canSendGames = true;
+        if (DialogObject.isChatDialog(dialog_id)) {
+            TLRPC.Chat chat = parentFragment.getMessagesController().getChat(-dialog_id);
+            canSendGames = ChatObject.canSendStickers(chat);
+        }
+        // noinspection UnnecessaryUnicodeEscape
+        return canSendGames && parentFragment.getMessagesController().diceEmojies.contains(text.replace("\ufe0f", ""));
+    }
+
+    private static String formatTime(int timestamp) {
+        return LocaleController.formatString(R.string.formatDateAtTime,
+                LocaleController.getInstance().getFormatterYear().format(new Date(timestamp * 1000L)),
+                LocaleController.getInstance().getFormatterDay().format(new Date(timestamp * 1000L)));
+    }
+
+    public static CharSequence getTimeHintText(MessageObject messageObject) {
+        SpannableStringBuilder text = new SpannableStringBuilder();
+        if (spannedStrings[3] == null) {
+            spannedStrings[3] = new SpannableStringBuilder("\u200B");
+            spannedStrings[3].setSpan(new ColoredImageSpan(Theme.chat_timeHintSentDrawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        text.append(spannedStrings[3]);
+        text.append(' ');
+        text.append(formatTime(messageObject.messageOwner.date));
+        if (messageObject.messageOwner.edit_date != 0) {
+            text.append("\n");
+            if (spannedStrings[1] == null) {
+                spannedStrings[1] = new SpannableStringBuilder("\u200B");
+                spannedStrings[1].setSpan(new ColoredImageSpan(Theme.chat_editDrawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            text.append(spannedStrings[1]);
+            text.append(' ');
+            text.append(formatTime(messageObject.messageOwner.edit_date));
+        }
+        if (messageObject.messageOwner.fwd_from != null && messageObject.messageOwner.fwd_from.date != 0) {
+            text.append("\n");
+            if (spannedStrings[4] == null) {
+                spannedStrings[4] = new SpannableStringBuilder("\u200B");
+                ColoredImageSpan span = new ColoredImageSpan(Theme.chat_timeHintForwardDrawable);
+                span.setSize(AndroidUtilities.dp(12f));
+                spannedStrings[4].setSpan(span, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            text.append(spannedStrings[4]);
+            text.append(' ');
+            text.append(formatTime(messageObject.messageOwner.fwd_from.date));
+        }
+        return text;
+    }
+
+    public static CharSequence blurify(CharSequence text) {
+        StringBuilder stringBuilder = new StringBuilder(text);
+        for (int i = 0; i < text.length(); i++) {
+            stringBuilder.setCharAt(i, spoilerChars[i % spoilerChars.length]);
+        }
+        return stringBuilder;
+    }
+
+    public static void blurify(MessageObject messageObject) {
+        if (messageObject.messageOwner == null) {
+            return;
+        }
+        if (!TextUtils.isEmpty(messageObject.messageText)) {
+            messageObject.messageText = blurify(messageObject.messageText);
+        }
+        if (!TextUtils.isEmpty(messageObject.messageOwner.message)) {
+            messageObject.messageOwner.message = blurify(messageObject.messageOwner.message).toString();
+        }
+        if (!TextUtils.isEmpty(messageObject.caption)) {
+            messageObject.caption = blurify(messageObject.caption);
+        }
+        if (messageObject.messageOwner.media != null) {
+            messageObject.messageOwner.media.spoiler = true;
+        }
     }
 }

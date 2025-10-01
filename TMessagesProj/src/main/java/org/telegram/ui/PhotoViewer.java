@@ -331,7 +331,7 @@ import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.helper.MessageHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 
 @SuppressLint("WrongConstant")
 @SuppressWarnings("unchecked")
@@ -5765,7 +5765,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     }
 
                     if (f != null && f.exists()) {
-                        MessageHelper.INSTANCE.addFileToClipboard(f, () -> BulletinFactory.of(containerView, null).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show());
+                        MessageHelper.addFileToClipboard(f, () -> BulletinFactory.of(containerView, null).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show());
                     } else {
                         showDownloadAlert();
                     }

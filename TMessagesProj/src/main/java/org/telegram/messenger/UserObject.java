@@ -16,7 +16,7 @@ import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.tl.TL_account;
 
-import xyz.nextalone.nagram.helper.MessageHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 import xyz.nextalone.nagram.helper.LocalPeerColorHelper;
 
 public class UserObject {
@@ -116,7 +116,7 @@ public class UserObject {
         } else if (!allowShort && name.length() <= 2) {
             return ContactsController.formatName(user.first_name, user.last_name);
         }
-        return !TextUtils.isEmpty(name) ? MessageHelper.INSTANCE.zalgoFilter(name) : LocaleController.getString(R.string.HiddenName);
+        return !TextUtils.isEmpty(name) ? MessageHelper.zalgoFilter(name) : LocaleController.getString(R.string.HiddenName);
     }
 
     public static String getForcedFirstName(TLRPC.User user) {

@@ -361,7 +361,7 @@ import tw.nekomimi.nekogram.utils.LangsKt;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
 import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.helper.MessageHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 
 public class ProfileActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate, SharedMediaLayout.SharedMediaPreloaderDelegate, ImageUpdater.ImageUpdaterDelegate, SharedMediaLayout.Delegate {
     private final static int PHONE_OPTION_CALL = 0,
@@ -2704,7 +2704,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity(), resourcesProvider);
                             builder.setTitle(LocaleController.getString(R.string.AddBot));
-                            String chatName = chat == null ? "" : MessageHelper.INSTANCE.zalgoFilter(chat.title);
+                            String chatName = chat == null ? "" : MessageHelper.zalgoFilter(chat.title);
                             builder.setMessage(AndroidUtilities.replaceTags(formatString("AddMembersAlertNamesText", R.string.AddMembersAlertNamesText, UserObject.getUserName(user), chatName)));
                             builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
                             builder.setPositiveButton(LocaleController.getString(R.string.AddBot), (di, i) -> {
@@ -12063,7 +12063,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         title = Emoji.replaceEmoji(title, nameTextView[a].getPaint().getFontMetricsInt(), false);
                     } catch (Exception ignore) {
                     }
-                    if (nameTextView[a].setText(MessageHelper.INSTANCE.zalgoFilter(title))) {
+                    if (nameTextView[a].setText(MessageHelper.zalgoFilter(title))) {
                         changed = true;
                     }
                 }
@@ -13945,18 +13945,18 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     if (position == userInfoRow) {
                         // TLRPC.User user = userInfo.user != null ? userInfo.user : getMessagesController().getUser(userInfo.id);
                         // boolean addlinks = isBot || (user != null && user.premium && userInfo.about != null);
-                        aboutLinkCell.setTextAndValue(MessageHelper.INSTANCE.zalgoFilter(userInfo.about), LocaleController.getString(R.string.UserBio), true);
+                        aboutLinkCell.setTextAndValue(MessageHelper.zalgoFilter(userInfo.about), LocaleController.getString(R.string.UserBio), true);
                     } else if (position == channelInfoRow) {
                         String text = chatInfo.about;
                         while (text.contains("\n\n\n")) {
                             text = text.replace("\n\n\n", "\n\n");
                         }
-                        aboutLinkCell.setTextAndValue(MessageHelper.INSTANCE.zalgoFilter(text), LocaleController.getString(R.string.DescriptionPlaceholder), ChatObject.isChannel(currentChat) && !currentChat.megagroup);
+                        aboutLinkCell.setTextAndValue(MessageHelper.zalgoFilter(text), LocaleController.getString(R.string.DescriptionPlaceholder), ChatObject.isChannel(currentChat) && !currentChat.megagroup);
                     } else if (position == bioRow) {
                         String value;
                         if (userInfo == null || !TextUtils.isEmpty(userInfo.about)) {
                             value = userInfo == null ? LocaleController.getString(R.string.Loading) : userInfo.about;
-                            aboutLinkCell.setTextAndValue(MessageHelper.INSTANCE.zalgoFilter(value), LocaleController.getString(R.string.UserBio), true/*getUserConfig().isPremium()*/);
+                            aboutLinkCell.setTextAndValue(MessageHelper.zalgoFilter(value), LocaleController.getString(R.string.UserBio), true/*getUserConfig().isPremium()*/);
                             currentBio = userInfo != null ? userInfo.about : null;
                         } else {
                             aboutLinkCell.setTextAndValue(LocaleController.getString(R.string.UserBio), LocaleController.getString(R.string.UserBioDetail), false);

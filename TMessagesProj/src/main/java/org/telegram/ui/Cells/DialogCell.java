@@ -1018,7 +1018,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             }
             String title;
             if (currentChat != null) {
-                title = xyz.nextalone.nagram.helper.MessageHelper.INSTANCE.zalgoFilter(currentChat.title.replace('\n', ' '));
+                title = MessageHelper.zalgoFilter(currentChat.title.replace('\n', ' '));
             } else if (currentUser != null) {
                 if (UserObject.isDeleted(currentUser)) {
                     title = getString(R.string.HiddenName);
@@ -1630,7 +1630,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                                         messageNameString = nameSpannableString;
                                     }
                                 }
-                                messageNameString = xyz.nextalone.nagram.helper.MessageHelper.INSTANCE.zalgoFilter(messageNameString);
+                                messageNameString = MessageHelper.zalgoFilter(messageNameString);
                                 messageNameString = AndroidUtil.sanitizeString(messageNameString);
                                 checkMessage = false;
                                 SpannableStringBuilder stringBuilder = getMessageStringFormatted(messageFormatType, restrictionReason, messageNameString, false);
@@ -2074,7 +2074,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         }
 
         if (topicIconInName == null) {
-            nameString = xyz.nextalone.nagram.helper.MessageHelper.INSTANCE.zalgoFilter(nameString);
+            nameString = MessageHelper.zalgoFilter(nameString);
         }
         int timeWidth;
         if (drawTime) {
@@ -3468,8 +3468,8 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             isFiltered = isFiltered || (message.messageOwner != null && message.messageOwner.hide);
             isFiltered = isFiltered || (NekoConfig.ignoreBlocked.Bool() && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getFromChatId()) >= 0);
             if (isFiltered) {
-                xyz.nextalone.nagram.helper.MessageHelper.INSTANCE.blurify(message);
-                if (captionMessage != null) xyz.nextalone.nagram.helper.MessageHelper.INSTANCE.blurify(captionMessage);
+                MessageHelper.blurify(message);
+                if (captionMessage != null) MessageHelper.blurify(captionMessage);
             }
         }
 
@@ -5635,7 +5635,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             }
         } else if (captionMessage != null && captionMessage.caption != null) {
             MessageObject message = captionMessage;
-            CharSequence mess = xyz.nextalone.nagram.helper.MessageHelper.INSTANCE.zalgoFilter(message.caption.toString());
+            CharSequence mess = MessageHelper.zalgoFilter(message.caption.toString());
             String emoji;
             if (!needEmoji) {
                 emoji = "";

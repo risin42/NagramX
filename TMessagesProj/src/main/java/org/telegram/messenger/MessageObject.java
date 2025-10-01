@@ -117,7 +117,7 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.parts.MessageTransKt;
 import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.helper.MessageHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.syntaxhighlight.SyntaxHighlight;
 
 public class MessageObject {
@@ -5633,7 +5633,7 @@ public class MessageObject {
                 } else {
                     messageText = messageOwner.message;
                 }
-                messageText = MessageHelper.INSTANCE.zalgoFilter(messageText);
+                messageText = MessageHelper.zalgoFilter(messageText);
             }
         }
 

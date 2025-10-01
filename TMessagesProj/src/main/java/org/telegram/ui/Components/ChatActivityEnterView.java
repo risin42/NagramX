@@ -8,8 +8,8 @@
 
 package org.telegram.ui.Components;
 
-import static xyz.nextalone.nagram.helper.MessageHelper.canSendAsDice;
-import static xyz.nextalone.nagram.helper.MessageHelper.containsMarkdown;
+import static tw.nekomimi.nekogram.helpers.MessageHelper.canSendAsDice;
+import static tw.nekomimi.nekogram.helpers.MessageHelper.containsMarkdown;
 import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.AndroidUtilities.dpf2;
 import static org.telegram.messenger.AndroidUtilities.lerp;

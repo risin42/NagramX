@@ -33,7 +33,7 @@ import org.telegram.ui.Components.MotionBackgroundDrawable;
 import org.telegram.ui.Stories.recorder.HintView2;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import xyz.nextalone.nagram.helper.MessageHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 
 @SuppressLint("ViewConstructor")
 public class StickerSizePreviewMessagesCell extends LinearLayout {
@@ -160,7 +160,7 @@ public class StickerSizePreviewMessagesCell extends LinearLayout {
                 .setMultilineText(true)
                 .setDuration(2000);
 
-        timeHint.setText(MessageHelper.INSTANCE.getTimeHintText(cell.getMessageObject()));
+        timeHint.setText(MessageHelper.getTimeHintText(cell.getMessageObject()));
         timeHint.setMaxWidthPx(fragmentView.getMeasuredWidth());
         timeHint.bringToFront();
         fragmentView.addView(timeHint, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 120, Gravity.TOP | Gravity.FILL_HORIZONTAL, 16, 0, 16, 0));

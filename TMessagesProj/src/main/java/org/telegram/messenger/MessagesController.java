@@ -126,7 +126,7 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.helper.MessageHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 
 import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.messages.AyuSavePreferences;
@@ -10922,7 +10922,7 @@ public class MessagesController extends BaseController implements NotificationCe
                         paint.setTextSize(AndroidUtilities.dp(14));
                     }
                     text = Emoji.replaceEmoji(text, paint.getFontMetricsInt(), false);
-                    text = MessageHelper.INSTANCE.zalgoFilter(text);
+                    text = MessageHelper.zalgoFilter(text);
                     newPrintingStrings.put(threadId, text);
                     newPrintingStringsTypes.put(threadId, type);
                 }

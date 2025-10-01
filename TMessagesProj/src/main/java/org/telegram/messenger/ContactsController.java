@@ -52,7 +52,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import xyz.nextalone.nagram.helper.MessageHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 
 public class ContactsController extends BaseController {
 
@@ -3094,7 +3094,7 @@ public class ContactsController extends BaseController {
                 result.append(firstName);
             }
         }
-        return MessageHelper.INSTANCE.zalgoFilter(result.toString());
+        return MessageHelper.zalgoFilter(result.toString());
     }
 
     private class PhoneBookContact {

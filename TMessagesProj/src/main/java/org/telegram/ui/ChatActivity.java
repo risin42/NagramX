@@ -343,7 +343,7 @@ import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.DoubleTap;
-import xyz.nextalone.nagram.helper.MessageHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 
 @SuppressWarnings("unchecked")
 public class ChatActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate, LocationActivity.LocationActivityDelegate, ChatAttachAlertDocumentLayout.DocumentSelectActivityDelegate, ChatActivityInterface, FloatingDebugProvider, InstantCameraView.Delegate {
@@ -9544,7 +9544,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 .setMultilineText(true)
                 .setDuration(2000);
 
-        timeHint.setText(MessageHelper.INSTANCE.getTimeHintText(cell.getMessageObject()));
+        timeHint.setText(MessageHelper.getTimeHintText(cell.getMessageObject()));
         timeHint.setMaxWidthPx(contentView.getMeasuredWidth());
         contentView.addView(timeHint, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 120, Gravity.TOP | Gravity.FILL_HORIZONTAL, 16, 0, 16, 0));
         contentView.post(() -> {
@@ -15861,7 +15861,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                     nameText = AndroidUtilities.replaceCharSequence("%s", LocaleController.getString(R.string.ReplyTo), name == null ? "" : name);
                 }
-                nameText = MessageHelper.INSTANCE.zalgoFilter(nameText);
+                nameText = MessageHelper.zalgoFilter(nameText);
                 nameText = Emoji.replaceEmoji(nameText, replyNameTextView.getPaint().getFontMetricsInt(), false);
                 replyNameTextView.setText(nameText);
                 replyIconImageView.setContentDescription(LocaleController.getString(R.string.AccDescrReplying));
@@ -29456,7 +29456,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     if (user != null) {
                         nameTextView.setText(ContactsController.formatName(user.first_name, user.last_name));
                     } else if (chat != null) {
-                        nameTextView.setText(MessageHelper.INSTANCE.zalgoFilter(chat.title));
+                        nameTextView.setText(MessageHelper.zalgoFilter(chat.title));
                     }
                 } else {
                     if (pinnedMessageObject.isInvoice() &&
@@ -35080,7 +35080,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 break;
             }
             case OPTION_COPY_PHOTO:{
-                MessageHelper.INSTANCE.addMessageToClipboard(selectedObject, () -> {
+                MessageHelper.addMessageToClipboard(selectedObject, () -> {
                     if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
                         BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
                     }
@@ -35088,7 +35088,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 break;
             }
             case OPTION_COPY_PHOTO_AS_STICKER:{
-                MessageHelper.INSTANCE.addMessageToClipboardAsSticker(selectedObject, () -> {
+                MessageHelper.addMessageToClipboardAsSticker(selectedObject, () -> {
                     if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
                         BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
                     }
