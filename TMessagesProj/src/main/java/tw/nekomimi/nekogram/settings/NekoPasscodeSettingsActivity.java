@@ -29,6 +29,7 @@ import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.URLSpanNoUnderline;
 import org.telegram.ui.PasscodeActivity;
+import org.telegram.ui.PrivacySettingsActivity;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -71,7 +72,7 @@ public class NekoPasscodeSettingsActivity extends BaseNekoSettingsActivity {
     @Override
     protected void onItemClick(View view, int position, float x, float y) {
         if (!passcodeSet) {
-            BulletinFactory.of(this).createErrorBulletin(getString(R.string.PasscodeNeeded)).show();
+            showBulletin();
             return;
         }
         if (position > accountsStartRow && position < accountsEndRow) {
@@ -183,7 +184,7 @@ public class NekoPasscodeSettingsActivity extends BaseNekoSettingsActivity {
     public void onResume() {
         passcodeSet = SharedConfig.passcodeHash.length() > 0;
         if (!passcodeSet) {
-            BulletinFactory.of(this).createErrorBulletin(getString(R.string.PasscodeNeeded)).show();
+            showBulletin();
         }
         updateRows();
         super.onResume();
@@ -330,4 +331,10 @@ public class NekoPasscodeSettingsActivity extends BaseNekoSettingsActivity {
         }
     }
 
+    private void showBulletin() {
+        BulletinFactory.of(this).createSimpleBulletin(R.raw.chats_infotip, getString(R.string.PasscodeNeeded), getString(R.string.Settings), () -> {
+            presentFragment(new PrivacySettingsActivity());
+            AndroidUtilities.scrollToFragmentRow(parentLayout, "passcodeRow");
+        }).show();
+    }
 }
