@@ -21,20 +21,18 @@ def find_apk(abi: str) -> Path:
                 if abi in apk.name:
                     return apk
 
-def get_thumb() -> str:
-    return "TMessagesProj/src/main/" + "ic_launcher_nagram_block_round-playstore.png"
-
 def get_commit_info():
-    commit_id = os.environ.get("COMMIT_ID", "")[:7]
-    commit_url = os.environ.get("COMMIT_URL", "")
-    commit_message = os.environ.get("COMMIT_MESSAGE", "")
+    commit_id_raw = os.environ.get("COMMIT_ID") or "unknown"
+    commit_id = commit_id_raw[:7]
+    commit_url = os.environ.get("COMMIT_URL") or "https://github.com/risin42/NagramX/commits"
+    commit_message = os.environ.get("COMMIT_MESSAGE") or "unknown"
     return commit_id, commit_url, commit_message
- 
+
 def get_caption() -> str:
     commit_id, commit_url, commit_message = get_commit_info()
     pre = "Test version." if test_version else "Release version."
     caption = f"{pre}\n\n"
-    caption += f"Commit Message:\n<blockquote>{commit_message}</blockquote>\n\n"
+    caption += f"Commit Message:\n<blockquote expandable>{commit_message}</blockquote>\n\n"
     caption += f"See commit details [{commit_id}]({commit_url})"
     return caption
 
@@ -46,18 +44,35 @@ def get_document() -> list["InputMediaDocument"]:
             documents.append(
                 InputMediaDocument(
                     media=str(apk),
-                    thumb=get_thumb(),
                 )
             )
-    documents[-1].caption = get_caption()
+    if not documents:
+        documents.append(
+        InputMediaDocument(
+            media=str("TMessagesProj/src/main/" + "ic_launcher_nagram_block_round-playstore.png")
+        ))
+    base_caption = get_caption()
+    ai_summary = get_ai_summary()
+    if ai_summary and len(base_caption + ai_summary) > 1024:
+        ai_summary = ""
+    documents[-1].caption = base_caption + ai_summary
     print(documents)
     return documents
 
 def get_metadata():
-    commit_id =  "`" + os.environ.get("COMMIT_ID", "")[:7] + "`"
-    commit_message = "`" + os.environ.get("COMMIT_MESSAGE", "None") + "`"
-    build_timestamp = "`" + os.environ.get("BUILD_TIMESTAMP", "None") + "`"
+    commit_id = "`" + (os.environ.get("COMMIT_ID") or "unknown")[:7] + "`"
+    commit_message = "`" + (os.environ.get("COMMIT_MESSAGE") or "unknown") + "`"
+    build_timestamp = "`" + (os.environ.get("BUILD_TIMESTAMP") or "-1") + "`"
     return build_timestamp + " " + commit_id + "\n" + commit_message
+
+def get_ai_summary():
+    ai_summary = os.environ.get("AI_SUMMARY", "")
+    if ai_summary:
+        return "\n\n" + "<blockquote expandable>" + normalize_message(ai_summary) + "</blockquote>"
+    return ""
+
+def normalize_message(text: str) -> str:
+    return (text or "").replace("\\n", "\n")
 
 def retry(func):
     async def wrapper(*args, **kwargs):
@@ -66,7 +81,6 @@ def retry(func):
                 return await func(*args, **kwargs)
             except Exception as e:
                 print(e)
-
     return wrapper
 
 @retry
@@ -85,6 +99,7 @@ async def send_metadata(client: "Client", cid: str):
     await client.send_message(
         chat_id=cid,
         text=get_metadata(),
+        disable_web_page_preview=True,
     )
 
 def get_client(bot_token: str):
@@ -105,8 +120,6 @@ async def main():
         await send_metadata(client, metadata_chat_id)
     await client.log_out()
 
-
 if __name__ == "__main__":
     from asyncio import run
-
     run(main())
