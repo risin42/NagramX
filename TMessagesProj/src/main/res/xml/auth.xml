@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accountType="nu.gpu.nagram"
+    android:accountType="nu.gpu.nagramx"
     android:icon="@mipmap/ic_launcher_nagram_blue_round"
     android:smallIcon="@mipmap/ic_launcher_nagram_blue_round"
     android:label="@string/AppName"

@@ -9,8 +9,7 @@ plugins {
 }
 
 def buildTimestamp = System.getenv("BUILD_TIMESTAMP") ?: "0"
-def commitId = System.getenv("COMMIT_ID")
-def verName = "${APP_VERSION_NAME}${commitId?.take(7) ? "-${commitId.take(7)}" : ''}"
+def verName = APP_VERSION_NAME
 def verCode = 1220
 
 def officialVer = APP_VERSION_NAME
@@ -59,6 +58,9 @@ android {
     defaultConfig.applicationId = APP_PACKAGE
 
     packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
         resources {
             excludes += '**'
         }
@@ -86,8 +88,8 @@ android {
         def appHash = "eb06d4abfb49dc3eeb1aeb98ae0f581e"
 
         if (properties != null) {
-            appId = properties.getProperty("TELEGRAM_APP_ID") ?: System.getenv("TELEGRAM_APP_ID") ?: appId
-            appHash = properties.getProperty("TELEGRAM_APP_HASH") ?: System.getenv("TELEGRAM_APP_HASH") ?: appHash
+            appId = properties.getProperty("APP_ID") ?: System.getenv("APP_ID") ?: appId
+            appHash = properties.getProperty("APP_HASH") ?: System.getenv("APP_HASH") ?: appHash
         }
 
         buildConfigField "String", "BUILD_VERSION_STRING", "\"" + verName + "\""
@@ -99,7 +101,7 @@ android {
 
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-21', '-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON'
+                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-27', '-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON'
                 System.getenv("PATH").split(File.pathSeparator).any { path ->
                     var file = Paths.get("${path}${File.separator}ccache${if (OperatingSystem.current().windows) ".exe" else ""}").toFile()
                     if (file.exists()) {
@@ -149,6 +151,16 @@ android {
             signingConfig = signingConfigs.release
         }
 
+        base {
+            debuggable = false
+            jniDebuggable = false
+            minifyEnabled = true
+            shrinkResources = true
+            multiDexEnabled = true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            signingConfig = signingConfigs.release
+        }
+
         staging {
             debuggable = false
             jniDebuggable = false
@@ -176,11 +188,12 @@ android {
 
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach { output ->
-            String gramName = "NagramX"
+            String gramName = "NagramX_base"
             String first = String.format("%s-v%s(%s)", gramName, versionName, versionCode)
             String name = outputFileName.replace("TMessagesProj", first)
             name = name.replace("-release", "")
             name = name.replace("-staging", "")
+            name = name.replace("-base", "")
             outputFileName = name
         }
     }

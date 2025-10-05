@@ -1,0 +1,211 @@
+name: Base build
+
+on:
+  push:
+    branches:
+      - base
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - '!.github/workflows/base.yml'
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Skip Upload: Set to "y" to skip uploading the build.'
+        required: false
+
+permissions:
+  contents: read
+  actions: read
+  models: read
+
+jobs:
+  build:
+    name: Gradle Build
+    runs-on: ubuntu-latest
+    outputs:
+      build_timestamp: ${{ steps.base_build_step.outputs.build_timestamp }}
+    env:
+      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+      CCACHE_HARDLINK: "true"
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_MAXSIZE: "10G"
+      NATIVE_TARGET: "arm64-v8a"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - name: Set up Ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          append-timestamp: false
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
+      - name: Set up Gradle cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle
+          key: gradle-${{ hashFiles('**/*.gradle') }}
+      - name: Set up Android SDK Tools
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "build-tools;36.0.0 ndk;27.2.12479018 platforms;android-36"
+      - name: Configure Android SDK Path
+        run: |
+          echo "sdk.dir=${ANDROID_HOME}" >> local.properties
+      - name: Modify Gradle JVM Args
+        run: |
+          MEMORY_KB=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
+          MEMORY_GB=$((MEMORY_KB / 1024 / 1024))
+          echo "Detected memory size: ${MEMORY_GB}GB"
+          if [ $MEMORY_GB -ge 12 ]; then
+            sed -i '/^org\.gradle\.jvmargs=/d' gradle.properties
+            echo "org.gradle.jvmargs=-Xmx8G -XX:MaxMetaspaceSize=2G -XX:+UseParallelGC -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" >> gradle.properties
+          fi
+          cat gradle.properties
+      - name: Enable Optimization
+        run: |
+          sed -i 's/^-dontoptimize$/#-dontoptimize/' TMessagesProj/proguard-rules.pro
+          echo "ProGuard optimization enabled for CI build"
+          echo "Modified proguard-rules.pro:"
+          grep -n "dontoptimize" TMessagesProj/proguard-rules.pro || echo "No dontoptimize rules found"
+      - name: Base Build
+        id: base_build_step
+        env:
+          COMMIT_ID: ${{ github.event.head_commit.id }}
+        run: |
+          export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
+          export BUILD_TIMESTAMP=$(date +%s)
+          echo "build_timestamp=$BUILD_TIMESTAMP" >> "$GITHUB_OUTPUT"
+          ./gradlew TMessagesProj:assembleBase
+
+          APK=$(find TMessagesProj/build/outputs/apk -name '*arm64-v8a*.apk')
+          APK=$(dirname $APK)
+          echo "APK=$APK" >> $GITHUB_ENV
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Base
+          path: ${{ env.APK }}
+  upload:
+    name: Upload base
+    if: github.event.inputs.upload != 'y' && !contains(github.event.head_commit.message, '[skip upload]')
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: Prepare commit summary
+        id: prepare
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update -y
+            sudo apt-get install -y jq
+          fi
+
+          BRANCH="${{ github.ref_name }}"
+          REPO="${{ github.repository }}"
+          HEAD_SHA="${{ github.sha }}"
+          HEAD_MSG="${{ github.event.head_commit.message }}"
+
+          LAST_SHA=$(curl -s -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            "https://api.github.com/repos/$REPO/actions/workflows/base.yml/runs?status=completed&conclusion=success&branch=$BRANCH&per_page=1" | jq -r '.workflow_runs[0].head_sha // empty')
+
+          COMMIT_TEXT=""
+          TOTAL_COMMITS=0
+          if [ -n "$LAST_SHA" ]; then
+            COMPARE=$(curl -s -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              "https://api.github.com/repos/$REPO/compare/$LAST_SHA...$HEAD_SHA")
+            TOTAL_COMMITS=$(echo "$COMPARE" | jq -r '.total_commits // 0')
+            COMMIT_TEXT=$(echo "$COMPARE" | jq -r '[.commits[].commit.message] | join("\n\n")')
+          fi
+
+          if [ -z "$COMMIT_TEXT" ]; then
+            COMMIT_TEXT="$HEAD_MSG"
+          fi
+
+          if [ "$TOTAL_COMMITS" -lt 3 ]; then
+            echo "Found $TOTAL_COMMITS commits since last build; skipping AI summary."
+            echo "ai_summary<<EOF" >> $GITHUB_OUTPUT
+            echo "" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          MODEL_ID="${{ vars.AI_MODEL }}"
+          if [ -z "$MODEL_ID" ]; then
+            MODEL_ID="openai/gpt-4o"
+          fi
+
+          PROMPT=$(cat << 'EOP'
+          Please summarize the Git commit messages between the last CI build and the current build using Telegram HTML formatting (not Markdown):
+          - Output strictly valid HTML supported by Telegram Bot API (e.g., <b>, <i>, <u>, <s>, <code>, <pre>, <a href="...">, <blockquote>, <br>).
+          - Do NOT use Markdown, code fences, or backticks. No triple backticks.
+          - Group by type with HTML headers: <b>✨ Features</b>, <b>🐛 Fixes</b>, <b>♻️ Refactors</b>, <b>⚠️ Breaking Changes</b>, <b>🧹 Others</b>.
+          - Put exactly one blank line between each header section (i.e., one empty line between headers and their following section).
+          - Under each header, use lines separated by <br> and start each item with • (bullet), keep each item one line, max 20 total items across all sections.
+          - Escape any &, <, > characters from commit messages as &amp;, &lt;, &gt;.
+          - Aggressively ignore trivial commits (merge commits, formatting, chore/version bumps, bump-deps, docs-only). Only surface user-facing changes, bug fixes, refactors affecting behavior, or notable internal changes.
+          Here are the commit messages:
+          EOP
+          )
+          CONTENT="$PROMPT\n$COMMIT_TEXT"
+          PAYLOAD=$(jq -n --arg content "$CONTENT" --arg model "$MODEL_ID" '{messages:[{role:"user",content:$content}],model:$model}')
+
+          RAW_RESPONSE=$(curl -s "https://models.github.ai/inference/chat/completions" \
+             -H "Content-Type: application/json" \
+             -H "Authorization: Bearer $GITHUB_TOKEN" \
+             -d "$PAYLOAD")
+
+          SUMMARY=$(echo "$RAW_RESPONSE" | jq -r '.choices[0].message.content // empty')
+
+          COMBINED=""
+          if [ -n "$SUMMARY" ]; then
+            COMBINED="Changes since last build:\n\n$SUMMARY"
+          fi
+
+          if [ -n "$LAST_SHA" ]; then
+            DIFF_URL="https://github.com/$REPO/compare/$LAST_SHA...$HEAD_SHA"
+          else
+            DIFF_URL="https://github.com/$REPO/commit/$HEAD_SHA"
+          fi
+
+          COMBINED="$COMBINED\n\n<a href=\"$DIFF_URL\"><b>Full changes</b></a>\n\nGenerated by $MODEL_ID"
+
+          echo "ai_summary<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMBINED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      - name: Send to Telegram
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          APP_HASH: ${{ secrets.APP_HASH }}
+          COMMIT_ID: ${{ github.event.head_commit.id }}
+          COMMIT_URL: ${{ github.event.head_commit.url }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          BUILD_TIMESTAMP: ${{ needs.build.outputs.build_timestamp }}
+          AI_SUMMARY: ${{ steps.prepare.outputs.ai_summary }}
+        run: |
+          # send apk via telegram bot api
+          export mini64=$(find artifacts -name "*arm64-v8a.apk")
+          echo $mini64
+          python -m pip install -r Tools/scripts/requirements.txt
+          python Tools/scripts/upload.py ${{ secrets.HELPER_BOT_TOKEN }} ${{ secrets.HELPER_BOT_CANARY_TARGET }} test ${{ secrets.HELPER_BOT_CANARY_TARGET }}

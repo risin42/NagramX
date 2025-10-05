@@ -1,3 +1,3 @@
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
     android:contentAuthority="com.android.contacts"
-    android:accountType="nu.gpu.nagram"/>
+    android:accountType="nu.gpu.nagramx"/>
