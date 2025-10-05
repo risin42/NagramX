@@ -10957,6 +10957,7 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public boolean sendTyping(long dialogId, long threadMsgId, int action, String emojicon, int classGuid) {
+        if (NekoConfig.disableChatAction.Bool()) return false;
         if (action < 0 || action >= sendingTypings.length || dialogId == 0) {
             return false;
         }
