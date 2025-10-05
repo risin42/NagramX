@@ -112,12 +112,6 @@ android {
                 }
             }
         }
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
-        }
     }
 
     bundle {
@@ -262,9 +256,6 @@ dependencies {
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
     // add for UnifiedPush
     implementation 'com.github.UnifiedPush:android-connector:2.3.1'
-    // add for save deleted messages
-    implementation 'androidx.room:room-runtime:2.7.2'
-    annotationProcessor 'androidx.room:room-compiler:2.7.2'
     // add for keep formatting in translations
     implementation 'org.apache.commons:commons-text:1.14.0'
     // translator from nekogram

@@ -4410,11 +4410,6 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             if (scheduled) {
                 return;
             }
-
-            if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
-                return;
-            }
-
             long channelId = (Long) args[1];
             ArrayList<Integer> markAsDeletedMessages = (ArrayList<Integer>) args[0];
             boolean reset = false;

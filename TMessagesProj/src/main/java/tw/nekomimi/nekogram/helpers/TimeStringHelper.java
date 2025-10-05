@@ -39,8 +39,6 @@ import tw.nekomimi.nekogram.ui.icons.IconsResources;
 import xyz.nextalone.nagram.NaConfig;
 
 public class TimeStringHelper {
-    public static SpannableStringBuilder deletedSpan;
-    public static Drawable deletedDrawable;
     public static SpannableStringBuilder editedSpan;
     public static Drawable editedDrawable;
     public static SpannableStringBuilder channelLabelSpan;
@@ -50,27 +48,6 @@ public class TimeStringHelper {
     public static SpannableStringBuilder arrowSpan;
     public static Drawable arrowDrawable;
     public ChatActivity.ThemeDelegate themeDelegate;
-
-    public static CharSequence createDeletedString(MessageObject messageObject, boolean isEdited, boolean isTranslated) {
-        String editedStr = NaConfig.INSTANCE.getCustomEditedMessage().String();
-        String editedStrFin = editedStr.isEmpty() ? getString(R.string.EditedMessage) : editedStr;
-        String deletedStr = NaConfig.INSTANCE.getCustomDeletedMark().String();
-        String deletedStrFin = deletedStr.isEmpty() ? getString(R.string.DeletedMessage) : deletedStr;
-
-        createSpan();
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-
-        spannableStringBuilder
-                .append(messageObject.messageOwner.post_author != null ? " " : "")
-                .append(NaConfig.INSTANCE.getUseDeletedIcon().Bool() ? deletedSpan : deletedStrFin)
-                .append("  ")
-                .append(isEdited ? (NaConfig.INSTANCE.getUseEditedIcon().Bool() ? editedSpan : editedStrFin) : "")
-                .append(isEdited ? "  " : "")
-                .append(isTranslated ? createTranslatedString(messageObject, true) : "")
-                .append(isTranslated ? "  " : "")
-                .append(LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000));
-        return spannableStringBuilder;
-    }
 
     public static CharSequence createEditedString(MessageObject messageObject, boolean isTranslated) {
         String editedStr = NaConfig.INSTANCE.getCustomEditedMessage().String();
@@ -134,14 +111,6 @@ public class TimeStringHelper {
         if (editedSpan == null) {
             editedSpan = new SpannableStringBuilder("\u200B");
             editedSpan.setSpan(new ColoredImageSpan(editedDrawable, true), 0, 1, 0);
-        }
-
-        if (deletedDrawable == null) {
-            deletedDrawable = Objects.requireNonNull(ContextCompat.getDrawable(ApplicationLoader.applicationContext, R.drawable.msg_delete_solar)).mutate();
-        }
-        if (deletedSpan == null) {
-            deletedSpan = new SpannableStringBuilder("\u200B");
-            deletedSpan.setSpan(new ColoredImageSpan(deletedDrawable, true), 0, 1, 0);
         }
 
         if (translatedDrawable == null) {

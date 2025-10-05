@@ -28,7 +28,6 @@ import android.util.SparseArray;
 import android.util.SparseIntArray;
 
 import androidx.annotation.UiThread;
-
 import androidx.collection.LongSparseArray;
 
 import org.telegram.PhoneFormat.PhoneFormat;
@@ -75,8 +74,6 @@ import java.util.function.Consumer;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 import xyz.nextalone.nagram.NaConfig;
-import com.radolyn.ayugram.messages.AyuMessagesController;
-import com.radolyn.ayugram.messages.AyuSavePreferences;
 
 public class MessagesStorage extends BaseController {
 
@@ -4577,14 +4574,6 @@ public class MessagesStorage extends BaseController {
                             if (!addFilesToDelete(message, filesToDelete, idsToDelete, namesToDelete, true)) {
                                 continue;
                             } else {
-                                // --- AyuGram hook
-                                if (NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool()) {
-                                    var prefs = new AyuSavePreferences(message, currentAccount);
-                                    prefs.setDialogId(dialogId);
-                                    AyuMessagesController.getInstance().onMessageEditedForce(prefs);
-                                }
-                                // --- AyuGram hook
-
                                 if (message.media.document != null) {
                                     message.media.document = new TLRPC.TL_documentEmpty();
                                 } else if (message.media.photo != null) {
@@ -13439,24 +13428,6 @@ public class MessagesStorage extends BaseController {
         });
     }
 
-    // AyuGram
-    public Pair<Integer, Integer> getMinAndMaxForDialog(long dialogId) {
-        SQLiteCursor cursor = null;
-        try {
-            cursor = database.queryFinalized(String.format(Locale.US, "SELECT MIN(mid), MAX(mid) FROM messages_v2 WHERE uid = %d", dialogId));
-            if (cursor.next()) {
-                return new Pair<>(cursor.intValue(0), cursor.intValue(1));
-            }
-        } catch (Exception e) {
-            checkSQLException(e);
-        } finally {
-            if (cursor != null) {
-                cursor.dispose();
-            }
-        }
-        return new Pair<>(0, 0);
-    }
-
     protected void deletePushMessages(long dialogId, ArrayList<Integer> messages) {
         try {
             database.executeFast(String.format(Locale.US, "DELETE FROM unread_push_messages WHERE uid = %d AND mid IN(%s)", dialogId, TextUtils.join(",", messages))).stepThis().dispose();
@@ -15239,15 +15210,6 @@ public class MessagesStorage extends BaseController {
                                     if (oldMessage.out && !message.out) {
                                         message.out = oldMessage.out;
                                     }
-                                    // --- AyuGram hook
-                                    if (message.from_id != null && (!oldMessage.message.equals(message.message) || !sameMedia)) {
-                                        if (NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool()) {
-                                            var prefs = new AyuSavePreferences(oldMessage, currentAccount);
-                                            prefs.setDialogId(dialogId);
-                                            AyuMessagesController.getInstance().onMessageEdited(prefs, message);
-                                        }
-                                    }
-                                    // --- AyuGram hook
                                     if (!sameMedia) {
                                         addFilesToDelete(oldMessage, filesToDelete, idsToDelete, namesToDelete, false);
                                     }
@@ -17905,29 +17867,6 @@ public class MessagesStorage extends BaseController {
 
     public SQLiteCursor createLoadStoriesCursor(long dialogId, int albumId, int type) throws SQLiteException {
         return database.queryFinalized(String.format(Locale.US, "SELECT data, seen, pin FROM profile_stories JOIN profile_stories_albums_links ON profile_stories.story_id = profile_stories_albums_links.story_id WHERE profile_stories.dialog_id = %d AND profile_stories_albums_links.dialog_id = %d  AND profile_stories_albums_links.album_id = %d AND profile_stories.type = %d ORDER BY profile_stories_albums_links.order_index ASC;", dialogId, dialogId, albumId, type));
-    }
-
-    // AyuGram
-    public ArrayList<Long> getDialogIdsToUpdate(long dialogId, ArrayList<Integer> messages) {
-        try {
-            SQLiteCursor cursor;
-            String ids = TextUtils.join(",", messages);
-            var dialogsToUpdate = new HashSet<Long>();
-            if (dialogId != 0) {
-                cursor = database.queryFinalized(String.format(Locale.US, "SELECT uid, mid FROM messages_v2 WHERE mid IN(%s) AND uid = %d", ids, dialogId));
-            } else {
-                cursor = database.queryFinalized(String.format(Locale.US, "SELECT uid, mid FROM messages_v2 WHERE mid IN(%s) AND is_channel = 0", ids));
-            }
-            while (cursor.next()) {
-                long did = cursor.longValue(0);
-                dialogsToUpdate.add(did);
-            }
-            cursor.dispose();
-            return new ArrayList<>(dialogsToUpdate);
-        } catch (Exception e) {
-            FileLog.e(e);
-        }
-        return null;
     }
 
     private boolean isForum(long dialogId) {

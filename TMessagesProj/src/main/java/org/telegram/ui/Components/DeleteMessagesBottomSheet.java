@@ -23,8 +23,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.radolyn.ayugram.utils.AyuState;
-
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BotWebViewVibrationEffect;
 import org.telegram.messenger.ChatObject;
@@ -1085,15 +1083,9 @@ public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         if (!supergroupMessageIds.isEmpty()) {
-            for (int i = 0; i < supergroupMessageIds.size(); i++) {
-                AyuState.permitDeleteMessage(-inChat.id, supergroupMessageIds.get(i));
-            }
             MessagesController.getInstance(currentAccount).deleteMessages(supergroupMessageIds, null, null, -inChat.id, topicId, false, mode);
         }
         if (!groupMessageIds.isEmpty()) {
-            for (int i = 0; i < groupMessageIds.size(); i++) {
-                AyuState.permitDeleteMessage(mergeDialogId, groupMessageIds.get(i));
-            }
             MessagesController.getInstance(currentAccount).deleteMessages(groupMessageIds, null, null, mergeDialogId, topicId, true, mode);
         }
 

@@ -30,8 +30,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.radolyn.ayugram.utils.AyuFileLocation;
-
 public class FileLoader extends BaseController {
 
     private static final int PRIORITY_STREAM = 4;
@@ -1425,24 +1423,6 @@ public class FileLoader extends BaseController {
                 dir = getDirectory(MEDIA_DIR_CACHE);
             }
         }
-
-        // --- AyuGram hook
-        if (attach instanceof TLRPC.PhotoSize) {
-            var obj = (TLRPC.PhotoSize) attach;
-            if (obj.location instanceof AyuFileLocation) {
-                return new File(((AyuFileLocation) obj.location).path);
-            }
-        } else if (attach instanceof TLRPC.TL_videoSize) {
-            var obj = (TLRPC.TL_videoSize) attach;
-            if (obj.location instanceof AyuFileLocation) {
-                return new File(((AyuFileLocation) obj.location).path);
-            }
-        } else if (attach instanceof AyuFileLocation) {
-            var obj = (AyuFileLocation) attach;
-            return new File(obj.path);
-        }
-        // --- AyuGram hook
-
         if (dir == null) {
             return new File("");
         }

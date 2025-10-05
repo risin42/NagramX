@@ -554,72 +554,6 @@ object NaConfig {
         )
 
     // NagramX
-    val enableSaveDeletedMessages =
-        addConfig(
-            "EnableSaveDeletedMessages",
-            ConfigItem.configTypeBool,
-            false
-        )
-    val enableSaveEditsHistory =
-        addConfig(
-            "EnableSaveEditsHistory",
-            ConfigItem.configTypeBool,
-            false
-        )
-    val messageSavingSaveMedia =
-        addConfig(
-            "MessageSavingSaveMedia",
-            ConfigItem.configTypeBool,
-            true
-        )
-    val saveMediaInPrivateChats =
-        addConfig(
-            "SaveMediaInPrivateChats",
-            ConfigItem.configTypeBool,
-            true
-        )
-    val saveMediaInPublicChannels =
-        addConfig(
-            "SaveMediaInPublicChannels",
-            ConfigItem.configTypeBool,
-            true
-        )
-    val saveMediaInPrivateChannels =
-        addConfig(
-            "SaveMediaInPrivateChannels",
-            ConfigItem.configTypeBool,
-            true
-        )
-    val saveMediaInPublicGroups =
-        addConfig(
-            "SaveMediaInPublicGroups",
-            ConfigItem.configTypeBool,
-            true
-        )
-    val saveMediaInPrivateGroups =
-        addConfig(
-            "SaveMediaInPrivateGroups",
-            ConfigItem.configTypeBool,
-            true
-        )
-    val saveDeletedMessageForBot =
-        addConfig(
-            "SaveDeletedMessageForBot", // save in bot chats
-            ConfigItem.configTypeBool,
-            false
-        )
-    val saveDeletedMessageForBotUser =
-        addConfig(
-            "SaveDeletedMessageForBotUser", // all messages from bot
-            ConfigItem.configTypeBool,
-            false
-        )
-    val customDeletedMark =
-        addConfig(
-            "CustomDeletedMark",
-            ConfigItem.configTypeString,
-            ""
-        )
     val hidePremiumSection =
         addConfig(
             "HidePremiumSection",
@@ -704,13 +638,6 @@ object NaConfig {
             ConfigItem.configTypeFloat,
             0.7f
         )
-
-    val translucentDeletedMessages =
-        addConfig(
-            "TranslucentDeletedMessages",
-            ConfigItem.configTypeBool,
-            true
-    )
     val enableSeparateArticleTranslator =
         addConfig(
             "EnableSeparateArticleTranslator",
@@ -873,12 +800,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val useDeletedIcon =
-        addConfig(
-            "UseDeletedIcon",
-            ConfigItem.configTypeBool,
-            true
-        )
     val useEditedIcon =
         addConfig(
             "UseEditedIcon",
@@ -966,12 +887,6 @@ object NaConfig {
     val chatMenuItemHideTitle =
         addConfig(
             "ChatMenuItemHideTitle",
-            ConfigItem.configTypeBool,
-            true
-        )
-    val chatMenuItemClearDeleted =
-        addConfig(
-            "ChatMenuItemClearDeleted",
             ConfigItem.configTypeBool,
             true
         )

@@ -35,8 +35,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import xyz.nextalone.nagram.NaConfig;
-
 public class ChatObject {
 
     public static final int CHAT_TYPE_CHAT = 0;
@@ -1921,11 +1919,7 @@ public class ChatObject {
     }
 
     public static boolean isNotInChat(TLRPC.Chat chat) {
-        if (!NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
-            return chat == null || chat instanceof TLRPC.TL_chatEmpty || chat instanceof TLRPC.TL_chatForbidden || chat instanceof TLRPC.TL_channelForbidden || chat.left || chat.kicked || chat.deactivated;
-        }
-
-        return chat == null || chat.left;
+        return chat == null || chat instanceof TLRPC.TL_chatEmpty || chat instanceof TLRPC.TL_chatForbidden || chat instanceof TLRPC.TL_channelForbidden || chat.left || chat.kicked || chat.deactivated;
     }
 
     public static boolean isInChat(TLRPC.Chat chat) {

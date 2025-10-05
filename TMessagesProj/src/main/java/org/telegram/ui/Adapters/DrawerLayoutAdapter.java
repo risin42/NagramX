@@ -61,7 +61,6 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
     public static int nkbtnArchivedChats = 1003;
     public static int nkbtnRestartApp = 1004;
     public static int nkbtnBrowser = 1005;
-    public static int nkbtnGhostMode = 1006;
     public static int nkbtnSessions = 1007;
 
     public DrawerLayoutAdapter(Context context, SideMenultItemAnimator animator, DrawerLayoutContainer drawerLayoutContainer) {
@@ -332,18 +331,6 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
             inviteIcon = R.drawable.msg_invite;
             helpIcon = R.drawable.msg_help;
         }
-
-        boolean showGhostInDrawer = NekoConfig.showGhostInDrawer.Bool();
-        // --- Ghost Mode ---
-       if (showGhostInDrawer) {
-            var msg = NekoConfig.isGhostModeActive()
-                    ? LocaleController.getString(R.string.DisableGhostMode)
-                    : LocaleController.getString(R.string.EnableGhostMode);
-            items.add(new Item(nkbtnGhostMode, msg, R.drawable.ayu_ghost));
-            items.add(null);
-        }
-       // --- Ghost Mode ---
-
         UserConfig me = UserConfig.getInstance(UserConfig.selectedAccount);
         boolean showDivider = false;
 
@@ -360,10 +347,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
 //            showDivider = true;
         }
 
-        if (showGhostInDrawer && NaConfig.INSTANCE.getDrawerItemArchivedChats().Bool()) { 
-            items.add(new Item(nkbtnArchivedChats, LocaleController.getString(R.string.ArchivedChats), R.drawable.msg_archive));
-        }
-        if (!showGhostInDrawer && (showMyProfile || showSetEmojiStatus)) {
+        if (showMyProfile || showSetEmojiStatus) {
             showDivider = true;
         }
 //        if (MessagesController.getInstance(UserConfig.selectedAccount).storiesEnabled()) {
@@ -389,7 +373,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         if (showDivider) {
             items.add(null); // divider
         }
-        if (!showGhostInDrawer && NaConfig.INSTANCE.getDrawerItemArchivedChats().Bool()) { 
+        if (NaConfig.INSTANCE.getDrawerItemArchivedChats().Bool()) {
             items.add(new Item(nkbtnArchivedChats, LocaleController.getString(R.string.ArchivedChats), R.drawable.msg_archive));
             items.add(null);
         }

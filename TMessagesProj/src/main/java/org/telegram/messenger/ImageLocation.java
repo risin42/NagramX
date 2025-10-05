@@ -5,8 +5,6 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.web.WebInstantView;
 
-import com.radolyn.ayugram.utils.AyuFileLocation;
-
 public class ImageLocation {
 
     public int dc_id;
@@ -130,13 +128,6 @@ public class ImageLocation {
         } else if (photoSize == null || photo == null) {
             return null;
         }
-
-        // --- AyuGram hook
-        if (photoSize.location instanceof AyuFileLocation) {
-            return ImageLocation.getForPath(((AyuFileLocation) photoSize.location).path);
-        }
-        // --- AyuGram hook
-
         int dc_id;
         if (photo.dc_id != 0) {
             dc_id = photo.dc_id;
