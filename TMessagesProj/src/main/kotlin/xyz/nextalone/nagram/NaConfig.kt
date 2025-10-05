@@ -37,7 +37,7 @@ object NaConfig {
         addConfig(
             "ForceCopy",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val showTextBold =
         addConfig(
@@ -394,7 +394,7 @@ object NaConfig {
         addConfig(
             "DisableFlagSecure",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val centerActionBarTitle =
         addConfig(
@@ -624,13 +624,13 @@ object NaConfig {
         addConfig(
             "HidePremiumSection",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val hideHelpSection =
         addConfig(
             "HideHelpSection",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val llmApiUrl =
         addConfig(
@@ -919,7 +919,7 @@ object NaConfig {
         addConfig(
             "SpringAnimation",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val springAnimationCrossfade =
         addConfig(
@@ -1332,6 +1332,12 @@ object NaConfig {
     val disableInAppBrowserGestures =
         addConfig(
             "DisableInAppBrowserGestures",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val showAds =
+        addConfig(
+            "ShowAds",
             ConfigItem.configTypeBool,
             false
         )

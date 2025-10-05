@@ -20397,7 +20397,7 @@ public class MessagesController extends BaseController implements NotificationCe
 
     public SponsoredMessagesInfo getSponsoredMessages(long dialogId) {
         // na: disable ad
-        if (true) {
+        if (!NaConfig.INSTANCE.getShowAds().Bool()) {
             return null;
         }
         SponsoredMessagesInfo info = sponsoredMessages.get(dialogId);
