@@ -120,8 +120,6 @@ import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
 import tw.nekomimi.nekogram.utils.StickersUtil;
-import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.helper.ExternalStickerCacheHelper;
 
 public class StickersActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -1608,10 +1606,6 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                             options.add(R.drawable.msg_reorder, getString(R.string.StickersReorder), () -> processSelectionOption(4, stickerSet));
                             options.add(R.drawable.msg_share, getString(R.string.StickersShare), () -> processSelectionOption(2, stickerSet));
                             options.add(R.drawable.msg_delete, getString(R.string.StickersRemove), true, () -> processSelectionOption(MENU_DELETE, stickerSet));
-                            if (!NaConfig.INSTANCE.getExternalStickerCache().String().isBlank()) {
-                                options.add(R.drawable.menu_views_reposts, getString(R.string.ExternalStickerCacheRefresh), () -> ExternalStickerCacheHelper.refreshCacheFiles(stickerSet));
-                                options.add(R.drawable.msg_delete, getString(R.string.ExternalStickerCacheDelete), () -> ExternalStickerCacheHelper.deleteCacheFiles(stickerSet));
-                            }
                         }
                         options.setMinWidth(190);
                         options.show();

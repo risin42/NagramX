@@ -6,15 +6,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -22,13 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildVars;
-import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
-import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MessagesController;
-import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
@@ -53,21 +45,16 @@ import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.UndoView;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.cell.AbstractConfigCell;
-import tw.nekomimi.nekogram.config.cell.ConfigCellAutoTextCheck;
 import tw.nekomimi.nekogram.config.cell.ConfigCellCustom;
 import tw.nekomimi.nekogram.config.cell.ConfigCellDivider;
 import tw.nekomimi.nekogram.config.cell.ConfigCellHeader;
 import tw.nekomimi.nekogram.config.cell.ConfigCellSelectBox;
-import tw.nekomimi.nekogram.config.cell.ConfigCellText;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheckIcon;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
@@ -75,10 +62,7 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
 import tw.nekomimi.nekogram.config.cell.WithOnClick;
 import tw.nekomimi.nekogram.ui.PopupBuilder;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
-import tw.nekomimi.nekogram.utils.FileUtil;
-import tw.nekomimi.nekogram.utils.ZipUtil;
 import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.helper.ExternalStickerCacheHelper;
 
 @SuppressLint("RtlHardcoded")
 @SuppressWarnings("unused")
@@ -89,8 +73,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private boolean sensitiveCanChange = false;
     private boolean sensitiveEnabled = false;
     private UndoView tooltip;
-    private static final int INTENT_PICK_CUSTOM_EMOJI_PACK = 114;
-    private static final int INTENT_PICK_EXTERNAL_STICKER_DIRECTORY = 514;
 
     private final CellGroup cellGroup = new CellGroup(this);
 
@@ -144,32 +126,13 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell hideFromHeaderRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideStoriesFromHeader()));
     private final AbstractConfigCell dividerStory = cellGroup.appendCell(new ConfigCellDivider());
 
-    // Sticker Cache
-    private final AbstractConfigCell headerExternalStickerCache = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.ExternalStickerCache)));
-    private final AbstractConfigCell externalStickerCacheRow = cellGroup.appendCell(new ConfigCellAutoTextCheck(NaConfig.INSTANCE.getExternalStickerCache(), getString(R.string.ExternalStickerCacheHint), this::onExternalStickerCacheButtonClick));
-    private final AbstractConfigCell externalStickerCacheAutoSyncRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getExternalStickerCacheAutoRefresh(), getString(R.string.ExternalStickerCacheAutoRefreshHint)));
-    private final AbstractConfigCell externalStickerCacheDirNameTypeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getExternalStickerCacheDirNameType(), new String[]{ "Short name", "ID" }, null));
-    private final AbstractConfigCell externalStickerCacheSyncAllRow = cellGroup.appendCell(new ConfigCellText("ExternalStickerCacheRefreshAll", ExternalStickerCacheHelper::syncAllCaches));
-    private final AbstractConfigCell externalStickerCacheDeleteAllRow = cellGroup.appendCell(new ConfigCellText("ExternalStickerCacheDeleteAll", ExternalStickerCacheHelper::deleteAllCaches));
-    private final AbstractConfigCell dividerExternalStickerCache = cellGroup.appendCell(new ConfigCellDivider());
-
     // Pangu
     private final AbstractConfigCell headerPangu = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.Pangu)));
     private final AbstractConfigCell enablePanguOnSendingRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnablePanguOnSending(), getString(R.string.PanguInfo)));
     private final AbstractConfigCell localeToDBCRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.localeToDBC));
     private final AbstractConfigCell dividerPangu = cellGroup.appendCell(new ConfigCellDivider());
 
-    private final List<AbstractConfigCell> externalStickerRows;
-
     public NekoExperimentalSettingsActivity() {
-        externalStickerRows = List.of(
-            externalStickerCacheDirNameTypeRow,
-            externalStickerCacheSyncAllRow,
-            externalStickerCacheDeleteAllRow
-        );
-        if (NaConfig.INSTANCE.getExternalStickerCache().String().isBlank()) {
-            cellGroup.rows.removeAll(externalStickerRows);
-        }
         if (!NaConfig.INSTANCE.getSpringAnimation().Bool()) {
             cellGroup.rows.remove(springAnimationCrossfadeRow);
         }
@@ -187,43 +150,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             cellGroup.rows.remove(showAdsRow);
         }
         addRowsToMap(cellGroup);
-    }
-
-    private void setExternalStickerCacheCellsEnabled(boolean enabled) {
-        ((ConfigCellTextCheck) externalStickerCacheAutoSyncRow).setEnabled(enabled);
-        ((ConfigCellText) externalStickerCacheSyncAllRow).setEnabled(enabled);
-        ((ConfigCellText) externalStickerCacheDeleteAllRow).setEnabled(enabled);
-    }
-
-    private void refreshExternalStickerStorageState() {
-        ConfigCellAutoTextCheck cell = (ConfigCellAutoTextCheck) externalStickerCacheRow;
-        setExternalStickerCacheCellsEnabled(!cell.getBindConfig().String().isEmpty());
-        Context context = ApplicationLoader.applicationContext;
-        ExternalStickerCacheHelper.checkUri(cell, context);
-    }
-
-    private void onExternalStickerCacheButtonClick(boolean isChecked) {
-        if (isChecked) {
-            // clear config
-            setExternalStickerCacheCellsEnabled(false);
-            ConfigCellAutoTextCheck cell = (ConfigCellAutoTextCheck) externalStickerCacheRow;
-            cell.setSubtitle(null);
-            NaConfig.INSTANCE.getExternalStickerCache().setConfigString("");
-            if (cellGroup.rows.containsAll(externalStickerRows)) {
-                cellGroup.rows.removeAll(externalStickerRows);
-                int externalStickerCacheIndex = cellGroup.rows.indexOf(externalStickerCacheRow);
-                listAdapter.notifyItemRangeRemoved(externalStickerCacheIndex + 2, externalStickerRows.size());
-            }
-            tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
-        } else {
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-            startActivityForResult(intent, INTENT_PICK_EXTERNAL_STICKER_DIRECTORY);
-            if (!cellGroup.rows.containsAll(externalStickerRows)) {
-                int externalStickerCacheIndex = cellGroup.rows.indexOf(externalStickerCacheRow);
-                cellGroup.rows.addAll(externalStickerCacheIndex + 2, externalStickerRows);
-                listAdapter.notifyItemRangeInserted(externalStickerCacheIndex + 2, externalStickerRows.size());
-            }
-        }
     }
 
     @Override
@@ -251,8 +177,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 }
             }
         });
-
-        refreshExternalStickerStorageState(); // Cell (externalStickerCacheRow): Refresh state
 
         listAdapter = new ListAdapter(context);
         fragmentView = new FrameLayout(context);
@@ -288,8 +212,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 ((WithOnClick) a).onClick();
             } else if (a instanceof ConfigCellTextInput) {
                 ((ConfigCellTextInput) a).onClick();
-            } else if (a instanceof ConfigCellAutoTextCheck) {
-                ((ConfigCellAutoTextCheck) a).onClick();
             } else if (a instanceof ConfigCellTextDetail) {
                 RecyclerListView.OnItemClickListener o = ((ConfigCellTextDetail) a).onItemClickListener;
                 if (o != null) {
@@ -365,21 +287,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
         // Cells: Set OnSettingChanged Callbacks
         cellGroup.callBackSettingsChanged = (key, newValue) -> {
-            if (key.equals(NekoConfig.useCustomEmoji.getKey())) {
-                // Check
-                if (!(boolean) newValue) {
-                    tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
-                    return;
-                }
-                NekoConfig.useCustomEmoji.setConfigBool(false);
-
-                // Open picker
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("application/zip");
-                Activity act = getParentActivity();
-                act.startActivityFromChild(act, intent, INTENT_PICK_CUSTOM_EMOJI_PACK);
-            } else if (key.equals(NekoConfig.localeToDBC.getKey())) {
+            if (key.equals(NekoConfig.localeToDBC.getKey())) {
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getDisableFlagSecure().getKey())) {
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
@@ -425,55 +333,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         frameLayout.addView(tooltip, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 0, 8, 8));
 
         return fragmentView;
-    }
-
-    @Override
-    public void onActivityResultFragment(int requestCode, int resultCode, Intent data) {
-        if (requestCode == INTENT_PICK_CUSTOM_EMOJI_PACK && resultCode == Activity.RESULT_OK) {
-            try {
-                // copy emoji zip
-                Uri uri = data.getData();
-                String zipPath = MediaController.copyFileToCache(uri, "file");
-
-                if (zipPath == null || zipPath.isEmpty()) {
-                    throw new Exception("zip copy failed");
-                }
-
-                //dirs
-                File dir = new File(ApplicationLoader.applicationContext.getFilesDir(), "custom_emoji");
-                if (dir.exists()) {
-                    FileUtil.deleteDirectory(dir);
-                }
-                dir.mkdir();
-
-                //process zip
-                File zipFile = new File(zipPath);
-                ZipUtil.unzip(new FileInputStream(zipFile), dir);
-                zipFile.delete();
-                if (!new File(ApplicationLoader.applicationContext.getFilesDir(), "custom_emoji/emoji/0_0.png").exists()) {
-                    throw new Exception(getString(R.string.useCustomEmojiInvalid));
-                }
-
-                NekoConfig.useCustomEmoji.setConfigBool(true);
-            } catch (Exception e) {
-                FileLog.e(e);
-                NekoConfig.useCustomEmoji.setConfigBool(false);
-                Toast.makeText(ApplicationLoader.applicationContext, "Failed: " + e, Toast.LENGTH_LONG).show();
-            }
-            tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
-        } else if (requestCode == INTENT_PICK_EXTERNAL_STICKER_DIRECTORY && resultCode == Activity.RESULT_OK) {
-            Uri uri = data.getData();
-            if (uri == null) {
-                return;
-            }
-            // reserve permissions
-            int takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
-            ApplicationLoader.applicationContext.getContentResolver().takePersistableUriPermission(uri, takeFlags);
-            // save config
-            NaConfig.INSTANCE.setExternalStickerCacheUri(uri);
-            refreshExternalStickerStorageState();
-            tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

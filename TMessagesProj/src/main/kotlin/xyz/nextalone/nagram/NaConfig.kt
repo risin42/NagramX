@@ -2,10 +2,8 @@ package xyz.nextalone.nagram
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Build
 import android.util.Base64
-import androidx.core.net.toUri
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.BuildVars
@@ -338,27 +336,6 @@ object NaConfig {
             "DisableStories",
             ConfigItem.configTypeBool,
             false
-        )
-    val externalStickerCache =
-        addConfig(
-            "ExternalStickerCache",
-            ConfigItem.configTypeString,
-            ""
-        )
-    var externalStickerCacheUri: Uri?
-        get() = externalStickerCache.String().let { return if (it.isBlank()) null else it.toUri() }
-        set(value) = externalStickerCache.setConfigString(value.toString())
-    val externalStickerCacheAutoRefresh =
-        addConfig(
-            "ExternalStickerCacheAutoRefresh",
-            ConfigItem.configTypeBool,
-            false
-        )
-    val externalStickerCacheDirNameType =
-        addConfig(
-            "ExternalStickerCacheDirNameType",
-            ConfigItem.configTypeInt,
-            0
         )
     val disableMarkdown =
         addConfig(

@@ -64,7 +64,6 @@ import org.telegram.ui.Cells.EmptyCell;
 import org.telegram.ui.Cells.StickerEmojiCell;
 import org.telegram.ui.Cells.StickerSetNameCell;
 import org.telegram.ui.ContentPreviewViewer;
-import xyz.nextalone.nagram.helper.ExternalStickerCacheHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;

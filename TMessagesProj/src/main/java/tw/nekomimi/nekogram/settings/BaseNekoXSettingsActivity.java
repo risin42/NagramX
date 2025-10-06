@@ -26,13 +26,12 @@ import java.util.Locale;
 import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.ConfigItem;
 import tw.nekomimi.nekogram.config.cell.AbstractConfigCell;
-import tw.nekomimi.nekogram.config.cell.ConfigCellAutoTextCheck;
 import tw.nekomimi.nekogram.config.cell.ConfigCellCheckBox;
-import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck2;
 import tw.nekomimi.nekogram.config.cell.ConfigCellCustom;
 import tw.nekomimi.nekogram.config.cell.ConfigCellSelectBox;
-import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheckIcon;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck;
+import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck2;
+import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheckIcon;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
 import tw.nekomimi.nekogram.config.cell.WithKey;
@@ -97,8 +96,6 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
             return ((ConfigCellTextDetail) row).getBindConfig();
         } else if (row instanceof ConfigCellTextInput) {
             return ((ConfigCellTextInput) row).getBindConfig();
-        } else if (row instanceof ConfigCellAutoTextCheck) {
-            return ((ConfigCellAutoTextCheck) row).getBindConfig();
         } else if (row instanceof ConfigCellTextCheckIcon) {
             return ((ConfigCellTextCheckIcon) row).getBindConfig();
         }
@@ -118,8 +115,6 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
             return ((ConfigCellTextInput) row).getKey();
         } else if (row instanceof ConfigCellCustom) {
             return ((ConfigCellCustom) row).getKey();
-        } else if (row instanceof ConfigCellAutoTextCheck) {
-            return ((ConfigCellAutoTextCheck) row).getKey();
         } else if (row instanceof ConfigCellTextCheckIcon) {
             return ((ConfigCellTextCheckIcon) row).getKey();
         } else if (row instanceof ConfigCellTextCheck2) {
