@@ -121,8 +121,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import xyz.nextalone.nagram.helper.LocalPeerColorHelper;
-
 public class PeerColorActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
     private final boolean isChannel;
@@ -1397,7 +1395,6 @@ public class PeerColorActivity extends BaseFragment implements NotificationCente
         if (isChannel) {
             finishFragment();
         } else {
-            LocalPeerColorHelper.apply(namePage.selectedColor, namePage.selectedEmoji, profilePage.selectedColor, profilePage.selectedEmoji);
             final TLRPC.User me = getUserConfig().getCurrentUser();
             if (me.color == null) {
                 me.color = new TLRPC.TL_peerColor();
@@ -1418,7 +1415,7 @@ public class PeerColorActivity extends BaseFragment implements NotificationCente
                     me.color.flags &=~ 2;
                     me.color.background_emoji_id = 0;
                 }
-                if (getUserConfig().isRealPremium()) getConnectionsManager().sendRequest(req, null);
+                getConnectionsManager().sendRequest(req, null);
             }
             if (profilePage.selectedColor != UserObject.getProfileColorId(me) || profilePage.selectedEmoji != UserObject.getProfileEmojiId(me)) {
                 applyingProfile = true;
@@ -1443,7 +1440,7 @@ public class PeerColorActivity extends BaseFragment implements NotificationCente
                     me.profile_color.flags &=~ 2;
                     me.profile_color.background_emoji_id = 0;
                 }
-                if (getUserConfig().isRealPremium()) getConnectionsManager().sendRequest(req, null);
+                getConnectionsManager().sendRequest(req, null);
             }
             if (!eq(me.emoji_status, profilePage.selectedEmojiCollectible) && (profilePage.selectedEmojiCollectible != null || DialogObject.isEmojiStatusCollectible(me.emoji_status))) {
                 TLRPC.EmojiStatus new_emoji_status = new TLRPC.TL_emojiStatusEmpty();

@@ -563,14 +563,6 @@ public class UserConfig extends BaseController {
         if (user == null) {
             return false;
         }
-        return user.premium || NekoConfig.localPremium.Bool();
-    }
-
-    public boolean isRealPremium() {
-        TLRPC.User user = currentUser;
-        if (user == null) {
-            return false;
-        }
         return user.premium;
     }
 

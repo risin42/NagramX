@@ -8049,7 +8049,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 if (loadFinal) {
                     int count = 100;
                     if (loadAll) {
-                        count = getUserConfig().isRealPremium() ? getMessagesController().dialogFiltersChatsLimitPremium : getMessagesController().dialogFiltersChatsLimitDefault;
+                        count = getUserConfig().isPremium() ? getMessagesController().dialogFiltersChatsLimitPremium : getMessagesController().dialogFiltersChatsLimitDefault;
                     }
                     getMessagesController().loadDialogs(folderId, -1, count, loadFromCacheFinal);
                 }

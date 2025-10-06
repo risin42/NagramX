@@ -329,8 +329,8 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 if (position == cellGroup.rows.indexOf(useTelegramUIAutoTranslateRow)) {
                     int provider = NekoConfig.translationProvider.Int();
                     boolean isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
-                    boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
-                    if (provider == Translator.providerTelegram && !isAutoTranslateEnabled && !isRealPremium) {
+                    boolean isPremium = UserConfig.getInstance(currentAccount).isPremium();
+                    if (provider == Translator.providerTelegram && !isAutoTranslateEnabled && !isPremium) {
                         BulletinFactory.of(this).createSimpleBulletin(R.raw.info, getString(R.string.LoginEmailResetPremiumRequiredTitle)).show();
                         BotWebViewVibrationEffect.APP_ERROR.vibrate();
                         AndroidUtilities.shakeViewSpring(view, -4);
@@ -355,8 +355,8 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                     showProviderSelectionPopup(view, NekoConfig.translationProvider, () -> {
                         if (NekoConfig.translationProvider.Int() == Translator.providerTelegram) {
                             boolean isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
-                            boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
-                            if (isAutoTranslateEnabled && !isRealPremium) {
+                            boolean isPremium = UserConfig.getInstance(currentAccount).isPremium();
+                            if (isAutoTranslateEnabled && !isPremium) {
                                 NaConfig.INSTANCE.getTelegramUIAutoTranslate().setConfigBool(false);
                                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useTelegramUIAutoTranslateRow));
                                 BulletinFactory.of(this).createSimpleBulletin(R.raw.info, getString(R.string.LoginEmailResetPremiumRequiredTitle)).show();

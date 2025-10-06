@@ -339,12 +339,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val useLocalQuoteColorData =
-        addConfig(
-            "useLocalQuoteColorData",
-            ConfigItem.configTypeString,
-            ""
-        )
     val externalStickerCache =
         addConfig(
             "ExternalStickerCache",

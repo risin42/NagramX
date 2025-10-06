@@ -17,7 +17,6 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.tl.TL_account;
 
 import tw.nekomimi.nekogram.helpers.MessageHelper;
-import xyz.nextalone.nagram.helper.LocalPeerColorHelper;
 
 public class UserObject {
 
@@ -193,36 +192,22 @@ public class UserObject {
 
     public static int getColorId(TLRPC.User user) {
         if (user == null) return 0;
-
-        Integer replace = LocalPeerColorHelper.getColorId(user);
-        if (replace != null) return replace;
-
         if (user.color != null && (user.color.flags & 1) != 0) return user.color.color;
         return (int) (user.id % 7);
     }
 
     public static long getEmojiId(TLRPC.User user) {
-        Long replace = LocalPeerColorHelper.getEmojiId(user);
-        if (replace != null) return replace;
-
         if (user != null && user.color != null && (user.color.flags & 2) != 0) return user.color.background_emoji_id;
         return 0;
     }
 
     public static int getProfileColorId(TLRPC.User user) {
         if (user == null) return 0;
-
-        Integer replace = LocalPeerColorHelper.getProfileColorId(user);
-        if (replace != null) return replace;
-
         if (user.profile_color != null && (user.profile_color.flags & 1) != 0) return user.profile_color.color;
         return -1;
     }
 
     public static long getProfileEmojiId(TLRPC.User user) {
-        Long replace = LocalPeerColorHelper.getProfileEmojiId(user);
-        if (replace != null) return replace;
-
         if (user != null && user.emoji_status instanceof TLRPC.TL_emojiStatusCollectible) {
             return ((TLRPC.TL_emojiStatusCollectible) user.emoji_status).pattern_document_id;
         }

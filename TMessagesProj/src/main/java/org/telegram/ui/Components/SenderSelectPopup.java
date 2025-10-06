@@ -245,7 +245,7 @@ public class SenderSelectPopup extends ActionBarPopupWindow {
             if (clicked) {
                 return;
             }
-            if (peerObj.premium_required && !UserConfig.getInstance(UserConfig.selectedAccount).isRealPremium()) {
+            if (peerObj.premium_required && !UserConfig.getInstance(UserConfig.selectedAccount).isPremium()) {
                 try {
                     if (!NekoConfig.disableVibration.Bool()) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                 } catch (Exception ignored) {}
