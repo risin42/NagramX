@@ -4,6 +4,7 @@ import android.os.Build;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.NotificationCenter;
@@ -56,7 +57,7 @@ public class UpdateHelper extends BaseRemoteHelper {
 
     @Override
     protected String getTag() {
-        return NaConfig.INSTANCE.getAutoUpdateChannel().Int() == UPDATE_CHANNEL_RELEASE ? "updateRelease" : "updateBeta";
+        return (NaConfig.INSTANCE.getAutoUpdateChannel().Int() == UPDATE_CHANNEL_RELEASE ? "updateRelease" : "updateBeta") + (ApplicationLoader.getApplicationId().equals("nu.gpu.nagramx") ? "Base" : "");
     }
 
     @SuppressWarnings("ConstantConditions")
