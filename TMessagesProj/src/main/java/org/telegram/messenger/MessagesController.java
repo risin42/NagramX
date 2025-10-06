@@ -489,7 +489,6 @@ public class MessagesController extends BaseController implements NotificationCe
         }
     };
 
-    public int thisDc; // nekox
     public boolean enableJoined;
     public String linkPrefix;
     public int maxGroupCount;
@@ -5533,7 +5532,6 @@ public class MessagesController extends BaseController implements NotificationCe
             getDownloadController().loadAutoDownloadConfig(false);
             loadAppConfig(true);
             checkPeerColors(true);
-            thisDc = config.this_dc;
             remoteConfigLoaded = true;
             maxMegagroupCount = config.megagroup_size_max;
             maxGroupCount = config.chat_size_max;
