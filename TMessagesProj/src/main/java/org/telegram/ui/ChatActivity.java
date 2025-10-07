@@ -30922,25 +30922,23 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             }
                             boolean ignore = false;
                             int count = 0;
-                            if (!NaConfig.INSTANCE.getAlwaysSaveChatOffset().Bool()){
-                                for (int a = position - 1; a >= chatAdapter.messagesStartRow; a--) {
-                                    int num = a - chatAdapter.messagesStartRow;
-                                    if (num < 0 || num >= messages.size()) {
-                                        continue;
-                                    }
-                                    MessageObject messageObject2 = messages.get(num);
-                                    if (messageObject2 == null || messageObject2.getId() == 0) {
-                                        continue;
-                                    }
-                                    if ((!messageObject2.isOut() || messageObject2.messageOwner.from_scheduled) && messageObject != null && messageObject.isUnread()) {
-                                        ignore = true;
-                                        messageId = 0;
-                                    }
-                                    if (count > 2) {
-                                        break;
-                                    }
-                                    count++;
+                            for (int a = position - 1; a >= chatAdapter.messagesStartRow; a--) {
+                                int num = a - chatAdapter.messagesStartRow;
+                                if (num < 0 || num >= messages.size()) {
+                                    continue;
                                 }
+                                MessageObject messageObject2 = messages.get(num);
+                                if (messageObject2 == null || messageObject2.getId() == 0) {
+                                    continue;
+                                }
+                                if ((!messageObject2.isOut() || messageObject2.messageOwner.from_scheduled) && messageObject != null && messageObject.isUnread()) {
+                                    ignore = true;
+                                    messageId = 0;
+                                }
+                                if (count > 2) {
+                                    break;
+                                }
+                                count++;
                             }
                             if (holder != null && !ignore) {
                                 if (messageObject != null) {

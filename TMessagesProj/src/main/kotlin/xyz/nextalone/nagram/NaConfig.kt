@@ -171,12 +171,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val alwaysSaveChatOffset =
-        addConfig(
-            "AlwaysSaveChatOffset",
-            ConfigItem.configTypeBool,
-            false
-        )
     val autoInsertGIFCaption =
         addConfig(
             "AutoInsertGIFCaption",
