@@ -110,7 +110,6 @@
     <string name="ShowTimeHint">Ayrıntılar İçin Dokunma Süresi</string>
     <string name="SearchHashtagDefaultPageChannel">Kanallarda Varsayılan Hashtag Arama Sayfası</string>
     <string name="SearchHashtagDefaultPageChat">Sohbetlerde Varsayılan Hashtag Arama Sayfası</string>
-    <string name="LocaleToDBC">Metni DBC Karakter Setiyle Yerelleştir</string>
     <string name="EnablePanguOnSending">Gönderirken Pangu\'yu Etkinleştir</string>
     <string name="PanguInfo">İyi okunabilirlik için, Çince, Japonca, Korece (CJK) karakterler ile Latin harfleri, rakamlar ve semboller arasına otomatik olarak boşluk ekler.</string>
     <string name="SendWithPangu">Pangu ile gönder</string>

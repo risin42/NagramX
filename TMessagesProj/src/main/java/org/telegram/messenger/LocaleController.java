@@ -58,9 +58,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.parts.LocFiltersKt;
 import tw.nekomimi.nekogram.shamsicalendar.PersianDate;
-import tw.nekomimi.nekogram.utils.FileUtil;
 
 public class LocaleController {
 
@@ -1396,8 +1394,6 @@ public class LocaleController {
         }
         if (value == null) {
             value = "LOC_ERR:" + key;
-        } else if (NekoConfig.localeToDBC.Bool()) {
-            value = LocFiltersKt.filter(value);
         }
         return value;
     }
