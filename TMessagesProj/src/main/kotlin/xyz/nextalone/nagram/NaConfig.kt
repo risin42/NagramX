@@ -195,12 +195,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val customArtworkApi =
-        addConfig(
-            "CustomArtworkApi",
-            ConfigItem.configTypeString,
-            ""
-        )
     val customEditedMessage =
         addConfig(
             "CustomEditedMessage",

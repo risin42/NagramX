@@ -10300,12 +10300,7 @@ public class MessageObject {
                             return null;
                         }
                         try {
-                            String query = TextUtils.isEmpty(performer) ? title : performer + " - " + title;
-                            String custom_api = NaConfig.INSTANCE.getCustomArtworkApi().String();
-                            if (!Objects.equals(custom_api, "")) {
-                                return custom_api + URLEncoder.encode(query, "UTF-8");
-                            }
-                            return "athumb://itunes.apple.com/search?term=" + URLEncoder.encode(query, "UTF-8") + "&entity=song&limit=4" + (small ? "&s=1" : "");
+                            return "athumb://itunes.apple.com/search?term=" + URLEncoder.encode(performer + " - " + title, "UTF-8") + "&entity=song&limit=4" + (small ? "&s=1" : "");
                         } catch (Exception ignore) {
 
                         }
