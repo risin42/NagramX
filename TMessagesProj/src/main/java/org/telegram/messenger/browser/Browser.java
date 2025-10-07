@@ -373,7 +373,7 @@ public class Browser {
                 }
             }
             String host = AndroidUtilities.getHostAuthority(uri.toString().toLowerCase());
-            if (AccountInstance.getInstance(currentAccount).getMessagesController().autologinDomains.contains(host) && !NaConfig.INSTANCE.getDisableAutoWebLogin().Bool()) {
+            if (AccountInstance.getInstance(currentAccount).getMessagesController().autologinDomains.contains(host)) {
                 String token = "autologin_token=" + URLEncoder.encode(AccountInstance.getInstance(UserConfig.selectedAccount).getMessagesController().autologinToken, "UTF-8");
                 String url = uri.toString();
                 int idx = url.indexOf("://");
