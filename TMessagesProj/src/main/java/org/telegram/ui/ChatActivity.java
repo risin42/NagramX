@@ -20390,8 +20390,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
 
                 if (actionModeOtherItem != null) {
-                    final TranslateController translateController = getMessagesController().getTranslateController();
-                    actionModeOtherItem.setSubItemVisibility(nkbtn_translate, !translateController.isTranslatingDialog(messageObject.getDialogId()));
+                    actionModeOtherItem.setSubItemVisibility(nkbtn_translate, !isTranslatingDialog(messageObject));
                 }
             }
         }
@@ -47088,7 +47087,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private boolean isTranslatingDialog(MessageObject messageObject) {
-        return getMessagesController().getTranslateController().isTranslatingDialog(messageObject.getDialogId());
+        return messageObject != null && getMessagesController().getTranslateController().isTranslatingDialog(messageObject.getDialogId());
     }
 
     private record MessageMenuStatus(boolean allowCopy, boolean allowCopyPhoto,
