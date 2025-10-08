@@ -286,7 +286,7 @@ public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
         }
 
         boolean checkOption(int i) {
-            if (i > totalCount) return false;
+            if (i > totalCount || checks == null) return false;
             return checks[i] && (filter == null || filter[i]);
         }
     }
