@@ -166,6 +166,8 @@ public class TextCheckCell extends FrameLayout {
 
     public void setTextAndCheck(CharSequence text, boolean checked, boolean divider) {
         AvatarSpan.checkSpansParent(text, this);
+        textView.setMaxLines(1);
+        textView.setEllipsize(TextUtils.TruncateAt.END);
         textView.setText(text);
         isMultiline = false;
         if (checkBox != null) {
@@ -243,6 +245,8 @@ public class TextCheckCell extends FrameLayout {
         valueTextView.setVisibility(VISIBLE);
         isMultiline = multiline;
         if (multiline) {
+            textView.setMaxLines(1);
+            textView.setEllipsize(TextUtils.TruncateAt.END);
             valueTextView.setLines(0);
             valueTextView.setMaxLines(0);
             valueTextView.setSingleLine(false);
