@@ -38139,6 +38139,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             } else if (viewType == -1000) {
                 view = new View(mContext);
                 // view = new DummyView(mContext);
+            } else {
+                view = new View(mContext);
             }
             view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
             return new RecyclerListView.Holder(view);
