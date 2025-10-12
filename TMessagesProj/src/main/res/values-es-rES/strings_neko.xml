@@ -28,6 +28,7 @@
     <string name="Valentine">Día de San Valentín</string>
     <string name="Snowflakes">Copos de Nieve</string>
     <string name="Fireworks">Fuegos Artificiales</string>
+    <string name="DeleteDownloadedFile">Limpiar</string>
     <string name="TestBackend">Backend de Prueba</string>
     <string name="HideProxySponsorChannel">Ocultar canal del patrocinador del proxy</string>
     <string name="ViewHistory">Historial</string>
@@ -51,6 +52,7 @@
     <string name="TranslateApiUnsupported">El proveedor escogido no soporta tu idioma.</string>
     <string name="ProviderLingocloud">Traducción de LingoCloud</string>
     <string name="UndoTranslate">Ocultar traducción</string>
+    <string name="DisablePhotoViewerSideAction">Desactivar toque lateral para cambiar fotos</string>
     <string name="BotToken">Token</string>
     <string name="UnlimitedPinnedDialogs">Chats anclados ilimitados</string>
     <string name="UnlimitedPinnedDialogsAbout">Ancla chats de forma ilimitada, pero se desactiva su sincronización.</string>
@@ -64,6 +66,8 @@
     <string name="HideAllTabAbout">Mantenga pulsado el título en la lista de chat para mostrar todos los chats.</string>
     <string name="TabTitleType">Mostrar en las Pestañas</string>
     <string name="TabTitleTypeText">Títulos</string>
+    <string name="TabTitleTypeIcon">Iconos</string>
+    <string name="TabTitleTypeMix">Iconos con títulos</string>
     <string name="ConfirmAVMessage">Preguntar antes de enviar mensaje de voz/vídeo</string>
     <string name="AskBeforeCalling">Preguntar antes de llamar</string>
     <string name="ConfirmCall">Confirmar llamada</string>
@@ -82,7 +86,7 @@
     <string name="AutoPauseVideoAbout">Cuando se bloquea la pantalla/cambia al fondo.</string>
     <string name="DisableProximityEvents">Desactivar eventos de proximidad</string>
     <string name="SelectBetween">Seleccionar rango</string>
-    <string name="AvatarAsBackground">Foto de perfil como fondo</string>
+    <string name="AvatarAsBackground">Tipo de Fondo</string>
     <string name="BlurAvatarBackground">Desenfocar fondo</string>
     <string name="DarkenAvatarBackground">Fondo oscuro</string>
     <string name="ProviderDeepLTranslate">Traductor de DeepL</string>
@@ -118,6 +122,7 @@
     <string name="enhancedFileLoader">Aumento de velocidad de descarga</string>
     <string name="mapDriftingFixForGoogleMaps">Corregir la deriva de Google Maps en China</string>
     <string name="useOSMDroidMap">Usar mapa OSMDroid</string>
+    <string name="UnknownNekoSettingsOption">No existe tal opción en N-Settings.</string>
     <string name="PasscodeNeeded">Tienes que activar primero el código de acceso</string>
     <string name="PasscodeNeko">Código de acceso</string>
     <string name="PasscodeShowInSettings">Mostrar en N-Ajustes</string>
@@ -183,11 +188,13 @@
     <string name="UseChatAttachEnterMenuNotice">Cambia el botón de grabación en un menú de entrada y agrega un botón para la vista previa del enlace.</string>
     <string name="DisableLinkPreviewByDefault">Deshabilitar la vista previa de enlaces por defecto</string>
     <string name="CustomApi">API personalizada</string>
+    <string name="UseCustomApiNotice">Inicie sesión con la API personalizada, si no puede registrarse o iniciar sesión, esto puede ayudar.\n\nNota: FCM no funcionará si está utilizando una API personalizada.</string>
     <string name="CustomApiNo">No utilizar la API personalizada</string>
     <string name="CustomApiInput">Entrada manual</string>
     <string name="LinkedGroupChat">Grupo enlazado</string>
     <string name="LinkedChannelChat">Canal enlazado</string>
     <string name="ChangeTranslateProvider">Cambiar de proveedor</string>
+    <string name="ProviderYandexTranslate">Traductor de Yandex</string>
     <string name="GoogleCloudTransKeyNotice">Si configura una clave de Google Cloud Trans, la API de traducción a la nube será llamada en lugar de enviar un formulario falso a la versión web al traducir (más rápido, estable y ahorrando tráfico).</string>
     <string name="TransToLang">Idioma de destino</string>
     <string name="TransInputToLang">Pre-enviar idioma de traducción</string>
@@ -205,7 +212,7 @@
     <string name="FilterMenu">Menú de filtros de diálogos</string>
     <string name="DisableProxyWhenVpnEnabled">Desactivar proxy cuando la VPN está habilitada</string>
     <string name="UseProxyItem">Mostrar proxy en el marcador</string>
-    <string name="HideProxyByDefault">Ocultar ajustes de proxy</string>
+    <string name="HideProxyByDefault">Ocultar proxy cuando está inactivo</string>
     <string name="SkipOpenLinkConfirm">Omitir confirmación de Abrir Enlace</string>
     <string name="DeleteAllInChatAlert">¡Advertencia! Esto **eliminará todos los mensajes** en este chat para **todos** los participantes.</string>
     <string name="UnblockAll">Desbloquear todo</string>
@@ -259,7 +266,7 @@
     <string name="useCustomEmojiInvalid">No es un paquete de emoji válido.</string>
     <string name="repeatConfirm">Preguntar antes del reenvío</string>
     <string name="repeatConfirmText">¿Estás seguro de que quieres volver a publicar?</string>
-    <string name="valuesLargeAvatarInDrawer">Telegram predeterminado\nAvatar como fondo\nGran avatar como fondo\nWallpaper</string>
+    <string name="valuesLargeAvatarInDrawer">Predeterminado\nAvatar\nAvatar grande\nFondo de pantalla</string>
     <string name="rememberAllBackMessages">Recordar todas las respuestas pulsadas</string>
     <string name="DisableInstantCamera">Deshabilitar cámara instantánea</string>
     <string name="showSeconds">Mostrar los segundos en la marca de tiempo</string>

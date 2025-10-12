@@ -3,7 +3,7 @@
     <string name="N_Config">N-Configuração</string>
     <string name="ForceCopy">Forçar Cópia</string>
     <string name="CombineMessage">Combinar Mensagens</string>
-    <string name="TextStyle">Estilo de texto</string>
+    <string name="TextStyle">Estilo de Texto</string>
     <string name="NoiseSuppressAndVoiceEnhance">Supressão de Ruído e Melhoramento de Voz</string>
     <string name="RepeatAsCopy">Respostar como Cópia</string>
     <string name="DoubleTapAction">Ação de Toque Duplo</string>
@@ -59,7 +59,7 @@
     <string name="NeedChangeNekoSettings">Você precisa alterar as N-Configurações</string>
     <string name="DoNotUnarchiveBySwipe">Desativar Deslizar para Desarquivar</string>
     <string name="DoNotShareMyPhoneNumber">Não Compartilhar Meu Número de Telefone</string>
-    <string name="DefaultDeleteMenu">Menu de exclusão padrão</string>
+    <string name="DefaultDeleteMenu">Menu de Exclusão Padrão</string>
     <string name="DisableSuggestionView">Desativar sugestão de configurações de perfil</string>
     <string name="DisableStories">Desativar Stories</string>
     <string name="CopyPhotoAsSticker">Copiar como Sticker</string>
