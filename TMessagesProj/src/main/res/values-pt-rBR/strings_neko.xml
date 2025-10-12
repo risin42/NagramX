@@ -30,7 +30,7 @@
     <string name="Fireworks">Fogos de Artifício</string>
     <string name="DeleteDownloadedFile">Limpar</string>
     <string name="TestBackend">Teste de back-end</string>
-    <string name="HideProxySponsorChannel">Ocultar canal de patrocinador de proxy</string>
+    <string name="HideProxySponsorChannel">Ocultar Canal Patrocinado do Proxy</string>
     <string name="ViewHistory">Histórico</string>
     <string name="Nya">Miau!</string>
     <string name="SensitiveDisableFiltering">Desativar Filtragem de Conteúdo Sensível</string>
@@ -64,7 +64,7 @@
     <string name="RearVideoMessages">Câmera traseira em Mensagens de Vídeo</string>
     <string name="HideAllTab">Ocultar a pasta \"Todos os Chats\"</string>
     <string name="HideAllTabAbout">Pressione longamente o título na lista de chats para exibir Todos os Chats.</string>
-    <string name="TabTitleType">Mostrar nas abas</string>
+    <string name="TabTitleType">Mostrar nas Abas</string>
     <string name="TabTitleTypeText">Títulos</string>
     <string name="TabTitleTypeIcon">Ícones</string>
     <string name="TabTitleTypeMix">Ícones com Títulos</string>
@@ -72,7 +72,7 @@
     <string name="AskBeforeCalling">Perguntar antes de ligar</string>
     <string name="ConfirmCall">Confirmar ligação</string>
     <string name="CallTo">Ligação para **%1$s**?</string>
-    <string name="DisableNumberRounding">Desativar arredondamento de números</string>
+    <string name="DisableNumberRounding">Desativar Arredondamento de Números</string>
     <string name="Categories">Categorias</string>
     <string name="OfficialChannel">Canal Nagram</string>
     <string name="About">Sobre</string>
@@ -81,7 +81,7 @@
     <string name="ResetStickerSize">Redefinir tamanho do sticker</string>
     <string name="RestartAppToTakeEffect">Reinicie o app para aplicar as alterações.</string>
     <string name="DisableAppBarShadow">Desativar Sombra da Barra de Título</string>
-    <string name="MediaPreview">Pré-visualização de mídia na lista de chats</string>
+    <string name="MediaPreview">Prévia de Mídia na Lista de Chats</string>
     <string name="AutoPauseVideo">Pausar Vídeo Automaticamente</string>
     <string name="AutoPauseVideoAbout">Quando bloquear tela/alternar para plano de fundo.</string>
     <string name="DisableProximityEvents">Desativar Eventos de Proximidade</string>
@@ -92,7 +92,7 @@
     <string name="ProviderDeepLTranslate">DeepL Tradutor</string>
     <string name="ProviderMicrosoftTranslator">Bing Tradutor</string>
     <string name="DontSendGreetingSticker">Não Enviar Sticker de Saudação</string>
-    <string name="TakeGIFasVideo">Tratar GIF como vídeo</string>
+    <string name="TakeGIFasVideo">Tratar GIF como Vídeo</string>
     <string name="UseMediaStreamInVoip">Use o Stream de Mídia no VoIP</string>
     <string name="HideTimeForSticker">Ocultar Horário e Confirmações de Leitura em Stickers</string>
     <string name="hideGroupSticker">Ocultar Sticker do Grupo</string>
@@ -182,11 +182,11 @@
     <string name="AccDescrChatAttachEnterMenu">Menu de entrada de chat</string>
     <string name="ChatAttachEnterMenuRecordVideo">Gravar Vídeo</string>
     <string name="ChatAttachEnterMenuRecordAudio">Gravar Áudio</string>
-    <string name="ChatAttachEnterMenuDisableLinkPreview">Desativar pré-visualização de Link</string>
-    <string name="ChatAttachEnterMenuEnableLinkPreview">Ativar pré-visualização de Link</string>
+    <string name="ChatAttachEnterMenuDisableLinkPreview">Desativar Prévia de Link</string>
+    <string name="ChatAttachEnterMenuEnableLinkPreview">Ativar Prévia de Link</string>
     <string name="UseChatAttachEnterMenu">Usar Menu de Entrada</string>
     <string name="UseChatAttachEnterMenuNotice">Alterar o botão de gravação para um menu de entrada e adicionar uma opção de pré-visualização de link.</string>
-    <string name="DisableLinkPreviewByDefault">Desativar Pré-visualização de Link por Padrão</string>
+    <string name="DisableLinkPreviewByDefault">Desativar Prévia de Link por Padrão</string>
     <string name="CustomApi">API Personalizada</string>
     <string name="UseCustomApiNotice">Faça login usando a API personalizada. Se você não conseguir se registrar ou fazer login, isso pode ajudar.\n\nObservação: o FCM não funcionará se você estiver usando uma API personalizada.</string>
     <string name="CustomApiNo">Não usar API personalizada</string>
@@ -211,7 +211,7 @@
     <string name="NagramXPushService">Serviço de Notificação</string>
     <string name="DisableSystemAccount">Desativar Conta do Sistema</string>
     <string name="FilterMenu">Menu de Filtro de Diálogos</string>
-    <string name="DisableProxyWhenVpnEnabled">Desativar Proxy quando a VPN estiver ativada</string>
+    <string name="DisableProxyWhenVpnEnabled">Desativar Proxy Quando a VPN Estiver Ativada</string>
     <string name="UseProxyItem">Mostrar Proxy na Gaveta</string>
     <string name="HideProxyByDefault">Ocultar Proxy Inativo</string>
     <string name="SkipOpenLinkConfirm">Pular confirmação de abertura de link</string>
@@ -228,7 +228,7 @@
     <string name="ImportStickersList">Importar Stickers</string>
     <string name="StickerSets">Pacote de Sticker</string>
     <string name="InvalidStickersFile">Arquivo de stickers inválido: </string>
-    <string name="ImportedProxies">Servidores proxy importados </string>
+    <string name="ImportedProxies">Servidores proxy importados: </string>
     <string name="DeleteAllServer">Excluir todos os servidores</string>
     <string name="DeleteUnavailableServer">Excluir servidores indisponíveis</string>
     <string name="ImportProxyFromClipboard">Importar da Área de Transferência</string>

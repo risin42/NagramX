@@ -199,7 +199,7 @@
     <string name="AutoCheckUpdateBeta">Beta</string>
     <string name="AutoInsertGIFCaption">Legendas Automáticas em GIFs</string>
     <string name="AutoInsertGIFCaptionNotice">Usa automaticamente o texto do campo de entrada atual como legenda do GIFs.</string>
-    <string name="UserAvatarsInMessagePreview">Avatares de Usuário na Prévia da Mensagem</string>
+    <string name="UserAvatarsInMessagePreview">Avatares de Usuário na Prévia de Mensagem</string>
     <string name="YourVersionIsLatestNax">Sua Versão Está Atualizada.</string>
     <string name="PremiumElements">Elementos Premium</string>
     <string name="PremiumItemBoosts">Contador de Impulsos</string>
@@ -227,7 +227,7 @@
     <string name="TestBackendOff">Esta conta se conectará ao backend de produção.</string>
     <string name="DidNotGetTheCodeBlameDurov">Se você não recebeu o código em outro aparelho ou não tem o Telegram logado em outro aparelho, por favor, use o aplicativo oficial do Telegram para receber o código.\n\nTelegram desativou a capacidade de fazer login com SMS em aplicativos de terceiros. Usuários que fazem login em aplicativos de terceiros só podem receber códigos de login via Telegram.\n\nNão podemos ajudar com isso. Se você tiver qualquer problema para fazer login, entre em contato com o Suporte do Telegram.</string>
     <string name="QRLoginMessage">Escaneie o QR Code com outro aparelho para fazer login.</string>
-    <string name="DnsType">Resolvedor DNS</string>
+    <string name="DnsType">Resolvedor de DNS</string>
     <string name="DnsTypeSystem">Sistema</string>
     <string name="CustomDoH">DoH Personalizado</string>
     <string name="PinnedReactions">Reações Fixadas</string>

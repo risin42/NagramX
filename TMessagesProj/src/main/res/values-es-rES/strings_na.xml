@@ -28,7 +28,6 @@
     <string name="AppIconBlue">Azul</string>
     <string name="AppIconDarkBlue">Azul oscuro</string>
     <string name="AppIconBlurBlue">Desenfoque Azul</string>
-    <string name="AutoInsertGIFCaption">Insertar leyenda automática antes de enviar GIF</string>
     <string name="InputMessageId">Introducir ID del mensaje</string>
     <string name="ToTheMessage">Ir a</string>
     <string name="ZalgoFilter">Filtrar símbolos \"Zalgo\"</string>
@@ -109,7 +108,7 @@
     <string name="RegexFiltersAddDescription">Puede utilizar el sitio <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> para probar completamente su expresión regular.
 También puede utilizar texto sin formato, pero no olvide escapar los paréntesis.</string>
     <string name="RegexFiltersAddError">Error de sintaxis Regex</string>
-    <string name="ShowTimeHint">Haga clic en Tiempo de Mensaje para mostrar detalles</string>
+    <string name="ShowTimeHint">Toca la hora para ver los detalles</string>
     <string name="SearchHashtagDefaultPageChannel">Página de búsqueda por defecto de Hashtag en canales</string>
     <string name="SearchHashtagDefaultPageChat">Página de búsqueda por defecto de Hashtag en Chats</string>
     <string name="EnablePanguOnSending">Activar Pangu al enviar</string>
@@ -121,4 +120,8 @@ También puede utilizar texto sin formato, pero no olvide escapar los paréntesi
     <string name="CustomTitleUserName">Usar nombre de usuario como título</string>
     <string name="EnhancedVideoBitrate">Bitrate de vídeo compartido mejorado</string>
     <string name="ActionBarButtons">Botones de la barra de acción</string>
+    <string name="VideoPlayerDecoder">Decodificador de vídeo</string>
+    <string name="VideoPlayerDecoderPreferSW">Preferir SW</string>
+    <string name="VideoPlayerDecoderHardware">Solo HW</string>
+    <string name="VideoPlayerDecoderPreferHW">Preferir HW</string>
 </resources>
