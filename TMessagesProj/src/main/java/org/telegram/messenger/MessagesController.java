@@ -12695,6 +12695,9 @@ public class MessagesController extends BaseController implements NotificationCe
                 if (lastMessage == null || message.date < lastMessage.date) {
                     lastMessage = message;
                 }
+                if (message.peer_id == null) {
+                    continue;
+                }
                 if (message.peer_id.channel_id != 0) {
                     TLRPC.Chat chat = chatsDict.get(message.peer_id.channel_id);
                     if (chat != null && chat.left && (promoDialogId == 0 || promoDialogId != -chat.id)) {
@@ -12724,7 +12727,7 @@ public class MessagesController extends BaseController implements NotificationCe
                 long dialogsLoadOffsetChatId = 0;
                 long dialogsLoadOffsetUserId = 0;
                 long dialogsLoadOffsetAccess = 0;
-                if (lastMessage != null && lastMessage.id != dialogsLoadOffset[UserConfig.i_dialogsLoadOffsetId]) {
+                if (lastMessage != null && lastMessage.id != dialogsLoadOffset[UserConfig.i_dialogsLoadOffsetId] && lastMessage.peer_id != null) {
                     totalDialogsLoadCount += dialogsRes.dialogs.size();
                     dialogsLoadOffsetId = lastMessage.id;
                     dialogsLoadOffsetDate = lastMessage.date;
