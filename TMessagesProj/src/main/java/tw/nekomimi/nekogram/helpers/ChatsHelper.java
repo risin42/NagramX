@@ -117,6 +117,7 @@ public class ChatsHelper extends BaseController {
     public void makeReplyButtonClick(ChatActivity chatActivity, boolean noForwards) {
         if (noForwards) {
             createReplyAction(chatActivity);
+            return;
         }
         switch (NaConfig.INSTANCE.getLeftBottomButton().Int()) {
             case LEFT_BUTTON_REPLY:
