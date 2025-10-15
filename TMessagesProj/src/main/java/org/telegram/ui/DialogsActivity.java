@@ -3132,6 +3132,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     speedItem.setOnClickListener(v -> showDialog(new PremiumFeatureBottomSheet(DialogsActivity.this, PremiumPreviewFragment.PREMIUM_FEATURE_DOWNLOAD_SPEED, true)));
                     speedItem.setClickable(false);
                     speedItem.setFixBackground(true);
+                    speedItem.setVisibility(View.GONE);
                     FrameLayout.LayoutParams speedParams = new FrameLayout.LayoutParams(dp(42), ViewGroup.LayoutParams.MATCH_PARENT);
                     speedParams.leftMargin = speedParams.rightMargin = dp(14 + 24);
                     speedParams.gravity = Gravity.RIGHT;
