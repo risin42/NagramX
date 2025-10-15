@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -71,8 +72,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import xyz.nextalone.nagram.NaConfig;
@@ -752,7 +755,25 @@ public class MessageHelper extends BaseController {
         if (!NaConfig.INSTANCE.getZalgoFilter().Bool()) return text;
         if (text.length() < 4 || text.length() > 2048) return text;
         if (!ZALGO_PATTERN.matcher(text).find()) return text;
-        return ZALGO_CLEANUP.matcher(text).replaceAll("");
+
+        if (!(text instanceof Spannable)) {
+            return ZALGO_CLEANUP.matcher(text).replaceAll("");
+        }
+
+        SpannableStringBuilder ssb = new SpannableStringBuilder(text);
+        Matcher matcher = ZALGO_CLEANUP.matcher(ssb);
+        List<int[]> ranges = new ArrayList<>();
+
+        while (matcher.find()) {
+            ranges.add(new int[]{matcher.start(), matcher.end()});
+        }
+
+        for (int i = ranges.size() - 1; i >= 0; i--) {
+            int[] range = ranges.get(i);
+            ssb.delete(range[0], range[1]);
+        }
+
+        return ssb;
     }
 
     public static boolean containsMarkdown(CharSequence text) {

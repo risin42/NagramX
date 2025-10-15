@@ -3571,6 +3571,7 @@ public class MessageObject {
         int[] emojiOnly = allowsBigEmoji() ? new int[1] : null;
         messageText = Emoji.replaceEmoji(messageText, paint.getFontMetricsInt(), false, emojiOnly);
         messageText = replaceAnimatedEmoji(messageText, entities, paint.getFontMetricsInt());
+        messageText = MessageHelper.zalgoFilter(messageText);
         if (emojiOnly != null && emojiOnly[0] > 1) {
             replaceEmojiToLottieFrame(messageText, emojiOnly);
         }
@@ -5618,7 +5619,7 @@ public class MessageObject {
                     }
                 }
             } else if (messageOwner.translated) {
-                messageText = messageOwner.translatedMessage;
+                messageText = MessageHelper.zalgoFilter(messageOwner.translatedMessage);
             } else {
                 if (messageOwner.message != null) {
                     try {
@@ -6787,6 +6788,7 @@ public class MessageObject {
         if (!isMediaEmpty() && !(getMedia(messageOwner) instanceof TLRPC.TL_messageMediaGame) && !TextUtils.isEmpty(text)) {
             caption = Emoji.replaceEmoji(text, Theme.chat_msgTextPaint.getFontMetricsInt(), false);
             caption = replaceAnimatedEmoji(caption, entities, Theme.chat_msgTextPaint.getFontMetricsInt(), false);
+            caption = MessageHelper.zalgoFilter(caption);
 
             boolean hasEntities;
             if (messageOwner.send_state != MESSAGE_SEND_STATE_SENT) {
