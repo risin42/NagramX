@@ -212,8 +212,8 @@ dependencies {
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
     compileOnly 'org.checkerframework:checker-qual:2.5.2'
     compileOnly 'org.checkerframework:checker-compat-qual:2.5.0'
-    implementation 'com.google.firebase:firebase-messaging:24.1.2' // 22.0.0
-    implementation 'com.google.firebase:firebase-crashlytics:19.4.4'
+    implementation 'com.google.firebase:firebase-messaging:25.0.1' // 22.0.0
+    implementation 'com.google.firebase:firebase-crashlytics:20.0.3'
     implementation 'com.google.android.gms:play-services-cast-framework:22.1.0' // 21.4.0
     implementation 'com.google.android.gms:play-services-maps:19.2.0' // 18.1.0
     implementation 'com.google.android.gms:play-services-auth:21.4.0' // 20.4.0
@@ -222,7 +222,7 @@ dependencies {
     implementation 'com.googlecode.mp4parser:isoparser:1.0.6'
     implementation 'com.google.mlkit:language-id:17.0.6'
     implementation 'com.google.code.gson:gson:2.13.2'
-    implementation ('com.google.guava:guava:33.4.8-android') { // 31.1
+    implementation ('com.google.guava:guava:33.5.0-android') { // 31.1
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
         exclude group: 'org.checkerframework', module: 'checker-compat-qual'
         exclude group: 'org.checkerframework', module: 'checker-qual'
@@ -233,7 +233,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1'
     implementation 'com.google.android.gms:play-services-mlkit-image-labeling:16.0.8'
     // payment
-    implementation 'com.google.android.gms:play-services-wallet:19.4.0' // 19.1.0
+    implementation 'com.google.android.gms:play-services-wallet:19.5.0' // 19.1.0
     implementation('com.stripe:stripe-android:2.0.2') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
@@ -241,20 +241,20 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
 
     // kotlin
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.10'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.20'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
     // utilities 
     implementation 'org.osmdroid:osmdroid-android:6.1.20'
     // network
-    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.2.1'
     implementation 'dnsjava:dnsjava:3.6.3'
     // add for emoji
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
     // add for UnifiedPush
     implementation 'com.github.UnifiedPush:android-connector:2.3.1'
     // add for save deleted messages
-    implementation 'androidx.room:room-runtime:2.7.2'
-    annotationProcessor 'androidx.room:room-compiler:2.7.2'
+    implementation 'androidx.room:room-runtime:2.8.2'
+    annotationProcessor 'androidx.room:room-compiler:2.8.2'
     // add for keep formatting in translations
     implementation 'org.apache.commons:commons-text:1.14.0'
     // translator from nekogram
