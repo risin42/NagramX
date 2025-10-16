@@ -8386,6 +8386,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                                     return;
                                 stickerEmptySent = true;
                                 generateThumb();
+                                photoEntry.highQuality = false;
                                 photoEntry.imagePath = fullStickerPath;
                                 placeProvider.sendButtonPressed(currentIndex, finalVideoEditedInfo, notify, scheduleDate, forceDocument);
                                 NotificationCenter.getInstance(UserConfig.selectedAccount).postNotificationNameOnUIThread(NotificationCenter.customStickerCreated, true);
