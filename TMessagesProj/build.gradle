@@ -59,6 +59,9 @@ android {
     defaultConfig.applicationId = APP_PACKAGE
 
     packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
         resources {
             excludes += '**'
         }
@@ -99,7 +102,7 @@ android {
 
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-21', '-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON'
+                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-27', '-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON'
                 System.getenv("PATH").split(File.pathSeparator).any { path ->
                     var file = Paths.get("${path}${File.separator}ccache${if (OperatingSystem.current().windows) ".exe" else ""}").toFile()
                     if (file.exists()) {
