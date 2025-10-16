@@ -19,6 +19,7 @@ import androidx.collection.LongSparseArray;
 
 import com.google.android.exoplayer2.util.Log;
 
+import org.telegram.messenger.utils.tlutils.TlUtils;
 import org.telegram.messenger.voip.Instance;
 import org.telegram.messenger.voip.VoIPService;
 import org.telegram.tgnet.TLRPC;
@@ -313,7 +314,7 @@ public class ChatObject {
         public void setCall(AccountInstance account, long chatId, TLRPC.GroupCall call) {
             this.chatId = chatId;
             this.currentAccount = account;
-            this.call = call;
+            this.call = TlUtils.applyGroupCallUpdate(this.call, call);
             this.recording = call.record_start_date != 0;
             sortParticipants();
             loadMembers(true);
@@ -327,7 +328,7 @@ public class ChatObject {
         public void setCall(AccountInstance account, long chatId, TL_phone.groupCall groupCall) {
             this.chatId = chatId;
             currentAccount = account;
-            call = groupCall.call;
+            call = TlUtils.applyGroupCallUpdate(call, groupCall.call);
             recording = call.record_start_date != 0;
             int date = Integer.MAX_VALUE;
             for (int a = 0, N = groupCall.participants.size(); a < N; a++) {
@@ -1275,11 +1276,15 @@ public class ChatObject {
         }
 
         public void processGroupCallUpdate(TLRPC.TL_updateGroupCall update) {
-            if (call.version < update.call.version) {
+            processGroupCallUpdate(update.call);
+        }
+
+        public void processGroupCallUpdate(TLRPC.GroupCall update) {
+            if (call.version < update.version) {
                 nextLoadOffset = null;
                 loadMembers(true);
             }
-            call = update.call;
+            call = TlUtils.applyGroupCallUpdate(call, update);
             TLRPC.GroupCallParticipant selfParticipant = participants.get(getSelfId());
             recording = call.record_start_date != 0;
             currentAccount.getNotificationCenter().postNotificationName(NotificationCenter.groupCallUpdated, chatId, call.id, false);
@@ -1968,7 +1973,7 @@ public class ChatObject {
     }
 
     public static boolean isBoostSupported(TLRPC.Chat chat) {
-        return (isChannelAndNotMegaGroup(chat) || isMegagroup(chat)) && !isMonoForum(chat);
+        return (isChannelAndNotMegaGroup(chat) || isMegagroup(chat)) && !isMonoForum(chat) && !false;
     }
 
     public static boolean isBoosted(TLRPC.ChatFull chatFull) {
@@ -2005,11 +2010,11 @@ public class ChatObject {
     }
 
     public static boolean canBlockUsers(TLRPC.Chat chat) {
-        return canUserDoAction(chat, ACTION_BLOCK_USERS);
+        return !false && canUserDoAction(chat, ACTION_BLOCK_USERS);
     }
 
     public static boolean canManageCalls(TLRPC.Chat chat) {
-        return canUserDoAction(chat, ACTION_MANAGE_CALLS);
+        return !false && canUserDoAction(chat, ACTION_MANAGE_CALLS);
     }
 
     public static boolean canSendStickers(TLRPC.Chat chat) {
@@ -2069,7 +2074,7 @@ public class ChatObject {
     }
 
     public static boolean canSendPolls(TLRPC.Chat chat) {
-        if (ChatObject.isMonoForum(chat)) {
+        if (ChatObject.isMonoForum(chat) || false) {
             return false;
         }
         if (isIgnoredChatRestrictionsForBoosters(chat)) {
@@ -2100,7 +2105,7 @@ public class ChatObject {
     }
 
     public static boolean canAddUsers(TLRPC.Chat chat) {
-        return canUserDoAction(chat, ACTION_INVITE);
+        return !false && canUserDoAction(chat, ACTION_INVITE);
     }
 
     public static boolean shouldSendAnonymously(TLRPC.Chat chat) {
@@ -2423,18 +2428,21 @@ public class ChatObject {
 
     public static int getColorId(TLRPC.Chat chat) {
         if (chat == null) return 0;
-        if (chat.color != null && (chat.color.flags & 1) != 0) return chat.color.color;
+        if (chat.color instanceof TLRPC.TL_peerColor && (chat.color.flags & 1) != 0)
+            return chat.color.color;
         return (int) (chat.id % 7);
     }
 
     public static long getEmojiId(TLRPC.Chat chat) {
-        if (chat != null && chat.color != null && (chat.color.flags & 2) != 0) return chat.color.background_emoji_id;
+        if (chat != null && chat.color instanceof TLRPC.TL_peerColor && (chat.color.flags & 2) != 0)
+            return chat.color.background_emoji_id;
         return 0;
     }
 
     public static int getProfileColorId(TLRPC.Chat chat) {
         if (chat == null) return 0;
-        if (chat.profile_color != null && (chat.profile_color.flags & 1) != 0) return chat.profile_color.color;
+        if (chat.profile_color instanceof TLRPC.TL_peerColor && (chat.profile_color.flags & 1) != 0)
+            return chat.profile_color.color;
         return -1;
     }
 
@@ -2442,7 +2450,14 @@ public class ChatObject {
         if (chat != null && chat.emoji_status instanceof TLRPC.TL_emojiStatusCollectible) {
             return ((TLRPC.TL_emojiStatusCollectible) chat.emoji_status).pattern_document_id;
         }
-        if (chat != null && chat.profile_color != null && (chat.profile_color.flags & 2) != 0) return chat.profile_color.background_emoji_id;
+        if (chat != null && chat.profile_color instanceof TLRPC.TL_peerColor && (chat.profile_color.flags & 2) != 0)
+            return chat.profile_color.background_emoji_id;
+        return 0;
+    }
+
+    public static long getOnlyProfileEmojiId(TLRPC.Chat chat) {
+        if (chat != null && chat.profile_color instanceof TLRPC.TL_peerColor && (chat.profile_color.flags & 2) != 0)
+            return chat.profile_color.background_emoji_id;
         return 0;
     }
 
