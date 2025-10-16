@@ -5976,7 +5976,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 updateDialogsHint();
             });
             updateAuthHintCellVisibility(false);
-        } else if (folderId == 0 && getMessagesController().customPendingSuggestion != null) {
+        } else if (folderId == 0 && getMessagesController().customPendingSuggestion != null && !NekoConfig.disableTrending.Bool()) {
             final TLRPC.TL_pendingSuggestion suggestion = getMessagesController().customPendingSuggestion;
             dialogsHintCellVisible = true;
             dialogsHintCell.setVisibility(View.VISIBLE);
