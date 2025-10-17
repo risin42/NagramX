@@ -35,7 +35,7 @@ subprojects {
 
                 defaultConfig {
                     minSdk = 27
-                    targetSdk = 35
+                    targetSdk = 36
                 }
 
                 buildFeatures.buildConfig = true
