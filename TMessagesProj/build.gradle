@@ -8,8 +8,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-def buildTimestamp = System.getenv("BUILD_TIMESTAMP") ?: "0"
-def commitId = System.getenv("COMMIT_ID")
+def buildTimestamp = System.getenv('BUILD_TIMESTAMP') ?: '0'
+def commitId = System.getenv('COMMIT_ID')
 def verName = "${APP_VERSION_NAME}${commitId?.take(7) ? "-${commitId.take(7)}" : ''}"
 def verCode = 1221
 
@@ -21,37 +21,42 @@ def alias = null
 def pwd = null
 
 Properties properties
-def base64 = System.getenv("LOCAL_PROPERTIES")
+def base64 = System.getenv('LOCAL_PROPERTIES')
 if (base64 != null && !base64.isBlank()) {
     properties = new Properties()
     properties.load(new ByteArrayInputStream(Base64.decoder.decode(base64)))
-} else if (project.rootProject.file("local.properties").exists()) {
+} else if (project.rootProject.file('local.properties').exists()) {
     properties = new Properties()
-    properties.load(project.rootProject.file("local.properties").newDataInputStream())
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
 }
 
 if (properties != null) {
-    keystorePwd = properties.getProperty("KEYSTORE_PASS")
-    alias = properties.getProperty("ALIAS_NAME")
-    pwd = properties.getProperty("ALIAS_PASS")
+    keystorePwd = properties.getProperty('KEYSTORE_PASS')
+    alias = properties.getProperty('ALIAS_NAME')
+    pwd = properties.getProperty('ALIAS_PASS')
 }
 
-keystorePwd = keystorePwd ?: System.getenv("KEYSTORE_PASS")
-alias = alias ?: System.getenv("ALIAS_NAME")
-pwd = pwd ?: System.getenv("ALIAS_PASS")
+keystorePwd = keystorePwd ?: System.getenv('KEYSTORE_PASS')
+alias = alias ?: System.getenv('ALIAS_NAME')
+pwd = pwd ?: System.getenv('ALIAS_PASS')
 
-def nativeTarget = System.getenv("NATIVE_TARGET") ?: ""
+def nativeTarget = System.getenv('NATIVE_TARGET') ?: ''
 
-if (nativeTarget == "SKIP") {
+if (nativeTarget == 'SKIP') {
     tasks.configureEach { task ->
         if (
-            task.name.toLowerCase().contains("cmake") ||
-            task.name.toLowerCase().contains("jni") ||
-            task.name.toLowerCase().contains("test") ||
-            task.name.toLowerCase().contains("uploadCrashlyticsMappingFile")
+            task.name.toLowerCase().contains('cmake') ||
+            task.name.toLowerCase().contains('jni') ||
+            task.name.toLowerCase().contains('test')
         ) {
             task.enabled = false
         }
+    }
+}
+
+tasks.configureEach {
+    if (it.name.contains('uploadCrashlyticsMappingFile')) {
+        it.enabled = false
     }
 }
 
@@ -84,26 +89,26 @@ android {
         versionName verName
         versionCode verCode
 
-        //obtain your own keys at https://core.telegram.org/api/obtaining_api_id
-        def appId = "6"
-        def appHash = "eb06d4abfb49dc3eeb1aeb98ae0f581e"
+        // obtain your own keys at https://core.telegram.org/api/obtaining_api_id
+        def appId = '6'
+        def appHash = 'eb06d4abfb49dc3eeb1aeb98ae0f581e'
 
         if (properties != null) {
-            appId = properties.getProperty("TELEGRAM_APP_ID") ?: System.getenv("TELEGRAM_APP_ID") ?: appId
-            appHash = properties.getProperty("TELEGRAM_APP_HASH") ?: System.getenv("TELEGRAM_APP_HASH") ?: appHash
+            appId = properties.getProperty('TELEGRAM_APP_ID') ?: System.getenv('TELEGRAM_APP_ID') ?: appId
+            appHash = properties.getProperty('TELEGRAM_APP_HASH') ?: System.getenv('TELEGRAM_APP_HASH') ?: appHash
         }
 
-        buildConfigField "String", "BUILD_VERSION_STRING", "\"" + verName + "\""
-        buildConfigField "String", "OFFICIAL_VERSION", "\"" + officialVer + "\""
-        buildConfigField "int", "OFFICIAL_VERSION_CODE", officialCode + ""
-        buildConfigField "int", "APP_ID", appId
-        buildConfigField "String", "APP_HASH", "\"" + appHash + "\""
-        buildConfigField "long", "BUILD_TIMESTAMP", buildTimestamp + "L"
+        buildConfigField 'String', 'BUILD_VERSION_STRING', '"' + verName + '"'
+        buildConfigField 'String', 'OFFICIAL_VERSION', '"' + officialVer + '"'
+        buildConfigField 'int', 'OFFICIAL_VERSION_CODE', officialCode + ''
+        buildConfigField 'int', 'APP_ID', appId
+        buildConfigField 'String', 'APP_HASH', '"' + appHash + '"'
+        buildConfigField 'long', 'BUILD_TIMESTAMP', buildTimestamp + 'L'
 
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-27', '-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON'
-                System.getenv("PATH").split(File.pathSeparator).any { path ->
+                System.getenv('PATH').split(File.pathSeparator).any { path ->
                     var file = Paths.get("${path}${File.separator}ccache${if (OperatingSystem.current().windows) ".exe" else ""}").toFile()
                     if (file.exists()) {
                         println("Using ccache ${file.getAbsolutePath()}")
@@ -116,7 +121,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+                arguments += ['room.schemaLocation': "$projectDir/schemas".toString()]
             }
         }
     }
@@ -130,13 +135,13 @@ android {
     externalNativeBuild {
         cmake {
             version = '3.31.6+'
-            path = "jni/CMakeLists.txt"
+            path = 'jni/CMakeLists.txt'
         }
     }
 
     signingConfigs {
         release {
-            storeFile project.file("release.keystore")
+            storeFile project.file('release.keystore')
             storePassword keystorePwd
             keyAlias alias
             keyPassword pwd
@@ -158,8 +163,8 @@ android {
             minifyEnabled = true
             shrinkResources = true
             multiDexEnabled = true
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            matchingFallbacks = ["release", "staging", "debug"]
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            matchingFallbacks = ['release', 'staging', 'debug']
             signingConfig = signingConfigs.release
         }
 
@@ -169,8 +174,8 @@ android {
             minifyEnabled = true
             shrinkResources = true
             multiDexEnabled = true
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            matchingFallbacks = ["release", "staging", "debug"]
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            matchingFallbacks = ['release', 'staging', 'debug']
             signingConfig = signingConfigs.release
         }
     }
@@ -179,11 +184,11 @@ android {
 
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach { output ->
-            String gramName = "NagramX"
-            String first = String.format("%s-v%s(%s)", gramName, versionName, versionCode)
-            String name = outputFileName.replace("TMessagesProj", first)
-            name = name.replace("-release", "")
-            name = name.replace("-staging", "")
+            String gramName = 'NagramX'
+            String first = String.format('%s-v%s(%s)', gramName, versionName, versionCode)
+            String name = outputFileName.replace('TMessagesProj', first)
+            name = name.replace('-release', '')
+            name = name.replace('-staging', '')
             outputFileName = name
         }
     }
@@ -243,7 +248,7 @@ dependencies {
     // kotlin
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.20'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
-    // utilities 
+    // utilities
     implementation 'org.osmdroid:osmdroid-android:6.1.20'
     // network
     implementation 'com.squareup.okhttp3:okhttp:5.2.1'
