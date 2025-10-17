@@ -31,6 +31,46 @@ import java.util.regex.Pattern;
 import xyz.nextalone.nagram.NaConfig;
 
 public class AyuFilter {
+    private static java.util.HashSet<Long> excludedDialogs;
+
+    private static java.util.HashSet<Long> getExcludedDialogs() {
+        if (excludedDialogs == null) {
+            try {
+                String str = NaConfig.INSTANCE.getRegexFiltersExcludedDialogs().String();
+                Long[] arr = new Gson().fromJson(str, Long[].class);
+                excludedDialogs = new java.util.HashSet<>();
+                if (arr != null) {
+                    excludedDialogs.addAll(Arrays.asList(arr));
+                }
+            } catch (Exception e) {
+                excludedDialogs = new java.util.HashSet<>();
+            }
+        }
+        return excludedDialogs;
+    }
+
+    public static boolean isDialogExcluded(long dialogId) {
+        return getExcludedDialogs().contains(dialogId);
+    }
+
+    public static void setDialogExcluded(long dialogId, boolean excluded) {
+        java.util.HashSet<Long> set = getExcludedDialogs();
+        boolean changed;
+        if (excluded) {
+            changed = set.add(dialogId);
+        } else {
+            changed = set.remove(dialogId);
+        }
+        if (changed) {
+            Long[] arr = set.toArray(new Long[0]);
+            String str = new Gson().toJson(arr);
+            NaConfig.INSTANCE.getRegexFiltersExcludedDialogs().setConfigString(str);
+            if (filteredCache != null) {
+                filteredCache.remove(dialogId);
+            }
+        }
+    }
+
     public static ArrayList<FilterModel> getRegexFilters() {
         var str = NaConfig.INSTANCE.getRegexFiltersData().String();
 
@@ -199,9 +239,14 @@ public class AyuFilter {
             rebuildCache();
         }
 
+        long dialogId = msg.getDialogId();
+
+        if (isDialogExcluded(dialogId)) {
+            return false;
+        }
+
         Boolean res;
 
-        long dialogId = msg.getDialogId();
         var cached = filteredCache.get(dialogId);
         if (cached != null) {
             res = cached.get(msg.getId());

@@ -346,6 +346,7 @@ import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
 import tw.nekomimi.nekogram.helpers.remote.UpdateHelper;
 import tw.nekomimi.nekogram.menu.saveDeleted.SaveExclusionPopupWrapper;
+import tw.nekomimi.nekogram.menu.regexfilters.RegexFiltersExclusionPopupWrapper;
 import tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
@@ -356,7 +357,6 @@ import tw.nekomimi.nekogram.parts.DialogTransKt;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
-import tw.nekomimi.nekogram.utils.LangsKt;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
 import xyz.nextalone.nagram.NaConfig;
@@ -12867,13 +12867,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         return drawable != null ? drawable : super.getThemedDrawable(drawableKey);
     }
 
-    private void createMessageFilterItem() {
-        if (!NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) {
-            return;
-        }
-        otherItem.addSubItem(message_filter, R.drawable.hide_title, getString("RegexFilters", R.string.RegexFilters));
-    }
-
     private void setAutoDeleteHistory(int time, int action) {
         long did = getDialogId();
         getMessagesController().setDialogHistoryTTL(did, time);
@@ -17024,6 +17017,22 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         if (!NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) return;
         var autoTranslatePopupWrapper = new SaveExclusionPopupWrapper(ProfileActivity.this, otherItem.getPopupLayout().getSwipeBack(), chatId, getResourceProvider());
         otherItem.addSwipeBackItem(R.drawable.msg_delete_24_solar, null, getString(R.string.SaveDeletedExclusionMenu), autoTranslatePopupWrapper.windowLayout);
+        otherItem.addColoredGap();
+    }
+
+    private void createMessageFilterItem() {
+        if (!NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) {
+            return;
+        }
+        var popupLayout = otherItem.getPopupLayout();
+        var popupWrapper = new RegexFiltersExclusionPopupWrapper(ProfileActivity.this, popupLayout.getSwipeBack(), chatId != 0 ? -chatId : userId, getResourceProvider());
+        int swipeBackIndex = popupLayout.addViewToSwipeBack(popupWrapper.windowLayout);
+        ActionBarMenuSubItem cell = otherItem.addSubItem(message_filter, R.drawable.hide_title, getString(R.string.RegexFilters).replace("Regex ", ""));
+        cell.setRightIcon(R.drawable.msg_arrowright, v -> {
+            if (popupLayout.getSwipeBack() != null) {
+                popupLayout.getSwipeBack().openForeground(swipeBackIndex);
+            }
+        });
         otherItem.addColoredGap();
     }
 
