@@ -56,6 +56,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -87,9 +88,9 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
     private final ArrayList<EmojiPackLoadListener> listeners = new ArrayList<>();
 
     private String emojiPack;
-    private Typeface systemEmojiTypeface;
+    private static Typeface systemEmojiTypeface;
     private Bitmap systemEmojiPreview;
-    private boolean loadSystemEmojiFailed = false;
+    private static boolean loadSystemEmojiFailed = false;
     private boolean loadingPack = false;
     private String pendingDeleteEmojiPackId;
     private Bulletin emojiPackBulletin;
@@ -285,16 +286,18 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
 
     public static void drawEmojiFont(Canvas canvas, int x, int y, Typeface typeface, String emoji, int emojiSize) {
         int fontSize = (int) (emojiSize * 0.85f);
-        Rect areaRect = new Rect(0, 0, emojiSize, emojiSize);
         if (textPaint == null) {
             textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
             textPaint.setTextAlign(Paint.Align.CENTER);
+            textPaint.setTextLocale(Locale.forLanguageTag("und-Zsye"));
         }
         textPaint.setTypeface(typeface);
         textPaint.setTextSize(fontSize);
-        Rect textRect = new Rect();
-        textPaint.getTextBounds(emoji, 0, emoji.length(), textRect);
-        canvas.drawText(emoji, areaRect.centerX() + x, -textRect.top + y, textPaint);
+        var fm = textPaint.getFontMetricsInt();
+        var textHeight = fm.descent - fm.ascent;
+        var baseline = y + (emojiSize - textHeight) / 2f - fm.ascent;
+        var centerX = x + emojiSize / 2f;
+        canvas.drawText(emoji, centerX, baseline, textPaint);
     }
 
     public Long getEmojiSize() {
@@ -344,9 +347,12 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
         }
     }
 
-    public Typeface getSystemEmojiTypeface() {
+    public static Typeface getSystemEmojiTypeface() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return null;
+        }
         if (!loadSystemEmojiFailed && systemEmojiTypeface == null) {
-            var font = getSystemEmojiFontPath();
+            var font = getSystemEmojiFontPathLegacy();
             if (font != null) {
                 systemEmojiTypeface = Typeface.createFromFile(font);
             }
