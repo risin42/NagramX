@@ -29,7 +29,7 @@ public class NotificationsService extends Service {
     public void onCreate() {
         super.onCreate();
         ApplicationLoader.postInitApplication();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM && NaConfig.INSTANCE.getPushServiceTypeInAppDialog().Bool()) {
+        if (NaConfig.INSTANCE.getPushServiceTypeInAppDialog().Bool()) {
             String CHANNEL_ID = "push_service_channel";
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, LocaleController.getString(R.string.NagramXPushService), NotificationManager.IMPORTANCE_DEFAULT);
@@ -64,6 +64,10 @@ public class NotificationsService extends Service {
 
     public void onDestroy() {
         super.onDestroy();
+        try {
+            stopForeground(true);
+        } catch (Throwable ignore) {
+        }
         SharedPreferences preferences = MessagesController.getGlobalNotificationsSettings();
         if (preferences.getBoolean("pushService", true)) {
             Intent intent = new Intent("org.telegram.start");
@@ -76,4 +80,9 @@ public class NotificationsService extends Service {
         }
     }
 
+    @Override
+    public void onTimeout(int startId, int fgsType) {
+        super.onTimeout(startId, fgsType);
+        stopSelf();
+    }
 }

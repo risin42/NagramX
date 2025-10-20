@@ -117,9 +117,7 @@ public class AndroidUtil {
             editor.putBoolean("pushService", true).apply();
             editor.putBoolean("pushConnection", true).apply();
             NaConfig.INSTANCE.getPushServiceType().setConfigInt(0);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(true);
-            }
+            NaConfig.INSTANCE.getPushServiceTypeInAppDialog().setConfigBool(true);
         }
     }
 
