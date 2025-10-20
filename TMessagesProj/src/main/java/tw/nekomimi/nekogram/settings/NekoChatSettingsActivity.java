@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +31,7 @@ import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
+import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ActionBar.ThemeDescription;
 import org.telegram.ui.Cells.CheckBoxCell;
@@ -228,39 +231,171 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             add(new ConfigCellTextCheck(NaConfig.INSTANCE.getDefaultDeleteMenuDoActionsInCommonGroups()));
         }}));
     }));
+
+    @SuppressLint("NotifyDataSetChanged")
     private final AbstractConfigCell textStyleRow = cellGroup.appendCell(new ConfigCellTextCheckIcon(null, "TextStyle", null, R.drawable.msg_photo_text_framed3, false, () -> {
         if (getParentActivity() == null) return;
-        final SpannableStringBuilder[] stringBuilder = new SpannableStringBuilder[6];
-        showDialog(showConfigMenuAlert(getParentActivity(), "TextStyle", new ArrayList<>() {{
-            stringBuilder[0] = new SpannableStringBuilder(getString(R.string.Bold));
-            stringBuilder[0].setSpan(new TypefaceSpan(AndroidUtilities.bold()), 0, stringBuilder[0].length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            stringBuilder[1] = new SpannableStringBuilder(getString(R.string.Italic));
-            stringBuilder[1].setSpan(new TypefaceSpan(AndroidUtilities.getTypeface("fonts/ritalic.ttf")), 0, stringBuilder[1].length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            stringBuilder[2] = new SpannableStringBuilder(getString(R.string.Mono));
-            stringBuilder[2].setSpan(new TypefaceSpan(Typeface.MONOSPACE), 0, stringBuilder[2].length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            stringBuilder[3] = new SpannableStringBuilder(getString(R.string.MonoCode));
-            stringBuilder[3].setSpan(new TypefaceSpan(Typeface.MONOSPACE), 0, stringBuilder[3].length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            stringBuilder[4] = new SpannableStringBuilder(getString(R.string.Strike));
-            TextStyleSpan.TextStyleRun run;
-            run = new TextStyleSpan.TextStyleRun();
-            run.flags |= TextStyleSpan.FLAG_STYLE_STRIKE;
-            stringBuilder[4].setSpan(new TextStyleSpan(run), 0, stringBuilder[4].length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            stringBuilder[5] = new SpannableStringBuilder(getString(R.string.Underline));
-            run = new TextStyleSpan.TextStyleRun();
-            run.flags |= TextStyleSpan.FLAG_STYLE_UNDERLINE;
-            stringBuilder[5].setSpan(new TextStyleSpan(run), 0, stringBuilder[5].length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextBold(), null, stringBuilder[0]));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextItalic(), null,stringBuilder[1]));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextMono(), null, stringBuilder[2]));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextMonoCode(), null, stringBuilder[3]));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextStrikethrough(), null, stringBuilder[4]));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextUnderline(), null, stringBuilder[5]));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextQuote(), null, getString(R.string.Quote)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextSpoiler(), null, getString(R.string.Spoiler)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextCreateLink(), null, getString(R.string.CreateLink)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextCreateMention(), null, getString(R.string.CreateMention)));
-            add(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextRegular(), null, getString(R.string.Regular)));
-        }}));
+        Context ctx = getParentActivity();
+        class Item {
+            final String key;
+            final CharSequence title;
+            final ConfigCellTextCheck bind;
+
+            Item(String k, CharSequence t, ConfigCellTextCheck b) {
+                key = k;
+                title = t;
+                bind = b;
+            }
+        }
+        ArrayList<Item> items = new ArrayList<>();
+        SpannableStringBuilder sb;
+        items.add(new Item("translate", getString(R.string.TranslateMessage), new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextTranslate(), null, getString(R.string.TranslateMessage))));
+        sb = new SpannableStringBuilder(getString(R.string.Bold));
+        sb.setSpan(new TypefaceSpan(AndroidUtilities.bold()), 0, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        items.add(new Item("bold", sb, new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextBold(), null, sb)));
+        sb = new SpannableStringBuilder(getString(R.string.Italic));
+        sb.setSpan(new TypefaceSpan(AndroidUtilities.getTypeface("fonts/ritalic.ttf")), 0, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        items.add(new Item("italic", sb, new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextItalic(), null, sb)));
+        sb = new SpannableStringBuilder(getString(R.string.Mono));
+        sb.setSpan(new TypefaceSpan(Typeface.MONOSPACE), 0, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        items.add(new Item("mono", sb, new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextMono(), null, sb)));
+        sb = new SpannableStringBuilder(getString(R.string.MonoCode));
+        sb.setSpan(new TypefaceSpan(Typeface.MONOSPACE), 0, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        items.add(new Item("code", sb, new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextMonoCode(), null, sb)));
+        sb = new SpannableStringBuilder(getString(R.string.Strike));
+        TextStyleSpan.TextStyleRun run = new TextStyleSpan.TextStyleRun();
+        run.flags |= TextStyleSpan.FLAG_STYLE_STRIKE;
+        sb.setSpan(new TextStyleSpan(run), 0, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        items.add(new Item("strike", sb, new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextStrikethrough(), null, sb)));
+        sb = new SpannableStringBuilder(getString(R.string.Underline));
+        run = new TextStyleSpan.TextStyleRun();
+        run.flags |= TextStyleSpan.FLAG_STYLE_UNDERLINE;
+        sb.setSpan(new TextStyleSpan(run), 0, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        items.add(new Item("underline", sb, new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextUnderline(), null, sb)));
+        items.add(new Item("quote", getString(R.string.Quote), new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextQuote(), null, getString(R.string.Quote))));
+        items.add(new Item("spoiler", getString(R.string.Spoiler), new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextSpoiler(), null, getString(R.string.Spoiler))));
+        items.add(new Item("link", getString(R.string.CreateLink), new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextCreateLink(), null, getString(R.string.CreateLink))));
+        items.add(new Item("mention", getString(R.string.CreateMention), new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextCreateMention(), null, getString(R.string.CreateMention))));
+        items.add(new Item("regular", getString(R.string.Regular), new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextRegular(), null, getString(R.string.Regular))));
+
+        // recover saved order
+        String orderStr = NaConfig.INSTANCE.getTextStyleOrder().String();
+        ArrayList<Item> ordered = new ArrayList<>();
+        if (!TextUtils.isEmpty(orderStr)) {
+            String[] keys = orderStr.split(",");
+            for (String k : keys) {
+                for (Item it : items) {
+                    if (it.key.equals(k) && !ordered.contains(it)) ordered.add(it);
+                }
+            }
+            for (Item it : items) {
+                if (!ordered.contains(it)) ordered.add(it);
+            }
+        } else {
+            ordered.addAll(items);
+        }
+
+        RecyclerView rv = new RecyclerView(ctx);
+        rv.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.VERTICAL, false));
+        class VH extends RecyclerView.ViewHolder {
+            final TextCheckCell cell;
+
+            VH(TextCheckCell c) {
+                super(c);
+                cell = c;
+            }
+        }
+
+        class Adapter extends RecyclerView.Adapter<VH> {
+            final ArrayList<Item> data;
+
+            Adapter(ArrayList<Item> d) {
+                data = d;
+            }
+
+            @NonNull
+            @Override
+            public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                TextCheckCell c = new TextCheckCell(ctx);
+                c.setBackground(Theme.getSelectorDrawable(false));
+                return new VH(c);
+            }
+
+            @Override
+            public void onBindViewHolder(VH holder, int position) {
+                Item it = data.get(position);
+                holder.cell.setTextAndCheck(it.title, it.bind.getBindConfig().Bool(), false);
+                holder.cell.setTag(position);
+                holder.cell.setOnClickListener(v -> {
+                    int pos = (Integer) v.getTag();
+                    Item ii = data.get(pos);
+                    ii.bind.getBindConfig().toggleConfigBool();
+                    holder.cell.setChecked(ii.bind.getBindConfig().Bool());
+                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+                });
+            }
+
+            @Override
+            public int getItemCount() {
+                return data.size();
+            }
+        }
+        Adapter adapter = new Adapter(ordered);
+        rv.setAdapter(adapter);
+
+        ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                return makeMovementFlags(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0);
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                int from = viewHolder.getAdapterPosition();
+                int to = target.getAdapterPosition();
+                Item it = ordered.remove(from);
+                ordered.add(to, it);
+                adapter.notifyItemMoved(from, to);
+                return true;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            }
+        });
+        helper.attachToRecyclerView(rv);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+        builder.setTitle(getString(R.string.TextStyle));
+        builder.setView(rv);
+        builder.setPositiveButton(getString(R.string.OK), (d, which) -> {
+            // save order
+            StringBuilder sbOrder = new StringBuilder();
+            for (int i = 0; i < ordered.size(); i++) {
+                if (i > 0) sbOrder.append(",");
+                sbOrder.append(ordered.get(i).key);
+            }
+            NaConfig.INSTANCE.getTextStyleOrder().setConfigString(sbOrder.toString());
+            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+        });
+        builder.setNegativeButton(getString(R.string.Cancel), null);
+        builder.setNeutralButton(getString(R.string.Reset), (d, which) -> {
+            String def = "translate,bold,italic,mono,code,strike,underline,quote,spoiler,link,mention,regular";
+            NaConfig.INSTANCE.getTextStyleOrder().setConfigString(def);
+            ordered.clear();
+            String[] keys = def.split(",");
+            for (String k : keys) {
+                for (Item it : items) {
+                    if (it.key.equals(k) && !ordered.contains(it)) ordered.add(it);
+                }
+            }
+            for (Item it : items) {
+                if (!ordered.contains(it)) ordered.add(it);
+            }
+            adapter.notifyDataSetChanged();
+            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+        });
+        builder.create().show();
     }));
     private final AbstractConfigCell dividerMenuAndButtons = cellGroup.appendCell(new ConfigCellDivider());
 
