@@ -242,7 +242,7 @@ class SolarIcons {
             solarIcons.add(R.drawable.msg_mini_customize to R.drawable.msg_mini_customize_solar)
             solarIcons.add(R.drawable.msg_mini_qr to R.drawable.msg_mini_qr_solar)
             solarIcons.add(R.drawable.msg_msgbubble to R.drawable.msg_msgbubble3_solar)
-            solarIcons.add(R.drawable.msg_msgbubble2 to R.drawable.msg_msgbubble2_solar)
+            // solarIcons.add(R.drawable.msg_msgbubble2 to R.drawable.msg_msgbubble2_solar)
             solarIcons.add(R.drawable.msg_msgbubble3 to R.drawable.msg_msgbubble3_solar)
             solarIcons.add(R.drawable.msg_mute to R.drawable.msg_mute_solar)
             solarIcons.add(R.drawable.msg_mute_1h to R.drawable.msg_mute_1h_solar)
