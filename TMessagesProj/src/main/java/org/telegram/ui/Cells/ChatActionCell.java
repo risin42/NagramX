@@ -1871,10 +1871,10 @@ public class ChatActionCell extends BaseCell implements DownloadController.FileD
                             boolean d = text.charAt(text.length() - 1) == ':';
                             long date = currentMessageObject.messageOwner.date;
                             SpannableStringBuilder ssb = new SpannableStringBuilder(text);
-                            if (d)
-                                ssb.delete(text.length() - 1, text.length());
+                            if (d) ssb.delete(text.length() - 1, text.length());
                             ssb.append(" ").append(LocaleController.formatString(R.string.TodayAtFormatted, LocaleController.getInstance().getFormatterDay().format(date * 1000)));
-                            text = ssb + (d ? ":" : "");
+                            if (d) ssb.append(":");
+                            text = ssb;
                         }
                     }
                 }
