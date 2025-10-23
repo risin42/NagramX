@@ -345,6 +345,7 @@ import tw.nekomimi.nekogram.helpers.ProfileDateHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
 import tw.nekomimi.nekogram.helpers.remote.UpdateHelper;
+import tw.nekomimi.nekogram.menu.forum.CustomForumTabsPopupWrapper;
 import tw.nekomimi.nekogram.menu.saveDeleted.SaveExclusionPopupWrapper;
 import tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity;
 import tw.nekomimi.nekogram.translate.Translator;
@@ -12566,6 +12567,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             }
             createSaveExclusionItem(chatId);
             createMessageFilterItem();
+            if (chat.forum) {
+                createCustomForumTabsItem();
+            }
             if (chat != null && (chat.has_link || (chatInfo != null && chatInfo.linked_chat_id != 0))) {
                 if (chat.megagroup) {
                     otherItem.addSubItem(view_discussion, R.drawable.msg_channel, getString(R.string.LinkedChannelChat));
@@ -12872,6 +12876,12 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             return;
         }
         otherItem.addSubItem(message_filter, R.drawable.hide_title, getString("RegexFilters", R.string.RegexFilters));
+    }
+
+    private void createCustomForumTabsItem() {
+        var customForumTabsPopupWrapper = new CustomForumTabsPopupWrapper(ProfileActivity.this, otherItem.getPopupLayout().getSwipeBack(), -chatId, getResourceProvider());
+        otherItem.addSwipeBackItem(R.drawable.msg_topics, null, LocaleController.getString(R.string.Topics), customForumTabsPopupWrapper.windowLayout);
+        otherItem.addColoredGap();
     }
 
     private void setAutoDeleteHistory(int time, int action) {

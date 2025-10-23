@@ -80,6 +80,7 @@ import java.util.function.Function;
 
 import kotlin.text.StringsKt;
 import tw.nekomimi.nekogram.DatacenterActivity;
+import tw.nekomimi.nekogram.DialogConfig;
 import tw.nekomimi.nekogram.NekoConfig;
 import xyz.nextalone.nagram.NaConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
@@ -915,7 +916,8 @@ public class NekoSettingsActivity extends BaseFragment {
         String[] preservePrefixes = {
                 AyuSavePreferences.saveExclusionPrefix,
                 ChatNameHelper.chatNameOverridePrefix,
-                NekoConfig.channelAliasPrefix
+                NekoConfig.channelAliasPrefix,
+                DialogConfig.customForumTabPrefix
         };
 
         for (Map.Entry<String, JsonElement> element : configJson.entrySet()) {

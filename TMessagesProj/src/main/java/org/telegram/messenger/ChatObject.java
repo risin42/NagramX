@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import tw.nekomimi.nekogram.DialogConfig;
 import xyz.nextalone.nagram.NaConfig;
 
 public class ChatObject {
@@ -2480,6 +2481,9 @@ public class ChatObject {
     }
 
     public static boolean areTabsEnabled(TLRPC.Chat chat) {
+        if (chat != null && DialogConfig.hasCustomForumTabsConfig(-chat.id)) {
+            return DialogConfig.isCustomForumTabsEnable(-chat.id);
+        }
         return SharedConfig.forceForumTabs || chat != null && chat.forum_tabs;
     }
 }

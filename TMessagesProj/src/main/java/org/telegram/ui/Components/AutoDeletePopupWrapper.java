@@ -38,6 +38,7 @@ public class AutoDeletePopupWrapper {
             backItem.setOnClickListener(view -> {
                 swipeBackLayout.closeForeground();
             });
+            ActionBarMenuItem.addColoredGap(windowLayout, resourcesProvider);
         }
 
         ActionBarMenuSubItem item = ActionBarMenuItem.addItem(windowLayout, R.drawable.msg_autodelete_1d, LocaleController.getString(R.string.AutoDelete1Day), false, resourcesProvider);
