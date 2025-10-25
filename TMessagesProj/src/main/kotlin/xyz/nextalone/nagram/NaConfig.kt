@@ -1221,6 +1221,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val idDcType =
+        addConfig(
+            "IdDcType",
+            ConfigItem.configTypeInt,
+            1
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {
@@ -1270,6 +1276,9 @@ object NaConfig {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             pushServiceTypeInAppDialog.setConfigBool(false)
+        }
+        if (!preferences.getBoolean("ShowIdAndDc", true)) {
+            idDcType.setConfigInt(0)
         }
     }
 

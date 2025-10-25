@@ -49,6 +49,10 @@ public class NekoConfig {
     public static final int DNS_TYPE_SYSTEM = 2;
     public static final int DNS_TYPE_CUSTOM_DOH = 3;
 
+    public static final int ID_TYPE_HIDDEN = 0;
+    public static final int ID_TYPE_API = 1;
+    public static final int ID_TYPE_BOT_API = 2;
+
     public static final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Context.MODE_PRIVATE);
     public static final Object sync = new Object();
     public static final String channelAliasPrefix = "channelAliasPrefix_";

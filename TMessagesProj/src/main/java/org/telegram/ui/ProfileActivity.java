@@ -10997,7 +10997,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     numberRow = rowCount++;
                 }
                 setUsernameRow = rowCount++;
-                if (NekoConfig.showIdAndDc.Bool()) {
+                if (NaConfig.INSTANCE.getIdDcType().Int() != 0) {
                     idDcRow = rowCount++;
                 }
                 bioRow = rowCount++;
@@ -11110,7 +11110,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 if (user != null && username != null) {
                     usernameRow = rowCount++;
                 }
-                if (NekoConfig.showIdAndDc.Bool()) {
+                if (NaConfig.INSTANCE.getIdDcType().Int() != 0) {
                     idDcRow = rowCount++;
                 }
                 if (userInfo != null) {
@@ -11280,7 +11280,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     infoEndRowEmpty = rowCount++;
                 }
             }
-            if (NekoConfig.showIdAndDc.Bool()) {
+            if (NaConfig.INSTANCE.getIdDcType().Int() != 0) {
                 idDcRow = rowCount++;
             }
             if (actionsView == null) {
@@ -13953,6 +13953,16 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         detailCell.setTextAndValue(text, alsoUsernamesString(username, usernames, value), infoEndRowEmpty == -1 && (isTopic || bizHoursRow != -1 || bizLocationRow != -1) && birthdayRow < 0);
                     } else if (position == idDcRow) {
                         long id = userId != 0 ? userId : chatId != 0 ? chatId : 0;
+                        if (NaConfig.INSTANCE.getIdDcType().Int() == NekoConfig.ID_TYPE_BOT_API && chatId != 0) {
+                            var chat = getMessagesController().getChat(chatId);
+                            if (chat != null) {
+                                if (ChatObject.isChannel(chat)) {
+                                    id = -1000000000000L - chat.id;
+                                } else {
+                                    id = - chat.id;
+                                }
+                            }
+                        }
                         int dc = getDcId();
                         boolean isUserSelf = userId == UserConfig.getInstance(currentAccount).getClientUserId();
                         detailCell.setTextAndValue(id + "", dc != 0 ? String.format(Locale.US, "DC%d %s, %s", dc, getDCName(dc), getDCLocation(dc)) : "DC " + getString(R.string.NumberUnknown), isUserSelf);
