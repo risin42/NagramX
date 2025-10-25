@@ -74,6 +74,7 @@ import java.util.function.Consumer;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
+import tw.nekomimi.nekogram.helpers.AyuFilter;
 import xyz.nextalone.nagram.NaConfig;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.messages.AyuSavePreferences;
@@ -15274,6 +15275,7 @@ public class MessagesStorage extends BaseController {
                                             prefs.setDialogId(dialogId);
                                             AyuMessagesController.getInstance().onMessageEdited(prefs, message);
                                         }
+                                        AyuFilter.onMessageEdited(message.id, dialogId);
                                     }
                                     // --- AyuGram hook
                                     if (!sameMedia) {

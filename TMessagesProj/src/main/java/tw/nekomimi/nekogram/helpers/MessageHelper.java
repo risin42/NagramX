@@ -79,6 +79,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import xyz.nextalone.nagram.NaConfig;
+import tw.nekomimi.nekogram.NekoConfig;
 
 public class MessageHelper extends BaseController {
 
@@ -179,6 +180,55 @@ public class MessageHelper extends BaseController {
             return null;
         }
         return ret;
+    }
+
+    public MessageObject getLastMessageSkippingFiltered(long dialogId) {
+        SQLiteCursor cursor;
+        try {
+            // Scan a small window of recent messages to find the first not filtered by AyuFilter and not hidden/blocked
+            cursor = getMessagesStorage().getDatabase().queryFinalized(String.format(Locale.US, "SELECT data,send_state,mid,date FROM messages_v2 WHERE uid = %d ORDER BY date DESC LIMIT %d,%d", dialogId, 0, 30));
+            while (cursor.next()) {
+                NativeByteBuffer data = cursor.byteBufferValue(0);
+                if (data == null) {
+                    continue;
+                }
+                TLRPC.Message message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
+                data.reuse();
+
+                // Skip blocked senders if the setting is enabled
+                if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(message.from_id != null ? message.from_id.user_id : 0) >= 0) {
+                    continue;
+                }
+
+                MessageObject obj = new MessageObject(currentAccount, message, true, true);
+                // Skip hidden messages and messages filtered by AyuFilter
+                boolean hidden = obj.messageOwner != null && obj.messageOwner.hide;
+                boolean filtered = AyuFilter.isFiltered(obj, null);
+                if (hidden || filtered) {
+                    continue;
+                }
+
+                // fill meta fields
+                message.send_state = cursor.intValue(1);
+                message.id = cursor.intValue(2);
+                message.date = cursor.intValue(3);
+                message.dialog_id = dialogId;
+
+                // Ensure user data present for name rendering if needed
+                if (getMessagesController().getUser(obj.getSenderId()) == null) {
+                    TLRPC.User user = getMessagesStorage().getUser(obj.getSenderId());
+                    if (user != null) {
+                        getMessagesController().putUser(user, true);
+                    }
+                }
+                cursor.dispose();
+                return obj;
+            }
+            cursor.dispose();
+        } catch (SQLiteException e) {
+            FileLog.e("RegexFilter, SQLiteException when reading last unfiltered message", e);
+        }
+        return null;
     }
 
     public void saveStickerToGallery(Context context, MessageObject messageObject) {
@@ -650,6 +700,15 @@ public class MessageHelper extends BaseController {
     }
 
     public static String getMessagePlainText(MessageObject messageObject, MessageObject.GroupedMessages messageGroup) {
+        if (messageGroup != null) {
+            MessageObject captionMessage = messageGroup.findCaptionMessageObject();
+            if (captionMessage != null && !TextUtils.isEmpty(captionMessage.caption)) {
+                return captionMessage.caption.toString();
+            }
+        }
+        if (messageObject == null) {
+            return null;
+        }
         if (messageObject.isPoll()) {
             TLRPC.Poll poll = ((TLRPC.TL_messageMediaPoll) messageObject.messageOwner.media).poll;
             StringBuilder pollText = new StringBuilder(poll.question.text).append("\n");
@@ -660,11 +719,6 @@ public class MessageHelper extends BaseController {
             return pollText.toString();
         } else if (!TextUtils.isEmpty(messageObject.getVoiceTranscription())) {
             return messageObject.messageOwner.voiceTranscription;
-        } else if (messageGroup != null) {
-            MessageObject captionMessage = messageGroup.findCaptionMessageObject();
-            if (captionMessage != null && !TextUtils.isEmpty(captionMessage.caption)) {
-                return captionMessage.caption.toString();
-            }
         }
         return messageObject.messageOwner.message;
     }
@@ -683,7 +737,7 @@ public class MessageHelper extends BaseController {
     private static final SpannableStringBuilder[] spannedStrings = new SpannableStringBuilder[5];
     private static final Pattern ZALGO_PATTERN = Pattern.compile("\\p{M}{4}");
     private static final Pattern ZALGO_CLEANUP = Pattern.compile("\\p{M}+");
-    private static final char[] spoilerChars = new char[]{'⠌', '⡢', '⢑', '⠨', '⠥', '⠮', '⡑'};
+    // private static final char[] spoilerChars = new char[]{'⠌', '⡢', '⢑', '⠨', '⠥', '⠮', '⡑'};
 
     public static void addMessageToClipboard(MessageObject selectedObject, Runnable callback) {
         String path = getPathToMessage(selectedObject);
@@ -833,7 +887,7 @@ public class MessageHelper extends BaseController {
         return text;
     }
 
-    public static CharSequence blurify(CharSequence text) {
+    /*public static CharSequence blurify(CharSequence text) {
         StringBuilder stringBuilder = new StringBuilder(text);
         for (int i = 0; i < text.length(); i++) {
             stringBuilder.setCharAt(i, spoilerChars[i % spoilerChars.length]);
@@ -857,5 +911,5 @@ public class MessageHelper extends BaseController {
         if (messageObject.messageOwner.media != null) {
             messageObject.messageOwner.media.spoiler = true;
         }
-    }
+    }*/
 }

@@ -94,8 +94,11 @@
     <string name="PreviewSendFile">Send File</string>
     <string name="UnblockDeleted">Unblock Deleted Users</string>
     <string name="UnblockDeletedWarn">Are you sure you want to unblock **all deleted users**?</string>
-    <string name="RegexFilters">Regex Message Filters</string>
+    <string name="RegexFilters">Message Filters</string>
     <string name="RegexFiltersHeader">Filters</string>
+    <string name="RegexFiltersSharedHeader">Shared Filters</string>
+    <string name="RegexFiltersSubMenuDescription">You can choose to exclude Shared Filters for this chat.</string>
+    <string name="RegexFiltersChatHeader">Chat Filters</string>
     <string name="RegexFiltersEnableInChats">Enable Filters in Private Chats</string>
     <string name="RegexFiltersCaseInsensitive">Case insensitive expressions</string>
     <string name="RegexFiltersAdd">Add filter</string>
