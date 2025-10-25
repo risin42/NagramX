@@ -433,6 +433,18 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val regexChatFiltersData =
+        addConfig(
+            "RegexChatFiltersData",
+            ConfigItem.configTypeString,
+            "[]"
+        )
+    val regexFiltersExcludedDialogs =
+        addConfig(
+            "RegexFiltersExcludedDialogs",
+            ConfigItem.configTypeString,
+            "[]"
+        )
     val showTimeHint =
         addConfig(
             "ShowTimeHint",

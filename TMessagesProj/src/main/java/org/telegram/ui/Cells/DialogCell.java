@@ -3044,6 +3044,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                         clearingDialog = MessagesController.getInstance(currentAccount).isClearingDialog(dialog.id);
                         groupMessages = MessagesController.getInstance(currentAccount).dialogMessage.get(dialog.id);
                         message = groupMessages != null && groupMessages.size() > 0 ? groupMessages.get(0) : null;
+                        // If last message is from a blocked sender and ignoreBlocked is enabled, use previous unblocked
                         if (message != null && NekoConfig.ignoreBlocked.Bool() && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getSenderId()) >= 0) {
                             if (MessagesController.getInstance(currentAccount).dialogMessageFromUnblocked.get(dialog.id) != null)
                                 message = MessagesController.getInstance(currentAccount).dialogMessageFromUnblocked.get(dialog.id);
@@ -3052,6 +3053,25 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                                 MessagesController.getInstance(currentAccount).dialogMessageFromUnblocked.put(dialog.id, message);
                             }
                             // Username show may be abnormal if User who send `message` is not loaded in (never enter chat since boot, esp after cold starting)
+                        }
+                        // Message Filter: if last message is filtered/hidden, try to pick previous unfiltered for preview
+                        if (message != null) {
+                            boolean hidden = message.messageOwner != null && message.messageOwner.hide;
+                            boolean blocked = NekoConfig.ignoreBlocked.Bool() && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getSenderId()) >= 0;
+                            boolean filtered = AyuFilter.isFiltered(message, null);
+                            MessageObject cap = getCaptionMessage();
+                            if (cap != null) {
+                                filtered = filtered || AyuFilter.isFiltered(cap, null);
+                            }
+                            if (hidden || blocked || filtered) {
+                                MessageObject alt = MessageHelper.getInstance(currentAccount).getLastMessageSkippingFiltered(dialog.id);
+                                if (alt != null) {
+                                    message = alt;
+                                    groupMessages = null;
+                                } else {
+                                    message = null;
+                                }
+                            }
                         }
                         lastUnreadState = message != null && message.isUnread();
                         TLRPC.Chat localChat = MessagesController.getInstance(currentAccount).getChat(-dialog.id);
@@ -3076,7 +3096,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                         }
                         markUnread = dialog.unread_mark;
                         currentEditDate = message != null ? message.messageOwner.edit_date : 0;
-                        lastMessageDate = dialog.last_message_date;
+                        lastMessageDate = message != null ? message.messageOwner.date : dialog.last_message_date; // Show time of the preview message we actually display
                         if (dialogsType == 7 || dialogsType == 8) {
                             MessagesController.DialogFilter filter = MessagesController.getInstance(currentAccount).selectedDialogFilter[dialogsType == 8 ? 1 : 0];
                             drawPin = filter != null && filter.pinnedDialogs.indexOfKey(dialog.id) >= 0;
@@ -3463,19 +3483,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             boolean newStateStoriesIsEmpty = StoriesUtilities.getPredictiveUnreadState(MessagesController.getInstance(currentAccount).getStoriesController(), getDialogId()) == StoriesUtilities.STATE_EMPTY;
             if (!newStateStoriesIsEmpty || (!currentStoriesIsEmpty && newStateStoriesIsEmpty)) {
                 invalidate = true;
-            }
-        }
-
-        if (message != null) {
-            MessageObject captionMessage = getCaptionMessage();
-            // --- AyuGram hook
-            boolean isFiltered = AyuFilter.isFiltered(message, null) || (captionMessage != null && AyuFilter.isFiltered(captionMessage, null));
-            // --- NaGram hook
-            isFiltered = isFiltered || (message.messageOwner != null && message.messageOwner.hide);
-            isFiltered = isFiltered || (NekoConfig.ignoreBlocked.Bool() && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getFromChatId()) >= 0);
-            if (isFiltered) {
-                MessageHelper.blurify(message);
-                if (captionMessage != null) MessageHelper.blurify(captionMessage);
             }
         }
 

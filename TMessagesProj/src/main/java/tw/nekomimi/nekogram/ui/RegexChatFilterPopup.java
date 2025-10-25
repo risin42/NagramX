@@ -12,18 +12,14 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.LayoutHelper;
 
 import tw.nekomimi.nekogram.helpers.AyuFilter;
-import tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity;
 
-
-public class RegexFilterPopup {
-    public static void show(RegexFiltersSettingActivity fragment, View anchorView, float touchedX, float touchedY, int filterIdx) {
-        if (fragment.getFragmentView() == null) {
-            return;
-        }
+public class RegexChatFilterPopup {
+    public static void show(RegexChatFiltersListActivity fragment, View anchorView, float touchedX, float touchedY, long dialogId, int filterIdx) {
+        if (fragment.getFragmentView() == null) return;
 
         var layout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(fragment.getContext());
         var popupWindow = new ActionBarPopupWindow(layout, LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT);
-        var windowLayout = createPopupLayout(layout, popupWindow, fragment, filterIdx);
+        var windowLayout = createPopupLayout(layout, popupWindow, fragment, dialogId, filterIdx);
 
         popupWindow.setPauseNotifications(true);
         popupWindow.setDismissAnimationDuration(220);
@@ -38,9 +34,7 @@ public class RegexFilterPopup {
         float x = touchedX, y = touchedY;
         View view = anchorView;
         while (view != fragment.getFragmentView()) {
-            if (view.getParent() == null) {
-                return;
-            }
+            if (view.getParent() == null) return;
             x += view.getX();
             y += view.getY();
             view = (View) view.getParent();
@@ -49,25 +43,22 @@ public class RegexFilterPopup {
         popupWindow.dimBehind();
     }
 
-    private static ActionBarPopupWindow.ActionBarPopupWindowLayout createPopupLayout(ActionBarPopupWindow.ActionBarPopupWindowLayout layout, ActionBarPopupWindow popupWindow, RegexFiltersSettingActivity fragment, int filterIdx) {
+    private static ActionBarPopupWindow.ActionBarPopupWindowLayout createPopupLayout(ActionBarPopupWindow.ActionBarPopupWindowLayout layout, ActionBarPopupWindow popupWindow, RegexChatFiltersListActivity fragment, long dialogId, int filterIdx) {
         layout.setFitItems(true);
 
         var editBtn = ActionBarMenuItem.addItem(layout, R.drawable.msg_edit, getString(R.string.Edit), false, fragment.getResourceProvider());
         editBtn.setOnClickListener(view -> {
-            fragment.presentFragment(new RegexFilterEditActivity(filterIdx));
+            fragment.presentFragment(new RegexFilterEditActivity(dialogId, filterIdx));
             popupWindow.dismiss();
         });
 
         var deleteBtn = ActionBarMenuItem.addItem(layout, R.drawable.msg_delete, getString(R.string.Delete), false, fragment.getResourceProvider());
         deleteBtn.setOnClickListener(view -> {
-            var filters = AyuFilter.getRegexFilters();
-            if (filterIdx >= 0 && filterIdx < filters.size()) {
-                AyuFilter.removeFilter(filterIdx);
-                fragment.onResume();
-                popupWindow.dismiss();
-            }
+            AyuFilter.removeChatFilter(dialogId, filterIdx);
+            fragment.onResume();
+            popupWindow.dismiss();
         });
-        var deleteBtnColor = Theme.getColor(Theme.key_text_RedBold);
+        int deleteBtnColor = Theme.getColor(Theme.key_text_RedBold);
         deleteBtn.setColors(deleteBtnColor, deleteBtnColor);
 
         return layout;

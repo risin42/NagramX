@@ -38593,29 +38593,44 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else {
                     messages = ChatActivity.this.messages;
                 }
-
+                // return messages.get(position - messagesStartRow).contentType;
+                // Message filter start
                 var msg = messages.get(position - messagesStartRow);
-
-                // --- AyuGram hook
-                if (NaConfig.INSTANCE.getRegexFiltersEnabled().Bool() && (NaConfig.INSTANCE.getRegexFiltersEnableInChats().Bool() || ChatObject.isChannel(currentChat))) {
-                    var group = getGroup(msg.getGroupId());
-                    var msgToCheck = group == null ? msg : group.findCaptionMessageObject();
-
-                    if (AyuFilter.isFiltered(msgToCheck, group)) {
-                        return -1000;
-                    }
+                var group = getGroup(msg.getGroupId());
+                var msgToCheck = group == null ? msg : group.findCaptionMessageObject();
+                if (AyuFilter.isFiltered(msgToCheck, group)) {
+                    return -1000;
                 }
-                // --- AyuGram hook
-                // --- NaGram hook
                 if (msg != null && msg.messageOwner != null && msg.messageOwner.hide) {
                     return -1000;
                 }
                 if (NekoConfig.ignoreBlocked.Bool() && msg != null && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(msg.getFromChatId()) >= 0) {
                     return -1000;
                 }
-                // --- NaGram hook
-
+                if (msg.contentType == 2) {
+                    int scanIndex = position - messagesStartRow - 1;
+                    boolean hasVisibleAfter = false;
+                    for (int i = scanIndex; i >= 0; i--) {
+                        var m = messages.get(i);
+                        var g = getGroup(m.getGroupId());
+                        if (AyuFilter.isFiltered(m, g)) {
+                            continue;
+                        }
+                        if (m != null && m.messageOwner != null && m.messageOwner.hide) {
+                            continue;
+                        }
+                        if (NekoConfig.ignoreBlocked.Bool() && m != null && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(m.getFromChatId()) >= 0) {
+                            continue;
+                        }
+                        hasVisibleAfter = true;
+                        break;
+                    }
+                    if (!hasVisibleAfter) {
+                        return -1000;
+                    }
+                }
                 return msg.contentType;
+                // Message filter end
             } else if (position == botInfoRow) {
                 return 3;
             } else if (position == userInfoRow) {
@@ -44576,7 +44591,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 int msgId = messages.get(i).getId();
                 if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(messages.get(i).getSenderId()) >= 0)
                     continue;
-                if (NaConfig.INSTANCE.getRegexFiltersEnabled().Bool() && AyuFilter.isFiltered(messages.get(i), null)) {
+                if (AyuFilter.isFiltered(messages.get(i), null)) {
                     continue;
                 }
                 if (msgId > begin && msgId < end && selectedMessagesIds[0].indexOfKey(msgId) < 0) {
