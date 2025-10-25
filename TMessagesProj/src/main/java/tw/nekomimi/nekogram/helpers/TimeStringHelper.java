@@ -49,6 +49,8 @@ public class TimeStringHelper {
     public static Drawable translatedDrawable;
     public static SpannableStringBuilder arrowSpan;
     public static Drawable arrowDrawable;
+    public static SpannableStringBuilder forwardsSpan;
+    public static Drawable forwardsDrawable;
     public ChatActivity.ThemeDelegate themeDelegate;
 
     public static CharSequence createDeletedString(MessageObject messageObject, boolean isEdited, boolean isTranslated) {
@@ -162,6 +164,14 @@ public class TimeStringHelper {
         if (arrowSpan == null) {
             arrowSpan = new SpannableStringBuilder("\u200B");
             arrowSpan.setSpan(new ColoredImageSpan(arrowDrawable, true), 0, 1, 0);
+        }
+
+        if (forwardsDrawable == null) {
+            forwardsDrawable = Objects.requireNonNull(ContextCompat.getDrawable(ApplicationLoader.applicationContext, R.drawable.forwards_solar)).mutate();
+        }
+        if (forwardsSpan == null) {
+            forwardsSpan = new SpannableStringBuilder("\u200B");
+            forwardsSpan.setSpan(new ColoredImageSpan(forwardsDrawable, true), 0, 1, 0);
         }
     }
 
