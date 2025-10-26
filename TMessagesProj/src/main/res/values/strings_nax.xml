@@ -62,7 +62,7 @@
     <string name="botCommandConfirmText">Do you want to send this command?\n\n%s</string>
     <string name="DisableScreenshotDetection">Disable Screenshot Detection</string>
     <string name="MessageSavingSaveMedia">Save Media</string>
-    <string name="MessageSavingSaveMediaHint">Click for More</string>
+    <string name="MessageSavingSaveMediaHint">Click for More.</string>
     <string name="MessageSavingSaveMediaInPrivateChats">… in Private Chats</string>
     <string name="MessageSavingSaveMediaInPublicChannels">… in Public Channels</string>
     <string name="MessageSavingSaveMediaInPrivateChannels">… in Private Channels</string>

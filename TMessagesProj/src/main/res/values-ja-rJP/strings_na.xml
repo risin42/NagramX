@@ -63,17 +63,6 @@
     <string name="DisableSuggestionView">電話番号変更の提案を無効にする</string>
     <string name="DisableStories">ストーリー機能を無効にする</string>
     <string name="CopyPhotoAsSticker">ステッカーとしてコピー</string>
-    <string name="ExternalStickerCache">外部ステッカーキャッシュ</string>
-    <string name="ExternalStickerCacheHint">他のアプリとステッカーパックを共有するには、クリックしてストレージの場所を選択。</string>
-    <string name="ExternalStickerCacheRefresh">外部キャッシュを更新</string>
-    <string name="ExternalStickerCacheDelete">外部キャッシュを削除</string>
-    <string name="ExternalStickerCacheWaitSync">キャッシュの同期が完了するのを待っています</string>
-    <string name="ExternalStickerCacheSyncNotFinished">キャッシュの同期は既に実行中です</string>
-    <string name="ExternalStickerCacheAutoRefresh">自動同期</string>
-    <string name="ExternalStickerCacheAutoRefreshHint">ステッカーイベントが発生したときに、すべてのキャッシュを自動的に同期します。</string>
-    <string name="ExternalStickerCacheRefreshAll">すべてのキャッシュを同期</string>
-    <string name="ExternalStickerCacheDeleteAll">すべてのキャッシュを削除</string>
-    <string name="ExternalStickerCacheDirNameType">ディレクトリ命名規則</string>
     <string name="ProviderTranSmartTranslate">TransSmart 翻訳</string>
     <string name="DisableMarkdown">Markdown を無効にする</string>
     <string name="SendWithMarkdown">Markdown で送信</string>
@@ -101,10 +90,13 @@
     <string name="UnblockDeletedWarn">**すべての削除済みアカウント**のブロックを解除してもよろしいですか？</string>
     <string name="RegexFilters">メッセージフィルター</string>
     <string name="RegexFiltersHeader">メッセージフィルター</string>
+    <string name="RegexFiltersSharedHeader">共通フィルター</string>
+    <string name="RegexFiltersSubMenuDescription">このチャットで共通フィルターを除外することができます。</string>
+    <string name="RegexFiltersChatHeader">チャットフィルター</string>
     <string name="RegexFiltersEnableInChats">プライベートチャットで有効にする</string>
     <string name="RegexFiltersCaseInsensitive">大文字と小文字を区別しない</string>
-    <string name="RegexFiltersAdd">正規表現を追加</string>
-    <string name="RegexFiltersEdit">正規表現を編集</string>
+    <string name="RegexFiltersAdd">フィルターを追加</string>
+    <string name="RegexFiltersEdit">フィルターを編集</string>
     <string name="RegexFiltersAddDescription">ウェブサイト <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> を使用して、正規表現を完全にテストできます。プレーンテキストを使用することもできますが、括弧をエスケープすることを忘れないでください。</string>
     <string name="RegexFiltersAddError">構文エラー</string>
     <string name="ShowTimeHint">時間をタップして詳細を表示</string>
