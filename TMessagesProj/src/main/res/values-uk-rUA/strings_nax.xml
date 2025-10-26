@@ -54,7 +54,7 @@
     <string name="botCommandConfirmText">Ви хочете відправити цю команду? \n\n%s</string>
     <string name="DisableScreenshotDetection">Вимкнути виявлення скріншотів</string>
     <string name="MessageSavingSaveMedia">Зберегти медіа</string>
-    <string name="MessageSavingSaveMediaHint">Натисніть, щоб побачити більше</string>
+    <string name="MessageSavingSaveMediaHint">Натисніть, щоб побачити більше.</string>
     <string name="MessageSavingSaveMediaInPrivateChats">… у приватних чатах</string>
     <string name="MessageSavingSaveMediaInPublicChannels">… у публічних каналах</string>
     <string name="MessageSavingSaveMediaInPrivateChannels">… у приватних каналах</string>

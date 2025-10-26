@@ -63,17 +63,6 @@
     <string name="DisableSuggestionView">Wyłącz sugestię ustawień profilu</string>
     <string name="DisableStories">Wyłącz historie</string>
     <string name="CopyPhotoAsSticker">Skopiuj jako naklejkę</string>
-    <string name="ExternalStickerCache">Zewnętrzna pamięć podręczna naklejek</string>
-    <string name="ExternalStickerCacheHint">Aby udostępniać pakiety naklejek innym aplikacjom. Kliknij, aby wybrać miejsce przechowywania.</string>
-    <string name="ExternalStickerCacheRefresh">Odśwież pamięć podręczną</string>
-    <string name="ExternalStickerCacheDelete">Usuń zewnętrzną pamięć podręczną</string>
-    <string name="ExternalStickerCacheWaitSync">Oczekiwanie na zakończenie synchronizacji pamięci podręcznej</string>
-    <string name="ExternalStickerCacheSyncNotFinished">Synchronizacja pamięci podręcznej jest już uruchomiona</string>
-    <string name="ExternalStickerCacheAutoRefresh">Automatyczna synchronizacja</string>
-    <string name="ExternalStickerCacheAutoRefreshHint">Automatycznie synchronizuj wszystkie pamięci podręczne po otrzymaniu zdarzeń dotyczących naklejek.</string>
-    <string name="ExternalStickerCacheRefreshAll">Synchronizuj wszystkie pamięci podręczne</string>
-    <string name="ExternalStickerCacheDeleteAll">Usuń wszystkie pamięci podręczne</string>
-    <string name="ExternalStickerCacheDirNameType">Nazewnictwo katalogów</string>
     <string name="ProviderTranSmartTranslate">Tłumacz TranSmart</string>
     <string name="DisableMarkdown">Wyłącz opcję Oznacz w dół</string>
     <string name="SendWithMarkdown">Wyślij z zaznaczeniem w dół</string>
@@ -99,7 +88,6 @@
     <string name="PreviewSendFile">Wyślij plik</string>
     <string name="UnblockDeleted">Odblokuj usuniętych użytkowników</string>
     <string name="UnblockDeletedWarn">Czy na pewno chcesz odblokować **wszystkich usuniętych użytkowników**?</string>
-    <string name="RegexFilters">Filtry wiadomości wyrażenia regularnego</string>
     <string name="RegexFiltersHeader">Filtry</string>
     <string name="RegexFiltersEnableInChats">Włącz filtry w prywatnych czatach</string>
     <string name="RegexFiltersCaseInsensitive">Wyrażenia bez uwzględniania wielkości liter</string>
