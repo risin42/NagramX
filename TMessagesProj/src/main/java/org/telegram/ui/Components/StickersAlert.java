@@ -124,7 +124,6 @@ import java.util.regex.Pattern;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.helper.ExternalStickerCacheHelper;
 import xyz.nextalone.nagram.helper.StickerSetHelper;
 
 public class StickersAlert extends BottomSheet implements NotificationCenter.NotificationCenterDelegate {
@@ -184,8 +183,6 @@ public class StickersAlert extends BottomSheet implements NotificationCenter.Not
     private boolean isEditModeEnabled;
 
     private final int menu_archive = 102;
-    private final int menuRefreshExternalCache = 100;
-    private final int menuDeleteExternalCache = 101;
     private final int menu_copy_sticker_set = 103;
     private final int menu_qrcode = 104;
     private final int menu_user_profile = 105;
@@ -1142,10 +1139,6 @@ public class StickersAlert extends BottomSheet implements NotificationCenter.Not
         optionsButton.addSubItem(2, R.drawable.msg_link, LocaleController.getString(R.string.CopyLink));
         optionsButton.addSubItem(menu_qrcode, R.drawable.msg_qrcode, LocaleController.getString(R.string.ShareQRCode));
         optionsButton.addSubItem(menu_archive, R.drawable.msg_archive, LocaleController.getString(R.string.Archive));
-        if (!NaConfig.INSTANCE.getExternalStickerCache().String().isBlank()) {
-            optionsButton.addSubItem(menuRefreshExternalCache, R.drawable.menu_views_reposts, LocaleController.getString(R.string.ExternalStickerCacheRefresh));
-            optionsButton.addSubItem(menuDeleteExternalCache, R.drawable.msg_delete, LocaleController.getString(R.string.ExternalStickerCacheDelete));
-        }
         optionsButton.addSubItem(menu_copy_sticker_set, R.drawable.msg_copy, LocaleController.getString(R.string.StickersCopyStickerSet));
         optionsButton.addSubItem(menu_user_profile, R.drawable.msg_openprofile, LocaleController.getString(R.string.ChannelAdmin));
 
@@ -1463,13 +1456,6 @@ public class StickersAlert extends BottomSheet implements NotificationCenter.Not
         } else if (id == menu_archive) {
             dismiss();
             MediaDataController.getInstance(currentAccount).toggleStickerSet(parentActivity, stickerSet, 1, parentFragment, false, true);
-        } else if (id == menuRefreshExternalCache) {
-            // Na: [ExternalStickerCache] force refresh cache files
-            ExternalStickerCacheHelper.refreshCacheFiles(stickerSet);
-        } else if (id == menuDeleteExternalCache) {
-            // Na: [ExternalStickerCache] delete cache files
-            ExternalStickerCacheHelper.deleteCacheFiles(stickerSet);
-            enableEditMode();
         } else if (id == menu_copy_sticker_set) {
             // Na: copy sticker set
             dismiss();

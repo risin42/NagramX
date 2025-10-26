@@ -357,27 +357,6 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
-    val externalStickerCache =
-        addConfig(
-            "ExternalStickerCache",
-            ConfigItem.configTypeString,
-            ""
-        )
-    var externalStickerCacheUri: Uri?
-        get() = externalStickerCache.String().let { return if (it.isBlank()) null else it.toUri() }
-        set(value) = externalStickerCache.setConfigString(value.toString())
-    val externalStickerCacheAutoRefresh =
-        addConfig(
-            "ExternalStickerCacheAutoRefresh",
-            ConfigItem.configTypeBool,
-            false
-        )
-    val externalStickerCacheDirNameType =
-        addConfig(
-            "ExternalStickerCacheDirNameType",
-            ConfigItem.configTypeInt,
-            0
-        )
     val disableMarkdown =
         addConfig(
             "DisableMarkdown",
