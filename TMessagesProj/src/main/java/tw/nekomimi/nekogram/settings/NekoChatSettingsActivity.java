@@ -324,9 +324,11 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             public void onBindViewHolder(VH holder, int position) {
                 Item it = data.get(position);
                 holder.cell.setTextAndCheck(it.title, it.bind.getBindConfig().Bool(), false);
-                holder.cell.setTag(position);
                 holder.cell.setOnClickListener(v -> {
-                    int pos = (Integer) v.getTag();
+                    int pos = holder.getAdapterPosition();
+                    if (pos < 0 || pos >= data.size()) {
+                        return;
+                    }
                     Item ii = data.get(pos);
                     ii.bind.getBindConfig().toggleConfigBool();
                     holder.cell.setChecked(ii.bind.getBindConfig().Bool());
