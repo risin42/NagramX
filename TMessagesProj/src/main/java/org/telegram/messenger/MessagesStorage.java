@@ -15275,7 +15275,9 @@ public class MessagesStorage extends BaseController {
                                             prefs.setDialogId(dialogId);
                                             AyuMessagesController.getInstance().onMessageEdited(prefs, message);
                                         }
-                                        AyuFilter.onMessageEdited(message.id, dialogId);
+                                        if (NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) {
+                                            AyuFilter.onMessageEdited(message.id, dialogId);
+                                        }
                                     }
                                     // --- AyuGram hook
                                     if (!sameMedia) {

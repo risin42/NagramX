@@ -3044,26 +3044,11 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                         clearingDialog = MessagesController.getInstance(currentAccount).isClearingDialog(dialog.id);
                         groupMessages = MessagesController.getInstance(currentAccount).dialogMessage.get(dialog.id);
                         message = groupMessages != null && groupMessages.size() > 0 ? groupMessages.get(0) : null;
-                        // If last message is from a blocked sender and ignoreBlocked is enabled, use previous unblocked
-                        if (message != null && NekoConfig.ignoreBlocked.Bool() && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getSenderId()) >= 0) {
-                            if (MessagesController.getInstance(currentAccount).dialogMessageFromUnblocked.get(dialog.id) != null)
-                                message = MessagesController.getInstance(currentAccount).dialogMessageFromUnblocked.get(dialog.id);
-                            else {
-                                message = MessageHelper.getInstance(currentAccount).getLastMessageFromUnblock(dialog.id);
-                                MessagesController.getInstance(currentAccount).dialogMessageFromUnblocked.put(dialog.id, message);
-                            }
-                            // Username show may be abnormal if User who send `message` is not loaded in (never enter chat since boot, esp after cold starting)
-                        }
-                        // Message Filter: if last message is filtered/hidden, try to pick previous unfiltered for preview
+                        // Message filter: if last message is blocked/filtered, try to pick previous unfiltered for preview
                         if (message != null) {
-                            boolean hidden = message.messageOwner != null && message.messageOwner.hide;
                             boolean blocked = NekoConfig.ignoreBlocked.Bool() && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getSenderId()) >= 0;
                             boolean filtered = AyuFilter.isFiltered(message, null);
-                            MessageObject cap = getCaptionMessage();
-                            if (cap != null) {
-                                filtered = filtered || AyuFilter.isFiltered(cap, null);
-                            }
-                            if (hidden || blocked || filtered) {
+                            if (blocked || filtered) {
                                 MessageObject alt = MessageHelper.getInstance(currentAccount).getLastMessageSkippingFiltered(dialog.id);
                                 if (alt != null) {
                                     message = alt;
@@ -3073,6 +3058,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                                 }
                             }
                         }
+                        // Message filter end
                         lastUnreadState = message != null && message.isUnread();
                         TLRPC.Chat localChat = MessagesController.getInstance(currentAccount).getChat(-dialog.id);
                         boolean isForumCell = localChat != null && localChat.forum && !isTopic;

@@ -125,6 +125,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import xyz.nextalone.nagram.NaConfig;
@@ -171,8 +172,6 @@ public class MessagesController extends BaseController implements NotificationCe
     public ConcurrentHashMap<Long, Integer> dialogs_read_outbox_max = new ConcurrentHashMap<>(100, 1.0f, 2);
     public LongSparseArray<TLRPC.Dialog> dialogs_dict = new LongSparseArray<>();
     public LongSparseArray<ArrayList<MessageObject>> dialogMessage = new LongSparseArray<>();
-    // NekoX: ignoreBlocked, Messages cache for Dialog Cell
-    public LongSparseArray<MessageObject> dialogMessageFromUnblocked = new LongSparseArray<>();
     public LongSparseArray<MessageObject> dialogMessagesByRandomIds = new LongSparseArray<>();
     public LongSparseIntArray deletedHistory = new LongSparseIntArray();
     public SparseArray<MessageObject> dialogMessagesByIds = new SparseArray<>();
@@ -12873,9 +12872,6 @@ public class MessagesController extends BaseController implements NotificationCe
             ArrayList<MessageObject> newMessages = new ArrayList<>();
             for (int a = 0; a < dialogsRes.messages.size(); a++) {
                 TLRPC.Message message = dialogsRes.messages.get(a);
-                if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(message.peer_id.user_id) >= 0) {
-                    continue;
-                }
                 if (message.date == 0) {
                     continue;
                 }
@@ -20865,12 +20861,6 @@ public class MessagesController extends BaseController implements NotificationCe
                     MessageObject msg = messages.get(i);
                     if (msg != null && lastMessage != null && (msg.getId() == lastMessage.getId() || msg.hasValidGroupId() && lastMessage.hasValidGroupId() && msg.getGroupIdForUse() == lastMessage.getGroupIdForUse())) {
                         arrayList.add(msg);
-                    }
-                }
-                if (NekoConfig.ignoreBlocked.Bool() && blockePeers.indexOfKey(lastMessage.getSenderId()) >= 0) {
-                    ArrayList<MessageObject> preMsg = dialogMessage.get(dialogId);
-                    if (!preMsg.isEmpty() && blockePeers.indexOfKey(preMsg.get(0).getSenderId()) < 0) {
-                        dialogMessageFromUnblocked.put(dialogId, preMsg.get(0));
                     }
                 }
                 dialogMessage.put(dialogId, arrayList);

@@ -38908,15 +38908,18 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 // return messages.get(position - messagesStartRow).contentType;
                 // Message filter start
                 var msg = messages.get(position - messagesStartRow);
-                var group = getGroup(msg.getGroupId());
-                var msgToCheck = group == null ? msg : group.findCaptionMessageObject();
-                if (AyuFilter.isFiltered(msgToCheck, group)) {
-                    return -1000;
-                }
                 if (msg != null && msg.messageOwner != null && msg.messageOwner.hide) {
                     return -1000;
                 }
                 if (NekoConfig.ignoreBlocked.Bool() && msg != null && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(msg.getFromChatId()) >= 0) {
+                    return -1000;
+                }
+                if (!NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) {
+                    return msg.contentType;
+                }
+                var group = getGroup(msg.getGroupId());
+                var msgToCheck = group == null ? msg : group.findCaptionMessageObject();
+                if (AyuFilter.isFiltered(msgToCheck, group)) {
                     return -1000;
                 }
                 if (msg.contentType == 2) {

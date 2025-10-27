@@ -78,8 +78,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import xyz.nextalone.nagram.NaConfig;
 import tw.nekomimi.nekogram.NekoConfig;
+import xyz.nextalone.nagram.NaConfig;
 
 public class MessageHelper extends BaseController {
 
@@ -148,10 +148,9 @@ public class MessageHelper extends BaseController {
     }
 
     public MessageObject getLastMessageSkippingFiltered(long dialogId) {
-        SQLiteCursor cursor;
+        SQLiteCursor cursor = null;
         try {
-            // Scan a small window of recent messages to find the first not filtered by AyuFilter and not hidden/blocked
-            cursor = getMessagesStorage().getDatabase().queryFinalized(String.format(Locale.US, "SELECT data,send_state,mid,date FROM messages_v2 WHERE uid = %d ORDER BY date DESC LIMIT %d,%d", dialogId, 0, 30));
+            cursor = getMessagesStorage().getDatabase().queryFinalized(String.format(Locale.US, "SELECT data,send_state,mid,date FROM messages_v2 WHERE uid = %d ORDER BY date DESC LIMIT %d,%d", dialogId, 0, 20));
             while (cursor.next()) {
                 NativeByteBuffer data = cursor.byteBufferValue(0);
                 if (data == null) {
@@ -159,39 +158,31 @@ public class MessageHelper extends BaseController {
                 }
                 TLRPC.Message message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
                 data.reuse();
-
-                // Skip blocked senders if the setting is enabled
                 if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(message.from_id != null ? message.from_id.user_id : 0) >= 0) {
                     continue;
                 }
-
                 MessageObject obj = new MessageObject(currentAccount, message, true, true);
-                // Skip hidden messages and messages filtered by AyuFilter
-                boolean hidden = obj.messageOwner != null && obj.messageOwner.hide;
-                boolean filtered = AyuFilter.isFiltered(obj, null);
-                if (hidden || filtered) {
+                if (AyuFilter.isFiltered(obj, null)) {
                     continue;
                 }
-
-                // fill meta fields
                 message.send_state = cursor.intValue(1);
                 message.id = cursor.intValue(2);
                 message.date = cursor.intValue(3);
                 message.dialog_id = dialogId;
-
-                // Ensure user data present for name rendering if needed
                 if (getMessagesController().getUser(obj.getSenderId()) == null) {
                     TLRPC.User user = getMessagesStorage().getUser(obj.getSenderId());
                     if (user != null) {
                         getMessagesController().putUser(user, true);
                     }
                 }
-                cursor.dispose();
                 return obj;
             }
-            cursor.dispose();
         } catch (SQLiteException e) {
             FileLog.e("RegexFilter, SQLiteException when reading last unfiltered message", e);
+        } finally {
+            if (cursor != null) {
+                cursor.dispose();
+            }
         }
         return null;
     }
