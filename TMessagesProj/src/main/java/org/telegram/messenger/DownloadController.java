@@ -613,7 +613,7 @@ public class DownloadController extends BaseController implements NotificationCe
 
     public boolean canDownloadMedia(MessageObject messageObject) {
         if (messageObject.getDocument() != null) {
-            if (AndroidUtil.isAutoDownloadDisabledFor(messageObject.getDocumentName())) {
+            if (AndroidUtil.isAutoDownloadDisabledFor(messageObject.getDocumentName()) || AyuFilter.isFiltered(messageObject, null)) {
                 return false;
             }
         }
@@ -675,7 +675,7 @@ public class DownloadController extends BaseController implements NotificationCe
         if (messageObject.isHiddenSensitive())
             return 0;
         if (messageObject.getDocument() != null) {
-            if (AndroidUtil.isAutoDownloadDisabledFor(messageObject.getDocumentName())) {
+            if (AndroidUtil.isAutoDownloadDisabledFor(messageObject.getDocumentName()) || AyuFilter.isFiltered(messageObject, null)) {
                 return 0;
             }
         }
@@ -878,12 +878,9 @@ public class DownloadController extends BaseController implements NotificationCe
             return canPreloadStories() ? 2 : 0;
         }
 
-        // --- AyuGram hook
-        var isFiltered = AyuFilter.isFiltered(new MessageObject(currentAccount, message, false, false), null);
-        if (isFiltered) {
+        if (AyuFilter.isFiltered(new MessageObject(currentAccount, message, false, false), null)) {
             return 0;
         }
-        // --- AyuGram hook
 
         int type;
         boolean isVideo;
