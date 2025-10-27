@@ -10628,6 +10628,9 @@ public class MessagesController extends BaseController implements NotificationCe
                     if (user == null) {
                         continue;
                     }
+                    if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(user.id) >= 0) {
+                        continue;
+                    }
                     final boolean isGroup = key < 0 && !isEncryptedChat;
                     if (pu.action instanceof TLRPC.TL_sendMessageRecordAudioAction) {
                         if (isGroup) {
