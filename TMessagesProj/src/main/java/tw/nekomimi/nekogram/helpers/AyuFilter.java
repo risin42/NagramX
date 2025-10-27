@@ -3,6 +3,8 @@ package tw.nekomimi.nekogram.helpers;
 import android.text.TextUtils;
 import android.util.LongSparseArray;
 
+import androidx.collection.LruCache;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
@@ -11,17 +13,19 @@ import org.telegram.messenger.MessageObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
 import xyz.nextalone.nagram.NaConfig;
 
 public class AyuFilter {
-    private static ArrayList<FilterModel> filterModels;
-    private static ArrayList<ChatFilterEntry> chatFilterEntries;
-    private static LongSparseArray<HashMap<Integer, Boolean>> filteredCache;
-    private static HashSet<Long> excludedDialogs;
+    private static final Object cacheLock = new Object();
+    private static final int PER_DIALOG_CACHE_LIMIT = 1000;
+
+    private static volatile ArrayList<FilterModel> filterModels;
+    private static volatile ArrayList<ChatFilterEntry> chatFilterEntries;
+    private static volatile LongSparseArray<LruCache<Integer, Boolean>> filteredCache;
+    private static volatile HashSet<Long> excludedDialogs;
 
     public static ArrayList<FilterModel> getRegexFilters() {
         var str = NaConfig.INSTANCE.getRegexFiltersData().String();
@@ -95,21 +99,22 @@ public class AyuFilter {
     }
 
     public static void rebuildCache() {
-        filterModels = getRegexFilters();
-
-        for (var filter : filterModels) {
-            filter.buildPattern();
-        }
-
-        chatFilterEntries = getChatFilterEntries();
-        for (var entry : chatFilterEntries) {
-            if (entry.filters == null) continue;
-            for (var f : entry.filters) {
-                f.buildPattern();
+        synchronized (cacheLock) {
+            filterModels = getRegexFilters();
+            for (var filter : filterModels) {
+                filter.buildPattern();
             }
-        }
 
-        filteredCache = new LongSparseArray<>();
+            chatFilterEntries = getChatFilterEntries();
+            for (var entry : chatFilterEntries) {
+                if (entry.filters == null) continue;
+                for (var f : entry.filters) {
+                    f.buildPattern();
+                }
+            }
+
+            filteredCache = new LongSparseArray<>();
+        }
     }
 
     private static boolean isFilteredInternal(CharSequence text, long dialogId) {
@@ -172,27 +177,33 @@ public class AyuFilter {
         }
 
         Boolean result;
+        LruCache<Integer, Boolean> cachedResult;
 
-        var cachedResult = filteredCache.get(dialogId);
-        if (cachedResult != null) {
-            result = cachedResult.get(msg.getId());
-            if (result != null) {
-                return result;
+        synchronized (cacheLock) {
+            cachedResult = filteredCache.get(dialogId);
+            if (cachedResult != null) {
+                result = cachedResult.get(msg.getId());
+                if (result != null) {
+                    return result;
+                }
             }
         }
 
         result = isFilteredInternal(text, dialogId);
 
-        if (cachedResult == null) {
-            cachedResult = new HashMap<>();
-            filteredCache.put(dialogId, cachedResult);
-        }
+        synchronized (cacheLock) {
+            cachedResult = filteredCache.get(dialogId);
+            if (cachedResult == null) {
+                cachedResult = new LruCache<>(PER_DIALOG_CACHE_LIMIT);
+                filteredCache.put(dialogId, cachedResult);
+            }
 
-        cachedResult.put(msg.getId(), result);
+            cachedResult.put(msg.getId(), result);
 
-        if (group != null && group.messages != null && !group.messages.isEmpty()) {
-            for (var m : group.messages) {
-                cachedResult.put(m.getId(), result);
+            if (group != null && group.messages != null && !group.messages.isEmpty()) {
+                for (var m : group.messages) {
+                    cachedResult.put(m.getId(), result);
+                }
             }
         }
 
@@ -301,23 +312,27 @@ public class AyuFilter {
     }
 
     public static boolean isDialogExcluded(long dialogId) {
-        return getExcludedDialogs().contains(dialogId);
+        synchronized (cacheLock) {
+            return getExcludedDialogs().contains(dialogId);
+        }
     }
 
     public static void setDialogExcluded(long dialogId, boolean excluded) {
-        HashSet<Long> set = getExcludedDialogs();
-        boolean changed;
-        if (excluded) {
-            changed = set.add(dialogId);
-        } else {
-            changed = set.remove(dialogId);
-        }
-        if (changed) {
-            Long[] arr = set.toArray(new Long[0]);
-            String str = new Gson().toJson(arr);
-            NaConfig.INSTANCE.getRegexFiltersExcludedDialogs().setConfigString(str);
-            if (filteredCache != null) {
-                filteredCache.remove(dialogId);
+        synchronized (cacheLock) {
+            HashSet<Long> set = getExcludedDialogs();
+            boolean changed;
+            if (excluded) {
+                changed = set.add(dialogId);
+            } else {
+                changed = set.remove(dialogId);
+            }
+            if (changed) {
+                Long[] arr = set.toArray(new Long[0]);
+                String str = new Gson().toJson(arr);
+                NaConfig.INSTANCE.getRegexFiltersExcludedDialogs().setConfigString(str);
+                if (filteredCache != null) {
+                    filteredCache.remove(dialogId);
+                }
             }
         }
     }
@@ -339,9 +354,14 @@ public class AyuFilter {
     }
 
     public static void onMessageEdited(int msgId, long dialogId) {
-        var cached = filteredCache.get(dialogId);
-        if (cached != null) {
-            cached.remove(msgId);
+        synchronized (cacheLock) {
+            if (filteredCache == null) {
+                return;
+            }
+            var cached = filteredCache.get(dialogId);
+            if (cached != null) {
+                cached.remove(msgId);
+            }
         }
     }
 

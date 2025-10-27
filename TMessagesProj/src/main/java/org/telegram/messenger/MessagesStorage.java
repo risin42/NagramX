@@ -17898,16 +17898,6 @@ public class MessagesStorage extends BaseController {
         return database.queryFinalized(String.format(Locale.US, "SELECT data, seen, pin FROM profile_stories JOIN profile_stories_albums_links ON profile_stories.story_id = profile_stories_albums_links.story_id WHERE profile_stories.dialog_id = %d AND profile_stories_albums_links.dialog_id = %d  AND profile_stories_albums_links.album_id = %d AND profile_stories.type = %d ORDER BY profile_stories_albums_links.order_index ASC;", dialogId, dialogId, albumId, type));
     }
 
-    private boolean isForum(long dialogId) {
-        int v = dialogIsForum.get(dialogId, -1);
-        if (v == -1) {
-            TLRPC.Chat chat = getChat(-dialogId);
-            v = chat != null && chat.forum ? 1 : 0;
-            dialogIsForum.put(dialogId, v);
-        }
-        return v == 1;
-    }
-
     public boolean isMonoForum(long dialogId) {
         // todo: inline
         return isForum(dialogId, FORUM_TYPE_DIRECT);
