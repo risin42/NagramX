@@ -26150,7 +26150,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         boolean updateChat = false;
         boolean hasFromMe = false;
         boolean isAd = false;
-        int blockedCount = 0;
 
         if (chatListItemAnimator != null) {
             chatListItemAnimator.setShouldAnimateEnterFromBottom(animatedFromBottom);
@@ -26418,10 +26417,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
                 if (!isAd) {
-                    if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(obj.getFromChatId()) >= 0) {
-                        blockedCount++;
-                        continue;
-                    }
                     newUnreadMessageCount++;
                 }
                 if (obj.type == 10 || obj.type == MessageObject.TYPE_ACTION_PHOTO) {
@@ -26776,10 +26771,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
                 if (!isAd) {
-                    if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(obj.getFromChatId()) >= 0) {
-                        blockedCount++;
-                        continue;
-                    }
                     newUnreadMessageCount++;
                 }
                 if (obj.type == 10 || obj.type == MessageObject.TYPE_ACTION_PHOTO) {
@@ -26846,17 +26837,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 pagedownButtonCounter.setCount(newUnreadMessageCount, true);
                             }
                         }
-                        if (arr.size() == blockedCount) {
-                            if (getMessagesController().isForum(dialog_id) || getMessagesController().isMonoForumWithManageRights(dialog_id)) {
-                                getMessagesController().markAllTopicsAsRead(dialog_id);
-                            }
-                            var dialog = getMessagesController().getDialog(dialog_id);
-                            getMessagesController().markMentionsAsRead(dialog_id, 0);
-                            getMessagesController().markDialogAsRead(dialog_id, dialog.top_message, dialog.top_message, dialog.last_message_date, false, 0, 0, true, 0);
-                        } else {
-                            canShowPagedownButton = true;
-                            updatePagedownButtonVisibility(true);
-                        }
+                        canShowPagedownButton = true;
+                        updatePagedownButtonVisibility(true);
                     }
                 } else {
                     MessageObject scrollToMessage = null;

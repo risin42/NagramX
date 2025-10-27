@@ -147,41 +147,6 @@ public class MessageHelper extends BaseController {
         return localInstance;
     }
 
-    public MessageObject getLastMessageFromUnblock(long dialogId) {
-        SQLiteCursor cursor;
-        MessageObject ret = null;
-        try {
-            cursor = getMessagesStorage().getDatabase().queryFinalized(String.format(Locale.US, "SELECT data,send_state,mid,date FROM messages_v2 WHERE uid = %d ORDER BY date DESC LIMIT %d,%d", dialogId, 0, 10));
-            while (cursor.next()) {
-                NativeByteBuffer data = cursor.byteBufferValue(0);
-                if (data == null)
-                    continue;
-                TLRPC.Message message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
-                data.reuse();
-                if (getMessagesController().blockePeers.indexOfKey(message.from_id.user_id) < 0) {
-                    // valid message
-                    ret = new MessageObject(currentAccount, message, true, true);
-                    message.send_state = cursor.intValue(1);
-                    message.id = cursor.intValue(2);
-                    message.date = cursor.intValue(3);
-                    message.dialog_id = dialogId;
-                    // Fix username show
-                    if (getMessagesController().getUser(ret.getSenderId()) == null) {
-                        TLRPC.User user = getMessagesStorage().getUser(ret.getSenderId());
-                        if (user != null)
-                            getMessagesController().putUser(user, true);
-                    }
-                    break;
-                }
-            }
-            cursor.dispose();
-        } catch (SQLiteException sqLiteException) {
-            FileLog.e("NekoX, ignoreBlocked, SQLiteException when read last message from unblocked user", sqLiteException);
-            return null;
-        }
-        return ret;
-    }
-
     public MessageObject getLastMessageSkippingFiltered(long dialogId) {
         SQLiteCursor cursor;
         try {
@@ -737,7 +702,6 @@ public class MessageHelper extends BaseController {
     private static final SpannableStringBuilder[] spannedStrings = new SpannableStringBuilder[5];
     private static final Pattern ZALGO_PATTERN = Pattern.compile("\\p{M}{4}");
     private static final Pattern ZALGO_CLEANUP = Pattern.compile("\\p{M}+");
-    // private static final char[] spoilerChars = new char[]{'⠌', '⡢', '⢑', '⠨', '⠥', '⠮', '⡑'};
 
     public static void addMessageToClipboard(MessageObject selectedObject, Runnable callback) {
         String path = getPathToMessage(selectedObject);
@@ -887,29 +851,4 @@ public class MessageHelper extends BaseController {
         return text;
     }
 
-    /*public static CharSequence blurify(CharSequence text) {
-        StringBuilder stringBuilder = new StringBuilder(text);
-        for (int i = 0; i < text.length(); i++) {
-            stringBuilder.setCharAt(i, spoilerChars[i % spoilerChars.length]);
-        }
-        return stringBuilder;
-    }
-
-    public static void blurify(MessageObject messageObject) {
-        if (messageObject.messageOwner == null) {
-            return;
-        }
-        if (!TextUtils.isEmpty(messageObject.messageText)) {
-            messageObject.messageText = blurify(messageObject.messageText);
-        }
-        if (!TextUtils.isEmpty(messageObject.messageOwner.message)) {
-            messageObject.messageOwner.message = blurify(messageObject.messageOwner.message).toString();
-        }
-        if (!TextUtils.isEmpty(messageObject.caption)) {
-            messageObject.caption = blurify(messageObject.caption);
-        }
-        if (messageObject.messageOwner.media != null) {
-            messageObject.messageOwner.media.spoiler = true;
-        }
-    }*/
 }
