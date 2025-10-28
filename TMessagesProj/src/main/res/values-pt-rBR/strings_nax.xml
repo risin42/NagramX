@@ -43,6 +43,8 @@
     <string name="DeleteCloudBackupFailed">Falha ao limpar dados na nuvem</string>
     <string name="DeleteCloudBackupSuccess">Dados na nuvem limpos</string>
     <string name="CloudConfigNoBackupToDelete">Não há dados para limpar</string>
+    <string name="ClearRegexFilters">Limpar</string>
+    <string name="ClearRegexFiltersAlertMessage">Você tem certeza de que deseja limpar todos os filtros regex salvos? Isso removerá tanto os filtros compartilhados quanto os específicos deste chat.</string>
     <string name="PreferredTranslateTargetLang">Lista de idiomas preferidos personalizados</string>
     <string name="PreferredTranslateTargetLangExample">e.g. ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Idiomas Preferidos</string>
@@ -50,6 +52,11 @@
     <string name="ClearDeletedAlertMessage">Você tem certeza que deseja limpar todas as mensagens excluídas neste chat?</string>
     <string name="ForwardsRestrictedInfoAyuDeleted">Não é permitido encaminhamento.</string>
     <string name="RegexFiltersNotice">Toque para editar.</string>
+    <string name="RegexFiltersImport">Importar</string>
+    <string name="RegexFiltersExport">Exportar</string>
+    <string name="RegexFiltersImportSuccess">Filtros importados.</string>
+    <string name="RegexFiltersImportError">Falha ao importar filtros da área de transferência.</string>
+    <string name="RegexFiltersExportError">Falha ao exportar filtros.</string>
     <string name="botCommandConfirmTitle">Enviar Comando</string>
     <string name="botCommandConfirmText">Você quer enviar este comando?\n\n%s</string>
     <string name="DisableScreenshotDetection">Desativar Detecção de Captura de Tela</string>

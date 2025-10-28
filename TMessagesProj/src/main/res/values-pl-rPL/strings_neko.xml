@@ -119,7 +119,7 @@
     <string name="MutualContactDescription">Ten kontakt jest kontaktem wzajemnym.</string>
     <string name="DatacenterStatusAbout">Sprawdź status **centrów danych** Telegramu.</string>
     <string name="DatacenterStatus">Stan centrum danych</string>
-    <string name="enhancedFileLoader">Pobierz Zwiększenie prędkości</string>
+    <string name="enhancedFileLoader">Zwiększ prędkość pobierania</string>
     <string name="mapDriftingFixForGoogleMaps">Napraw dryfujące mapy Google w Chinach</string>
     <string name="useOSMDroidMap">Użyj mapy OSMDroid</string>
     <string name="UnknownNekoSettingsOption">Nie ma takiej opcji w ustawieniach Nagram</string>
@@ -277,7 +277,7 @@
     <string name="StickerSettings">Naklejki</string>
     <string name="ConfirmSettings">Potwierdzenia</string>
     <string name="InteractionSettings">Interakcje</string>
-    <string name="localPremium">Lokalne Premium</string>
+    <string name="localPremium">Włącz konto Premium</string>
     <string name="ReactionSettings">Reakcje</string>
     <string name="UpgradeGroup">Aktualizuj Grupę</string>
     <string name="AccDescrShowKeyboard">Pokaż klawiaturę</string>

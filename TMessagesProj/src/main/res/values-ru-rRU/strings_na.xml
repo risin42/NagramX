@@ -63,17 +63,6 @@
     <string name="DisableSuggestionView">Отключить предложение настройки профиля</string>
     <string name="DisableStories">Отключить истории</string>
     <string name="CopyPhotoAsSticker">Копировать как стикер</string>
-    <string name="ExternalStickerCache">Внешний кэш стикеров</string>
-    <string name="ExternalStickerCacheHint">Для обмена наборами стикеров с другими приложениями. Нажмите, чтобы выбрать место хранения.</string>
-    <string name="ExternalStickerCacheRefresh">Обновить внешний кэш</string>
-    <string name="ExternalStickerCacheDelete">Очистить внешний кэш</string>
-    <string name="ExternalStickerCacheWaitSync">Ожидание завершения синхронизации кэша</string>
-    <string name="ExternalStickerCacheSyncNotFinished">Синхронизация кэша уже запущена</string>
-    <string name="ExternalStickerCacheAutoRefresh">Автоматическая синхронизация</string>
-    <string name="ExternalStickerCacheAutoRefreshHint">Автоматически синхронизируйте весь кэш после получения событий, связанных со стикерами.</string>
-    <string name="ExternalStickerCacheRefreshAll">Синхронизировать весь кэш</string>
-    <string name="ExternalStickerCacheDeleteAll">Удалить весь кэш</string>
-    <string name="ExternalStickerCacheDirNameType">Присвоение имен каталогам</string>
     <string name="ProviderTranSmartTranslate">TranSmart</string>
     <string name="DisableMarkdown">Отключить разметку</string>
     <string name="SendWithMarkdown">Отправить с разметкой</string>
@@ -102,6 +91,9 @@
     <string name="UnblockDeletedWarn">Вы уверены, что хотите разблокировать **всех удалённых пользователей**?</string>
     <string name="RegexFilters">Фильтры сообщений</string>
     <string name="RegexFiltersHeader">Фильтры</string>
+    <string name="RegexFiltersSharedHeader">Общие фильтры</string>
+    <string name="RegexFiltersSubMenuDescription">Вы можете исключить общие фильтры для этого чата.</string>
+    <string name="RegexFiltersChatHeader">Фильтры чатов</string>
     <string name="RegexFiltersEnableInChats">Включить фильтры в личных чатах</string>
     <string name="RegexFiltersCaseInsensitive">Не учитывать регистр</string>
     <string name="RegexFiltersAdd">Добавить фильтр</string>

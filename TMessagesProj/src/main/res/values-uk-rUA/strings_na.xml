@@ -63,17 +63,6 @@
     <string name="DisableSuggestionView">Вимкнути пропозицію налаштувань профілю</string>
     <string name="DisableStories">Вимкнути історії</string>
     <string name="CopyPhotoAsSticker">Копіювати як наліпку</string>
-    <string name="ExternalStickerCache">Зовнішній кеш наліпок</string>
-    <string name="ExternalStickerCacheHint">Для обміну наборами наліпок з іншими програмами. Натисніть, щоб вибрати місце зберігання.</string>
-    <string name="ExternalStickerCacheRefresh">Оновити зовнішній кеш</string>
-    <string name="ExternalStickerCacheDelete">Видалити зовнішній кеш</string>
-    <string name="ExternalStickerCacheWaitSync">Очікування завершення синхронізації кешу</string>
-    <string name="ExternalStickerCacheSyncNotFinished">Синхронізація кешу вже виконується</string>
-    <string name="ExternalStickerCacheAutoRefresh">Автоматична синхронізація</string>
-    <string name="ExternalStickerCacheAutoRefreshHint">Автоматично синхронізувати всі кеші після отримання подій зі стікерами.</string>
-    <string name="ExternalStickerCacheRefreshAll">Синхронізувати весь кеш</string>
-    <string name="ExternalStickerCacheDeleteAll">Очистити весь кеш</string>
-    <string name="ExternalStickerCacheDirNameType">Назва каталогів</string>
     <string name="ProviderTranSmartTranslate">TranSmart</string>
     <string name="DisableMarkdown">Вимкнути розмітку тексту</string>
     <string name="SendWithMarkdown">Надіслати із розміткою</string>
@@ -101,6 +90,9 @@
     <string name="UnblockDeletedWarn">Ви впевнені, що хочете розблокувати **всіх видалених користувачів**?</string>
     <string name="RegexFilters">Фільтри повідомлень</string>
     <string name="RegexFiltersHeader">Фільтри</string>
+    <string name="RegexFiltersSharedHeader">Спільні фільтри</string>
+    <string name="RegexFiltersSubMenuDescription">Ви можете виключити спільні фільтри для цього чату.</string>
+    <string name="RegexFiltersChatHeader">Фільтри чату</string>
     <string name="RegexFiltersEnableInChats">Увімкнути фільтри у приватних чатах</string>
     <string name="RegexFiltersCaseInsensitive">Нечутливі до регістрів вирази</string>
     <string name="RegexFiltersAdd">Додати фільтр</string>

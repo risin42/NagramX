@@ -110,8 +110,8 @@
     <string name="TgBrowserOpenFail">Przeglądarka w aplikacji jest niedostępna</string>
     <string name="TgBrowserOpenFail_Desc">Wybrana operacja jest niedostępna, ponieważ przeglądarka w aplikacji została wyłączona.</string>
     <string name="MapPreviewProviderYandexNax">Yandex</string>
-    <string name="GhostMode">Tryb Ducha</string>
-    <string name="GhostEssentialsHeader">Niezbędne informacje o trybie duch</string>
+    <string name="GhostMode">Ustawienia trybu Ducha 👻</string>
+    <string name="GhostEssentialsHeader">Niezbędne informacje o trybie ducha</string>
     <string name="EnableGhostMode">Włącz tryb ducha</string>
     <string name="DisableGhostMode">Wyłącz tryb ducha</string>
     <string name="GhostModeEnabled">Włączono tryb ducha</string>
@@ -123,7 +123,7 @@
     <string name="DontSendUploadProgress">Nie wysyłaj pisania</string>
     <string name="SendOfflinePacketAfterOnline">Automatyczne przejście w tryb offline</string>
     <string name="MarkReadAfterSend">Czytaj dalej Interakcja</string>
-    <string name="GhostModeNotice">Długie dotknięcie dowolnej opcji zapobiega jej zmianie podczas przełączania Trybu ducha.</string>
+    <string name="GhostModeNotice">Długie dotknięcie dowolnej opcji zapobiega jej zmianie podczas przełączania trybu ducha.</string>
     <string name="MarkReadAfterSendNotice">Automatycznie odczytuje wiadomość, gdy wysyłasz nową lub klikasz reakcję.</string>
     <string name="SendWithoutSoundRowNotice">Automatyczne wysyłanie wiadomości bez dźwięku.</string>
     <string name="GhostReadMessage">Czytaj wiadomość w trybie duch</string>

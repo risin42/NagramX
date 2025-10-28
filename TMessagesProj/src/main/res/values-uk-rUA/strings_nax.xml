@@ -43,6 +43,8 @@
     <string name="DeleteCloudBackupFailed">Не вдалося очистити дані із хмари</string>
     <string name="DeleteCloudBackupSuccess">Дані в хмарі очищено</string>
     <string name="CloudConfigNoBackupToDelete">Немає даних для очищення</string>
+    <string name="ClearRegexFilters">Очистити</string>
+    <string name="ClearRegexFiltersAlertMessage">Ви впевнені, що хочете очистити всі збережені фільтри? Це призведе до видалення як спільних, так і специфічних для чату фільтрів.</string>
     <string name="PreferredTranslateTargetLang">Користувацький список мов</string>
     <string name="PreferredTranslateTargetLangExample">Для прикладу, ua, pl, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Пріоритетні мови</string>
@@ -50,6 +52,11 @@
     <string name="ClearDeletedAlertMessage">Ви дійсно хочете очистити всі видалені повідомлення в цьому чаті?</string>
     <string name="ForwardsRestrictedInfoAyuDeleted">Пересилка заборона.</string>
     <string name="RegexFiltersNotice">Натисніть для Редагування.</string>
+    <string name="RegexFiltersImport">Імпорт</string>
+    <string name="RegexFiltersExport">Експорт</string>
+    <string name="RegexFiltersImportSuccess">Фільтри імпортовано.</string>
+    <string name="RegexFiltersImportError">Не вдалося імпортувати фільтри з буфера обміну.</string>
+    <string name="RegexFiltersExportError">Не вдалося експортувати фільтри.</string>
     <string name="botCommandConfirmTitle">Надіслати команду</string>
     <string name="botCommandConfirmText">Ви хочете відправити цю команду? \n\n%s</string>
     <string name="DisableScreenshotDetection">Вимкнути виявлення скріншотів</string>
