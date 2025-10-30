@@ -26,7 +26,10 @@ import com.google.gson.Gson;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
+import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
+import org.telegram.messenger.UserConfig;
+import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
@@ -90,7 +93,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
         dividerRow = rowCount++;
         // Chat-specific filters section
         chatFiltersHeaderRow = rowCount++;
-        var chatEntries = AyuFilter.getChatFilterEntries();
+        var chatEntries = checkChatFilters(AyuFilter.getChatFilterEntries());
         chatFiltersStartRow = rowCount;
         rowCount += chatEntries.size();
         addChatFilterBtnRow = rowCount++;
@@ -216,7 +219,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                             AyuFilter.saveFilter(currentShared);
                         }
                         if (chatsIncoming != null && !chatsIncoming.isEmpty()) {
-                            ArrayList<AyuFilter.ChatFilterEntry> currentChats = AyuFilter.getChatFilterEntries();
+                            ArrayList<AyuFilter.ChatFilterEntry> currentChats = checkChatFilters(AyuFilter.getChatFilterEntries());
                             for (AyuFilter.ChatFilterEntry inEntry : chatsIncoming) {
                                 if (inEntry == null) continue;
                                 AyuFilter.ChatFilterEntry target = null;
@@ -266,7 +269,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                     try {
                         TransferData data = new TransferData();
                         data.shared = AyuFilter.getRegexFilters();
-                        data.chats = AyuFilter.getChatFilterEntries();
+                        data.chats = checkChatFilters(AyuFilter.getChatFilterEntries());
                         String json = new Gson().toJson(data);
                         AndroidUtilities.addToClipboard(json);
                         BulletinFactory.of(RegexFiltersSettingActivity.this).createCopyLinkBulletin().show();
@@ -330,7 +333,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
             presentFragment(getDialogsActivity());
         } else if (position >= chatFiltersStartRow && position < addChatFilterBtnRow) {
             int idx = position - chatFiltersStartRow;
-            var chatEntries = AyuFilter.getChatFilterEntries();
+            var chatEntries = checkChatFilters(AyuFilter.getChatFilterEntries());
             if (idx >= 0 && idx < chatEntries.size()) {
                 long did = chatEntries.get(idx).dialogId;
                 presentFragment(new RegexChatFiltersListActivity(did));
@@ -355,6 +358,26 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
             return false;
         });
         return activity;
+    }
+
+    private ArrayList<AyuFilter.ChatFilterEntry> checkChatFilters(ArrayList<AyuFilter.ChatFilterEntry> chatEntries) {
+        if (chatEntries == null || chatEntries.isEmpty()) return chatEntries;
+        ArrayList<AyuFilter.ChatFilterEntry> newEntries = new ArrayList<>();
+        for (AyuFilter.ChatFilterEntry entry : chatEntries) {
+            if (entry == null) continue;
+            if (entry.dialogId > 0) {
+                TLRPC.User user = MessagesController.getInstance(UserConfig.selectedAccount).getUser(entry.dialogId);
+                if (user != null) {
+                    newEntries.add(entry);
+                }
+            } else {
+                TLRPC.Chat chat = MessagesController.getInstance(UserConfig.selectedAccount).getChat(-entry.dialogId);
+                if (chat != null) {
+                    newEntries.add(entry);
+                }
+            }
+        }
+        return newEntries;
     }
 
     @Override
@@ -432,7 +455,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                 case TYPE_ACCOUNT:
                     if (position >= chatFiltersStartRow && position < addChatFilterBtnRow) {
                         int idx = position - chatFiltersStartRow;
-                        var chatEntries = AyuFilter.getChatFilterEntries();
+                        var chatEntries = checkChatFilters(AyuFilter.getChatFilterEntries());
                         if (idx >= 0 && idx < chatEntries.size()) {
                             var entry = chatEntries.get(idx);
                             long did = entry.dialogId;
