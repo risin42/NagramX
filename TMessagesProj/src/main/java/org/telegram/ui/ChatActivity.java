@@ -38592,6 +38592,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (AyuFilter.isFiltered(msgToCheck, group)) {
                     return -1000;
                 }
+                if (msgToCheck != null && msgToCheck.replyMessageObject != null) {
+                    if (MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(msgToCheck.replyMessageObject.getFromChatId()) >= 0) {
+                        return -1000;
+                    }
+                }
                 if (msg.contentType == 2) {
                     int scanIndex = position - messagesStartRow - 1;
                     boolean hasVisibleAfter = false;
