@@ -250,4 +250,12 @@
     <string name="ExportSettingsIncludeApiKeys">API キーを含める</string>
     <string name="DisableInAppBrowserGestures">ジェスチャーを無効にする</string>
     <string name="HowToObtain">取得方法は？</string>
+    <string name="BlockChannel">ブロック</string>
+    <string name="UnblockChannel">ブロックを解除</string>
+    <string name="BlockedChannels">ブロックされたチャンネル</string>
+    <string name="ChannelBlocked">ブロックしました。</string>
+    <string name="ChannelUnblocked">ブロックを解除しました。</string>
+    <string name="BlockedChannelsEmpty">ブロックされたチャンネルはまだありません</string>
+    <string name="UnblockAllChannelsWarn">**すべてのチャンネル**のブロックを解除してもよろしいですか？</string>
+    <string name="BlockChannelsUnavailable">一部のチャンネルは一時的に表示できません。</string>
 </resources>
