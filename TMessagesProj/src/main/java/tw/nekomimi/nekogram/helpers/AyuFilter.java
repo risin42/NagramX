@@ -79,7 +79,6 @@ public class AyuFilter {
     public static void saveFilter(ArrayList<FilterModel> filterModels1) {
         var str = new Gson().toJson(filterModels1);
         NaConfig.INSTANCE.getRegexFiltersData().setConfigString(str);
-
         AyuFilter.rebuildCache();
     }
 
@@ -355,13 +354,10 @@ public class AyuFilter {
     }
 
     public static void clearAllFilters() {
-        try {
-            NaConfig.INSTANCE.getRegexFiltersData().setConfigString("[]");
-            NaConfig.INSTANCE.getRegexChatFiltersData().setConfigString("[]");
-            NaConfig.INSTANCE.getRegexFiltersExcludedDialogs().setConfigString("[]");
-            rebuildCache();
-        } catch (Exception ignored) {
-        }
+        NaConfig.INSTANCE.getRegexFiltersData().setConfigString("[]");
+        NaConfig.INSTANCE.getRegexChatFiltersData().setConfigString("[]");
+        NaConfig.INSTANCE.getRegexFiltersExcludedDialogs().setConfigString("[]");
+        rebuildCache();
     }
 
     private static HashSet<Long> getBlockedChannels() {
@@ -421,10 +417,7 @@ public class AyuFilter {
     }
 
     public static void clearBlockedChannels() {
-        try {
-            NaConfig.INSTANCE.getBlockedChannelsData().setConfigString("[]");
-        } catch (Exception ignored) {
-        }
+        NaConfig.INSTANCE.getBlockedChannelsData().setConfigString("[]");
         synchronized (cacheLock) {
             blockedChannels = new HashSet<>();
         }
@@ -463,22 +456,6 @@ public class AyuFilter {
             }
         }
     }
-
-    /*public static int getLastFilteredMessageId(long dialogId) {
-        var cached = filteredCache.get(dialogId);
-        if (cached != null) {
-            int lastId = -1;
-            for (var entry : cached.entrySet()) {
-                if (entry.getValue()) {
-                    if (entry.getKey() > lastId) {
-                        lastId = entry.getKey();
-                    }
-                }
-            }
-            return lastId;
-        }
-        return -1;
-    }*/
 
     public static class FilterModel {
         @Expose
