@@ -17355,7 +17355,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         if (messageObject.messageOwner.forwards > 0) {
             currentForwardsString = String.format("%s", LocaleController.formatShortNumber(Math.max(1, messageObject.messageOwner.forwards), null));
             forwardsTextWidth = (int) Math.ceil(Theme.chat_timePaint.measureText(currentForwardsString));
-            float drawableWidth = TimeStringHelper.forwardsDrawable != null ? (TimeStringHelper.forwardsDrawable.getIntrinsicWidth() * (Theme.chat_timePaint.getTextSize() - dp(2)) / Math.max(1f, TimeStringHelper.forwardsDrawable.getIntrinsicHeight())) : 0;
+            float drawableWidth = TimeStringHelper.forwardsDrawable != null ? (TimeStringHelper.forwardsDrawable.getIntrinsicWidth() * Theme.chat_timePaint.getTextSize() / Math.max(1f, TimeStringHelper.forwardsDrawable.getIntrinsicHeight())) : 0;
             timeWidth += forwardsTextWidth + drawableWidth + dp(10);
         } else {
             currentForwardsString = null;
@@ -22873,7 +22873,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             if (forwardsDrawable != null) {
                 int color = Theme.chat_timePaint.getColor();
                 forwardsDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
-                fw = setDrawableBounds(forwardsDrawable, forwardsX, timeY + dp(1.5f), Theme.chat_timePaint.getTextSize() - dp(2));
+                fw = setDrawableBounds(forwardsDrawable, forwardsX, timeY + dp(0.5f), Theme.chat_timePaint.getTextSize());
                 if (useScale) {
                     canvas.save();
                     float cx = forwardsX + (forwardsDrawable.getIntrinsicWidth() + dp(3) + forwardsTextWidth) / 2f;
