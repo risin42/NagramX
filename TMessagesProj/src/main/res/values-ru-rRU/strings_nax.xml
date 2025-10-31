@@ -44,7 +44,7 @@
     <string name="DeleteCloudBackupSuccess">Облачные данные очищены</string>
     <string name="CloudConfigNoBackupToDelete">Нет данных для очистки</string>
     <string name="ClearRegexFilters">Очистить</string>
-    <string name="ClearRegexFiltersAlertMessage">Вы уверены, что хотите удалить все сохранённые фильтры? Это удалит как общие, так и фильтры чатов.</string>
+    <string name="ClearRegexFiltersAlertMessage">Вы уверены, что хотите удалить все сохранённые фильтры? Это удалит как общие фильтры, так и фильтры чатов.</string>
     <string name="PreferredTranslateTargetLang">Пользовательский список языков</string>
     <string name="PreferredTranslateTargetLangExample">Например: ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Предпочитаемые языки</string>
