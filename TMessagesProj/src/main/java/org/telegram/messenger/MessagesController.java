@@ -124,6 +124,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import xyz.nextalone.nagram.NaConfig;
@@ -10794,6 +10795,9 @@ public class MessagesController extends BaseController implements NotificationCe
                         continue;
                     }
                     if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(user.id) >= 0) {
+                        continue;
+                    }
+                    if (AyuFilter.isBlockedChannel(user.id)) {
                         continue;
                     }
                     final boolean isGroup = key < 0 && !isEncryptedChat;

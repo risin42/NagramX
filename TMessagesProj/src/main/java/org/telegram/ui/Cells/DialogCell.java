@@ -3046,7 +3046,8 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                         message = groupMessages != null && groupMessages.size() > 0 ? groupMessages.get(0) : null;
                         // Message filter: if last message is blocked/filtered, try to pick previous unfiltered for preview
                         if (message != null) {
-                            boolean blocked = NekoConfig.ignoreBlocked.Bool() && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getSenderId()) >= 0;
+                            boolean blocked = NekoConfig.ignoreBlocked.Bool() && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getFromChatId()) >= 0;
+                            blocked = blocked || AyuFilter.isBlockedChannel(message.getFromChatId());
                             boolean filtered = AyuFilter.isFiltered(message, null);
                             if (blocked || filtered) {
                                 MessageObject alt = MessageHelper.getInstance(currentAccount).getLastMessageSkippingFiltered(dialog.id);
