@@ -38578,26 +38578,32 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 // return messages.get(position - messagesStartRow).contentType;
                 // Message filter start
                 var msg = messages.get(position - messagesStartRow);
-                if (msg != null && msg.messageOwner != null && msg.messageOwner.hide) {
+                if (msg == null || msg.messageOwner != null && msg.messageOwner.hide) {
                     return -1000;
                 }
-                if (NekoConfig.ignoreBlocked.Bool() && msg != null && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(msg.getFromChatId()) >= 0) {
-                    return -1000;
-                }
-                if (!NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) {
-                    return msg.contentType;
-                }
-                var group = getGroup(msg.getGroupId());
-                var msgToCheck = group == null ? msg : group.findCaptionMessageObject();
-                if (AyuFilter.isFiltered(msgToCheck, group)) {
-                    return -1000;
-                }
-                if (msgToCheck != null && msgToCheck.replyMessageObject != null) {
-                    if (MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(msgToCheck.replyMessageObject.getFromChatId()) >= 0) {
-                        return -1000;
+                if (NekoConfig.ignoreBlocked.Bool()) {
+                    long fromId = msg.getFromChatId();
+                    boolean iChannelAndNotMegagroup = ChatObject.isChannelAndNotMegaGroup(currentChat);
+                    if (fromId < 0) {
+                        if (ChatObject.isMegagroup(currentChat) && AyuFilter.isBlockedChannel(fromId)) {
+                            return -1000;
+                        }
+                    } else {
+                        if (isBlockedUser(fromId)) {
+                            return -1000;
+                        }
+                    }
+                    if (msg.replyMessageObject != null) {
+                        fromId = msg.replyMessageObject.getFromChatId();
+                        if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
+                            return -1000;
+                        }
                     }
                 }
-                if (msg.contentType == 2) {
+                if (AyuFilter.isFiltered(msg, getGroup(msg.getGroupId()))) {
+                    return -1000;
+                }
+                if (msg.contentType == 2) { // ChatUnreadCell
                     int scanIndex = position - messagesStartRow - 1;
                     boolean hasVisibleAfter = false;
                     for (int i = scanIndex; i >= 0; i--) {
@@ -38609,7 +38615,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         if (m != null && m.messageOwner != null && m.messageOwner.hide) {
                             continue;
                         }
-                        if (NekoConfig.ignoreBlocked.Bool() && m != null && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(m.getFromChatId()) >= 0) {
+                        if (NekoConfig.ignoreBlocked.Bool() && m != null && isBlockedUser(m.getFromChatId())) {
                             continue;
                         }
                         hasVisibleAfter = true;
@@ -44579,7 +44585,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             Integer end = ids.get(ids.size() - 1);
             for (int i = 0; i < messages.size(); i++) {
                 int msgId = messages.get(i).getId();
-                if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(messages.get(i).getSenderId()) >= 0)
+                if (NekoConfig.ignoreBlocked.Bool() && isBlockedUser(messages.get(i).getFromChatId()))
                     continue;
                 if (AyuFilter.isFiltered(messages.get(i), null)) {
                     continue;
@@ -47306,5 +47312,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                      boolean allowDelete, boolean allowEdit,
                                      boolean allowReply, boolean allowReplyPm,
                                      boolean allowForward) {
+    }
+
+    public boolean isBlockedUser(long senderId) {
+        return getMessagesController().blockePeers.indexOfKey(senderId) >= 0;
     }
 }

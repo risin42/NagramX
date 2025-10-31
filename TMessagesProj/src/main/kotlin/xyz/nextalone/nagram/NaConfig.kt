@@ -445,6 +445,12 @@ object NaConfig {
             ConfigItem.configTypeString,
             "[]"
         )
+    val blockedChannelsData =
+        addConfig(
+            "BlockedChannelsData",
+            ConfigItem.configTypeString,
+            "[]"
+        )
     val showTimeHint =
         addConfig(
             "ShowTimeHint",

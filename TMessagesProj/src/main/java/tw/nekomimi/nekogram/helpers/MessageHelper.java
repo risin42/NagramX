@@ -161,6 +161,9 @@ public class MessageHelper extends BaseController {
                 if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(message.from_id != null ? message.from_id.user_id : 0) >= 0) {
                     continue;
                 }
+                if (AyuFilter.isBlockedChannel(message.from_id != null ? message.from_id.channel_id : 0)) {
+                    continue;
+                }
                 MessageObject obj = new MessageObject(currentAccount, message, true, true);
                 if (AyuFilter.isFiltered(obj, null)) {
                     continue;

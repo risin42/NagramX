@@ -8,7 +8,12 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
 import org.telegram.messenger.Emoji;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessageObject;
+import org.telegram.messenger.MessagesController;
+import org.telegram.messenger.MessagesStorage;
+import org.telegram.messenger.UserConfig;
+import org.telegram.tgnet.TLRPC;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +21,7 @@ import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+import tw.nekomimi.nekogram.NekoConfig;
 import xyz.nextalone.nagram.NaConfig;
 
 public class AyuFilter {
@@ -25,6 +31,7 @@ public class AyuFilter {
     private static volatile ArrayList<FilterModel> filterModels;
     private static volatile ArrayList<ChatFilterEntry> chatFilterEntries;
     private static volatile HashSet<Long> excludedDialogs;
+    private static volatile HashSet<Long> blockedChannels;
 
     public static ArrayList<FilterModel> getRegexFilters() {
         if (filterModels == null) {
@@ -355,6 +362,97 @@ public class AyuFilter {
             rebuildCache();
         } catch (Exception ignored) {
         }
+    }
+
+    private static HashSet<Long> getBlockedChannels() {
+        if (blockedChannels == null) {
+            synchronized (cacheLock) {
+                if (blockedChannels == null) {
+                    try {
+                        String str = NaConfig.INSTANCE.getBlockedChannelsData().String();
+                        Long[] arr = new Gson().fromJson(str, Long[].class);
+                        blockedChannels = new HashSet<>();
+                        if (arr != null) {
+                            blockedChannels.addAll(Arrays.asList(arr));
+                        }
+                    } catch (Exception e) {
+                        blockedChannels = new HashSet<>();
+                    }
+                }
+            }
+        }
+        return blockedChannels;
+    }
+
+    public static boolean isBlockedChannel(long dialogId) {
+        return NekoConfig.ignoreBlocked.Bool() && getBlockedChannels().contains(dialogId);
+    }
+
+    public static void blockPeer(long dialogId) {
+        HashSet<Long> set = new HashSet<>(getBlockedChannels());
+        if (set.add(dialogId)) {
+            Long[] arr = set.toArray(new Long[0]);
+            String str = new Gson().toJson(arr);
+            NaConfig.INSTANCE.getBlockedChannelsData().setConfigString(str);
+            synchronized (cacheLock) {
+                blockedChannels = set;
+            }
+        }
+    }
+
+    public static void unblockPeer(long dialogId) {
+        HashSet<Long> set = new HashSet<>(getBlockedChannels());
+        if (set.remove(dialogId)) {
+            Long[] arr = set.toArray(new Long[0]);
+            String str = new Gson().toJson(arr);
+            NaConfig.INSTANCE.getBlockedChannelsData().setConfigString(str);
+            synchronized (cacheLock) {
+                blockedChannels = set;
+            }
+        }
+    }
+
+    public static ArrayList<Long> getBlockedChannelsList() {
+        return checkBlockedChannels(getBlockedChannels());
+    }
+
+    public static int getBlockedChannelsCount() {
+        return getBlockedChannels().size();
+    }
+
+    public static void clearBlockedChannels() {
+        try {
+            NaConfig.INSTANCE.getBlockedChannelsData().setConfigString("[]");
+        } catch (Exception ignored) {
+        }
+        synchronized (cacheLock) {
+            blockedChannels = new HashSet<>();
+        }
+    }
+
+    public static ArrayList<Long> checkBlockedChannels(HashSet<Long> blockedChannels) {
+        if (blockedChannels == null || blockedChannels.isEmpty()) return new ArrayList<>();
+        ArrayList<Long> filtered = new ArrayList<>();
+        try {
+            final MessagesController mc = MessagesController.getInstance(UserConfig.selectedAccount);
+            final MessagesStorage ms = MessagesStorage.getInstance(UserConfig.selectedAccount);
+            for (Long did : blockedChannels) {
+                if (did == null) continue;
+                if (did < 0) {
+                    TLRPC.Chat chat = mc.getChat(-did);
+                    if (chat == null) {
+                        chat = ms.getChatSync(-did);
+                    }
+                    if (chat != null) {
+                        filtered.add(did);
+                        mc.putChat(chat, true);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+        return filtered;
     }
 
     public static void onMessageEdited(int msgId, long dialogId) {

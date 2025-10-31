@@ -341,6 +341,7 @@ import java.util.zip.ZipOutputStream;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
+import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.helpers.ProfileDateHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
@@ -490,6 +491,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private long dialogId;
     private boolean creatingChat;
     private boolean userBlocked;
+    private boolean channelBlocked;
     private boolean reportSpam;
     private long mergeDialogId;
     private boolean expandPhoto;
@@ -628,6 +630,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private final static int message_filter = 103;
     private final static int clear_cache = 104;
     private final static int add_to_folder = 105;
+    private final static int block_channel = 106;
 
     private Rect rect = new Rect();
 
@@ -2230,7 +2233,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             } else if (chatInfo == null) {
                 chatInfo = getMessagesStorage().loadChatInfo(chatId, false, null, false, false);
             }
-
+            channelBlocked = AyuFilter.isBlockedChannel(-chatId);
             updateExceptions();
         } else {
             return false;
@@ -2572,6 +2575,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     finishFragment();
                 } else if (id == block_contact) {
                     onBlockContactClicked(false);
+                } else if (id == block_channel) {
+                    onBlockChannelClicked();
                 } else if (id == add_contact) {
                     TLRPC.User user = getMessagesController().getUser(userId);
                     Bundle args = new Bundle();
@@ -6422,6 +6427,42 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             } else {
                 getMessagesController().unblockPeer(userId, () -> getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of("/start", userId, null, null, null, false, null, null, null, true, 0, null, false)));
                 finishFragment();
+            }
+        }
+    }
+
+    private void onBlockChannelClicked() {
+        TLRPC.Chat chat = getMessagesController().getChat(chatId);
+        if (chat == null) {
+            return;
+        }
+        if (ChatObject.isChannelAndNotMegaGroup(chat)) {
+            if (channelBlocked) {
+                AyuFilter.unblockPeer(-chatId);
+                channelBlocked = false;
+                if (BulletinFactory.canShowBulletin(ProfileActivity.this)) {
+                    BulletinFactory.createBanChannelBulletin(ProfileActivity.this, false).show();
+                }
+                createActionBarMenu(true);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity(), resourcesProvider);
+                builder.setTitle(getString(R.string.BlockChannel));
+                builder.setMessage(AndroidUtilities.replaceTags(formatString(R.string.AreYouSureBlockContact2, chat.title)));
+                builder.setPositiveButton(LocaleController.getString(R.string.Block), (dialogInterface, i) -> {
+                    AyuFilter.blockPeer(-chatId);
+                    channelBlocked = true;
+                    if (BulletinFactory.canShowBulletin(ProfileActivity.this)) {
+                        BulletinFactory.createBanChannelBulletin(ProfileActivity.this, true).show();
+                    }
+                    createActionBarMenu(true);
+                });
+                builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+                AlertDialog dialog = builder.create();
+                showDialog(dialog);
+                TextView button = (TextView) dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                if (button != null) {
+                    button.setTextColor(getThemedColor(Theme.key_text_RedBold));
+                }
             }
         }
     }
@@ -12623,6 +12664,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     if (NekoConfig.channelAlias.Bool()){
                         otherItem.addSubItem(aliasChannelName, R.drawable.profile_admin, getString( R.string.setChannelAliasName));
                     }
+                    otherItem.addSubItem(block_channel, R.drawable.msg_block, !channelBlocked ? getString(R.string.BlockChannel) : getString(R.string.UnblockChannel));
                     if (!BuildVars.IS_BILLING_UNAVAILABLE && !getMessagesController().premiumPurchaseBlocked()) {
                         StarsController.getInstance(currentAccount).loadStarGifts();
                         otherItem.addSubItem(gift_premium, R.drawable.msg_gift_premium, LocaleController.getString(R.string.ProfileSendAGiftToChannel));
