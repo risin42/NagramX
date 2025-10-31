@@ -54,12 +54,6 @@ if (nativeTarget == 'SKIP') {
     }
 }
 
-tasks.configureEach {
-    if (it.name.contains('uploadCrashlyticsMappingFile')) {
-        it.enabled = false
-    }
-}
-
 android {
     defaultConfig.applicationId = APP_PACKAGE
 
@@ -219,7 +213,7 @@ dependencies {
     compileOnly 'org.checkerframework:checker-compat-qual:2.5.0'
     implementation 'com.google.firebase:firebase-messaging:25.0.1' // 22.0.0
     implementation 'com.google.firebase:firebase-crashlytics:20.0.3'
-    implementation 'com.google.android.gms:play-services-cast-framework:22.1.0' // 21.4.0
+    implementation 'com.google.android.gms:play-services-cast-framework:22.2.0' // 21.4.0
     implementation 'com.google.android.gms:play-services-maps:19.2.0' // 18.1.0
     implementation 'com.google.android.gms:play-services-auth:21.4.0' // 20.4.0
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
@@ -246,20 +240,20 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
 
     // kotlin
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.20'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.21'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
     // utilities
     implementation 'org.osmdroid:osmdroid-android:6.1.20'
     // network
-    implementation 'com.squareup.okhttp3:okhttp:5.2.1'
+    implementation 'com.squareup.okhttp3:okhttp:5.3.0'
     implementation 'dnsjava:dnsjava:3.6.3'
     // add for emoji
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
     // add for UnifiedPush
     implementation 'com.github.UnifiedPush:android-connector:2.3.1'
     // add for save deleted messages
-    implementation 'androidx.room:room-runtime:2.8.2'
-    annotationProcessor 'androidx.room:room-compiler:2.8.2'
+    implementation 'androidx.room:room-runtime:2.8.3'
+    annotationProcessor 'androidx.room:room-compiler:2.8.3'
     // add for keep formatting in translations
     implementation 'org.apache.commons:commons-text:1.14.0'
     // translator from nekogram
