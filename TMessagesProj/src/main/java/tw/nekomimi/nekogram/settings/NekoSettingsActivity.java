@@ -833,10 +833,9 @@ public class NekoSettingsActivity extends BaseFragment {
             if (!includeApiKeys && (key.endsWith("Key") || key.contains("Token") || key.contains("AccountID"))) {
                 continue;
             }
-            if (isCloud && key.endsWith("Prompt")) {
+            if (filter != null && !filter.apply(key)) {
                 continue;
             }
-            if (filter != null && !filter.apply(key)) continue;
             if (entry.getValue() instanceof Long) {
                 key = key + "_long";
             } else if (entry.getValue() instanceof Float) {
