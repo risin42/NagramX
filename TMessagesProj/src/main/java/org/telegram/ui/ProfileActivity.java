@@ -12528,7 +12528,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 if (isBot || getContactsController().contactsDict.get(userId) == null) {
                     if (MessagesController.isSupportUser(user)) {
-                        createMessageFilterItem();
                         if (userBlocked) {
                             otherItem.addSubItem(block_contact, R.drawable.msg_block, LocaleController.getString(R.string.Unblock));
                         }
@@ -12927,7 +12926,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 popupLayout.getSwipeBack().openForeground(swipeBackIndex);
             }
         });
-        otherItem.addColoredGap();
+        if (!ChatObject.isForum(currentChat)) otherItem.addColoredGap();
     }
 
     private void createCustomForumTabsItem() {
