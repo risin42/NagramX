@@ -12533,7 +12533,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 if (isBot || getContactsController().contactsDict.get(userId) == null) {
                     if (MessagesController.isSupportUser(user)) {
-                        createMessageFilterItem();
                         if (userBlocked) {
                             otherItem.addSubItem(block_contact, R.drawable.msg_block, LocaleController.getString(R.string.Unblock));
                         }
@@ -12935,7 +12934,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 popupLayout.getSwipeBack().openForeground(swipeBackIndex);
             }
         });
-        otherItem.addColoredGap();
+        if (!ChatObject.isForum(currentChat)) otherItem.addColoredGap();
     }
 
     private void createCustomForumTabsItem() {
@@ -17104,7 +17103,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         if (!NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) return;
         var autoTranslatePopupWrapper = new SaveExclusionPopupWrapper(ProfileActivity.this, otherItem.getPopupLayout().getSwipeBack(), chatId, getResourceProvider());
         otherItem.addSwipeBackItem(R.drawable.msg_delete_24_solar, null, getString(R.string.SaveDeletedExclusionMenu), autoTranslatePopupWrapper.windowLayout);
-        otherItem.addColoredGap();
+        if (!NaConfig.INSTANCE.getRegexFiltersEnabled().Bool() && !ChatObject.isForum(currentChat)) otherItem.addColoredGap();
     }
 
     private int lastStoriesSelectedCount;
