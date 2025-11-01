@@ -39,44 +39,52 @@ import org.telegram.ui.Components.TextViewSwitcher;
 import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.Stories.recorder.ButtonWithCounterView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicReference;
 
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
 import tw.nekomimi.nekogram.utils.GsonUtil;
 
 public class CloudSettingsHelper {
+    public static final SharedPreferences.OnSharedPreferenceChangeListener listener = (preferences, key) -> CloudSettingsHelper.getInstance().doAutoSync();
     private static final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nekocloud", Context.MODE_PRIVATE);
-
     private final SparseArray<Long> cloudSyncedDate = new SparseArray<>();
     private final Handler handler = new Handler();
+    private long localSyncedDate = preferences.getLong("updated_at", -1);
+    private boolean autoSync = preferences.getBoolean("auto_sync", false);
+
     private final Runnable cloudSyncRunnable = () -> CloudSettingsHelper.getInstance().syncToCloud((success, error) -> {
         if (!success) {
             var global = BulletinFactory.global();
-            if (global != null) {
-                if (error == null) {
-                    global.createSimpleBulletin(R.raw.error, getString(R.string.CloudConfigSyncFailed)).show();
-                } else {
-                    global.createSimpleBulletin(R.raw.error, getString(R.string.CloudConfigSyncFailed), error).show();
-                }
+            if (error == null) {
+                global.createSimpleBulletin(R.raw.error, getString(R.string.CloudConfigSyncFailed)).show();
+            } else {
+                global.createSimpleBulletin(R.raw.error, getString(R.string.CloudConfigSyncFailed), error).show();
             }
         }
     });
 
-    private long localSyncedDate = preferences.getLong("updated_at", -1);
-    private boolean autoSync = preferences.getBoolean("auto_sync", false);
-
-    public static final SharedPreferences.OnSharedPreferenceChangeListener listener = (preferences, key) -> {
-        CloudSettingsHelper.getInstance().doAutoSync();
-    };
-
-    private static final class InstanceHolder {
-        private static final CloudSettingsHelper instance = new CloudSettingsHelper();
-    }
-
     public static CloudSettingsHelper getInstance() {
         return InstanceHolder.instance;
+    }
+
+    private static String formatDateUntil(long date) {
+        try {
+            Calendar rightNow = Calendar.getInstance();
+            int year = rightNow.get(Calendar.YEAR);
+            rightNow.setTimeInMillis(date);
+            int dateYear = rightNow.get(Calendar.YEAR);
+
+            if (year == dateYear) {
+                return LocaleController.getInstance().getFormatterBannedUntilThisYear().format(new Date(date));
+            } else {
+                return LocaleController.getInstance().getFormatterBannedUntil().format(new Date(date));
+            }
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+        return "LOC_ERR";
     }
 
     public void showDialog(BaseFragment parentFragment) {
@@ -152,9 +160,7 @@ public class CloudSettingsHelper {
                     AlertDialog restart = new AlertDialog(context, 0);
                     restart.setTitle(getString(R.string.NagramX));
                     restart.setMessage(getString(R.string.RestartAppToTakeEffect));
-                    restart.setPositiveButton(getString(R.string.OK), (__, ___) -> {
-                        AppRestartHelper.triggerRebirth(context, new Intent(context, LaunchActivity.class));
-                    });
+                    restart.setPositiveButton(getString(R.string.OK), (__, ___) -> AppRestartHelper.triggerRebirth(context, new Intent(context, LaunchActivity.class)));
                     restart.show();
                 }
             });
@@ -170,22 +176,12 @@ public class CloudSettingsHelper {
                 syncedDate.setText(formatSyncedDate());
                 if (!success) {
                     if (error == null) {
-                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider)
-                                .createSimpleBulletin(R.raw.info,
-                                        getString(R.string.CloudConfigNoBackupToDelete))
-                                .show();
+                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider).createSimpleBulletin(R.raw.info, getString(R.string.CloudConfigNoBackupToDelete)).show();
                     } else {
-                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider)
-                                .createSimpleBulletin(R.raw.error,
-                                        getString(R.string.DeleteCloudBackupFailed),
-                                        error)
-                                .show();
+                        BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider).createSimpleBulletin(R.raw.error, getString(R.string.DeleteCloudBackupFailed), error).show();
                     }
                 } else {
-                    BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider)
-                            .createSimpleBulletin(R.raw.done,
-                                    getString(R.string.DeleteCloudBackupSuccess))
-                            .show();
+                    BulletinFactory.of(Bulletin.BulletinWindow.make(context), resourcesProvider).createSimpleBulletin(R.raw.done, getString(R.string.DeleteCloudBackupSuccess)).show();
                 }
             });
         });
@@ -216,47 +212,48 @@ public class CloudSettingsHelper {
     private void syncToCloud(Utilities.Callback2<Boolean, String> callback) {
         try {
             String setting = NekoSettingsActivity.backupSettingsJson(true, 0);
-            // 分块存储
-            int chunkSize = 4000;  // 每个分块的最大长度
-            int numChunks = (int) Math.ceil((double) setting.length() / chunkSize);  // 计算总分块数
-            AtomicReference<Boolean> haveError = new AtomicReference<>(false);
-            for (int i = 0; i < numChunks; i++) {
-                int startIndex = i * chunkSize;
-                int endIndex = Math.min(startIndex + chunkSize, setting.length());
+            int chunkSize = 3800;
+            int numChunks = (int) Math.ceil((double) setting.length() / chunkSize);
 
-                String chunk = setting.substring(startIndex, endIndex);
-
-                // 存储每个分块
-                String storageKey = "neko_settings_" + i;
-                getCloudStorageHelper().setItem(storageKey, chunk, (res, error) -> {
-                    if (error != null) {
-                        haveError.set(true);
-                        callback.run(false, error);
-                    }
-                });
-                if (haveError.get()) break;
-            }
-            if (!haveError.get()) {
-                getCloudStorageHelper().setItem("neko_settings", String.valueOf(numChunks), (res, error) -> {
-                    if (error == null) {
-                        localSyncedDate = System.currentTimeMillis();
-                        cloudSyncedDate.put(UserConfig.selectedAccount, localSyncedDate);
-                        getCloudStorageHelper().setItem("neko_settings_updated_at", String.valueOf(localSyncedDate), null);
-                        preferences.edit().putLong("updated_at", localSyncedDate).apply();
-                        callback.run(true, null);
-                    } else {
-                        callback.run(false, error);
-                    }
-                });
-            }
+            syncChunk(setting, 0, numChunks, chunkSize, callback);
         } catch (JSONException error) {
             callback.run(false, error.toString());
         }
     }
 
+    private void syncChunk(String setting, int index, int numChunks, int chunkSize, Utilities.Callback2<Boolean, String> callback) {
+        if (index >= numChunks) {
+            getCloudStorageHelper().setItem("neko_settings", String.valueOf(numChunks), (res, error) -> {
+                if (error == null) {
+                    localSyncedDate = System.currentTimeMillis();
+                    cloudSyncedDate.put(UserConfig.selectedAccount, localSyncedDate);
+                    getCloudStorageHelper().setItem("neko_settings_updated_at", String.valueOf(localSyncedDate), null);
+                    preferences.edit().putLong("updated_at", localSyncedDate).apply();
+                    callback.run(true, null);
+                } else {
+                    callback.run(false, error);
+                }
+            });
+            return;
+        }
+
+        int startIndex = index * chunkSize;
+        int endIndex = Math.min(startIndex + chunkSize, setting.length());
+        String chunk = setting.substring(startIndex, endIndex);
+        String storageKey = "neko_settings_" + index;
+
+        getCloudStorageHelper().setItem(storageKey, chunk, (res, error) -> {
+            if (error != null) {
+                callback.run(false, error);
+            } else {
+                syncChunk(setting, index + 1, numChunks, chunkSize, callback);
+            }
+        });
+    }
+
     private void restoreFromCloud(Utilities.Callback2<Boolean, String> callback) {
         getCloudStorageHelper().getItem("neko_settings", (res, error) -> {
-            if (error == null) {
+            if (error == null && res != null) {
                 try {
                     int numChunks = Integer.parseInt(res);
                     String[] keys = new String[numChunks];
@@ -268,8 +265,13 @@ public class CloudSettingsHelper {
                             callback.run(false, error_);
                         } else {
                             StringBuilder sb = new StringBuilder();
-                            for (String key : keys) {
-                                sb.append(res_.get(key));
+                            for (int i = 0; i < numChunks; i++) {
+                                String chunk = res_.get("neko_settings_" + i);
+                                if (chunk == null) {
+                                    callback.run(false, "Chunk " + i + " is missing");
+                                    return;
+                                }
+                                sb.append(chunk);
                             }
                             try {
                                 NekoSettingsActivity.importSettings(GsonUtil.toJsonObject(sb.toString()));
@@ -293,38 +295,36 @@ public class CloudSettingsHelper {
     }
 
     private void deleteCloudBackup(Utilities.Callback2<Boolean, String> callback) {
-        // Check if cloud data exists
-        if (cloudSyncedDate.get(UserConfig.selectedAccount, -1L) <= 0) {
-            callback.run(false, null);
-            return;
-        }
-
-        getCloudStorageHelper().getItem("neko_settings", (res, error) -> {
-            if (error == null) {
-                try {
-                    int numChunks = Integer.parseInt(res);
-                    String[] keys = new String[numChunks + 2]; // +2 for neko_settings and neko_settings_updated_at
-                    for (int i = 0; i < numChunks; i++) {
-                        keys[i] = "neko_settings_" + i;
-                    }
-                    keys[numChunks] = "neko_settings";
-                    keys[numChunks + 1] = "neko_settings_updated_at";
-
-                    getCloudStorageHelper().removeItems(keys, (res_, error_) -> {
-                        if (error_ == null) {
-                            cloudSyncedDate.put(UserConfig.selectedAccount, -1L);
-                            callback.run(true, null);
-                        } else {
-                            callback.run(false, error_);
-                        }
-                    });
-                } catch (Exception e) {
-                    FileLog.e(e);
-                    callback.run(false, e.getLocalizedMessage());
-                }
-            } else {
+        getCloudStorageHelper().getKeys((keys, error) -> {
+            if (error != null) {
                 callback.run(false, error);
+                return;
             }
+            if (keys == null || keys.length == 0) {
+                callback.run(false, null);
+                return;
+            }
+
+            ArrayList<String> nekoKeys = new ArrayList<>();
+            for (String key : keys) {
+                if (key.startsWith("neko_settings")) {
+                    nekoKeys.add(key);
+                }
+            }
+
+            if (nekoKeys.isEmpty()) {
+                callback.run(false, null);
+                return;
+            }
+
+            getCloudStorageHelper().removeItems(nekoKeys.toArray(new String[0]), (res_, error_) -> {
+                if (error_ == null) {
+                    cloudSyncedDate.put(UserConfig.selectedAccount, -1L);
+                    callback.run(true, null);
+                } else {
+                    callback.run(false, error_);
+                }
+            });
         });
     }
 
@@ -333,28 +333,11 @@ public class CloudSettingsHelper {
     }
 
     private String formatSyncedDate() {
-        return LocaleController.formatString(
-                R.string.CloudConfigSyncDate,
-                localSyncedDate > 0 ? formatDateUntil(localSyncedDate) : getString(R.string.CloudConfigSyncDateNever),
-                cloudSyncedDate.get(UserConfig.selectedAccount, 0L) > 0 ? formatDateUntil(cloudSyncedDate.get(UserConfig.selectedAccount, 0L)) : getString(R.string.CloudConfigSyncDateNever));
+        return LocaleController.formatString(R.string.CloudConfigSyncDate, localSyncedDate > 0 ? formatDateUntil(localSyncedDate) : getString(R.string.CloudConfigSyncDateNever), cloudSyncedDate.get(UserConfig.selectedAccount, 0L) > 0 ? formatDateUntil(cloudSyncedDate.get(UserConfig.selectedAccount, 0L)) : getString(R.string.CloudConfigSyncDateNever));
     }
 
-    private static String formatDateUntil(long date) {
-        try {
-            Calendar rightNow = Calendar.getInstance();
-            int year = rightNow.get(Calendar.YEAR);
-            rightNow.setTimeInMillis(date);
-            int dateYear = rightNow.get(Calendar.YEAR);
-
-            if (year == dateYear) {
-                return LocaleController.getInstance().getFormatterBannedUntilThisYear().format(new Date(date));
-            } else {
-                return LocaleController.getInstance().getFormatterBannedUntil().format(new Date(date));
-            }
-        } catch (Exception e) {
-            FileLog.e(e);
-        }
-        return "LOC_ERR";
+    private static final class InstanceHolder {
+        private static final CloudSettingsHelper instance = new CloudSettingsHelper();
     }
 
     @SuppressLint("ViewConstructor")
@@ -403,12 +386,12 @@ public class CloudSettingsHelper {
             checkBox.setChecked(checked, false);
         }
 
-        public void setChecked(boolean checked) {
-            checkBox.setChecked(checked, true);
-        }
-
         public boolean isChecked() {
             return checkBox.isChecked();
+        }
+
+        public void setChecked(boolean checked) {
+            checkBox.setChecked(checked, true);
         }
 
         @Override
