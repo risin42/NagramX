@@ -24,6 +24,7 @@ import com.radolyn.ayugram.database.entities.EditedMessage;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.proprietary.AyuMessageUtils;
 
+import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessageObject;
@@ -34,15 +35,15 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
-import org.telegram.ui.ActionBar.ThemeDescription;
+import org.telegram.ui.Cells.ChatMessageCell;
+import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AyuMessageHistory extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
+public class AyuMessageHistory extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, AyuMessageCell.AyuMessageCellDelegate {
     private final MessageObject messageObject;
     private List<EditedMessage> messages;
     private int rowCount;
@@ -64,20 +65,16 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
     public View createView(Context context) {
         var firstMsg = messages.get(0);
         var peer = getMessagesController().getUserOrChat(firstMsg.dialogId);
-        // int currentAccount = baseFragment.getCurrentAccount();
         int currentAccount = UserConfig.selectedAccount;
         // todo: check sender of the message
 
-        String name;
-        if (peer == null) {
-            name = "?"; // wtf
-        } else if (peer instanceof TLRPC.User) {
-            name = ((TLRPC.User) peer).first_name;
-        } else if (peer instanceof TLRPC.Chat) {
-            name = ((TLRPC.Chat) peer).title;
-        } else {
-            name = LocaleController.getString(R.string.EditsHistoryMenuText);
-        }
+        String name = switch (peer) {
+            case null -> "?"; // wtf
+
+            case TLRPC.User user -> user.first_name;
+            case TLRPC.Chat chat -> chat.title;
+            default -> LocaleController.getString(R.string.EditsHistoryMenuText);
+        };
 
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setAllowOverlayTitle(true);
@@ -143,6 +140,18 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
         NotificationCenter.getInstance(UserConfig.selectedAccount).removeObserver(this, AyuConstants.MESSAGE_EDITED_NOTIFICATION);
     }
 
+    @Override
+    public void onTextCopied() {
+        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString(R.string.MessageCopied)).show();
+    }
+
+    @Override
+    public void onImagePressed(ChatMessageCell cell) {
+        if (cell.getMessageObject() != null) {
+            AndroidUtilities.openForView(cell.getMessageObject(), getParentActivity(), null, false);
+        }
+    }
+
     private class ListAdapter extends RecyclerListView.SelectionAdapter {
 
         private final Context context;
@@ -168,7 +177,7 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             if (viewType == 1) {
-                view = new AyuMessageCell(context, currentAccount, getParentActivity(), AyuMessageHistory.this);
+                view = new AyuMessageCell(context, currentAccount);
             } else {
                 view = null;
             }
@@ -183,6 +192,7 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
                 var editedMessage = messages.get(position);
                 var msg = createMessageObject(editedMessage);
 
+                ayuMessageDetailCell.setAyuDelegate(AyuMessageHistory.this);
                 ayuMessageDetailCell.setMessageObject(msg, null, false, false, false);
                 ayuMessageDetailCell.setEditedMessage(editedMessage);
                 ayuMessageDetailCell.setId(position);
