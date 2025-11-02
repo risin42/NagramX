@@ -38581,17 +38581,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (msg == null || msg.messageOwner != null && msg.messageOwner.hide) {
                     return -1000;
                 }
-                if (NekoConfig.ignoreBlocked.Bool()) {
+                if (NekoConfig.ignoreBlocked.Bool() && ChatObject.isMegagroup(currentChat)) {
                     long fromId = msg.getFromChatId();
-                    boolean iChannelAndNotMegagroup = ChatObject.isChannelAndNotMegaGroup(currentChat);
-                    if (fromId < 0) {
-                        if (ChatObject.isMegagroup(currentChat) && AyuFilter.isBlockedChannel(fromId)) {
-                            return -1000;
-                        }
-                    } else {
-                        if (isBlockedUser(fromId)) {
-                            return -1000;
-                        }
+                    if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
+                        return -1000;
                     }
                     if (msg.replyMessageObject != null) {
                         fromId = msg.replyMessageObject.getFromChatId();
@@ -38608,14 +38601,16 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     boolean hasVisibleAfter = false;
                     for (int i = scanIndex; i >= 0; i--) {
                         var m = messages.get(i);
+                        if (m == null) continue;
                         var g = getGroup(m.getGroupId());
+                        var fromId = m.getFromChatId();
+                        if (m.messageOwner != null && m.messageOwner.hide) {
+                            continue;
+                        }
+                        if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
+                            continue;
+                        }
                         if (AyuFilter.isFiltered(m, g)) {
-                            continue;
-                        }
-                        if (m != null && m.messageOwner != null && m.messageOwner.hide) {
-                            continue;
-                        }
-                        if (NekoConfig.ignoreBlocked.Bool() && m != null && isBlockedUser(m.getFromChatId())) {
                             continue;
                         }
                         hasVisibleAfter = true;
@@ -44585,8 +44580,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             Integer end = ids.get(ids.size() - 1);
             for (int i = 0; i < messages.size(); i++) {
                 int msgId = messages.get(i).getId();
-                if (NekoConfig.ignoreBlocked.Bool() && isBlockedUser(messages.get(i).getFromChatId()))
+                long fromId = messages.get(i).getFromChatId();
+                if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
                     continue;
+                }
                 if (AyuFilter.isFiltered(messages.get(i), null)) {
                     continue;
                 }
@@ -47315,6 +47312,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     public boolean isBlockedUser(long senderId) {
-        return getMessagesController().blockePeers.indexOfKey(senderId) >= 0;
+        return NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(senderId) >= 0;
     }
 }

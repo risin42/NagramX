@@ -3046,10 +3046,18 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                         message = groupMessages != null && groupMessages.size() > 0 ? groupMessages.get(0) : null;
                         // Message filter: if last message is blocked/filtered, try to pick previous unfiltered for preview
                         if (message != null) {
-                            boolean blocked = NekoConfig.ignoreBlocked.Bool() && MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getFromChatId()) >= 0;
-                            blocked = blocked || AyuFilter.isBlockedChannel(message.getFromChatId());
-                            boolean filtered = AyuFilter.isFiltered(message, null);
-                            if (blocked || filtered) {
+                            boolean blocked = false;
+                            boolean replyBlocked = false;
+                            if (NekoConfig.ignoreBlocked.Bool() && ChatObject.isMegagroup(MessagesController.getInstance(currentAccount).getChat(-dialog.id))) {
+                                blocked = MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getFromChatId()) >= 0;
+                                blocked = blocked || AyuFilter.isBlockedChannel(message.getFromChatId());
+                                if (message.replyMessageObject != null) {
+                                    long fromId = message.replyMessageObject.getFromChatId();
+                                    replyBlocked = MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(fromId) >= 0;
+                                    replyBlocked = replyBlocked || AyuFilter.isBlockedChannel(fromId);
+                                }
+                            }
+                            if (blocked || replyBlocked || AyuFilter.isFiltered(message, null)) {
                                 MessageObject alt = MessageHelper.getInstance(currentAccount).getLastMessageSkippingFiltered(dialog.id);
                                 if (alt != null) {
                                     message = alt;

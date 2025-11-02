@@ -158,13 +158,19 @@ public class MessageHelper extends BaseController {
                 }
                 TLRPC.Message message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
                 data.reuse();
-                if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(message.from_id != null ? message.from_id.user_id : 0) >= 0) {
-                    continue;
+                MessageObject obj = new MessageObject(currentAccount, message, false, false);
+                if (NekoConfig.ignoreBlocked.Bool()) {
+                    long fromId = obj.getFromChatId();
+                    if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
+                        continue;
+                    }
+                    if (obj.replyMessageObject != null) {
+                        fromId = obj.replyMessageObject.getFromChatId();
+                        if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
+                            continue;
+                        }
+                    }
                 }
-                if (AyuFilter.isBlockedChannel(message.from_id != null ? message.from_id.channel_id : 0)) {
-                    continue;
-                }
-                MessageObject obj = new MessageObject(currentAccount, message, true, true);
                 if (AyuFilter.isFiltered(obj, null)) {
                     continue;
                 }
@@ -845,4 +851,16 @@ public class MessageHelper extends BaseController {
         return text;
     }
 
+    public boolean isBlockedUser(long senderId) {
+        return NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(senderId) >= 0;
+    }
+
+    public boolean isBlockedOrFiltered(TLRPC.Message message) {
+        if (message == null) {
+            return false;
+        }
+        long fromId = MessageObject.getFromChatId(message);
+        boolean blocked =  isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId);
+        return blocked || AyuFilter.isFiltered(new MessageObject(currentAccount, message, false, false), null);
+    }
 }
