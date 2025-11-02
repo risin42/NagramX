@@ -18,6 +18,7 @@ import org.telegram.tgnet.tl.TL_account;
 
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import xyz.nextalone.nagram.helper.LocalPeerColorHelper;
+import xyz.nextalone.nagram.helper.LocalPremiumStatusHelper;
 
 public class UserObject {
 
@@ -153,7 +154,11 @@ public class UserObject {
         if (user == null) {
             return null;
         }
-        return getEmojiStatusDocumentId(user.emoji_status);
+        Long server = getEmojiStatusDocumentId(user.emoji_status);
+        if (server != null && server != 0) {
+            return server;
+        }
+        return LocalPremiumStatusHelper.getDocumentId(user);
     }
 
     public static Long getEmojiStatusDocumentId(TLRPC.EmojiStatus emojiStatus) {

@@ -126,9 +126,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import xyz.nextalone.nagram.NaConfig;
-import tw.nekomimi.nekogram.helpers.MessageHelper;
+import xyz.nextalone.nagram.helper.LocalPremiumStatusHelper;
 
 import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.messages.AyuSavePreferences;
@@ -2597,6 +2598,7 @@ public class MessagesController extends BaseController implements NotificationCe
                 user.emoji_status = new_emoji_status;
                 getNotificationCenter().postNotificationName(NotificationCenter.userEmojiStatusUpdated, user);
             }
+            LocalPremiumStatusHelper.apply(new_emoji_status);
         } else {
             TLRPC.TL_channels_updateEmojiStatus req = new TLRPC.TL_channels_updateEmojiStatus();
             req.channel = getInputChannel(-dialogId);
@@ -2612,7 +2614,7 @@ public class MessagesController extends BaseController implements NotificationCe
         }
         getMessagesController().updateEmojiStatusUntilUpdate(dialogId, new_emoji_status);
         getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_EMOJI_STATUS);
-        getConnectionsManager().sendRequest(r, null);
+        if (UserConfig.getInstance(currentAccount).isRealPremium()) getConnectionsManager().sendRequest(r, null);
     }
 
     public void removeFilter(DialogFilter filter) {

@@ -233,7 +233,7 @@ public class DrawerProfileCell extends FrameLayout implements NotificationCenter
             }
         };
         nameTextView.setRightDrawableOnClick(e -> {
-            if (lastUser != null && lastUser.premium) {
+            if (lastUser != null && lastUser.premium || NekoConfig.localPremium.Bool()) {
                 onPremiumClick();
             }
         });

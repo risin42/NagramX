@@ -357,6 +357,12 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
+    val useLocalEmojiStatusData =
+        addConfig(
+            "useLocalEmojiStatusData",
+            ConfigItem.configTypeString,
+            ""
+        )
     val disableMarkdown =
         addConfig(
             "DisableMarkdown",
