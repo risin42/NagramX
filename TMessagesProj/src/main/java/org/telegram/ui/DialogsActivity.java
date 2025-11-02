@@ -2711,7 +2711,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     public boolean onFragmentCreate() {
         super.onFragmentCreate();
 
-        getMessagesController().getBlockedPeers(true);
+        Utilities.globalQueue.postRunnable(() -> getMessagesController().getBlockedPeers(false));
 
         if (arguments != null) {
             onlySelect = arguments.getBoolean("onlySelect", false);

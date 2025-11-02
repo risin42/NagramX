@@ -8667,7 +8667,7 @@ public class MessagesController extends BaseController implements NotificationCe
         loadingBlockedPeers = true;
         TLRPC.TL_contacts_getBlocked req = new TLRPC.TL_contacts_getBlocked();
         req.offset = reset ? 0 : blockePeers.size();
-        req.limit = 100;
+        req.limit = reset ? 20 : 100;
         getConnectionsManager().sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
             if (response != null) {
                 TLRPC.contacts_Blocked res = (TLRPC.contacts_Blocked) response;
