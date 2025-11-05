@@ -21886,10 +21886,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
             // --- AyuGram history hook start
             if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
-                final String NAX = "AyuHistoryHookMain";
-
-                var dialogId = getDialogId();
-                var topicId = getTopicId();
+                long dialogId = getDialogId();
+                long topicId = getTopicId();
 
                 boolean isReplyChatComment = isReplyChatComment();
                 boolean isThreadChat = isThreadChat();
@@ -21902,25 +21900,17 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 // ...deleted messages
                 long endId = minVal; // bottom message
 
-                var limit = 500;
-
-                var msgIds = AyuHistoryHook.getMinAndMaxIds(messArr);
-
-                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messages.size: " + messages.size());
-                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messArr.size: " + messArr.size());
+                Pair<Integer, Integer> msgIds = AyuHistoryHook.getMinAndMaxIds(messArr);
 
                 if (!DialogObject.isEncryptedDialog(dialogId)) {
                     if (!messArr.isEmpty()) {
                         int msg1 = msgIds.first; // smaller
                         int msg2 = msgIds.second; // bigger
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "msgIds.first: "+ msgIds.first + ", " + "msgIds.second: " + msgIds.second);
 
                         startId = Math.min(msg1, msg2);
                         endId = Math.max(msg1, msg2);
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "startId: " + startId + ", " + "endId: " + endId);
 
-                        var dialog = getMessagesController().getDialog(dialogId);
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "dialog: " + dialog);
+                        TLRPC.Dialog dialog = getMessagesController().getDialog(dialogId);
 
                         TLRPC.TL_forumTopic topic = null;
                         if (isTopic) {
@@ -21932,66 +21922,37 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             }
                         }
 
-                        // todo: check if these's any messages between current loaded and newly loaded
-                        // like, we know their ids, so why not
-                        var minMaxRes = getMessagesStorage().getMinAndMaxForDialog(dialogId);
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "minMaxRes.first: " + minMaxRes.first);
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "minMaxRes.second: " + minMaxRes.second);
-                        if (BuildVars.LOGS_ENABLED && dialog != null) Log.d(NAX, "dialog.top_message: " + dialog.top_message);
-
-                        // empty user dialog, so load as much as we can
-                        if (dialog != null && DialogObject.isUserDialog(dialogId) && (startId == endId && endId == dialog.top_message) && messArr.size() <= 1) {
-                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a1");
+                        Pair<Integer, Integer> minMaxRes = getMessagesStorage().getMinAndMaxForDialog(dialogId);
+                        if (dialog != null && DialogObject.isUserDialog(dialogId) && (startId == endId && endId == dialog.top_message) && messArr.size() <= 1) { // empty user dialog, so load as much as we can
                             startId = minVal;
                             endId = maxVal;
-                        }
-                        // deleted messages loading in comments
-                        else if (isChannelComment) {
-                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a2");
+                        } else if (isChannelComment) { // deleted messages loading in comments
                             startId = threadMaxOutboxReadId == 0 ? minVal : threadMessageId;
                             endId = threadMaxOutboxReadId == 0 ? minVal : threadMaxOutboxReadId;
-                        }
-                        // allows loading messages that are under bottom messages
-                        else if (dialog != null && (dialog.top_message == endId || (minMaxRes.second == endId && dialog.top_message <= minMaxRes.second)) || topic != null && topic.top_message == endId) {
-                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a3");
-                            // startId is the smallest in the current batch
-                            endId = maxVal;
-                        }
-                        // TL_messageService
-                        else if (messArr.size() == 1 && messArr.get(0).messageOwner instanceof TLRPC.TL_messageService) {
-                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a4");
+                        } else if (dialog != null && (dialog.top_message == endId || (minMaxRes.second == endId && dialog.top_message <= minMaxRes.second)) || topic != null && topic.top_message == endId) { // allows loading messages that are under bottom messages
+                            endId = maxVal; // startId is the smallest in the current batch
+                        } else if (messArr.size() == 1 && messArr.get(0).messageOwner instanceof TLRPC.TL_messageService) { // TL_messageService
                             startId = minVal;
                             endId = AyuUtils.getMinRealId(messages);
-                        }
-                        // allows loading messages that are uppermore than the dialog
-                        else if (messArr.size() < count && !isCache && (load_type == 2 || load_type == 1) && !messArr.isEmpty()) {
-                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case a5");
+                        } else if (messArr.size() < count && !isCache && (load_type == 2 || load_type == 1) && !messArr.isEmpty()) { // allows loading messages that are uppermore than the dialog
                             startId = minVal;
                             endId = Math.min(msg1, msg2);
                         }
                     } else {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "messArr isEmpty");
-                        if (!messages.isEmpty() && load_type != 1) { // for loading uppermore // NagramX: load_type != 1
-                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b1");
+                        if (!messages.isEmpty() && load_type != 1) { // for loading uppermore
                             startId = minVal;
                             endId = AyuUtils.getMinRealId(messages);
-                        }
-                        // empty(new) user dialog, so load as much as we can
-                        else if (DialogObject.isUserDialog(dialogId)) {
-                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b2");
+                        } else if (DialogObject.isUserDialog(dialogId)) { // empty(new) user dialog, so load as much as we can
                             startId = minVal;
                             endId = maxVal;
                         }
                         if (isCache) {
-                            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case b3");
                             startId = minVal;
                             endId = minVal;
                         }
                     }
-                } else {
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "isEncryptedDialog");
-                    // works for secret chats only, because they're all cached
-                    var secretRes = getMessagesStorage().getMinAndMaxForDialog(dialogId);
+                } else { // works for secret chats only, because they're all cached
+                    Pair<Integer, Integer> secretRes = getMessagesStorage().getMinAndMaxForDialog(dialogId);
                     int secretStartId = secretRes.second; // bigger
                     int secretEndId = secretRes.first; // smaller
 
@@ -21999,61 +21960,34 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     int msg2 = msgIds.first; // smaller
 
                     if (Math.abs(secretStartId - secretEndId) == 1 || (secretStartId == msg1 && secretEndId == msg2)) { // empty dialog, so load as much as we can
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c1");
                         startId = minVal;
                         endId = maxVal;
                     } else if (secretStartId == msg1) { // loaded up to top
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c2");
                         startId = minVal;
                         endId = msg2;
                     } else if (secretEndId == msg2) { // loaded up to bottom
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c3");
                         startId = msg1;
                         endId = maxVal;
                     } else { // just between some messages
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "case c4");
                         startId = msg1;
                         endId = msg2;
                     }
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "secretStartId: " + secretStartId + ", secretEndId: " + secretEndId);
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "msg1: " + msg1 + ", msg2: " + msg2);
                 }
 
                 if (startId > endId) {
-                    var t = startId;
+                    long t = startId;
                     startId = endId;
                     endId = t;
-                    if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (startId > endId) -> " + "startId: " + startId + ", " + "endId: " + endId);
                 }
 
-                if (BuildVars.LOGS_ENABLED) Log.d(NAX,
-                        "messArr: " + messArr.size()
-                                + " , startId: " + startId
-                                + " , endId: " + endId
-                                + " , count: " + count
-                                + " , load_type: " + load_type
-                                + " , isCache: " + isCache
-                                + " , isEnd: " + isEnd
-                                + " , endReached[0]: " + endReached[0]
-                                + " , threadMaxInboxReadId: " + threadMaxInboxReadId
-                                + " , threadMaxOutboxReadId: " + threadMaxOutboxReadId
-                                + " , replyMaxReadId: " + replyMaxReadId
-                                + " , threadMessageId: " + threadMessageId
-                                + " , replyOriginalMessageId: " + replyOriginalMessageId
-                                + " , isComments: " + isComments
-                                + " , isReplyChatComment: " + isReplyChatComment
-                                + " , isThreadChat: " + isThreadChat
-                                + " , isTopic: " + isTopic
-                );
                 if (!isChannelComment && !isInScheduleMode() && chatMode != MODE_PINNED && (startId != minVal || endId != minVal)) {
-                    var needToReset = messArr.size() == count;
-                    AyuHistoryHook.doHook(currentAccount, messArr, messagesDict, startId, endId, dialogId, limit, topicId, isSecretChat(), load_type, isChannelComment, threadMessageId, isTopic);
+                    boolean needToReset = messArr.size() == count;
+                    int limit = 200;
+                    AyuHistoryHook.doHookAsync(currentAccount, startId, endId, dialogId, limit, topicId, load_type, isChannelComment, threadMessageId, isTopic);
                     if (needToReset) {
-                        if (BuildVars.LOGS_ENABLED) Log.d(NAX, "if (needToReset) -> " + "count = messArr.size(): " + count);
                         count = messArr.size();
                     }
                 }
-                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "history hook end");
             }
             // --- AyuGram history hook end
 
@@ -24377,9 +24311,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (did == dialog_id) {
                 ArrayList<MessageObject> loadedMessages = (ArrayList<MessageObject>) args[1];
                 LongSparseArray<SparseArray<ArrayList<MessageObject>>> replyMessageOwners = (LongSparseArray<SparseArray<ArrayList<MessageObject>>>) args[2];
+                SparseArray<MessageObject> loadedMessagesMap = new SparseArray<>(); // AyuHistoryHook
                 for (int a = 0, N = loadedMessages.size(); a < N; a++) {
                     MessageObject obj = loadedMessages.get(a);
                     repliesMessagesDict.put(obj.getId(), obj);
+                    loadedMessagesMap.put(obj.getId(), obj);
                 }
                 if (replyMessageOwners != null) {
                     for (int a = 0, N = replyMessageOwners.size(); a < N; a++) {
@@ -24389,6 +24325,18 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             for (int b = 0, N2 = arrayList.size(); b < N2; b++) {
                                 addReplyMessageOwner(arrayList.get(b), 0);
                             }
+                        }
+                    }
+                }
+                // AyuHistoryHook: fix replyMessage
+                for (int a = 0, N = messages.size(); a < N; a++) {
+                    MessageObject messageObject = messages.get(a);
+                    if (messageObject.getReplyMsgId() != 0 && (messageObject.replyMessageObject == null || messageObject.replyMessageObject.messageOwner instanceof TLRPC.TL_messageEmpty)) {
+                        int replyId = messageObject.getReplyMsgId();
+                        MessageObject replyMessage = loadedMessagesMap.get(replyId);
+                        if (replyMessage != null) {
+                            messageObject.replyMessageObject = replyMessage;
+                            addReplyMessageOwner(messageObject, 0);
                         }
                     }
                 }
@@ -26414,11 +26362,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
 
                 if (threadMessageId == 0 || isTopic) {
-                    if (obj.messageOwner.mentioned && obj.isContentUnread()) {
+                    if (obj.messageOwner.mentioned && obj.isContentUnread() && !obj.messageOwner.ayuDeleted) {
                         newMentionsCount++;
                     }
                 }
-                if (!isAd) {
+                if (!isAd && !obj.messageOwner.ayuDeleted) {
                     newUnreadMessageCount++;
                 }
                 if (obj.type == 10 || obj.type == MessageObject.TYPE_ACTION_PHOTO) {
@@ -26570,14 +26518,14 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
 
                 if (placeToPaste == -1) {
-                    if (!obj.scheduled && obj.messageOwner.id < 0 || obj.isQuickReply() || messages.isEmpty()) {
+                    if ((!obj.scheduled && obj.messageOwner.id < 0 && !obj.messageOwner.ayuDeleted) || obj.isQuickReply() || messages.isEmpty()) {
                         placeToPaste = 0;
                     } else {
                         final int size = messages.size();
                         for (int b = 0; b < size; b++) {
                             final MessageObject lastMessage = messages.get(b);
                             if (lastMessage.type >= 0 && lastMessage.messageOwner.date > 0) {
-                                if (chatMode != MODE_SCHEDULED && lastMessage.messageOwner.id > 0 && obj.messageOwner.id > 0 && lastMessage.messageOwner.id < obj.messageOwner.id || lastMessage.messageOwner.date < obj.messageOwner.date || lastMessage.messageOwner.date == obj.messageOwner.date) {
+                                if (chatMode != MODE_SCHEDULED && lastMessage.messageOwner.id > 0 && obj.messageOwner.id > 0 && lastMessage.messageOwner.id < obj.messageOwner.id || lastMessage.messageOwner.date < obj.messageOwner.date || lastMessage.messageOwner.date == obj.messageOwner.date && lastMessage.messageOwner.id > 0 && obj.messageOwner.id > 0 && lastMessage.messageOwner.id < obj.messageOwner.id) {
                                     MessageObject.GroupedMessages lastGroupedMessages;
                                     if (lastMessage.getGroupId() != 0) {
                                         lastGroupedMessages = groupedMessagesMap.get(lastMessage.getGroupId());
@@ -26768,11 +26716,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
                 if (threadMessageId == 0 || isTopic) {
-                    if (!obj.isOut() && obj.messageOwner.mentioned && obj.isContentUnread()) {
+                    if (!obj.isOut() && obj.messageOwner.mentioned && obj.isContentUnread() && !obj.messageOwner.ayuDeleted) {
                         newMentionsCount++;
                     }
                 }
-                if (!isAd) {
+                if (!isAd && !obj.messageOwner.ayuDeleted) {
                     newUnreadMessageCount++;
                 }
                 if (obj.type == 10 || obj.type == MessageObject.TYPE_ACTION_PHOTO) {

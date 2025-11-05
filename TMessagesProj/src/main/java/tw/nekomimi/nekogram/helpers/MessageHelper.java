@@ -209,6 +209,65 @@ public class MessageHelper extends BaseController {
         return null;
     }
 
+    public TLRPC.Message getMessage(long dialogId, long msgId) {
+        TLRPC.Message message = null;
+        SQLiteCursor cursor = null;
+        try {
+            cursor = getMessagesStorage().getDatabase().queryFinalized("SELECT data FROM messages_v2 WHERE uid = " + dialogId + " AND mid = " + msgId + " LIMIT 1");
+            while (cursor.next()) {
+                NativeByteBuffer data = cursor.byteBufferValue(0);
+                if (data != null) {
+                    message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
+                    if (message != null) {
+                        message.readAttachPath(data, UserConfig.getInstance(currentAccount).clientUserId);
+                    }
+                    data.reuse();
+                }
+            }
+            cursor.dispose();
+            cursor = null;
+        } catch (Exception e) {
+            FileLog.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.dispose();
+            }
+        }
+        return message;
+    }
+
+    public ArrayList<TLRPC.Message> getMessagesStorageMessages(long dialogId, ArrayList<Integer> messageIds) {
+        ArrayList<TLRPC.Message> messages = null;
+        SQLiteCursor cursor = null;
+        try {
+            String ids = TextUtils.join(",", messageIds);
+            cursor = getMessagesStorage().getDatabase().queryFinalized(String.format(Locale.US,"SELECT data FROM messages_v2 WHERE uid = %d AND mid IN (%s)", dialogId, ids));
+            while (cursor.next()) {
+                NativeByteBuffer data = cursor.byteBufferValue(0);
+                if (data != null) {
+                    TLRPC.Message message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
+                    if (message != null) {
+                        message.readAttachPath(data, UserConfig.getInstance(currentAccount).clientUserId);
+                    }
+                    data.reuse();
+                    if (messages == null) {
+                        messages = new ArrayList<>();
+                    }
+                    messages.add(message);
+                }
+            }
+            cursor.dispose();
+            cursor = null;
+        } catch (SQLiteException e) {
+            FileLog.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.dispose();
+            }
+        }
+        return messages;
+    }
+
     public void saveStickerToGallery(Context context, MessageObject messageObject) {
         if (messageObject.isAnimatedSticker()) return;
         // Animated Sticker is not supported.

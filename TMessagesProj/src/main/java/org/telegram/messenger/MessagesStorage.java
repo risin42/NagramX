@@ -79,6 +79,7 @@ import tw.nekomimi.nekogram.helpers.MessageHelper;
 import xyz.nextalone.nagram.NaConfig;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.messages.AyuSavePreferences;
+import com.radolyn.ayugram.proprietary.AyuMessageUtils;
 
 public class MessagesStorage extends BaseController {
 
@@ -14323,7 +14324,8 @@ public class MessagesStorage extends BaseController {
         }
     }
 
-    public ArrayList<Long> markMessagesAsDeleted(long dialogId, ArrayList<Integer> messages, boolean useQueue, boolean deleteFiles, int mode, int topicId) {
+    public ArrayList<Long> markMessagesAsDeleted(long dialogId, ArrayList<Integer> messages, boolean useQueue, boolean deleteFilesOrig, int mode, int topicId) {
+        final boolean deleteFiles = deleteFilesOrig && !AyuMessageUtils.shouldSaveMedia(currentAccount, dialogId);
         if (messages.isEmpty()) {
             return null;
         }
@@ -17951,8 +17953,8 @@ public class MessagesStorage extends BaseController {
 
     // AyuGram
     public ArrayList<Long> getDialogIdsToUpdate(long dialogId, ArrayList<Integer> messages) {
+        SQLiteCursor cursor = null;
         try {
-            SQLiteCursor cursor;
             String ids = TextUtils.join(",", messages);
             var dialogsToUpdate = new HashSet<Long>();
             if (dialogId != 0) {
@@ -17968,6 +17970,10 @@ public class MessagesStorage extends BaseController {
             return new ArrayList<>(dialogsToUpdate);
         } catch (Exception e) {
             FileLog.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.dispose();
+            }
         }
         return null;
     }

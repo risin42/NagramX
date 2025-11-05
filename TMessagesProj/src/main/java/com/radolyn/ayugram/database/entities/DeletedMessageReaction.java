@@ -10,9 +10,14 @@
 package com.radolyn.ayugram.database.entities;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity()
+@Entity(
+        indices = {
+                @Index(value = {"deletedMessageId"})
+        }
+)
 public class DeletedMessageReaction {
     @PrimaryKey(autoGenerate = true)
     public long fakeReactionId;

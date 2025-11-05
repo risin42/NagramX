@@ -10,9 +10,18 @@
 package com.radolyn.ayugram.database.entities;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity()
+@Entity(
+        indices = {
+                @Index(value = {"userId", "dialogId", "messageId"}),
+                @Index(value = {"userId", "dialogId", "topicId", "messageId"}),
+                @Index(value = {"userId", "dialogId", "replyMessageId", "messageId"}),
+                @Index(value = {"userId", "dialogId", "groupedId", "messageId"}),
+                @Index(value = {"dialogId"})
+        }
+)
 public class DeletedMessage extends AyuMessageBase {
     @PrimaryKey(autoGenerate = true)
     public long fakeId;

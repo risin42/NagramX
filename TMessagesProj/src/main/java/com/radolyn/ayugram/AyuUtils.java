@@ -14,10 +14,9 @@ import static org.telegram.messenger.Utilities.random;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.core.util.Pair;
-
-import com.google.android.exoplayer2.util.Log;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
@@ -36,19 +35,56 @@ public class AyuUtils {
     private static final char[] chars = "abcdefghijklmnopqrstuvwxyz1234567890".toCharArray();
 
     public static boolean moveOrCopyFile(File from, File to) {
+        if (from == null || !from.exists()) {
+            if (BuildVars.LOGS_ENABLED) {
+                Log.e(NAX, "Source file does not exist: " + (from != null ? from.getAbsolutePath() : "null"));
+            }
+            return false;
+        }
+
         boolean success;
+        boolean usedCopy = false;
+
         try {
             success = from.renameTo(to);
-        } catch (SecurityException e) {
-            if (BuildVars.LOGS_ENABLED) Log.e(NAX, e.toString());
+            if (success && BuildVars.LOGS_ENABLED) {
+                Log.d(NAX, "Successfully moved file: " + from.getName());
+            }
+        } catch (Exception e) {
+            if (BuildVars.LOGS_ENABLED) Log.e(NAX, "Move failed, trying copy: " + e);
             success = false;
         }
 
         if (!success) {
             try {
                 success = AndroidUtilities.copyFile(from, to);
+                if (success) {
+                    usedCopy = true;
+                    if (BuildVars.LOGS_ENABLED) {
+                        Log.d(NAX, "Successfully copied file: " + from.getName());
+                    }
+                }
             } catch (Exception e) {
-                if (BuildVars.LOGS_ENABLED) Log.e(NAX, e.toString());
+                if (BuildVars.LOGS_ENABLED) Log.e(NAX, "Copy failed: " + e);
+                success = false;
+            }
+        }
+
+        if (success && usedCopy) {
+            try {
+                if (from.delete()) {
+                    if (BuildVars.LOGS_ENABLED) {
+                        Log.d(NAX, "Deleted original file after copy: " + from.getName());
+                    }
+                } else {
+                    if (BuildVars.LOGS_ENABLED) {
+                        Log.w(NAX, "Failed to delete original file after copy: " + from.getAbsolutePath());
+                    }
+                }
+            } catch (Exception e) {
+                if (BuildVars.LOGS_ENABLED) {
+                    Log.e(NAX, "Error deleting original file: " + e);
+                }
             }
         }
 

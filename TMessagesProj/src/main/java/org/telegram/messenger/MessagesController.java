@@ -9110,68 +9110,65 @@ public class MessagesController extends BaseController implements NotificationCe
         // --- AyuGram hook
         int ayuDeletedMessagesCount = 0;
         if (!scheduled && NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+            var ayuMessagesController = AyuMessagesController.getInstance();
             if (DialogObject.isEncryptedDialog(dialogId) && messages != null && !messages.isEmpty()) { // process TTL messages from secrets
-                for (int a = 0; a < messages.size(); a++) {
-                    int id = messages.get(a);
-
-                    if (AyuState.isDeletePermitted(dialogId, id)) {
-                        continue;
-                    }
-
-                    MessageObject obj = dialogMessagesByIds.get(id);
-                    if (obj == null) {
-                        var msg = getMessagesStorage().getMessage(dialogId, id);
-                        if (msg != null) {
-                            obj = new MessageObject(currentAccount, msg, false, false);
+                final ArrayList<Integer> messagesCopy = new ArrayList<>(messages);
+                final long dialogIdFinal = dialogId;
+                getMessagesStorage().getStorageQueue().postRunnable(() -> {
+                    for (int a = 0; a < messagesCopy.size(); a++) {
+                        int msgId = messagesCopy.get(a);
+                        if (AyuState.isDeletePermitted(dialogIdFinal, msgId)) {
+                            continue;
+                        }
+                        MessageObject obj = dialogMessagesByIds.get(msgId);
+                        TLRPC.Message msg;
+                        if (obj == null) {
+                            msg = MessageHelper.getInstance(currentAccount).getMessage(dialogIdFinal, msgId);
+                            if (msg != null) {
+                                obj = new MessageObject(currentAccount, msg, false, false);
+                            }
+                        }
+                        if (obj != null) {
+                            var prefs = new AyuSavePreferences(obj.messageOwner, currentAccount);
+                            prefs.setDialogId(dialogIdFinal);
+                            ayuMessagesController.onMessageDeleted(prefs);
                         }
                     }
-
-                    if (obj != null) {
-                        var prefs = new AyuSavePreferences(obj.messageOwner, currentAccount);
-                        prefs.setDialogId(dialogId);
-                        AyuMessagesController.getInstance().onMessageDeleted(prefs);
-                    }
-                }
-
-                AndroidUtilities.runOnUIThread(() -> {
-                    // invalidating views
-                    getNotificationCenter().postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogId, messages);
+                    AndroidUtilities.runOnUIThread(() -> {
+                        getNotificationCenter().postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogIdFinal, messagesCopy);
+                    });
                 });
             } else if (messages != null && !messages.isEmpty() && taskId != 0) { // process TTL messages
-                var invalidate = new ArrayList<Integer>();
-
-                for (var msgId : messages) {
-                    if (AyuState.isDeletePermitted(dialogId, msgId)) {
-                        continue;
-                    }
-
-                    var msg = getMessagesStorage().getMessage(dialogId, msgId);
-                    if (msg != null) {
-                        if (msg.ttl > 0 || msg.ttl_period > 0) {
-                            invalidate.add(msgId);
-
-                            var prefs = new AyuSavePreferences(msg, currentAccount);
-                            prefs.setDialogId(dialogId);
-                            AyuMessagesController.getInstance().onMessageDeleted(prefs);
+                final ArrayList<Integer> messagesCopy = new ArrayList<>(messages);
+                final long dialogIdFinal = dialogId;
+                getMessagesStorage().getStorageQueue().postRunnable(() -> {
+                    var invalidate = new ArrayList<Integer>();
+                    for (var msgId : messagesCopy) {
+                        if (AyuState.isDeletePermitted(dialogIdFinal, msgId)) {
+                            continue;
+                        }
+                        var msg = MessageHelper.getInstance(currentAccount).getMessage(dialogIdFinal, msgId);
+                        if (msg != null) {
+                            if (msg.ttl > 0 || msg.ttl_period > 0) {
+                                invalidate.add(msgId);
+                                var prefs = new AyuSavePreferences(msg, currentAccount);
+                                prefs.setDialogId(dialogIdFinal);
+                                ayuMessagesController.onMessageDeleted(prefs);
+                            }
                         }
                     }
-                }
-
-                AndroidUtilities.runOnUIThread(() -> {
-                    // invalidating views
-                    getNotificationCenter().postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogId, invalidate);
+                    AndroidUtilities.runOnUIThread(() -> {
+                        getNotificationCenter().postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogIdFinal, invalidate);
+                    });
                 });
             } else if ((messages != null && !messages.isEmpty())) { // process manual deletion of deleted messages
-                var ayuMessagesController = AyuMessagesController.getInstance();
                 var userId = UserConfig.getInstance(currentAccount).clientUserId;
-
                 ArrayList<Integer> permittedForAyuDeletion = new ArrayList<>();
                 for (var msgId : messages) {
                     if (AyuState.isDeletePermitted(dialogId, msgId)) {
                         permittedForAyuDeletion.add(msgId);
                     }
                 }
-
                 var existingMessageIds = ayuMessagesController.getExistingMessageIds(userId, dialogId, permittedForAyuDeletion);
                 if (!existingMessageIds.isEmpty()) {
                     Utilities.globalQueue.postRunnable(() -> ayuMessagesController.deleteMessages(userId, dialogId, existingMessageIds));
@@ -18773,44 +18770,46 @@ public class MessagesController extends BaseController implements NotificationCe
 
         // --- AyuGram request hook
         if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool() && deletedMessages != null) {
-            var currentTimeS = (int)(currentTime / 1000);
-            var messagesStorage = getMessagesStorage();
-            var userId = getAccountInstance().getUserConfig().clientUserId;
             var ayuMessagesController = AyuMessagesController.getInstance();
-            for (int a = 0, size = deletedMessages.size(); a < size; a++) {
-                var possibleDialogId = deletedMessages.keyAt(a);
-                var messageIds = deletedMessages.valueAt(a);
-
-                var dialogIds = new ArrayList<Long>();
-
-                if (possibleDialogId == 0) {
-                    // Telegram sometimes won't give us dialog id directly...
-                    var possibleIds = messagesStorage.getDialogIdsToUpdate(possibleDialogId, messageIds);
-                    if (possibleIds != null && !possibleIds.isEmpty()) {
-                        dialogIds = possibleIds;
+            var deletedMessagesFinal = deletedMessages.clone();
+            getMessagesStorage().getStorageQueue().postRunnable(() -> {
+                var notificationsToSend = new LongSparseArray<ArrayList<Integer>>();
+                for (int a = 0, size = deletedMessagesFinal.size(); a < size; a++) {
+                    var possibleDialogId = deletedMessagesFinal.keyAt(a);
+                    var messageIds = deletedMessagesFinal.valueAt(a);
+                    var dialogIds = new ArrayList<Long>();
+                    if (possibleDialogId == 0) {
+                        // Telegram sometimes won't give us dialog id directly...
+                        var possibleIds = getMessagesStorage().getDialogIdsToUpdate(possibleDialogId, messageIds);
+                        if (possibleIds != null && !possibleIds.isEmpty()) {
+                            dialogIds = possibleIds;
+                        }
+                    }
+                    if (dialogIds.isEmpty()) {
+                        dialogIds.add(possibleDialogId);
+                    }
+                    for (var dialogId : dialogIds) {
+                        var messagesToSave = MessageHelper.getInstance(currentAccount).getMessagesStorageMessages(dialogId, messageIds);
+                        if (messagesToSave != null && !messagesToSave.isEmpty()) {
+                            for (var msg : messagesToSave) {
+                                var topicId = MessageObject.getTopicId(currentAccount, msg, isForum(dialogId));
+                                var prefs = new AyuSavePreferences(msg, currentAccount, dialogId, topicId, msg.id, (int)(currentTime / 1000));
+                                ayuMessagesController.onMessageDeleted(prefs);
+                            }
+                        }
+                        notificationsToSend.put(dialogId, messageIds);
                     }
                 }
-
-                if (dialogIds.isEmpty()) {
-                    dialogIds.add(possibleDialogId);
-                }
-
-                for (var dialogId : dialogIds) {
-                    for (var msgId : messageIds) {
-                        var msg = messagesStorage.getMessage(dialogId, msgId);
-                        var topicId = msg != null ? MessageObject.getTopicId(currentAccount, msg, isForum(dialogId)) : 0;
-
-                        // TLRPC.Message msg, int accountId, long dialogId, int topicId, int messageId, int requestCatchTime
-                        var prefs = new AyuSavePreferences(msg, currentAccount, dialogId, topicId, msgId, currentTimeS);
-                        ayuMessagesController.onMessageDeleted(prefs);
-                    }
-
+                if (!notificationsToSend.isEmpty()) {
                     AndroidUtilities.runOnUIThread(() -> {
-                        // invalidating views
-                        getNotificationCenter().postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogId, messageIds);
+                        for (int i = 0, n = notificationsToSend.size(); i < n; i++) {
+                            long dialogId = notificationsToSend.keyAt(i);
+                            ArrayList<Integer> messageIds = notificationsToSend.valueAt(i);
+                            getNotificationCenter().postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogId, messageIds);
+                        }
                     });
                 }
-            }
+            });
         }
         // --- AyuGram request hook
 

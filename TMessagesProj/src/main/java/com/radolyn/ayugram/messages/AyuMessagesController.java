@@ -28,6 +28,7 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.NotificationCenter;
+import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.TLRPC;
 
 import java.io.File;
@@ -83,19 +84,23 @@ public class AyuMessagesController {
     }
 
     public void onMessageEdited(AyuSavePreferences prefs, TLRPC.Message newMessage) {
-        try {
-            onMessageEditedInner(prefs, newMessage, false);
-        } catch (Exception e) {
-            FileLog.e("onMessageEdited", e);
-        }
+        Utilities.globalQueue.postRunnable(() -> {
+            try {
+                onMessageEditedInner(prefs, newMessage, false);
+            } catch (Exception e) {
+                FileLog.e("onMessageEdited", e);
+            }
+        });
     }
 
     public void onMessageEditedForce(AyuSavePreferences prefs) {
-        try {
-            onMessageEditedInner(prefs, prefs.getMessage(), true);
-        } catch (Exception e) {
-            FileLog.e("onMessageEditedForce", e);
-        }
+        Utilities.globalQueue.postRunnable(() -> {
+            try {
+                onMessageEditedInner(prefs, prefs.getMessage(), true);
+            } catch (Exception e) {
+                FileLog.e("onMessageEditedForce", e);
+            }
+        });
     }
 
     private void onMessageEditedInner(AyuSavePreferences prefs, TLRPC.Message newMessage, boolean force) {
@@ -142,13 +147,19 @@ public class AyuMessagesController {
     }
 
     public void onMessageDeleted(AyuSavePreferences prefs) {
+        onMessageDeleted(prefs, true);
+    }
+
+    public void onMessageDeleted(AyuSavePreferences prefs, boolean useQueue) {
         if (prefs.getMessage() == null) {
-            if (BuildVars.LOGS_ENABLED) Log.d(NAX, "null msg ?");
             return;
         }
-
         try {
-            onMessageDeletedInner(prefs);
+            if (useQueue) {
+                Utilities.globalQueue.postRunnable(() -> onMessageDeletedInner(prefs));
+            } else {
+                onMessageDeletedInner(prefs);
+            }
         } catch (Exception e) {
             FileLog.e("onMessageDeleted", e);
         }
@@ -237,11 +248,25 @@ public class AyuMessagesController {
         return deletedMessageDao.getMessagesGrouped(userId, dialogId, groupedId);
     }
 
+    public List<DeletedMessageFull> getMessagesGroupedIn(long userId, long dialogId, List<Long> groupedIds) {
+        if (groupedIds == null || groupedIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return deletedMessageDao.getMessagesGroupedIn(userId, dialogId, groupedIds);
+    }
+
     public List<Integer> getExistingMessageIds(long userId, long dialogId, List<Integer> messageIds) {
         if (messageIds == null || messageIds.isEmpty()) {
             return new ArrayList<>();
         }
         return deletedMessageDao.getExistingMessageIds(userId, dialogId, messageIds);
+    }
+
+    public List<DeletedMessageFull> getMessagesByIds(long userId, long dialogId, List<Integer> messageIds) {
+        if (messageIds == null || messageIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return deletedMessageDao.getMessagesByIds(userId, dialogId, messageIds);
     }
 
     public void delete(long userId, long dialogId, int messageId) {

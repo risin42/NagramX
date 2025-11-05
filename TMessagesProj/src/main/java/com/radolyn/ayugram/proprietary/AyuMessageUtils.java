@@ -15,6 +15,7 @@ import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLoader;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LiteMode;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
@@ -38,25 +39,32 @@ public abstract class AyuMessageUtils {
     private static final String NAX = "AyuMessageUtils";
 
     public static ArrayList deserializeMultiple(byte[] bArr, Function<NativeByteBuffer, TLObject> function) {
+        ArrayList result = new ArrayList();
         if (bArr == null || bArr.length == 0) {
-            return new ArrayList();
+            return result;
         }
+        NativeByteBuffer nativeByteBuffer = null;
         try {
-            NativeByteBuffer nativeByteBuffer = new NativeByteBuffer(bArr.length);
+            nativeByteBuffer = new NativeByteBuffer(bArr.length);
             nativeByteBuffer.buffer.put(bArr);
             nativeByteBuffer.rewind();
-            ArrayList arrayList = new ArrayList();
-            while (nativeByteBuffer.buffer.position() < nativeByteBuffer.buffer.limit()) {
+
+            while (nativeByteBuffer.buffer.hasRemaining()) {
                 TLObject tLObject = function.apply(nativeByteBuffer);
                 if (tLObject != null) {
-                    arrayList.add(tLObject);
+                    result.add(tLObject);
+                } else {
+                    break;
                 }
             }
-            return arrayList;
-        } catch (Exception unused) {
-            Log.e(NAX, "Failed to allocate buffer");
-            return new ArrayList();
+        } catch (Exception e) {
+            FileLog.e("Failed to deserializeMultiple", e);
+        } finally {
+            if (nativeByteBuffer != null) {
+                nativeByteBuffer.reuse();
+            }
         }
+        return result;
     }
 
     public static void map(AyuMessageBase ayuMessageBase, TLRPC.Message tLRPC$Message, int i) {
@@ -167,16 +175,45 @@ public abstract class AyuMessageUtils {
         String str = ayuMessageBase.mediaPath;
         int i2 = ayuMessageBase.date;
         if (i != 0) {
-            if (i == 2 || !TextUtils.isEmpty(str)) {
-                if (i == 2) {
-                    try {
-                        NativeByteBuffer nativeByteBuffer = new NativeByteBuffer(bArr2.length);
-                        nativeByteBuffer.put(ByteBuffer.wrap(bArr2));
+            // If we have serialized media data (and no file path), deserialize it directly
+            // This handles cases where the file wasn't downloaded when the message was deleted
+            if (bArr2 != null && bArr2.length > 0 && TextUtils.isEmpty(str)) {
+                NativeByteBuffer nativeByteBuffer = null;
+                try {
+                    nativeByteBuffer = new NativeByteBuffer(bArr2.length);
+                    nativeByteBuffer.put(ByteBuffer.wrap(bArr2));
+                    nativeByteBuffer.rewind();
+                    tLRPC$Message.media = TLRPC.MessageMedia.TLdeserialize(nativeByteBuffer, nativeByteBuffer.readInt32(false), false);
+                    if (i == 2) {
+                        tLRPC$Message.stickerVerified = 1;
+                    }
+                    if (BuildVars.LOGS_ENABLED) {
+                        Log.d(NAX, "Restored media from serialized data for message " + tLRPC$Message.id);
+                    }
+                    return;
+                } catch (Exception e) {
+                    FileLog.e("Failed to deserialize media", e);
+                } finally {
+                    if (nativeByteBuffer != null) {
                         nativeByteBuffer.reuse();
+                    }
+                }
+            }
+
+            if (i == 2 || !TextUtils.isEmpty(str)) {
+                if (i == 2 && bArr2 != null && bArr2.length > 0) {
+                    NativeByteBuffer nativeByteBuffer = null;
+                    try {
+                        nativeByteBuffer = new NativeByteBuffer(bArr2.length);
+                        nativeByteBuffer.put(ByteBuffer.wrap(bArr2));
                         nativeByteBuffer.rewind();
                         tLRPC$Message.media = TLRPC.MessageMedia.TLdeserialize(nativeByteBuffer, nativeByteBuffer.readInt32(false), false);
-                    } catch (Exception unused) {
-                        Log.e(NAX, "fake news sticker..");
+                    } catch (Exception e) {
+                        FileLog.e("fake news sticker..", e);
+                    } finally {
+                        if (nativeByteBuffer != null) {
+                            nativeByteBuffer.reuse();
+                        }
                     }
                     tLRPC$Message.stickerVerified = 1;
                     return;
@@ -267,16 +304,20 @@ public abstract class AyuMessageUtils {
             } else if ((tLRPC$MessageMedia instanceof TLRPC.TL_messageMediaDocument) && tLRPC$MessageMedia.document != null && (MessageObject.isStickerMessage(message) || message.media.document.mime_type.equals("application/x-tgsticker"))) {
                 ayuMessageBase.documentType = 2;
                 ayuMessageBase.mimeType = message.media.document.mime_type;
+                NativeByteBuffer nativeByteBuffer = null;
                 try {
-                    NativeByteBuffer nativeByteBuffer = new NativeByteBuffer(message.media.getObjectSize());
+                    nativeByteBuffer = new NativeByteBuffer(message.media.getObjectSize());
                     message.media.serializeToStream(nativeByteBuffer);
-                    nativeByteBuffer.reuse();
                     nativeByteBuffer.buffer.rewind();
                     byte[] bArr = new byte[nativeByteBuffer.buffer.remaining()];
                     nativeByteBuffer.buffer.get(bArr);
                     ayuMessageBase.documentSerialized = bArr;
                 } catch (Exception e) {
-                    Log.e(NAX, "fake news sticker", e);
+                    FileLog.e("fake news sticker", e);
+                } finally {
+                    if (nativeByteBuffer != null) {
+                        nativeByteBuffer.reuse();
+                    }
                 }
             } else {
                 ayuMessageBase.documentType = 3;
@@ -311,13 +352,39 @@ public abstract class AyuMessageUtils {
                         ayuMessageBase.mimeType = message.media.document.mime_type;
                     }
                 } catch (Exception e2) {
-                    Log.e(NAX, "failed to save media", e2);
+                    FileLog.e("failed to save media", e2);
                 }
                 String absolutePath = file.getAbsolutePath();
                 if (absolutePath.equals("/")) {
                     absolutePath = null;
                 }
                 ayuMessageBase.mediaPath = absolutePath;
+
+                // Serialize media object to preserve metadata even if file doesn't exist
+                // This allows showing file info, thumbnails, and attributes even without the actual file
+                if (ayuMessageBase.mediaPath == null && message.media != null) {
+                    NativeByteBuffer nativeByteBuffer = null;
+                    try {
+                        int size = message.media.getObjectSize();
+                        if (size > 0) {
+                            nativeByteBuffer = new NativeByteBuffer(size);
+                            message.media.serializeToStream(nativeByteBuffer);
+                            nativeByteBuffer.rewind();
+                            byte[] bArr = new byte[nativeByteBuffer.buffer.remaining()];
+                            nativeByteBuffer.buffer.get(bArr);
+                            ayuMessageBase.documentSerialized = bArr;
+                            if (BuildVars.LOGS_ENABLED) {
+                                Log.d(NAX, "Media file not found, saved metadata for message " + message.id);
+                            }
+                        }
+                    } catch (Exception e) {
+                        FileLog.e("Failed to serialize media metadata", e);
+                    } finally {
+                        if (nativeByteBuffer != null) {
+                            nativeByteBuffer.reuse();
+                        }
+                    }
+                }
             }
         }
     }
@@ -330,6 +397,14 @@ public abstract class AyuMessageUtils {
                 pathToAttach = pathToAttach2;
             }
         }
+
+        if (!pathToAttach.exists()) {
+            if (BuildVars.LOGS_ENABLED) {
+                Log.d(NAX, "Media file not found for attachment, will save metadata only: " + pathToAttach.getAbsolutePath());
+            }
+            return new File("/");
+        }
+
         return processAttachment(pathToAttach, new File(AyuMessagesController.attachmentsPath, AyuUtils.getFilename(tLObject, pathToAttach)));
     }
 
@@ -350,65 +425,96 @@ public abstract class AyuMessageUtils {
 
     private static File processAttachment(File file, File file2) {
         if (file.exists()) {
-            return AyuUtils.moveOrCopyFile(file, file2) ? new File(file2.getAbsolutePath()) : new File("/");
+            boolean success = AyuUtils.moveOrCopyFile(file, file2);
+            if (!success && BuildVars.LOGS_ENABLED) {
+                Log.e(NAX, "Failed to move/copy media file from " + file.getAbsolutePath() + " to " + file2.getAbsolutePath());
+            }
+            return success ? new File(file2.getAbsolutePath()) : new File("/");
         }
+
         File directory = FileLoader.getDirectory(4);
         File file3 = new File(directory, file.getName() + ".enc");
         if (file3.exists()) {
             File internalCacheDir = FileLoader.getInternalCacheDir();
             File file4 = new File(internalCacheDir, file3.getName() + ".key");
-            if (BuildVars.LOGS_ENABLED)
-                Log.d(NAX, "key file " + file4.getAbsolutePath() + " exists " + file4.exists());
+            if (BuildVars.LOGS_ENABLED) {
+                Log.d(NAX, "Found encrypted file, checking for key: " + file4.getAbsolutePath() + " exists=" + file4.exists());
+            }
             if (file4.exists()) {
-                try {
-                    EncryptedFileInputStream encryptedFileInputStream = new EncryptedFileInputStream(file3, file4);
-                    FileOutputStream fileOutputStream = new FileOutputStream(file2);
-                    try {
-                        byte[] bArr = new byte[1024];
-                        while (true) {
-                            int read = encryptedFileInputStream.read(bArr);
-                            if (read == -1) {
-                                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "encrypted media copy success");
-                                fileOutputStream.close();
-                                encryptedFileInputStream.close();
-                                return file2;
-                            }
-                            fileOutputStream.write(bArr, 0, read);
-                        }
-                    } catch (Throwable th) {
-                        try {
-                            fileOutputStream.close();
-                        } catch (Throwable th2) {
-                            th.addSuppressed(th2);
-                        }
-                        throw th;
+                try (EncryptedFileInputStream encryptedFileInputStream = new EncryptedFileInputStream(file3, file4);
+                    FileOutputStream fileOutputStream = new FileOutputStream(file2)) {
+                    byte[] bArr = new byte[4 * 1024];
+                    int read;
+                    while ((read = encryptedFileInputStream.read(bArr)) != -1) {
+                        fileOutputStream.write(bArr, 0, read);
                     }
+                    if (BuildVars.LOGS_ENABLED) {
+                        Log.d(NAX, "Successfully decrypted and saved media to " + file2.getAbsolutePath());
+                    }
+
+                    try {
+                        if (file3.delete()) {
+                            if (BuildVars.LOGS_ENABLED) {
+                                Log.d(NAX, "Deleted encrypted file: " + file3.getName());
+                            }
+                        }
+                        if (file4.delete()) {
+                            if (BuildVars.LOGS_ENABLED) {
+                                Log.d(NAX, "Deleted encryption key: " + file4.getName());
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (BuildVars.LOGS_ENABLED) {
+                            Log.w(NAX, "Failed to delete encrypted files: " + e);
+                        }
+                    }
+
+                    return file2;
                 } catch (Exception e) {
-                    Log.e(NAX, "encrypted media copy failed", e);
+                    FileLog.e("encrypted media copy failed", e);
                     return new File("/");
                 }
             }
+        }
+
+        if (BuildVars.LOGS_ENABLED) {
+            Log.d(NAX, "Media file not found at " + file.getAbsolutePath() + ", will save metadata only");
         }
         return new File("/");
     }
 
     public static byte[] serializeMultiple(ArrayList arrayList) {
         if (arrayList == null || arrayList.isEmpty()) {
-            return "".getBytes();
+            return null;
         }
+        NativeByteBuffer nativeByteBuffer = null;
         try {
-            NativeByteBuffer nativeByteBuffer = new NativeByteBuffer(arrayList.stream().mapToInt(obj -> ((TLObject) obj).getObjectSize()).sum());
-            for (Object o : arrayList) {
-                ((TLObject) o).serializeToStream(nativeByteBuffer);
+            int totalSize = 0;
+            for (Object obj : arrayList) {
+                if (obj instanceof TLObject) {
+                    totalSize += ((TLObject) obj).getObjectSize();
+                }
             }
-            nativeByteBuffer.reuse();
+            if (totalSize <= 0) {
+                return null;
+            }
+            nativeByteBuffer = new NativeByteBuffer(totalSize);
+            for (Object o : arrayList) {
+                if (o instanceof TLObject) {
+                    ((TLObject) o).serializeToStream(nativeByteBuffer);
+                }
+            }
             nativeByteBuffer.rewind();
             byte[] bArr = new byte[nativeByteBuffer.remaining()];
             nativeByteBuffer.buffer.get(bArr);
             return bArr;
-        } catch (Exception unused) {
-            Log.e(NAX, "Failed to allocate buffer for message entities");
-            return "".getBytes();
+        } catch (Exception e) {
+            FileLog.e("Failed to allocate buffer for message entities", e);
+            return null;
+        } finally {
+            if (nativeByteBuffer != null) {
+                nativeByteBuffer.reuse();
+            }
         }
     }
 
@@ -420,6 +526,30 @@ public abstract class AyuMessageUtils {
             TLRPC.Chat chat = MessagesController.getInstance(ayuSavePreferences.getAccountId()).getChat(Math.abs(ayuSavePreferences.getDialogId()));
             if (chat == null) {
                 Log.d(NAX, "chat is null so saving media just in case");
+                return true;
+            }
+            boolean isPublic = ChatObject.isPublic(chat);
+            if (ChatObject.isChannelAndNotMegaGroup(chat)) {
+                if (isPublic && NaConfig.INSTANCE.getSaveMediaInPublicChannels().Bool()) {
+                    return true;
+                }
+                return !isPublic && NaConfig.INSTANCE.getSaveMediaInPrivateChannels().Bool();
+            } else if (isPublic && NaConfig.INSTANCE.getSaveMediaInPublicGroups().Bool()) {
+                return true;
+            } else {
+                return !isPublic && NaConfig.INSTANCE.getSaveMediaInPrivateGroups().Bool();
+            }
+        }
+        return false;
+    }
+
+    public static boolean shouldSaveMedia(int accountId, long dialogId) {
+        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool() && NaConfig.INSTANCE.getMessageSavingSaveMedia().Bool()) {
+            if (DialogObject.isUserDialog(dialogId)) {
+                return NaConfig.INSTANCE.getSaveMediaInPrivateChats().Bool();
+            }
+            TLRPC.Chat chat = MessagesController.getInstance(accountId).getChat(Math.abs(dialogId));
+            if (chat == null) {
                 return true;
             }
             boolean isPublic = ChatObject.isPublic(chat);

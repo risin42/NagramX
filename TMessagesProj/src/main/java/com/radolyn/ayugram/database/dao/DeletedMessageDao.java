@@ -42,12 +42,20 @@ public interface DeletedMessageDao {
     List<DeletedMessageFull> getMessagesGrouped(long userId, long dialogId, long groupedId);
 
     @Transaction
+    @Query("SELECT * FROM deletedmessage WHERE userId = :userId AND dialogId = :dialogId AND groupedId IN (:groupedIds) ORDER BY messageId")
+    List<DeletedMessageFull> getMessagesGroupedIn(long userId, long dialogId, List<Long> groupedIds);
+
+    @Transaction
     @Query("SELECT * FROM deletedmessage WHERE dialogId = :dialogId")
     List<DeletedMessageFull> getMessagesByDialog(long dialogId);
 
     @Transaction
     @Query("SELECT messageId FROM deletedmessage WHERE userId = :userId AND dialogId = :dialogId AND messageId IN (:messageIds)")
     List<Integer> getExistingMessageIds(long userId, long dialogId, List<Integer> messageIds);
+
+    @Transaction
+    @Query("SELECT * FROM deletedmessage WHERE userId = :userId AND dialogId = :dialogId AND messageId IN (:messageIds)")
+    List<DeletedMessageFull> getMessagesByIds(long userId, long dialogId, List<Integer> messageIds);
 
     @Insert
     long insert(DeletedMessage msg);

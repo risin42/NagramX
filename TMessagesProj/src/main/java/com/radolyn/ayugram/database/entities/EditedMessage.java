@@ -10,9 +10,16 @@
 package com.radolyn.ayugram.database.entities;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity()
+@Entity(
+        indices = {
+                @Index(value = {"userId", "dialogId", "messageId", "entityCreateDate"}),
+                @Index(value = {"userId", "entityCreateDate"}),
+                @Index(value = {"dialogId", "messageId"})
+        }
+)
 public class EditedMessage extends AyuMessageBase {
     @PrimaryKey(autoGenerate = true)
     public long fakeId;
