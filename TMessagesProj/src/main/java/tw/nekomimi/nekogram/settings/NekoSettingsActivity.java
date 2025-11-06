@@ -798,7 +798,7 @@ public class NekoSettingsActivity extends BaseFragment {
         mainconfig.add("disableVoiceAudioEffects");
         mainconfig.add("chatSwipeAction");
 
-        mainconfig.add("theme");
+        if (!isCloud) mainconfig.add("theme");
         mainconfig.add("selectedAutoNightType");
         mainconfig.add("autoNightScheduleByLocation");
         mainconfig.add("autoNightBrighnessThreshold");
@@ -813,19 +813,18 @@ public class NekoSettingsActivity extends BaseFragment {
 
         mainconfig.add("lang_code");
 
-        spToJSON("mainconfig", configJson, mainconfig::contains, isCloud);
-        spToJSON("themeconfig", configJson, null, isCloud);
-
-        spToJSON("nkmrcfg", configJson, null, isCloud, includeApiKeys);
+        spToJSON("mainconfig", configJson, mainconfig::contains);
+        if (!isCloud) spToJSON("themeconfig", configJson, null);
+        spToJSON("nkmrcfg", configJson, null, includeApiKeys);
 
         return configJson.toString(indentSpaces);
     }
 
-    private static void spToJSON(String sp, JSONObject object, Function<String, Boolean> filter, boolean isCloud) throws JSONException {
-        spToJSON(sp, object, filter, isCloud, true);
+    private static void spToJSON(String sp, JSONObject object, Function<String, Boolean> filter) throws JSONException {
+        spToJSON(sp, object, filter, true);
     }
 
-    private static void spToJSON(String sp, JSONObject object, Function<String, Boolean> filter, boolean isCloud, boolean includeApiKeys) throws JSONException {
+    private static void spToJSON(String sp, JSONObject object, Function<String, Boolean> filter, boolean includeApiKeys) throws JSONException {
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences(sp, Activity.MODE_PRIVATE);
         JSONObject jsonConfig = new JSONObject();
         for (Map.Entry<String, ?> entry : preferences.getAll().entrySet()) {
