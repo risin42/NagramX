@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import xyz.nextalone.nagram.NaConfig;
+
 public class PagePreviewRulesHelper extends BaseRemoteHelper {
     private static final String PAGE_PREVIEW_TAG = "pagepreview";
     private static volatile PagePreviewRulesHelper Instance;
@@ -156,6 +158,9 @@ public class PagePreviewRulesHelper extends BaseRemoteHelper {
     }
 
     public void checkPagePreviewRules() {
+        if (!NaConfig.INSTANCE.getFixLinkPreview().Bool()) {
+            return;
+        }
         if (loading) {
             return;
         }

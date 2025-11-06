@@ -15085,14 +15085,16 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
 
             final TL_account.getWebPagePreview req = new TL_account.getWebPagePreview();
+            if (textToCheck instanceof String) {
+                req.message = (String) textToCheck;
+            } else {
+                req.message = textToCheck.toString();
+            }
             // na: page preview rules
-            try {
-                req.message = PagePreviewRulesHelper.getInstance().doRegex(textToCheck);
-            } catch (Exception ignored) {
-                if (textToCheck instanceof String) {
-                    req.message = (String) textToCheck;
-                } else {
-                    req.message = textToCheck.toString();
+            if (NaConfig.INSTANCE.getFixLinkPreview().Bool()) {
+                try {
+                    req.message = PagePreviewRulesHelper.getInstance().doRegex(textToCheck);
+                } catch (Exception ignored) {
                 }
             }
             if (foundWebPage != null && req.message.equals(foundWebPage.displayedText)) {
