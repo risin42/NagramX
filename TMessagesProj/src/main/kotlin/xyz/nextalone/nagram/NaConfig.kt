@@ -1356,6 +1356,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             1
         )
+    val fixLinkPreview =
+        addConfig(
+            "FixLinkPreview",
+            ConfigItem.configTypeBool,
+            true
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {
