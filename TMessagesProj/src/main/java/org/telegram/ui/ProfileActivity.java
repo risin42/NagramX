@@ -7906,6 +7906,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             return true;
         } else if (position == idDcRow) {
             showIdDcBottomSheet();
+            return true;
         } else if (position == channelInfoRow || position == userInfoRow || position == locationRow || position == bioRow) {
             if (position == bioRow && (userInfo == null || TextUtils.isEmpty(userInfo.about))) {
                 return false;
@@ -7956,7 +7957,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 });
             }
             builder.show();
-            return !(view instanceof AboutLinkCell);
+            return true;
         } else if (position == bizHoursRow || position == bizLocationRow) {
             if (getParentActivity() == null || userInfo == null) {
                 return false;
