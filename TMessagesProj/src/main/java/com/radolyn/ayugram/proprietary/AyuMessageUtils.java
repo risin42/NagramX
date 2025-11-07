@@ -423,7 +423,7 @@ public abstract class AyuMessageUtils {
                 return true;
             }
             boolean isPublic = ChatObject.isPublic(chat);
-            if (ChatObject.isChannel(chat)) {
+            if (ChatObject.isChannelAndNotMegaGroup(chat)) {
                 if (isPublic && NaConfig.INSTANCE.getSaveMediaInPublicChannels().Bool()) {
                     return true;
                 }
