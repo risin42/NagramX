@@ -8,7 +8,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.SpannableString;
@@ -38,6 +37,7 @@ import com.google.gson.JsonSerializer;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BuildConfig;
+import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.CodeHighlighting;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.FileLoader;
@@ -45,6 +45,7 @@ import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LanguageDetector;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessageObject;
+import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.TranslateController;
@@ -238,18 +239,43 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
 
         });
         listView.setOnItemLongClickListener((view, position) -> {
-            if (position == filePathRow) {
+            if (position == idRow) {
+                if (ChatObject.isChannel(fromChat)) {
+                    TLRPC.TL_channels_exportMessageLink req = new TLRPC.TL_channels_exportMessageLink();
+                    req.id = messageObject.getId();
+                    req.channel = MessagesController.getInputChannel(fromChat);
+                    req.thread = false;
+                    getConnectionsManager().sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
+                        if (response != null) {
+                            TLRPC.TL_exportedMessageLink exportedMessageLink = (TLRPC.TL_exportedMessageLink) response;
+                            try {
+                                AndroidUtilities.addToClipboard(exportedMessageLink.link);
+                                BulletinFactory.of(this).createCopyLinkBulletin(exportedMessageLink.link.contains("/c/")).show();
+                            } catch (Exception e) {
+                                FileLog.e(e);
+                            }
+                        } else if (error != null) {
+                            BulletinFactory.of(this).createErrorBulletin(error.text).show();
+                        }
+                    }));
+                } else if (fromUser != null) {
+                    try {
+                        String link = "tg://openmessage?user_id=" + fromUser.id + "&message_id=" + messageObject.messageOwner.id;
+                        AndroidUtilities.addToClipboard(link);
+                        BulletinFactory.of(this).createCopyBulletin(LocaleController.formatString(R.string.TextCopied)).show();
+                    } catch (Exception e) {
+                        FileLog.e(e);
+                    }
+                }
+                return true;
+            } else if (position == filePathRow) {
                 AndroidUtilities.runOnUIThread(() -> {
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("application/octet-stream");
-                    if (Build.VERSION.SDK_INT >= 24) {
-                        try {
-                            intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(getParentActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(filePath)));
-                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        } catch (Exception ignore) {
-                            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
-                        }
-                    } else {
+                    try {
+                        intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(getParentActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(filePath)));
+                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } catch (Exception ignore) {
                         intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
                     }
                     startActivityForResult(Intent.createChooser(intent, getString(R.string.ShareFile)), 500);
@@ -268,30 +294,30 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
                     ProfileActivity fragment = new ProfileActivity(args);
                     presentFragment(fragment);
                 }
-        } else if (position == restrictionReasonRow) {
-            ArrayList<TLRPC.RestrictionReason> reasons = messageObject.messageOwner.restriction_reason;
-            LinearLayout ll = new LinearLayout(getParentActivity());
-            ll.setOrientation(LinearLayout.VERTICAL);
+            } else if (position == restrictionReasonRow) {
+                ArrayList<TLRPC.RestrictionReason> reasons = messageObject.messageOwner.restriction_reason;
+                LinearLayout ll = new LinearLayout(getParentActivity());
+                ll.setOrientation(LinearLayout.VERTICAL);
 
-            AlertDialog dialog = new AlertDialog.Builder(getParentActivity())
-                    .setView(ll)
-                    .create();
+                AlertDialog dialog = new AlertDialog.Builder(getParentActivity())
+                        .setView(ll)
+                        .create();
 
-            for (TLRPC.RestrictionReason reason : reasons) {
-                TextDetailSettingsCell cell = new TextDetailSettingsCell(getParentActivity());
-                cell.setBackground(Theme.getSelectorDrawable(false));
-                cell.setMultilineDetail(true);
-                cell.setOnClickListener(v1 -> {
-                    dialog.dismiss();
-                    AndroidUtilities.addToClipboard(cell.getValueTextView().getText());
-                    BulletinFactory.of(this).createCopyBulletin(LocaleController.formatString(R.string.TextCopied)).show();
-                });
-                cell.setTextAndValue(reason.reason + "-" + reason.platform, reason.text, false);
+                for (TLRPC.RestrictionReason reason : reasons) {
+                    TextDetailSettingsCell cell = new TextDetailSettingsCell(getParentActivity());
+                    cell.setBackground(Theme.getSelectorDrawable(false));
+                    cell.setMultilineDetail(true);
+                    cell.setOnClickListener(v1 -> {
+                        dialog.dismiss();
+                        AndroidUtilities.addToClipboard(cell.getValueTextView().getText());
+                        BulletinFactory.of(this).createCopyBulletin(LocaleController.formatString(R.string.TextCopied)).show();
+                    });
+                    cell.setTextAndValue(reason.reason + "-" + reason.platform, reason.text, false);
 
-                ll.addView(cell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            }
+                    ll.addView(cell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+                }
 
-            showDialog(dialog);
+                showDialog(dialog);
             } else {
                 return false;
             }
@@ -623,7 +649,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
                     view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
                     break;
             }
-            //noinspection ConstantConditions
+            // noinspection ConstantConditions
             view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
             return new RecyclerListView.Holder(view);
         }
