@@ -160,6 +160,15 @@ public class RegexFilterEditActivity extends BaseFragment {
         editField = new EditTextBoldCursor(context);
         editField.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         editField.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        editField.setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteHintText));
+        editField.setBackground(null);
+        editField.setLineColors(Theme.getColor(Theme.key_windowBackgroundWhiteInputField), Theme.getColor(Theme.key_windowBackgroundWhiteInputFieldActivated), Theme.getColor(Theme.key_text_RedRegular));
+        editField.setPadding(0, 0, 0, AndroidUtilities.dp(6));
+        editField.setCursorColor(Theme.getColor(Theme.key_chat_TextSelectionCursor));
+        editField.setCursorSize(AndroidUtilities.dp(20));
+        editField.setCursorWidth(1.5f);
+        editField.setHandlesColor(Theme.getColor(Theme.key_chat_TextSelectionCursor));
+        editField.setHighlightColor(Theme.getColor(Theme.key_chat_inTextSelectionHighlight));
         editField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -238,6 +247,15 @@ public class RegexFilterEditActivity extends BaseFragment {
 
     @Override
     public ArrayList<ThemeDescription> getThemeDescriptions() {
+        final ThemeDescription.ThemeDescriptionDelegate delegate = () -> {
+            if (editField != null) {
+                editField.setLineColors(Theme.getColor(Theme.key_windowBackgroundWhiteInputField), Theme.getColor(Theme.key_windowBackgroundWhiteInputFieldActivated), Theme.getColor(Theme.key_text_RedRegular));
+                editField.setCursorColor(Theme.getColor(Theme.key_chat_TextSelectionCursor));
+                editField.setHandlesColor(Theme.getColor(Theme.key_chat_TextSelectionCursor));
+                editField.setHighlightColor(Theme.getColor(Theme.key_chat_inTextSelectionHighlight));
+            }
+        };
+
         ArrayList<ThemeDescription> themeDescriptions = new ArrayList<>();
 
         themeDescriptions.add(new ThemeDescription(fragmentView, ThemeDescription.FLAG_BACKGROUND, null, null, null, null, Theme.key_windowBackgroundWhite));
@@ -249,8 +267,11 @@ public class RegexFilterEditActivity extends BaseFragment {
 
         themeDescriptions.add(new ThemeDescription(editField, ThemeDescription.FLAG_TEXTCOLOR, null, null, null, null, Theme.key_windowBackgroundWhiteBlackText));
         themeDescriptions.add(new ThemeDescription(editField, ThemeDescription.FLAG_HINTTEXTCOLOR, null, null, null, null, Theme.key_windowBackgroundWhiteHintText));
-        themeDescriptions.add(new ThemeDescription(editField, ThemeDescription.FLAG_BACKGROUNDFILTER, null, null, null, null, Theme.key_windowBackgroundWhiteInputField));
-        themeDescriptions.add(new ThemeDescription(editField, ThemeDescription.FLAG_BACKGROUNDFILTER | ThemeDescription.FLAG_DRAWABLESELECTEDSTATE, null, null, null, null, Theme.key_windowBackgroundWhiteInputFieldActivated));
+        themeDescriptions.add(new ThemeDescription(null, 0, null, null, null, delegate, Theme.key_windowBackgroundWhiteInputField));
+        themeDescriptions.add(new ThemeDescription(null, 0, null, null, null, delegate, Theme.key_windowBackgroundWhiteInputFieldActivated));
+        themeDescriptions.add(new ThemeDescription(null, 0, null, null, null, delegate, Theme.key_text_RedRegular));
+        themeDescriptions.add(new ThemeDescription(null, 0, null, null, null, delegate, Theme.key_chat_TextSelectionCursor));
+        themeDescriptions.add(new ThemeDescription(null, 0, null, null, null, delegate, Theme.key_chat_inTextSelectionHighlight));
 
         themeDescriptions.add(new ThemeDescription(helpTextView, ThemeDescription.FLAG_TEXTCOLOR, null, null, null, null, Theme.key_windowBackgroundWhiteGrayText8));
 
