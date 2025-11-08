@@ -147,6 +147,19 @@ public class MessageHelper extends BaseController {
         return localInstance;
     }
 
+    public interface FilteredMessageCallback {
+        void onLoaded(MessageObject result);
+    }
+
+    public void loadLastMessageSkippingFilteredAsync(long dialogId, FilteredMessageCallback callback) {
+        Utilities.globalQueue.postRunnable(() -> {
+            MessageObject result = getLastMessageSkippingFiltered(dialogId);
+            if (callback != null) {
+                AndroidUtilities.runOnUIThread(() -> callback.onLoaded(result));
+            }
+        });
+    }
+
     public MessageObject getLastMessageSkippingFiltered(long dialogId) {
         SQLiteCursor cursor = null;
         try {
