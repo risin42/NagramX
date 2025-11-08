@@ -253,9 +253,13 @@
     <string name="BlockChannel">屏蔽频道</string>
     <string name="UnblockChannel">取消屏蔽频道</string>
     <string name="BlockedChannels">已屏蔽的频道</string>
+    <string name="BlockedChannelsCount_one">%1$d 个被屏蔽的频道</string>
+    <string name="BlockedChannelsCount_other">%1$d 个被屏蔽的频道</string>
+    <string name="BlockedChannelsInfo">您可以在群组中隐藏来自已屏蔽频道的消息。 %s</string>
     <string name="ChannelBlocked">已屏蔽该频道。</string>
     <string name="ChannelUnblocked">已取消屏蔽该频道。</string>
     <string name="BlockedChannelsEmpty">暂无已屏蔽的频道</string>
     <string name="UnblockAllChannelsWarn">您确定要解除屏蔽**所有频道**？</string>
     <string name="BlockChannelsUnavailable">某些频道暂时无法显示。</string>
+    <string name="FixLinkPreview">修复链接预览</string>
 </resources>

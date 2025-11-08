@@ -250,4 +250,12 @@
     <string name="ExportSettingsIncludeApiKeys">Incluir Chaves de API</string>
     <string name="DisableInAppBrowserGestures">Desativar Gestos</string>
     <string name="HowToObtain">Como obter?</string>
+    <string name="BlockChannel">Bloquear canal</string>
+    <string name="UnblockChannel">Desbloquear canal</string>
+    <string name="BlockedChannels">Canais Bloqueados</string>
+    <string name="ChannelBlocked">Canal bloqueado.</string>
+    <string name="ChannelUnblocked">Canal desbloqueado.</string>
+    <string name="BlockedChannelsEmpty">Ainda não há canais bloqueados</string>
+    <string name="UnblockAllChannelsWarn">Você tem certeza de que deseja desbloquear **todos os canais**?</string>
+    <string name="BlockChannelsUnavailable">Alguns canais estão temporariamente indisponíveis.</string>
 </resources>

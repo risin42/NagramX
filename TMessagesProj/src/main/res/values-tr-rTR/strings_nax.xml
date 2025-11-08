@@ -43,6 +43,8 @@
     <string name="DeleteCloudBackupFailed">Bulut verileri temizlenemedi</string>
     <string name="DeleteCloudBackupSuccess">Bulut verileri temizlendi</string>
     <string name="CloudConfigNoBackupToDelete">Temizlenecek veri yok</string>
+    <string name="ClearRegexFilters">Temizle</string>
+    <string name="ClearRegexFiltersAlertMessage">Kaydedilmiş tüm regex filtrelerini temizlemek istediğinizden emin misiniz? Bu işlem hem paylaşılan hem de sohbete özel filtreleri kaldıracaktır.</string>
     <string name="PreferredTranslateTargetLang">Özel tercih edilen dil listesi</string>
     <string name="PreferredTranslateTargetLangExample">örn. ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Tercih Edilen Diller</string>
@@ -50,6 +52,11 @@
     <string name="ClearDeletedAlertMessage">Bu sohbetteki tüm silinmiş mesajları temizlemek istediğinizden emin misiniz?</string>
     <string name="ForwardsRestrictedInfoAyuDeleted">İletmeye izin verilmiyor.</string>
     <string name="RegexFiltersNotice">Düzenlemek için dokunun.</string>
+    <string name="RegexFiltersImport">İçe Aktar</string>
+    <string name="RegexFiltersExport">Dışa Aktar</string>
+    <string name="RegexFiltersImportSuccess">Filtreler içe aktarıldı.</string>
+    <string name="RegexFiltersImportError">Panodan filtreler içe aktarılamadı.</string>
+    <string name="RegexFiltersExportError">Filtreler dışa aktarılamadı.</string>
     <string name="botCommandConfirmTitle">Komutu Gönder</string>
     <string name="botCommandConfirmText">Bu komutu göndermek istiyor musunuz?\n\n%s</string>
     <string name="DisableScreenshotDetection">Ekran Görüntüsü Algılamayı Devre Dışı Bırak</string>
@@ -243,4 +250,12 @@
     <string name="ExportSettingsIncludeApiKeys">API Anahtarlarını Dahil Et</string>
     <string name="DisableInAppBrowserGestures">Hareketleri Devre Dışı Bırak</string>
     <string name="HowToObtain">Nasıl elde edilir?</string>
+    <string name="BlockChannel">Kanalı engelle</string>
+    <string name="UnblockChannel">Kanalın engelini kaldır</string>
+    <string name="BlockedChannels">Engellenen Kanallar</string>
+    <string name="ChannelBlocked">Kanal engellendi.</string>
+    <string name="ChannelUnblocked">Kanalın engeli kaldırıldı.</string>
+    <string name="BlockedChannelsEmpty">Henüz engellenen kanal yok</string>
+    <string name="UnblockAllChannelsWarn">**Tüm kanalların** engelini kaldırmak istediğinizden emin misiniz?</string>
+    <string name="BlockChannelsUnavailable">Bazı kanallar geçici olarak kullanılamıyor.</string>
 </resources>
