@@ -253,9 +253,13 @@
     <string name="BlockChannel">ブロック</string>
     <string name="UnblockChannel">ブロックを解除</string>
     <string name="BlockedChannels">ブロックされたチャンネル</string>
+    <string name="BlockedChannelsCount_one">ブロック数 %1$d</string>
+    <string name="BlockedChannelsCount_other">ブロック数 %1$d</string>
+    <string name="BlockedChannelsInfo">グループ内でブロックしたチャンネルからのメッセージを非表示にできます。 %s</string>
     <string name="ChannelBlocked">ブロックしました。</string>
     <string name="ChannelUnblocked">ブロックを解除しました。</string>
     <string name="BlockedChannelsEmpty">ブロックされたチャンネルはまだありません</string>
     <string name="UnblockAllChannelsWarn">**すべてのチャンネル**のブロックを解除してもよろしいですか？</string>
     <string name="BlockChannelsUnavailable">一部のチャンネルは一時的に表示できません。</string>
+    <string name="FixLinkPreview">リンクプレビューを修正</string>
 </resources>

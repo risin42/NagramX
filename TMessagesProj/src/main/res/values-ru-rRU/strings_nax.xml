@@ -250,4 +250,12 @@
     <string name="ExportSettingsIncludeApiKeys">Включать ключи API</string>
     <string name="DisableInAppBrowserGestures">Отключить жесты</string>
     <string name="HowToObtain">Как получить?</string>
+    <string name="BlockChannel">Заблокировать канал</string>
+    <string name="UnblockChannel">Разблокировать канал</string>
+    <string name="BlockedChannels">Заблокированные каналы</string>
+    <string name="ChannelBlocked">Канал заблокирован.</string>
+    <string name="ChannelUnblocked">Канал разблокирован.</string>
+    <string name="BlockedChannelsEmpty">Заблокированных каналов пока нет</string>
+    <string name="UnblockAllChannelsWarn">Вы уверены, что хотите разблокировать **все каналы**?</string>
+    <string name="BlockChannelsUnavailable">Некоторые каналы временно недоступны.</string>
 </resources>

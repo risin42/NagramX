@@ -122,7 +122,7 @@
     <string name="DontSendOnlinePackets">Nie wysyłaj online</string>
     <string name="DontSendUploadProgress">Nie wysyłaj pisania</string>
     <string name="SendOfflinePacketAfterOnline">Automatyczne przejście w tryb offline</string>
-    <string name="MarkReadAfterSend">Czytaj dalej Interakcja</string>
+    <string name="MarkReadAfterSend">Czytaj dalej Interakcje</string>
     <string name="GhostModeNotice">Długie dotknięcie dowolnej opcji zapobiega jej zmianie podczas przełączania trybu ducha.</string>
     <string name="MarkReadAfterSendNotice">Automatycznie odczytuje wiadomość, gdy wysyłasz nową lub klikasz reakcję.</string>
     <string name="SendWithoutSoundRowNotice">Automatyczne wysyłanie wiadomości bez dźwięku.</string>
