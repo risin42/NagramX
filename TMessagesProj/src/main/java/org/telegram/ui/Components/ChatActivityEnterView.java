@@ -4402,7 +4402,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
     }
 
     private void onMenuClick(View view) {
-        if (parentFragment == null) {
+        if (parentFragment == null || slowModeTimer > 0) {
             return;
         }
         ActionBarPopupWindow.ActionBarPopupWindowLayout menuPopupLayout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(parentActivity);
