@@ -262,6 +262,9 @@
     <string name="BlockChannel">Block channel</string>
     <string name="UnblockChannel">Unblock channel</string>
     <string name="BlockedChannels">Blocked Channels</string>
+    <string name="BlockedChannelsCount_one">%1$d blocked channel</string>
+    <string name="BlockedChannelsCount_other">%1$d blocked channels</string>
+    <string name="BlockedChannelsInfo">You can hide messages from blocked channels in groups. %s</string>
     <string name="ChannelBlocked">Channel blocked.</string>
     <string name="ChannelUnblocked">Channel unblocked.</string>
     <string name="BlockedChannelsEmpty">No blocked channels yet</string>
