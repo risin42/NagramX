@@ -165,10 +165,17 @@ public class TextCheckCell extends FrameLayout {
     }
 
     public void setTextAndCheck(CharSequence text, boolean checked, boolean divider) {
+        setTextAndCheck(text, checked, divider, false);
+    }
+
+    public void setTextAndCheck(CharSequence text, boolean checked, boolean divider, boolean isNekoCell) {
         AvatarSpan.checkSpansParent(text, this);
-        textView.setMaxLines(1);
-        textView.setEllipsize(TextUtils.TruncateAt.END);
         textView.setText(text);
+        if (isNekoCell) {
+            textView.setLines(0);
+            textView.setMaxLines(0);
+            textView.setSingleLine(false);
+        }
         isMultiline = false;
         if (checkBox != null) {
             checkBox.setVisibility(View.VISIBLE);
@@ -231,6 +238,10 @@ public class TextCheckCell extends FrameLayout {
     }
 
     public void setTextAndValueAndCheck(String text, String value, boolean checked, boolean multiline, boolean divider) {
+        setTextAndValueAndCheck(text, value, checked, multiline, divider, false);
+    }
+
+    public void setTextAndValueAndCheck(String text, String value, boolean checked, boolean multiline, boolean divider, boolean isNekoCell) {
         AvatarSpan.checkSpansParent(text, this);
         textView.setText(text);
         valueTextView.setText(value);
@@ -245,8 +256,12 @@ public class TextCheckCell extends FrameLayout {
         valueTextView.setVisibility(VISIBLE);
         isMultiline = multiline;
         if (multiline) {
-            textView.setMaxLines(1);
-            textView.setEllipsize(TextUtils.TruncateAt.END);
+            if (isNekoCell) {
+                if (!TextUtils.isEmpty(value)) {
+                    textView.setMaxLines(1);
+                    textView.setEllipsize(TextUtils.TruncateAt.END);
+                }
+            }
             valueTextView.setLines(0);
             valueTextView.setMaxLines(0);
             valueTextView.setSingleLine(false);
