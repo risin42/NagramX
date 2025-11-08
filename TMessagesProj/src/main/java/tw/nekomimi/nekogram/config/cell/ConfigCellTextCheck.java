@@ -62,9 +62,9 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
         if (this.cell != null) {
             this.cell.setEnabled(this.enabled);
             if (subtitle == null) {
-                cell.setTextAndCheck(title, bindConfig.Bool(), cellGroup.needSetDivider(this));
+                cell.setTextAndCheck(title, bindConfig.Bool(), cellGroup.needSetDivider(this), true);
             } else {
-                cell.setTextAndValueAndCheck(title.toString(), subtitle, bindConfig.Bool(), true, cellGroup.needSetDivider(this));
+                cell.setTextAndValueAndCheck(title.toString(), subtitle, bindConfig.Bool(), true, cellGroup.needSetDivider(this), true);
             }
         }
     }
@@ -73,9 +73,9 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
         TextCheckCell cell = (TextCheckCell) holder.itemView;
         this.cell = cell;
         if (subtitle == null) {
-            cell.setTextAndCheck(title, bindConfig.Bool(), cellGroup.needSetDivider(this));
+            cell.setTextAndCheck(title, bindConfig.Bool(), cellGroup.needSetDivider(this), true);
         } else {
-            cell.setTextAndValueAndCheck(title.toString(), subtitle, bindConfig.Bool(), true, cellGroup.needSetDivider(this));
+            cell.setTextAndValueAndCheck(title.toString(), subtitle, bindConfig.Bool(), true, cellGroup.needSetDivider(this), true);
         }
         cell.setEnabled(enabled, null);
     }

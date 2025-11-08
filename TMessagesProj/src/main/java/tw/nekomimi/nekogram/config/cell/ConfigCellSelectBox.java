@@ -73,7 +73,7 @@ public class ConfigCellSelectBox extends AbstractConfigCell {
         if (selectList != null && bindConfig.Int() < selectList.length) {
             valueText = selectList[bindConfig.Int()];
         }
-        cell.setTextAndValue(title, valueText, cellGroup.needSetDivider(this));
+        cell.setTextAndValue(title, valueText, cellGroup.needSetDivider(this), false, true);
     }
 
     public void onClickWithDialog(Context ctx) {
