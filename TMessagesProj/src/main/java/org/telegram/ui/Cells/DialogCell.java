@@ -377,6 +377,9 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     private boolean isForum;
     private ArrayList<MessageObject> groupMessages;
     private boolean clearingDialog;
+    private boolean loadingFilteredMessage;
+    private MessageObject filteredMessageCache;
+    private int lastCheckedMessageId;
     private CharSequence lastMessageString;
     private int dialogsType;
     private int folderId;
@@ -3046,6 +3049,12 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                         message = groupMessages != null && groupMessages.size() > 0 ? groupMessages.get(0) : null;
                         // Message filter: if last message is blocked/filtered, try to pick previous unfiltered for preview
                         if (message != null) {
+                            int currentMessageId = message.getId();
+                            if (currentMessageId != lastCheckedMessageId) {
+                                lastCheckedMessageId = currentMessageId;
+                                filteredMessageCache = null;
+                                loadingFilteredMessage = false;
+                            }
                             boolean blocked = false;
                             boolean replyBlocked = false;
                             if (NekoConfig.ignoreBlocked.Bool() && ChatObject.isMegagroup(MessagesController.getInstance(currentAccount).getChat(-dialog.id))) {
@@ -3058,14 +3067,33 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                                 }
                             }
                             if (blocked || replyBlocked || AyuFilter.isFiltered(message, null)) {
-                                MessageObject alt = MessageHelper.getInstance(currentAccount).getLastMessageSkippingFiltered(dialog.id);
-                                if (alt != null) {
-                                    message = alt;
+                                if (filteredMessageCache != null && filteredMessageCache.getDialogId() == dialog.id) {
+                                    message = filteredMessageCache;
                                     groupMessages = null;
+                                } else if (!loadingFilteredMessage) {
+                                    loadingFilteredMessage = true;
+                                    final long dialogId = dialog.id;
+                                    message = null;
+                                    groupMessages = null;
+                                    MessageHelper.getInstance(currentAccount).loadLastMessageSkippingFilteredAsync(
+                                        dialogId,
+                                        (result) -> {
+                                            filteredMessageCache = result;
+                                            loadingFilteredMessage = false;
+                                            update(0);
+                                        }
+                                    );
                                 } else {
                                     message = null;
+                                    groupMessages = null;
                                 }
+                            } else {
+                                filteredMessageCache = null;
                             }
+                        } else {
+                            lastCheckedMessageId = 0;
+                            loadingFilteredMessage = false;
+                            filteredMessageCache = null;
                         }
                         // Message filter end
                         lastUnreadState = message != null && message.isUnread();
