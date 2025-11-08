@@ -12,10 +12,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,6 +55,7 @@ import org.telegram.ui.Components.RecyclerListView;
 import java.util.ArrayList;
 
 import tw.nekomimi.nekogram.helpers.AyuFilter;
+import tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity;
 
 public class PrivacyUsersActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -62,6 +67,7 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
     private int rowCount;
     private int blockUserRow;
     private int blockUserDetailRow;
+    private int blockedChannelsDetailRow;
     private int usersHeaderRow;
     private int usersStartRow;
     private int usersEndRow;
@@ -411,6 +417,7 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
         rowCount = 0;
         usersHeaderRow = -1;
         blockUserDetailRow = -1;
+        blockedChannelsDetailRow = -1;
         deleteAllRow = -1;
         if (!blockedUsersActivity || getMessagesController().totalBlockedCount >= 0) {
             if (currentType == TYPE_BLOCKED_CHANNELS) {
@@ -429,6 +436,9 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                 count = uidArray.size();
             }
             if (count != 0) {
+                if (currentType == TYPE_BLOCKED_CHANNELS) {
+                    blockedChannelsDetailRow = rowCount++;
+                }
                 if (currentType == TYPE_BLOCKED || currentType == TYPE_BLOCKED_CHANNELS) {
                     usersHeaderRow = rowCount++;
                 }
@@ -611,6 +621,18 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                         } else {
                             privacyCell.setBackgroundDrawable(Theme.getThemedDrawableByKey(mContext, R.drawable.greydivider, Theme.key_windowBackgroundGrayShadow));
                         }
+                    } else if (position == blockedChannelsDetailRow) {
+                        privacyCell.setFixedSize(0);
+                        String description = LocaleController.getString(R.string.BlockedChannelsInfo);
+                        String link = LocaleController.getString(R.string.RegexFilters);
+                        String fullText = String.format(description, link);
+                        SpannableStringBuilder spannableString = getRegexFiltersSettingLink(fullText, link);
+                        privacyCell.setText(spannableString);
+                        if (usersStartRow == -1) {
+                            privacyCell.setBackground(Theme.getThemedDrawableByKey(mContext, R.drawable.greydivider_bottom, Theme.key_windowBackgroundGrayShadow));
+                        } else {
+                            privacyCell.setBackground(Theme.getThemedDrawableByKey(mContext, R.drawable.greydivider, Theme.key_windowBackgroundGrayShadow));
+                        }
                     } else if (position == usersDetailRow) {
                         privacyCell.setFixedSize(12);
                         privacyCell.setText("");
@@ -632,7 +654,7 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                         if (currentType == TYPE_BLOCKED) {
                             headerCell.setText(LocaleController.formatPluralString("BlockedUsersCount", getMessagesController().totalBlockedCount));
                         } else if (currentType == TYPE_BLOCKED_CHANNELS) {
-                            headerCell.setText(LocaleController.getString(R.string.BlockedChannels));
+                            headerCell.setText(LocaleController.formatPluralString("BlockedChannelsCount", uidArray.size()));
                         } else {
                             headerCell.setText(LocaleController.getString(R.string.PrivacyExceptions));
                         }
@@ -649,12 +671,26 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                 return 3;
             } else if (position == blockUserRow) {
                 return 2;
-            } else if (position == blockUserDetailRow || position == usersDetailRow) {
+            } else if (position == blockUserDetailRow || position == blockedChannelsDetailRow || position == usersDetailRow) {
                 return 1;
             } else {
                 return 0;
             }
         }
+    }
+
+    @NonNull
+    private SpannableStringBuilder getRegexFiltersSettingLink(String fullText, String link) {
+        SpannableStringBuilder spannableString = new SpannableStringBuilder(fullText);
+        int start = fullText.indexOf(link);
+        int end = start + link.length();
+        spannableString.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                presentFragment(new RegexFiltersSettingActivity());
+            }
+        }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString;
     }
 
     @Override
