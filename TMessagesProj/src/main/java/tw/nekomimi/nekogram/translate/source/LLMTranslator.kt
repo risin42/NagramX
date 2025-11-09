@@ -269,10 +269,13 @@ object LLMTranslator : Translator {
         return model == "gemini-flash-latest"
                 || model.startsWith("gemini-2.5")
                 || model.startsWith("gpt-5")
+                || model.startsWith("gpt-oss")
     }
 
-    private fun getReasoningEffort(model: String): String {
-        return if (model.startsWith("gpt-5")) "minimal" else "none"
+    private fun getReasoningEffort(model: String) = when {
+        model.startsWith("gpt-5") -> "minimal"
+        model.startsWith("gpt-oss") -> "low"
+        else -> "none"
     }
 
     class RateLimitException(message: String) : Exception(message)
