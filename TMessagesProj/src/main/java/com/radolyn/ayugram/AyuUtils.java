@@ -42,8 +42,7 @@ public class AyuUtils {
             return false;
         }
 
-        boolean success;
-        boolean usedCopy = false;
+        boolean success = false;
 
         try {
             success = from.renameTo(to);
@@ -52,38 +51,34 @@ public class AyuUtils {
             }
         } catch (Exception e) {
             if (BuildVars.LOGS_ENABLED) Log.e(NAX, "Move failed, trying copy: " + e);
-            success = false;
         }
 
         if (!success) {
             try {
                 success = AndroidUtilities.copyFile(from, to);
                 if (success) {
-                    usedCopy = true;
                     if (BuildVars.LOGS_ENABLED) {
                         Log.d(NAX, "Successfully copied file: " + from.getName());
                     }
-                }
-            } catch (Exception e) {
-                if (BuildVars.LOGS_ENABLED) Log.e(NAX, "Copy failed: " + e);
-                success = false;
-            }
-        }
-
-        if (success && usedCopy) {
-            try {
-                if (from.delete()) {
-                    if (BuildVars.LOGS_ENABLED) {
-                        Log.d(NAX, "Deleted original file after copy: " + from.getName());
-                    }
-                } else {
-                    if (BuildVars.LOGS_ENABLED) {
-                        Log.w(NAX, "Failed to delete original file after copy: " + from.getAbsolutePath());
+                    try {
+                        if (from.delete()) {
+                            if (BuildVars.LOGS_ENABLED) {
+                                Log.d(NAX, "Deleted original file after copy: " + from.getName());
+                            }
+                        } else {
+                            if (BuildVars.LOGS_ENABLED) {
+                                Log.w(NAX, "Failed to delete original file after copy: " + from.getAbsolutePath());
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (BuildVars.LOGS_ENABLED) {
+                            Log.e(NAX, "Error deleting original file: " + e);
+                        }
                     }
                 }
             } catch (Exception e) {
                 if (BuildVars.LOGS_ENABLED) {
-                    Log.e(NAX, "Error deleting original file: " + e);
+                    Log.e(NAX, "Copy failed: " + e);
                 }
             }
         }
