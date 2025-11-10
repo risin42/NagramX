@@ -2598,7 +2598,9 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                         BulletinFactory.of(slideViewsContainer, null).createSimpleBulletin(R.raw.chats_infotip, LocaleController.getString("TestBackendOff", R.string.TestBackendOff)).show();
                     }
                 });
-                testBackendCheckBox.setVisibility(GONE);
+                if (!testBackend) {
+                    testBackendCheckBox.setVisibility(GONE);
+                }
             }
             if (bottomMargin > 0 && !AndroidUtilities.isSmallScreen()) {
                 Space bottomSpacer = new Space(context);
