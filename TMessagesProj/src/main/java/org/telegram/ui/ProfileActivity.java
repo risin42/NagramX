@@ -14011,18 +14011,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         }
                         detailCell.setTextAndValue(text, alsoUsernamesString(username, usernames, value), infoEndRowEmpty == -1 && (isTopic || bizHoursRow != -1 || bizLocationRow != -1) && birthdayRow < 0);
                     } else if (position == idDcRow) {
-                        long id = userId != 0 ? userId : chatId != 0 ? chatId : 0;
-                        if (NaConfig.INSTANCE.getIdDcType().Int() == NekoConfig.ID_TYPE_BOT_API && chatId != 0) {
-                            var chat = getMessagesController().getChat(chatId);
-                            if (chat != null) {
-                                if (ChatObject.isChannel(chat)) {
-                                    id = -1000000000000L - chat.id;
-                                } else {
-                                    id = - chat.id;
-                                }
-                            }
-                        }
-                        int dc = getDcId();
+                        long id = getId(true);
+                        int dc = getDc();
                         boolean isUserSelf = userId == UserConfig.getInstance(currentAccount).getClientUserId();
                         detailCell.setTextAndValue(id + "", dc != 0 ? String.format(Locale.US, "DC%d %s, %s", dc, getDCName(dc), getDCLocation(dc)) : "DC " + getString(R.string.NumberUnknown), isUserSelf);
                     } else if (position == restrictionReasonRow) {
@@ -17315,7 +17305,22 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         return spannableStringBuilder;
     }
 
-    private int getDcId() {
+    private long getId(boolean styled) {
+        long id = userId != 0 ? userId : chatId != 0 ? chatId : 0;
+        if (styled && chatId != 0 && NaConfig.INSTANCE.getIdDcType().Int() == NekoConfig.ID_TYPE_BOT_API) {
+            var chat = getMessagesController().getChat(chatId);
+            if (chat != null) {
+                if (ChatObject.isChannel(chat)) {
+                    id = -1000000000000L - chat.id;
+                } else {
+                    id = - chat.id;
+                }
+            }
+        }
+        return id;
+    }
+
+    private int getDc() {
         int dc = 0;
         TLRPC.User user;
         TLRPC.Chat chat;
@@ -17343,10 +17348,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     }
 
     private void showIdDcBottomSheet() {
-        long id = userId != 0 ? userId : chatId != 0 ? chatId : 0;
-        int dc = getDcId();
+        long id = getId(true);
+        long idForLink = getId(false);
+        int dc = getDc();
         BottomBuilder builder = new BottomBuilder(getParentActivity());
-        if (id == userId) {
+        if (userId != 0) {
             builder.addTitle(id + "", ProfileDateHelper.getUserTime(id));
         } else {
             builder.addTitle(id + "");
@@ -17355,22 +17361,22 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             AlertUtil.copyAndAlert(id + "", this);
             return Unit.INSTANCE;
         });
-        if (id == userId) {
+        if (userId != 0) {
             builder.addItem(getString(R.string.CopyLink), R.drawable.profile_link, __ -> {
-                AlertUtil.copyLinkAndAlert("tg://user?id=" + id, this);
+                AlertUtil.copyLinkAndAlert("tg://user?id=" + idForLink, this);
                 return Unit.INSTANCE;
             });
             builder.addItem(getString(R.string.CopyLink) + " (Android)", R.drawable.profile_link, __ -> {
-                AlertUtil.copyLinkAndAlert("tg://openmessage?user_id=" + id, this);
+                AlertUtil.copyLinkAndAlert("tg://openmessage?user_id=" + idForLink, this);
                 return Unit.INSTANCE;
             });
             builder.addItem(getString(R.string.CopyLink) + " (iOS)", R.drawable.profile_link, __ -> {
-                AlertUtil.copyLinkAndAlert("https://t.me/@id" + id, this);
+                AlertUtil.copyLinkAndAlert("https://t.me/@id" + idForLink, this);
                 return Unit.INSTANCE;
             });
         } else {
             builder.addItem(getString(R.string.CopyLink) + " (Android)", R.drawable.profile_link, __ -> {
-                AlertUtil.copyLinkAndAlert("tg://openmessage?chat_id=" + id, this);
+                AlertUtil.copyLinkAndAlert("tg://openmessage?chat_id=" + idForLink, this);
                 return Unit.INSTANCE;
             });
         }
