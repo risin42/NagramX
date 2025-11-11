@@ -539,7 +539,7 @@ public class ContentPreviewViewer {
                     items.add(LocaleController.getString("SaveToGallery", R.string.SaveToGallery));
                     icons.add(R.drawable.msg_gallery);
                     actions.add(nkbtn_stickerdl);
-                    if (!MessageObject.isAnimatedStickerDocument(currentDocument)) {
+                    if (!MessageObject.isAnimatedStickerDocument(currentDocument) && !MessageObject.isAnimatedStickerDocument(currentDocument, true) && !MessageObject.isVideoSticker(currentDocument)) {
                         items.add(getString(R.string.CopySticker));
                         icons.add(R.drawable.msg_copy_photo);
                         actions.add(nkbtn_sticker_copy);
