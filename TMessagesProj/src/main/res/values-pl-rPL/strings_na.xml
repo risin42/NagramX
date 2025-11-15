@@ -88,7 +88,11 @@
     <string name="PreviewSendFile">Wyślij plik</string>
     <string name="UnblockDeleted">Odblokuj usuniętych użytkowników</string>
     <string name="UnblockDeletedWarn">Czy na pewno chcesz odblokować **wszystkich usuniętych użytkowników**?</string>
+    <string name="RegexFilters">Filtry wiadomości</string>
     <string name="RegexFiltersHeader">Filtry</string>
+    <string name="RegexFiltersSharedHeader">Wspólne filtry</string>
+    <string name="RegexFiltersSubMenuDescription">Możesz wybrać opcję wykluczenia filtrów współdzielonych dla tego czatu.</string>
+    <string name="RegexFiltersChatHeader">Filtry czatu</string>
     <string name="RegexFiltersEnableInChats">Włącz filtry w prywatnych czatach</string>
     <string name="RegexFiltersCaseInsensitive">Wyrażenia bez uwzględniania wielkości liter</string>
     <string name="RegexFiltersAdd">Dodaj filtr</string>
