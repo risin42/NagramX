@@ -63,17 +63,6 @@
     <string name="DisableSuggestionView">Desactivar la sugerencia de configuración del perfil</string>
     <string name="DisableStories">Deshabilitar historias</string>
     <string name="CopyPhotoAsSticker">Copiar como sticker</string>
-    <string name="ExternalStickerCache">Memoria caché externa</string>
-    <string name="ExternalStickerCacheHint">Para compartir paquetes de pegatinas con otras aplicaciones. Haz clic para elegir la ubicación de almacenamiento.</string>
-    <string name="ExternalStickerCacheRefresh">Actualizar caché externa</string>
-    <string name="ExternalStickerCacheDelete">Borrar caché externa</string>
-    <string name="ExternalStickerCacheWaitSync">Esperando a que termine la sincronización de la caché</string>
-    <string name="ExternalStickerCacheSyncNotFinished">La sincronización de la caché ya está en marcha</string>
-    <string name="ExternalStickerCacheAutoRefresh">Sincronización automática</string>
-    <string name="ExternalStickerCacheAutoRefreshHint">Sincroniza automáticamente toda la caché tras recibir eventos de stickers.</string>
-    <string name="ExternalStickerCacheRefreshAll">Sincronizar toda la caché</string>
-    <string name="ExternalStickerCacheDeleteAll">Borrar toda la caché</string>
-    <string name="ExternalStickerCacheDirNameType">Nombres de directorios</string>
     <string name="ProviderTranSmartTranslate">Traductor TranSmart</string>
     <string name="DisableMarkdown">Desactivar Markdown</string>
     <string name="SendWithMarkdown">Enviar con Markdown</string>

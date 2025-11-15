@@ -63,17 +63,6 @@
     <string name="DisableSuggestionView">غیرفعال کردن پیشنهادات تنظیمات پروفایل</string>
     <string name="DisableStories">استوری‌ها را غیرفعال کنید</string>
     <string name="CopyPhotoAsSticker">کپی به‌صورت برچسب</string>
-    <string name="ExternalStickerCache">حافظه پنهان(کش) خارجی برای استیکرها</string>
-    <string name="ExternalStickerCacheHint">برای هم‌رسانی بسته‌های استیکر با اپ‌های دیگر. برای انتخاب محل ذخیره لمس کنید.</string>
-    <string name="ExternalStickerCacheRefresh">نوسازی حافظه پنهان(کش) خارجی</string>
-    <string name="ExternalStickerCacheDelete">پاکسازی حافظه پنهان(کش) خارجی</string>
-    <string name="ExternalStickerCacheWaitSync">در انتظار برای اتمام همگام‌سازی حافظه پنهان(کش)</string>
-    <string name="ExternalStickerCacheSyncNotFinished">همگام‌سازی حافظه پنهان(کش) در حال اجراست</string>
-    <string name="ExternalStickerCacheAutoRefresh">همگام‌سازی خودکار</string>
-    <string name="ExternalStickerCacheAutoRefreshHint">همگام‌سازی خودکار تمام داده‌های پنهان(کش‌ها) پس از دریافت رویدادهای استیکر.</string>
-    <string name="ExternalStickerCacheRefreshAll">همگام‌سازی تمام داده‌های پنهان(کش‌ها)</string>
-    <string name="ExternalStickerCacheDeleteAll">پاک‌کردن تمام داده‌های پنهان(کش‌ها)</string>
-    <string name="ExternalStickerCacheDirNameType">نامگذاری پوشه‌ها</string>
     <string name="ProviderTranSmartTranslate">مترجم TransSmart</string>
     <string name="DisableMarkdown">غیرفعال‌سازی Markdown</string>
     <string name="SendWithMarkdown">ارسال با Markdown</string>

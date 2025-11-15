@@ -83,7 +83,7 @@
     <string name="HideArchive">Удалить архивные чаты из списка чатов</string>
     <string name="HideChannelSilentBroadcast">Скрыть переключатель бесшумной трансляции</string>
     <string name="ConfirmAllLinks">Спрашивать перед открытием встроенных ссылок</string>
-    <string name="ConfirmAllLinksDescription">\nВключая внутренние ссылки Telegram, такие как ссылки t.me во встроенных кнопках ботов.</string>
+    <string name="ConfirmAllLinksDescription">Включая внутренние ссылки Telegram, такие как ссылки t.me во встроенных кнопках ботов.</string>
     <string name="TranslatorMinimizedChannel">Панель переводчика для этого канала была свёрнута.</string>
     <string name="TranslatorMinimizedGroup">Панель переводчика для этой группы была свёрнута.</string>
     <string name="TranslatorMinimized">Панель переводчика для этого чата была свёрнута.</string>
@@ -253,9 +253,13 @@
     <string name="BlockChannel">Заблокировать канал</string>
     <string name="UnblockChannel">Разблокировать канал</string>
     <string name="BlockedChannels">Заблокированные каналы</string>
+    <string name="BlockedChannelsCount_one">%1$d заблокированный канал</string>
+    <string name="BlockedChannelsCount_other">%1$d заблокированных каналов</string>
+    <string name="BlockedChannelsInfo">Вы можете скрыть сообщения из заблокированных каналов в группах. %s</string>
     <string name="ChannelBlocked">Канал заблокирован.</string>
     <string name="ChannelUnblocked">Канал разблокирован.</string>
     <string name="BlockedChannelsEmpty">Заблокированных каналов пока нет</string>
     <string name="UnblockAllChannelsWarn">Вы уверены, что хотите разблокировать **все каналы**?</string>
     <string name="BlockChannelsUnavailable">Некоторые каналы временно недоступны.</string>
+    <string name="FixLinkPreview">Исправить предпросмотр ссылок</string>
 </resources>

@@ -253,9 +253,13 @@
     <string name="BlockChannel">Bloquear canal</string>
     <string name="UnblockChannel">Desbloquear canal</string>
     <string name="BlockedChannels">Canais Bloqueados</string>
+    <string name="BlockedChannelsCount_one">%1$d canal bloqueado</string>
+    <string name="BlockedChannelsCount_other">%1$d canais bloqueados</string>
+    <string name="BlockedChannelsInfo">Você pode ocultar mensagens de canais bloqueados em grupos. %s</string>
     <string name="ChannelBlocked">Canal bloqueado.</string>
     <string name="ChannelUnblocked">Canal desbloqueado.</string>
     <string name="BlockedChannelsEmpty">Ainda não há canais bloqueados</string>
     <string name="UnblockAllChannelsWarn">Você tem certeza de que deseja desbloquear **todos os canais**?</string>
     <string name="BlockChannelsUnavailable">Alguns canais estão temporariamente indisponíveis.</string>
+    <string name="FixLinkPreview">Corrigir Prévia de Link</string>
 </resources>
