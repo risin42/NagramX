@@ -992,6 +992,8 @@ public class MediaDataController extends BaseController {
                         AndroidUtilities.runOnUIThread(() -> getMediaDataController().loadRecents(MediaDataController.TYPE_FAVE, false, false, true));
                     }
                 });
+            } else {
+                AndroidUtilities.runOnUIThread(() -> getMediaDataController().loadRecents(MediaDataController.TYPE_FAVE, false, true, false));
             }
             maxCount = NekoConfig.unlimitedFavedStickers.Bool() ? Integer.MAX_VALUE : getUserConfig().isPremium() ? 10 : getMessagesController().maxFaveStickersCount;
         } else {
@@ -1882,8 +1884,10 @@ public class MediaDataController extends BaseController {
     }
 
     public void loadRecents(int type, boolean gif, boolean cache, boolean force) {
-        if (NekoConfig.unlimitedFavedStickers.Bool() && type == TYPE_FAVE && !cache) {
-            return;
+        if (type == TYPE_FAVE && !cache) {
+            if (NekoConfig.unlimitedFavedStickers.Bool() || recentStickers[TYPE_FAVE].size() > getMessagesController().maxFaveStickersCount) {
+                return;
+            }
         }
         if (gif) {
             if (loadingRecentGifs) {
@@ -2156,15 +2160,24 @@ public class MediaDataController extends BaseController {
 
                 }
                 if (documents != null) {
+                    boolean shouldUpdate = true;
                     if (gif) {
                         recentGifs = documents;
                     } else {
-                        recentStickers[type] = documents;
+                        if (type == TYPE_FAVE && !NekoConfig.unlimitedFavedStickers.Bool() &&
+                            recentStickers[TYPE_FAVE].size() > getMessagesController().maxFaveStickersCount &&
+                            documents.size() <= getMessagesController().maxFaveStickersCount) {
+                            shouldUpdate = false;
+                        } else {
+                            recentStickers[type] = documents;
+                        }
                     }
                     if (type == TYPE_GREETINGS) {
                         preloadNextGreetingsSticker();
                     }
-                    getNotificationCenter().postNotificationName(NotificationCenter.recentDocumentsDidLoad, gif, type);
+                    if (shouldUpdate) {
+                        getNotificationCenter().postNotificationName(NotificationCenter.recentDocumentsDidLoad, gif, type);
+                    }
                 } else {
 
                 }
