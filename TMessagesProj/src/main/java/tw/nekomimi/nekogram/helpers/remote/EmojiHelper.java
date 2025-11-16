@@ -355,7 +355,11 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
         if (!loadSystemEmojiFailed && systemEmojiTypeface == null) {
             var font = getSystemEmojiFontPathLegacy();
             if (font != null) {
-                systemEmojiTypeface = Typeface.createFromFile(font);
+                try {
+                    systemEmojiTypeface = Typeface.createFromFile(font);
+                } catch (Exception e) {
+                    FileLog.e("Failed to load system emoji font: " + font.getAbsolutePath(), e);
+                }
             }
             if (systemEmojiTypeface == null) {
                 loadSystemEmojiFailed = true;
@@ -379,7 +383,13 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
             if (!emojiFile.exists()) {
                 return null;
             }
-            typefaceCache.put(pack.packId, typeface = Typeface.createFromFile(emojiFile));
+            try {
+                typeface = Typeface.createFromFile(emojiFile);
+                typefaceCache.put(pack.packId, typeface);
+            } catch (Exception e) {
+                FileLog.e("Failed to load emoji font: " + pack.fileLocation, e);
+                return null;
+            }
         } else {
             typeface = typefaceCache.get(pack.packId);
         }
@@ -611,7 +621,13 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
         try (FileInputStream inputStream = new FileInputStream(emojiFile)) {
             AndroidUtilities.copyFile(inputStream, emojiFont);
         }
-        Typeface typeface = Typeface.createFromFile(emojiFont);
+        Typeface typeface;
+        try {
+            typeface = Typeface.createFromFile(emojiFont);
+        } catch (RuntimeException e) {
+            FileLog.e("Failed to create typeface from emoji font: " + emojiFont.getAbsolutePath(), e);
+            throw new IOException("Invalid or corrupted font file", e);
+        }
         Bitmap bitmap = drawPreviewBitmap(typeface);
         File emojiPreview = new File(emojiDir, "preview.png");
         try (FileOutputStream outputStream = new FileOutputStream(emojiPreview)) {
