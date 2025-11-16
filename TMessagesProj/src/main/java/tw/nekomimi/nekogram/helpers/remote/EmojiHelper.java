@@ -59,6 +59,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import tw.nekomimi.nekogram.NekoConfig;
@@ -82,10 +83,10 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
     private static TextPaint textPaint;
 
     private final HashMap<String, Typeface> typefaceCache = new HashMap<>();
-    private final ArrayList<EmojiPackBase> emojiPacksInfo = new ArrayList<>();
+    private final CopyOnWriteArrayList<EmojiPackBase> emojiPacksInfo = new CopyOnWriteArrayList<>();
     private final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nekoemojis", Context.MODE_PRIVATE);
     private final HashMap<String, Pair<EmojiPackInfo, Boolean[]>> loadingEmojiPacks = new HashMap<>();
-    private final ArrayList<EmojiPackLoadListener> listeners = new ArrayList<>();
+    private final CopyOnWriteArrayList<EmojiPackLoadListener> listeners = new CopyOnWriteArrayList<>();
 
     private String emojiPack;
     private static Typeface systemEmojiTypeface;
@@ -437,7 +438,7 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
     }
 
     public ArrayList<EmojiPackBase> getEmojiPacks() {
-        return emojiPacksInfo;
+        return new ArrayList<>(emojiPacksInfo);
     }
 
     public ArrayList<EmojiPackInfo> getEmojiPacksInfo() {
@@ -652,7 +653,7 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
     }
 
     private void loadCustomEmojiPacks() {
-        getAllEmojis().parallelStream()
+        ArrayList<EmojiPackBase> customPacks = getAllEmojis().parallelStream()
                 .filter(EmojiHelper::isValidCustomPack)
                 .sorted(Comparator.comparingLong(File::lastModified))
                 .map(file -> {
@@ -660,7 +661,8 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
                     emojiPackBase.loadFromFile(file);
                     return emojiPackBase;
                 })
-                .forEach(emojiPacksInfo::add);
+                .collect(Collectors.toCollection(ArrayList::new));
+        emojiPacksInfo.addAll(customPacks);
     }
 
     public boolean isSelectedCustomEmojiPack() {
@@ -794,12 +796,7 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
             serializedData.cleanup();
 
             AndroidUtilities.runOnUIThread(() -> {
-                var iterator = emojiPacksInfo.listIterator();
-                while (iterator.hasNext()) {
-                    if (iterator.next() instanceof EmojiPackInfo) {
-                        iterator.remove();
-                    }
-                }
+                emojiPacksInfo.removeIf(emojiPackBase -> emojiPackBase instanceof EmojiPackInfo);
                 emojiPacksInfo.addAll(packs);
             });
         }
