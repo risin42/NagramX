@@ -4976,12 +4976,13 @@ public class Theme {
                                     newAccents.add(accent);
                                     info.lastAccentId = Math.max(info.lastAccentId, accent.id);
                                 } catch (Throwable e) {
-                                    throw new RuntimeException(e);
+                                    FileLog.e(e);
+                                    // throw new RuntimeException(e);
                                 }
                             }
                         } catch (Throwable e) {
                             FileLog.e(e);
-                            throw new RuntimeException(e);
+                            // throw new RuntimeException(e);
                         }
                     } else {
                         String key = "accent_for_" + info.assetName;
@@ -5083,7 +5084,7 @@ public class Theme {
             autoNightLastSunCheckDay = preferences.getInt("autoNightLastSunCheckDay", -1);
         } catch (Exception e) {
             FileLog.e(e);
-            throw new RuntimeException(e);
+            // throw new RuntimeException(e);
         }
         if (applyingTheme == null) {
             applyingTheme = defaultTheme;
