@@ -41203,13 +41203,7 @@ public class ChatActivity extends BaseFragment implements
 
         @Override
         public void onDiceFinished() {
-            if (fireworksOverlay.isStarted()) {
-                return;
-            }
-            fireworksOverlay.start();
-            try {
-                if (!NekoConfig.disableVibration.Bool()) fireworksOverlay.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-            } catch (Exception ignored) {};
+            startFireworks();
         }
 
         @Override
@@ -46764,5 +46758,15 @@ public class ChatActivity extends BaseFragment implements
         }
 
         return false;
+    }
+
+    public void startFireworks() {
+        if (fireworksOverlay == null || fireworksOverlay.isStarted()) {
+            return;
+        }
+        fireworksOverlay.start();
+        try {
+            fireworksOverlay.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+        } catch (Exception ignored) {};
     }
 }
