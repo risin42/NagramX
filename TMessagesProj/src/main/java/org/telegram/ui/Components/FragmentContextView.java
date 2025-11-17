@@ -1140,6 +1140,9 @@ public class FragmentContextView extends FrameLayout implements NotificationCent
             if (VoIPService.getSharedInstance() != null) {
                 VoIPService.getSharedInstance().unregisterStateListener(this);
             }
+            if (callMessagesAnimator != null) {
+                callMessagesAnimator.replace(null, true);
+            }
         }
         currentStyle = style;
         frameLayout.setWillNotDraw(currentStyle != STYLE_INACTIVE_GROUP_CALL);
@@ -2858,8 +2861,14 @@ public class FragmentContextView extends FrameLayout implements NotificationCent
     private int groupCallMessageCounter = 0;
 
     @Override
-    public void onNewGroupCallMessage(GroupCallMessage message) {
+    public void onNewGroupCallMessage(long callId, GroupCallMessage message) {
         if (groupCallMessagesContainer == null) {
+            return;
+        }
+        if (currentStyle != STYLE_CONNECTING_GROUP_CALL && currentStyle != STYLE_ACTIVE_GROUP_CALL) {
+            return;
+        }
+        if (VoIPService.getSharedInstance() == null || VoIPService.getSharedInstance().getGroupCallID() != callId) {
             return;
         }
 

@@ -5871,6 +5871,9 @@ public class ChatActivityEnterView extends FrameLayout implements
             messageEditText.setFallbackLineSpacing(false);
         }
 
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            messageEditText.setLocalePreferredLineHeightForMinimumUsed(false);
+        }
         messageEditText.setDelegate(new EditTextCaption.EditTextCaptionDelegate() {
             @Override
             public void onSpansChanged() {
