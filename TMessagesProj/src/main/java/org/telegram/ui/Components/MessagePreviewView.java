@@ -1087,7 +1087,7 @@ public class MessagePreviewView extends FrameLayout {
                         AlertsCreator.createScheduleDatePickerDialog(
                                 chatActivity.getParentActivity(),
                                 chatActivity.getDialogId(),
-                                MessagePreviewView.this::sendWebpageMedia);
+                                (notify, scheduleDate, scheduleRepeatPeriod) -> MessagePreviewView.this.sendWebpageMedia(notify, scheduleDate));
                     } else {
                         sendWebpageMedia(true, 0);
                     }

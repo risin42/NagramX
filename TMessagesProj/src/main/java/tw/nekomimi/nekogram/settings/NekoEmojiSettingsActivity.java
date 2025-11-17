@@ -239,7 +239,7 @@ public class NekoEmojiSettingsActivity extends BaseNekoSettingsActivity implemen
     }
 
     @Override
-    public void didSelectFiles(ArrayList<String> files, String caption, ArrayList<TLRPC.MessageEntity> captionEntities, ArrayList<MessageObject> fMessages, boolean notify, int scheduleDate, long effectId, boolean invertMedia, long payStars) {
+    public void didSelectFiles(ArrayList<String> files, String caption, ArrayList<TLRPC.MessageEntity> captionEntities, ArrayList<MessageObject> fMessages, boolean notify, int scheduleDate, int scheduleRepeatPeriod, long effectId, boolean invertMedia, long payStars) {
         ArrayList<File> filesToUpload = new ArrayList<>();
         for (String file : files) {
             File f = new File(file);

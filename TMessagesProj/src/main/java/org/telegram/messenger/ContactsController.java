@@ -82,6 +82,7 @@ public class ContactsController extends BaseController {
     private ArrayList<TLRPC.PrivacyRule> p2pPrivacyRules;
     private ArrayList<TLRPC.PrivacyRule> profilePhotoPrivacyRules;
     private ArrayList<TLRPC.PrivacyRule> bioPrivacyRules;
+    private ArrayList<TLRPC.PrivacyRule> musicPrivacyRules;
     private ArrayList<TLRPC.PrivacyRule> forwardsPrivacyRules;
     private ArrayList<TLRPC.PrivacyRule> phonePrivacyRules;
     private ArrayList<TLRPC.PrivacyRule> addedByPhonePrivacyRules;
@@ -105,8 +106,9 @@ public class ContactsController extends BaseController {
     public final static int PRIVACY_RULES_TYPE_BIRTHDAY = 11;
     public final static int PRIVACY_RULES_TYPE_GIFTS = 12;
     public final static int PRIVACY_RULES_TYPE_NO_PAID_MESSAGES = 13;
+    public final static int PRIVACY_RULES_TYPE_MUSIC = 14;
 
-    public final static int PRIVACY_RULES_TYPE_COUNT = 14;
+    public final static int PRIVACY_RULES_TYPE_COUNT = 15;
 
     private class MyContentObserver extends ContentObserver {
 
@@ -337,6 +339,7 @@ public class ContactsController extends BaseController {
         p2pPrivacyRules = null;
         profilePhotoPrivacyRules = null;
         bioPrivacyRules = null;
+        musicPrivacyRules = null;
         birthdayPrivacyRules = null;
         giftsPrivacyRules = null;
         forwardsPrivacyRules = null;
@@ -376,12 +379,12 @@ public class ContactsController extends BaseController {
     public String getInviteText(int contacts) {
         String link = inviteLink == null ? "https://telegram.org/dl" : inviteLink;
         if (contacts <= 1) {
-            return LocaleController.formatString("InviteText2", R.string.InviteText2, link);
+            return LocaleController.formatString(R.string.InviteText2, link);
         } else {
             try {
                 return String.format(LocaleController.getPluralString("InviteTextNum", contacts), contacts, link);
             } catch (Exception e) {
-                return LocaleController.formatString("InviteText2", R.string.InviteText2, link);
+                return LocaleController.formatString(R.string.InviteText2, link);
             }
         }
     }
@@ -2706,6 +2709,9 @@ public class ContactsController extends BaseController {
                 case PRIVACY_RULES_TYPE_BIO:
                     req.key = new TLRPC.TL_inputPrivacyKeyAbout();
                     break;
+                case PRIVACY_RULES_TYPE_MUSIC:
+                    req.key = new TLRPC.TL_inputPrivacyKeySavedMusic();
+                    break;
                 case PRIVACY_RULES_TYPE_FORWARDS:
                     req.key = new TLRPC.TL_inputPrivacyKeyForwards();
                     break;
@@ -2755,6 +2761,9 @@ public class ContactsController extends BaseController {
                             break;
                         case PRIVACY_RULES_TYPE_BIO:
                             bioPrivacyRules = rules.rules;
+                            break;
+                        case PRIVACY_RULES_TYPE_MUSIC:
+                            musicPrivacyRules = rules.rules;
                             break;
                         case PRIVACY_RULES_TYPE_BIRTHDAY:
                             birthdayPrivacyRules = rules.rules;
@@ -2827,6 +2836,8 @@ public class ContactsController extends BaseController {
                 return profilePhotoPrivacyRules;
             case PRIVACY_RULES_TYPE_BIO:
                 return bioPrivacyRules;
+            case PRIVACY_RULES_TYPE_MUSIC:
+                return musicPrivacyRules;
             case PRIVACY_RULES_TYPE_BIRTHDAY:
                 return birthdayPrivacyRules;
             case PRIVACY_RULES_TYPE_GIFTS:
@@ -2864,6 +2875,9 @@ public class ContactsController extends BaseController {
                 break;
             case PRIVACY_RULES_TYPE_BIO:
                 bioPrivacyRules = rules;
+                break;
+            case PRIVACY_RULES_TYPE_MUSIC:
+                musicPrivacyRules = rules;
                 break;
             case PRIVACY_RULES_TYPE_BIRTHDAY:
                 birthdayPrivacyRules = rules;

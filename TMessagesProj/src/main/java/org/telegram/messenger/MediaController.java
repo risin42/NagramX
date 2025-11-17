@@ -775,9 +775,13 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                 } catch (Exception e) {
                     FileLog.e(e);
                 }
-                AndroidUtilities.recycleBitmap(paintBitmap);
+                if (paintBitmap != null) {
+                    paintBitmap.recycle();
+                }
             }
-            AndroidUtilities.recycleBitmap(b);
+            if (b != null) {
+                b.recycle();
+            }
         }
     }
 
@@ -4881,7 +4885,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                     if (duration > 700) {
                         NotificationCenter.getInstance(recordingCurrentAccount).postNotificationName(NotificationCenter.beforeAudioDidSent, recordingGuid, send == 2 ? audioToSend : null, send == 2 ? recordingAudioFileToSend.getAbsolutePath() : null);
                         if (send == 1) {
-                            SendMessagesHelper.SendMessageParams params = SendMessagesHelper.SendMessageParams.of(audioToSend, null, recordingAudioFileToSend.getAbsolutePath(), recordDialogId, recordReplyingMsg, recordReplyingTopMsg, null, null, null, null, notify, scheduleDate, once ? 0x7FFFFFFF : 0, null, null, false);
+                            SendMessagesHelper.SendMessageParams params = SendMessagesHelper.SendMessageParams.of(audioToSend, null, recordingAudioFileToSend.getAbsolutePath(), recordDialogId, recordReplyingMsg, recordReplyingTopMsg, null, null, null, null, notify, scheduleDate, 0, once ? 0x7FFFFFFF : 0, null, null, false);
                             params.monoForumPeer = recordMonoForumPeerId;
                             params.suggestionParams = recordMonoForumSuggestionParams;
                             params.replyToStoryItem = recordReplyingStory;
