@@ -173,7 +173,7 @@ public class StoryPrivacySelector extends View {
             StoryPrivacyBottomSheet sheet = new StoryPrivacyBottomSheet(getContext(), storyPeriod, resourcesProvider);
             sheet.setValue(getStoryPrivacy());
             sheet.isEdit(false);
-            sheet.whenSelectedRules((privacy, a, b, sendAs, whenDone) -> {
+            sheet.whenSelectedRules((privacy, allowComments, a, b, isRtmpStream, sendAs, pricePerComment, whenDone, cancelled) -> {
                 edited = true;
                 CharSequence text = (value = privacy).toString();
                 textDrawable.setText(text);

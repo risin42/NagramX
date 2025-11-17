@@ -39,7 +39,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -55,9 +54,11 @@ import androidx.dynamicanimation.animation.FloatValueHolder;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;
-import com.google.zxing.NotFoundException;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
@@ -66,6 +67,7 @@ import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.LocaleController;
@@ -79,7 +81,6 @@ import org.telegram.messenger.camera.CameraSessionWrapper;
 import org.telegram.messenger.camera.CameraView;
 import org.telegram.messenger.camera.Size;
 import org.telegram.ui.ActionBar.ActionBar;
-import org.telegram.ui.ActionBar.ActionBarLayout;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.ActionBar.INavigationLayout;
@@ -93,6 +94,7 @@ import org.telegram.ui.Components.LinkSpanDrawable;
 import org.telegram.ui.Components.TypefaceSpan;
 import org.telegram.ui.Components.URLSpanNoUnderline;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 @TargetApi(18)
@@ -147,10 +149,9 @@ public class CameraScanActivity extends BaseFragment {
     private boolean qrLoaded = false;
 
     private QRCodeReader qrReader = null;
-    //private BarcodeDetector visionQrReader = null;
+    private BarcodeDetector visionQrReader = null;
 
     private boolean needGalleryButton;
-    private boolean any;
 
     private int currentType;
 
@@ -179,72 +180,8 @@ public class CameraScanActivity extends BaseFragment {
         default void onDismiss() {}
     }
 
-    // Official Signature
-    public static INavigationLayout[] showAsSheet(BaseFragment parentFragment, boolean gallery, int type, CameraScanActivityDelegate cameraDelegate) {
-        return showAsSheet(parentFragment, gallery, type, cameraDelegate, false);
-    }
-
-    // Add the any parameter
-    public static INavigationLayout[] showAsSheet(BaseFragment parentFragment, boolean gallery, int type, CameraScanActivityDelegate cameraDelegate, boolean any) {
-        if (parentFragment == null || parentFragment.getParentActivity() == null) {
-            return null;
-        }
-        INavigationLayout[] actionBarLayout = new INavigationLayout[]{INavigationLayout.newLayout(parentFragment.getParentActivity(), false)};
-        BottomSheet bottomSheet = new BottomSheet(parentFragment.getParentActivity(), false) {
-            CameraScanActivity fragment;
-            {
-                actionBarLayout[0].setFragmentStack(new ArrayList<>());
-                fragment = new CameraScanActivity(type) {
-                    @Override
-                    public void finishFragment() {
-                        dismiss();
-                    }
-
-                    @Override
-                    public void removeSelfFromStack() {
-                        dismiss();
-                    }
-                };
-                fragment.shownAsBottomSheet = true;
-                fragment.needGalleryButton = gallery;
-                fragment.any = any;
-                actionBarLayout[0].addFragmentToStack(fragment);
-                actionBarLayout[0].showLastFragment();
-                actionBarLayout[0].getView().setPadding(backgroundPaddingLeft, 0, backgroundPaddingLeft, 0);
-                fragment.setDelegate(cameraDelegate);
-                containerView = actionBarLayout[0].getView();
-                setApplyBottomPadding(false);
-                setApplyBottomPadding(false);
-                setOnDismissListener(dialog -> fragment.onFragmentDestroy());
-            }
-
-            @Override
-            protected boolean canDismissWithSwipe() {
-                return false;
-            }
-
-            @Override
-            public void onBackPressed() {
-                if (actionBarLayout[0] == null || actionBarLayout[0].getFragmentStack().size() <= 1) {
-                    super.onBackPressed();
-                } else {
-                    actionBarLayout[0].onBackPressed();
-                }
-            }
-
-            @Override
-            public void dismiss() {
-                super.dismiss();
-                actionBarLayout[0] = null;
-            }
-        };
-        bottomSheet.setUseLightStatusBar(false);
-        AndroidUtilities.setLightNavigationBar(bottomSheet.getWindow(), false);
-        AndroidUtilities.setNavigationBarColor(bottomSheet.getWindow(), 0xff000000, false);
-        bottomSheet.setUseLightStatusBar(false);
-        bottomSheet.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        bottomSheet.show();
-        return actionBarLayout;
+    public static BottomSheet showAsSheet(BaseFragment parentFragment, boolean gallery, int type, CameraScanActivityDelegate cameraDelegate) {
+        return showAsSheet(parentFragment.getParentActivity(), gallery, type, cameraDelegate);
     }
 
     public static BottomSheet showAsSheet(Activity parentActivity, boolean gallery, int type, CameraScanActivityDelegate cameraDelegate) {
@@ -305,16 +242,12 @@ public class CameraScanActivity extends BaseFragment {
             }
         };
         bottomSheet.setUseLightStatusBar(false);
-        AndroidUtilities.setLightNavigationBar(bottomSheet.getWindow(), false);
-        AndroidUtilities.setNavigationBarColor(bottomSheet.getWindow(), 0xff000000, false);
+        AndroidUtilities.setLightNavigationBar(bottomSheet, false);
+        AndroidUtilities.setNavigationBarColor(bottomSheet, 0xff000000, false);
         bottomSheet.setUseLightStatusBar(false);
         bottomSheet.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         bottomSheet.show();
         return bottomSheet;
-    }
-
-    public static INavigationLayout[] showAsSheet(BaseFragment parentFragment, CameraScanActivityDelegate cameraDelegate) {
-        return showAsSheet(parentFragment, true, TYPE_QR, cameraDelegate, true);
     }
 
     public CameraScanActivity(int type) {
@@ -323,7 +256,7 @@ public class CameraScanActivity extends BaseFragment {
         if (isQr()) {
             Utilities.globalQueue.postRunnable(() -> {
                 qrReader = new QRCodeReader();
-                //visionQrReader = new BarcodeDetector.Builder(ApplicationLoader.applicationContext).setBarcodeFormats(Barcode.QR_CODE).build();
+                visionQrReader = new BarcodeDetector.Builder(ApplicationLoader.applicationContext).setBarcodeFormats(Barcode.QR_CODE).build();
             });
         }
 
@@ -347,9 +280,9 @@ public class CameraScanActivity extends BaseFragment {
         if (getParentActivity() != null) {
             getParentActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
-        /*if (visionQrReader != null) {
+        if (visionQrReader != null) {
             visionQrReader.release();
-        }*/
+        }
     }
 
     @Override
@@ -476,9 +409,9 @@ public class CameraScanActivity extends BaseFragment {
                 if (isQr() && child == cameraView) {
                     RectF bounds = getBounds();
                     int sizex = (int) (child.getWidth() * bounds.width()),
-                            sizey = (int) (child.getHeight() * bounds.height()),
-                            cx = (int) (child.getWidth() * bounds.centerX()),
-                            cy = (int) (child.getHeight() * bounds.centerY());
+                        sizey = (int) (child.getHeight() * bounds.height()),
+                        cx = (int) (child.getWidth() * bounds.centerX()),
+                        cy = (int) (child.getHeight() * bounds.centerY());
 
 //                    PointF[] points = getPoints();
 //                    path.rewind();
@@ -494,7 +427,7 @@ public class CameraScanActivity extends BaseFragment {
                     sizex *= (.5f + qrAppearingValue * .5f);
                     sizey *= (.5f + qrAppearingValue * .5f);
                     int x = cx - sizex / 2,
-                            y = cy - sizey / 2;
+                        y = cy - sizey / 2;
 
                     paint.setAlpha((int) (255 * (1f - (1f - backShadowAlpha) * Math.min(1, qrAppearingValue))));
                     canvas.drawRect(0, 0, child.getMeasuredWidth(), y, paint);
@@ -848,13 +781,20 @@ public class CameraScanActivity extends BaseFragment {
 
     private ValueAnimator recognizedAnimator;
     private float recognizedT = 0;
+    private float newRecognizedT = 0;
     private SpringAnimation useRecognizedBoundsAnimator;
     private float useRecognizedBounds = 0;
     private void updateRecognized() {
-        if (recognizedAnimator != null) {
-            recognizedAnimator.cancel();
+        float wasNewRecognizedT = recognizedT;
+        newRecognizedT = recognized ? 1f : 0f;
+        if (wasNewRecognizedT != newRecognizedT) {
+            if (recognizedAnimator != null) {
+                recognizedAnimator.cancel();
+            }
+        } else {
+            return;
         }
-        float newRecognizedT = recognized ? 1f : 0f;
+
         recognizedAnimator = ValueAnimator.ofFloat(recognizedT, newRecognizedT);
         recognizedAnimator.addUpdateListener(a -> {
             recognizedT = (float) a.getAnimatedValue();
@@ -862,7 +802,6 @@ public class CameraScanActivity extends BaseFragment {
             if (currentType == TYPE_QR_WEB_BOT) {
                 descriptionText.setAlpha(1f - recognizedT);
             }
-            if (galleryButton != null) galleryButton.setAlpha(1f - recognizedT);
             flashButton.setAlpha(1f - recognizedT);
             backShadowAlpha = .5f + recognizedT * .25f;
             fragmentView.invalidate();
@@ -887,7 +826,7 @@ public class CameraScanActivity extends BaseFragment {
     }
 
     private void initCameraView() {
-        if (fragmentView == null) {
+        if (fragmentView == null || !CameraView.isCameraAllowed()) {
             return;
         }
         CameraController.getInstance().initCamera(null);
@@ -1011,13 +950,13 @@ public class CameraScanActivity extends BaseFragment {
             normalBounds = new RectF();
         }
         int width = Math.max(AndroidUtilities.displaySize.x, fragmentView.getWidth()),
-                height = Math.max(AndroidUtilities.displaySize.y, fragmentView.getHeight()),
-                side = (int) (Math.min(width, height) / 1.5f);
+            height = Math.max(AndroidUtilities.displaySize.y, fragmentView.getHeight()),
+            side = (int) (Math.min(width, height) / 1.5f);
         normalBounds.set(
-                (width - side) / 2f / (float) width,
-                (height - side) / 2f / (float) height,
-                (width + side) / 2f / (float) width,
-                (height + side) / 2f / (float) height
+            (width - side) / 2f / (float) width,
+            (height - side) / 2f / (float) height,
+            (width + side) / 2f / (float) width,
+            (height + side) / 2f / (float) height
         );
     }
 
@@ -1179,9 +1118,9 @@ public class CameraScanActivity extends BaseFragment {
                 }
 
                 if (( // finish because...
-                        (recognizeIndex == 0 && res != null && res.bounds == null && !qrLoading) || // first recognition doesn't have bounds
-                                (SystemClock.elapsedRealtime() - recognizedStart > 1000 && !qrLoading) // got more than 1 second and nothing is loading
-                ) && recognizedText != null) {
+                      (recognizeIndex == 0 && res != null && res.bounds == null && !qrLoading) || // first recognition doesn't have bounds
+                      (SystemClock.elapsedRealtime() - recognizedStart > 1000 && !qrLoading) // got more than 1 second and nothing is loading
+                    ) && recognizedText != null) {
                     if (cameraView != null && cameraView.getCameraSession() != null && currentType != TYPE_QR_WEB_BOT) {
                         CameraController.getInstance().stopPreview(cameraView.getCameraSession());
                     }
@@ -1242,10 +1181,10 @@ public class CameraScanActivity extends BaseFragment {
         matrixGrayscale.setSaturation(0);
         ColorMatrix matrixInvert = new ColorMatrix();
         matrixInvert.set(new float[] {
-                -1.0f, 0.0f, 0.0f, 0.0f, 255.0f,
-                0.0f, -1.0f, 0.0f, 0.0f, 255.0f,
-                0.0f, 0.0f, -1.0f, 0.0f, 255.0f,
-                0.0f, 0.0f, 0.0f, 1.0f, 0.0f
+            -1.0f, 0.0f, 0.0f, 0.0f, 255.0f,
+            0.0f, -1.0f, 0.0f, 0.0f, 255.0f,
+            0.0f, 0.0f, -1.0f, 0.0f, 255.0f,
+            0.0f, 0.0f, 0.0f, 1.0f, 0.0f
         });
         matrixInvert.preConcat(matrixGrayscale);
         paint.setColorFilter(new ColorMatrixColorFilter(matrixInvert));
@@ -1268,10 +1207,10 @@ public class CameraScanActivity extends BaseFragment {
     }
     public static ColorMatrix createThresholdMatrix(int threshold) {
         ColorMatrix matrix = new ColorMatrix(new float[] {
-                85.f, 85.f, 85.f, 0.f, -255.f * threshold,
-                85.f, 85.f, 85.f, 0.f, -255.f * threshold,
-                85.f, 85.f, 85.f, 0.f, -255.f * threshold,
-                0f, 0f, 0f, 1f, 0f
+            85.f, 85.f, 85.f, 0.f, -255.f * threshold,
+            85.f, 85.f, 85.f, 0.f, -255.f * threshold,
+            85.f, 85.f, 85.f, 0.f, -255.f * threshold,
+            0f, 0f, 0f, 1f, 0f
         });
         return matrix;
     }
@@ -1279,14 +1218,6 @@ public class CameraScanActivity extends BaseFragment {
     private class QrResult {
         String text;
         RectF bounds;
-
-        public QrResult(String text, RectF bounds) {
-            this.text = text;
-            this.bounds = bounds;
-        }
-
-        public QrResult() {}
-
         PointF[] cornerPoints;
     }
 
@@ -1307,7 +1238,7 @@ public class CameraScanActivity extends BaseFragment {
             RectF bounds = new RectF();
             PointF[] cornerPoints = null;
             int width = 1, height = 1;
-            /*if (visionQrReader != null && visionQrReader.isOperational()) {
+            if (visionQrReader != null && visionQrReader.isOperational()) {
                 Frame frame;
                 if (bitmap != null) {
                     frame = new Frame.Builder().setBitmap(bitmap).build();
@@ -1397,10 +1328,7 @@ public class CameraScanActivity extends BaseFragment {
                 } else {
                     text = null;
                 }
-            } else */
-            // NekoX: Remove google parts visionQrReader
-
-            if (qrReader != null) {
+            } else if (qrReader != null) {
                 LuminanceSource source;
                 if (bitmap != null) {
                     int[] intArray = new int[bitmap.getWidth() * bitmap.getHeight()];
@@ -1424,9 +1352,9 @@ public class CameraScanActivity extends BaseFragment {
                     bounds = null;
                 } else {
                     float minX = Float.MAX_VALUE,
-                            maxX = Float.MIN_VALUE,
-                            minY = Float.MAX_VALUE,
-                            maxY = Float.MIN_VALUE;
+                          maxX = Float.MIN_VALUE,
+                          minY = Float.MAX_VALUE,
+                          maxY = Float.MIN_VALUE;
                     for (ResultPoint point : result.getResultPoints()) {
                         minX = Math.min(minX, point.getX());
                         maxX = Math.max(maxX, point.getX());
@@ -1451,7 +1379,6 @@ public class CameraScanActivity extends BaseFragment {
                 onNoQrFound();
                 return null;
             }
-            if (any) return new QrResult(text, bounds);
             if (needGalleryButton) {
                 Uri uri = Uri.parse(text);
                 String path = uri.getPath().replace("/", "");
@@ -1467,8 +1394,8 @@ public class CameraScanActivity extends BaseFragment {
                     paddingy = dp(15);
                 bounds.set(bounds.left - paddingx, bounds.top - paddingy, bounds.right + paddingx, bounds.bottom + paddingy);
                 bounds.set(
-                        bounds.left / (float) width, bounds.top / (float) height,
-                        bounds.right / (float) width, bounds.bottom / (float) height
+                    bounds.left / (float) width, bounds.top / (float) height,
+                    bounds.right / (float) width, bounds.bottom / (float) height
                 );
             }
             qrResult.cornerPoints = cornerPoints;

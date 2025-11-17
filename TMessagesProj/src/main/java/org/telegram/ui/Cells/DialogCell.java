@@ -735,6 +735,9 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         if (isForumCell()) {
             return false;
         }
+        if (storyParams.drawnLive) {
+            return false;
+        }
         if (user == null || user.self) {
             return false;
         }
@@ -755,7 +758,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     }
 
     private void checkTtl() {
-        showTtl = ttlPeriod > 0 && !hasCall && !isOnline() && !(checkBox != null && checkBox.isChecked()) && AndroidUtil.getOnlineColor(user, resourcesProvider) == 0;
+        showTtl = ttlPeriod > 0 && !hasCall && !isOnline() && !(checkBox != null && checkBox.isChecked()) && !storyParams.drawnLive  && AndroidUtil.getOnlineColor(user, resourcesProvider) == 0;
         ttlProgress = showTtl ? 1.0f : 0.0f;
     }
 
@@ -4531,6 +4534,9 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                     storyParams.forceState = StoriesUtilities.STATE_HAS_UNREAD;
                 }
                 StoriesUtilities.drawAvatarWithStory(currentDialogId, canvas, avatarImage, storyParams);
+                if (storyParams.drawnLive) {
+                    checkTtl();
+                }
                 storyParams.forceState = s;
             }
         }
@@ -4763,7 +4769,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             return false;
         }
         if (isDialogCell && currentDialogFolderId == 0 && !stars) {
-            showTtl = ttlPeriod > 0 && !isOnline() && !hasCall && AndroidUtil.getOnlineColor(user, resourcesProvider) == 0;
+            showTtl = ttlPeriod > 0 && !isOnline() && !hasCall && !storyParams.drawnLive && AndroidUtil.getOnlineColor(user, resourcesProvider) == 0;
             if (rightFragmentOpenedProgress != 1f && (showTtl || ttlProgress > 0)) {
                 if (timerDrawable == null || (timerDrawable.getTime() != ttlPeriod && ttlPeriod > 0)) {
                     timerDrawable = TimerDrawable.getTtlIconForDialogs(ttlPeriod);
