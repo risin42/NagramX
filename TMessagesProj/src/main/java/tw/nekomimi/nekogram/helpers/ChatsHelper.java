@@ -11,11 +11,6 @@ package tw.nekomimi.nekogram.helpers;
 
 import static org.telegram.messenger.LocaleController.getString;
 
-import android.annotation.SuppressLint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
@@ -140,7 +135,7 @@ public class ChatsHelper extends BaseController {
         }
     }
 
-    /*public void makeReplyButtonLongClick(ChatActivity chatActivity, boolean noForwards, Theme.ResourcesProvider resourcesProvider) {
+    public void makeReplyButtonLongClick(ChatActivity chatActivity, boolean noForwards, Theme.ResourcesProvider resourcesProvider) {
         ArrayList<String> configStringKeys = new ArrayList<>();
         ArrayList<Integer> configValues = new ArrayList<>();
 
@@ -158,20 +153,10 @@ public class ChatsHelper extends BaseController {
 
         PopupHelper.show(configStringKeys, getString(R.string.LeftBottomButtonAction), configValues.indexOf(NaConfig.INSTANCE.getLeftBottomButton().Int()), chatActivity.getContext(), i -> {
             NaConfig.INSTANCE.getLeftBottomButton().setConfigInt(configValues.get(i));
-
-            if (chatActivity.replyButton == null) return;
-
-            if (chatActivity.bottomMessagesActionContainer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                LaunchActivity.makeRipple(chatActivity.bottomMessagesActionContainer.getLeft(), chatActivity.bottomMessagesActionContainer.getBottom(), 2);
-            }
-
-            chatActivity.replyButton.setText(getLeftButtonText(noForwards));
-
-            @SuppressLint("UseCompatLoadingForDrawables") Drawable image = chatActivity.getContext().getResources().getDrawable(getLeftButtonDrawable(noForwards)).mutate();
-            image.setColorFilter(new PorterDuffColorFilter(chatActivity.getThemedColor(Theme.key_actionBarActionModeDefaultIcon), PorterDuff.Mode.MULTIPLY));
-            chatActivity.replyButton.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+            chatActivity.updateLeftBottomButton(noForwards);
+            chatActivity.showLeftBottomButtonRipple();
         }, resourcesProvider);
-    }*/
+    }
 
     private ArrayList<MessageObject> getSelectedMessages(ChatActivity chatActivity) {
         ArrayList<MessageObject> fmessages = new ArrayList<>();

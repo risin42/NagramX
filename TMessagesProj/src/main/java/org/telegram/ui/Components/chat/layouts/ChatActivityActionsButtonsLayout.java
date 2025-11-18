@@ -78,7 +78,11 @@ public class ChatActivityActionsButtonsLayout extends LinearLayout {
         return forwardButton.button;
     }
 
-    private void addTextView(ButtonHolder button, String text, @DrawableRes int iconRes, boolean iconLeft) {
+    public View getReplyButton() {
+        return replyButton.button;
+    }
+
+    /*private void addTextView(ButtonHolder button, String text, @DrawableRes int iconRes, boolean iconLeft) {
         TextView forwardButton = new TextView(getContext());
         forwardButton.setText(text);
         forwardButton.setGravity(Gravity.CENTER_VERTICAL);
@@ -93,9 +97,35 @@ public class ChatActivityActionsButtonsLayout extends LinearLayout {
 
         button.textView = forwardButton;
         button.button.addView(forwardButton, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
-        /*if (getDialogId() == UserObject.VERIFY) {
+        if (getDialogId() == UserObject.VERIFY) {
             forwardButton.setVisibility(View.GONE);
-        }*/
+        }
+    }*/
+
+    private void addTextView(ButtonHolder button, String text, @DrawableRes int iconRes, boolean iconLeft) {
+        TextView textView = new TextView(getContext());
+        textView.setGravity(Gravity.CENTER_VERTICAL);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
+        textView.setPadding(AndroidUtilities.dp(21), 0, AndroidUtilities.dp(21), 0);
+        textView.setCompoundDrawablePadding(AndroidUtilities.dp(6));
+        textView.setTypeface(AndroidUtilities.bold());
+        button.textView = textView;
+        button.button.addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+        setButtonTextAndIcon(button, text, iconRes, iconLeft);
+    }
+
+    private void setButtonTextAndIcon(ButtonHolder holder, String text, @DrawableRes int iconRes, boolean iconLeft) {
+        if (holder == null || holder.textView == null) {
+            return;
+        }
+        holder.textView.setText(text);
+        holder.textView.setTextColor(Theme.getColor(Theme.key_glass_defaultText, resourcesProvider));
+        Drawable image = null;
+        if (iconRes != 0) {
+            image = getContext().getResources().getDrawable(iconRes).mutate();
+            image.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_glass_defaultIcon, resourcesProvider), PorterDuff.Mode.MULTIPLY));
+        }
+        holder.textView.setCompoundDrawablesWithIntrinsicBounds(iconLeft ? image : null, null, iconLeft ? null : image, null);
     }
 
 
@@ -173,4 +203,21 @@ public class ChatActivityActionsButtonsLayout extends LinearLayout {
             checkHolderPositionsAndVisibility(this);
         }
     }
+
+    public void setReplyButtonOnLongClickListener(View.OnLongClickListener listener) {
+        replyButton.button.setOnLongClickListener(listener);
+    }
+
+    public void setForwardButtonOnLongClickListener(View.OnLongClickListener listener) {
+        forwardButton.button.setOnLongClickListener(listener);
+    }
+
+    public void setReplyButtonTextAndIcon(String text, @DrawableRes int iconRes, boolean iconLeft) {
+        setButtonTextAndIcon(replyButton, text, iconRes, iconLeft);
+    }
+
+    public void setForwardButtonTextAndIcon(String text, @DrawableRes int iconRes, boolean iconLeft) {
+        setButtonTextAndIcon(forwardButton, text, iconRes, iconLeft);
+    }
+
 }
