@@ -36,8 +36,8 @@ import xyz.nextalone.nagram.NaConfig;
 
 public class AndroidUtil {
 
-    public static int getNavBarColor(int color) {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+    public static int getNavBarColor(int color, boolean animated) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R || animated) {
             return color;
         }
         BaseFragment fragment = LaunchActivity.getLastFragment();

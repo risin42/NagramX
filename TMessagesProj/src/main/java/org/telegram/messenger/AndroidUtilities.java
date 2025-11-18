@@ -5425,7 +5425,7 @@ public class AndroidUtilities {
     }
 
     private static void setNavigationBarColor(Window window, int colors, boolean animated, IntColorCallback onUpdate) {
-        int color = getNavBarColor(colors);
+        int color = getNavBarColor(colors, animated);
         if (window == null) {
             return;
         }

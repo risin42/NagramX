@@ -1617,7 +1617,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 AndroidUtilities.setLightStatusBar(getWindow(), enable, forceLightStatusBar);
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && checkNavigationBar && (!useCurrentFragment || currentFragment == null || !currentFragment.isInPreviewMode())) {
-                int color = currentFragment != null && useCurrentFragment ? currentFragment.getNavigationBarColor() : getNavBarColor(Theme.getColor(Theme.key_windowBackgroundGray, null, true));
+                int color = currentFragment != null && useCurrentFragment ? currentFragment.getNavigationBarColor() : getNavBarColor(Theme.getColor(Theme.key_windowBackgroundGray, null, true), false);
 
                 int mode = 0; // 0 - default, 1 - light, 2 - dark
                 if (currentFragment instanceof ChatActivity) {

@@ -4764,7 +4764,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
     }
 
     private void setNavBarAlpha(float alpha) {
-        navBarColor = ColorUtils.setAlphaComponent(AndroidUtil.getNavBarColor(getThemedColor(Theme.key_windowBackgroundGray)), Math.min(255, Math.max(0, (int) (255 * alpha))));
+        navBarColor = ColorUtils.setAlphaComponent(AndroidUtil.getNavBarColor(getThemedColor(Theme.key_windowBackgroundGray), false), Math.min(255, Math.max(0, (int) (255 * alpha))));
         AndroidUtilities.setNavigationBarColor(this, navBarColor, false);
         AndroidUtilities.setLightNavigationBar(this, AndroidUtilities.computePerceivedBrightness(navBarColor) > 0.721);
         getContainer().invalidate();
