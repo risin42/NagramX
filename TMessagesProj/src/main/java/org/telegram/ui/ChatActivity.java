@@ -8245,7 +8245,7 @@ public class ChatActivity extends BaseFragment implements
         }
 
         actionsButtonsLayout = new ChatActivityActionsButtonsLayout(context, resourceProvider, blurredBackgroundColorProvider, glassBackgroundDrawableFactory);
-        actionsButtonsLayout.setForwardButtonOnClickListener(v -> openForward(false));
+        /*actionsButtonsLayout.setForwardButtonOnClickListener(v -> openForward(false));
         actionsButtonsLayout.setReplyButtonOnClickListener(v -> {
             MessageObject messageObject = null;
             for (int a = 1; a >= 0; a--) {
@@ -8263,7 +8263,30 @@ public class ChatActivity extends BaseFragment implements
             updatePinnedMessageView(true);
             updateVisibleRows();
             updateSelectedMessageReactions();
+        });*/
+        // left button action start
+        boolean noForwards = getMessagesController().isChatNoForwards(currentChat) || currentChat != null && currentChat.noforwards;
+        ChatsHelper chatsHelper = ChatsHelper.getInstance(currentAccount);
+        actionsButtonsLayout.setReplyButtonTextAndIcon(ChatsHelper.getLeftButtonText(noForwards), ChatsHelper.getLeftButtonDrawable(noForwards), true);
+        actionsButtonsLayout.setForwardButtonTextAndIcon(LocaleController.getString(R.string.Forward), R.drawable.input_forward, false);
+        actionsButtonsLayout.setReplyButtonOnClickListener(v -> {
+            chatsHelper.makeReplyButtonClick(this, noForwards);
         });
+        if (!noForwards) {
+            actionsButtonsLayout.setReplyButtonOnLongClickListener(v -> {
+                if (!NekoConfig.disableVibration.Bool()) {
+                    v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                }
+                chatsHelper.makeReplyButtonLongClick(this, noForwards, getResourceProvider());
+                return false;
+            });
+        }
+        actionsButtonsLayout.setForwardButtonOnClickListener(v -> {
+            noForwardQuote = false;
+            noForwardCaption = false;
+            openForward(false);
+        });
+        // left button action end
         bottomViewsVisibilityController.setViewVisible(MESSAGE_ACTION_CONTAINER, false, false);
         chatInputBubbleContainer.addView(actionsButtonsLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 106, Gravity.BOTTOM, 0, 0, 0, -56));
         chatActivityEnterView.setSuggestionButtonVisible(ChatObject.isMonoForum(currentChat), false);
@@ -9751,59 +9774,34 @@ public class ChatActivity extends BaseFragment implements
     }
 
     private void createBottomMessagesActionButtons() {
-        // TODO
-        /*boolean noForwards = getMessagesController().isChatNoForwards(currentChat) || currentChat != null && currentChat.noforwards;
 
-        if (!isInsideContainer) {
-            ChatsHelper chatsHelper = ChatsHelper.getInstance(currentAccount);
-            replyButton = new TextView(getContext());
-            replyButton.setText(ChatsHelper.getLeftButtonText(noForwards));
-            replyButton.setGravity(Gravity.CENTER_VERTICAL);
-            replyButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
-            replyButton.setPadding(AndroidUtilities.dp(14), 0, AndroidUtilities.dp(21), 0);
-            replyButton.setBackgroundDrawable(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarActionModeDefaultSelector), 3));
-            replyButton.setTextColor(getThemedColor(Theme.key_actionBarActionModeDefaultIcon));
-            replyButton.setCompoundDrawablePadding(AndroidUtilities.dp(7));
-            replyButton.setTypeface(AndroidUtilities.bold());
-            Drawable image = getContext().getResources().getDrawable(ChatsHelper.getLeftButtonDrawable(noForwards)).mutate();
-            image.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_actionBarActionModeDefaultIcon), PorterDuff.Mode.MULTIPLY));
-            replyButton.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-            replyButton.setOnClickListener(v -> {
-                chatsHelper.makeReplyButtonClick(this, noForwards);
-            });
-            bottomMessagesActionContainer.addView(replyButton, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.LEFT | Gravity.TOP));
-
-            if (!noForwards && replyButton != null) {
-                replyButton.setOnLongClickListener(v -> {
-                    if (!NekoConfig.disableVibration.Bool()) v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                    chatsHelper.makeReplyButtonLongClick(this, noForwards, getResourceProvider());
-                    return false;
-                });
-            }
-        }
-
-        forwardButton = new TextView(getContext());
-        forwardButton.setText(LocaleController.getString(R.string.Forward));
-        forwardButton.setGravity(Gravity.CENTER_VERTICAL);
-        forwardButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
-        forwardButton.setPadding(AndroidUtilities.dp(21), 0, AndroidUtilities.dp(21), 0);
-        forwardButton.setCompoundDrawablePadding(AndroidUtilities.dp(6));
-        forwardButton.setBackgroundDrawable(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarActionModeDefaultSelector), 3));
-        forwardButton.setTextColor(getThemedColor(Theme.key_actionBarActionModeDefaultIcon));
-        forwardButton.setTypeface(AndroidUtilities.bold());
-        Drawable image = getContext().getResources().getDrawable(R.drawable.input_forward).mutate();
-        image.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_actionBarActionModeDefaultIcon), PorterDuff.Mode.MULTIPLY));
-        forwardButton.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-        forwardButton.setOnClickListener(v -> {
-            noForwardQuote = false;
-            noForwardCaption = false;
-            openForward(false);
-        });
-        bottomMessagesActionContainer.addView(forwardButton, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.RIGHT | Gravity.TOP));
-        if (getDialogId() == UserObject.VERIFY) {
-            forwardButton.setVisibility(View.GONE);
-        }*/
     }
+    // left button action start
+    public void updateLeftBottomButton(boolean noForwards) {
+        if (actionsButtonsLayout != null) {
+            actionsButtonsLayout.setReplyButtonTextAndIcon(
+                ChatsHelper.getLeftButtonText(noForwards),
+                ChatsHelper.getLeftButtonDrawable(noForwards),
+                true
+            );
+        }
+    }
+
+    public void showLeftBottomButtonRipple() {
+        if (actionsButtonsLayout == null || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.TIRAMISU) {
+            return;
+        }
+        View replyButtonView = actionsButtonsLayout.getReplyButton();
+        if (replyButtonView == null) {
+            return;
+        }
+        int[] location = new int[2];
+        replyButtonView.getLocationOnScreen(location);
+        float x = location[0] + replyButtonView.getWidth() / 2f;
+        float y = location[1] + replyButtonView.getHeight() / 2f;
+        LaunchActivity.makeRipple(x, y, 2f);
+    }
+    // left button action end
 
     private void checkInstantSearch() {
         final long searchFromUserId = getArguments().getInt("search_from_user_id", 0);
