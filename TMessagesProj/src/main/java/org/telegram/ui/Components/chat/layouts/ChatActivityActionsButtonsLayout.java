@@ -212,6 +212,11 @@ public class ChatActivityActionsButtonsLayout extends LinearLayout {
         forwardButton.button.setOnLongClickListener(listener);
     }
 
+    public void setReplyButtonTextAndIcon(String text, @DrawableRes int iconRes) {
+        boolean iconLeft = iconRes == R.drawable.msg_saved || iconRes == R.drawable.msg_share;
+        setButtonTextAndIcon(replyButton, text, iconRes, iconLeft);
+    }
+
     public void setReplyButtonTextAndIcon(String text, @DrawableRes int iconRes, boolean iconLeft) {
         setButtonTextAndIcon(replyButton, text, iconRes, iconLeft);
     }

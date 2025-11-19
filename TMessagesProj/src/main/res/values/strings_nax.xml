@@ -271,4 +271,5 @@
     <string name="UnblockAllChannelsWarn">Are you sure you want to unblock **all channels**?</string>
     <string name="BlockChannelsUnavailable">Some channels are temporarily unavailable.</string>
     <string name="FixLinkPreview">Fix Link Preview</string>
+    <string name="NoQuoteForwardShort">NoQuote</string>
 </resources>
