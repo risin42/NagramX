@@ -74,8 +74,8 @@ public class ChatsHelper extends BaseController {
         return switch (NaConfig.INSTANCE.getLeftBottomButton().Int()) {
             case LEFT_BUTTON_REPLY -> getString(R.string.Reply);
             case LEFT_BUTTON_SAVE_MESSAGE -> getString(R.string.AddToSavedMessages);
-            case LEFT_BUTTON_DIRECT_SHARE -> getString(R.string.DirectShare);
-            default -> getString(R.string.NoQuoteForward);
+            case LEFT_BUTTON_DIRECT_SHARE -> getString(R.string.ShareMessages);
+            default -> getString(R.string.NoQuoteForwardShort);
         };
     }
 

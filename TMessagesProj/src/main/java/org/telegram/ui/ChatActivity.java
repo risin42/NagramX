@@ -8287,8 +8287,8 @@ public class ChatActivity extends BaseFragment implements
         // left button action start
         boolean noForwards = getMessagesController().isChatNoForwards(currentChat) || currentChat != null && currentChat.noforwards;
         ChatsHelper chatsHelper = ChatsHelper.getInstance(currentAccount);
-        actionsButtonsLayout.setReplyButtonTextAndIcon(ChatsHelper.getLeftButtonText(noForwards), ChatsHelper.getLeftButtonDrawable(noForwards), true);
-        actionsButtonsLayout.setForwardButtonTextAndIcon(LocaleController.getString(R.string.Forward), R.drawable.input_forward, false);
+        actionsButtonsLayout.setReplyButtonTextAndIcon(ChatsHelper.getLeftButtonText(noForwards), ChatsHelper.getLeftButtonDrawable(noForwards));
+        actionsButtonsLayout.setForwardButtonTextAndIcon(LocaleController.getString(R.string.Forward), R.drawable.input_forward, true);
         actionsButtonsLayout.setReplyButtonOnClickListener(v -> {
             chatsHelper.makeReplyButtonClick(this, noForwards);
         });
@@ -9801,8 +9801,7 @@ public class ChatActivity extends BaseFragment implements
         if (actionsButtonsLayout != null) {
             actionsButtonsLayout.setReplyButtonTextAndIcon(
                 ChatsHelper.getLeftButtonText(noForwards),
-                ChatsHelper.getLeftButtonDrawable(noForwards),
-                true
+                ChatsHelper.getLeftButtonDrawable(noForwards)
             );
         }
     }
