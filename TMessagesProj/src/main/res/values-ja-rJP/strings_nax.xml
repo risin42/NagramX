@@ -261,5 +261,6 @@
     <string name="BlockedChannelsEmpty">ブロックされたチャンネルはまだありません</string>
     <string name="UnblockAllChannelsWarn">**すべてのチャンネル**のブロックを解除してもよろしいですか？</string>
     <string name="BlockChannelsUnavailable">一部のチャンネルは一時的に表示できません。</string>
-    <string name="FixLinkPreview">リンクプレビューを修正</string>
+    <string name="FixLinkPreview">リンクプレビューを改善</string>
+    <string name="NoQuoteForwardShort">引用なし</string>
 </resources>
