@@ -9460,11 +9460,12 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                     messageEditText.setAlpha(0f);
 
                     if (audioVideoSendButton != null) {
-                        if (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)
-                        audioVideoSendButton.setState(isInVideoMode() ? ChatActivityEnterViewAnimatedIconView.State.VIDEO : ChatActivityEnterViewAnimatedIconView.State.VOICE, animated);
-                        audioVideoSendButton.setAlpha(1f);
-                        audioVideoSendButton.setScaleX(1f);
-                        audioVideoSendButton.setScaleY(1f);
+                        if (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories) {
+                            audioVideoSendButton.setState(isInVideoMode() ? ChatActivityEnterViewAnimatedIconView.State.VIDEO : ChatActivityEnterViewAnimatedIconView.State.VOICE, animated);
+                            audioVideoSendButton.setAlpha(1f);
+                            audioVideoSendButton.setScaleX(1f);
+                            audioVideoSendButton.setScaleY(1f);
+                        }
                     }
                     if (botCommandsMenuButton != null) {
                         botCommandsMenuButton.setAlpha(0f);
