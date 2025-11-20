@@ -33612,6 +33612,18 @@ public class ChatActivity extends BaseFragment implements
                         locFile = f;
                     }
                 }
+                String fileName = "";
+                var media = MessageObject.getMedia(selectedObject.messageOwner);
+                if (media != null) {
+                    var document = media.document;
+                    if (document != null) {
+                        for (var attribute : document.attributes) {
+                            if (attribute instanceof TLRPC.TL_documentAttributeFilename) {
+                                fileName = attribute.file_name;
+                            }
+                        }
+                    }
+                }
                 if (locFile == null) {
                     File f = getFileLoader().getPathToMessage(selectedObject.messageOwner);
                     if (f.exists()) {
@@ -33666,7 +33678,7 @@ public class ChatActivity extends BaseFragment implements
                                 R.drawable.menu_secret, getString(R.string.Import),
                                 false, () -> {}
                         );
-                    } else if (locFile.getName().toLowerCase().endsWith(".nekox-stickers.json")) {
+                    } else if (locFile.getName().toLowerCase().endsWith(".nekox-stickers.json") || fileName.endsWith(".nekox-stickers.json")) {
                         File finalLocFile = locFile;
                         AlertUtil.showConfirm(getParentActivity(),
                                 getString(R.string.ImportStickersList),
@@ -33675,7 +33687,7 @@ public class ChatActivity extends BaseFragment implements
                                     presentFragment(new StickersActivity(finalLocFile));
                                 }
                         );
-                    } else if (locFile.getName().toLowerCase().endsWith(".nekox-settings.json")) {
+                    } else if (locFile.getName().toLowerCase().endsWith(".nekox-settings.json") || fileName.endsWith(".nekox-settings.json")) {
                         File finalLocFile = locFile;
                         NekoSettingsActivity.importSettings(getParentActivity(), finalLocFile);
                     } else if (getMessageType(selectedObject) == 100) {
