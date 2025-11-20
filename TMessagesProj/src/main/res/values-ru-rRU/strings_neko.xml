@@ -16,7 +16,7 @@
     <string name="FirstLast">По имени</string>
     <string name="LastFirst">По фамилии</string>
     <string name="TypefaceUseDefault">Использовать системный шрифт</string>
-    <string name="NoQuoteForward">Переслать без отправителя</string>
+    <string name="NoQuoteForward">Переслать без автора</string>
     <string name="Repeat">Повторить</string>
     <string name="AddToSavedMessages">Сохранить</string>
     <string name="CreateMention">Упомянуть</string>

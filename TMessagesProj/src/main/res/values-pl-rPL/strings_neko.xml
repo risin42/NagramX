@@ -16,7 +16,7 @@
     <string name="FirstLast">Pierwszy ostatni</string>
     <string name="LastFirst">Ostatni jako pierwszy</string>
     <string name="TypefaceUseDefault">Użyj czcionki systemowej</string>
-    <string name="NoQuoteForward">Brak wyceny do przodu</string>
+    <string name="NoQuoteForward">Przekaż bez śledzenia</string>
     <string name="Repeat">Ponownie opublikować</string>
     <string name="AddToSavedMessages">Zapisz</string>
     <string name="CreateMention">Utwórz wzmiankę</string>

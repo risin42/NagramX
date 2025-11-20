@@ -262,4 +262,5 @@
     <string name="UnblockAllChannelsWarn">Czy na pewno chcesz odblokować **wszystkie kanały**?</string>
     <string name="BlockChannelsUnavailable">Niektóre kanały są tymczasowo niedostępne.</string>
     <string name="FixLinkPreview">Napraw podgląd łącza</string>
+    <string name="NoQuoteForwardShort">Przekaż bez śledzenia</string>
 </resources>
