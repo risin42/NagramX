@@ -47076,6 +47076,7 @@ public class ChatActivity extends BaseFragment implements
     private boolean onSideControlButtonOnLongClick(int buttonId, View view) {
         final boolean isMentionButton = buttonId == ChatActivitySideControlsButtonsLayout.BUTTON_MENTION;
         final boolean isReactionButton = buttonId == ChatActivitySideControlsButtonsLayout.BUTTON_REACTIONS;
+        final boolean isPageDownButton = buttonId == ChatActivitySideControlsButtonsLayout.BUTTON_PAGE_DOWN;
 
         if (isMentionButton || isReactionButton) {
             final Runnable onRead;
@@ -47131,6 +47132,16 @@ public class ChatActivity extends BaseFragment implements
                 view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             } catch (Exception ignored) {}
             return true;
+        } else if (isPageDownButton) {
+            if (NekoConfig.rememberAllBackMessages.Bool()) {
+                returnToMessageId = 0;
+                returnToMessageIdsStack.clear();
+                onPageDownClicked();
+                try {
+                    if (!NekoConfig.disableVibration.Bool()) view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                } catch (Exception ignored) {}
+                return true;
+            }
         }
 
         return false;
