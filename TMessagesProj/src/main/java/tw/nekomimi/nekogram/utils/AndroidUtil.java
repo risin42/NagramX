@@ -4,7 +4,9 @@ import static org.telegram.messenger.LocaleController.getString;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Build;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -188,5 +190,38 @@ public class AndroidUtil {
         BuildVars.LOGS_ENABLED = BuildVars.DEBUG_VERSION = !BuildVars.LOGS_ENABLED;
         SharedPreferences sharedPreferences = ApplicationLoader.applicationContext.getSharedPreferences("systemConfig", Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean("logsEnabled", BuildVars.LOGS_ENABLED).apply();
+    }
+
+    /*<!-- Controls the navigation bar interaction mode:
+         0: 3 button mode (back, home, overview buttons)
+         1: 2 button mode (back, home buttons + swipe up for overview)
+         2: gestures only for back, home and overview -->
+     */
+    public static boolean isGestureNavigation(Context context) {
+        if (context == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            return false;
+        }
+        try {
+            int mode = Settings.Secure.getInt(context.getContentResolver(), "navigation_mode", 0);
+            return mode == 2;
+        } catch (Throwable ignore) {
+            try {
+                return isEdgeToEdgeEnabled(context) == 2;
+            } catch (Throwable ignored) {
+            }
+            return false;
+        }
+    }
+
+    public static int isEdgeToEdgeEnabled(Context context) {
+        if (context == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            return 0;
+        }
+        Resources resources = context.getResources();
+        int resourceId = resources.getIdentifier("config_navBarInteractionMode", "integer", "android");
+        if (resourceId > 0) {
+            return resources.getInteger(resourceId);
+        }
+        return 0;
     }
 }
