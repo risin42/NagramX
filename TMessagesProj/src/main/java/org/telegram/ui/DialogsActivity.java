@@ -3416,6 +3416,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
                 actionBarTitleNax = title;
                 actionBar.setTitle(title, statusDrawable);
+                if (NaConfig.INSTANCE.getCustomTitleUserName().Bool()) {
+                    actionBar.setTitleScrollNonFitText(true);
+                }
                 actionBar.setOnLongClickListener(v -> {
                     if (NekoConfig.hideAllTab.Bool() && filterTabsView != null && filterTabsView.getCurrentTabId() != Integer.MAX_VALUE) {
                         filterTabsView.toggleAllTabs(true);
