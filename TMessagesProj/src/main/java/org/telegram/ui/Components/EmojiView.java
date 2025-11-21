@@ -2604,7 +2604,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                 public void onPageSelected(int position) {
                     saveNewPage();
                     showBackspaceButton(position == 0, true);
-                    showStickerSettingsButton(position == 2 && shouldDrawBackground, true);
+                    showStickerSettingsButton(position == 2, true);
                     if (delegate.isSearchOpened()) {
                         if (position == 0) {
                             if (emojiSearchField != null) {
@@ -5736,7 +5736,7 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
             }
         } else if (currentPage == 1) {
             showBackspaceButton(false, false);
-            showStickerSettingsButton(shouldDrawBackground, false);
+            showStickerSettingsButton(true, false);
             if (pager.getCurrentItem() != 2) {
                 pager.setCurrentItem(2, false);
             }
