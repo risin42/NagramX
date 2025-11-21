@@ -906,6 +906,9 @@ public class MediaDataController extends BaseController {
         if (type == TYPE_PREMIUM_STICKERS) {
             return new ArrayList<>(recentStickers[type]);
         }
+        if (type == TYPE_FAVE && NekoConfig.unlimitedFavedStickers.Bool()) {
+            return new ArrayList<>(recentStickers[type]);
+        }
         ArrayList<TLRPC.Document> result = new ArrayList<>(arrayList.subList(0, Math.min(arrayList.size(), NekoConfig.maxRecentStickerCount.Int())));
         if (firstEmpty && !result.isEmpty() && !StickersAlert.DISABLE_STICKER_EDITOR && !NekoConfig.minimizedStickerCreator.Bool()) {
             result.add(0, new TLRPC.TL_documentEmpty());
@@ -1884,11 +1887,6 @@ public class MediaDataController extends BaseController {
     }
 
     public void loadRecents(int type, boolean gif, boolean cache, boolean force) {
-        if (type == TYPE_FAVE && !cache) {
-            if (NekoConfig.unlimitedFavedStickers.Bool() || recentStickers[TYPE_FAVE].size() > getMessagesController().maxFaveStickersCount) {
-                return;
-            }
-        }
         if (gif) {
             if (loadingRecentGifs) {
                 return;
@@ -2060,6 +2058,7 @@ public class MediaDataController extends BaseController {
     }
 
     protected void processLoadedRecentDocuments(int type, ArrayList<TLRPC.Document> documents, boolean gif, int date, boolean replace) {
+        final ArrayList<TLRPC.Document>[] mergedDocumentsHolder = new ArrayList[1];
         if (documents != null) {
             getMessagesStorage().getStorageQueue().postRunnable(() -> {
                 try {
@@ -2076,10 +2075,75 @@ public class MediaDataController extends BaseController {
                             maxCount = NekoConfig.maxRecentStickerCount.Int()/*getMessagesController().maxRecentStickersCount*/;
                         }
                     }
+                    // For unlimited faved stickers, merge with existing database entries
+                    ArrayList<TLRPC.Document> finalDocuments = documents;
+                    if (type == TYPE_FAVE && NekoConfig.unlimitedFavedStickers.Bool() && replace) {
+                        HashSet<Long> serverIds = new HashSet<>();
+                        for (TLRPC.Document doc : documents) {
+                            serverIds.add(doc.id);
+                        }
+                        SQLiteCursor cursor = database.queryFinalized("SELECT document FROM web_recent_v3 WHERE type = 5 ORDER BY date DESC");
+                        ArrayList<TLRPC.Document> localStickers = new ArrayList<>();
+                        while (cursor.next()) {
+                            if (!cursor.isNull(0)) {
+                                NativeByteBuffer data = cursor.byteBufferValue(0);
+                                if (data != null) {
+                                    TLRPC.Document document = TLRPC.Document.TLdeserialize(data, data.readInt32(false), false);
+                                    if (document != null && !serverIds.contains(document.id)) {
+                                        localStickers.add(document);
+                                    }
+                                    data.reuse();
+                                }
+                            }
+                        }
+                        cursor.dispose();
+                        if (!localStickers.isEmpty()) {
+                            finalDocuments = new ArrayList<>(documents);
+                            finalDocuments.addAll(localStickers);
+                        }
+                    }
+                    mergedDocumentsHolder[0] = finalDocuments;
+
+                    if (date == 0) {
+                        AndroidUtilities.runOnUIThread(() -> {
+                            SharedPreferences.Editor editor = MessagesController.getEmojiSettings(currentAccount).edit();
+                            if (gif) {
+                                loadingRecentGifs = false;
+                                recentGifsLoaded = true;
+                                editor.putLong("lastGifLoadTime", System.currentTimeMillis()).apply();
+                            } else {
+                                loadingRecentStickers[type] = false;
+                                recentStickersLoaded[type] = true;
+                                if (type == TYPE_IMAGE) {
+                                    editor.putLong("lastStickersLoadTime", System.currentTimeMillis()).apply();
+                                } else if (type == TYPE_MASK) {
+                                    editor.putLong("lastStickersLoadTimeMask", System.currentTimeMillis()).apply();
+                                } else if (type == TYPE_GREETINGS) {
+                                    editor.putLong("lastStickersLoadTimeGreet", System.currentTimeMillis()).apply();
+                                } else if (type == TYPE_EMOJIPACKS) {
+                                    editor.putLong("lastStickersLoadTimeEmojiPacks", System.currentTimeMillis()).apply();
+                                } else if (type == TYPE_PREMIUM_STICKERS) {
+                                    editor.putLong("lastStickersLoadTimePremiumStickers", System.currentTimeMillis()).apply();
+                                } else {
+                                    editor.putLong("lastStickersLoadTimeFavs", System.currentTimeMillis()).apply();
+                                }
+                            }
+                            if (gif) {
+                                recentGifs = documents;
+                            } else {
+                                ArrayList<TLRPC.Document> documentsToUse = mergedDocumentsHolder[0] != null ? mergedDocumentsHolder[0] : documents;
+                                recentStickers[type] = documentsToUse;
+                            }
+                            if (type == TYPE_GREETINGS) {
+                                preloadNextGreetingsSticker();
+                            }
+                            getNotificationCenter().postNotificationName(NotificationCenter.recentDocumentsDidLoad, gif, type);
+                        });
+                    }
                     database.beginTransaction();
 
                     SQLitePreparedStatement state = database.executeFast("REPLACE INTO web_recent_v3 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    int count = documents.size();
+                    int count = finalDocuments.size();
                     int cacheType;
                     if (gif) {
                         cacheType = 2;
@@ -2103,7 +2167,7 @@ public class MediaDataController extends BaseController {
                         if (a == maxCount) {
                             break;
                         }
-                        TLRPC.Document document = documents.get(a);
+                        TLRPC.Document document = finalDocuments.get(a);
                         state.requery();
                         state.bindString(1, "" + document.id);
                         state.bindInteger(2, cacheType);
@@ -2122,64 +2186,15 @@ public class MediaDataController extends BaseController {
                     }
                     state.dispose();
                     database.commitTransaction();
-                    if (!replace && documents.size() >= maxCount) {
+                    if (!replace && finalDocuments.size() >= maxCount) {
                         database.beginTransaction();
-                        for (int a = maxCount; a < documents.size(); a++) {
-                            database.executeFast("DELETE FROM web_recent_v3 WHERE id = '" + documents.get(a).id + "' AND type = " + cacheType).stepThis().dispose();
+                        for (int a = maxCount; a < finalDocuments.size(); a++) {
+                            database.executeFast("DELETE FROM web_recent_v3 WHERE id = '" + finalDocuments.get(a).id + "' AND type = " + cacheType).stepThis().dispose();
                         }
                         database.commitTransaction();
                     }
                 } catch (Exception e) {
                     FileLog.e(e);
-                }
-            });
-        }
-        if (date == 0) {
-            AndroidUtilities.runOnUIThread(() -> {
-                SharedPreferences.Editor editor = MessagesController.getEmojiSettings(currentAccount).edit();
-                if (gif) {
-                    loadingRecentGifs = false;
-                    recentGifsLoaded = true;
-                    editor.putLong("lastGifLoadTime", System.currentTimeMillis()).apply();
-                } else {
-                    loadingRecentStickers[type] = false;
-                    recentStickersLoaded[type] = true;
-                    if (type == TYPE_IMAGE) {
-                        editor.putLong("lastStickersLoadTime", System.currentTimeMillis()).apply();
-                    } else if (type == TYPE_MASK) {
-                        editor.putLong("lastStickersLoadTimeMask", System.currentTimeMillis()).apply();
-                    } else if (type == TYPE_GREETINGS) {
-                        editor.putLong("lastStickersLoadTimeGreet", System.currentTimeMillis()).apply();
-                    } else if (type == TYPE_EMOJIPACKS) {
-                        editor.putLong("lastStickersLoadTimeEmojiPacks", System.currentTimeMillis()).apply();
-                    } else if (type == TYPE_PREMIUM_STICKERS) {
-                        editor.putLong("lastStickersLoadTimePremiumStickers", System.currentTimeMillis()).apply();
-                    } else {
-                        editor.putLong("lastStickersLoadTimeFavs", System.currentTimeMillis()).apply();
-                    }
-
-                }
-                if (documents != null) {
-                    boolean shouldUpdate = true;
-                    if (gif) {
-                        recentGifs = documents;
-                    } else {
-                        if (type == TYPE_FAVE && !NekoConfig.unlimitedFavedStickers.Bool() &&
-                            recentStickers[TYPE_FAVE].size() > getMessagesController().maxFaveStickersCount &&
-                            documents.size() <= getMessagesController().maxFaveStickersCount) {
-                            shouldUpdate = false;
-                        } else {
-                            recentStickers[type] = documents;
-                        }
-                    }
-                    if (type == TYPE_GREETINGS) {
-                        preloadNextGreetingsSticker();
-                    }
-                    if (shouldUpdate) {
-                        getNotificationCenter().postNotificationName(NotificationCenter.recentDocumentsDidLoad, gif, type);
-                    }
-                } else {
-
                 }
             });
         }
