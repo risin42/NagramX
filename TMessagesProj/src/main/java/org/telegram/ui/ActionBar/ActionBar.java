@@ -130,6 +130,7 @@ public class ActionBar extends FrameLayout {
     private boolean titleOverlayShown;
     private Runnable titleActionRunnable;
     private boolean castShadows = !NekoConfig.disableAppBarShadow.Bool();
+    private boolean titleScrollNonFitText;
 
     protected boolean isSearchFieldVisible;
     public float searchFieldVisibleAlpha;
@@ -451,6 +452,9 @@ public class ActionBar extends FrameLayout {
         } else {
             addView(titleTextView[i], 0, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP));
         }
+        if (NaConfig.INSTANCE.getCustomTitleUserName().Bool() && titleScrollNonFitText) {
+            titleTextView[i].setScrollNonFitText(true);
+        }
     }
 
     private boolean isCenterTitle;
@@ -527,6 +531,9 @@ public class ActionBar extends FrameLayout {
 
     public void setTitleScrollNonFitText(boolean b) {
         titleTextView[0].setScrollNonFitText(b);
+        if (NaConfig.INSTANCE.getCustomTitleUserName().Bool()) {
+            titleScrollNonFitText = b;
+        }
     }
 
     public void setPopupItemsColor(int color, boolean icon, boolean forActionMode) {
