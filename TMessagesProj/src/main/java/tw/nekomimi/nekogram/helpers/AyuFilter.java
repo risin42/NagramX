@@ -98,7 +98,7 @@ public class AyuFilter {
         if (selectedObject.type == MessageObject.TYPE_EMOJIS || selectedObject.type == MessageObject.TYPE_ANIMATED_STICKER || selectedObject.type == MessageObject.TYPE_STICKER) {
             return null;
         }
-        CharSequence messageText = MessageHelper.getMessagePlainText(selectedObject, selectedObjectGroup);
+        CharSequence messageText = MessageHelper.getMessagePlainTextFull(selectedObject, selectedObjectGroup);
         if (messageText != null && Emoji.fullyConsistsOfEmojis(messageText)) {
             messageText = null;
         }
