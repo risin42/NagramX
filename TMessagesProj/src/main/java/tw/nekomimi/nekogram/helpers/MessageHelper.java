@@ -760,6 +760,31 @@ public class MessageHelper extends BaseController {
         return messageObject.messageOwner.message;
     }
 
+    public static CharSequence getMessagePlainTextFull(MessageObject messageObject, MessageObject.GroupedMessages messageGroup) {
+        StringBuilder text = new StringBuilder();
+        if (messageGroup != null) {
+            for (var groupedMessage : messageGroup.messages) {
+                text.append(getMessagePlainText(groupedMessage, null));
+            }
+        }
+        if (messageObject != null && messageObject.messageOwner != null) {
+            if (messageObject.isPoll()) {
+                TLRPC.Poll poll = ((TLRPC.TL_messageMediaPoll) messageObject.messageOwner.media).poll;
+                StringBuilder pollText = new StringBuilder(poll.question.text).append("\n");
+                for (TLRPC.PollAnswer answer : poll.answers) {
+                    pollText.append("\n\uD83D\uDD18 ");
+                    pollText.append(answer.text.text);
+                }
+                text.append(pollText);
+            } else if (!TextUtils.isEmpty(messageObject.getVoiceTranscription())) {
+                text.append(messageObject.messageOwner.voiceTranscription);
+            } else {
+                text.append(messageObject.messageOwner.message);
+            }
+        }
+        return text.toString();
+    }
+
     public static boolean messageObjectIsFile(int type, MessageObject messageObject) {
         boolean canSave = (type == 4 || type == 5 || type == 6 || type == 10);
         boolean downloading = messageObject.loadedFileSize > 0;
