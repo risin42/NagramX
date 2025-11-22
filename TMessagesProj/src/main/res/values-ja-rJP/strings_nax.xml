@@ -263,4 +263,5 @@
     <string name="BlockChannelsUnavailable">一部のチャンネルは一時的に表示できません。</string>
     <string name="FixLinkPreview">リンクプレビューを改善</string>
     <string name="NoQuoteForwardShort">引用なし</string>
+    <string name="ForceEdgeToEdge">エッジ ツー エッジ対応</string>
 </resources>

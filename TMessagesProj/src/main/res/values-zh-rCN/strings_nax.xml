@@ -263,4 +263,5 @@
     <string name="BlockChannelsUnavailable">某些频道暂时无法显示。</string>
     <string name="FixLinkPreview">修复链接预览</string>
     <string name="NoQuoteForwardShort">无引用</string>
+    <string name="ForceEdgeToEdge">强制无边框显示</string>
 </resources>
