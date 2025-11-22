@@ -115,7 +115,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
             "Google " + "gemini-2.5-flash-lite",
             "Groq " + "meta/llama-4-maverick",
             "DeepSeek " + "DeepSeek-V3.2-Exp",
-            "xAI " + "grok-4-fast",
+            "xAI " + "grok-4.1-fast",
     }, null));
 
     private final Map<Integer, List<AbstractConfigCell>> llmProviderConfigMap = new HashMap<>();
