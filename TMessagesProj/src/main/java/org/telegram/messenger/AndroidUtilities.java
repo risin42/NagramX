@@ -4254,18 +4254,6 @@ public class AndroidUtilities {
         if (f == null || !f.exists()) {
             f = FileLoader.getInstance(message.currentAccount).getPathToMessage(message.messageOwner);
         }
-        if (f != null && !f.exists()) {
-            String cacheFilePath = AndroidUtilities.getCacheDir().getAbsolutePath();
-            cacheFilePath += "/" + AndroidUtil.getFileNameWithoutEx(f.getName());
-            List<String> suffix = Arrays.asList(".pt", ".temp");
-            for (int ii = 0; ii < suffix.size(); ii++) {
-                f = new File(cacheFilePath + suffix.get(ii));
-                if (f.exists()) {
-                    message.putInDownloadsStore = true;
-                    break;
-                }
-            }
-        }
         String mimeType = message.type == MessageObject.TYPE_FILE || message.type == MessageObject.TYPE_TEXT ? message.getMimeType() : null;
         return openForView(f, message.getFileName(), mimeType, activity, resourcesProvider, restrict);
     }
