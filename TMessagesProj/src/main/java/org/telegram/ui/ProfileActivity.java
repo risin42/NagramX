@@ -13743,22 +13743,22 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
                 case VIEW_TYPE_VERSION:
-                default: {
-                    TextInfoPrivacyCell cell = new TextInfoPrivacyCell(mContext, 10, resourcesProvider);
-                    cell.getTextView().setGravity(Gravity.CENTER_HORIZONTAL);
-                    cell.getTextView().setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteGrayText3));
-                    cell.getTextView().setMovementMethod(null);
-                    // cell.setText(AndroidUtilities.getBuildVersionInfo());
-                    cell.setBackground(Theme.getThemedDrawable(mContext, R.drawable.greydivider_bottom, Theme.key_windowBackgroundGrayShadow));
-                    cell.setText("Nagram X v" + BuildConfig.VERSION_NAME + "(" + BuildConfig.VERSION_CODE + ") " + Build.SUPPORTED_ABIS[0].toLowerCase(Locale.ROOT) + " " + BuildConfig.BUILD_TYPE);
-                    cell.getTextView().setPadding(0, AndroidUtilities.dp(14), 0, AndroidUtilities.dp(14));
-                    view = cell;
-                    Drawable drawable = Theme.getThemedDrawable(mContext, R.drawable.greydivider_bottom, getThemedColor(Theme.key_windowBackgroundGrayShadow));
-                    CombinedDrawable combinedDrawable = new CombinedDrawable(new ColorDrawable(Theme.getColor(Theme.key_windowBackgroundGray)), drawable);
-                    combinedDrawable.setFullsize(true);
-                    view.setBackground(combinedDrawable);
-                    break;
-                }
+                    default: {
+                        TextInfoPrivacyCell cell = new TextInfoPrivacyCell(mContext, 10, resourcesProvider);
+                        cell.getTextView().setGravity(Gravity.CENTER_HORIZONTAL);
+                        cell.getTextView().setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteGrayText3));
+                        cell.getTextView().setMovementMethod(null);
+                        // cell.setText(AndroidUtilities.getBuildVersionInfo());
+                        cell.setBackground(Theme.getThemedDrawable(mContext, R.drawable.greydivider_bottom, Theme.key_windowBackgroundGrayShadow));
+                        cell.setText("Nagram X v" + BuildConfig.VERSION_NAME + "(" + BuildConfig.VERSION_CODE + ") " + Build.SUPPORTED_ABIS[0].toLowerCase(Locale.ROOT) + " " + BuildConfig.BUILD_TYPE);
+                        cell.getTextView().setPadding(0, AndroidUtilities.dp(14), 0, AndroidUtilities.dp(isSupportEdgeToEdge() ? 42 : 14));
+                        view = cell;
+                        Drawable drawable = Theme.getThemedDrawable(mContext, R.drawable.greydivider_bottom, getThemedColor(Theme.key_windowBackgroundGrayShadow));
+                        CombinedDrawable combinedDrawable = new CombinedDrawable(new ColorDrawable(Theme.getColor(Theme.key_windowBackgroundGray)), drawable);
+                        combinedDrawable.setFullsize(true);
+                        view.setBackground(combinedDrawable);
+                        break;
+                    }
                 case VIEW_TYPE_SUGGESTION: {
                     view = new SettingsSuggestionCell(mContext, resourcesProvider) {
                         @Override
@@ -17372,4 +17372,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         builder.show();
     }
 
+    @Override
+    public boolean isSupportEdgeToEdge() {
+        return NaConfig.INSTANCE.getForceEdgeToEdge().Bool();
+    }
 }
