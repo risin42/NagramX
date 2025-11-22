@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
@@ -72,7 +70,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private AnimatorSet animatorSet;
     private boolean sensitiveCanChange = false;
     private boolean sensitiveEnabled = false;
-    private UndoView tooltip;
 
     private final CellGroup cellGroup = new CellGroup(this);
 
@@ -155,15 +152,24 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         return true;
     }
 
+    @Override
+    protected BlurredRecyclerView createListView(Context context) {
+        return new BlurredRecyclerView(context) {
+            @Override
+            public Integer getSelectorColor(int position) {
+                if (position == cellGroup.rows.indexOf(clearMessageDatabaseRow)) {
+                    return Theme.multAlpha(getThemedColor(Theme.key_text_RedRegular), .1f);
+                }
+                return getThemedColor(Theme.key_listSelector);
+            }
+        };
+    }
+
     @SuppressLint("NewApi")
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
-        actionBar.setTitle(getTitle());
+        View superView = super.createView(context);
 
-        if (AndroidUtilities.isTablet()) {
-            actionBar.setOccupyStatusBar(false);
-        }
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -174,22 +180,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         });
 
         listAdapter = new ListAdapter(context);
-        fragmentView = new FrameLayout(context);
-        fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
-        FrameLayout frameLayout = (FrameLayout) fragmentView;
 
-        listView = new BlurredRecyclerView(context);
-        listView.setVerticalScrollBarEnabled(false);
-        listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-
-        DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
-        itemAnimator.setChangeDuration(350);
-        itemAnimator.setInterpolator(CubicBezierInterpolator.EASE_OUT_QUINT);
-        itemAnimator.setDelayAnimations(false);
-        itemAnimator.setSupportsChangeAnimations(false);
-        listView.setItemAnimator(itemAnimator);
-
-        frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
         listView.setAdapter(listAdapter);
 
         // Fragment: Set OnClick Callbacks
@@ -322,10 +313,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         //Cells: Set ListAdapter
         cellGroup.setListAdapter(listView, listAdapter);
 
-        tooltip = new UndoView(context);
-        frameLayout.addView(tooltip, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 0, 8, 8));
-
-        return fragmentView;
+        return superView;
     }
 
     @SuppressLint("NotifyDataSetChanged")

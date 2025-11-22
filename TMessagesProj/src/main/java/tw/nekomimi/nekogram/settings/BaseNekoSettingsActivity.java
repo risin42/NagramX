@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.ColorUtils;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +40,7 @@ import org.telegram.ui.Cells.TextInfoPrivacyCell;
 import org.telegram.ui.Cells.TextRadioCell;
 import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.BlurredRecyclerView;
+import org.telegram.ui.Components.Bulletin;
 import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.FlickerLoadingView;
@@ -45,6 +48,7 @@ import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;
 import org.telegram.ui.Components.URLSpanNoUnderline;
+import org.telegram.ui.Components.inset.WindowInsetsStateHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,6 +88,13 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
     protected int rowCount;
     protected HashMap<String, Integer> rowMap = new HashMap<>(20);
     protected HashMap<Integer, String> rowMapReverse = new HashMap<>(20);
+    private final WindowInsetsStateHolder windowInsetsStateHolder = new WindowInsetsStateHolder(this::checkInsets);
+
+    private void checkInsets() {
+        if (listView != null) {
+            listView.setPadding(0, 0, 0, windowInsetsStateHolder.getCurrentNavigationBarInset());
+        }
+    }
 
     @Override
     public boolean onFragmentCreate() {
@@ -98,6 +109,10 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
     public View createView(Context context) {
         fragmentView = new BlurContentView(context);
         fragmentView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundGray));
+        ViewCompat.setOnApplyWindowInsetsListener(fragmentView, (v, insets) -> {
+            windowInsetsStateHolder.setInsets(insets);
+            return WindowInsetsCompat.CONSUMED;
+        });
         SizeNotifierFrameLayout frameLayout = (SizeNotifierFrameLayout) fragmentView;
 
         actionBar.setDrawBlurBackground(frameLayout);
@@ -124,6 +139,7 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
 
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(this::onItemClick);
+        listView.setClipToPadding(false);
         listView.setOnItemLongClickListener((view, position, x, y) -> {
             if (onItemLongClick(view, position, x, y)) {
                 return true;
@@ -131,14 +147,10 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
             var holder = listView.findViewHolderForAdapterPosition(position);
             var key = getKey();
             if (key != null && holder != null && listAdapter.isEnabled(holder) && rowMapReverse.containsKey(position)) {
-                showDialog(new AlertDialog.Builder(context)
-                        .setItems(
-                                new CharSequence[]{getString(R.string.CopyLink)},
-                                (dialogInterface, i) -> {
-                                    AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s", getMessagesController().linkPrefix, getKey(), rowMapReverse.get(position)));
-                                    BulletinFactory.of(BaseNekoSettingsActivity.this).createCopyLinkBulletin().show();
-                                })
-                        .create());
+                showDialog(new AlertDialog.Builder(context).setItems(new CharSequence[]{getString(R.string.CopyLink)}, (dialogInterface, i) -> {
+                    AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s", getMessagesController().linkPrefix, getKey(), rowMapReverse.get(position)));
+                    BulletinFactory.of(BaseNekoSettingsActivity.this).createCopyLinkBulletin().show();
+                }).create());
                 return true;
             }
             return false;
@@ -199,41 +211,6 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
 
     protected abstract String getActionBarTitle();
 
-    private class BlurContentView extends SizeNotifierFrameLayout {
-
-        public BlurContentView(Context context) {
-            super(context);
-            needBlur = hasWhiteActionBar();
-            blurBehindViews.add(this);
-        }
-
-        @Override
-        protected void drawList(Canvas blurCanvas, boolean top, ArrayList<IViewWithInvalidateCallback> views) {
-            for (int j = 0; j < listView.getChildCount(); j++) {
-                View child = listView.getChildAt(j);
-                if (child.getY() < listView.blurTopPadding + AndroidUtilities.dp(100)) {
-                    int restore = blurCanvas.save();
-                    blurCanvas.translate(getX() + child.getX(), getY() + listView.getY() + child.getY());
-                    child.draw(blurCanvas);
-                    blurCanvas.restoreToCount(restore);
-                }
-            }
-        }
-
-        public Paint blurScrimPaint = new Paint();
-        Rect rectTmp = new Rect();
-
-        @Override
-        protected void dispatchDraw(Canvas canvas) {
-            super.dispatchDraw(canvas);
-            if (hasWhiteActionBar() && listView.canScrollVertically(-1)) {
-                rectTmp.set(0, 0, getMeasuredWidth(), 1);
-                blurScrimPaint.setColor(getThemedColor(Theme.key_divider));
-                drawBlurRect(canvas, getY(), rectTmp, blurScrimPaint, true);
-            }
-        }
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onResume() {
@@ -241,6 +218,19 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
+
+        Bulletin.addDelegate(this, new Bulletin.Delegate() {
+            @Override
+            public int getBottomOffset(int tag) {
+                return windowInsetsStateHolder.getCurrentNavigationBarInset();
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Bulletin.removeDelegate(this);
     }
 
     protected boolean hasWhiteActionBar() {
@@ -284,7 +274,7 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
     public void scrollToRow(String key, Runnable unknown) {
         if (rowMap.containsKey(key)) {
             listView.highlightRow(() -> {
-                //noinspection ConstantConditions
+                // noinspection ConstantConditions
                 int position = rowMap.get(key);
                 layoutManager.scrollToPositionWithOffset(position, AndroidUtilities.dp(60));
                 return position;
@@ -297,6 +287,51 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
     protected void updateRows() {
         rowCount = 0;
         rowMap.clear();
+    }
+
+    @Override
+    public Theme.ResourcesProvider getResourceProvider() {
+        return resourcesProvider;
+    }
+
+    @Override
+    public boolean isSupportEdgeToEdge() {
+        return true;
+    }
+
+    private class BlurContentView extends SizeNotifierFrameLayout {
+
+        public Paint blurScrimPaint = new Paint();
+        Rect rectTmp = new Rect();
+
+        public BlurContentView(Context context) {
+            super(context);
+            needBlur = hasWhiteActionBar();
+            blurBehindViews.add(this);
+        }
+
+        @Override
+        protected void drawList(Canvas blurCanvas, boolean top, ArrayList<IViewWithInvalidateCallback> views) {
+            for (int j = 0; j < listView.getChildCount(); j++) {
+                View child = listView.getChildAt(j);
+                if (child.getY() < listView.blurTopPadding + AndroidUtilities.dp(100)) {
+                    int restore = blurCanvas.save();
+                    blurCanvas.translate(getX() + child.getX(), getY() + listView.getY() + child.getY());
+                    child.draw(blurCanvas);
+                    blurCanvas.restoreToCount(restore);
+                }
+            }
+        }
+
+        @Override
+        protected void dispatchDraw(Canvas canvas) {
+            super.dispatchDraw(canvas);
+            if (hasWhiteActionBar() && listView.canScrollVertically(-1)) {
+                rectTmp.set(0, 0, getMeasuredWidth(), 1);
+                blurScrimPaint.setColor(getThemedColor(Theme.key_divider));
+                drawBlurRect(canvas, getY(), rectTmp, blurScrimPaint, true);
+            }
+        }
     }
 
     protected abstract class BaseListAdapter extends RecyclerListView.SelectionAdapter {
@@ -404,14 +439,11 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
                     view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
                     break;
             }
-            //noinspection ConstantConditions
+            // noinspection ConstantConditions
             view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
             return new RecyclerListView.Holder(view);
         }
     }
 
-    @Override
-    public Theme.ResourcesProvider getResourceProvider() {
-        return resourcesProvider;
-    }
+
 }

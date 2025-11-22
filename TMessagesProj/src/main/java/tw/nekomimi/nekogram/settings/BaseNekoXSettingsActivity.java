@@ -3,21 +3,32 @@ package tw.nekomimi.nekogram.settings;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.content.Context;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
+import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Components.BlurredRecyclerView;
+import org.telegram.ui.Components.Bulletin;
 import org.telegram.ui.Components.BulletinFactory;
+import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
+import org.telegram.ui.Components.UndoView;
+import org.telegram.ui.Components.inset.WindowInsetsStateHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,9 +50,161 @@ import tw.nekomimi.nekogram.config.cell.WithKey;
 public class BaseNekoXSettingsActivity extends BaseFragment {
     protected BlurredRecyclerView listView;
     protected LinearLayoutManager layoutManager;
+    protected UndoView tooltip;
     protected HashMap<String, Integer> rowMap = new HashMap<>(20);
     protected HashMap<Integer, String> rowMapReverse = new HashMap<>(20);
     protected HashMap<Integer, ConfigItem> rowConfigMapReverse = new HashMap<>(20);
+    private final WindowInsetsStateHolder windowInsetsStateHolder = new WindowInsetsStateHolder(this::checkInsets);
+
+    private void checkInsets() {
+        int navigationBarInset = windowInsetsStateHolder.getCurrentNavigationBarInset();
+        if (listView != null) {
+            listView.setPadding(0, 0, 0, navigationBarInset);
+        }
+        if (tooltip != null && tooltip.getLayoutParams() instanceof FrameLayout.LayoutParams params) {
+            params.bottomMargin = AndroidUtilities.dp(8) + navigationBarInset;
+            tooltip.setLayoutParams(params);
+        }
+    }
+
+    public static AlertDialog showConfigMenuAlert(Context context, String titleKey, ArrayList<ConfigCellTextCheck> configItems) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(getString(titleKey));
+
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout linearLayoutInviteContainer = new LinearLayout(context);
+        linearLayoutInviteContainer.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(linearLayoutInviteContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+        int count = configItems.size();
+        for (int a = 0; a < count; a++) {
+            ConfigCellTextCheck configItem = configItems.get(a);
+            TextCheckCell textCell = new TextCheckCell(context);
+            textCell.setTextAndCheck(configItem.getTitle(), configItem.getBindConfig().Bool(), false);
+            textCell.setTag(a);
+            textCell.setBackground(Theme.getSelectorDrawable(false));
+            linearLayoutInviteContainer.addView(textCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            int finalA = a;
+            textCell.setOnClickListener(v2 -> {
+                Integer tag = (Integer) v2.getTag();
+                if (tag == finalA) {
+                    textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
+                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+                }
+            });
+        }
+        builder.setPositiveButton(getString(R.string.OK), null);
+        builder.setView(linearLayout);
+        return builder.create();
+    }
+
+    public static AlertDialog showConfigMenuWithIconAlert(BaseFragment bf, int titleKeyRes, ArrayList<ConfigCellTextCheckIcon> configItems) {
+        Context context = bf.getContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(getString(titleKeyRes));
+
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout linearLayoutInviteContainer = new LinearLayout(context);
+        linearLayoutInviteContainer.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(linearLayoutInviteContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+        int count = configItems.size();
+        for (int a = 0; a < count; a++) {
+            ConfigCellTextCheckIcon configItem = configItems.get(a);
+            TextCell textCell = new TextCell(context, 23, false, true, bf.getResourceProvider());
+            textCell.setTextAndCheckAndIcon(configItem.getTitle(), configItem.getBindConfig().Bool(), configItem.getResId(), configItem.getDivider());
+            textCell.setTag(a);
+            textCell.setBackground(Theme.getSelectorDrawable(false));
+            linearLayoutInviteContainer.addView(textCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            int finalA = a;
+            textCell.setOnClickListener(v2 -> {
+                Integer tag = (Integer) v2.getTag();
+                if (tag == finalA) {
+                    textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
+                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+                }
+            });
+        }
+        builder.setPositiveButton(getString(R.string.OK), null);
+        builder.setView(linearLayout);
+        return builder.create();
+    }
+
+    protected BlurredRecyclerView createListView(Context context) {
+        return new BlurredRecyclerView(context);
+    }
+
+    @Override
+    public View createView(Context context) {
+        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        actionBar.setTitle(getTitle());
+
+        if (AndroidUtilities.isTablet()) {
+            actionBar.setOccupyStatusBar(false);
+        }
+
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+            @Override
+            public void onItemClick(int id) {
+                if (id == -1) {
+                    finishFragment();
+                }
+            }
+        });
+
+        fragmentView = new FrameLayout(context);
+        fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        ViewCompat.setOnApplyWindowInsetsListener(fragmentView, (v, insets) -> {
+            windowInsetsStateHolder.setInsets(insets);
+            return WindowInsetsCompat.CONSUMED;
+        });
+        FrameLayout frameLayout = (FrameLayout) fragmentView;
+
+        listView = createListView(context);
+        listView.setVerticalScrollBarEnabled(false);
+        listView.setClipToPadding(false);
+        listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+
+        DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setChangeDuration(350);
+        itemAnimator.setInterpolator(CubicBezierInterpolator.EASE_OUT_QUINT);
+        itemAnimator.setDelayAnimations(false);
+        itemAnimator.setSupportsChangeAnimations(false);
+
+        listView.setItemAnimator(itemAnimator);
+        frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
+
+        tooltip = new UndoView(context);
+        frameLayout.addView(tooltip, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 0, 8, 8));
+
+        return fragmentView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Bulletin.addDelegate(this, new Bulletin.Delegate() {
+            @Override
+            public int getBottomOffset(int tag) {
+                return windowInsetsStateHolder.getCurrentNavigationBarInset();
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Bulletin.removeDelegate(this);
+    }
+
+    @Override
+    public boolean isSupportEdgeToEdge() {
+        return true;
+    }
 
     protected void updateRows() {
     }
@@ -125,7 +288,7 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         return null;
     }
 
-    protected void createLongClickDialog(Context context, BaseFragment fragment, String prefix,  int position) {
+    protected void createLongClickDialog(Context context, BaseFragment fragment, String prefix, int position) {
         String key = getRowKey(position);
         String value = getRowValue(position);
         ArrayList<CharSequence> itemsArray = new ArrayList<>();
@@ -134,22 +297,18 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
             itemsArray.add(getString(R.string.BackupSettings));
         }
         CharSequence[] items = itemsArray.toArray(new CharSequence[0]);
-        showDialog(new AlertDialog.Builder(context)
-                .setItems(
-                        items,
-                        (dialogInterface, i) -> {
-                            switch (i) {
-                                case 0:
-                                    AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s", getMessagesController().linkPrefix, prefix, key));
-                                    BulletinFactory.of(fragment).createCopyLinkBulletin().show();
-                                    break;
-                                case 1:
-                                    AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s&v=%s", getMessagesController().linkPrefix, prefix, key, value));
-                                    BulletinFactory.of(fragment).createCopyLinkBulletin().show();
-                                    break;
-                            }
-                        })
-                .create());
+        showDialog(new AlertDialog.Builder(context).setItems(items, (dialogInterface, i) -> {
+            switch (i) {
+                case 0:
+                    AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s", getMessagesController().linkPrefix, prefix, key));
+                    BulletinFactory.of(fragment).createCopyLinkBulletin().show();
+                    break;
+                case 1:
+                    AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s&v=%s", getMessagesController().linkPrefix, prefix, key, value));
+                    BulletinFactory.of(fragment).createCopyLinkBulletin().show();
+                    break;
+            }
+        }).create());
     }
 
     public void importToRow(String key, String value, Runnable unknown) {
@@ -207,70 +366,5 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         return rowMapReverse;
     }
 
-    public static AlertDialog showConfigMenuAlert(Context context, String titleKey, ArrayList<ConfigCellTextCheck> configItems) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(getString(titleKey));
 
-        LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-        LinearLayout linearLayoutInviteContainer = new LinearLayout(context);
-        linearLayoutInviteContainer.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(linearLayoutInviteContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-
-        int count = configItems.size();
-        for (int a = 0; a < count; a++) {
-            ConfigCellTextCheck configItem = configItems.get(a);
-            TextCheckCell textCell = new TextCheckCell(context);
-            textCell.setTextAndCheck(configItem.getTitle(), configItem.getBindConfig().Bool(), false);
-            textCell.setTag(a);
-            textCell.setBackground(Theme.getSelectorDrawable(false));
-            linearLayoutInviteContainer.addView(textCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            int finalA = a;
-            textCell.setOnClickListener(v2 -> {
-                Integer tag = (Integer) v2.getTag();
-                if (tag == finalA) {
-                    textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
-                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
-                }
-            });
-        }
-        builder.setPositiveButton(getString(R.string.OK), null);
-        builder.setView(linearLayout);
-        return builder.create();
-    }
-
-    public static AlertDialog showConfigMenuWithIconAlert(BaseFragment bf, int titleKeyRes, ArrayList<ConfigCellTextCheckIcon> configItems) {
-        Context context = bf.getContext();
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(getString(titleKeyRes));
-
-        LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-        LinearLayout linearLayoutInviteContainer = new LinearLayout(context);
-        linearLayoutInviteContainer.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(linearLayoutInviteContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-
-        int count = configItems.size();
-        for (int a = 0; a < count; a++) {
-            ConfigCellTextCheckIcon configItem = configItems.get(a);
-            TextCell textCell = new TextCell(context, 23, false, true, bf.getResourceProvider());
-            textCell.setTextAndCheckAndIcon(configItem.getTitle(), configItem.getBindConfig().Bool(), configItem.getResId(), configItem.getDivider());
-            textCell.setTag(a);
-            textCell.setBackground(Theme.getSelectorDrawable(false));
-            linearLayoutInviteContainer.addView(textCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            int finalA = a;
-            textCell.setOnClickListener(v2 -> {
-                Integer tag = (Integer) v2.getTag();
-                if (tag == finalA) {
-                    textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
-                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
-                }
-            });
-        }
-        builder.setPositiveButton(getString(R.string.OK), null);
-        builder.setView(linearLayout);
-        return builder.create();
-    }
 }

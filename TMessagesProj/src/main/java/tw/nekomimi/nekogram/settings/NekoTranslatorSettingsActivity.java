@@ -24,8 +24,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
@@ -40,9 +38,7 @@ import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Cells.TextDetailSettingsCell;
 import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.AnimatedEmojiDrawable;
-import org.telegram.ui.Components.BlurredRecyclerView;
 import org.telegram.ui.Components.BulletinFactory;
-import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.Premium.PremiumGradient;
 import org.telegram.ui.Components.RecyclerListView;
@@ -287,12 +283,8 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     @SuppressLint("NewApi")
     @Override
     public View createView(Context context) {
-        actionBar.setBackButtonImage(R.drawable.ic_ab_back);
-        actionBar.setTitle(getTitle());
+        View superView = super.createView(context);
 
-        if (AndroidUtilities.isTablet()) {
-            actionBar.setOccupyStatusBar(false);
-        }
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -304,22 +296,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
         listAdapter = new ListAdapter(context);
 
-        fragmentView = new FrameLayout(context);
-        fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
-        FrameLayout frameLayout = (FrameLayout) fragmentView;
-
-        listView = new BlurredRecyclerView(context);
-        listView.setVerticalScrollBarEnabled(false);
-        listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-
-        DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
-        itemAnimator.setChangeDuration(350);
-        itemAnimator.setInterpolator(CubicBezierInterpolator.EASE_OUT_QUINT);
-        itemAnimator.setDelayAnimations(false);
-        itemAnimator.setSupportsChangeAnimations(false);
-        listView.setItemAnimator(itemAnimator);
-
-        frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
         listView.setAdapter(listAdapter);
 
         // Fragment: Set OnClick Callbacks
@@ -462,7 +438,8 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 }
             }
         };
-        return fragmentView;
+
+        return superView;
     }
 
     private class ListAdapter extends RecyclerListView.SelectionAdapter {
