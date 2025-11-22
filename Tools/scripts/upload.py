@@ -4,7 +4,7 @@ from pathlib import Path
 from sys import argv
 
 from pyrogram import Client
-from pyrogram.types import InputMediaDocument
+from pyrogram.types import InputMediaDocument, LinkPreviewOptions
 
 api_id = os.environ.get("APP_ID")
 api_hash = os.environ.get("APP_HASH")
@@ -43,13 +43,13 @@ def get_document() -> list["InputMediaDocument"]:
         if apk := find_apk(abi):
             documents.append(
                 InputMediaDocument(
-                    media=str(apk),
+                    media = str(apk),
                 )
             )
     if not documents:
         documents.append(
         InputMediaDocument(
-            media=str("TMessagesProj/src/main/" + "ic_launcher_nagram_block_round-playstore.png")
+            media = str("TMessagesProj/src/main/" + "ic_launcher_nagram_block_round-playstore.png")
         ))
     base_caption = get_caption()
     ai_summary = get_ai_summary()
@@ -60,9 +60,9 @@ def get_document() -> list["InputMediaDocument"]:
     return documents
 
 def get_metadata():
-    commit_id = "`" + (os.environ.get("COMMIT_ID") or "unknown")[:7] + "`"
-    commit_message = "`" + (os.environ.get("COMMIT_MESSAGE") or "unknown") + "`"
-    build_timestamp = "`" + (os.environ.get("BUILD_TIMESTAMP") or "-1") + "`"
+    commit_id = "<code>" + (os.environ.get("COMMIT_ID") or "unknown")[:7] + "</code>"
+    commit_message = "<code>" + (os.environ.get("COMMIT_MESSAGE") or "unknown") + "</code>"
+    build_timestamp = "<code>" + (os.environ.get("BUILD_TIMESTAMP") or "-1") + "</code>"
     return build_timestamp + " " + commit_id + "\n" + commit_message
 
 def get_ai_summary():
@@ -89,7 +89,7 @@ async def send_to_channel(client: "Client", cid: str):
         cid = int(cid)
     await client.send_media_group(
         cid,
-        media=get_document(),
+        media = get_document(),
     )
 
 @retry
@@ -97,9 +97,8 @@ async def send_metadata(client: "Client", cid: str):
     with contextlib.suppress(ValueError):
         cid = int(cid)
     await client.send_message(
-        chat_id=cid,
-        text=get_metadata(),
-        disable_web_page_preview=True,
+        chat_id = cid,
+        text = get_metadata(),
     )
 
 def get_client(bot_token: str):
