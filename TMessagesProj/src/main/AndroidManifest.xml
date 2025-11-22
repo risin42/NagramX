@@ -841,6 +841,12 @@
             </intent-filter>
         </service>
 
+        <provider
+            android:authorities="${applicationId}.streaming"
+            android:name="tw.nekomimi.nekogram.streaming.MediaStreamingProvider"
+            android:exported="false"
+            android:grantUriPermissions="true"/>
+
         <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyDE_x6GRKJCSfCY33soBYUQ2piYsgjVpVE" />
         <uses-library android:name="com.google.android.maps" android:required="false"/>
 
