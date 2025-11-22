@@ -26,7 +26,7 @@
     <string name="LlmProviderGeminiModel" translatable="false">gemini-flash-lite-latest</string>
     <string name="LlmProviderGroqModel" translatable="false">meta-llama/llama-4-maverick-17b-128e-instruct</string>
     <string name="LlmProviderDeepSeekModel" translatable="false">deepseek-chat</string>
-    <string name="LlmProviderXAIModel" translatable="false">grok-4-fast-non-reasoning</string>
+    <string name="LlmProviderXAIModel" translatable="false">grok-4-1-fast-non-reasoning</string>
     <string name="LlmProviderPreset">Model Provider</string>
     <string name="LlmProviderCustom">Custom</string>
     <string name="LlmProviderOpenAIKey">OpenAI API Key</string>
