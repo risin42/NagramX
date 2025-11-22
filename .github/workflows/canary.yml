@@ -145,6 +145,15 @@ jobs:
             exit 0
           fi
 
+          AI_SUMMARY_ENABLED="${{ vars.AI_SUMMARY_ENABLED }}"
+          if [ "$AI_SUMMARY_ENABLED" != "true" ] && [ "$AI_SUMMARY_ENABLED" != "TRUE" ]; then
+            echo "AI summary is disabled; skipping."
+            echo "ai_summary<<EOF" >> $GITHUB_OUTPUT
+            echo "" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
           MODEL_ID="${{ vars.AI_MODEL }}"
           if [ -z "$MODEL_ID" ]; then
             MODEL_ID="openai/gpt-4o"
