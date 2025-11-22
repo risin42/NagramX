@@ -141,7 +141,7 @@ public class AyuMessageCell extends ChatMessageCell {
                 urlLongPressHandled = false;
                 downX = event.getX();
                 downY = event.getY();
-                if (!TextUtils.isEmpty(editedMessage.text) && !isInImageArea(event)) {
+                if (!TextUtils.isEmpty(editedMessage.text) && !isInImageArea(event) && isInMessageBubble(event)) {
                     if (longPressRunnable == null) {
                         longPressRunnable = () -> {
                             if (!urlLongPressHandled) {
@@ -185,6 +185,16 @@ public class AyuMessageCell extends ChatMessageCell {
         float x = event.getX();
         float y = event.getY();
         return x >= ix && x <= ix + iw && y >= iy && y <= iy + ih;
+    }
+
+    private boolean isInMessageBubble(MotionEvent event) {
+        float x = event.getX();
+        float y = event.getY();
+        int left = getBackgroundDrawableLeft();
+        int right = getBackgroundDrawableRight();
+        int top = getBackgroundDrawableTop();
+        int bottom = getBackgroundDrawableBottom();
+        return x >= left && x <= right && y >= top && y <= bottom;
     }
 
     @Override
