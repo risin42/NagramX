@@ -266,4 +266,5 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="UnblockAllChannelsWarn">Sei sicuro di voler sbloccare **tutti i canali**?</string>
     <string name="BlockChannelsUnavailable">Alcuni canali sono temporaneamente non disponibili.</string>
     <string name="FixLinkPreview">Correggi l\'anteprima link</string>
+    <string name="NoQuoteForwardShort">Ness. cit.</string>
 </resources>
