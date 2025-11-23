@@ -46828,9 +46828,6 @@ public class ChatActivity extends BaseFragment implements
                 returnToMessageId = 0;
                 returnToMessageIdsStack.clear();
                 onPageDownClicked();
-                try {
-                    if (!NekoConfig.disableVibration.Bool()) view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                } catch (Exception ignored) {}
                 return true;
             }
         }
