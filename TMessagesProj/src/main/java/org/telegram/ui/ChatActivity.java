@@ -430,7 +430,6 @@ public class ChatActivity extends BaseFragment implements
     private final static int nkbtn_reply_private = 2033;
     private final static int nkbtn_translate_llm = 2034;
     private final static int nkbtn_forward_nocaption = 2035;
-    private final static int nkbtn_channelDirectMessage = 2036;
     private final static int nkbtn_translateVoice = 2037;
     private final static int nkbtn_transcriptionRetry = 2038;
     private final static int nkbtn_clearDeleted = 2100;
@@ -510,7 +509,6 @@ public class ChatActivity extends BaseFragment implements
     private ActionBarMenuItem.Item toTheBeginning;
     private ActionBarMenuItem.Item toTheMessage;
     private ActionBarMenuItem.Item hideTitleItem;
-    private ActionBarMenuItem.Item channelDmItem;
     private ClippingImageView animatingImageView;
     private ThanosEffect chatListThanosEffect;
     private ChatListViewPaddingsAnimator chatListViewPaddingsAnimator;
@@ -4669,7 +4667,7 @@ public class ChatActivity extends BaseFragment implements
 
             if (currentChat != null) {
                 headerItem.lazilyAddSubItem(open_direct, R.drawable.msg_markunread, getString(R.string.ChannelOpenDirect));
-                headerItem.setSubItemShown(open_direct, ChatObject.isChannel(currentChat) && !ChatObject.isMonoForum(currentChat) && currentChat.linked_monoforum_id != 0 && ChatObject.canManageMonoForum(currentAccount, -currentChat.linked_monoforum_id));
+                headerItem.setSubItemShown(open_direct, ChatObject.isChannel(currentChat) && !ChatObject.isMonoForum(currentChat) && currentChat.linked_monoforum_id != 0 && (NaConfig.INSTANCE.getDisableChannelMuteButton().Bool() || ChatObject.canManageMonoForum(currentAccount, -currentChat.linked_monoforum_id)));
             }
             if (currentUser != null && chatMode != MODE_SAVED) {
                 headerItem.lazilyAddSubItem(call, R.drawable.msg_callback, LocaleController.getString(R.string.Call));
@@ -4712,10 +4710,6 @@ public class ChatActivity extends BaseFragment implements
             /*if (currentChat != null && !currentChat.creator && !ChatObject.hasAdminRights(currentChat)) {
                 headerItem.lazilyAddSubItem(report, R.drawable.msg_report, LocaleController.getString(R.string.ReportChat));
             }*/
-            if (currentChat != null && currentChat.linked_monoforum_id != 0) {
-                channelDmItem = headerItem.lazilyAddSubItem(nkbtn_channelDirectMessage, R.drawable.input_message, LocaleController.getString(R.string.PostSuggestions));
-                channelDmItem.setVisibility(View.GONE);
-            }
 
             if (currentChat != null && (currentChat.has_link || (chatInfo != null && chatInfo.linked_chat_id != 0))) {
                 String text;
@@ -22211,7 +22205,7 @@ public class ChatActivity extends BaseFragment implements
                 updateTopPanel(true);
             }
             if (headerItem != null) {
-                headerItem.setSubItemShown(open_direct, ChatObject.isChannel(currentChat) && !ChatObject.isMonoForum(currentChat) && currentChat.linked_monoforum_id != 0 && ChatObject.canManageMonoForum(currentAccount, -currentChat.linked_monoforum_id));
+                headerItem.setSubItemShown(open_direct, ChatObject.isChannel(currentChat) && !ChatObject.isMonoForum(currentChat) && currentChat.linked_monoforum_id != 0 && (NaConfig.INSTANCE.getDisableChannelMuteButton().Bool() || ChatObject.canManageMonoForum(currentAccount, -currentChat.linked_monoforum_id)));
             }
         } else if (id == NotificationCenter.didReceiveNewMessages) {
             FileLog.d("ChatActivity didReceiveNewMessages start");
@@ -28088,9 +28082,6 @@ public class ChatActivity extends BaseFragment implements
             chatInputViewsContainer.getFadeView().invalidate();
         }
 
-        if (channelDmItem != null) {
-            channelDmItem.setVisibility(showSuggestButton);
-        }
         checkRaiseSensors();
     }
 
@@ -44098,16 +44089,6 @@ public class ChatActivity extends BaseFragment implements
             TextView button = (TextView) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
             if (button != null) {
                 button.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
-            }
-        } else if (id == nkbtn_channelDirectMessage) {
-            MessagesController.getGlobalMainSettings().edit().putInt("channelsuggesthint", 3).apply();
-            if (currentChat != null && currentChat.linked_monoforum_id != 0) {
-                getMessagesController().putMonoForumLinkedChat(currentChat.id, currentChat.linked_monoforum_id);
-                Bundle bundle = new Bundle();
-                bundle.putLong("chat_id", currentChat.linked_monoforum_id);
-                bundle.putInt("chatMode", MODE_SUGGESTIONS);
-                bundle.putBoolean("isSubscriberSuggestions", true);
-                presentFragment(new ChatActivity(bundle));
             }
         } else if (id == nkheaderbtn_upgrade) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
