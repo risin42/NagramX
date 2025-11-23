@@ -60,7 +60,6 @@
     <string name="DoNotUnarchiveBySwipe">スワイプによるアーカイブ解除を無効にする</string>
     <string name="DoNotShareMyPhoneNumber">電話番号の共有を無効にする</string>
     <string name="DefaultDeleteMenu">デフォルトの削除メニュー</string>
-    <string name="DisableSuggestionView">電話番号変更の提案を無効にする</string>
     <string name="DisableStories">ストーリー機能を無効にする</string>
     <string name="CopyPhotoAsSticker">ステッカーとしてコピー</string>
     <string name="ProviderTranSmartTranslate">TransSmart 翻訳</string>

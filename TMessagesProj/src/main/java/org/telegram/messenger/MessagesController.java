@@ -10581,9 +10581,7 @@ public class MessagesController extends BaseController implements NotificationCe
                         getNotificationCenter().postNotificationName(NotificationCenter.newSuggestionsAvailable);
 
                         SharedPreferences.Editor editor1 = mainPreferences.edit();
-                        if (!NaConfig.INSTANCE.getDisableSuggestionView().Bool()) {
-                            editor1.putStringSet("pendingSuggestions", pendingSuggestions);
-                        }
+                        editor1.putStringSet("pendingSuggestions", pendingSuggestions);
                         editor1.putStringSet("dismissedSuggestions", dismissedSuggestions);
                         editor1.commit();
 
