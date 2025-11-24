@@ -243,15 +243,15 @@ dependencies {
     // utilities
     implementation 'org.osmdroid:osmdroid-android:6.1.20'
     // network
-    implementation 'com.squareup.okhttp3:okhttp:5.3.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
     implementation 'dnsjava:dnsjava:3.6.3'
     // add for emoji
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
     // add for UnifiedPush
     implementation 'com.github.UnifiedPush:android-connector:2.3.1'
     // add for save deleted messages
-    implementation 'androidx.room:room-runtime:2.8.3'
-    annotationProcessor 'androidx.room:room-compiler:2.8.3'
+    implementation 'androidx.room:room-runtime:2.8.4'
+    annotationProcessor 'androidx.room:room-compiler:2.8.4'
     // add for keep formatting in translations
     implementation 'org.apache.commons:commons-text:1.14.0'
     // translator from nekogram
