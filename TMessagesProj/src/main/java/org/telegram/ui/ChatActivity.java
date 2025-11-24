@@ -4419,8 +4419,15 @@ public class ChatActivity extends BaseFragment implements
                         return true;
                     }
 
-                    getHeaderItem().performClick();
-                    return true;
+                    if (attachItem != null && attachItem.getView() != null && attachItem.getView().getVisibility() == VISIBLE) {
+                        attachItem.getView().performClick();
+                        return true;
+                    }
+
+                    if (headerItem != null) {
+                        headerItem.performClick();
+                        return true;
+                    }
                 }
 
                 return super.onAvatarClick();
