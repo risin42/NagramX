@@ -5,7 +5,7 @@
     <string name="DeletedMessage">eliminato</string>
     <string name="EnableSaveEditsHistory">Salva cronologia modifiche</string>
     <string name="EditsHistoryMenuText">Cronologia delle modifiche</string>
-    <string name="DeleteKeepLocally">Conservare localmente</string>
+    <string name="DeleteKeepLocally">Conserva localmente</string>
     <string name="ClearMessageDatabase">Cancella database dei messaggi</string>
     <string name="ClearMessageDatabaseNotification">Database dei messaggi cancellato.</string>
     <string name="CustomDeletedMark">Contrassegno di eliminazione personalizzato</string>
@@ -267,4 +267,5 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="BlockChannelsUnavailable">Alcuni canali sono temporaneamente non disponibili.</string>
     <string name="FixLinkPreview">Correggi l\'anteprima link</string>
     <string name="NoQuoteForwardShort">Ness. cit.</string>
+    <string name="ForceEdgeToEdge">Forza edge-to-edge</string>
 </resources>

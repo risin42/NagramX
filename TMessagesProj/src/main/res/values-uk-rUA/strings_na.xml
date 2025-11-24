@@ -60,6 +60,7 @@
     <string name="DoNotUnarchiveBySwipe">Вимкнути функцію \"Проведення для розархівування\"</string>
     <string name="DoNotShareMyPhoneNumber">Не повідомляти мій номер телефону</string>
     <string name="DefaultDeleteMenu">Меню видалення за замовчуванням</string>
+    <string name="DisableSuggestionView">Вимкнути пропозицію налаштувань профілю</string>
     <string name="DisableStories">Вимкнути історії</string>
     <string name="CopyPhotoAsSticker">Копіювати як наліпку</string>
     <string name="ProviderTranSmartTranslate">TranSmart</string>

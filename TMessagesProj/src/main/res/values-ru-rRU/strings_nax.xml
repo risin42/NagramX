@@ -263,4 +263,5 @@
     <string name="BlockChannelsUnavailable">Некоторые каналы временно недоступны.</string>
     <string name="FixLinkPreview">Исправить предпросмотр ссылок</string>
     <string name="NoQuoteForwardShort">Без автора</string>
+    <string name="ForceEdgeToEdge">«От края до края» принудительно</string>
 </resources>
