@@ -30816,7 +30816,8 @@ public class ChatActivity extends BaseFragment implements
             }
             bottomViewsVisibilityController.setViewVisible(MESSAGE_ACTION_CONTAINER, false, true);
             actionBar.hideActionMode();
-            updateBottomOverlay();
+            // Delay updateBottomOverlay to ensure action mode state is properly updated after forward
+            AndroidUtilities.runOnUIThread(() -> updateBottomOverlay(), 50);
         }
         cantDeleteMessagesCount = 0;
         canEditMessagesCount = 0;
