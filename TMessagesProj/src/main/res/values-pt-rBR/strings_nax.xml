@@ -263,4 +263,5 @@
     <string name="BlockChannelsUnavailable">Alguns canais estão temporariamente indisponíveis.</string>
     <string name="FixLinkPreview">Corrigir Prévia de Link</string>
     <string name="NoQuoteForwardShort">Sem Citar</string>
+    <string name="ForceEdgeToEdge">Forçar exibição de ponto a ponta</string>
 </resources>
