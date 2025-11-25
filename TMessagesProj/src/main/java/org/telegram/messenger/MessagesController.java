@@ -10343,7 +10343,7 @@ public class MessagesController extends BaseController implements NotificationCe
                 TLRPC.TL_help_promoDataEmpty res = (TLRPC.TL_help_promoDataEmpty) response;
                 nextPromoInfoCheckTime = res.expires;
                 noDialog = true;
-            } else if (response instanceof TLRPC.TL_help_promoData res && (!res.proxy || !NekoConfig.hideProxySponsorChannel.Bool())) {
+            } else if (response instanceof TLRPC.TL_help_promoData res && !res.proxy) {
                 long did;
                 if (res.peer == null) {
                     did = 0;
