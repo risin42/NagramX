@@ -3141,7 +3141,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                         if (captionLimitView != null) {
                             AndroidUtilities.shakeViewSpring(captionLimitView, 3.5f);
                             try {
-                                captionLimitView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                                if (!NekoConfig.disableVibration.Bool()) captionLimitView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                             } catch (Exception ignored) {}
                         }
                         return false;

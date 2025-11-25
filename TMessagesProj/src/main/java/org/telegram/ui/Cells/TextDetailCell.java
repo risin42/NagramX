@@ -132,7 +132,7 @@ public class TextDetailCell extends FrameLayout {
         rightValueTextView.setOnLinkLongPressListener(span -> {
             if (span != null) {
                 try {
-                    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    if (!NekoConfig.disableVibration.Bool()) performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                 } catch (Exception ignore) {};
                 span.onClick(valueTextView);
             }

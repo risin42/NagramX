@@ -13853,7 +13853,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
                 Bulletin.make(DialogsActivity.this, layout, duration).show();
                 try {
-                    fragmentView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                    if (!NekoConfig.disableVibration.Bool()) fragmentView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                 } catch (Exception ignored) {}
 
             }, () -> getMessagesController().removeSuggestion(0, "SETUP_LOGIN_EMAIL"),
