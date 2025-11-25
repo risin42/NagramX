@@ -41,7 +41,6 @@
     <string name="SendAsEmoji">Enviar como emoji</string>
     <string name="CustomArtworkApi">API Artwork Personalizada</string>
     <string name="CustomEditedMessage">Marca Editada Personalizada</string>
-    <string name="DisableEmojiDrawLimit">Desativar Limite de Desenho de Emoji</string>
     <string name="IconDecoration">Decoração do Ícone</string>
     <string name="NotificationIcon">Ícone de Notificação</string>
     <string name="Official">Oficial</string>
