@@ -103,7 +103,6 @@
     <string name="ShowTimeHint">Tocca L\'orario per Dettagli</string>
     <string name="SearchHashtagDefaultPageChannel">Hashtag Default per la Ricerca nei Canali</string>
     <string name="SearchHashtagDefaultPageChat">Hashtag Default per la Ricerca nelle Chat</string>
-    <string name="LocaleToDBC">Testo locale utilizzando DBC Case</string>
     <string name="EnablePanguOnSending">Abilita Pangu All\'invio</string>
     <string name="PanguInfo">Spaziatura del testo \"paranoica\" per una buona leggibilità, per inserire automaticamente spazi vuoti tra caratteri CGC (cinese, giapponese, coreano), caratteri inglesi a mezza larghezza, cifre e simboli.</string>
     <string name="SendWithPangu">Invia con Pangu</string>

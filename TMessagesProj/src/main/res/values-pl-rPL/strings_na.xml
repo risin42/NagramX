@@ -101,7 +101,6 @@
     <string name="ShowTimeHint">Kliknij Czas, aby poznać szczegóły</string>
     <string name="SearchHashtagDefaultPageChannel">Domyślna strona wyszukiwania hashtagów w kanałach</string>
     <string name="SearchHashtagDefaultPageChat">Domyślna strona wyszukiwania hashtagów w czatach</string>
-    <string name="LocaleToDBC">Tekst ustawień regionalnych z użyciem wielkości liter DBC</string>
     <string name="EnablePanguOnSending">Włącz Pangu podczas wysyłania</string>
     <string name="PanguInfo">Paranoiczne odstępy w tekście w celu zapewnienia lepszej czytelności, aby automatycznie wstawiać odstępy między znakami CJK (chiński, japoński, koreański), znakami o połowie szerokości języka angielskiego, cyframi i symbolami.</string>
     <string name="SendWithPangu">Wyślij z Pangu</string>

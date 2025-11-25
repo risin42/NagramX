@@ -181,7 +181,6 @@ public class NekoConfig {
     public static ConfigItem mapDriftingFixForGoogleMaps = addConfig("mapDriftingFixForGoogleMaps", configTypeBool, true);
 
     public static ConfigItem localPremium = addConfig("localPremium", configTypeBool, false);
-    public static ConfigItem localeToDBC = addConfig("LocaleToDBC", configTypeBool, false);
 
     public static ConfigItem usePersianCalendar = addConfig("UsePersianCalendar", configTypeBool, false);
     public static ConfigItem displayPersianCalendarByLatin = addConfig("DisplayPersianCalendarByLatin", configTypeBool, false);

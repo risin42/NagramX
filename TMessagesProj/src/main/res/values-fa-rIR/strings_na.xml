@@ -98,7 +98,6 @@
     <string name="ShowTimeHint">برای نمایش جزئیات روی زمان پیام کلیک کنید</string>
     <string name="SearchHashtagDefaultPageChannel">صفحه جستجوی پیش‌فرض هشتگ‌ها در کانال‌ها</string>
     <string name="SearchHashtagDefaultPageChat">صفحه جستجوی پیش‌فرض هشتگ‌ها در چت‌ها</string>
-    <string name="LocaleToDBC">متن محلی با استفاده از حالت DBC</string>
     <string name="EnablePanguOnSending">فعالسازی Pangu هنگام ارسال</string>
     <string name="PanguInfo">فاصله متن Paranoid برای خوانایی خوب، برای درج خودکار فضای خالی بین CJK (چینی، ژاپنی، کره‌ای)، انگلیسی نیمه عرض، رقم و کاراکترهای نماد.</string>
     <string name="SendWithPangu">ارسال با Pangu</string>

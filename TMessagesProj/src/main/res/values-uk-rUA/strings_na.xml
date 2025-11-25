@@ -102,7 +102,6 @@
     <string name="ShowTimeHint">Натисніть «Час» для детальної інформації</string>
     <string name="SearchHashtagDefaultPageChannel">Типовий пошук хештегів у каналах</string>
     <string name="SearchHashtagDefaultPageChat">Типовий пошук хештегів у чатах</string>
-    <string name="LocaleToDBC">Текст локалізації з використанням регістру DBC</string>
     <string name="EnablePanguOnSending">Увімкнути Pangu при надсиланні</string>
     <string name="PanguInfo">Параноїдальний інтервал для тексту для кращої читабельності, автоматичне вставлення пробілів між символами CJK (китайська, японська, корейська), англійськими напівширинними, цифрами та символами.</string>
     <string name="SendWithPangu">Надіслати з Pangu</string>
