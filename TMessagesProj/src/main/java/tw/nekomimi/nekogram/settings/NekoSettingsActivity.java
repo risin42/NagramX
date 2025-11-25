@@ -94,6 +94,8 @@ import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.GsonUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
+import xyz.nextalone.nagram.helper.LocalPeerColorHelper;
+import xyz.nextalone.nagram.helper.LocalPremiumStatusHelper;
 
 public class NekoSettingsActivity extends BaseFragment {
     public static final int PAGE_TYPE = 0;
@@ -915,7 +917,9 @@ public class NekoSettingsActivity extends BaseFragment {
                 AyuSavePreferences.saveExclusionPrefix,
                 ChatNameHelper.chatNameOverridePrefix,
                 NekoConfig.channelAliasPrefix,
-                DialogConfig.customForumTabPrefix
+                DialogConfig.customForumTabPrefix,
+                LocalPeerColorHelper.KEY_PREFIX,
+                LocalPremiumStatusHelper.KEY_PREFIX
         };
 
         for (Map.Entry<String, JsonElement> element : configJson.entrySet()) {

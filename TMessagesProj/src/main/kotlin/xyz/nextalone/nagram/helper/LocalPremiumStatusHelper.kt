@@ -1,6 +1,8 @@
 package xyz.nextalone.nagram.helper
 
+import androidx.core.content.edit
 import com.google.gson.Gson
+import org.telegram.messenger.UserConfig
 import org.telegram.tgnet.TLRPC
 import tw.nekomimi.nekogram.NekoConfig
 import xyz.nextalone.nagram.NaConfig
@@ -10,45 +12,89 @@ data class LocalEmojiStatusData(
 )
 
 object LocalPremiumStatusHelper {
-    var loaded: Boolean = false
-    var data: LocalEmojiStatusData? = null
+    const val KEY_PREFIX = "useLocalEmojiStatusData_"
+
+    private val dataMap = mutableMapOf<Long, LocalEmojiStatusData?>()
+    private val loadedUsers = mutableSetOf<Long>()
 
     @JvmStatic
     fun getDocumentId(user: TLRPC.User?): Long? {
         if (!NekoConfig.localPremium.Bool()) return null
-        init()
-        if (user != null && user.self && data != null) {
-            val u = data!!.until ?: 0
-            if (u != 0 && u <= (System.currentTimeMillis() / 1000).toInt()) {
-                return null
-            }
-            return data!!.documentId
+        if (user == null || !isLocalUser(user.id)) return null
+
+        val data = getDataForUser(user.id) ?: return null
+        val until = data.until ?: 0
+        if (until != 0 && until <= (System.currentTimeMillis() / 1000).toInt()) {
+            return null
         }
-        return null
+        return data.documentId
+    }
+
+    private fun getDataForUser(userId: Long): LocalEmojiStatusData? {
+        if (userId == 0L) return null
+        initForUser(userId)
+        return dataMap[userId]
+    }
+
+    private fun isLocalUser(userId: Long): Boolean {
+        for (i in 0 until UserConfig.MAX_ACCOUNT_COUNT) {
+            if (UserConfig.getInstance(i).isClientActivated &&
+                UserConfig.getInstance(i).getClientUserId() == userId
+            ) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun getCurrentUserId(): Long {
+        return UserConfig.getInstance(UserConfig.selectedAccount).getClientUserId()
     }
 
     @JvmStatic
-    fun init(force: Boolean = false) {
-        if (loaded && !force) return
-        loaded = true
+    fun initForUser(userId: Long, force: Boolean = false) {
+        if (!force && loadedUsers.contains(userId)) return
+        loadedUsers.add(userId)
+
         try {
             val gson = Gson()
-            data = gson.fromJson(
-                NaConfig.useLocalEmojiStatusData.String(),
-                LocalEmojiStatusData::class.java
-            )
+            val userKey = KEY_PREFIX + userId
+
+            var jsonStr = NaConfig.preferences.getString(userKey, null)
+
+            if (jsonStr.isNullOrEmpty()) {
+                val legacyJson = NaConfig.useLocalEmojiStatusData.String()
+                if (legacyJson.isNotEmpty()) {
+                    jsonStr = legacyJson
+                    NaConfig.preferences.edit { putString(userKey, jsonStr) }
+                }
+            }
+
+            dataMap[userId] = if (!jsonStr.isNullOrEmpty()) {
+                gson.fromJson(jsonStr, LocalEmojiStatusData::class.java)
+            } else {
+                null
+            }
         } catch (_: Exception) {
+            dataMap[userId] = null
         }
     }
 
     @JvmStatic
     fun apply(status: TLRPC.EmojiStatus?) {
         if (!NekoConfig.localPremium.Bool()) return
+
+        val userId = getCurrentUserId()
+        if (userId == 0L) return
+
+        val userKey = KEY_PREFIX + userId
+
         if (status == null || status is TLRPC.TL_emojiStatusEmpty) {
-            NaConfig.useLocalEmojiStatusData.setConfigString("")
-            init(true)
+            dataMap[userId] = null
+            NaConfig.preferences.edit { putString(userKey, "") }
             return
         }
+
         var documentId: Long? = null
         var until: Int? = null
         when (status) {
@@ -62,8 +108,9 @@ object LocalPremiumStatusHelper {
                 until = if ((status.flags and 1) != 0) status.until else null
             }
         }
+
         val localData = LocalEmojiStatusData(documentId, until)
-        NaConfig.useLocalEmojiStatusData.setConfigString(Gson().toJson(localData))
-        init(true)
+        dataMap[userId] = localData
+        NaConfig.preferences.edit { putString(userKey, Gson().toJson(localData)) }
     }
 }
