@@ -88,7 +88,7 @@ public class TranscribeHelper {
     public static boolean useTranscribeAI(int account) {
         int provider = NaConfig.INSTANCE.getTranscribeProvider().Int();
         return provider == TRANSCRIBE_WORKERSAI || provider == TRANSCRIBE_GEMINI || provider == TRANSCRIBE_OPENAI ||
-                (!UserConfig.getInstance(account).isRealPremium() && provider == TRANSCRIBE_AUTO);
+                (!UserConfig.getInstance(account).isPremium() && provider == TRANSCRIBE_AUTO);
     }
 
     private static EditTextBoldCursor createAndSetupEditText(Context context, Theme.ResourcesProvider resourcesProvider, String initialText, String hintText, int imeOptions, boolean requestFocus) {

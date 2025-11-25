@@ -17015,7 +17015,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
     private void updateEditColorIcon() {
         if (getContext() == null || editColorItem == null) return;
-        if (getUserConfig().isPremium()) {
+        if (getUserConfig().isPremiumOrLocal()) {
             editColorItem.setIcon(R.drawable.menu_profile_colors);
         } else {
             Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.menu_profile_colors_locked);

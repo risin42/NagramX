@@ -4062,7 +4062,7 @@ public class AlertsCreator {
         final FrameLayout repeatContainer;
         final TextView repeatTextView;
         final Runnable updateRepeatText;
-        if (UserConfig.getInstance(UserConfig.selectedAccount).isRealPremium()/*dialogId == selfUserId || true*/) {
+        if (UserConfig.getInstance(UserConfig.selectedAccount).isPremium()/*dialogId == selfUserId || true*/) {
             repeatContainer = new FrameLayout(context);
 
             final int textColor = datePickerColors != null ? datePickerColors.textColor : Theme.getColor(Theme.key_windowBackgroundWhiteBlackText, resourcesProvider);

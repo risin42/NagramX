@@ -93,7 +93,7 @@ public class TranslateController extends BaseController {
     }
 
     public boolean isFeatureAvailable() {
-        boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
+        boolean isRealPremium = UserConfig.getInstance(currentAccount).isPremium();
         return NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool() && (isRealPremium || NekoConfig.translationProvider.Int() != Translator.providerTelegram);
     }
 

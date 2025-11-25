@@ -6775,7 +6775,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 break;
             }
         }
-        boolean visible = !getUserConfig().isPremium() && !getMessagesController().premiumFeaturesBlocked() && visibleByDownload && visibleByPosition && DISPLAY_SPEEDOMETER_IN_DOWNLOADS_SEARCH;
+        boolean visible = BuildConfig.DEBUG && !getUserConfig().isPremium() && !getMessagesController().premiumFeaturesBlocked() && visibleByDownload && visibleByPosition && DISPLAY_SPEEDOMETER_IN_DOWNLOADS_SEARCH;
 
         boolean wasVisible = speedItem.getTag() != null;
         if (visible != wasVisible) {
@@ -8176,7 +8176,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 if (loadFinal) {
                     int count = 100;
                     if (loadAll) {
-                        count = getUserConfig().isRealPremium() ? getMessagesController().dialogFiltersChatsLimitPremium : getMessagesController().dialogFiltersChatsLimitDefault;
+                        count = getUserConfig().isPremium() ? getMessagesController().dialogFiltersChatsLimitPremium : getMessagesController().dialogFiltersChatsLimitDefault;
                     }
                     getMessagesController().loadDialogs(folderId, -1, count, loadFromCacheFinal);
                 }

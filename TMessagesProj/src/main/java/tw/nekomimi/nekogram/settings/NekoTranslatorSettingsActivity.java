@@ -305,7 +305,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 if (position == cellGroup.rows.indexOf(useTelegramUIAutoTranslateRow)) {
                     int provider = NekoConfig.translationProvider.Int();
                     boolean isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
-                    boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
+                    boolean isRealPremium = UserConfig.getInstance(currentAccount).isPremium();
                     if (provider == Translator.providerTelegram && !isAutoTranslateEnabled && !isRealPremium) {
                         BulletinFactory.of(this).createSimpleBulletin(R.raw.info, getString(R.string.LoginEmailResetPremiumRequiredTitle)).show();
                         BotWebViewVibrationEffect.APP_ERROR.vibrate();
@@ -331,7 +331,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                     showProviderSelectionPopup(view, NekoConfig.translationProvider, () -> {
                         if (NekoConfig.translationProvider.Int() == Translator.providerTelegram) {
                             boolean isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
-                            boolean isRealPremium = UserConfig.getInstance(currentAccount).isRealPremium();
+                            boolean isRealPremium = UserConfig.getInstance(currentAccount).isPremium();
                             if (isAutoTranslateEnabled && !isRealPremium) {
                                 NaConfig.INSTANCE.getTelegramUIAutoTranslate().setConfigBool(false);
                                 listAdapter.notifyItemChanged(cellGroup.rows.indexOf(useTelegramUIAutoTranslateRow));

@@ -124,7 +124,7 @@ public class TranscribeButton {
 
         this.isOpen = false;
         this.shouldBeOpen = false;
-        premium = parent.getMessageObject() != null && (UserConfig.getInstance(parent.getMessageObject().currentAccount).isRealPremium() || TranscribeHelper.useTranscribeAI(parent.getMessageObject().currentAccount));
+        premium = parent.getMessageObject() != null && (UserConfig.getInstance(parent.getMessageObject().currentAccount).isPremium() || TranscribeHelper.useTranscribeAI(parent.getMessageObject().currentAccount));
 
         loadingFloat = new AnimatedFloat(parent, 250, CubicBezierInterpolator.EASE_OUT_QUINT);
         animatedDrawLock = new AnimatedFloat(parent, 250, CubicBezierInterpolator.EASE_OUT_QUINT);
@@ -1024,7 +1024,7 @@ public class TranscribeButton {
         if (!TextUtils.isEmpty(messageObject.messageOwner.voiceTranscription)) {
             return false;
         }
-        if (UserConfig.getInstance(messageObject.currentAccount).isRealPremium()) {
+        if (UserConfig.getInstance(messageObject.currentAccount).isPremium()) {
             return false;
         }
         if (TranscribeHelper.useTranscribeAI(messageObject.currentAccount)) {

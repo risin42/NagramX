@@ -2638,7 +2638,7 @@ public class MessagesController extends BaseController implements NotificationCe
         }
         getMessagesController().updateEmojiStatusUntilUpdate(dialogId, new_emoji_status);
         getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_EMOJI_STATUS);
-        if (UserConfig.getInstance(currentAccount).isRealPremium()) getConnectionsManager().sendRequest(r, null);
+        if (UserConfig.getInstance(currentAccount).isPremium()) getConnectionsManager().sendRequest(r, null);
     }
 
     public void removeFilter(DialogFilter filter) {
