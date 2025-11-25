@@ -59,7 +59,6 @@
     <string name="RegexFiltersExportError">Filtreler dışa aktarılamadı.</string>
     <string name="botCommandConfirmTitle">Komutu Gönder</string>
     <string name="botCommandConfirmText">Bu komutu göndermek istiyor musunuz?\n\n%s</string>
-    <string name="DisableScreenshotDetection">Ekran Görüntüsü Algılamayı Devre Dışı Bırak</string>
     <string name="MessageSavingSaveMedia">Medyayı Kaydet</string>
     <string name="MessageSavingSaveMediaHint">Daha Fazlası İçin Tıklayın.</string>
     <string name="MessageSavingSaveMediaInPrivateChats">… Özel Sohbetlerde</string>

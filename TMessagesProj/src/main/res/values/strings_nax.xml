@@ -67,7 +67,6 @@
     <string name="RegexFiltersExportError">Failed to export filters.</string>
     <string name="botCommandConfirmTitle">Send Command</string>
     <string name="botCommandConfirmText">Do you want to send this command?\n\n%s</string>
-    <string name="DisableScreenshotDetection">Disable Screenshot Detection</string>
     <string name="MessageSavingSaveMedia">Save Media</string>
     <string name="MessageSavingSaveMediaHint">Click for More.</string>
     <string name="MessageSavingSaveMediaInPrivateChats">… in Private Chats</string>

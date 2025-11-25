@@ -59,7 +59,6 @@
     <string name="RegexFiltersExportError">Falha ao exportar filtros.</string>
     <string name="botCommandConfirmTitle">Enviar Comando</string>
     <string name="botCommandConfirmText">Você quer enviar este comando?\n\n%s</string>
-    <string name="DisableScreenshotDetection">Desativar Detecção de Captura de Tela</string>
     <string name="MessageSavingSaveMedia">Salvar Mídia</string>
     <string name="MessageSavingSaveMediaHint">Clique para Mais.</string>
     <string name="MessageSavingSaveMediaInPrivateChats">… em Chats Privados</string>

@@ -59,7 +59,6 @@
     <string name="RegexFiltersExportError">Impossibile esportare i filtri.</string>
     <string name="botCommandConfirmTitle">Invia comando</string>
     <string name="botCommandConfirmText">Vuoi inviare questo comando?\n\n%s</string>
-    <string name="DisableScreenshotDetection">Disabilita il rilevamento degli screenshot</string>
     <string name="MessageSavingSaveMedia">Salva media</string>
     <string name="MessageSavingSaveMediaHint">Clicca per saperne di più.</string>
     <string name="MessageSavingSaveMediaInPrivateChats">… nelle chat private</string>

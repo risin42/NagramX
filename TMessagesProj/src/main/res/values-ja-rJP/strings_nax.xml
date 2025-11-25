@@ -59,7 +59,6 @@
     <string name="RegexFiltersExportError">フィルターのエクスポートに失敗しました。</string>
     <string name="botCommandConfirmTitle">コマンド確認</string>
     <string name="botCommandConfirmText">このコマンドを送信しますか？\n\n%s</string>
-    <string name="DisableScreenshotDetection">スクリーンショット検出を無効にする</string>
     <string name="MessageSavingSaveMedia">メディアを保存</string>
     <string name="MessageSavingSaveMediaHint">詳細はこちらをタップ。</string>
     <string name="MessageSavingSaveMediaInPrivateChats">プライベートチャットで保存</string>
