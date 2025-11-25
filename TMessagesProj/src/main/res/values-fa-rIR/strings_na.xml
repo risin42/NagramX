@@ -58,7 +58,6 @@
     <string name="ChatDecoration">تزئین چت</string>
     <string name="NeedChangeNekoSettings">بهتر است تنظیمات N را تغییر دهید</string>
     <string name="DoNotUnarchiveBySwipe">غیرفعال کردن سوایپ برای بازگردانی از آرشیو</string>
-    <string name="DoNotShareMyPhoneNumber">شماره تلفن من را به اشتراک نگذارید</string>
     <string name="DefaultDeleteMenu">منوی حذف پیش‌فرض</string>
     <string name="DisableStories">استوری‌ها را غیرفعال کنید</string>
     <string name="CopyPhotoAsSticker">کپی به‌صورت برچسب</string>

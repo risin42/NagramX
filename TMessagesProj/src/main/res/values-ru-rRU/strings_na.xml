@@ -58,7 +58,6 @@
     <string name="ChatDecoration">Оформление чатов</string>
     <string name="NeedChangeNekoSettings">Вам нужно изменить «Настройки N»</string>
     <string name="DoNotUnarchiveBySwipe">Отключить разархивирование смахиванием</string>
-    <string name="DoNotShareMyPhoneNumber">Не сообщать мой номер телефона</string>
     <string name="DefaultDeleteMenu">Меню удаления по умолчанию</string>
     <string name="DisableSuggestionView">Отключить предложение настройки профиля</string>
     <string name="DisableStories">Отключить истории</string>
