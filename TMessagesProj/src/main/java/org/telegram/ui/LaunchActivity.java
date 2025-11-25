@@ -3909,7 +3909,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             if (fragment != null) {
                 Bulletin.make(fragment, layout, duration).show();
                 try {
-                    fragment.fragmentView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                    if (!NekoConfig.disableVibration.Bool()) fragment.fragmentView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                 } catch (Exception ignored) {}
             }
         });

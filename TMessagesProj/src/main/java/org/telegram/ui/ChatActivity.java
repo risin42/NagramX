@@ -8292,9 +8292,7 @@ public class ChatActivity extends BaseFragment implements
         });
         if (!noForwards) {
             actionsButtonsLayout.setReplyButtonOnLongClickListener(v -> {
-                if (!NekoConfig.disableVibration.Bool()) {
-                    v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                }
+                if (!NekoConfig.disableVibration.Bool()) v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                 chatsHelper.makeReplyButtonLongClick(this, noForwards, getResourceProvider());
                 return false;
             });
@@ -47137,6 +47135,9 @@ public class ChatActivity extends BaseFragment implements
                 returnToMessageId = 0;
                 returnToMessageIdsStack.clear();
                 onPageDownClicked();
+                if (NekoConfig.disableVibration.Bool()) {
+                    AndroidUtil.disableHapticFeedback(view);
+                }
                 return true;
             }
         }
