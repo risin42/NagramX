@@ -103,12 +103,61 @@ object GoogleTranslator : Translator {
             if (json.isNull("translation")) {
                 error("Google API response missing 'translation' field: ${json.toString(2)}")
             }
-            return json.getString("translation")
+            val result = json.getString("translation")
+
+            return if (to.lowercase().startsWith("zh")) {
+                fixChineseNewlines(text, result)
+            } else {
+                result
+            }
         } catch (e: IOException) {
             throw RuntimeException("Google API request failed due to network issue: ${e.message}", e)
         } catch (e: JSONException) {
             throw RuntimeException("Google API response parsing failed: ${e.message}", e)
         }
+    }
+
+    /**
+     * Fix Google Translate API bug for Chinese: single \n becomes \n\n in result.
+     * Strategy: Build newline pattern from original text and apply to translated result.
+     */
+    private fun fixChineseNewlines(original: String, translated: String): String {
+        // Extract newline patterns from original: count consecutive \n at each break point
+        val originalNewlinePattern = mutableListOf<Int>()
+        var i = 0
+        while (i < original.length) {
+            if (original[i] == '\n') {
+                var count = 0
+                while (i < original.length && original[i] == '\n') {
+                    count++
+                    i++
+                }
+                originalNewlinePattern.add(count)
+            } else {
+                i++
+            }
+        }
+
+        if (originalNewlinePattern.isEmpty()) {
+            return translated
+        }
+
+        // Split translated text by newlines (one or more)
+        val parts = translated.split(Regex("\n+"))
+
+        // Rebuild with original newline pattern
+        if (parts.size <= 1) {
+            return translated
+        }
+
+        val result = StringBuilder()
+        for (j in parts.indices) {
+            result.append(parts[j])
+            if (j < parts.size - 1 && j < originalNewlinePattern.size) {
+                repeat(originalNewlinePattern[j]) { result.append('\n') }
+            }
+        }
+        return result.toString()
     }
 
     private val targetLanguages = listOf(
