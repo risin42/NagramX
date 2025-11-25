@@ -29584,7 +29584,7 @@ public class ChatActivity extends BaseFragment implements
                 }
                 addToContactsButton.setTag(null);
                 addToContactsButton.setVisibility(View.VISIBLE);
-            } else if (showShare && !user.self && !NaConfig.INSTANCE.getDoNotShareMyPhoneNumber().Bool()) {
+            } else if (showShare && !user.self) {
                 createTopPanel();
                 if (topChatPanelView == null) {
                     return;

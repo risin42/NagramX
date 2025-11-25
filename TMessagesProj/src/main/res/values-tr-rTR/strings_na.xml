@@ -58,7 +58,6 @@
     <string name="ChatDecoration">Sohbet Süslemesi</string>
     <string name="NeedChangeNekoSettings">N-Ayarlarını değiştirmeniz gerekiyor</string>
     <string name="DoNotUnarchiveBySwipe">Arşivden Çıkarmak için Kaydırmayı Devre Dışı Bırak</string>
-    <string name="DoNotShareMyPhoneNumber">Telefon Numaramı Paylaşma</string>
     <string name="DefaultDeleteMenu">Varsayılan Silme Menüsü</string>
     <string name="DisableStories">Hikayeleri Devre Dışı Bırak</string>
     <string name="CopyPhotoAsSticker">Çıkartma Olarak Kopyala</string>

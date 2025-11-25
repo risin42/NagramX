@@ -299,12 +299,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val doNotShareMyPhoneNumber =
-        addConfig(
-            "DoNotShareMyPhoneNumber",
-            ConfigItem.configTypeBool,
-            false
-        )
     val defaultDeleteMenu =
         addConfig(
             "DefaultDeleteMenu",

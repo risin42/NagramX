@@ -515,7 +515,7 @@ public class ContactAddActivity extends BaseFragment implements NotificationCent
         return fragmentView = frameLayout;
     }
 
-    private boolean checkShare = !NaConfig.INSTANCE.getDoNotShareMyPhoneNumber().Bool();
+    private boolean checkShare = false;
 
     private boolean firstSet = true;
     private void fillItems(ArrayList<UItem> items, UniversalAdapter adapter) {

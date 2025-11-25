@@ -58,7 +58,6 @@
     <string name="ChatDecoration">チャットデコレーション</string>
     <string name="NeedChangeNekoSettings">この設定はN-設定によって上書きされているため、変更できません</string>
     <string name="DoNotUnarchiveBySwipe">スワイプによるアーカイブ解除を無効にする</string>
-    <string name="DoNotShareMyPhoneNumber">電話番号の共有を無効にする</string>
     <string name="DefaultDeleteMenu">デフォルトの削除メニュー</string>
     <string name="DisableStories">ストーリー機能を無効にする</string>
     <string name="CopyPhotoAsSticker">ステッカーとしてコピー</string>
