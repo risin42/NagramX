@@ -59,7 +59,6 @@
     <string name="RegexFiltersExportError">导出过滤器失败。</string>
     <string name="botCommandConfirmTitle">确认发送</string>
     <string name="botCommandConfirmText">您确定要发送此指令吗？\n\n%s</string>
-    <string name="DisableScreenshotDetection">禁用截屏检测</string>
     <string name="MessageSavingSaveMedia">保存媒体</string>
     <string name="MessageSavingSaveMediaHint">点击查看更多选项。</string>
     <string name="MessageSavingSaveMediaInPrivateChats">私聊</string>

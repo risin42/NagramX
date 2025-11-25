@@ -59,7 +59,6 @@
     <string name="RegexFiltersExportError">Не вдалося експортувати фільтри.</string>
     <string name="botCommandConfirmTitle">Надіслати команду</string>
     <string name="botCommandConfirmText">Ви хочете відправити цю команду? \n\n%s</string>
-    <string name="DisableScreenshotDetection">Вимкнути виявлення скріншотів</string>
     <string name="MessageSavingSaveMedia">Зберегти медіа</string>
     <string name="MessageSavingSaveMediaHint">Натисніть, щоб побачити більше.</string>
     <string name="MessageSavingSaveMediaInPrivateChats">… у приватних чатах</string>

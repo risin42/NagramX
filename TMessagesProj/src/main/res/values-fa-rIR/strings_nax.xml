@@ -53,7 +53,6 @@
     <string name="RegexFiltersNotice">برای ویرایش ضربه بزنید.</string>
     <string name="botCommandConfirmTitle">ارسال دستور</string>
     <string name="botCommandConfirmText">آیا می‌خواهید این دستور را ارسال کنید؟\n\n%s</string>
-    <string name="DisableScreenshotDetection">غیرفعال کردن تشخیص اسکرین‌شات</string>
     <string name="MessageSavingSaveMedia">ذخیره رسانه‌ها</string>
     <string name="MessageSavingSaveMediaHint">برای اطلاعات بیشتر کلیک کنید.</string>
     <string name="MessageSavingSaveMediaInPrivateChats">... در گفتگوهای خصوصی</string>

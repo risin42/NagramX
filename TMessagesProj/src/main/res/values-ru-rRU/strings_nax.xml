@@ -59,7 +59,6 @@
     <string name="RegexFiltersExportError">Не удалось экспортировать фильтры.</string>
     <string name="botCommandConfirmTitle">Отправить команду</string>
     <string name="botCommandConfirmText">Вы хотите отправить эту команду?\n\n%s</string>
-    <string name="DisableScreenshotDetection">Отключить обнаружение скриншотов</string>
     <string name="MessageSavingSaveMedia">Сохранять медиа</string>
     <string name="MessageSavingSaveMediaHint">Нажмите, чтобы узнать больше.</string>
     <string name="MessageSavingSaveMediaInPrivateChats">… в личных чатах</string>
