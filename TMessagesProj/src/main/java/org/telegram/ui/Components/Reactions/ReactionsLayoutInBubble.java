@@ -210,7 +210,7 @@ public class ReactionsLayoutInBubble {
                             }
                         }
                     }
-                    if (!hasPaidReaction) {
+                    if (false && !hasPaidReaction) {
                         includeEmptyStarButton = true;
                     }
                 }
