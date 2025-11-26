@@ -1391,9 +1391,6 @@ object NaConfig {
         if (translatorMode.Int() > 1) {
             translatorMode.setConfigInt(1)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            pushServiceTypeInAppDialog.setConfigBool(false)
-        }
         if (!preferences.getBoolean("ShowIdAndDc", true)) {
             idDcType.setConfigInt(0)
         }
