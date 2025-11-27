@@ -17488,6 +17488,7 @@ public class ChatActivity extends BaseFragment implements
         @Override
         public void drawBlurRect(Canvas canvas, float y, Rect rectTmp, Paint blurScrimPaint, boolean top) {
             int blurAlpha = Color.alpha(Theme.getColor(SharedConfig.getDevicePerformanceClass() == SharedConfig.PERFORMANCE_CLASS_HIGH ? Theme.key_chat_BlurAlpha : Theme.key_chat_BlurAlphaSlow, getResourceProvider()));
+            if (NekoConfig.forceBlurInChat.Bool()) blurAlpha = NekoConfig.chatBlueAlphaValue.Int();
             final BlurredBackgroundSource blurSource = glassBackgroundSourceFrostedRenderNode;
             if (blurSource != null && blurAlpha < 255) {
                 canvas.save();
