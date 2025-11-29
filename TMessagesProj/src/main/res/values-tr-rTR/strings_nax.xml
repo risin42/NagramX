@@ -252,9 +252,15 @@
     <string name="BlockChannel">Kanalı engelle</string>
     <string name="UnblockChannel">Kanalın engelini kaldır</string>
     <string name="BlockedChannels">Engellenen Kanallar</string>
+    <string name="BlockedChannelsCount_one">%1$d engellenen kanal</string>
+    <string name="BlockedChannelsCount_other">%1$d engellenen kanal</string>
+    <string name="BlockedChannelsInfo">Gruplarda engellenen kanallardan gelen mesajları gizleyebilirsiniz. %s</string>
     <string name="ChannelBlocked">Kanal engellendi.</string>
     <string name="ChannelUnblocked">Kanalın engeli kaldırıldı.</string>
     <string name="BlockedChannelsEmpty">Henüz engellenen kanal yok</string>
     <string name="UnblockAllChannelsWarn">**Tüm kanalların** engelini kaldırmak istediğinizden emin misiniz?</string>
     <string name="BlockChannelsUnavailable">Bazı kanallar geçici olarak kullanılamıyor.</string>
+    <string name="FixLinkPreview">Bağlantı Önizlemesini Düzelt</string>
+    <string name="NoQuoteForwardShort">Alıntı Yapma</string>
+    <string name="ForceEdgeToEdge">Uçtan Uca Zorla</string>
 </resources>
