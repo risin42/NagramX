@@ -11,7 +11,6 @@ package com.radolyn.ayugram.messages;
 
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.AyuUtils;
@@ -25,7 +24,6 @@ import com.radolyn.ayugram.database.entities.EditedMessage;
 import com.radolyn.ayugram.proprietary.AyuMessageUtils;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.Utilities;
@@ -40,7 +38,6 @@ import tw.nekomimi.nekogram.utils.FileUtil;
 public class AyuMessagesController {
     public static final String attachmentsSubfolder = "Saved Attachments";
     public static final File attachmentsPath = new File(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AyuConstants.APP_NAME), attachmentsSubfolder);
-    private static final String NAX = "AyuMessagesController";
     private static AyuMessagesController instance;
     private final EditedMessageDao editedMessageDao;
     private final DeletedMessageDao deletedMessageDao;
@@ -63,7 +60,9 @@ public class AyuMessagesController {
                 File randomFile = new File(attachmentsPath, AyuUtils.generateRandomString(4));
                 AndroidUtilities.createEmptyFile(randomFile);
                 if (!randomFile.renameTo(nomediaFile)) {
-                    if (!randomFile.delete()) FileLog.e("Failed to delete random .nomedia file");
+                    if (!randomFile.delete()) {
+                        randomFile.deleteOnExit();
+                    }
                     FileLog.e("Failed to rename random .nomedia file to the correct name");
                 } else {
                     FileLog.d("Created .nomedia file in attachments folder by renaming a random file");
@@ -182,8 +181,7 @@ public class AyuMessagesController {
 
         var msg = prefs.getMessage();
 
-        if (BuildVars.LOGS_ENABLED)
-            Log.d(NAX, "saving message " + prefs.getMessageId() + " for " + prefs.getDialogId() + " with topic " + prefs.getTopicId());
+        FileLog.d("saving message " + prefs.getMessageId() + " for " + prefs.getDialogId() + " with topic " + prefs.getTopicId());
 
         AyuMessageUtils.map(prefs, deletedMessage);
         AyuMessageUtils.mapMedia(prefs, deletedMessage, true);
@@ -212,7 +210,6 @@ public class AyuMessagesController {
                 deletedReaction.documentId = ((TLRPC.TL_reactionCustomEmoji) reaction.reaction).document_id;
                 deletedReaction.isCustom = true;
             } else {
-                if (BuildVars.LOGS_ENABLED) Log.d(NAX, "fake news emoji");
                 continue;
             }
 
@@ -242,10 +239,6 @@ public class AyuMessagesController {
 
     public List<DeletedMessageFull> getThreadMessages(long userId, long dialogId, long threadMessageId, long startId, long endId, int limit) {
         return deletedMessageDao.getThreadMessages(userId, dialogId, threadMessageId, startId, endId, limit);
-    }
-
-    public List<DeletedMessageFull> getMessagesGrouped(long userId, long dialogId, long groupedId) {
-        return deletedMessageDao.getMessagesGrouped(userId, dialogId, groupedId);
     }
 
     public List<DeletedMessageFull> getMessagesGroupedIn(long userId, long dialogId, List<Long> groupedIds) {
@@ -281,7 +274,7 @@ public class AyuMessagesController {
             var p = new File(msg.message.mediaPath);
             try {
                 if (!p.exists() || !p.delete()) {
-                    Log.e(NAX, "failed to delete file " + msg.message.mediaPath);
+                    p.deleteOnExit();
                 }
             } catch (Exception e) {
                 FileLog.e(e);
@@ -307,7 +300,7 @@ public class AyuMessagesController {
                 var p = new File(msg.message.mediaPath);
                 try {
                     if (!p.exists() || !p.delete()) {
-                        Log.e(NAX, "failed to delete file " + msg.message.mediaPath);
+                        p.deleteOnExit();
                     }
                 } catch (Exception e) {
                     FileLog.e(e);
@@ -316,19 +309,30 @@ public class AyuMessagesController {
         }
     }
 
+    public void deleteRevision(long fakeId) {
+        String mediaPath = editedMessageDao.getMediaPathByFakeId(fakeId);
+        int deleted = editedMessageDao.deleteByFakeId(fakeId);
+        if (deleted == 0) {
+            return;
+        }
+        if (!TextUtils.isEmpty(mediaPath)) {
+            File p = new File(mediaPath);
+            try {
+                if (!p.exists() || !p.delete()) {
+                    p.deleteOnExit();
+                }
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
+        }
+    }
+
     public void deleteCurrent(long dialogId, long mergeDialogId, Runnable callback) {
         List<DeletedMessageFull> messages = deletedMessageDao.getMessagesByDialog(dialogId);
-        ArrayList<Integer> messageIds = new ArrayList<>();
-        for (DeletedMessageFull message : messages) {
-            messageIds.add(message.message.messageId);
-        }
 
         if (mergeDialogId != 0) {
             List<DeletedMessageFull> mergeMessages = deletedMessageDao.getMessagesByDialog(mergeDialogId);
             messages.addAll(mergeMessages);
-            for (DeletedMessageFull message : mergeMessages) {
-                messageIds.add(message.message.messageId);
-            }
         }
 
         // Delete messages and their edit history from database
@@ -346,7 +350,7 @@ public class AyuMessagesController {
                 File mediaFile = new File(msg.message.mediaPath);
                 try {
                     if (!mediaFile.exists() || !mediaFile.delete()) {
-                        Log.e(NAX, "failed to delete file " + msg.message.mediaPath);
+                        mediaFile.deleteOnExit();
                     }
                 } catch (Exception e) {
                     FileLog.e(e);
@@ -357,6 +361,25 @@ public class AyuMessagesController {
         if (callback != null) {
             callback.run();
         }
+    }
+
+    public boolean isAyuDeletedMessageId(long userId, long dialogId, int messageId) {
+        if (userId == 0 || dialogId == 0 || messageId == 0) {
+            return false;
+        }
+        return AyuMessagesController.getInstance().getMessage(userId, dialogId, messageId) != null;
+    }
+
+    public int getDeletedCount(long userId, long dialogId) {
+        return deletedMessageDao.countByDialog(userId, dialogId);
+    }
+
+    public List<DeletedMessageFull> getLatestMessages(long userId, long dialogId, int limit) {
+        return deletedMessageDao.getLatestMessages(userId, dialogId, limit);
+    }
+
+    public List<DeletedMessageFull> getOlderMessagesBefore(long userId, long dialogId, int before, int limit) {
+        return deletedMessageDao.getOlderMessagesBefore(userId, dialogId, before, limit);
     }
 
     public void clean() {

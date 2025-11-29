@@ -960,6 +960,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val chatMenuItemViewDeleted =
+        addConfig(
+            "ChatMenuItemViewDeleted",
+            ConfigItem.configTypeBool,
+            true
+        )
     val chatMenuItemClearDeleted =
         addConfig(
             "ChatMenuItemClearDeleted",

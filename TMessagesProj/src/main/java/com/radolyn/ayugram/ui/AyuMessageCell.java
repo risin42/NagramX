@@ -1,15 +1,10 @@
-/*
- * This is the source code of AyuGram for Android.
- *
- * We do not and cannot prevent the use of our code,
- * but be respectful and credit the original author.
- *
- * Copyright @Radolyn, 2023
- */
-
 package com.radolyn.ayugram.ui;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
@@ -24,29 +19,35 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.radolyn.ayugram.database.entities.EditedMessage;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.DialogObject;
+import org.telegram.messenger.ImageReceiver;
+import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.browser.Browser;
+import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Cells.ChatMessageCell;
+import org.telegram.ui.Components.URLSpanMono;
 
 import java.util.Optional;
 
+@SuppressLint("ViewConstructor")
 public class AyuMessageCell extends ChatMessageCell {
 
     private final int touchSlop;
     private EditedMessage editedMessage;
     private Runnable longPressRunnable;
-    private boolean longPressScheduled;
     private float downX, downY;
     private boolean urlLongPressHandled;
+    private boolean avatarPressedDown;
     @Nullable
     private AyuMessageCellDelegate ayuDelegate;
 
     public AyuMessageCell(Context context, int currentAccount) {
         super(context, currentAccount);
 
+        isChat = true;
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
         setFullyDraw(true);
-        isChat = false;
         setDelegate(new ChatMessageCell.ChatMessageCellDelegate() {
             @Override
             public boolean canPerformActions() {
@@ -59,9 +60,12 @@ public class AyuMessageCell extends ChatMessageCell {
                     urlLongPressHandled = true;
                     if (longPressRunnable != null) {
                         AyuMessageCell.this.removeCallbacks(longPressRunnable);
-                        longPressScheduled = false;
                     }
-                    AndroidUtilities.addToClipboard(((URLSpan) urlSpan).getURL());
+                    if (urlSpan instanceof URLSpanMono) {
+                        ((URLSpanMono) urlSpan).copyToClipboard();
+                    } else if (urlSpan instanceof URLSpan) {
+                        AndroidUtilities.addToClipboard(((URLSpan) urlSpan).getURL());
+                    }
                     Optional.ofNullable(ayuDelegate).ifPresent(AyuMessageCellDelegate::onTextCopied);
                     return;
                 }
@@ -81,28 +85,27 @@ public class AyuMessageCell extends ChatMessageCell {
             }
 
             @Override
-            public void didLongPress(ChatMessageCell cell, float x, float y) {
-                if (longPressScheduled && longPressRunnable != null) {
-                    AyuMessageCell.this.removeCallbacks(longPressRunnable);
-                    longPressScheduled = false;
+            public void didPressUserAvatar(ChatMessageCell cell, TLRPC.User user, float touchX, float touchY, boolean asForward) {
+                if (user != null) {
+                    Optional.ofNullable(ayuDelegate).ifPresent(d -> d.onAvatarPressed(cell, user.id));
                 }
-                copyText();
             }
 
             @Override
-            public void didPressOther(ChatMessageCell cell, float otherX, float otherY) {
-                if (editedMessage == null || TextUtils.isEmpty(editedMessage.mediaPath)) {
+            public void didLongPress(ChatMessageCell cell, float x, float y) {
+                boolean hasText = (editedMessage != null && !TextUtils.isEmpty(editedMessage.text)) || (getMessageObject() != null && getMessageObject().messageOwner != null && !TextUtils.isEmpty(getMessageObject().messageOwner.message));
+                if (hasText && isInMessageBubble(x, y) && !isInImageArea(x, y)) {
                     copyText();
                 }
             }
 
             @Override
             public void forceUpdate(ChatMessageCell cell, boolean anchorScroll) {
-                org.telegram.messenger.MessageObject mo = cell.getMessageObject();
-                if (mo != null) {
-                    mo.forceUpdate = true;
-                    AyuMessageCell.this.setMessageObject(mo, null, AyuMessageCell.this.pinnedBottom, AyuMessageCell.this.pinnedTop, AyuMessageCell.this.firstInChat);
-                    mo.forceUpdate = false;
+                MessageObject msg = cell.getMessageObject();
+                if (msg != null) {
+                    msg.forceUpdate = true;
+                    AyuMessageCell.this.setMessageObject(msg, null, AyuMessageCell.this.pinnedBottom, AyuMessageCell.this.pinnedTop, AyuMessageCell.this.firstInChat);
+                    msg.forceUpdate = false;
                 }
                 AyuMessageCell.this.requestLayout();
                 AyuMessageCell.this.invalidate();
@@ -114,6 +117,11 @@ public class AyuMessageCell extends ChatMessageCell {
         });
     }
 
+    @Override
+    protected boolean shouldTranslucentDeleted() {
+        return false;
+    }
+
     public void setEditedMessage(EditedMessage editedMessage) {
         this.editedMessage = editedMessage;
     }
@@ -122,74 +130,131 @@ public class AyuMessageCell extends ChatMessageCell {
         this.ayuDelegate = ayuDelegate;
     }
 
-    private void copyText() {
-        if (editedMessage == null || TextUtils.isEmpty(editedMessage.text)) {
-            return;
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        ImageReceiver avatar = getAvatarImage();
+        if (avatar != null) {
+            avatar.setParentView(this);
         }
-        AndroidUtilities.addToClipboard(editedMessage.text);
-        Optional.ofNullable(ayuDelegate).ifPresent(AyuMessageCellDelegate::onTextCopied);
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (editedMessage == null) {
-            return super.onTouchEvent(event);
-        }
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
 
+        if (longPressRunnable != null) {
+            removeCallbacks(longPressRunnable);
+            longPressRunnable = null;
+        }
+    }
+
+    private void copyText() {
+        String text = null;
+        if (editedMessage != null && !TextUtils.isEmpty(editedMessage.text)) {
+            text = editedMessage.text;
+        } else if (getMessageObject() != null && getMessageObject().messageOwner != null && !TextUtils.isEmpty(getMessageObject().messageOwner.message)) {
+            text = getMessageObject().messageOwner.message;
+        }
+        if (TextUtils.isEmpty(text)) return;
+        AndroidUtilities.addToClipboard(text);
+        Optional.ofNullable(ayuDelegate).ifPresent(AyuMessageCellDelegate::onTextCopied);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 urlLongPressHandled = false;
                 downX = event.getX();
                 downY = event.getY();
-                if (!TextUtils.isEmpty(editedMessage.text) && !isInImageArea(event) && isInMessageBubble(event)) {
-                    if (longPressRunnable == null) {
-                        longPressRunnable = () -> {
-                            if (!urlLongPressHandled) {
-                                copyText();
-                            }
-                        };
-                    }
-                    postDelayed(longPressRunnable, ViewConfiguration.getLongPressTimeout());
-                    longPressScheduled = true;
+                if (isInAvatarArea(downX, downY)) {
+                    avatarPressedDown = true;
+                    return true;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (longPressScheduled) {
-                    float dx = event.getX() - downX;
-                    float dy = event.getY() - downY;
-                    if (dx * dx + dy * dy > touchSlop * touchSlop) {
-                        removeCallbacks(longPressRunnable);
-                        longPressScheduled = false;
+                if (avatarPressedDown) {
+                    float x = event.getX();
+                    float y = event.getY();
+                    if (Math.abs(x - downX) > touchSlop || Math.abs(y - downY) > touchSlop) {
+                        avatarPressedDown = false;
                     }
+                    return true;
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (longPressScheduled) {
-                    removeCallbacks(longPressRunnable);
-                    longPressScheduled = false;
+                if (avatarPressedDown) {
+                    float upX = event.getX();
+                    float upY = event.getY();
+                    avatarPressedDown = false;
+                    if (!urlLongPressHandled && Math.abs(upX - downX) < touchSlop && Math.abs(upY - downY) < touchSlop && isInAvatarArea(upX, upY)) {
+                        MessageObject msg = getMessageObject();
+                        if (msg != null && msg.messageOwner != null && msg.messageOwner.from_id != null) {
+                            long uid = DialogObject.getPeerDialogId(msg.messageOwner.from_id);
+                            Optional.ofNullable(ayuDelegate).ifPresent(d -> d.onAvatarPressed(this, uid));
+                            return true;
+                        }
+                    }
                 }
                 break;
         }
         return super.onTouchEvent(event);
     }
 
-    private boolean isInImageArea(MotionEvent event) {
-        if (getPhotoImage() == null || getPhotoImage().getImageWidth() <= 0 || getPhotoImage().getImageHeight() <= 0) {
-            return false;
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        MessageObject msg = getMessageObject();
+        if (msg == null || msg.isOutOwner()) {
+            return;
         }
-        float ix = getPhotoImage().getImageX();
-        float iy = getPhotoImage().getImageY();
-        float iw = getPhotoImage().getImageWidth();
-        float ih = getPhotoImage().getImageHeight();
-        float x = event.getX();
-        float y = event.getY();
-        return x >= ix && x <= ix + iw && y >= iy && y <= iy + ih;
+        ImageReceiver avatar = getAvatarImage();
+        if (avatar != null) {
+            float wasX = avatar.getImageX();
+            float wasY = avatar.getImageY();
+            float wasW = avatar.getImageWidth();
+            float wasH = avatar.getImageHeight();
+            float wasA = avatar.getAlpha();
+            boolean wasV = avatar.getVisible();
+
+            int size = AndroidUtilities.dp(42);
+            int x = AndroidUtilities.dp(6);
+            int y = getBackgroundDrawableBottom() - size - AndroidUtilities.dp(3);
+            avatar.setVisible(true, false);
+            avatar.setImageCoords(x, y, size, size);
+            avatar.setAlpha(1f);
+            drawStatusWithImage(canvas, avatar, dp(7));
+            avatar.setImageCoords(wasX, wasY, wasW, wasH);
+            avatar.setAlpha(wasA);
+            avatar.setVisible(wasV, false);
+        }
     }
 
-    private boolean isInMessageBubble(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
+    private boolean isInAvatarArea(float x, float y) {
+        MessageObject msg = getMessageObject();
+        if (msg == null || msg.isOutOwner()) {
+            return false;
+        }
+        int size = AndroidUtilities.dp(42);
+        int left = AndroidUtilities.dp(6);
+        int top = getBackgroundDrawableBottom() - size - AndroidUtilities.dp(3);
+        return x >= left && x <= left + size && y >= top && y <= top + size;
+    }
+
+    private boolean isInImageArea(float x, float y) {
+        ImageReceiver photo = getPhotoImage();
+        if (photo == null || photo.getImageWidth() <= 0 || photo.getImageHeight() <= 0) {
+            return false;
+        }
+        return photo.isInsideImage(x, y);
+    }
+
+    private boolean isInMessageBubble(float x, float y) {
         int left = getBackgroundDrawableLeft();
         int right = getBackgroundDrawableRight();
         int top = getBackgroundDrawableTop();
@@ -210,5 +275,7 @@ public class AyuMessageCell extends ChatMessageCell {
         void onTextCopied();
 
         void onImagePressed(ChatMessageCell cell);
+
+        void onAvatarPressed(ChatMessageCell cell, long userId);
     }
 }

@@ -272,4 +272,5 @@
     <string name="FixLinkPreview">Fix Link Preview</string>
     <string name="NoQuoteForwardShort">NoQuote</string>
     <string name="ForceEdgeToEdge">Force edge-to-edge</string>
+    <string name="ViewDeleted">View Deleted</string>
 </resources>

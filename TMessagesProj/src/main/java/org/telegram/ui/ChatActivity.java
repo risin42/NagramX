@@ -144,6 +144,7 @@ import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.messages.AyuSavePreferences;
 import com.radolyn.ayugram.proprietary.AyuHistoryHook;
 import com.radolyn.ayugram.ui.AyuMessageHistory;
+import com.radolyn.ayugram.ui.AyuViewDeleted;
 import com.radolyn.ayugram.ui.DummyView;
 import com.radolyn.ayugram.utils.AyuGhostUtils;
 import com.radolyn.ayugram.utils.AyuState;
@@ -433,6 +434,7 @@ public class ChatActivity extends BaseFragment implements
     private final static int nkbtn_translateVoice = 2037;
     private final static int nkbtn_transcriptionRetry = 2038;
     private final static int nkbtn_clearDeleted = 2100;
+    private final static int nkbtn_viewDeleted = 2101;
 
     private final static int BOTTOM_TAG_MUTE = 200;
 
@@ -4753,6 +4755,7 @@ public class ChatActivity extends BaseFragment implements
             if (NaConfig.INSTANCE.getChatMenuItemToBeginning().Bool()) headerItem.lazilyAddSubItem(to_the_beginning, R.drawable.ic_upward, getString(R.string.ToTheBeginning));
             if (NaConfig.INSTANCE.getChatMenuItemGoToMessage().Bool()) headerItem.lazilyAddSubItem(to_the_message, R.drawable.msg_go_up, getString(R.string.ToTheMessage));
             hideTitleItem = NaConfig.INSTANCE.getChatMenuItemHideTitle().Bool() ? headerItem.lazilyAddSubItem(nkheaderbtn_hide_title, R.drawable.hide_title, getString(R.string.HideTitle)) : null;
+            if (NaConfig.INSTANCE.getChatMenuItemViewDeleted().Bool() && NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) headerItem.lazilyAddSubItem(nkbtn_viewDeleted, R.drawable.msg_view_file, getString(R.string.ViewDeleted));
             if (NaConfig.INSTANCE.getChatMenuItemClearDeleted().Bool() && NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) headerItem.lazilyAddSubItem(nkbtn_clearDeleted, R.drawable.msg_clear, getString(R.string.ClearDeleted));
             if (!isTopic) {
                 if (NaConfig.INSTANCE.getChatMenuItemDeleteOwnMessages().Bool() && (ChatObject.isMegagroup(currentChat) || currentChat != null && !ChatObject.isChannel(currentChat))) {
@@ -21584,7 +21587,9 @@ public class ChatActivity extends BaseFragment implements
                         highlightTaskId = taskId;
                     }
                     if (showScrollToMessageError && messageId != startLoadFromMessageId) {
-                        BulletinFactory.of(this).createErrorBulletin(LocaleController.getString(R.string.MessageNotFound), themeDelegate).show();
+                        if (!AyuMessagesController.getInstance().isAyuDeletedMessageId(currentUserId, dialog_id, startLoadFromMessageId)) {
+                            BulletinFactory.of(this).createErrorBulletin(LocaleController.getString(R.string.MessageNotFound), themeDelegate).show();
+                        }
                     }
                     scrollToMessage = obj;
                     if (postponedScroll) {
@@ -23592,14 +23597,16 @@ public class ChatActivity extends BaseFragment implements
                     }
                 }
                 // AyuHistoryHook: fix replyMessage
-                for (int a = 0, N = messages.size(); a < N; a++) {
-                    MessageObject messageObject = messages.get(a);
-                    if (messageObject.getReplyMsgId() != 0 && (messageObject.replyMessageObject == null || messageObject.replyMessageObject.messageOwner instanceof TLRPC.TL_messageEmpty)) {
-                        int replyId = messageObject.getReplyMsgId();
-                        MessageObject replyMessage = loadedMessagesMap.get(replyId);
-                        if (replyMessage != null) {
-                            messageObject.replyMessageObject = replyMessage;
-                            addReplyMessageOwner(messageObject, 0);
+                if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+                    for (int a = 0, N = messages.size(); a < N; a++) {
+                        MessageObject messageObject = messages.get(a);
+                        if (messageObject.getReplyMsgId() != 0 && (messageObject.replyMessageObject == null || messageObject.replyMessageObject.messageOwner instanceof TLRPC.TL_messageEmpty)) {
+                            int replyId = messageObject.getReplyMsgId();
+                            MessageObject replyMessage = loadedMessagesMap.get(replyId);
+                            if (replyMessage != null) {
+                                messageObject.replyMessageObject = replyMessage;
+                                addReplyMessageOwner(messageObject, 0);
+                            }
                         }
                     }
                 }
@@ -25365,6 +25372,7 @@ public class ChatActivity extends BaseFragment implements
         boolean updateChat = false;
         boolean hasFromMe = false;
         boolean isAd = false;
+        boolean hasAyuDeleted = false;
 
         if (chatListItemAnimator != null) {
             chatListItemAnimator.setShouldAnimateEnterFromBottom(animatedFromBottom);
@@ -25547,7 +25555,17 @@ public class ChatActivity extends BaseFragment implements
         if (justCreatedTopic) {
             forwardEndReached[0] = true;
         }
-        if (!forwardEndReached[0]) {
+        // AyuHistoryHook
+        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+            for (int i = 0, N = arr.size(); i < N; i++) {
+                MessageObject m = arr.get(i);
+                if (m != null && m.messageOwner != null && m.messageOwner.ayuDeleted) {
+                    hasAyuDeleted = true;
+                    break;
+                }
+            }
+        }
+        if (!forwardEndReached[0] && !hasAyuDeleted) {
             int currentMaxDate = Integer.MIN_VALUE;
 
             for (int a = 0; a < arr.size(); a++) {
@@ -44097,6 +44115,8 @@ public class ChatActivity extends BaseFragment implements
             if (button != null) {
                 button.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
             }
+        } else if (id == nkbtn_viewDeleted) {
+            presentFragment(new AyuViewDeleted(dialog_id));
         } else if (id == nkheaderbtn_upgrade) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
             builder.setMessage(LocaleController.getString("ConvertGroupAlert", R.string.ConvertGroupAlert));

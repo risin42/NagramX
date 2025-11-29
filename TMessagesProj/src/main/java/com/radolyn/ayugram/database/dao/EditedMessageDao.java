@@ -30,17 +30,17 @@ public interface EditedMessageDao {
     @Query("SELECT EXISTS(SELECT * FROM editedmessage WHERE userId = :userId AND dialogId = :dialogId AND messageId = :messageId)")
     boolean hasAnyRevisions(long userId, long dialogId, long messageId);
 
-    @Query("SELECT COUNT(*) FROM editedmessage WHERE userId = :userId AND entityCreateDate > :fromDate")
-    int getSyncCount(long userId, long fromDate);
-
-    @Query("SELECT * FROM editedmessage WHERE userId = :userId AND entityCreateDate > :fromDate ORDER BY entityCreateDate LIMIT 50 OFFSET :offset")
-    List<EditedMessage> getForSync(long userId, long fromDate, int offset);
-
     @Query("DELETE FROM editedmessage WHERE dialogId = :dialogId")
     void delete(long dialogId);
 
     @Query("DELETE FROM editedmessage WHERE dialogId = :dialogId AND messageId IN (:messageIds)")
     void deleteByDialogIdAndMessageIds(long dialogId, List<Integer> messageIds);
+
+    @Query("DELETE FROM editedmessage WHERE fakeId = :fakeId")
+    int deleteByFakeId(long fakeId);
+
+    @Query("SELECT mediaPath FROM editedmessage WHERE fakeId = :fakeId LIMIT 1")
+    String getMediaPathByFakeId(long fakeId);
 
     @Insert
     void insert(EditedMessage revision);
