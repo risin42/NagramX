@@ -45,6 +45,17 @@ public class TranslatePopupWrapper {
                     });
                     return true;
                 });
+            } else if (id == TranslateItem.ID_CHANGE_PROVIDER) {
+                var item = ActionBarMenuItem.addItem(windowLayout, R.drawable.msg_replace_solar, TranslateItem.ITEM_TITLES.get(id), false, resourcesProvider);
+                item.setOnClickListener(view -> Translator.showProviderSelect(view, (provider) -> {
+                    if (fragment.scrimPopupWindow != null) {
+                        fragment.scrimPopupWindow.dismiss();
+                        fragment.scrimPopupWindow = null;
+                        fragment.scrimPopupWindowItems = null;
+                    }
+                    MessageTransKt.translateMessages(fragment, provider);
+                    return Unit.INSTANCE;
+                }));
             }
         }
     }
