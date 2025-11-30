@@ -290,10 +290,17 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
         });
         listView.addOnScrollListener(listScrollListener);
 
-        floatingDateView = new ChatActionCell(context);
+        floatingDateView = new ChatActionCell(context) {
+            @Override
+            public boolean isFloating() {
+                return true;
+            }
+        };
+        floatingDateView.setCustomDate((int) (System.currentTimeMillis() / 1000), false, false);
         floatingDateView.setAlpha(0.0f);
         floatingDateView.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
-        frameLayout.addView(floatingDateView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, dp(4), 0, 0));
+        floatingDateView.setInvalidateColors(true);
+        frameLayout.addView(floatingDateView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 4, 0, 0));
 
         emptyView = new AppCompatTextView(context) {
             @Override
