@@ -2014,7 +2014,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                         }
 
                         if (/*!unsupported && allowShare &&*/!currentStory.isLive) {
-                            if (UserConfig.getInstance(currentAccount).isPremium()) {
+                            if (UserConfig.getInstance(currentAccount).isPremium() || true) {
                                 ActionBarMenuItem.addItem(popupLayout, R.drawable.msg_gallery, getString(R.string.SaveToGallery), false, resourcesProvider).setOnClickListener(v -> {
                                     saveToGallery();
                                     if (popupMenu != null) {
