@@ -12,7 +12,7 @@ import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
-import org.telegram.messenger.TranslateController;
+import org.telegram.messenger.TranslateController
 import org.telegram.tgnet.TLRPC
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.translate.source.*
@@ -50,6 +50,7 @@ val Locale.locale2code by receiveLazy<Locale, String> {
 
 val LocaleController.LocaleInfo.locale by receiveLazy<LocaleController.LocaleInfo, Locale> { pluralLangCode.code2Locale }
 
+@Suppress("ConstPropertyName")
 interface Translator {
 
     suspend fun doTranslate(
@@ -260,6 +261,32 @@ interface Translator {
 
         private val availableLocaleList: Array<Locale> = Locale.getAvailableLocales().also {
             Arrays.sort(it, Comparator.comparing(Locale::toString))
+        }
+
+        data class ProviderInfo(val providerConstant: Int, val nameResId: Int) {
+            companion object {
+                val PROVIDERS = arrayOf(
+                    ProviderInfo(providerGoogle, R.string.ProviderGoogleTranslate),
+                    ProviderInfo(providerYandex, R.string.ProviderYandexTranslate),
+                    ProviderInfo(providerLingo, R.string.ProviderLingocloud),
+                    ProviderInfo(providerMicrosoft, R.string.ProviderMicrosoftTranslator),
+                    ProviderInfo(providerRealMicrosoft, R.string.ProviderRealMicrosoftTranslator),
+                    ProviderInfo(providerDeepL, R.string.ProviderDeepLTranslate),
+                    ProviderInfo(providerTelegram, R.string.ProviderTelegramAPI),
+                    ProviderInfo(providerTranSmart, R.string.ProviderTranSmartTranslate),
+                    ProviderInfo(providerLLMTranslator, R.string.ProviderLLMTranslator),
+                )
+            }
+        }
+
+        @JvmStatic
+        fun showProviderSelect(anchor: View, callback: (Int) -> Unit) {
+            val builder = PopupBuilder(anchor)
+            val itemNames = ProviderInfo.PROVIDERS.map { getString(it.nameResId) }.toTypedArray()
+            builder.setItems(itemNames.map { it as CharSequence }.toTypedArray()) { index, _ ->
+                callback(ProviderInfo.PROVIDERS[index].providerConstant)
+            }
+            builder.show()
         }
 
         @JvmStatic
