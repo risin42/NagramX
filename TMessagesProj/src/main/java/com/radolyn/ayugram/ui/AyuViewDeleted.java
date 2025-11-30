@@ -70,12 +70,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import tw.nekomimi.nekogram.helpers.MessageHelper;
+import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
 import xyz.nextalone.nagram.NaConfig;
 
 public class AyuViewDeleted extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, AyuMessageCell.AyuMessageCellDelegate {
     private static final int OPTION_SHOW_IN_CHAT = 1;
     private static final int OPTION_DELETE_FROM_DATABASE = 2;
     private static final int OPTION_COPY = 3;
+    private static final int OPTION_COPY_PHOTO = 4;
+    private static final int OPTION_COPY_PHOTO_AS_STICKER = 5;
+    private static final int OPTION_DETAILS = 6;
     private final long dialogId;
     private final ArrayList<DeletedMessageFull> deletedMessages = new ArrayList<>();
     private final ArrayList<DeletedMessageFull> filteredMessages = new ArrayList<>();
@@ -526,9 +531,30 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
             options.add(OPTION_COPY);
         }
 
+        boolean isStaticSticker = msg.isSticker() && !msg.isAnimatedSticker() && !msg.isVideoSticker();
+        if ((msg.isPhoto() || isStaticSticker) && !msg.needDrawBluredPreview()) {
+            if (msg.isPhoto()) {
+                items.add(getString(R.string.CopyPhoto));
+            } else {
+                items.add(getString(R.string.CopySticker));
+            }
+            icons.add(R.drawable.msg_copy_photo);
+            options.add(OPTION_COPY_PHOTO);
+
+            if (msg.isPhoto()) {
+                items.add(getString(R.string.CopyPhotoAsSticker));
+                icons.add(R.drawable.msg_copy_photo);
+                options.add(OPTION_COPY_PHOTO_AS_STICKER);
+            }
+        }
+
         items.add(getString(R.string.Delete));
         icons.add(R.drawable.msg_delete);
         options.add(OPTION_DELETE_FROM_DATABASE);
+
+        items.add(getString(R.string.MessageDetails));
+        icons.add(R.drawable.msg_info);
+        options.add(OPTION_DETAILS);
 
         ActionBarPopupWindow.ActionBarPopupWindowLayout popupLayout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(getParentActivity(), R.drawable.popup_fixed_alert, getResourceProvider(), 0);
         popupLayout.setMinimumWidth(dp(200));
@@ -581,6 +607,12 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
                         AndroidUtilities.addToClipboard(text);
                         BulletinFactory.of(this).createCopyBulletin(getString(R.string.MessageCopied)).show();
                     }
+                } else if (option == OPTION_COPY_PHOTO) {
+                    MessageHelper.addMessageToClipboard(msg, () -> BulletinFactory.of(this).createCopyBulletin(getString(R.string.PhotoCopied)).show());
+                } else if (option == OPTION_COPY_PHOTO_AS_STICKER) {
+                    MessageHelper.addMessageToClipboardAsSticker(msg, () -> BulletinFactory.of(this).createCopyBulletin(getString(R.string.PhotoCopied)).show());
+                } else if (option == OPTION_DETAILS) {
+                    presentFragment(new MessageDetailsActivity(msg, null));
                 }
                 if (scrimPopupWindow != null) {
                     scrimPopupWindow.dismiss();
