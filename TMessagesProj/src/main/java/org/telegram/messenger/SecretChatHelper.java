@@ -35,6 +35,10 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 import tw.nekomimi.nekogram.utils.AlertUtil;
+import xyz.nextalone.nagram.NaConfig;
+import com.radolyn.ayugram.AyuConstants;
+import com.radolyn.ayugram.messages.AyuMessagesController;
+import com.radolyn.ayugram.messages.AyuSavePreferences;
 
 public class SecretChatHelper extends BaseController {
 
@@ -250,7 +254,10 @@ public class SecretChatHelper extends BaseController {
             });
         }
         if (newChat instanceof TLRPC.TL_encryptedChatDiscarded && newChat.history_deleted) {
-            AndroidUtilities.runOnUIThread(() -> getMessagesController().deleteDialog(dialog_id, 0));
+            // don't delete encrypted chat dialog if save deleted messages is enabled
+            if (!NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+                AndroidUtilities.runOnUIThread(() -> getMessagesController().deleteDialog(dialog_id, 0));
+            }
         }
     }
 
@@ -1141,22 +1148,15 @@ public class SecretChatHelper extends BaseController {
                     return newMessage;
                 } else if (serviceMessage.action instanceof TLRPC.TL_decryptedMessageActionFlushHistory) {
                     long did = DialogObject.makeEncryptedDialogId(chat.id);
-                    AndroidUtilities.runOnUIThread(() -> {
-                        TLRPC.Dialog dialog = getMessagesController().dialogs_dict.get(did);
-                        if (dialog != null) {
-                            dialog.unread_count = 0;
-                            getMessagesController().dialogMessage.remove(dialog.id);
-                        }
-                        getMessagesStorage().getStorageQueue().postRunnable(() -> AndroidUtilities.runOnUIThread(() -> {
-                            getNotificationsController().processReadMessages(null, did, 0, Integer.MAX_VALUE, false);
-                            LongSparseIntArray dialogsToUpdate = new LongSparseIntArray(1);
-                            dialogsToUpdate.put(did, 0);
-                            getNotificationsController().processDialogsUpdateRead(dialogsToUpdate);
-                        }));
-                        getMessagesStorage().deleteDialog(did, 1);
-                        getNotificationCenter().postNotificationName(NotificationCenter.dialogsNeedReload);
-                        getNotificationCenter().postNotificationName(NotificationCenter.removeAllMessagesFromDialog, did, false, null);
-                    });
+                    // save all messages before flushing encrypted chat history
+                    if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+                        getMessagesStorage().getStorageQueue().postRunnable(() -> {
+                            saveAllMessagesFromEncryptedChat(did);
+                            AndroidUtilities.runOnUIThread(() -> performFlushEncryptedHistory(did));
+                        });
+                    } else {
+                        AndroidUtilities.runOnUIThread(() -> performFlushEncryptedHistory(did));
+                    }
                     return null;
                 } else if (serviceMessage.action instanceof TLRPC.TL_decryptedMessageActionDeleteMessages) {
                     if (!serviceMessage.action.random_ids.isEmpty()) {
@@ -2050,4 +2050,62 @@ public class SecretChatHelper extends BaseController {
             //don't promt
         }
     }
+
+    // save deleted start
+    private void saveAllMessagesFromEncryptedChat(long dialogId) {
+        SQLiteCursor cursor = null;
+        NativeByteBuffer data = null;
+        try {
+            var ayuMessagesController = AyuMessagesController.getInstance();
+            cursor = getMessagesStorage().getDatabase().queryFinalized("SELECT data FROM messages_v2 WHERE uid = " + dialogId);
+            ArrayList<Integer> savedMessageIds = new ArrayList<>();
+            while (cursor.next()) {
+                data = cursor.byteBufferValue(0);
+                if (data != null) {
+                    TLRPC.Message message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
+                    if (message != null) {
+                        message.readAttachPath(data, getUserConfig().clientUserId);
+                        message.dialog_id = dialogId;
+                        var prefs = new AyuSavePreferences(message, currentAccount);
+                        prefs.setDialogId(dialogId);
+                        ayuMessagesController.onMessageDeleted(prefs, false);
+                        savedMessageIds.add(message.id);
+                    }
+                    data.reuse();
+                }
+            }
+            if (!savedMessageIds.isEmpty()) {
+                AndroidUtilities.runOnUIThread(() -> {
+                    getNotificationCenter().postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogId, savedMessageIds);
+                });
+            }
+        } catch (Exception e) {
+            FileLog.e("saveAllMessagesFromEncryptedChat", e);
+        } finally {
+            if (cursor != null) {
+                cursor.dispose();
+            }
+            if (data != null) {
+                data.reuse();
+            }
+        }
+    }
+
+    private void performFlushEncryptedHistory(long did) {
+        TLRPC.Dialog dialog = getMessagesController().dialogs_dict.get(did);
+        if (dialog != null) {
+            dialog.unread_count = 0;
+            getMessagesController().dialogMessage.remove(dialog.id);
+        }
+        getMessagesStorage().getStorageQueue().postRunnable(() -> AndroidUtilities.runOnUIThread(() -> {
+            getNotificationsController().processReadMessages(null, did, 0, Integer.MAX_VALUE, false);
+            LongSparseIntArray dialogsToUpdate = new LongSparseIntArray(1);
+            dialogsToUpdate.put(did, 0);
+            getNotificationsController().processDialogsUpdateRead(dialogsToUpdate);
+        }));
+        getMessagesStorage().deleteDialog(did, 1);
+        getNotificationCenter().postNotificationName(NotificationCenter.dialogsNeedReload);
+        getNotificationCenter().postNotificationName(NotificationCenter.removeAllMessagesFromDialog, did, false, null);
+    }
+    // save deleted end
 }

@@ -77,6 +77,7 @@ import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import xyz.nextalone.nagram.NaConfig;
+import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.messages.AyuSavePreferences;
 import com.radolyn.ayugram.proprietary.AyuMessageUtils;
@@ -13460,9 +13461,32 @@ public class MessagesStorage extends BaseController {
                 cursor.dispose();
                 cursor = null;
                 if (!dialogs.isEmpty()) {
+                    // save deleted messages from encrypted chats
+                    if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+                        var ayuMessagesController = AyuMessagesController.getInstance();
+                        for (int a = 0, N = dialogs.size(); a < N; a++) {
+                            long dialogId = dialogs.keyAt(a);
+                            ArrayList<Integer> mids = dialogs.valueAt(a);
+                            for (int msgId : mids) {
+                                TLRPC.Message msg = getMessageInternalSync(dialogId, msgId);
+                                if (msg != null) {
+                                    msg.dialog_id = dialogId;
+                                    var prefs = new AyuSavePreferences(msg, currentAccount);
+                                    prefs.setDialogId(dialogId);
+                                    ayuMessagesController.onMessageDeleted(prefs, true);
+                                }
+                            }
+                        }
+                    }
                     for (int a = 0, N = dialogs.size(); a < N; a++) {
                         long dialogId = dialogs.keyAt(a);
                         ArrayList<Integer> mids = dialogs.valueAt(a);
+                        // notify about deleted messages
+                        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+                            final long dialogIdFinal = dialogId;
+                            final ArrayList<Integer> midsFinal = new ArrayList<>(mids);
+                            AndroidUtilities.runOnUIThread(() -> getNotificationCenter().postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogIdFinal, midsFinal));
+                        }
                         AndroidUtilities.runOnUIThread(() -> getNotificationCenter().postNotificationName(NotificationCenter.messagesDeleted, mids, 0L, false));
                         updateDialogsWithReadMessagesInternal(mids, null, null, null, null);
                         markMessagesAsDeletedInternal(dialogId, mids, true, 0, 0);
@@ -13477,24 +13501,6 @@ public class MessagesStorage extends BaseController {
                 }
             }
         });
-    }
-
-    // AyuGram
-    public Pair<Integer, Integer> getMinAndMaxForDialog(long dialogId) {
-        SQLiteCursor cursor = null;
-        try {
-            cursor = database.queryFinalized(String.format(Locale.US, "SELECT MIN(mid), MAX(mid) FROM messages_v2 WHERE uid = %d", dialogId));
-            if (cursor.next()) {
-                return new Pair<>(cursor.intValue(0), cursor.intValue(1));
-            }
-        } catch (Exception e) {
-            checkSQLException(e);
-        } finally {
-            if (cursor != null) {
-                cursor.dispose();
-            }
-        }
-        return new Pair<>(0, 0);
     }
 
     protected void deletePushMessages(long dialogId, ArrayList<Integer> messages) {
@@ -17951,33 +17957,6 @@ public class MessagesStorage extends BaseController {
         return database.queryFinalized(String.format(Locale.US, "SELECT data, seen, pin FROM profile_stories JOIN profile_stories_albums_links ON profile_stories.story_id = profile_stories_albums_links.story_id WHERE profile_stories.dialog_id = %d AND profile_stories_albums_links.dialog_id = %d  AND profile_stories_albums_links.album_id = %d AND profile_stories.type = %d ORDER BY profile_stories_albums_links.order_index ASC;", dialogId, dialogId, albumId, type));
     }
 
-    // AyuGram
-    public ArrayList<Long> getDialogIdsToUpdate(long dialogId, ArrayList<Integer> messages) {
-        SQLiteCursor cursor = null;
-        try {
-            String ids = TextUtils.join(",", messages);
-            var dialogsToUpdate = new HashSet<Long>();
-            if (dialogId != 0) {
-                cursor = database.queryFinalized(String.format(Locale.US, "SELECT uid, mid FROM messages_v2 WHERE mid IN(%s) AND uid = %d", ids, dialogId));
-            } else {
-                cursor = database.queryFinalized(String.format(Locale.US, "SELECT uid, mid FROM messages_v2 WHERE mid IN(%s) AND is_channel = 0", ids));
-            }
-            while (cursor.next()) {
-                long did = cursor.longValue(0);
-                dialogsToUpdate.add(did);
-            }
-            cursor.dispose();
-            return new ArrayList<>(dialogsToUpdate);
-        } catch (Exception e) {
-            FileLog.e(e);
-        } finally {
-            if (cursor != null) {
-                cursor.dispose();
-            }
-        }
-        return null;
-    }
-
     public boolean isMonoForum(long dialogId) {
         // todo: inline
         return isForum(dialogId, FORUM_TYPE_DIRECT);
@@ -18065,4 +18044,77 @@ public class MessagesStorage extends BaseController {
                     '}';
         }
     }
+
+    // save deleted start
+    public Pair<Integer, Integer> getMinAndMaxForDialog(long dialogId) {
+        SQLiteCursor cursor = null;
+        try {
+            cursor = database.queryFinalized(String.format(Locale.US, "SELECT MIN(mid), MAX(mid) FROM messages_v2 WHERE uid = %d", dialogId));
+            if (cursor.next()) {
+                return new Pair<>(cursor.intValue(0), cursor.intValue(1));
+            }
+        } catch (Exception e) {
+            checkSQLException(e);
+        } finally {
+            if (cursor != null) {
+                cursor.dispose();
+            }
+        }
+        return new Pair<>(0, 0);
+    }
+
+    public ArrayList<Long> getDialogIdsToUpdate(long dialogId, ArrayList<Integer> messages) {
+        SQLiteCursor cursor = null;
+        try {
+            String ids = TextUtils.join(",", messages);
+            var dialogsToUpdate = new HashSet<Long>();
+            if (dialogId != 0) {
+                cursor = database.queryFinalized(String.format(Locale.US, "SELECT uid, mid FROM messages_v2 WHERE mid IN(%s) AND uid = %d", ids, dialogId));
+            } else {
+                cursor = database.queryFinalized(String.format(Locale.US, "SELECT uid, mid FROM messages_v2 WHERE mid IN(%s) AND is_channel = 0", ids));
+            }
+            while (cursor.next()) {
+                long did = cursor.longValue(0);
+                dialogsToUpdate.add(did);
+            }
+            cursor.dispose();
+            return new ArrayList<>(dialogsToUpdate);
+        } catch (Exception e) {
+            FileLog.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.dispose();
+            }
+        }
+        return null;
+    }
+
+    private TLRPC.Message getMessageInternalSync(long dialogId, int msgId) {
+        SQLiteCursor cursor = null;
+        NativeByteBuffer data = null;
+        TLRPC.Message message = null;
+        try {
+            cursor = database.queryFinalized("SELECT data FROM messages_v2 WHERE uid = " + dialogId + " AND mid = " + msgId + " LIMIT 1");
+            if (cursor.next()) {
+                data = cursor.byteBufferValue(0);
+                if (data != null) {
+                    message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
+                    if (message != null) {
+                        message.readAttachPath(data, getUserConfig().clientUserId);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            checkSQLException(e);
+        } finally {
+            if (cursor != null) {
+                cursor.dispose();
+            }
+            if (data != null) {
+                data.reuse();
+            }
+        }
+        return message;
+    }
+    // save deleted end
 }
