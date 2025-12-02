@@ -273,7 +273,7 @@ public class AyuMessagesController {
         if (!TextUtils.isEmpty(msg.message.mediaPath)) {
             var p = new File(msg.message.mediaPath);
             try {
-                if (!p.exists() || !p.delete()) {
+                if (p.exists() && !p.delete()) {
                     p.deleteOnExit();
                 }
             } catch (Exception e) {
@@ -299,7 +299,7 @@ public class AyuMessagesController {
             if (!TextUtils.isEmpty(msg.message.mediaPath)) {
                 var p = new File(msg.message.mediaPath);
                 try {
-                    if (!p.exists() || !p.delete()) {
+                    if (p.exists() && !p.delete()) {
                         p.deleteOnExit();
                     }
                 } catch (Exception e) {
@@ -318,7 +318,7 @@ public class AyuMessagesController {
         if (!TextUtils.isEmpty(mediaPath)) {
             File p = new File(mediaPath);
             try {
-                if (!p.exists() || !p.delete()) {
+                if (p.exists() && !p.delete()) {
                     p.deleteOnExit();
                 }
             } catch (Exception e) {
@@ -349,7 +349,7 @@ public class AyuMessagesController {
             if (msg.message.mediaPath != null && !msg.message.mediaPath.isEmpty()) {
                 File mediaFile = new File(msg.message.mediaPath);
                 try {
-                    if (!mediaFile.exists() || !mediaFile.delete()) {
+                    if (mediaFile.exists() && !mediaFile.delete()) {
                         mediaFile.deleteOnExit();
                     }
                 } catch (Exception e) {
