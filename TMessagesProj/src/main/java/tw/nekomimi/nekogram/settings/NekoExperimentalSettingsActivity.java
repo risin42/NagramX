@@ -119,17 +119,25 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell useDeletedIconRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getUseDeletedIcon()));
     private final AbstractConfigCell customDeletedMarkRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomDeletedMark(), "", null));
     private final AbstractConfigCell clearMessageDatabaseRow = cellGroup.appendCell(new ConfigCellTextCheckIcon(null, "ClearMessageDatabase", null, AyuData.totalSize > 0 ? AndroidUtilities.formatFileSize(AyuData.totalSize) : "...", R.drawable.msg_clear, false, () -> {
-        AlertDialog progressDialog = new AlertDialog(getParentActivity(), AlertDialog.ALERT_TYPE_SPINNER);
-        progressDialog.setCanCancel(false);
-        progressDialog.show();
-        Utilities.globalQueue.postRunnable(() -> {
-            AyuMessagesController.getInstance().clean();
-            AndroidUtilities.runOnUIThread(() -> {
-                progressDialog.dismiss();
-                BulletinFactory.of(this).createSimpleBulletin(R.raw.done, getString(R.string.ClearMessageDatabaseNotification)).show();
-            });
-            AyuData.loadSizes(this);
-        });
+        new AlertDialog.Builder(getContext(), getResourceProvider())
+            .setTitle(getString(R.string.ClearMessageDatabase))
+            .setMessage(getString(R.string.AreYouSure))
+            .setPositiveButton(getString(R.string.Clear), (dialog, which) -> {
+                AlertDialog progressDialog = new AlertDialog(getParentActivity(), AlertDialog.ALERT_TYPE_SPINNER);
+                progressDialog.setCanCancel(false);
+                progressDialog.show();
+                Utilities.globalQueue.postRunnable(() -> {
+                    AyuMessagesController.getInstance().clean();
+                    AndroidUtilities.runOnUIThread(() -> {
+                        progressDialog.dismiss();
+                        BulletinFactory.of(this).createSimpleBulletin(R.raw.done, getString(R.string.ClearMessageDatabaseNotification)).show();
+                    });
+                    AyuData.loadSizes(this);
+                });
+            })
+            .setNegativeButton(getString(R.string.Cancel), (d, w) -> d.dismiss())
+            .makeRed(AlertDialog.BUTTON_POSITIVE)
+            .show();
     }));
     private final AbstractConfigCell dividerAyuMoments = cellGroup.appendCell(new ConfigCellDivider());
 
