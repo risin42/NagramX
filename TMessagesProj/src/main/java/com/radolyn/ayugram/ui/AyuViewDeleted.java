@@ -82,10 +82,12 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
     private static final int OPTION_COPY_PHOTO_AS_STICKER = 5;
     private static final int OPTION_DETAILS = 6;
     private final long dialogId;
+    private final boolean isEncrypted;
     private final ArrayList<DeletedMessageFull> deletedMessages = new ArrayList<>();
     private final ArrayList<DeletedMessageFull> filteredMessages = new ArrayList<>();
     private final SparseArray<DeletedMessageFull> messageIdMap = new SparseArray<>();
     private final int pageSize = 50;
+    private final int pageSizeEncrypted = Integer.MAX_VALUE;
     private int rowCount;
     private RecyclerListView listView;
     private LinearLayoutManager layoutManager;
@@ -104,6 +106,7 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
 
     public AyuViewDeleted(long dialogId) {
         this.dialogId = dialogId;
+        this.isEncrypted = DialogObject.isEncryptedDialog(dialogId);
     }
 
     private void checkInsets() {
@@ -129,7 +132,7 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             if (!loading && !noMoreOlder) {
                 int first = layoutManager.findFirstVisibleItemPosition();
-                if (first <= 2) {
+                if (first <= 2 && !isEncrypted) {
                     loadOlder();
                 }
             }
@@ -159,11 +162,13 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
     private void updateDeleted(Runnable onComplete) {
         long userId = getUserConfig().getClientUserId();
         Utilities.globalQueue.postRunnable(() -> {
-            List<DeletedMessageFull> latest = AyuMessagesController.getInstance().getLatestMessages(userId, dialogId, pageSize);
+            List<DeletedMessageFull> latest = AyuMessagesController.getInstance().getLatestMessages(userId, dialogId, isEncrypted ? pageSizeEncrypted : pageSize);
             if (latest == null) {
                 latest = new ArrayList<>();
             }
-            Collections.reverse(latest);
+            if (!isEncrypted) {
+                Collections.reverse(latest);
+            }
             ArrayList<DeletedMessageFull> filtered = new ArrayList<>(latest.size());
             for (DeletedMessageFull m : latest) {
                 if (hasContent(m)) {
@@ -193,6 +198,7 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
     public View createView(Context context) {
         var peer = getMessagesController().getUserOrChat(dialogId);
         String name = switch (peer) {
+            case null -> getString(R.string.ViewDeleted);
             case TLRPC.User user -> user.first_name;
             case TLRPC.Chat chat -> chat.title;
             default -> getString(R.string.ViewDeleted);
@@ -353,7 +359,7 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
         int top = firstView != null ? firstView.getTop() : 0;
 
         Utilities.globalQueue.postRunnable(() -> {
-            List<DeletedMessageFull> olderDesc = AyuMessagesController.getInstance().getOlderMessagesBefore(userId, dialogId, currentOldestId, pageSize);
+            List<DeletedMessageFull> olderDesc = AyuMessagesController.getInstance().getOlderMessagesBefore(userId, dialogId, currentOldestId, isEncrypted ? pageSizeEncrypted : pageSize);
             if (olderDesc == null || olderDesc.isEmpty()) {
                 AndroidUtilities.runOnUIThread(() -> {
                     noMoreOlder = true;

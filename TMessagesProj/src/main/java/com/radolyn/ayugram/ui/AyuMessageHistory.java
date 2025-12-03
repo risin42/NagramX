@@ -92,6 +92,7 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
         int currentAccount = UserConfig.selectedAccount;
 
         String name = switch (peer) {
+            case null -> getString(R.string.EditsHistoryMenuText);
             case TLRPC.User user -> user.first_name;
             case TLRPC.Chat chat -> chat.title;
             default -> getString(R.string.EditsHistoryMenuText);
