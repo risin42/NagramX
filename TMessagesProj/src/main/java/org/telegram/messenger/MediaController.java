@@ -76,6 +76,7 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.common.images.WebImage;
+import com.radolyn.ayugram.AyuConstants;
 
 import org.telegram.messenger.audioinfo.AudioInfo;
 import org.telegram.messenger.chromecast.ChromecastController;
@@ -3799,6 +3800,9 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
             if (exists) {
                 if (!messageObject.mediaExists && cacheFile != file) {
                     AndroidUtilities.runOnUIThread(() -> NotificationCenter.getInstance(messageObject.currentAccount).postNotificationName(NotificationCenter.fileLoaded, FileLoader.getAttachFileName(messageObject.getDocument()), cacheFile));
+                    if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool() && messageObject.messageOwner != null && messageObject.messageOwner.ayuDeleted) {
+                        AndroidUtilities.runOnUIThread(() -> NotificationCenter.getInstance(messageObject.currentAccount).postNotificationName(AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION, FileLoader.getAttachFileName(messageObject.getDocument()), cacheFile));
+                    }
                 }
                 videoPlayer.preparePlayer(Uri.fromFile(cacheFile), "other");
             } else {
@@ -3909,6 +3913,9 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                 if (exists) {
                     if (!messageObject.mediaExists && cacheFile != file) {
                         AndroidUtilities.runOnUIThread(() -> NotificationCenter.getInstance(messageObject.currentAccount).postNotificationName(NotificationCenter.fileLoaded, FileLoader.getAttachFileName(messageObject.getDocument()), cacheFile));
+                        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool() && messageObject.messageOwner != null && messageObject.messageOwner.ayuDeleted) {
+                            AndroidUtilities.runOnUIThread(() -> NotificationCenter.getInstance(messageObject.currentAccount).postNotificationName(AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION, FileLoader.getAttachFileName(messageObject.getDocument()), cacheFile));
+                        }
                     }
                     audioPlayer.preparePlayer(Uri.fromFile(cacheFile), "other");
                     isStreamingCurrentAudio = false;

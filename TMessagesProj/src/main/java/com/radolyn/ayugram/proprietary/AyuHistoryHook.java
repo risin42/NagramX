@@ -222,7 +222,7 @@ public abstract class AyuHistoryHook {
             }
         }
         tlMessage.ayuDeleted = true;
-        AyuMessageUtils.mapMedia(deletedMessageFull.message, tlMessage);
+        AyuMessageUtils.mapMedia(deletedMessageFull.message, tlMessage, accountId);
         return tlMessage;
     }
 

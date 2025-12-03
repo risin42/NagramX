@@ -38,6 +38,7 @@ import com.radolyn.ayugram.proprietary.AyuMessageUtils;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.DialogObject;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
@@ -65,6 +66,7 @@ import org.telegram.ui.Components.StickersAlert;
 import org.telegram.ui.Components.inset.WindowInsetsStateHolder;
 import org.telegram.ui.ProfileActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -415,6 +417,7 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
         super.onFragmentCreate();
 
         NotificationCenter.getInstance(UserConfig.selectedAccount).addObserver(this, AyuConstants.MESSAGES_DELETED_NOTIFICATION);
+        NotificationCenter.getInstance(UserConfig.selectedAccount).addObserver(this, AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION);
 
         return true;
     }
@@ -424,6 +427,7 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
         super.onFragmentDestroy();
 
         NotificationCenter.getInstance(UserConfig.selectedAccount).removeObserver(this, AyuConstants.MESSAGES_DELETED_NOTIFICATION);
+        NotificationCenter.getInstance(UserConfig.selectedAccount).removeObserver(this, AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION);
         Bulletin.removeDelegate(this);
 
         if (scrimPopupWindow != null) {
@@ -482,7 +486,6 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
         if (id == AyuConstants.MESSAGES_DELETED_NOTIFICATION) {
@@ -493,6 +496,15 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
                     applySearchFilter();
                     updateActionBarCount();
                 }, 500);
+            }
+        } else if (id == AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION) {
+            try {
+                Utilities.globalQueue.postRunnable(() -> {
+                    File file = (File) args[1];
+                    AyuMessageUtils.saveDownloadedMedia(file);
+                });
+            } catch (Exception e) {
+                FileLog.e(e);
             }
         }
     }
@@ -914,7 +926,7 @@ public class AyuViewDeleted extends BaseFragment implements NotificationCenter.N
             var base = deletedMessageFull.message;
             var tl = new TLRPC.TL_message();
             AyuMessageUtils.map(base, tl, currentAccount);
-            AyuMessageUtils.mapMedia(base, tl);
+            AyuMessageUtils.mapMedia(base, tl, currentAccount);
 
             if (resolveReply && base.replyMessageId != 0) {
                 boolean found = false;

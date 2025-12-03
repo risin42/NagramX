@@ -39,6 +39,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.graphics.ColorUtils;
 
+import com.radolyn.ayugram.AyuConstants;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.DispatchQueuePriority;
@@ -88,6 +90,8 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
+
+import xyz.nextalone.nagram.NaConfig;
 
 /**
  * image filter types
@@ -2197,12 +2201,14 @@ public class ImageLoader {
                 public void fileDidLoaded(final String location, final File finalFile, Object parentObject, final int type) {
                     fileProgresses.remove(location);
                     AndroidUtilities.runOnUIThread(() -> {
+                        boolean ayuDeleted = false;
                         if (finalFile != null && (location.endsWith(".mp4") || location.endsWith(".jpg"))) {
                             FilePathDatabase.FileMeta meta = FileLoader.getFileMetadataFromParent(currentAccount, parentObject);
                             if (meta != null) {
                                 MessageObject messageObject = null;
                                 if (parentObject instanceof MessageObject) {
                                     messageObject = (MessageObject) parentObject;
+                                    ayuDeleted = messageObject.messageOwner != null && messageObject.messageOwner.ayuDeleted;
                                 }
                                 long dialogId = meta.dialogId;
                                 int flag;
@@ -2221,6 +2227,9 @@ public class ImageLoader {
                             }
                         }
                         NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.fileLoaded, location, finalFile);
+                        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool() && ayuDeleted) {
+                            NotificationCenter.getInstance(currentAccount).postNotificationName(AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION, location, finalFile);
+                        }
                         ImageLoader.this.fileDidLoaded(location, finalFile, type);
                     });
                 }

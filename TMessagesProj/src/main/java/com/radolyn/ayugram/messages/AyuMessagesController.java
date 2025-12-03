@@ -382,6 +382,10 @@ public class AyuMessagesController {
         return deletedMessageDao.getOlderMessagesBefore(userId, dialogId, before, limit);
     }
 
+    public void updateMediaPath(long userId, long dialogId, int messageId, String newPath) {
+        deletedMessageDao.updateMediaPathIfEmpty(userId, dialogId, messageId, newPath);
+    }
+
     public void clean() {
         AyuData.clean();
         AyuData.create();

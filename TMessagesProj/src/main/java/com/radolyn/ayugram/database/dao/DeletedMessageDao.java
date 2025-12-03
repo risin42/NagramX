@@ -85,4 +85,7 @@ public interface DeletedMessageDao {
 
     @Query("DELETE FROM deletedmessage WHERE userId = :userId AND dialogId = :dialogId AND messageId IN (:messageIds)")
     void deleteMessages(long userId, long dialogId, List<Integer> messageIds);
+
+    @Query("UPDATE deletedmessage SET mediaPath = :newPath WHERE userId = :userId AND dialogId = :dialogId AND messageId = :messageId AND (mediaPath IS NULL OR mediaPath = '')")
+    void updateMediaPathIfEmpty(long userId, long dialogId, int messageId, String newPath);
 }

@@ -19,6 +19,7 @@ import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LiteMode;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
+import org.telegram.messenger.Utilities;
 import org.telegram.messenger.secretmedia.EncryptedFileInputStream;
 import org.telegram.tgnet.NativeByteBuffer;
 import org.telegram.tgnet.TLObject;
@@ -168,7 +169,7 @@ public abstract class AyuMessageUtils {
         ayuMessageBase.textEntities = serializeMultiple(message.entities);
     }
 
-    public static void mapMedia(AyuMessageBase ayuMessageBase, TLRPC.Message tLRPC$Message) {
+    public static void mapMedia(AyuMessageBase ayuMessageBase, TLRPC.Message tLRPC$Message, int currentAccount) {
         byte[] bArr;
         int i = ayuMessageBase.documentType;
         byte[] bArr2 = ayuMessageBase.documentSerialized;
@@ -177,20 +178,26 @@ public abstract class AyuMessageUtils {
         if (i != 0) {
             // If we have serialized media data (and no file path), deserialize it directly
             // This handles cases where the file wasn't downloaded when the message was deleted
-            if (bArr2 != null && bArr2.length > 0 && TextUtils.isEmpty(str)) {
+            if (i != 2 && bArr2 != null && bArr2.length > 0 && TextUtils.isEmpty(str)) {
                 NativeByteBuffer nativeByteBuffer = null;
                 try {
                     nativeByteBuffer = new NativeByteBuffer(bArr2.length);
                     nativeByteBuffer.put(ByteBuffer.wrap(bArr2));
                     nativeByteBuffer.rewind();
                     tLRPC$Message.media = TLRPC.MessageMedia.TLdeserialize(nativeByteBuffer, nativeByteBuffer.readInt32(false), false);
-                    if (i == 2) {
-                        tLRPC$Message.stickerVerified = 1;
+                    String resolvedPath = ensureAttachmentAndUpdateMediaPath(ayuMessageBase, tLRPC$Message, currentAccount);
+                    if (!TextUtils.isEmpty(resolvedPath)) {
+                        str = resolvedPath;
+                        if (BuildVars.LOGS_ENABLED) {
+                            Log.d(NAX, "mapMedia: found attachments copy for deserialized media: " + str);
+                        }
                     }
                     if (BuildVars.LOGS_ENABLED) {
                         Log.d(NAX, "Restored media from serialized data for message " + tLRPC$Message.id);
                     }
-                    return;
+                    if (TextUtils.isEmpty(str)) {
+                        return;
+                    }
                 } catch (Exception e) {
                     FileLog.e("Failed to deserialize media", e);
                 } finally {
@@ -216,6 +223,9 @@ public abstract class AyuMessageUtils {
                         }
                     }
                     tLRPC$Message.stickerVerified = 1;
+                    return;
+                }
+                if (TextUtils.isEmpty(str)) {
                     return;
                 }
                 tLRPC$Message.attachPath = str;
@@ -301,7 +311,7 @@ public abstract class AyuMessageUtils {
                 ayuMessageBase.documentType = 0;
             } else if ((tLRPC$MessageMedia instanceof TLRPC.TL_messageMediaPhoto) && tLRPC$MessageMedia.photo != null) {
                 ayuMessageBase.documentType = 1;
-            } else if ((tLRPC$MessageMedia instanceof TLRPC.TL_messageMediaDocument) && tLRPC$MessageMedia.document != null && (MessageObject.isStickerMessage(message) || message.media.document.mime_type.equals("application/x-tgsticker"))) {
+            } else if ((tLRPC$MessageMedia instanceof TLRPC.TL_messageMediaDocument) && tLRPC$MessageMedia.document != null && (MessageObject.isStickerMessage(message) || (tLRPC$MessageMedia.document.mime_type != null && tLRPC$MessageMedia.document.mime_type.equals("application/x-tgsticker")))) {
                 ayuMessageBase.documentType = 2;
                 ayuMessageBase.mimeType = message.media.document.mime_type;
                 NativeByteBuffer nativeByteBuffer = null;
@@ -623,6 +633,18 @@ public abstract class AyuMessageUtils {
         }
     }
 
+    public static File findExistingFileByBaseNameFast(String baseName) {
+        File attachmentsDir = AyuMessagesController.attachmentsPath;
+        if (!attachmentsDir.exists() && !attachmentsDir.mkdirs()) {
+            return null;
+        }
+        File exactMatch = new File(attachmentsDir, baseName);
+        if (exactMatch.exists() && exactMatch.length() > 0) {
+            return exactMatch;
+        }
+        return null;
+    }
+
     public static File findExistingFileByBaseName(String baseName) {
         File attachmentsDir = AyuMessagesController.attachmentsPath;
         if (!attachmentsDir.exists() && !attachmentsDir.mkdirs()) {
@@ -673,5 +695,77 @@ public abstract class AyuMessageUtils {
             }
         }
         return (bestSize > 0) ? best : null;
+    }
+
+    public static File saveDownloadedMedia(File downloadedFile) {
+        if (!NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+            return null;
+        }
+        if (downloadedFile == null) {
+            return null;
+        }
+        String filename = downloadedFile.getName();
+        File outputFile = new File(AyuMessagesController.attachmentsPath, filename);
+        if (outputFile.exists()) {
+            return outputFile;
+        }
+        if (!downloadedFile.exists()) {
+            if (outputFile.exists()) {
+                return outputFile;
+            }
+            return null;
+        }
+        File result = processAttachment(downloadedFile, outputFile);
+        if (result != null && "/".equals(result.getAbsolutePath())) {
+            return null;
+        }
+        return result;
+    }
+
+    private static String ensureAttachmentAndUpdateMediaPath(AyuMessageBase base, TLRPC.Message message, int accountId) {
+        try {
+            String baseName = AyuUtils.getBaseFilename(message);
+            if (TextUtils.isEmpty(baseName)) {
+                return null;
+            }
+            String filePath = AyuUtils.getPathToMessage(accountId, message);
+            // check if the file exists in the telegram cache folder (successfully downloaded after deserialization and saved by DELETED_MEDIA_LOADED_NOTIFICATION)
+            if (!TextUtils.isEmpty(filePath)) {
+                File from = new File(filePath);
+                String attachmentsPath = AyuMessagesController.attachmentsPath.getAbsolutePath();
+                if (from.exists() && !from.getAbsolutePath().startsWith(attachmentsPath)) {
+                    File to = new File(attachmentsPath, baseName);
+                    Utilities.globalQueue.postRunnable(() -> {
+                        File result = processAttachment(from, to);
+                        File resolved;
+                        if (result != null && !"/".equals(result.getAbsolutePath()) && result.exists()) {
+                            resolved = result;
+                        } else {
+                            resolved = findExistingFileByBaseNameFast(baseName);
+                        }
+                        if (resolved != null && resolved.exists() && resolved.length() > 0) {
+                            String newPath = resolved.getAbsolutePath();
+                            AyuMessagesController.getInstance().updateMediaPath(base.userId, base.dialogId, base.messageId, newPath);
+                        }
+                    });
+                    File found = findExistingFileByBaseNameFast(baseName);
+                    return found != null ? found.getAbsolutePath() : null;
+                }
+            }
+            File found = findExistingFileByBaseNameFast(baseName);
+            if (found == null && !TextUtils.isEmpty(filePath)) {
+                found = findExistingFileByBaseNameFast(new File(filePath).getName());
+            }
+            if (found != null) {
+                // update mediaPath in db when we discover an attachments copy
+                final String newPath = found.getAbsolutePath();
+                Utilities.globalQueue.postRunnable(() -> AyuMessagesController.getInstance().updateMediaPath(base.userId, base.dialogId, base.messageId, newPath));
+                return newPath;
+            }
+        } catch (Exception e) {
+            FileLog.e("ensureAttachmentAndUpdateMediaPath", e);
+            return null;
+        }
+        return null;
     }
 }

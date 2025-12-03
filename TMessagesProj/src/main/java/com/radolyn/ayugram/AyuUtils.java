@@ -121,7 +121,7 @@ public class AyuUtils {
         return sb.toString();
     }
 
-    public static String getFilename(TLObject obj, File attachPathFile) {
+    public static String getBaseFilename(TLObject obj) {
         String filename = null;
         if (obj instanceof TLRPC.Message && ((TLRPC.Message) obj).media != null) {
             filename = FileLoader.getDocumentFileName(((TLRPC.Message) obj).media.document);
@@ -135,6 +135,31 @@ public class AyuUtils {
             filename = FileLoader.getMessageFileName((TLRPC.Message) obj);
         }
         if (TextUtils.isEmpty(filename)) {
+            filename = "";
+        }
+        return filename;
+    }
+
+    public static String getPathToMessage(int currentAccount, TLObject obj) {
+        String path = "";
+        if (obj instanceof TLRPC.Message && ((TLRPC.Message) obj).media != null) {
+            path = FileLoader.getInstance(currentAccount).getPathToMessage(((TLRPC.Message) obj)).toString();
+        }
+        return path;
+    }
+
+    public static String getFilename(TLObject obj, File attachPathFile) {
+        String filename = null;
+        if (obj instanceof TLRPC.Message && ((TLRPC.Message) obj).media != null) {
+            filename = FileLoader.getDocumentFileName(((TLRPC.Message) obj).media.document);
+        }
+        if (obj instanceof TLRPC.Document) {
+            filename = FileLoader.getDocumentFileName((TLRPC.Document) obj);
+        }
+        if (TextUtils.isEmpty(filename) && obj instanceof TLRPC.Message) {
+            filename = FileLoader.getMessageFileName((TLRPC.Message) obj);
+        }
+        if (TextUtils.isEmpty(filename) && attachPathFile != null) {
             filename = attachPathFile.getName();
         }
         if (TextUtils.isEmpty(filename)) {

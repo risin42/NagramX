@@ -140,9 +140,12 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.zxing.common.detector.MathUtils;
 import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.AyuUtils;
+import com.radolyn.ayugram.database.entities.AyuMessageBase;
+import com.radolyn.ayugram.database.entities.DeletedMessageFull;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.messages.AyuSavePreferences;
 import com.radolyn.ayugram.proprietary.AyuHistoryHook;
+import com.radolyn.ayugram.proprietary.AyuMessageUtils;
 import com.radolyn.ayugram.ui.AyuMessageHistory;
 import com.radolyn.ayugram.ui.AyuViewDeleted;
 import com.radolyn.ayugram.ui.DummyView;
@@ -1285,6 +1288,7 @@ public class ChatActivity extends BaseFragment implements
 
     private final static int[] allowedNotificationsDuringChatListAnimations = new int[]{
             AyuConstants.MESSAGES_DELETED_NOTIFICATION,
+            AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION,
             NotificationCenter.messagesRead,
             NotificationCenter.threadMessagesRead,
             NotificationCenter.monoForumMessagesRead,
@@ -3081,6 +3085,7 @@ public class ChatActivity extends BaseFragment implements
         getNotificationCenter().addObserver(this, NotificationCenter.botForumDraftUpdate);
         getNotificationCenter().addObserver(this, NotificationCenter.botForumDraftDelete);
         getNotificationCenter().addObserver(this, AyuConstants.MESSAGES_DELETED_NOTIFICATION);
+        getNotificationCenter().addObserver(this, AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION);
 
         if (chatMode == MODE_EDIT_BUSINESS_LINK) {
             getNotificationCenter().addObserver(this, NotificationCenter.businessLinksUpdated);
@@ -3578,6 +3583,7 @@ public class ChatActivity extends BaseFragment implements
         getNotificationCenter().removeObserver(this, NotificationCenter.botForumDraftUpdate);
         getNotificationCenter().removeObserver(this, NotificationCenter.botForumDraftDelete);
         getNotificationCenter().removeObserver(this, AyuConstants.MESSAGES_DELETED_NOTIFICATION);
+        getNotificationCenter().removeObserver(this, AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION);
 
         if (chatMode == MODE_EDIT_BUSINESS_LINK) {
             getNotificationCenter().removeObserver(this, NotificationCenter.businessLinksUpdated);
@@ -24702,6 +24708,15 @@ public class ChatActivity extends BaseFragment implements
 
             if (avatarContainer != null) {
                 avatarContainer.updateSubtitle(true);
+            }
+        } else if (id == AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION) {
+            try {
+                Utilities.globalQueue.postRunnable(() -> {
+                    File file = (File) args[1];
+                    AyuMessageUtils.saveDownloadedMedia(file);
+                });
+            } catch (Exception e) {
+                FileLog.e(e);
             }
         }
         // --- AyuGram hook (ayuDeleted)

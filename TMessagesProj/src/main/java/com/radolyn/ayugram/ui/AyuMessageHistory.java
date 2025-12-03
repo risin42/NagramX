@@ -497,7 +497,7 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
         private MessageObject createMessageObject(EditedMessage editedMessage) {
             var msg = new TLRPC.TL_message();
             AyuMessageUtils.map(editedMessage, msg, currentAccount);
-            AyuMessageUtils.mapMedia(editedMessage, msg);
+            AyuMessageUtils.mapMedia(editedMessage, msg, currentAccount);
 
             msg.date = editedMessage.entityCreateDate;
             msg.edit_hide = true;
@@ -529,7 +529,7 @@ public class AyuMessageHistory extends BaseFragment implements NotificationCente
 
         private File findSavedMedia(EditedMessage editedMessage) {
             File attachmentsDir = AyuMessagesController.attachmentsPath;
-            if (!attachmentsDir.exists()) {
+            if (!attachmentsDir.exists() && !attachmentsDir.mkdirs()) {
                 return null;
             }
             String ttlPrefix = "ttl_" + editedMessage.dialogId + "_" + editedMessage.messageId + "_";
