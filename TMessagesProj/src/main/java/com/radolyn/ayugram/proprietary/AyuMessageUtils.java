@@ -38,19 +38,19 @@ import xyz.nextalone.nagram.NaConfig;
 public abstract class AyuMessageUtils {
     private static final String NAX = "AyuMessageUtils";
 
-    public static ArrayList deserializeMultiple(byte[] bArr, Function<NativeByteBuffer, TLObject> function) {
+    public static <T extends TLObject> ArrayList<T> deserializeMultiple(byte[] data, Function<NativeByteBuffer, T> deserializer) {
         ArrayList result = new ArrayList();
-        if (bArr == null || bArr.length == 0) {
+        if (data == null || data.length == 0) {
             return result;
         }
         NativeByteBuffer nativeByteBuffer = null;
         try {
-            nativeByteBuffer = new NativeByteBuffer(bArr.length);
-            nativeByteBuffer.buffer.put(bArr);
+            nativeByteBuffer = new NativeByteBuffer(data.length);
+            nativeByteBuffer.buffer.put(data);
             nativeByteBuffer.rewind();
 
             while (nativeByteBuffer.buffer.hasRemaining()) {
-                TLObject tLObject = function.apply(nativeByteBuffer);
+                TLObject tLObject = deserializer.apply(nativeByteBuffer);
                 if (tLObject != null) {
                     result.add(tLObject);
                 } else {
@@ -397,14 +397,6 @@ public abstract class AyuMessageUtils {
                 pathToAttach = pathToAttach2;
             }
         }
-
-        if (!pathToAttach.exists()) {
-            if (BuildVars.LOGS_ENABLED) {
-                Log.d(NAX, "Media file not found for attachment, will save metadata only: " + pathToAttach.getAbsolutePath());
-            }
-            return new File("/");
-        }
-
         return processAttachment(pathToAttach, new File(AyuMessagesController.attachmentsPath, AyuUtils.getFilename(tLObject, pathToAttach)));
     }
 
@@ -565,5 +557,121 @@ public abstract class AyuMessageUtils {
             }
         }
         return false;
+    }
+
+    public static File decryptAndSaveMedia(String fileName, File encryptedFile, MessageObject messageObject) {
+        if (!NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+            return null;
+        }
+        File AttachmentsDir = AyuMessagesController.attachmentsPath;
+        if (!AttachmentsDir.exists() && !AttachmentsDir.mkdirs()) {
+            return null;
+        }
+        if (TextUtils.isEmpty(fileName)) {
+            if (encryptedFile == null || !encryptedFile.exists()) {
+                return null;
+            }
+            fileName = encryptedFile.getName();
+            if (fileName.endsWith(".enc")) {
+                fileName = fileName.substring(0, fileName.length() - 4);
+            }
+        }
+        long dialogId = messageObject != null ? messageObject.getDialogId() : 0;
+        int messageId = messageObject != null ? messageObject.getId() : 0;
+        String outputFileName = "ttl_" + dialogId + "_" + messageId + "_" + fileName;
+        File outputFile = new File(AyuMessagesController.attachmentsPath, outputFileName);
+        // check if already exists
+        if (outputFile.exists() && outputFile.length() > 0) {
+            if (BuildVars.LOGS_ENABLED) {
+                Log.d(NAX, "Decrypted file already exists: " + outputFile.getAbsolutePath());
+            }
+            return outputFile;
+        }
+        // check for files saved with different naming pattern
+        File existingFile = findExistingFileByBaseName(fileName); // heavy operation, maybe remove later
+        if (existingFile != null) {
+            if (BuildVars.LOGS_ENABLED) {
+                Log.d(NAX, "File already saved: " + existingFile.getAbsolutePath());
+            }
+            return existingFile;
+        }
+        // decrypt and save
+        File keyFile = new File(FileLoader.getInternalCacheDir(), encryptedFile.getName() + ".key");
+        if (!keyFile.exists()) {
+            if (BuildVars.LOGS_ENABLED) {
+                Log.d(NAX, "Key file not found: " + keyFile.getAbsolutePath());
+            }
+            return null;
+        }
+        try (EncryptedFileInputStream inputStream = new EncryptedFileInputStream(encryptedFile, keyFile);
+             FileOutputStream outputStream = new FileOutputStream(outputFile)) {
+            byte[] readBuffer = new byte[8 * 1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(readBuffer)) != -1) {
+                outputStream.write(readBuffer, 0, bytesRead);
+            }
+            if (BuildVars.LOGS_ENABLED) {
+                Log.d(NAX, "Successfully decrypted and saved media to: " + outputFile.getAbsolutePath());
+            }
+            return outputFile;
+        } catch (Exception e) {
+            FileLog.e("Failed to decrypt and save media", e);
+            if (outputFile.exists() && !outputFile.delete()) {
+                outputFile.deleteOnExit();
+            }
+            return null;
+        }
+    }
+
+    public static File findExistingFileByBaseName(String baseName) {
+        File attachmentsDir = AyuMessagesController.attachmentsPath;
+        if (!attachmentsDir.exists() && !attachmentsDir.mkdirs()) {
+            return null;
+        }
+        File exactMatch = new File(attachmentsDir, baseName);
+        if (exactMatch.exists()) {
+            return exactMatch;
+        }
+        String nameWithoutExtension = AyuUtils.removeExtension(baseName);
+        String extension = AyuUtils.getExtension(baseName);
+        // match files that either have the random suffix after '@' (name@rand.ext)
+        // or have a size specifier followed by @ (name#WxH@rand.ext).
+        File[] matchingFiles = attachmentsDir.listFiles((dir, name) -> {
+            if (!name.endsWith(extension)) {
+                return false;
+            }
+            if (name.equals(baseName)) {
+                return true;
+            }
+            if (!name.startsWith(nameWithoutExtension)) {
+                return false;
+            }
+            int length = nameWithoutExtension.length();
+            if (name.length() <= length) {
+                return false;
+            }
+            char ch = name.charAt(length);
+            return (ch == '@' || ch == '#');
+        });
+        if (matchingFiles == null || matchingFiles.length == 0) {
+            return null;
+        }
+        return getLargestNonEmpty(matchingFiles);
+    }
+
+    public static File getLargestNonEmpty(File[] files) {
+        if (files == null || files.length == 0) {
+            return null;
+        }
+        File best = null;
+        long bestSize = -1;
+        for (File f : files) {
+            long len = f == null ? 0 : f.length();
+            if (len > bestSize) {
+                best = f;
+                bestSize = len;
+            }
+        }
+        return (bestSize > 0) ? best : null;
     }
 }

@@ -118,6 +118,8 @@ import java.util.Locale;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 
+import com.radolyn.ayugram.proprietary.AyuMessageUtils;
+
 public class SecretMediaViewer implements NotificationCenter.NotificationCenterDelegate, GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
 
     private class FrameLayoutDrawer extends FrameLayout {
@@ -1527,7 +1529,13 @@ public class SecretMediaViewer implements NotificationCenter.NotificationCenterD
                     File file = FileLoader.getInstance(currentAccount).getPathToMessage(messageObject.messageOwner);
                     File encryptedFile = new File(file.getAbsolutePath() + ".enc");
                     if (encryptedFile.exists()) {
-                        file = encryptedFile;
+                        // save deleted: try to decrypt and save to attachments path for persistence
+                        File decryptedFile = AyuMessageUtils.decryptAndSaveMedia(file.getName(), encryptedFile, messageObject);
+                        if (decryptedFile != null && decryptedFile.exists() && decryptedFile.length() > 0) {
+                            file = decryptedFile;
+                        } else {
+                            file = encryptedFile;
+                        }
                     }
                     preparePlayer(file);
                 }
@@ -1538,7 +1546,19 @@ public class SecretMediaViewer implements NotificationCenter.NotificationCenterD
         } else {
             actionBar.setTitle(LocaleController.getString(R.string.DisappearingPhoto));
             TLRPC.PhotoSize sizeFull = FileLoader.getClosestPhotoSizeWithSize(messageObject.photoThumbs, AndroidUtilities.getPhotoSize());
-            centerImage.setImage(ImageLocation.getForObject(sizeFull, messageObject.photoThumbsObject), null, currentThumb != null ? new BitmapDrawable(currentThumb.bitmap) : null, -1, null, messageObject, 2);
+            // save deleted: try to decrypt and save photo to attachments path for persistence
+            File photoFile = FileLoader.getInstance(currentAccount).getPathToAttach(sizeFull, true);
+            File encryptedPhotoFile = new File(photoFile.getAbsolutePath() + ".enc");
+            if (encryptedPhotoFile.exists()) {
+                File decryptedFile = AyuMessageUtils.decryptAndSaveMedia(photoFile.getName(), encryptedPhotoFile, messageObject);
+                if (decryptedFile != null && decryptedFile.exists() && decryptedFile.length() > 0) {
+                    centerImage.setImage(decryptedFile.getAbsolutePath(), null, currentThumb != null ? new BitmapDrawable(currentThumb.bitmap) : null, "jpg", 0);
+                } else {
+                    centerImage.setImage(ImageLocation.getForObject(sizeFull, messageObject.photoThumbsObject), null, currentThumb != null ? new BitmapDrawable(currentThumb.bitmap) : null, -1, null, messageObject, 2);
+                }
+            } else {
+                centerImage.setImage(ImageLocation.getForObject(sizeFull, messageObject.photoThumbsObject), null, currentThumb != null ? new BitmapDrawable(currentThumb.bitmap) : null, -1, null, messageObject, 2);
+            }
 
             if (sizeFull != null) {
                 videoWidth = sizeFull.w;

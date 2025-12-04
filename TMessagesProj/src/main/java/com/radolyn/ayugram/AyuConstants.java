@@ -13,6 +13,9 @@ import tw.nekomimi.nekogram.NekoConfig;
 
 public class AyuConstants {
 
+    public static final int DOCUMENT_TYPE_NONE = 0;
+    public static final int DOCUMENT_TYPE_PHOTO = 1;
+    public static final int DOCUMENT_TYPE_STICKER = 2;
     public static final int DOCUMENT_TYPE_FILE = 3;
 
     public static final int OPTION_HISTORY = 1338_01;
