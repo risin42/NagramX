@@ -1,10 +1,11 @@
 package com.radolyn.ayugram.proprietary;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.core.util.Pair;
 
-import com.google.android.exoplayer2.util.Log;
+import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.AyuUtils;
 import com.radolyn.ayugram.database.entities.AyuMessageBase;
 import com.radolyn.ayugram.messages.AyuMessagesController;
@@ -34,26 +35,24 @@ import java.util.function.Function;
 
 import xyz.nextalone.nagram.NaConfig;
 
-/** @noinspection rawtypes*/
-@SuppressWarnings("unchecked")
 public abstract class AyuMessageUtils {
-    private static final String NAX = "AyuMessageUtils";
+    private static final String TAG = "AyuMessageUtils";
 
-    public static <T extends TLObject> ArrayList<T> deserializeMultiple(byte[] data, Function<NativeByteBuffer, T> deserializer) {
-        ArrayList result = new ArrayList();
-        if (data == null || data.length == 0) {
-            return result;
+    public static <T extends TLObject> ArrayList<T> deserializeMultiple(byte[] serializedData, Function<NativeByteBuffer, T> deserializer) {
+        ArrayList<T> deserializedList = new ArrayList<>();
+        if (serializedData == null || serializedData.length == 0) {
+            return deserializedList;
         }
-        NativeByteBuffer nativeByteBuffer = null;
+        NativeByteBuffer data = null;
         try {
-            nativeByteBuffer = new NativeByteBuffer(data.length);
-            nativeByteBuffer.buffer.put(data);
-            nativeByteBuffer.rewind();
+            data = new NativeByteBuffer(serializedData.length);
+            data.buffer.put(serializedData);
+            data.rewind();
 
-            while (nativeByteBuffer.buffer.hasRemaining()) {
-                TLObject tLObject = deserializer.apply(nativeByteBuffer);
-                if (tLObject != null) {
-                    result.add(tLObject);
+            while (data.buffer.hasRemaining()) {
+                T item = deserializer.apply(data);
+                if (item != null) {
+                    deserializedList.add(item);
                 } else {
                     break;
                 }
@@ -61,239 +60,230 @@ public abstract class AyuMessageUtils {
         } catch (Exception e) {
             FileLog.e("Failed to deserializeMultiple", e);
         } finally {
-            if (nativeByteBuffer != null) {
-                nativeByteBuffer.reuse();
+            if (data != null) {
+                data.reuse();
             }
         }
-        return result;
+        return deserializedList;
     }
 
-    public static void map(AyuMessageBase ayuMessageBase, TLRPC.Message tLRPC$Message, int i) {
-        MessagesController messagesController = MessagesController.getInstance(i);
-        int i2 = ayuMessageBase.flags;
-        tLRPC$Message.dialog_id = ayuMessageBase.dialogId;
-        tLRPC$Message.grouped_id = ayuMessageBase.groupedId;
-        tLRPC$Message.peer_id = messagesController.getPeer(ayuMessageBase.peerId);
-        tLRPC$Message.from_id = messagesController.getPeer(ayuMessageBase.fromId);
-        int i3 = ayuMessageBase.messageId;
-        tLRPC$Message.id = i3;
-        tLRPC$Message.realId = i3;
-        tLRPC$Message.date = ayuMessageBase.date;
-        int i4 = ayuMessageBase.flags;
-        tLRPC$Message.flags = i4;
-        tLRPC$Message.unread = (i2 & 1) != 0;
-        tLRPC$Message.out = (i2 & 2) != 0;
-        tLRPC$Message.mentioned = (i2 & 16) != 0;
-        tLRPC$Message.media_unread = (i2 & 32) != 0;
-        tLRPC$Message.silent = (i2 & LiteMode.FLAG_ANIMATED_EMOJI_REACTIONS_NOT_PREMIUM) != 0;
-        tLRPC$Message.post = (i2 & 16384) != 0;
-        tLRPC$Message.from_scheduled = (262144 & i2) != 0;
-        tLRPC$Message.legacy = (524288 & i2) != 0;
-        tLRPC$Message.edit_hide = (2097152 & i2) != 0;
-        tLRPC$Message.pinned = (16777216 & i2) != 0;
-        tLRPC$Message.noforwards = false;
-//        tLRPC$Message.ayuNoforwards = (67108864 & i2) != 0;
-//        tLRPC$Message.topic_start = (i2 & 134217728) != 0;
-        tLRPC$Message.edit_date = ayuMessageBase.editDate;
-        tLRPC$Message.views = ayuMessageBase.views;
-        if ((i4 & 4) != 0) {
-            TLRPC.TL_messageFwdHeader tLRPC$TL_messageFwdHeader = new TLRPC.TL_messageFwdHeader();
-            tLRPC$Message.fwd_from = tLRPC$TL_messageFwdHeader;
-            tLRPC$TL_messageFwdHeader.flags = ayuMessageBase.fwdFlags;
-            if (ayuMessageBase.fwdFromId != 0) {
-                tLRPC$TL_messageFwdHeader.from_id = messagesController.getPeer(ayuMessageBase.fwdFromId);
+    public static void map(AyuMessageBase source, TLRPC.Message target, int accountId) {
+        MessagesController messagesController = MessagesController.getInstance(accountId);
+        int flags = source.flags;
+        target.dialog_id = source.dialogId;
+        target.grouped_id = source.groupedId;
+        target.peer_id = messagesController.getPeer(source.peerId);
+        target.from_id = messagesController.getPeer(source.fromId);
+        int messageId = source.messageId;
+        target.id = messageId;
+        target.realId = messageId;
+        target.date = source.date;
+        target.flags = flags;
+        target.unread = (flags & 1) != 0;
+        target.out = (flags & 2) != 0;
+        target.mentioned = (flags & 16) != 0;
+        target.media_unread = (flags & 32) != 0;
+        target.silent = (flags & LiteMode.FLAG_ANIMATED_EMOJI_REACTIONS_NOT_PREMIUM) != 0;
+        target.post = (flags & 16384) != 0;
+        target.from_scheduled = (262144 & flags) != 0;
+        target.legacy = (524288 & flags) != 0;
+        target.edit_hide = (2097152 & flags) != 0;
+        target.pinned = (16777216 & flags) != 0;
+        target.noforwards = false;
+        target.edit_date = source.editDate;
+        target.views = source.views;
+        if ((flags & 4) != 0) {
+            TLRPC.TL_messageFwdHeader forwardHeader = new TLRPC.TL_messageFwdHeader();
+            target.fwd_from = forwardHeader;
+            forwardHeader.flags = source.fwdFlags;
+            if (source.fwdFromId != 0) {
+                forwardHeader.from_id = messagesController.getPeer(source.fwdFromId);
             }
-            TLRPC.MessageFwdHeader tLRPC$MessageFwdHeader = tLRPC$Message.fwd_from;
-            tLRPC$MessageFwdHeader.from_name = ayuMessageBase.fwdName;
-            tLRPC$MessageFwdHeader.date = ayuMessageBase.fwdDate;
-            tLRPC$MessageFwdHeader.post_author = ayuMessageBase.fwdPostAuthor;
+            forwardHeader.from_name = source.fwdName;
+            forwardHeader.date = source.fwdDate;
+            forwardHeader.post_author = source.fwdPostAuthor;
         }
-        if ((tLRPC$Message.flags & 8) != 0) {
-            TLRPC.MessageReplyHeader messageReplyHeader = new TLRPC.TL_messageReplyHeader();
-            tLRPC$Message.reply_to = messageReplyHeader;
-            messageReplyHeader.flags = ayuMessageBase.replyFlags;
-            messageReplyHeader.reply_to_msg_id = ayuMessageBase.replyMessageId;
-            if (ayuMessageBase.replyPeerId != 0) {
-                messageReplyHeader.reply_to_peer_id = messagesController.getPeer(ayuMessageBase.replyPeerId);
+        if ((target.flags & 8) != 0) {
+            TLRPC.MessageReplyHeader replyHeader = new TLRPC.TL_messageReplyHeader();
+            target.reply_to = replyHeader;
+            replyHeader.flags = source.replyFlags;
+            replyHeader.reply_to_msg_id = source.replyMessageId;
+            if (source.replyPeerId != 0) {
+                replyHeader.reply_to_peer_id = messagesController.getPeer(source.replyPeerId);
             }
-            TLRPC.MessageReplyHeader messageReplyHeader2 = tLRPC$Message.reply_to;
-            messageReplyHeader2.reply_to_top_id = ayuMessageBase.replyTopId;
-            messageReplyHeader2.forum_topic = ayuMessageBase.replyForumTopic;
+            replyHeader.reply_to_top_id = source.replyTopId;
+            replyHeader.forum_topic = source.replyForumTopic;
 
         }
-        tLRPC$Message.message = ayuMessageBase.text;
-        tLRPC$Message.entities = deserializeMultiple(
-                ayuMessageBase.textEntities,
-                (NativeByteBuffer nativeByteBuffer) ->
+        target.message = source.text;
+        target.entities = deserializeMultiple(
+                source.textEntities,
+                (NativeByteBuffer data) ->
                         TLRPC.MessageEntity.TLdeserialize(
-                                nativeByteBuffer,
-                                nativeByteBuffer.readInt32(false),
+                                data,
+                                data.readInt32(false),
                                 false
                         )
         );
     }
 
-    public static void map(AyuSavePreferences ayuSavePreferences, AyuMessageBase ayuMessageBase) {
-        TLRPC.Message message = ayuSavePreferences.getMessage();
-        ayuMessageBase.userId = ayuSavePreferences.getUserId();
-        ayuMessageBase.dialogId = ayuSavePreferences.getDialogId();
-        ayuMessageBase.groupedId = message.grouped_id;
-        ayuMessageBase.peerId = MessageObject.getPeerId(message.peer_id);
-        ayuMessageBase.fromId = MessageObject.getPeerId(message.from_id);
-        ayuMessageBase.topicId = ayuSavePreferences.getTopicId();
-        ayuMessageBase.messageId = message.id;
-        ayuMessageBase.date = message.date;
-        ayuMessageBase.flags = message.flags;
-        ayuMessageBase.editDate = message.edit_date;
-        ayuMessageBase.views = message.views;
-        TLRPC.MessageFwdHeader tLRPC$MessageFwdHeader = message.fwd_from;
-        if (tLRPC$MessageFwdHeader != null) {
-            ayuMessageBase.fwdFlags = tLRPC$MessageFwdHeader.flags;
-            ayuMessageBase.fwdFromId = MessageObject.getPeerId(tLRPC$MessageFwdHeader.from_id);
-            TLRPC.MessageFwdHeader tLRPC$MessageFwdHeader2 = message.fwd_from;
-            ayuMessageBase.fwdName = tLRPC$MessageFwdHeader2.from_name;
-            ayuMessageBase.fwdDate = tLRPC$MessageFwdHeader2.date;
-            ayuMessageBase.fwdPostAuthor = tLRPC$MessageFwdHeader2.post_author;
+    public static void map(AyuSavePreferences prefs, AyuMessageBase out) {
+        TLRPC.Message message = prefs.getMessage();
+        out.userId = prefs.getUserId();
+        out.dialogId = prefs.getDialogId();
+        out.groupedId = message.grouped_id;
+        out.peerId = MessageObject.getPeerId(message.peer_id);
+        out.fromId = MessageObject.getPeerId(message.from_id);
+        out.topicId = prefs.getTopicId();
+        out.messageId = message.id;
+        out.date = message.date;
+        out.flags = message.flags;
+        out.editDate = message.edit_date;
+        out.views = message.views;
+        TLRPC.MessageFwdHeader fwdHeader = message.fwd_from;
+        if (fwdHeader != null) {
+            out.fwdFlags = fwdHeader.flags;
+            out.fwdFromId = MessageObject.getPeerId(fwdHeader.from_id);
+            out.fwdName = fwdHeader.from_name;
+            out.fwdDate = fwdHeader.date;
+            out.fwdPostAuthor = fwdHeader.post_author;
         }
-        TLRPC.MessageReplyHeader messageReplyHeader = message.reply_to;
-        if (messageReplyHeader != null) {
-            ayuMessageBase.replyFlags = messageReplyHeader.flags;
-            ayuMessageBase.replyMessageId = messageReplyHeader.reply_to_msg_id;
-            ayuMessageBase.replyPeerId = MessageObject.getPeerId(messageReplyHeader.reply_to_peer_id);
-            TLRPC.MessageReplyHeader messageReplyHeader2 = message.reply_to;
-            ayuMessageBase.replyTopId = messageReplyHeader2.reply_to_top_id;
-            ayuMessageBase.replyForumTopic = messageReplyHeader2.forum_topic;
+        TLRPC.MessageReplyHeader replyHeader = message.reply_to;
+        if (replyHeader != null) {
+            out.replyFlags = replyHeader.flags;
+            out.replyMessageId = replyHeader.reply_to_msg_id;
+            out.replyPeerId = MessageObject.getPeerId(replyHeader.reply_to_peer_id);
+            out.replyTopId = replyHeader.reply_to_top_id;
+            out.replyForumTopic = replyHeader.forum_topic;
         }
-        ayuMessageBase.entityCreateDate = ayuSavePreferences.getRequestCatchTime();
-        ayuMessageBase.text = message.message;
-        ayuMessageBase.textEntities = serializeMultiple(message.entities);
+        out.entityCreateDate = prefs.getRequestCatchTime();
+        out.text = message.message;
+        out.textEntities = serializeMultiple(message.entities);
     }
 
-    public static void mapMedia(AyuMessageBase ayuMessageBase, TLRPC.Message tLRPC$Message, int currentAccount) {
-        byte[] bArr;
-        int i = ayuMessageBase.documentType;
-        byte[] bArr2 = ayuMessageBase.documentSerialized;
-        String str = ayuMessageBase.mediaPath;
-        int i2 = ayuMessageBase.date;
-        if (i != 0) {
+    public static void mapMedia(AyuMessageBase base, TLRPC.Message target, int accountId) {
+        byte[] bytes;
+        int documentType = base.documentType;
+        byte[] serializedDocument = base.documentSerialized;
+        String mediaPath = base.mediaPath;
+        int messageDate = base.date;
+        if (documentType != AyuConstants.DOCUMENT_TYPE_NONE) {
             // If we have serialized media data (and no file path), deserialize it directly
             // This handles cases where the file wasn't downloaded when the message was deleted
-            if (i != 2 && bArr2 != null && bArr2.length > 0 && TextUtils.isEmpty(str)) {
-                NativeByteBuffer nativeByteBuffer = null;
+            if (documentType != AyuConstants.DOCUMENT_TYPE_STICKER && serializedDocument != null && serializedDocument.length > 0 && TextUtils.isEmpty(mediaPath)) {
+                NativeByteBuffer data = null;
                 try {
-                    nativeByteBuffer = new NativeByteBuffer(bArr2.length);
-                    nativeByteBuffer.put(ByteBuffer.wrap(bArr2));
-                    nativeByteBuffer.rewind();
-                    tLRPC$Message.media = TLRPC.MessageMedia.TLdeserialize(nativeByteBuffer, nativeByteBuffer.readInt32(false), false);
-                    String resolvedPath = ensureAttachmentAndUpdateMediaPath(ayuMessageBase, tLRPC$Message, currentAccount);
+                    data = new NativeByteBuffer(serializedDocument.length);
+                    data.put(ByteBuffer.wrap(serializedDocument));
+                    data.rewind();
+                    target.media = TLRPC.MessageMedia.TLdeserialize(data, data.readInt32(false), false);
+                    String resolvedPath = ensureAttachmentAndUpdateMediaPath(base, target, accountId);
                     if (!TextUtils.isEmpty(resolvedPath)) {
-                        str = resolvedPath;
+                        mediaPath = resolvedPath;
                         if (BuildVars.LOGS_ENABLED) {
-                            Log.d(NAX, "mapMedia: found attachments copy for deserialized media: " + str);
+                            Log.d(TAG, "mapMedia: found attachments copy for deserialized media: " + mediaPath);
                         }
                     }
                     if (BuildVars.LOGS_ENABLED) {
-                        Log.d(NAX, "Restored media from serialized data for message " + tLRPC$Message.id);
+                        Log.d(TAG, "Restored media from serialized data for message " + target.id);
                     }
-                    if (TextUtils.isEmpty(str)) {
+                    if (TextUtils.isEmpty(mediaPath)) {
                         return;
                     }
                 } catch (Exception e) {
                     FileLog.e("Failed to deserialize media", e);
                 } finally {
-                    if (nativeByteBuffer != null) {
-                        nativeByteBuffer.reuse();
+                    if (data != null) {
+                        data.reuse();
                     }
                 }
             }
 
-            if (i == 2 || !TextUtils.isEmpty(str)) {
-                if (i == 2 && bArr2 != null && bArr2.length > 0) {
-                    NativeByteBuffer nativeByteBuffer = null;
+            if (documentType == AyuConstants.DOCUMENT_TYPE_STICKER || !TextUtils.isEmpty(mediaPath)) {
+                if (documentType == AyuConstants.DOCUMENT_TYPE_STICKER && serializedDocument != null && serializedDocument.length > 0) {
+                    NativeByteBuffer data = null;
                     try {
-                        nativeByteBuffer = new NativeByteBuffer(bArr2.length);
-                        nativeByteBuffer.put(ByteBuffer.wrap(bArr2));
-                        nativeByteBuffer.rewind();
-                        tLRPC$Message.media = TLRPC.MessageMedia.TLdeserialize(nativeByteBuffer, nativeByteBuffer.readInt32(false), false);
+                        data = new NativeByteBuffer(serializedDocument.length);
+                        data.put(ByteBuffer.wrap(serializedDocument));
+                        data.rewind();
+                        target.media = TLRPC.MessageMedia.TLdeserialize(data, data.readInt32(false), false);
                     } catch (Exception e) {
                         FileLog.e("fake news sticker..", e);
                     } finally {
-                        if (nativeByteBuffer != null) {
-                            nativeByteBuffer.reuse();
+                        if (data != null) {
+                            data.reuse();
                         }
                     }
-                    tLRPC$Message.stickerVerified = 1;
+                    target.stickerVerified = 1;
                     return;
                 }
-                if (TextUtils.isEmpty(str)) {
+                if (TextUtils.isEmpty(mediaPath)) {
                     return;
                 }
-                tLRPC$Message.attachPath = str;
-                File file = new File(str);
-                if (i == 1) {
-                    Pair extractImageSizeFromName = AyuUtils.extractImageSizeFromName(file.getName());
-                    if (extractImageSizeFromName == null) {
-                        extractImageSizeFromName = AyuUtils.extractImageSizeFromFile(file.getAbsolutePath());
+                target.attachPath = mediaPath;
+                File file = new File(mediaPath);
+                if (documentType == AyuConstants.DOCUMENT_TYPE_PHOTO) {
+                    Pair<Integer, Integer> sizePair = AyuUtils.extractImageSizeFromName(file.getName());
+                    if (sizePair == null) {
+                        sizePair = AyuUtils.extractImageSizeFromFile(file.getAbsolutePath());
                     }
-                    if (extractImageSizeFromName == null) {
-                        extractImageSizeFromName = new Pair(500, 302);
+                    if (sizePair == null) {
+                        sizePair = new Pair<>(500, 500);
                     }
-                    TLRPC.TL_messageMediaPhoto tLRPC$TL_messageMediaPhoto = new TLRPC.TL_messageMediaPhoto();
-                    tLRPC$Message.media = tLRPC$TL_messageMediaPhoto;
-                    tLRPC$TL_messageMediaPhoto.flags = 1;
-                    tLRPC$TL_messageMediaPhoto.photo = new TLRPC.TL_photo();
-                    TLRPC.Photo tLRPC$Photo = tLRPC$Message.media.photo;
-                    tLRPC$Photo.has_stickers = false;
-                    tLRPC$Photo.date = i2;
-                    TLRPC.TL_photoSize tLRPC$TL_photoSize = new TLRPC.TL_photoSize();
-                    tLRPC$TL_photoSize.size = (int) file.length();
-                    tLRPC$TL_photoSize.w = (Integer) extractImageSizeFromName.first;
-                    tLRPC$TL_photoSize.h = (Integer) extractImageSizeFromName.second;
-                    tLRPC$TL_photoSize.type = "y";
-                    tLRPC$TL_photoSize.location = new AyuFileLocation(str);
-                    tLRPC$Message.media.photo.sizes.add(tLRPC$TL_photoSize);
-                } else if (i == 3) {
-                    TLRPC.TL_messageMediaDocument tLRPC$TL_messageMediaDocument = new TLRPC.TL_messageMediaDocument();
-                    tLRPC$Message.media = tLRPC$TL_messageMediaDocument;
-                    tLRPC$TL_messageMediaDocument.flags = 1;
-                    tLRPC$TL_messageMediaDocument.document = new TLRPC.TL_document();
-                    TLRPC.Document tLRPC$Document = tLRPC$Message.media.document;
-                    tLRPC$Document.date = i2;
-                    tLRPC$Document.localPath = str;
-                    tLRPC$Document.file_name = AyuUtils.getReadableFilename(file.getName());
-                    tLRPC$Message.media.document.file_name_fixed = AyuUtils.getReadableFilename(file.getName());
-                    tLRPC$Message.media.document.size = file.length();
-                    TLRPC.Document tLRPC$Document2 = tLRPC$Message.media.document;
-                    tLRPC$Document2.mime_type = ayuMessageBase.mimeType;
-                    tLRPC$Document2.attributes = deserializeMultiple(
-                            ayuMessageBase.documentAttributesSerialized,
-                            (NativeByteBuffer nativeByteBuffer) ->
-                                    TLRPC.DocumentAttribute.TLdeserialize(
-                                            nativeByteBuffer,
-                                            nativeByteBuffer.readInt32(false),
-                                            false
-                                    )
+                    TLRPC.TL_messageMediaPhoto mediaPhoto = new TLRPC.TL_messageMediaPhoto();
+                    target.media = mediaPhoto;
+                    mediaPhoto.flags = 1;
+                    mediaPhoto.photo = new TLRPC.TL_photo();
+                    TLRPC.Photo photo = target.media.photo;
+                    photo.has_stickers = false;
+                    photo.date = messageDate;
+                    TLRPC.TL_photoSize photoSize = new TLRPC.TL_photoSize();
+                    photoSize.size = (int) file.length();
+                    photoSize.w = sizePair.first;
+                    photoSize.h = sizePair.second;
+                    photoSize.type = "y";
+                    photoSize.location = new AyuFileLocation(mediaPath);
+                    target.media.photo.sizes.add(photoSize);
+                } else if (documentType == AyuConstants.DOCUMENT_TYPE_FILE) {
+                    TLRPC.TL_messageMediaDocument mediaDocument = new TLRPC.TL_messageMediaDocument();
+                    target.media = mediaDocument;
+                    mediaDocument.flags = 1;
+                    mediaDocument.document = new TLRPC.TL_document();
+                    TLRPC.Document doc = target.media.document;
+                    doc.date = messageDate;
+                    doc.localPath = mediaPath;
+                    doc.file_name = AyuUtils.getReadableFilename(file.getName());
+                    doc.file_name_fixed = AyuUtils.getReadableFilename(file.getName());
+                    doc.size = file.length();
+                    doc.mime_type = base.mimeType;
+                    doc.attributes = deserializeMultiple(
+                        base.documentAttributesSerialized,
+                        (NativeByteBuffer data) ->
+                            TLRPC.DocumentAttribute.TLdeserialize(
+                                data,
+                                data.readInt32(false),
+                                false
+                            )
                     );
-                    for (Object o : deserializeMultiple(
-                            ayuMessageBase.thumbsSerialized,
-                            (NativeByteBuffer nativeByteBuffer) ->
+                    for (TLRPC.PhotoSize photoSize : deserializeMultiple(
+                            base.thumbsSerialized,
+                            (NativeByteBuffer data) ->
                                     TLRPC.PhotoSize.TLdeserialize(
                                             0L,
                                             0L,
                                             0L,
-                                            nativeByteBuffer,
-                                            nativeByteBuffer.readInt32(false),
+                                            data,
+                                            data.readInt32(false),
                                             false
                                     )
                     )) {
-                        TLRPC.PhotoSize tLRPC$PhotoSize = (TLRPC.PhotoSize) o;
-                        if (tLRPC$PhotoSize != null) {
-                            if ((tLRPC$PhotoSize instanceof TLRPC.TL_photoSize) && !TextUtils.isEmpty(ayuMessageBase.hqThumbPath) && ((bArr = tLRPC$PhotoSize.bytes) == null || bArr.length == 0)) {
-                                tLRPC$PhotoSize.location = new AyuFileLocation(ayuMessageBase.hqThumbPath);
+                        if (photoSize != null) {
+                            if ((photoSize instanceof TLRPC.TL_photoSize) && !TextUtils.isEmpty(base.hqThumbPath) && ((bytes = photoSize.bytes) == null || bytes.length == 0)) {
+                                photoSize.location = new AyuFileLocation(base.hqThumbPath);
                             }
-                            byte[] bArr3 = tLRPC$PhotoSize.bytes;
-                            if ((bArr3 != null && bArr3.length != 0) || tLRPC$PhotoSize.location != null) {
-                                tLRPC$Message.media.document.thumbs.add(tLRPC$PhotoSize);
+                            byte[] thumbBytes = photoSize.bytes;
+                            if ((thumbBytes != null && thumbBytes.length != 0) || photoSize.location != null) {
+                                target.media.document.thumbs.add(photoSize);
                             }
                         }
                     }
@@ -302,96 +292,96 @@ public abstract class AyuMessageUtils {
         }
     }
 
-    public static void mapMedia(AyuSavePreferences ayuSavePreferences, AyuMessageBase ayuMessageBase, boolean z) {
-        File processAttachment;
-        TLRPC.Message message = ayuSavePreferences.getMessage();
-        if (shouldSaveMedia(ayuSavePreferences)) {
-            TLRPC.MessageMedia tLRPC$MessageMedia = message.media;
-            if (tLRPC$MessageMedia == null) {
-                ayuMessageBase.documentType = 0;
-            } else if ((tLRPC$MessageMedia instanceof TLRPC.TL_messageMediaPhoto) && tLRPC$MessageMedia.photo != null) {
-                ayuMessageBase.documentType = 1;
-            } else if ((tLRPC$MessageMedia instanceof TLRPC.TL_messageMediaDocument) && tLRPC$MessageMedia.document != null && (MessageObject.isStickerMessage(message) || (tLRPC$MessageMedia.document.mime_type != null && tLRPC$MessageMedia.document.mime_type.equals("application/x-tgsticker")))) {
-                ayuMessageBase.documentType = 2;
-                ayuMessageBase.mimeType = message.media.document.mime_type;
-                NativeByteBuffer nativeByteBuffer = null;
+    public static void mapMedia(AyuSavePreferences prefs, AyuMessageBase out, boolean copyFileToAttachments) {
+        File processedAttachment;
+        TLRPC.Message message = prefs.getMessage();
+        if (shouldSaveMedia(prefs)) {
+            TLRPC.MessageMedia media = message.media;
+            if (media == null) {
+                out.documentType = AyuConstants.DOCUMENT_TYPE_NONE;
+            } else if ((media instanceof TLRPC.TL_messageMediaPhoto) && media.photo != null) {
+                out.documentType = AyuConstants.DOCUMENT_TYPE_PHOTO;
+            } else if ((media instanceof TLRPC.TL_messageMediaDocument) && media.document != null && (MessageObject.isStickerMessage(message) || (media.document.mime_type != null && media.document.mime_type.equals("application/x-tgsticker")))) {
+                out.documentType = AyuConstants.DOCUMENT_TYPE_STICKER;
+                out.mimeType = message.media.document.mime_type;
+                NativeByteBuffer data = null;
                 try {
-                    nativeByteBuffer = new NativeByteBuffer(message.media.getObjectSize());
-                    message.media.serializeToStream(nativeByteBuffer);
-                    nativeByteBuffer.buffer.rewind();
-                    byte[] bArr = new byte[nativeByteBuffer.buffer.remaining()];
-                    nativeByteBuffer.buffer.get(bArr);
-                    ayuMessageBase.documentSerialized = bArr;
+                    data = new NativeByteBuffer(message.media.getObjectSize());
+                    message.media.serializeToStream(data);
+                    data.buffer.rewind();
+                    byte[] serialized = new byte[data.buffer.remaining()];
+                    data.buffer.get(serialized);
+                    out.documentSerialized = serialized;
                 } catch (Exception e) {
                     FileLog.e("fake news sticker", e);
                 } finally {
-                    if (nativeByteBuffer != null) {
-                        nativeByteBuffer.reuse();
+                    if (data != null) {
+                        data.reuse();
                     }
                 }
             } else {
-                ayuMessageBase.documentType = 3;
+                out.documentType = AyuConstants.DOCUMENT_TYPE_FILE;
             }
-            int i = ayuMessageBase.documentType;
-            if (i == 1 || i == 3) {
-                File file = new File("/");
+            int docType = out.documentType;
+            if (docType == AyuConstants.DOCUMENT_TYPE_PHOTO || docType == AyuConstants.DOCUMENT_TYPE_FILE) {
+                File finalFile = new File("/");
                 try {
-                    if (z) {
-                        file = processAttachment(ayuSavePreferences);
-                        TLRPC.MessageMedia media = MessageObject.getMedia(ayuSavePreferences.getMessage());
-                        if (media != null && MessageObject.isVideoDocument(media.document)) {
-                            Iterator<TLRPC.PhotoSize> it = media.document.thumbs.iterator();
+                    if (copyFileToAttachments) {
+                        finalFile = processAttachment(prefs);
+                        TLRPC.MessageMedia m = MessageObject.getMedia(prefs.getMessage());
+                        if (m != null && MessageObject.isVideoDocument(m.document)) {
+                            Iterator<TLRPC.PhotoSize> it = m.document.thumbs.iterator();
                             while (true) {
                                 if (!it.hasNext()) {
                                     break;
                                 }
                                 TLRPC.PhotoSize next = it.next();
-                                if ((next instanceof TLRPC.TL_photoSize) && (processAttachment = processAttachment(ayuSavePreferences.getAccountId(), next)) != null && !processAttachment.getAbsolutePath().equals("/")) {
-                                    ayuMessageBase.hqThumbPath = processAttachment.getAbsolutePath();
+                                if ((next instanceof TLRPC.TL_photoSize) && (processedAttachment = processAttachment(prefs.getAccountId(), next)) != null && !processedAttachment.getAbsolutePath().equals("/")) {
+                                    out.hqThumbPath = processedAttachment.getAbsolutePath();
                                     break;
                                 }
                             }
                         }
                     } else {
-                        file = FileLoader.getInstance(ayuSavePreferences.getAccountId()).getPathToMessage(ayuSavePreferences.getMessage());
+                        finalFile = FileLoader.getInstance(prefs.getAccountId()).getPathToMessage(prefs.getMessage());
                     }
-                    TLRPC.Document tLRPC$Document = message.media.document;
-                    if (tLRPC$Document != null) {
-                        ayuMessageBase.documentAttributesSerialized = serializeMultiple(tLRPC$Document.attributes);
-                        ayuMessageBase.thumbsSerialized = serializeMultiple(message.media.document.thumbs);
-                        ayuMessageBase.mimeType = message.media.document.mime_type;
+                    TLRPC.Document doc = message.media.document;
+                    if (doc != null) {
+                        out.documentAttributesSerialized = serializeMultiple(doc.attributes);
+                        out.thumbsSerialized = serializeMultiple(doc.thumbs);
+                        out.mimeType = doc.mime_type;
                     }
-                } catch (Exception e2) {
-                    FileLog.e("failed to save media", e2);
+                } catch (Exception e) {
+                    FileLog.e("failed to save media", e);
                 }
-                String absolutePath = file.getAbsolutePath();
+                String absolutePath = finalFile.getAbsolutePath();
                 if (absolutePath.equals("/")) {
                     absolutePath = null;
                 }
-                ayuMessageBase.mediaPath = absolutePath;
+                out.mediaPath = absolutePath;
 
                 // Serialize media object to preserve metadata even if file doesn't exist
                 // This allows showing file info, thumbnails, and attributes even without the actual file
-                if (ayuMessageBase.mediaPath == null && message.media != null) {
-                    NativeByteBuffer nativeByteBuffer = null;
+                if (out.mediaPath == null && message.media != null) {
+                    NativeByteBuffer data = null;
                     try {
                         int size = message.media.getObjectSize();
                         if (size > 0) {
-                            nativeByteBuffer = new NativeByteBuffer(size);
-                            message.media.serializeToStream(nativeByteBuffer);
-                            nativeByteBuffer.rewind();
-                            byte[] bArr = new byte[nativeByteBuffer.buffer.remaining()];
-                            nativeByteBuffer.buffer.get(bArr);
-                            ayuMessageBase.documentSerialized = bArr;
+                            data = new NativeByteBuffer(size);
+                            message.media.serializeToStream(data);
+                            data.rewind();
+                            byte[] serialized = new byte[data.buffer.remaining()];
+                            data.buffer.get(serialized);
+                            out.documentSerialized = serialized;
                             if (BuildVars.LOGS_ENABLED) {
-                                Log.d(NAX, "Media file not found, saved metadata for message " + message.id);
+                                Log.d(TAG, "Media file not found, saved metadata for message " + message.id);
                             }
                         }
                     } catch (Exception e) {
                         FileLog.e("Failed to serialize media metadata", e);
                     } finally {
-                        if (nativeByteBuffer != null) {
-                            nativeByteBuffer.reuse();
+                        if (data != null) {
+                            data.reuse();
                         }
                     }
                 }
@@ -399,79 +389,60 @@ public abstract class AyuMessageUtils {
         }
     }
 
-    private static File processAttachment(int i, TLObject tLObject) {
-        File pathToAttach = FileLoader.getInstance(i).getPathToAttach(tLObject);
+    private static File processAttachment(int accountId, TLObject object) {
+        File pathToAttach = FileLoader.getInstance(accountId).getPathToAttach(object);
         if (!pathToAttach.exists()) {
-            File pathToAttach2 = FileLoader.getInstance(i).getPathToAttach(tLObject, true);
+            File pathToAttach2 = FileLoader.getInstance(accountId).getPathToAttach(object, true);
             if (!pathToAttach2.getAbsolutePath().endsWith("/cache")) {
                 pathToAttach = pathToAttach2;
             }
         }
-        return processAttachment(pathToAttach, new File(AyuMessagesController.attachmentsPath, AyuUtils.getFilename(tLObject, pathToAttach)));
+        return processAttachment(pathToAttach, new File(AyuMessagesController.attachmentsPath, AyuUtils.getFilename(object, pathToAttach)));
     }
 
-    private static File processAttachment(AyuSavePreferences ayuSavePreferences) {
-        TLRPC.Message message = ayuSavePreferences.getMessage();
-        File pathToMessage = FileLoader.getInstance(ayuSavePreferences.getAccountId()).getPathToMessage(message);
+    private static File processAttachment(AyuSavePreferences prefs) {
+        TLRPC.Message message = prefs.getMessage();
+        File pathToMessage = FileLoader.getInstance(prefs.getAccountId()).getPathToMessage(message);
         if (!pathToMessage.exists() && !pathToMessage.getAbsolutePath().endsWith("/cache")) {
-            pathToMessage = FileLoader.getInstance(ayuSavePreferences.getAccountId()).getPathToMessage(message, false);
+            pathToMessage = FileLoader.getInstance(prefs.getAccountId()).getPathToMessage(message, false);
         }
         if (pathToMessage.exists() || message.media.document == null) {
             if (pathToMessage.exists() || message.media.photo == null) {
                 return processAttachment(pathToMessage, new File(AyuMessagesController.attachmentsPath, AyuUtils.getFilename(message, pathToMessage)));
             }
-            return processAttachment(ayuSavePreferences.getAccountId(), message.media.photo);
+            return processAttachment(prefs.getAccountId(), message.media.photo);
         }
-        return processAttachment(ayuSavePreferences.getAccountId(), message.media.document);
+        return processAttachment(prefs.getAccountId(), message.media.document);
     }
 
-    private static File processAttachment(File file, File file2) {
-        if (file.exists()) {
-            boolean success = AyuUtils.moveOrCopyFile(file, file2);
+    private static File processAttachment(File source, File target) {
+        if (source.exists()) {
+            boolean success = AyuUtils.moveOrCopyFile(source, target);
             if (!success && BuildVars.LOGS_ENABLED) {
-                Log.e(NAX, "Failed to move/copy media file from " + file.getAbsolutePath() + " to " + file2.getAbsolutePath());
+                Log.e(TAG, "Failed to move/copy media file from " + source.getAbsolutePath() + " to " + target.getAbsolutePath());
             }
-            return success ? new File(file2.getAbsolutePath()) : new File("/");
+            return success ? new File(target.getAbsolutePath()) : new File("/");
         }
 
         File directory = FileLoader.getDirectory(4);
-        File file3 = new File(directory, file.getName() + ".enc");
-        if (file3.exists()) {
+        File encryptedFile = new File(directory, source.getName() + ".enc");
+        if (encryptedFile.exists()) {
             File internalCacheDir = FileLoader.getInternalCacheDir();
-            File file4 = new File(internalCacheDir, file3.getName() + ".key");
+            File keyFile = new File(internalCacheDir, encryptedFile.getName() + ".key");
             if (BuildVars.LOGS_ENABLED) {
-                Log.d(NAX, "Found encrypted file, checking for key: " + file4.getAbsolutePath() + " exists=" + file4.exists());
+                Log.d(TAG, "Found encrypted file, checking for key: " + keyFile.getAbsolutePath() + " exists=" + keyFile.exists());
             }
-            if (file4.exists()) {
-                try (EncryptedFileInputStream encryptedFileInputStream = new EncryptedFileInputStream(file3, file4);
-                    FileOutputStream fileOutputStream = new FileOutputStream(file2)) {
-                    byte[] bArr = new byte[4 * 1024];
+            if (keyFile.exists()) {
+                try (EncryptedFileInputStream inputStream = new EncryptedFileInputStream(encryptedFile, keyFile); FileOutputStream outputStream = new FileOutputStream(target)) {
+                    byte[] buffer = new byte[4 * 1024];
                     int read;
-                    while ((read = encryptedFileInputStream.read(bArr)) != -1) {
-                        fileOutputStream.write(bArr, 0, read);
+                    while ((read = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, read);
                     }
                     if (BuildVars.LOGS_ENABLED) {
-                        Log.d(NAX, "Successfully decrypted and saved media to " + file2.getAbsolutePath());
+                        Log.d(TAG, "Successfully decrypted and saved media to " + target.getAbsolutePath());
                     }
-
-                    try {
-                        if (file3.delete()) {
-                            if (BuildVars.LOGS_ENABLED) {
-                                Log.d(NAX, "Deleted encrypted file: " + file3.getName());
-                            }
-                        }
-                        if (file4.delete()) {
-                            if (BuildVars.LOGS_ENABLED) {
-                                Log.d(NAX, "Deleted encryption key: " + file4.getName());
-                            }
-                        }
-                    } catch (Exception e) {
-                        if (BuildVars.LOGS_ENABLED) {
-                            Log.w(NAX, "Failed to delete encrypted files: " + e);
-                        }
-                    }
-
-                    return file2;
+                    return target;
                 } catch (Exception e) {
                     FileLog.e("encrypted media copy failed", e);
                     return new File("/");
@@ -480,54 +451,54 @@ public abstract class AyuMessageUtils {
         }
 
         if (BuildVars.LOGS_ENABLED) {
-            Log.d(NAX, "Media file not found at " + file.getAbsolutePath() + ", will save metadata only");
+            Log.d(TAG, "Media file not found at " + source.getAbsolutePath() + ", will save metadata only");
         }
         return new File("/");
     }
 
-    public static byte[] serializeMultiple(ArrayList arrayList) {
+    public static byte[] serializeMultiple(ArrayList<? extends TLObject> arrayList) {
         if (arrayList == null || arrayList.isEmpty()) {
             return null;
         }
-        NativeByteBuffer nativeByteBuffer = null;
+        NativeByteBuffer data = null;
         try {
             int totalSize = 0;
-            for (Object obj : arrayList) {
-                if (obj instanceof TLObject) {
-                    totalSize += ((TLObject) obj).getObjectSize();
+            for (TLObject obj : arrayList) {
+                if (obj != null) {
+                    totalSize += obj.getObjectSize();
                 }
             }
             if (totalSize <= 0) {
                 return null;
             }
-            nativeByteBuffer = new NativeByteBuffer(totalSize);
-            for (Object o : arrayList) {
-                if (o instanceof TLObject) {
-                    ((TLObject) o).serializeToStream(nativeByteBuffer);
+            data = new NativeByteBuffer(totalSize);
+            for (TLObject o : arrayList) {
+                if (o != null) {
+                    o.serializeToStream(data);
                 }
             }
-            nativeByteBuffer.rewind();
-            byte[] bArr = new byte[nativeByteBuffer.remaining()];
-            nativeByteBuffer.buffer.get(bArr);
-            return bArr;
+            data.rewind();
+            byte[] serializedBytes = new byte[data.remaining()];
+            data.buffer.get(serializedBytes);
+            return serializedBytes;
         } catch (Exception e) {
             FileLog.e("Failed to allocate buffer for message entities", e);
             return null;
         } finally {
-            if (nativeByteBuffer != null) {
-                nativeByteBuffer.reuse();
+            if (data != null) {
+                data.reuse();
             }
         }
     }
 
-    private static boolean shouldSaveMedia(AyuSavePreferences ayuSavePreferences) {
-        if (NaConfig.INSTANCE.getMessageSavingSaveMedia().Bool() && ayuSavePreferences.getMessage().media != null) {
-            if (DialogObject.isUserDialog(ayuSavePreferences.getDialogId())) {
+    private static boolean shouldSaveMedia(AyuSavePreferences prefs) {
+        if (NaConfig.INSTANCE.getMessageSavingSaveMedia().Bool() && prefs.getMessage().media != null) {
+            if (DialogObject.isUserDialog(prefs.getDialogId())) {
                 return NaConfig.INSTANCE.getSaveMediaInPrivateChats().Bool();
             }
-            TLRPC.Chat chat = MessagesController.getInstance(ayuSavePreferences.getAccountId()).getChat(Math.abs(ayuSavePreferences.getDialogId()));
+            TLRPC.Chat chat = MessagesController.getInstance(prefs.getAccountId()).getChat(Math.abs(prefs.getDialogId()));
             if (chat == null) {
-                Log.d(NAX, "chat is null so saving media just in case");
+                Log.d(TAG, "chat is null so saving media just in case");
                 return true;
             }
             boolean isPublic = ChatObject.isPublic(chat);
@@ -593,7 +564,7 @@ public abstract class AyuMessageUtils {
         // check if already exists
         if (outputFile.exists() && outputFile.length() > 0) {
             if (BuildVars.LOGS_ENABLED) {
-                Log.d(NAX, "Decrypted file already exists: " + outputFile.getAbsolutePath());
+                Log.d(TAG, "Decrypted file already exists: " + outputFile.getAbsolutePath());
             }
             return outputFile;
         }
@@ -601,7 +572,7 @@ public abstract class AyuMessageUtils {
         File existingFile = findExistingFileByBaseName(fileName); // heavy operation, maybe remove later
         if (existingFile != null) {
             if (BuildVars.LOGS_ENABLED) {
-                Log.d(NAX, "File already saved: " + existingFile.getAbsolutePath());
+                Log.d(TAG, "File already saved: " + existingFile.getAbsolutePath());
             }
             return existingFile;
         }
@@ -609,7 +580,7 @@ public abstract class AyuMessageUtils {
         File keyFile = new File(FileLoader.getInternalCacheDir(), encryptedFile.getName() + ".key");
         if (!keyFile.exists()) {
             if (BuildVars.LOGS_ENABLED) {
-                Log.d(NAX, "Key file not found: " + keyFile.getAbsolutePath());
+                Log.d(TAG, "Key file not found: " + keyFile.getAbsolutePath());
             }
             return null;
         }
@@ -621,7 +592,7 @@ public abstract class AyuMessageUtils {
                 outputStream.write(readBuffer, 0, bytesRead);
             }
             if (BuildVars.LOGS_ENABLED) {
-                Log.d(NAX, "Successfully decrypted and saved media to: " + outputFile.getAbsolutePath());
+                Log.d(TAG, "Successfully decrypted and saved media to: " + outputFile.getAbsolutePath());
             }
             return outputFile;
         } catch (Exception e) {
