@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="XChannel">Canale Nagram X</string>
-    <string name="EnableSaveDeletedMessages">Salva i messaggi cancellati</string>
+    <string name="EnableSaveDeletedMessages">Salva i Messaggi Eliminati</string>
     <string name="DeletedMessage">eliminato</string>
     <string name="EnableSaveEditsHistory">Salva cronologia modifiche</string>
     <string name="EditsHistoryMenuText">Cronologia delle modifiche</string>
@@ -267,4 +267,5 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="FixLinkPreview">Correggi l\'anteprima link</string>
     <string name="NoQuoteForwardShort">Ness. cit.</string>
     <string name="ForceEdgeToEdge">Forza edge-to-edge</string>
+    <string name="ViewDeleted">Visualizza eliminati</string>
 </resources>
