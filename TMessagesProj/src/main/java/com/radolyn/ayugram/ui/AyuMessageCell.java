@@ -92,6 +92,11 @@ public class AyuMessageCell extends ChatMessageCell {
             }
 
             @Override
+            public void didPressInstantButton(ChatMessageCell cell, int type) {
+                Optional.ofNullable(ayuDelegate).ifPresent(d -> d.didPressInstantButton(cell, type));
+            }
+
+            @Override
             public void didLongPress(ChatMessageCell cell, float x, float y) {
                 boolean hasText = (editedMessage != null && !TextUtils.isEmpty(editedMessage.text)) || (getMessageObject() != null && getMessageObject().messageOwner != null && !TextUtils.isEmpty(getMessageObject().messageOwner.message));
                 if (hasText && isInMessageBubble(x, y) && !isInImageArea(x, y)) {
@@ -277,5 +282,7 @@ public class AyuMessageCell extends ChatMessageCell {
         void onImagePressed(ChatMessageCell cell);
 
         void onAvatarPressed(ChatMessageCell cell, long userId);
+
+        void didPressInstantButton(ChatMessageCell cell, int type);
     }
 }
