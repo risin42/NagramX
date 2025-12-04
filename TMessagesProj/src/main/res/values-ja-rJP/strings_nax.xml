@@ -173,6 +173,7 @@
     <string name="DebugMenuCleanAppUpdate">アプリの更新を消去</string>
     <string name="DebugMenuMakeMemoryDump">メモリダンプを作成</string>
     <string name="TranslateMessageLLM">AI で翻訳</string>
+    <string name="EditLocalNameOverride">ローカルチャット名の上書きを編集しています。</string>
     <string name="ResetChatNameOverrides">チャット名の上書きをリセット</string>
     <string name="ResetChatNameNotification">チャット名の上書きがクリアされました。</string>
     <string name="TabStyle">タブスタイル</string>

@@ -58,7 +58,6 @@
     <string name="NeedChangeNekoSettings">Hai bisogno di cambiare le N-Config</string>
     <string name="DoNotUnarchiveBySwipe">Disabilita scorri per togliere dall\'archivio</string>
     <string name="DefaultDeleteMenu">Menù di Eliminazione Predefinito</string>
-    <string name="DisableSuggestionView">Disabilita i Suggerimenti nelle Impostazioni</string>
     <string name="DisableStories">Disabilita le Storie</string>
     <string name="CopyPhotoAsSticker">Copia come Sticker</string>
     <string name="ProviderTranSmartTranslate">Traduttore TranSmart</string>

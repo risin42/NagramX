@@ -263,4 +263,5 @@
     <string name="FixLinkPreview">Corrigir Prévia de Link</string>
     <string name="NoQuoteForwardShort">Sem Citar</string>
     <string name="ForceEdgeToEdge">Forçar exibição de ponto a ponta</string>
+    <string name="ViewDeleted">Ver excluído</string>
 </resources>

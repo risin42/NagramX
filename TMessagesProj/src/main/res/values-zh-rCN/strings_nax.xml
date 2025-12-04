@@ -173,6 +173,7 @@
     <string name="DebugMenuCleanAppUpdate">清除应用更新</string>
     <string name="DebugMenuMakeMemoryDump">内存转储</string>
     <string name="TranslateMessageLLM">AI 翻译</string>
+    <string name="EditLocalNameOverride">正在编辑本地聊天名称覆盖。</string>
     <string name="ResetChatNameOverrides">重置聊天名称覆盖</string>
     <string name="ResetChatNameNotification">聊天名称覆盖已清除。</string>
     <string name="TabStyle">文件夹标签样式</string>
