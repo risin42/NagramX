@@ -460,6 +460,15 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         AndroidUtilities.requestAdjustResize(getParentActivity(), classGuid);
         updateFields(true, true);
         imageUpdater.onResume();
+
+        if (currentUser == null && currentChat != null && !ChatObject.canChangeChatInfo(currentChat)) {
+            AndroidUtilities.runOnUIThread(() -> {
+                if (getParentActivity() == null) {
+                    return;
+                }
+                BulletinFactory.of(this).createSimpleBulletin(R.raw.info, getString(R.string.EditLocalNameOverride)).show();
+            }, 500);
+        }
     }
 
     @Override
