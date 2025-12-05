@@ -382,8 +382,8 @@ object DnsFactory {
                 hasIPv6 -> when {
                     !hasIPv4 -> USE_IPV6_ONLY
                     forceIPv6 -> USE_IPV6_ONLY
+                    NekoConfig.useIPv6.Bool() -> USE_IPV6_ONLY
                     hasStrangeIPv4 -> USE_IPV4_IPV6_RANDOM
-                    NekoConfig.useIPv6.Bool() -> USE_IPV4_IPV6_RANDOM
                     else -> USE_IPV4_ONLY
                 }
 
