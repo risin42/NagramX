@@ -168,6 +168,26 @@ public abstract class AyuMessageUtils {
         String mediaPath = base.mediaPath;
         int messageDate = base.date;
         if (documentType != AyuConstants.DOCUMENT_TYPE_NONE) {
+            // handle WebPage
+            if (documentType == AyuConstants.DOCUMENT_TYPE_WEBPAGE && serializedDocument != null && serializedDocument.length > 0) {
+                NativeByteBuffer data = null;
+                try {
+                    data = new NativeByteBuffer(serializedDocument.length);
+                    data.put(ByteBuffer.wrap(serializedDocument));
+                    data.rewind();
+                    target.media = TLRPC.MessageMedia.TLdeserialize(data, data.readInt32(false), false);
+                    if (BuildVars.LOGS_ENABLED) {
+                        Log.d(TAG, "Restored webpage media for message " + target.id);
+                    }
+                } catch (Exception e) {
+                    FileLog.e("Failed to deserialize webpage media", e);
+                } finally {
+                    if (data != null) {
+                        data.reuse();
+                    }
+                }
+                return;
+            }
             // If we have serialized media data (and no file path), deserialize it directly
             // This handles cases where the file wasn't downloaded when the message was deleted
             if (documentType != AyuConstants.DOCUMENT_TYPE_STICKER && serializedDocument != null && serializedDocument.length > 0 && TextUtils.isEmpty(mediaPath)) {
@@ -177,6 +197,13 @@ public abstract class AyuMessageUtils {
                     data.put(ByteBuffer.wrap(serializedDocument));
                     data.rewind();
                     target.media = TLRPC.MessageMedia.TLdeserialize(data, data.readInt32(false), false);
+                    // handle legacy WebPage data saved as DOCUMENT_TYPE_FILE
+                    if (target.media instanceof TLRPC.TL_messageMediaWebPage) {
+                        if (BuildVars.LOGS_ENABLED) {
+                            Log.d(TAG, "Restored legacy webpage media for message " + target.id);
+                        }
+                        return;
+                    }
                     String resolvedPath = ensureAttachmentAndUpdateMediaPath(base, target, accountId);
                     if (!TextUtils.isEmpty(resolvedPath)) {
                         mediaPath = resolvedPath;
@@ -319,6 +346,27 @@ public abstract class AyuMessageUtils {
                         data.reuse();
                     }
                 }
+            } else if (media instanceof TLRPC.TL_messageMediaWebPage && media.webpage != null) {
+                out.documentType = AyuConstants.DOCUMENT_TYPE_WEBPAGE;
+                NativeByteBuffer data = null;
+                try {
+                    data = new NativeByteBuffer(message.media.getObjectSize());
+                    message.media.serializeToStream(data);
+                    data.buffer.rewind();
+                    byte[] serialized = new byte[data.buffer.remaining()];
+                    data.buffer.get(serialized);
+                    out.documentSerialized = serialized;
+                    if (BuildVars.LOGS_ENABLED) {
+                        Log.d(TAG, "Saved webpage media for message " + message.id);
+                    }
+                } catch (Exception e) {
+                    FileLog.e("Failed to serialize webpage media", e);
+                } finally {
+                    if (data != null) {
+                        data.reuse();
+                    }
+                }
+                return; // webPage doesn't need file processing
             } else {
                 out.documentType = AyuConstants.DOCUMENT_TYPE_FILE;
             }
