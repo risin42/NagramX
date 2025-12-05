@@ -113,7 +113,33 @@ public abstract class AyuMessageUtils {
             }
             replyHeader.reply_to_top_id = source.replyTopId;
             replyHeader.forum_topic = source.replyForumTopic;
-
+            replyHeader.quote = source.replyQuote;
+            replyHeader.quote_text = source.replyQuoteText;
+            replyHeader.quote_entities = deserializeMultiple(
+                    source.replyQuoteEntities,
+                    (NativeByteBuffer data) ->
+                            TLRPC.MessageEntity.TLdeserialize(
+                                    data,
+                                    data.readInt32(false),
+                                    false
+                            )
+            );
+            // deserialize reply_from for quotes
+            if (source.replyFromSerialized != null && source.replyFromSerialized.length > 0) {
+                NativeByteBuffer data = null;
+                try {
+                    data = new NativeByteBuffer(source.replyFromSerialized.length);
+                    data.put(ByteBuffer.wrap(source.replyFromSerialized));
+                    data.rewind();
+                    replyHeader.reply_from = TLRPC.MessageFwdHeader.TLdeserialize(data, data.readInt32(false), false);
+                } catch (Exception e) {
+                    FileLog.e("Failed to deserialize reply_from", e);
+                } finally {
+                    if (data != null) {
+                        data.reuse();
+                    }
+                }
+            }
         }
         target.message = source.text;
         target.entities = deserializeMultiple(
@@ -155,6 +181,30 @@ public abstract class AyuMessageUtils {
             out.replyPeerId = MessageObject.getPeerId(replyHeader.reply_to_peer_id);
             out.replyTopId = replyHeader.reply_to_top_id;
             out.replyForumTopic = replyHeader.forum_topic;
+            out.replyQuote = replyHeader.quote;
+            out.replyQuoteText = replyHeader.quote_text;
+            out.replyQuoteEntities = serializeMultiple(replyHeader.quote_entities);
+            // serialize reply_from for quotes
+            if (replyHeader.reply_from != null) {
+                NativeByteBuffer data = null;
+                try {
+                    int size = replyHeader.reply_from.getObjectSize();
+                    if (size > 0) {
+                        data = new NativeByteBuffer(size);
+                        replyHeader.reply_from.serializeToStream(data);
+                        data.rewind();
+                        byte[] serialized = new byte[data.buffer.remaining()];
+                        data.buffer.get(serialized);
+                        out.replyFromSerialized = serialized;
+                    }
+                } catch (Exception e) {
+                    FileLog.e("Failed to serialize reply_from", e);
+                } finally {
+                    if (data != null) {
+                        data.reuse();
+                    }
+                }
+            }
         }
         out.entityCreateDate = prefs.getRequestCatchTime();
         out.text = message.message;

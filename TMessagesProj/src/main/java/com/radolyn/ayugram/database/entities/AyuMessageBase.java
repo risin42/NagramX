@@ -35,6 +35,10 @@ public abstract class AyuMessageBase {
     public long replyPeerId;
     public int replyTopId;
     public boolean replyForumTopic;
+    public boolean replyQuote;
+    public String replyQuoteText;
+    public byte[] replyQuoteEntities; // TL serialized
+    public byte[] replyFromSerialized; // TL serialized MessageFwdHeader for quotes
 
     public int entityCreateDate;
 
