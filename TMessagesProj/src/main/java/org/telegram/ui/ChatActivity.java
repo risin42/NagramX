@@ -32219,9 +32219,114 @@ public class ChatActivity extends BaseFragment implements
                         }
                         processSelectedOption(options.get(i));
                     });
-                    if (option == OPTION_TRANSLATE) {
-                        // NekoX: Official Translation Move to neko_btn_translate
-                    }
+                    /*if (option == OPTION_TRANSLATE) {
+                        final boolean translateEnabled = getMessagesController().getTranslateController().isContextTranslateEnabled();
+                        String toLangDefault = LocaleController.getInstance().getCurrentLocale().getLanguage();
+                        String toLang = TranslateAlert2.getToLanguage();
+                        int[] messageIdToTranslate = new int[] { message.getId() };
+                        final CharSequence finalMessageText = message.getMessageTextToTranslate(groupedMessages, messageIdToTranslate);
+                        Utilities.CallbackReturn<URLSpan, Boolean> onLinkPress = (link) -> {
+                            didPressMessageUrl(link, false, selectedObject, v instanceof ChatMessageCell ? (ChatMessageCell) v : null);
+                            return true;
+                        };
+                        TLRPC.InputPeer inputPeer = selectedObject != null && (selectedObject.isPoll() || selectedObject.isVoiceTranscriptionOpen() || selectedObject.isSponsored() || selectedObject.scheduled || chatMode == MODE_QUICK_REPLIES) ? null : getMessagesController().getInputPeer(dialog_id);
+                        if (selectedObject != null && selectedObject.messageOwner != null && selectedObject.messageOwner.originalLanguage != null) {
+                            waitForLangDetection.set(false);
+                            String fromLang = selectedObject.messageOwner.originalLanguage;
+                            cell.setVisibility(
+                                fromLang != null && (!fromLang.equals(toLang) || !fromLang.equals(toLangDefault) || fromLang.equals(TranslateController.UNKNOWN_LANGUAGE)) && (
+                                    translateEnabled && !RestrictedLanguagesSelectActivity.getRestrictedLanguages().contains(fromLang) ||
+                                    (currentChat != null && (currentChat.has_link || ChatObject.isPublic(currentChat)) || selectedObject.messageOwner.fwd_from != null) && ("uk".equals(fromLang) || "ru".equals(fromLang))
+                                ) ? View.VISIBLE : View.GONE
+                            );
+                            cell.setOnClickListener(e -> {
+                                if (selectedObject == null || i >= options.size() || getParentActivity() == null) {
+                                    return;
+                                }
+                                String toLangValue = fromLang != null && fromLang.equals(toLang) ? toLangDefault : toLang;
+                                ArrayList<TLRPC.MessageEntity> entities = selectedObject != null && selectedObject.messageOwner != null ? selectedObject.messageOwner.entities : null;
+                                TranslateAlert2 alert = TranslateAlert2.showAlert(getParentActivity(), this, currentAccount, inputPeer, messageIdToTranslate[0], fromLang, toLangValue, finalMessageText, entities, noforwardsOrPaidMedia, onLinkPress, () -> dimBehindView(false));
+                                alert.setDimBehind(false);
+                                closeMenu(false);
+
+                                int hintCount = MessagesController.getNotificationsSettings(currentAccount).getInt("dialog_show_translate_count" + getDialogId(), 5);
+                                if (hintCount > 0) {
+                                    hintCount--;
+                                    MessagesController.getNotificationsSettings(currentAccount).edit().putInt("dialog_show_translate_count" + getDialogId(), hintCount).apply();
+                                    updateTopPanel(true);
+                                }
+                            });
+                        } else if (LanguageDetector.hasSupport()) {
+                            final String[] fromLang = {null};
+                            cell.setVisibility(View.GONE);
+                            waitForLangDetection.set(true);
+                            LanguageDetector.detectLanguage(
+                                finalMessageText.toString(),
+                                (String lang) -> {
+                                    fromLang[0] = lang;
+                                    if (fromLang[0] != null && (!fromLang[0].equals(toLang) || !fromLang[0].equals(toLangDefault) || fromLang[0].equals(TranslateController.UNKNOWN_LANGUAGE)) && (
+                                        translateEnabled && !RestrictedLanguagesSelectActivity.getRestrictedLanguages().contains(fromLang[0]) ||
+                                        (currentChat != null && (currentChat.has_link || ChatObject.isPublic(currentChat)) || selectedObject.messageOwner.fwd_from != null) && ("uk".equals(fromLang[0]) || "ru".equals(fromLang[0]))
+                                    )) {
+                                        cell.setVisibility(View.VISIBLE);
+                                    }
+                                    waitForLangDetection.set(false);
+                                    if (onLangDetectionDone.get() != null) {
+                                        onLangDetectionDone.get().run();
+                                        onLangDetectionDone.set(null);
+                                    }
+                                },
+                                (Exception e) -> {
+                                    FileLog.e("mlkit: failed to detect language in message");
+                                    waitForLangDetection.set(false);
+                                    if (onLangDetectionDone.get() != null) {
+                                        onLangDetectionDone.get().run();
+                                        onLangDetectionDone.set(null);
+                                    }
+                                }
+                            );
+                            cell.setOnClickListener(e -> {
+                                if (selectedObject == null || i >= options.size() || getParentActivity() == null) {
+                                    return;
+                                }
+                                String toLangValue = fromLang[0] != null && fromLang[0].equals(toLang) ? toLangDefault : toLang;
+                                ArrayList<TLRPC.MessageEntity> entities = selectedObject != null && selectedObject.messageOwner != null ? selectedObject.messageOwner.entities : null;
+                                TranslateAlert2 alert = TranslateAlert2.showAlert(getParentActivity(), this, currentAccount, inputPeer, messageIdToTranslate[0], fromLang[0], toLangValue, finalMessageText, entities, noforwardsOrPaidMedia, onLinkPress, () -> dimBehindView(false));
+                                alert.setDimBehind(false);
+                                closeMenu(false);
+
+                                int hintCount = MessagesController.getNotificationsSettings(currentAccount).getInt("dialog_show_translate_count" + getDialogId(), 5);
+                                if (hintCount > 0) {
+                                    hintCount--;
+                                    MessagesController.getNotificationsSettings(currentAccount).edit().putInt("dialog_show_translate_count" + getDialogId(), hintCount).apply();
+                                    updateTopPanel(true);
+                                }
+                            });
+                            cell.postDelayed(() -> {
+                                if (onLangDetectionDone.get() != null) {
+                                    onLangDetectionDone.getAndSet(null).run();
+                                }
+                            }, 250);
+                        } else if (translateEnabled) {
+                            cell.setOnClickListener(e -> {
+                                if (selectedObject == null || i >= options.size() || getParentActivity() == null) {
+                                    return;
+                                }
+                                TranslateAlert2 alert = TranslateAlert2.showAlert(getParentActivity(), this, currentAccount, inputPeer, messageIdToTranslate[0], "und", toLang, finalMessageText, null, noforwardsOrPaidMedia, onLinkPress, () -> dimBehindView(false));
+                                alert.setDimBehind(false);
+                                closeMenu(false);
+
+                                int hintCount = MessagesController.getNotificationsSettings(currentAccount).getInt("dialog_show_translate_count" + getDialogId(), 5);
+                                if (hintCount > 0) {
+                                    hintCount--;
+                                    MessagesController.getNotificationsSettings(currentAccount).edit().putInt("dialog_show_translate_count" + getDialogId(), hintCount).apply();
+                                    updateTopPanel(true);
+                                }
+                            });
+                        } else {
+                            cell.setVisibility(View.GONE);
+                        }
+                    }*/
                     cell.setOnLongClickListener(v1 -> {
                         if (selectedObject == null || i < 0 || i >= options.size()) {
                             return false;
@@ -46433,11 +46538,13 @@ public class ChatActivity extends BaseFragment implements
                         icons.add(R.drawable.menu_recent);
                     }
                     MessageObject messageObject = getMessageForTranslate();
+                    MessageObject captionObject = null;
                     boolean docsWithMessages = false;
                     if (selectedObjectGroup != null && selectedObjectGroup.isDocuments) {
                         for (MessageObject object : selectedObjectGroup.messages) {
                             if (!TextUtils.isEmpty(object.messageOwner.message)) {
                                 docsWithMessages = true;
+                                captionObject = object;
                             }
                         }
                     }
@@ -46445,9 +46552,20 @@ public class ChatActivity extends BaseFragment implements
                     boolean showTranslateLLM = NaConfig.INSTANCE.getShowTranslateMessageLLM().Bool() && NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider();
                     boolean isTranslatableMessage = !selectedObject.isAnimatedEmoji() && !selectedObject.isDice() && (messageObject != null || docsWithMessages);
                     if ((showTranslate || showTranslateLLM) && isTranslatableMessage) {
+                        String fromLang = null;
+                        if (messageObject != null && messageObject.messageOwner.originalLanguage != null) {
+                            fromLang = messageObject.messageOwner.originalLanguage;
+                        } else if (captionObject != null && captionObject.messageOwner.originalLanguage != null) {
+                            fromLang = captionObject.messageOwner.originalLanguage;
+                        }
+                        // check if language is restricted but don't detect language here to avoid extra delay
+                        if (fromLang != null && RestrictedLanguagesSelectActivity.getRestrictedLanguages().contains(fromLang)) {
+                            showTranslate = false;
+                            showTranslateLLM = false;
+                        }
                         boolean isLLMDefault = NaConfig.INSTANCE.llmIsDefaultProvider();
                         boolean isOutgoingOrNotTranslatingDialog = selectedObject.isOutOwner() || !isTranslatingDialog(selectedObject);
-                        boolean isTranslated = messageObject != null ? (messageObject.messageOwner.translated || messageObject.translated) : selectedObjectGroup.messages.get(0).messageOwner.translated;
+                        boolean isTranslated = messageObject != null ? (messageObject.messageOwner.translated || messageObject.translated) : (captionObject != null && captionObject.messageOwner.translated);
                         boolean canUndoTranslate = isTranslated && isOutgoingOrNotTranslatingDialog;
                         if (showTranslate && (isOutgoingOrNotTranslatingDialog || isLLMDefault)) {
                             items.add(canUndoTranslate ? getString(R.string.UndoTranslate) : getString(R.string.Translate));
@@ -46663,11 +46781,13 @@ public class ChatActivity extends BaseFragment implements
                     }
                 }
                 MessageObject messageObject = getMessageForTranslate();
+                MessageObject captionObject = null;
                 boolean docsWithMessages = false;
                 if (selectedObjectGroup != null && selectedObjectGroup.isDocuments) {
                     for (MessageObject object : selectedObjectGroup.messages) {
                         if (!TextUtils.isEmpty(object.messageOwner.message)) {
                             docsWithMessages = true;
+                            captionObject = object;
                         }
                     }
                 }
@@ -46676,19 +46796,24 @@ public class ChatActivity extends BaseFragment implements
                 boolean isTranslatingDialog = isTranslatingDialog(selectedObject);
                 if ((showTranslate || showTranslateLLM) && (selectedObject.isOutOwner() || !isTranslatingDialog)) {
                     if (messageObject != null || docsWithMessages) {
-                        boolean td;
-                        if (messageObject != null) {
-                            td = messageObject.messageOwner.translated || messageObject.translated;
-                        } else {
-                            td = selectedObjectGroup.messages.get(0).messageOwner.translated;
+                        String fromLang = null;
+                        if (messageObject != null && messageObject.messageOwner.originalLanguage != null) {
+                            fromLang = messageObject.messageOwner.originalLanguage;
+                        } else if (captionObject != null && captionObject.messageOwner.originalLanguage != null) {
+                            fromLang = captionObject.messageOwner.originalLanguage;
                         }
+                        if (fromLang != null && RestrictedLanguagesSelectActivity.getRestrictedLanguages().contains(fromLang)) {
+                            showTranslate = false;
+                            showTranslateLLM = false;
+                        }
+                        boolean isTranslated = messageObject != null ? (messageObject.messageOwner.translated || messageObject.translated) : (captionObject != null && captionObject.messageOwner.translated);
                         if (showTranslate) {
-                            items.add(td ? LocaleController.getString(R.string.UndoTranslate) : LocaleController.getString(R.string.Translate));
+                            items.add(isTranslated ? LocaleController.getString(R.string.UndoTranslate) : LocaleController.getString(R.string.Translate));
                             options.add(nkbtn_translate);
                             icons.add(NaConfig.INSTANCE.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.msg_translate);
                         }
-                        if (showTranslateLLM && (!showTranslate || !td)) {
-                            items.add(td ? LocaleController.getString(R.string.UndoTranslate) : LocaleController.getString(R.string.TranslateMessageLLM));
+                        if (showTranslateLLM && (!showTranslate || !isTranslated)) {
+                            items.add(isTranslated ? LocaleController.getString(R.string.UndoTranslate) : LocaleController.getString(R.string.TranslateMessageLLM));
                             options.add(nkbtn_translate_llm);
                             icons.add(R.drawable.magic_stick_solar);
                         }
