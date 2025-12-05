@@ -52,6 +52,8 @@ def get_document() -> list["InputMediaDocument"]:
             media = str("TMessagesProj/src/main/" + "ic_launcher_nagram_block_round-playstore.png")
         ))
     base_caption = get_caption()
+    if base_caption and len(base_caption) > 1024:
+        base_caption = base_caption[:1020] + "..."
     ai_summary = get_ai_summary()
     if ai_summary and len(base_caption + ai_summary) > 1024:
         ai_summary = ""
