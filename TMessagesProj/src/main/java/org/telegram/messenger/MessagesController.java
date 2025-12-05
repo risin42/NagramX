@@ -10641,6 +10641,20 @@ public class MessagesController extends BaseController implements NotificationCe
             for (HashMap.Entry<Integer, ArrayList<PrintingUser>> threadEntry : threads.entrySet()) {
                 Integer threadId = threadEntry.getKey();
                 ArrayList<PrintingUser> arr = threadEntry.getValue();
+                // ignoreBlocked start
+                if (NekoConfig.ignoreBlocked.Bool()) {
+                    ArrayList<PrintingUser> filteredArr = new ArrayList<>();
+                    for (PrintingUser pu : arr) {
+                        if (blockePeers.indexOfKey(pu.userId) < 0) {
+                            filteredArr.add(pu);
+                        }
+                    }
+                    arr = filteredArr;
+                }
+                if (arr.isEmpty()) {
+                    continue;
+                }
+                // ignoreBlocked end
 
                 LongSparseArray<CharSequence> newPrintingStrings = new LongSparseArray<>();
                 LongSparseArray<Integer> newPrintingStringsTypes = new LongSparseArray<>();
@@ -10653,12 +10667,6 @@ public class MessagesController extends BaseController implements NotificationCe
                     PrintingUser pu = arr.get(0);
                     TLRPC.User user = getUser(pu.userId);
                     if (user == null) {
-                        continue;
-                    }
-                    if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(user.id) >= 0) {
-                        continue;
-                    }
-                    if (AyuFilter.isBlockedChannel(user.id)) {
                         continue;
                     }
                     final boolean isGroup = key < 0 && !isEncryptedChat;
