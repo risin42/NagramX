@@ -1097,9 +1097,9 @@ public class ConnectionsManager extends BaseController {
                 }
             }
             if (hasIpv6) {
-                if (!hasIpv4 || forceTryIpV6) {
+                if (!hasIpv4 || forceTryIpV6 || NekoConfig.useIPv6.Bool()) {
                     return USE_IPV6_ONLY;
-                } else if (hasStrangeIpv4 || NekoConfig.useIPv6.Bool()) {
+                } else if (hasStrangeIpv4) {
                     return USE_IPV4_IPV6_RANDOM;
                 } else {
                     return USE_IPV4_ONLY;
