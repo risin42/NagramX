@@ -114,7 +114,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
             "OpenAI " + getString(R.string.LlmProviderOpenAIModel),
             "Google " + "gemini-2.5-flash-lite",
             "Groq " + "meta/llama-4-maverick",
-            "DeepSeek " + "DeepSeek-V3.2-Exp",
+            "DeepSeek " + "DeepSeek-V3.2",
             "xAI " + "grok-4.1-fast",
     }, null));
 
