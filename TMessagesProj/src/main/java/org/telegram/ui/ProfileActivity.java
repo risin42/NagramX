@@ -13776,7 +13776,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         cell.getTextView().setMovementMethod(null);
                         // cell.setText(AndroidUtilities.getBuildVersionInfo());
                         cell.setBackground(Theme.getThemedDrawable(mContext, R.drawable.greydivider_bottom, Theme.key_windowBackgroundGrayShadow));
-                        cell.setText("Nagram X v" + BuildConfig.VERSION_NAME + "(" + BuildConfig.VERSION_CODE + ") " + Build.SUPPORTED_ABIS[0].toLowerCase(Locale.ROOT) + " " + BuildConfig.BUILD_TYPE);
+                        cell.setText("Nagram X v" + BuildConfig.VERSION_NAME + "(" + BuildConfig.VERSION_CODE + ") " + Build.SUPPORTED_ABIS[0].toLowerCase(Locale.ROOT) + " " + BuildConfig.BUILD_TYPE + (BuildVars.LOGS_ENABLED ? " " + BuildConfig.BUILD_TIMESTAMP : ""));
                         cell.getTextView().setPadding(0, AndroidUtilities.dp(14), 0, AndroidUtilities.dp(isSupportEdgeToEdge() ? 42 : 14));
                         view = cell;
                         Drawable drawable = Theme.getThemedDrawable(mContext, R.drawable.greydivider_bottom, getThemedColor(Theme.key_windowBackgroundGrayShadow));
