@@ -27686,8 +27686,9 @@ public class ChatActivity extends BaseFragment implements
     }
 
     // hide bottom start
+    private boolean cachedIsGestureNavigation;
     private boolean isGesture() {
-        return AndroidUtil.isGestureNavigation(getContext());
+        return cachedIsGestureNavigation;
     }
 
     private boolean shouldHideBottomFor3ButtonNav() {
@@ -30244,6 +30245,7 @@ public class ChatActivity extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        cachedIsGestureNavigation = AndroidUtil.isGestureNavigation(getContext());
         checkShowBlur(false);
         activityResumeTime = System.currentTimeMillis();
         if (openImport && getSendMessagesHelper().getImportingHistory(dialog_id) != null) {
