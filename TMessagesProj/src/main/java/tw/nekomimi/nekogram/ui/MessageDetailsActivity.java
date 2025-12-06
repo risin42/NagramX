@@ -186,6 +186,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
     @Override
     public boolean onFragmentCreate() {
         super.onFragmentCreate();
+        NotificationCenter.getGlobalInstance().addObserver(this, NotificationCenter.emojiLoaded);
         updateRows();
         return true;
     }
@@ -416,11 +417,17 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
 
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
+        if (id == NotificationCenter.emojiLoaded) {
+            if (listView != null) {
+                listView.invalidateViews();
+            }
+        }
     }
 
     @Override
     public void onFragmentDestroy() {
         super.onFragmentDestroy();
+        NotificationCenter.getGlobalInstance().removeObserver(this, NotificationCenter.emojiLoaded);
     }
 
     private static class ByteArrayToBase64TypeAdapter implements JsonSerializer<byte[]>, JsonDeserializer<byte[]> {
@@ -477,14 +484,14 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
                     if (position == idRow) {
                         textCell.setTextAndValue("ID", String.valueOf(messageObject.messageOwner.id), divider);
                     } else if (position == messageRow) {
-                        textCell.setTextAndValue("Message", messageObject.messageText, divider);
+                        textCell.setTextAndValue("Message", messageObject.messageText.toString(), divider);
                     } else if (position == captionRow) {
                         if (!TextUtils.isEmpty(messageObject.caption)) {
-                            textCell.setTextAndValue("Caption", messageObject.caption, divider);
+                            textCell.setTextAndValue("Caption", messageObject.caption.toString(), divider);
                         } else if (messageGroup != null) {
                             MessageObject captionMessageObject = messageGroup.findCaptionMessageObject();
                             if (!TextUtils.isEmpty(captionMessageObject.caption)) {
-                                textCell.setTextAndValue("Caption", captionMessageObject.caption, divider);
+                                textCell.setTextAndValue("Caption", captionMessageObject.caption.toString(), divider);
                             }
                         }
                     } else if (position == channelRow || position == groupRow) {
