@@ -5241,7 +5241,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         if (searchString == null && initialDialogsType == DIALOGS_TYPE_DEFAULT) {
             updateButton = ApplicationLoader.applicationLoaderInstance.takeUpdateButton(context);
             if (updateButton != null) {
-                contentView.addView(updateButton, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.LEFT | Gravity.BOTTOM));
+                int updateButtonBottomMargin = isSupportEdgeToEdge() ? AndroidUtilities.navigationBarHeight : 0;
+                contentView.addView(updateButton, LayoutHelper.createFrameMarginPx(LayoutHelper.MATCH_PARENT, 48, Gravity.LEFT | Gravity.BOTTOM, 0, 0, 0, updateButtonBottomMargin));
                 updateButton.onTranslationUpdate(ty -> {
                     additionalFloatingTranslation2 = dp(48) - ty;
                     if (additionalFloatingTranslation2 < 0) {
