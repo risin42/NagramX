@@ -38,7 +38,9 @@ import com.radolyn.ayugram.proprietary.AyuMessageUtils;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.DialogObject;
+import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
@@ -79,6 +81,8 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
     private static final int OPTION_COPY_PHOTO = 4;
     private static final int OPTION_COPY_PHOTO_AS_STICKER = 5;
     private static final int OPTION_DETAILS = 6;
+    private static final int OPTION_SAVE_TO_GALLERY = 7;
+    private static final int OPTION_SAVE_TO_DOWNLOADS = 8;
     private final long dialogId;
     private final boolean isEncrypted;
     private final ArrayList<DeletedMessageFull> deletedMessages = new ArrayList<>();
@@ -533,6 +537,18 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
             }
         }
 
+        if ((msg.isPhoto() || msg.isVideo() || msg.isGif()) && !msg.needDrawBluredPreview()) {
+            items.add(getString(R.string.SaveToGallery));
+            icons.add(R.drawable.msg_gallery);
+            options.add(OPTION_SAVE_TO_GALLERY);
+        }
+
+        if (msg.isDocument() || msg.isMusic()) {
+            items.add(msg.isMusic() ? getString(R.string.SaveToMusic) : getString(R.string.SaveToDownloads));
+            icons.add(R.drawable.msg_download);
+            options.add(OPTION_SAVE_TO_DOWNLOADS);
+        }
+
         items.add(getString(R.string.Delete));
         icons.add(R.drawable.msg_delete);
         options.add(OPTION_DELETE_FROM_DATABASE);
@@ -596,6 +612,42 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
                     MessageHelper.addMessageToClipboard(msg, () -> BulletinFactory.of(this).createCopyBulletin(getString(R.string.PhotoCopied)).show());
                 } else if (option == OPTION_COPY_PHOTO_AS_STICKER) {
                     MessageHelper.addMessageToClipboardAsSticker(msg, () -> BulletinFactory.of(this).createCopyBulletin(getString(R.string.PhotoCopied)).show());
+                } else if (option == OPTION_SAVE_TO_GALLERY) {
+                    String path = null;
+                    if (!TextUtils.isEmpty(msg.messageOwner.attachPath)) {
+                        File temp = new File(msg.messageOwner.attachPath);
+                        if (temp.exists()) {
+                            path = msg.messageOwner.attachPath;
+                        }
+                    }
+                    if (TextUtils.isEmpty(path)) {
+                        File f = FileLoader.getInstance(getCurrentAccount()).getPathToMessage(msg.messageOwner);
+                        if (f != null && f.exists()) {
+                            path = f.getPath();
+                        }
+                    }
+                    if (!TextUtils.isEmpty(path)) {
+                        MediaController.saveFile(msg, path, getParentActivity(), msg.isVideo() ? 1 : 0, null, null, uri -> {
+                            if (getParentActivity() != null) {
+                                BulletinFactory.of(this).createDownloadBulletin(
+                                        msg.isVideo() ? BulletinFactory.FileType.VIDEO : BulletinFactory.FileType.PHOTO,
+                                        getResourceProvider()
+                                ).show();
+                            }
+                        });
+                    }
+                } else if (option == OPTION_SAVE_TO_DOWNLOADS) {
+                    ArrayList<MessageObject> messageObjects = new ArrayList<>();
+                    messageObjects.add(msg);
+                    MediaController.saveFilesFromMessages(getParentActivity(), getAccountInstance(), messageObjects, (count) -> {
+                        if (count > 0) {
+                            BulletinFactory.of(this).createDownloadBulletin(
+                                    msg.isMusic() ? BulletinFactory.FileType.AUDIOS : BulletinFactory.FileType.UNKNOWNS,
+                                    count,
+                                    getResourceProvider()
+                            ).show();
+                        }
+                    });
                 } else if (option == OPTION_DETAILS) {
                     presentFragment(new MessageDetailsActivity(msg, null));
                 }
