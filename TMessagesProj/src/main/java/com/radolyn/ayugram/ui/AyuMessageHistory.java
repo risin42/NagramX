@@ -577,6 +577,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
             if (msg.media instanceof TLRPC.TL_messageMediaPhoto mediaPhoto && msg.media.photo != null) {
                 mediaPhoto.photo.sizes.clear();
                 mediaPhoto.photo.sizes.add(photoSize);
+                mediaPhoto.ttl_seconds = 0;
             } else {
                 TLRPC.TL_messageMediaPhoto mediaPhoto = new TLRPC.TL_messageMediaPhoto();
                 mediaPhoto.flags = 1;
@@ -595,6 +596,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
             // if media already exists just update the path
             if (msg.media instanceof TLRPC.TL_messageMediaDocument && msg.media.document != null) {
                 msg.media.document.localPath = filePath;
+                msg.media.ttl_seconds = 0;
                 return;
             }
             // create new document media structure for video
