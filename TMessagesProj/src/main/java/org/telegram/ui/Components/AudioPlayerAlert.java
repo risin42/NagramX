@@ -646,6 +646,7 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
             }
         };
         seekBarView.setLineWidth(4);
+        seekBarView.setSliderStyleOverride(SeekBarView.SLIDER_STYLE_DEFAULT);
         seekBarView.setDelegate(new SeekBarView.SeekBarViewDelegate() {
             @Override
             public void onSeekBarDrag(boolean stop, float progress) {

@@ -84,6 +84,7 @@ public class SeekBarView extends FrameLayout {
     private int previewingState = -1;
     private int lineWidthDp = 3;
     private boolean hasCustomLineWidthValue = false;
+    private int sliderStyleOverride = -1;
 
     private Path path = new Path();
 
@@ -450,8 +451,23 @@ public class SeekBarView extends FrameLayout {
         return pressed;
     }
 
+    public void setSliderStyleOverride(int style) {
+        this.sliderStyleOverride = style;
+    }
+
+    private int getEffectiveSliderStyle() {
+        if (previewingState != -1) {
+            return previewingState;
+        }
+        int configStyle = NaConfig.INSTANCE.getSliderStyle().Int();
+        if (sliderStyleOverride != -1 && configStyle == SLIDER_STYLE_MD3) {
+            return sliderStyleOverride;
+        }
+        return configStyle;
+    }
+
     private void updateModernState() {
-        int style = (previewingState == -1 ? NaConfig.INSTANCE.getSliderStyle().Int() : previewingState);
+        int style = getEffectiveSliderStyle();
         isModern = style == SLIDER_STYLE_MODERN || style == SLIDER_STYLE_MD3;
         isModern &= (timestamps == null || timestamps.isEmpty());
 
@@ -467,7 +483,7 @@ public class SeekBarView extends FrameLayout {
     private int needCustomDraw() {
         updateModernState();
 
-        int style = (previewingState == -1 ? NaConfig.INSTANCE.getSliderStyle().Int() : previewingState);
+        int style = getEffectiveSliderStyle();
         if (isModern && style == SLIDER_STYLE_MD3) {
             return style;
         }
