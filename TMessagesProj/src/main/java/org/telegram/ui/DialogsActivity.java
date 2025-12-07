@@ -3193,9 +3193,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                         if (floatingButton2Container != null) {
                             floatingButton2Container.setVisibility(View.GONE);
                         }
-                        if (updateButton != null) {
-                            updateButton.setVisibility(View.GONE);
-                        }
                         if (storyHint != null) {
                             storyHint.hide();
                         }
@@ -3257,9 +3254,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                         floatingButtonContainer.setVisibility(NaConfig.INSTANCE.getDisableDialogsFloatingButton().Bool() ? View.GONE : View.VISIBLE);
                         if (floatingButton2Container != null) {
                             floatingButton2Container.setVisibility(!storiesEnabled || NaConfig.INSTANCE.getDisableDialogsFloatingButton().Bool() ? View.GONE : View.VISIBLE);
-                        }
-                        if (updateButton != null) {
-                            updateButton.setVisibility(View.VISIBLE);
                         }
                         floatingHidden = true;
                         floatingButtonTranslation = dp(100);
