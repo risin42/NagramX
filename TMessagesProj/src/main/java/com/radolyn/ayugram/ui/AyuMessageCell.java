@@ -97,6 +97,19 @@ public class AyuMessageCell extends ChatMessageCell {
             }
 
             @Override
+            public void didPressBotButton(ChatMessageCell cell, TLRPC.KeyboardButton button) {
+                Optional.ofNullable(ayuDelegate).ifPresent(d -> d.didPressBotButton(cell, button));
+            }
+
+            @Override
+            public boolean didLongPressBotButton(ChatMessageCell cell, TLRPC.KeyboardButton button) {
+                if (ayuDelegate != null) {
+                    return ayuDelegate.didLongPressBotButton(cell, button);
+                }
+                return false;
+            }
+
+            @Override
             public void didLongPress(ChatMessageCell cell, float x, float y) {
                 boolean hasText = (editedMessage != null && !TextUtils.isEmpty(editedMessage.text)) || (getMessageObject() != null && getMessageObject().messageOwner != null && !TextUtils.isEmpty(getMessageObject().messageOwner.message));
                 if (hasText && isInMessageBubble(x, y) && !isInImageArea(x, y)) {
@@ -284,5 +297,9 @@ public class AyuMessageCell extends ChatMessageCell {
         void onAvatarPressed(ChatMessageCell cell, long userId);
 
         void didPressInstantButton(ChatMessageCell cell, int type);
+
+        void didPressBotButton(ChatMessageCell cell, TLRPC.KeyboardButton button);
+
+        boolean didLongPressBotButton(ChatMessageCell cell, TLRPC.KeyboardButton button);
     }
 }

@@ -66,6 +66,14 @@ public class AyuData {
         }
     };
 
+    private static final Migration MIGRATION_23_24 = new Migration(23, 24) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE DeletedMessage ADD COLUMN replyMarkupSerialized BLOB");
+            database.execSQL("ALTER TABLE EditedMessage ADD COLUMN replyMarkupSerialized BLOB");
+        }
+    };
+
     static {
         create();
     }
@@ -74,7 +82,7 @@ public class AyuData {
         database = Room.databaseBuilder(ApplicationLoader.applicationContext, AyuDatabase.class, AyuConstants.AYU_DATABASE)
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigrationOnDowngrade()
-                .addMigrations(MIGRATION_21_22, MIGRATION_22_23)
+                .addMigrations(MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24)
                 .build();
 
         editedMessageDao = database.editedMessageDao();

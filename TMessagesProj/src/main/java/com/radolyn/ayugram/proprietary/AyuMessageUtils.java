@@ -151,6 +151,22 @@ public abstract class AyuMessageUtils {
                                 false
                         )
         );
+        // deserialize reply_markup (inline keyboard)
+        if (source.replyMarkupSerialized != null && source.replyMarkupSerialized.length > 0) {
+            NativeByteBuffer data = null;
+            try {
+                data = new NativeByteBuffer(source.replyMarkupSerialized.length);
+                data.put(ByteBuffer.wrap(source.replyMarkupSerialized));
+                data.rewind();
+                target.reply_markup = TLRPC.ReplyMarkup.TLdeserialize(data, data.readInt32(false), false);
+            } catch (Exception e) {
+                FileLog.e("Failed to deserialize reply_markup", e);
+            } finally {
+                if (data != null) {
+                    data.reuse();
+                }
+            }
+        }
     }
 
     public static void map(AyuSavePreferences prefs, AyuMessageBase out) {
@@ -209,6 +225,28 @@ public abstract class AyuMessageUtils {
         out.entityCreateDate = prefs.getRequestCatchTime();
         out.text = message.message;
         out.textEntities = serializeMultiple(message.entities);
+        // serialize reply_markup (inline keyboard)
+        TLRPC.ReplyMarkup replyMarkup = message.reply_markup;
+        if (replyMarkup != null) {
+            NativeByteBuffer data = null;
+            try {
+                int size = replyMarkup.getObjectSize();
+                if (size > 0) {
+                    data = new NativeByteBuffer(size);
+                    replyMarkup.serializeToStream(data);
+                    data.rewind();
+                    byte[] serialized = new byte[data.buffer.remaining()];
+                    data.buffer.get(serialized);
+                    out.replyMarkupSerialized = serialized;
+                }
+            } catch (Exception e) {
+                FileLog.e("Failed to serialize reply_markup", e);
+            } finally {
+                if (data != null) {
+                    data.reuse();
+                }
+            }
+        }
     }
 
     public static void mapMedia(AyuMessageBase base, TLRPC.Message target, int accountId) {

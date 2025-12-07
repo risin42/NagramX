@@ -5,6 +5,7 @@ import static org.telegram.messenger.LocaleController.getString;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.HapticFeedbackConstants;
 
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
@@ -15,12 +16,16 @@ import org.telegram.messenger.R;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.BaseFragment;
+import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.Cells.ChatMessageCell;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.StickersAlert;
 import org.telegram.ui.ContactAddActivity;
 import org.telegram.ui.ProfileActivity;
+
+import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 
 public abstract class AyuMessageDelegateFragment extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, AyuMessageCell.AyuMessageCellDelegate {
 
@@ -116,6 +121,66 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
             Browser.openUrl(getParentActivity(), Uri.parse(webPage.url), true, true, false, null, null, false, true, false);
         } catch (Exception e) {
             FileLog.e(e);
+        }
+    }
+
+    @Override
+    public void didPressBotButton(ChatMessageCell cell, TLRPC.KeyboardButton button) {
+        if (button == null || getParentActivity() == null) return;
+        try {
+            if (button instanceof TLRPC.TL_keyboardButtonUrl) {
+                String url = button.url;
+                if (!TextUtils.isEmpty(url)) {
+                    Browser.openUrl(getParentActivity(), url);
+                }
+            } else if (button instanceof TLRPC.TL_keyboardButtonSwitchInline) {
+                // show toast since we can't switch
+                BulletinFactory.of(this).createSimpleBulletin(R.raw.error, getString(R.string.ErrorOccurred)).show();
+            } else {
+                BulletinFactory.of(this).createSimpleBulletin(R.raw.error, getString(R.string.ErrorOccurred)).show();
+            }
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+    }
+
+    @Override
+    public boolean didLongPressBotButton(ChatMessageCell cell, TLRPC.KeyboardButton button) {
+        if (button == null || getParentActivity() == null) return false;
+        try {
+            if (!TextUtils.isEmpty(button.url)) {
+                AndroidUtilities.addToClipboard(button.url);
+                BulletinFactory.of(this).createCopyLinkBulletin().show();
+            } else {
+                BottomSheet.Builder builder = new BottomSheet.Builder(getParentActivity(), false, getResourceProvider());
+                builder.setTitle(button.text);
+                builder.setItems(new CharSequence[]{
+                        getString(R.string.Copy),
+                        button.data != null ? getString(R.string.CopyCallback) : null,
+                        button.query != null ? getString(R.string.CopyInlineQuery) : null,
+                        button.user_id != 0 ? getString(R.string.CopyID) : null
+                }, (dialog, which) -> {
+                    if (which == 0) {
+                        AndroidUtilities.addToClipboard(button.text);
+                    } else if (which == 1) {
+                        AndroidUtilities.addToClipboard(MessageHelper.getTextOrBase64(button.data));
+                    } else if (which == 2) {
+                        AndroidUtilities.addToClipboard(button.query);
+                    } else if (which == 3) {
+                        AndroidUtilities.addToClipboard(String.valueOf(button.user_id));
+                    }
+                    BulletinFactory.of(this).createCopyBulletin(getString(R.string.TextCopied)).show();
+                });
+                showDialog(builder.create());
+            }
+            try {
+                if (!NekoConfig.disableVibration.Bool()) cell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+            } catch (Exception ignore) {
+            }
+            return true;
+        } catch (Exception e) {
+            FileLog.e(e);
+            return false;
         }
     }
 
