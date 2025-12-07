@@ -173,6 +173,7 @@
     <string name="DebugMenuCleanAppUpdate">Очистити оновлення програми</string>
     <string name="DebugMenuMakeMemoryDump">Зробити дамп пам\'яті</string>
     <string name="TranslateMessageLLM">Перекладач AI</string>
+    <string name="EditLocalNameOverride">Редагування локального імені.</string>
     <string name="ResetChatNameOverrides">Скинути змінені назви чатів</string>
     <string name="ResetChatNameNotification">Змінені назви чатів очищені.</string>
     <string name="TabStyle">Стиль вкладок</string>
@@ -263,4 +264,5 @@
     <string name="FixLinkPreview">Виправити прев’ю посилань</string>
     <string name="NoQuoteForwardShort">Без цитати</string>
     <string name="ForceEdgeToEdge">Примусово на весь екран</string>
+    <string name="ViewDeleted">Переглянути видалені</string>
 </resources>

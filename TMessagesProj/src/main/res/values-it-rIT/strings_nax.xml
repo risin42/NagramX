@@ -173,6 +173,7 @@
     <string name="DebugMenuCleanAppUpdate">Aggiornamento pulito dell\'app</string>
     <string name="DebugMenuMakeMemoryDump">Crea un dump della memoria</string>
     <string name="TranslateMessageLLM">Traduci con IA</string>
+    <string name="EditLocalNameOverride">Modificare l\'override del nome locale.</string>
     <string name="ResetChatNameOverrides">Reimposta gli override dei nomi della chat</string>
     <string name="ResetChatNameNotification">I nomi delle chat sono stati sostituiti.</string>
     <string name="TabStyle">Stile cartelle</string>
