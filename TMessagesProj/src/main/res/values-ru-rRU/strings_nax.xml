@@ -173,6 +173,7 @@
     <string name="DebugMenuCleanAppUpdate">Очистить обновления приложения</string>
     <string name="DebugMenuMakeMemoryDump">Создать дамп памяти</string>
     <string name="TranslateMessageLLM">Перевести с помощью ИИ</string>
+    <string name="EditLocalNameOverride">Редактирование локального названия чата.</string>
     <string name="ResetChatNameOverrides">Сбросить названия чатов</string>
     <string name="ResetChatNameNotification">Изменённые названия чатов очищены.</string>
     <string name="TabStyle">Стиль вкладок</string>
