@@ -211,7 +211,7 @@ import org.telegram.ui.Components.TermsOfServiceView;
 import org.telegram.ui.Components.TextStyleSpan;
 import org.telegram.ui.Components.ThemeEditorView;
 import org.telegram.ui.Components.UndoView;
-import org.telegram.ui.Components.inset.WindowRootInsetsListener;
+import org.telegram.ui.Components.inset.WindowAnimatedInsetsProvider;
 import org.telegram.ui.Components.spoilers.SpoilerEffect2;
 import org.telegram.ui.Components.voip.RTMPStreamPipOverlay;
 import org.telegram.ui.Components.voip.VoIPHelper;
@@ -401,9 +401,13 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
     private FlagSecureReason flagSecureReason;
     private final LiteMode.BatteryReceiver batteryReceiver = new LiteMode.BatteryReceiver();
-    public final WindowRootInsetsListener windowRootInsetsListener = new WindowRootInsetsListener();
+    private WindowAnimatedInsetsProvider rootAnimatedInsetsListener;
 
     public static LaunchActivity instance;
+
+    public WindowAnimatedInsetsProvider getRootAnimatedInsetsListener() {
+        return rootAnimatedInsetsListener;
+    }
 
     private AssetManager iconsAsset;
     private IconsResources customResources;
@@ -486,6 +490,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         frameLayout.setClipToPadding(false);
         frameLayout.setClipChildren(false);
         setContentView(frameLayout);
+        rootAnimatedInsetsListener = new WindowAnimatedInsetsProvider(frameLayout);
         pipActivityController.addPipListener(new IPipActivityListener() {
             @Override
             public void onCompleteEnterToPip() {
@@ -1181,7 +1186,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
 
         AndroidUtilities.enableEdgeToEdge(this);
-        windowRootInsetsListener.attach(getWindow());
 
         EmojiHelper.getInstance().checkEmojiPacks();
         PagePreviewRulesHelper.getInstance().checkPagePreviewRules();

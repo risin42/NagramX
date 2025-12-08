@@ -207,7 +207,9 @@ import org.telegram.messenger.VideoEditedInfo;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.messenger.camera.CameraView;
 import org.telegram.messenger.support.LongSparseIntArray;
+import org.telegram.messenger.utils.OnPostDrawView;
 import org.telegram.messenger.utils.PhotoUtilities;
+import org.telegram.messenger.utils.RectFMergeBounding;
 import org.telegram.messenger.utils.tlutils.TlUtils;
 import org.telegram.messenger.voip.VoIPService;
 import org.telegram.tgnet.ConnectionsManager;
@@ -349,6 +351,7 @@ import java.util.stream.Collectors;
 
 import me.vkryl.android.animator.BoolAnimator;
 import me.vkryl.android.animator.FactorAnimator;
+import me.vkryl.core.BitwiseUtils;
 import me.vkryl.core.reference.ReferenceList;
 
 import kotlin.Unit;
@@ -518,7 +521,7 @@ public class ChatActivity extends BaseFragment implements
     private ClippingImageView animatingImageView;
     private ThanosEffect chatListThanosEffect;
     private ChatListViewPaddingsAnimator chatListViewPaddingsAnimator;
-    public RecyclerListView chatListView;
+    public ChatListRecyclerView chatListView;
     private ChatListItemAnimator chatListItemAnimator;
     private GridLayoutManagerFixed chatLayoutManager;
     public ChatActivityAdapter chatAdapter;
@@ -2726,8 +2729,10 @@ public class ChatActivity extends BaseFragment implements
             recommendedAdditionalSizeY = dp(48);
 
             glassBackgroundSourceFrostedRenderNode = new BlurredBackgroundSourceRenderNode(navbarContentSourceWallpaper);
+            glassBackgroundSourceFrostedRenderNode.setOnDrawablesRelativePositionChangeListener(this::invalidateMergedVisibleBlurredPositionsAndSourcesPositions);
 
             navbarContentSourceMessages = new BlurredBackgroundSourceRenderNode(null);
+            navbarContentSourceMessages.setOnDrawablesRelativePositionChangeListener(this::invalidateMergedVisibleBlurredPositionsAndSourcesPositions);
             navbarContentSourceMessagesDrawable = navbarContentSourceMessages.createDrawable();
 
             glassBackgroundDrawableFactoryFrosted = new BlurredBackgroundDrawableViewFactory(glassBackgroundSourceFrostedRenderNode);
@@ -2735,6 +2740,7 @@ public class ChatActivity extends BaseFragment implements
 
             if (LiteMode.isEnabled(LiteMode.FLAG_LIQUID_GLASS)) {
                 glassBackgroundSourceRenderNode = new BlurredBackgroundSourceRenderNode(navbarContentSourceWallpaper);
+                glassBackgroundSourceRenderNode.setOnDrawablesRelativePositionChangeListener(this::invalidateMergedVisibleBlurredPositionsAndSourcesPositions);
                 glassBackgroundDrawableFactory = new BlurredBackgroundDrawableViewFactory(glassBackgroundSourceRenderNode);
                 glassBackgroundDrawableFactory.setLiquidGlassEffectAllowed(LiteMode.isEnabled(LiteMode.FLAG_LIQUID_GLASS));
 
@@ -2744,6 +2750,7 @@ public class ChatActivity extends BaseFragment implements
                 glassBackgroundSourceRenderNode = null;
                 glassBackgroundDrawableFactory = glassBackgroundDrawableFactoryFrosted;
                 navbarContentSourceWallpaperAndMessagesRenderNode = new BlurredBackgroundSourceRenderNode(null);
+                navbarContentSourceWallpaperAndMessagesRenderNode.setOnDrawablesRelativePositionChangeListener(this::invalidateMergedVisibleBlurredPositionsAndSourcesPositions);
                 navbarContentDrawableFactory = new BlurredBackgroundDrawableViewFactory(navbarContentSourceWallpaperAndMessagesRenderNode);
             }
         } else {
@@ -4871,6 +4878,8 @@ public class ChatActivity extends BaseFragment implements
         }
         removingFromParent = false;
         fragmentView = contentView = new ChatActivityFragmentView(context, parentLayout);
+        invalidateBlurredSourcesView = new OnPostDrawView(context, this::invalidateMergedVisibleBlurredPositionsAndSourcesImpl);
+        contentView.addView(invalidateBlurredSourcesView);
 
         final ViewPositionWatcher viewPositionWatcher = new ViewPositionWatcher(contentView);
 
@@ -4922,7 +4931,7 @@ public class ChatActivity extends BaseFragment implements
             mentionContainer.getAdapter().onDestroy();
         }
 
-        chatListView = new RecyclerListViewInternal(context, themeDelegate) {
+        chatListView = new ChatListRecyclerView(context, themeDelegate) {
             private int lastWidth;
 
             private final ArrayList<ChatMessageCell> drawTimeAfter = new ArrayList<>();
@@ -5798,16 +5807,6 @@ public class ChatActivity extends BaseFragment implements
 
             @Override
             protected void dispatchDraw(Canvas canvas) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && canvas.isHardwareAccelerated() && scrollableViewNoiseSuppressor != null) {
-                    if (!scrollableViewNoiseSuppressor.inRecording()) {
-                        final Canvas c = scrollableViewNoiseSuppressor.beginRecording(getMeasuredWidth(), getMeasuredHeight());
-                        dispatchDraw(c);
-                        scrollableViewNoiseSuppressor.endRecording();
-                        scrollableViewNoiseSuppressor.draw(canvas, DownscaleScrollableNoiseSuppressor.DRAW_ORIGINAL);
-                        return;
-                    }
-                }
-
                 drawLaterRoundProgressCell = null;
                 invalidated = false;
 
@@ -5835,7 +5834,7 @@ public class ChatActivity extends BaseFragment implements
                 canvas.restore();
             }
 
-            private void drawChatForegroundElements(Canvas canvas) {
+            protected void drawChatForegroundElements(Canvas canvas) {
                 int size = drawTimeAfter.size();
                 if (size > 0) {
                     for (int a = 0; a < size; a++) {
@@ -5945,7 +5944,7 @@ public class ChatActivity extends BaseFragment implements
                 }
             }
 
-            private void drawChatBackgroundElements(Canvas canvas) {
+            protected void drawChatBackgroundElements(Canvas canvas) {
                 final int count = getChildCount();
                 MessageObject.GroupedMessages lastDrawnGroup = null;
 
@@ -7012,6 +7011,7 @@ public class ChatActivity extends BaseFragment implements
                     chatListView.setOverScrollMode(RecyclerView.OVER_SCROLL_ALWAYS);
                     textSelectionHelper.stopScrolling();
                     updateVisibleRows();
+                    invalidateMergedVisibleBlurredPositionsAndSources(BLUR_INVALIDATE_FLAG_SCROLL);
                     scrollByTouch = false;
                 } else {
                     if (groupEmojiPackHint != null && groupEmojiPackHint.shown()) {
@@ -7092,6 +7092,7 @@ public class ChatActivity extends BaseFragment implements
                     }
                 }
                 if (dy != 0) {
+                    invalidateMergedVisibleBlurredPositionsAndSources(BLUR_INVALIDATE_FLAG_SCROLL);
                     contentView.invalidateBlur();
                     hideHints(true);
                 }
@@ -7182,10 +7183,6 @@ public class ChatActivity extends BaseFragment implements
                 }
                 if (starReactionsOverlay != null) {
                     starReactionsOverlay.invalidate();
-                }
-
-                if (Build.VERSION.SDK_INT >= 31 && scrollableViewNoiseSuppressor != null) {
-                    // scrollableViewNoiseSuppressor.onScrolled(dx, dy);
                 }
             }
         });
@@ -9236,9 +9233,12 @@ public class ChatActivity extends BaseFragment implements
             createTopicsTabs();
         }
 
+        if (context instanceof LaunchActivity) {
+            windowInsetsStateHolder.setupAnimatedInsetsProvider(((LaunchActivity) context).getRootAnimatedInsetsListener(), fragmentView);
+        }
+
         onBottomItemsVisibilityChanged();
         ViewCompat.setOnApplyWindowInsetsListener(fragmentView, this::onApplyWindowInsets);
-        windowInsetsStateHolder.attach(fragmentView);
         Timer.finish(t);
 
         return fragmentView;
@@ -12353,32 +12353,31 @@ public class ChatActivity extends BaseFragment implements
 
             // final int b = blurredViewBottomOffset + AndroidUtilities.navigationBarHeight + dp(9 + 44 + 7); //  + (isInsideContainer && searchContainer != null && searchContainer.getVisibility() == View.VISIBLE ? dp(50) : 0);
             if (chatListView.getPaddingTop() != p || chatListView.getPaddingBottom() != b) {
-                int top = 0;
-                MessageObject scrollToMessageObject = null;
-                for (int i = 0; i < chatListView.getChildCount(); i++) {
-                    View v = chatListView.getChildAt(i);
-                    if (v instanceof ChatMessageCell) {
-                        scrollToMessageObject = ((ChatMessageCell) v).getMessageObject();
-                        top = getScrollingOffsetForView(v);
-                        break;
-                    } else if (v instanceof ChatActionCell) {
-                        scrollToMessageObject = ((ChatActionCell) v).getMessageObject();
-                        top = getScrollingOffsetForView(v);
-                        break;
-                    }
-                }
+                //int top = 0;
+                //MessageObject scrollToMessageObject = null;
+                //for (int i = 0; i < chatListView.getChildCount(); i++) {
+                //    View v = chatListView.getChildAt(i);
+                //    if (v instanceof ChatMessageCell) {
+                //        scrollToMessageObject = ((ChatMessageCell) v).getMessageObject();
+                //        top = getScrollingOffsetForView(v);
+                //        break;
+                //    } else if (v instanceof ChatActionCell) {
+                //        scrollToMessageObject = ((ChatActionCell) v).getMessageObject();
+                //        top = getScrollingOffsetForView(v);
+                //        break;
+                //    }
+                //}
 
-                // chatListView.setPadding(0, p, 0, b);
-
-                if (scrollToMessageObject != null) {
-                    chatAdapter.updateRowsSafe();
-                    int index = messages.indexOf(scrollToMessageObject);
-                    if (index >= 0) {
-                        chatLayoutManager.scrollToPositionWithOffset(chatAdapter.messagesStartRow + index, top);
-                    }
-                }
+                //if (scrollToMessageObject != null) {
+                //    chatAdapter.updateRowsSafe();
+                //    int index = messages.indexOf(scrollToMessageObject);
+                //    if (index >= 0) {
+                //        chatLayoutManager.scrollToPositionWithOffset(chatAdapter.messagesStartRow + index, top);
+                //    }
+                //}
 
                 invalidateMessagesVisiblePart();
+                invalidateMergedVisibleBlurredPositionsAndSourcesPositions();
             }
 
             chatListView.setTopGlowOffset((int) (chatListViewPaddingTop - chatListViewPaddingVisibleOffset - AndroidUtilities.dp(4)));
@@ -13917,7 +13916,7 @@ public class ChatActivity extends BaseFragment implements
         chatActivityEnterView.setOpenGifsTabFirst();
         emojiButtonRed = new View(getParentActivity());
         emojiButtonRed.setBackgroundResource(R.drawable.redcircle);
-        frameLayout.addView(emojiButtonRed, index + 1, LayoutHelper.createFrame(10, 10, Gravity.BOTTOM | Gravity.LEFT, 30, 0, 0, 27));
+        frameLayout.addView(emojiButtonRed, index + 1, LayoutHelper.createFrame(10, 10, Gravity.BOTTOM | Gravity.LEFT, 37, 0, 0, 27));
 
         gifHintTextView = new HintView(getParentActivity(), 9, themeDelegate);
         gifHintTextView.setText(LocaleController.getString(R.string.TapHereGifs));
@@ -17536,6 +17535,10 @@ public class ChatActivity extends BaseFragment implements
         @Override
         public void onUpdateBackgroundDrawable(Drawable drawable) {
             super.onUpdateBackgroundDrawable(drawable);
+            if (drawable instanceof MotionBackgroundDrawable) {
+                ((MotionBackgroundDrawable) drawable).setFastRenderAllowed();
+            }
+
             final BlurredBackgroundSource source = wallpaperBitmapProvider.updateSourceFromBackgroundViewDrawable(drawable);
             final int navigationBarColor = wallpaperBitmapProvider.getNavigationBarColor(source);
             final float brightness = AndroidUtilities.computePerceivedBrightness(navigationBarColor);
@@ -17568,6 +17571,56 @@ public class ChatActivity extends BaseFragment implements
         protected boolean invalidateOptimized() {
             return true;
         }
+
+        private final RectF tmpViewRectF = new RectF();
+
+        public void drawList(Canvas blurCanvas, RectF position) {
+            final long drawingTime = SystemClock.uptimeMillis();
+
+            blurCanvas.save();
+            blurCanvas.clipRect(position);
+            blurCanvas.translate(0, chatListView.getY());
+            chatListView.drawChatBackgroundElements(blurCanvas);
+            for (int i = 0; i < chatListView.getChildCount(); i++) {
+                View child = chatListView.getChildAt(i);
+                tmpViewRectF.set(child.getX(), child.getY() + chatListView.getY(), child.getX() + child.getWidth(), child.getY() + chatListView.getY() + child.getHeight());
+                if (!tmpViewRectF.intersect(position)) {
+                    continue;
+                }
+
+                if (child instanceof ChatMessageCell) {
+                    blurCanvas.save();
+                    blurCanvas.translate(child.getX(), child.getY());
+                    ChatMessageCell cell = (ChatMessageCell) child;
+                    if (cell.drawBackgroundInParent()) {
+                        blurCanvas.save();
+                        blurCanvas.translate(0, cell.starsPriceTopPadding);
+                        cell.drawBackgroundInternal(blurCanvas, true);
+                        blurCanvas.restore();
+                    }
+                    blurCanvas.restore();
+                    chatListView.drawChild(blurCanvas, child, drawingTime);
+                    if (cell.hasOutboundsContent()) {
+                        blurCanvas.save();
+                        blurCanvas.translate(cell.getX(), cell.getY());
+                        cell.drawOutboundsContent(blurCanvas);
+                        blurCanvas.restore();
+                    }
+                } else if (child instanceof ChatActionCell) {
+                    ChatActionCell cell = (ChatActionCell) child;
+                    chatListView.drawChild(blurCanvas, child, drawingTime);
+                    blurCanvas.save();
+                    blurCanvas.translate(child.getX(), child.getY());
+                    cell.drawOutboundsContent(blurCanvas);
+                    blurCanvas.restore();
+                } else {
+                    chatListView.drawChild(blurCanvas, child, drawingTime);
+                }
+            }
+            chatListView.drawChatForegroundElements(blurCanvas);
+            blurCanvas.restore();
+        }
+
 
         @Override
         public void addView(View child, int index, ViewGroup.LayoutParams params) {
@@ -17931,7 +17984,6 @@ public class ChatActivity extends BaseFragment implements
                 if (navbarContentSourceMessages != null && !navbarContentSourceMessages.inRecording()) {
                     if (navbarContentSourceMessages.needUpdateDisplayList(width, height) || glassSourcesInvalidated) {
                         final Canvas c = navbarContentSourceMessages.beginRecording(width, height);
-                        c.translate(chatListView.getX(), chatListView.getY());
                         scrollableViewNoiseSuppressor.draw(c, DownscaleScrollableNoiseSuppressor.DRAW_FROSTED_GLASS_NO_SATURATION);
                         navbarContentSourceMessages.endRecording();
                     }
@@ -17950,7 +18002,6 @@ public class ChatActivity extends BaseFragment implements
                     if (glassBackgroundSourceRenderNode.needUpdateDisplayList(width, height) || glassSourcesInvalidated) {
                         final Canvas c = glassBackgroundSourceRenderNode.beginRecording(width, height);
                         navbarContentSourceWallpaper.draw(c, 0, 0, width, height);
-                        c.translate(chatListView.getX(), chatListView.getY());
                         scrollableViewNoiseSuppressor.draw(c, DownscaleScrollableNoiseSuppressor.DRAW_GLASS);
                         glassBackgroundSourceRenderNode.endRecording();
                     }
@@ -17959,7 +18010,6 @@ public class ChatActivity extends BaseFragment implements
                     if (glassBackgroundSourceFrostedRenderNode.needUpdateDisplayList(width, height) || glassSourcesInvalidated) {
                         final Canvas c = glassBackgroundSourceFrostedRenderNode.beginRecording(width, height);
                         navbarContentSourceWallpaper.draw(c, 0, 0, width, height);
-                        c.translate(chatListView.getX(), chatListView.getY());
                         scrollableViewNoiseSuppressor.draw(c, DownscaleScrollableNoiseSuppressor.DRAW_FROSTED_GLASS);
                         glassBackgroundSourceFrostedRenderNode.endRecording();
                     }
@@ -18471,10 +18521,16 @@ public class ChatActivity extends BaseFragment implements
                 canvas.restore();
                 canvas.restore();
             }
+
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && scrollableViewNoiseSuppressor != null) {
+                scrollableViewNoiseSuppressor.drawDebugPositions(canvas);
+            }*/
         }
 
         @Override
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            invalidateBlurredSourcesView.bringToFrontIfNeeded();
+
             int allHeight;
             int widthSize = View.MeasureSpec.getSize(widthMeasureSpec);
             int heightSize = allHeight = View.MeasureSpec.getSize(heightMeasureSpec);
@@ -18830,6 +18886,8 @@ public class ChatActivity extends BaseFragment implements
                     }
                 } else if (chatActivityEnterView != null && chatActivityEnterView.isRecordCircleOrControlsView(child)) {
                     childTop -= windowInsetsStateHolder.getCurrentMaxBottomInset() + dp(7);
+                } else if (child == emojiButtonRed) {
+                    childTop -= windowInsetsStateHolder.getCurrentMaxBottomInset() + dp(7);
                 } else if (chatActivityEnterView != null && child == chatActivityEnterView.recordedAudioPanel) {
                     childTop -= windowInsetsStateHolder.getCurrentMaxBottomInset() + dp(9);
                 } else if (child == gifHintTextView || child == voiceHintTextView || child == mediaBanTooltip || child == emojiHintTextView) {
@@ -18940,18 +18998,18 @@ public class ChatActivity extends BaseFragment implements
 
         @Override
         public void invalidateBlur() {
-            super.invalidateBlur();
+            /*super.invalidateBlur();
             if (parentChatActivity != null) {
                 parentChatActivity.contentView.invalidateBlur();
-            }
+            }*/
         }
 
         @Override
         public void updateBlurContent() {
-            super.updateBlurContent();
+            /*super.updateBlurContent();
             if (parentChatActivity != null) {
                 parentChatActivity.contentView.updateBlurContent();
-            }
+            }*/
         }
     };
 
@@ -47456,6 +47514,106 @@ public class ChatActivity extends BaseFragment implements
         } catch (Exception ignored) {};
     }
 
+    private OnPostDrawView invalidateBlurredSourcesView;
+
+    private static final int BLUR_INVALIDATE_FLAG_SCROLL = 1;
+    private static final int BLUR_INVALIDATE_FLAG_POSITIONS = 1 << 1;
+
+    private void invalidateMergedVisibleBlurredPositionsAndSourcesPositions() {
+        invalidateMergedVisibleBlurredPositionsAndSources(BLUR_INVALIDATE_FLAG_POSITIONS);
+    }
+
+    private void invalidateMergedVisibleBlurredPositionsAndSources(int flags) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || scrollableViewNoiseSuppressor == null) {
+            return;
+        }
+
+        invalidateBlurredSourcesView.invalidate(flags);
+    }
+
+    private final ArrayList<RectF> glassDrawablesPositions = new ArrayList<>();
+    private final ArrayList<RectF> glassDrawablesPositionsMerged = new ArrayList<>();
+    private int glassDrawablesPositionsCount;
+
+    private void invalidateMergedVisibleBlurredPositionsAndSourcesImpl(int flags) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || scrollableViewNoiseSuppressor == null) {
+            return;
+        }
+
+        if (BitwiseUtils.hasFlag(flags, BLUR_INVALIDATE_FLAG_POSITIONS)) {
+            glassDrawablesPositionsCount = getMergedVisibleBlurredPositions(glassDrawablesPositionsMerged);
+            scrollableViewNoiseSuppressor.setupRenderNodes(glassDrawablesPositionsMerged, glassDrawablesPositionsCount);
+        }
+
+        //if (BitwiseUtils.hasFlag(flags, BLUR_INVALIDATE_FLAG_POSITIONS | BLUR_INVALIDATE_FLAG_SCROLL)) {
+            for (int a = 0; a < glassDrawablesPositionsCount; a++) {
+                final RectF position = scrollableViewNoiseSuppressor.getPosition(a);
+                Canvas c = scrollableViewNoiseSuppressor.beginRecordingRect(a);
+                c.save();
+                c.translate(-position.left, -position.top);
+                contentView.drawList(c, position);
+                c.restore();
+                scrollableViewNoiseSuppressor.endRecordingRect();
+            }
+            scrollableViewNoiseSuppressor.invalidateResultRenderNodes(contentView.getWidth(), contentView.getHeight());
+        //}
+    }
+
+    private int getMergedVisibleBlurredPositions(List<RectF> positions) {
+        final int positionsCount = getVisibleBlurredPositions(glassDrawablesPositions);
+        final int mergedPositionsCount = RectFMergeBounding.mergeOverlapping(glassDrawablesPositions, positionsCount, positions);
+        for (int a = 0; a < mergedPositionsCount; a++) {
+            final RectF position = positions.get(a);
+            position.left = Math.max(0, position.left);
+            position.top = Math.max(chatListView.getY(), position.top);
+            position.right = Math.min(contentView.getMeasuredWidth(), position.right);
+            position.bottom = Math.min(chatListView.getY() + chatListView.getMeasuredHeight(), position.bottom);
+            /*if (drawDebug) {
+                ((Canvas) null).drawRect(position, Theme.DEBUG_GREEN_STROKE);
+            }*/
+        }
+
+        return mergedPositionsCount;
+    }
+
+    private int getVisibleBlurredPositions(List<RectF> positions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            int count = 0;
+
+            if (glassBackgroundSourceFrostedRenderNode != null) {
+                final int blurAlpha = Color.alpha(Theme.getColor(SharedConfig.getDevicePerformanceClass() == SharedConfig.PERFORMANCE_CLASS_HIGH ? Theme.key_chat_BlurAlpha : Theme.key_chat_BlurAlphaSlow, getResourceProvider()));
+                if (blurAlpha < 255) {
+                    final RectF rectf;
+                    if (positions.isEmpty()) {
+                        positions.add(rectf = new RectF());
+                    } else {
+                        rectf = positions.get(0);
+                    }
+
+                    rectf.set(0, 0, contentView.getMeasuredWidth(), chatListView.getPaddingTop() + chatListView.getY());
+                    rectf.inset(0, -dp(45));
+                    count += 1;
+                }
+
+                count += glassBackgroundSourceFrostedRenderNode.getVisiblePositions(positions, count, dp(48));
+            }
+
+            if (glassBackgroundSourceRenderNode != null) {
+                count += glassBackgroundSourceRenderNode.getVisiblePositions(positions, count, dp(8));
+            }
+
+            if (navbarContentSourceWallpaperAndMessagesRenderNode != null) {
+                count += navbarContentSourceWallpaperAndMessagesRenderNode.getVisiblePositions(positions, count, dp(48));
+            }
+
+            return count;
+        } else {
+            return 0;
+        }
+    }
+
+
+
     private final Rect clipBoundsTmp = new Rect();
     private void invalidateClipRectForBackgroundAndChatList() {
         if (contentView == null) {
@@ -47479,5 +47637,15 @@ public class ChatActivity extends BaseFragment implements
             clipBoundsTmp.set(0, 0, contentView.getMeasuredWidth(), contentView.getMeasuredHeight() - bottomClip);
             // chatInputViewsContainer.getFadeView().setClipBounds(clipBoundsTmp);
         }
+    }
+
+    private abstract class ChatListRecyclerView extends RecyclerListViewInternal {
+
+        public ChatListRecyclerView(Context context, ThemeDelegate themeDelegate) {
+            super(context, themeDelegate);
+        }
+
+        abstract void drawChatBackgroundElements(Canvas canvas);
+        abstract void drawChatForegroundElements(Canvas canvas);
     }
 }

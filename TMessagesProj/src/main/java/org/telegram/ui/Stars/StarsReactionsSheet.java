@@ -1600,10 +1600,11 @@ public class StarsReactionsSheet extends BottomSheet implements NotificationCent
             this.speed = speed;
         }
 
+        private long lastInvalidateTime;
         private long lastTime;
-        public void process() {
+        public boolean process() {
             if (!LiteMode.isEnabled(LiteMode.FLAG_PARTICLES)) {
-                return;
+                return false;
             }
 
             final long now = System.currentTimeMillis();
@@ -1620,6 +1621,12 @@ public class StarsReactionsSheet extends BottomSheet implements NotificationCent
                 p.la = 4f * lifetime - 4f * lifetime * lifetime;
             }
             lastTime = now;
+
+            if (lastInvalidateTime == 0 || lastInvalidateTime - now >= 66) {
+                lastInvalidateTime = now;
+                return true;
+            }
+            return false;
         }
 
         public void generateGrid() {
