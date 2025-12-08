@@ -15879,7 +15879,14 @@ public class ChatActivity extends BaseFragment implements
     }
 
     private Runnable sendSecretMessageRead(MessageObject messageObject, boolean readNow) {
+        return sendSecretMessageRead(messageObject, readNow, false);
+    }
+
+    private Runnable sendSecretMessageRead(MessageObject messageObject, boolean readNow, boolean force) {
         if (messageObject == null || messageObject.isOut() || !messageObject.isSecretMedia() || messageObject.messageOwner.destroyTime != 0 || messageObject.messageOwner.ttl <= 0) {
+            return null;
+        }
+        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool() && !force) {
             return null;
         }
         if (readNow) {
@@ -15893,9 +15900,6 @@ public class ChatActivity extends BaseFragment implements
             }
             return null;
         } else {
-            if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
-                return null;
-            }
             return () -> {
                 final boolean delete = messageObject.messageOwner.ttl != 0x7FFFFFFF;
                 final int ttl = messageObject.messageOwner.ttl == 0x7FFFFFFF ? 0 : messageObject.messageOwner.ttl;
@@ -15911,10 +15915,14 @@ public class ChatActivity extends BaseFragment implements
     }
 
     private Runnable sendSecretMediaDelete(MessageObject messageObject) {
+        return sendSecretMediaDelete(messageObject, false);
+    }
+
+    private Runnable sendSecretMediaDelete(MessageObject messageObject, boolean force) {
         if (messageObject == null || messageObject.isOut() || !messageObject.isSecretMedia() || messageObject.messageOwner.ttl != 0x7FFFFFFF) {
             return null;
         }
-        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
+        if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool() && !force) {
             return null;
         }
         final long taskId = getMessagesController().createDeleteShowOnceTask(dialog_id, messageObject.getId());
@@ -33631,7 +33639,8 @@ public class ChatActivity extends BaseFragment implements
                 if (selectedObject.messageOwner.ttl == 0x7FFFFFFF) {
                     selectedObject.messageOwner.ttl = 1;
                 }
-                sendSecretMessageRead(selectedObject, true);
+                sendSecretMessageRead(selectedObject, true, true);
+                sendSecretMediaDelete(selectedObject, true);
                 BotWebViewVibrationEffect.SELECTION_CHANGE.vibrate();
                 break;
             case AyuConstants.OPTION_READ_MESSAGE:
