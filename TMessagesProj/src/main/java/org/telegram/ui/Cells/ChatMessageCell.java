@@ -9714,6 +9714,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                         }
                         boolean checkCaption = true;
                         if ((currentPosition.flags & captionFlag()) != 0 || captionAbove || currentMessagesGroup.hasSibling && (currentPosition.flags & MessageObject.POSITION_FLAG_TOP) == 0) {
+
                             if (currentPosition == null || (currentPosition.flags & captionFlag()) != 0) {
                                 widthForCaption += getAdditionalWidthForPosition(currentPosition);
                             }
@@ -9770,6 +9771,11 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                                         }
                                     }
                                 }
+                            }
+                            if ((currentPosition.flags & MessageObject.POSITION_FLAG_LEFT) != 0 && currentCaption != null) {
+                                currentMessagesGroup.cachedWidthForCaption = widthForCaption;
+                            } else if (currentMessagesGroup.cachedWidthForCaption > 0) {
+                                widthForCaption = currentMessagesGroup.cachedWidthForCaption;
                             }
                         }
                     } else {
