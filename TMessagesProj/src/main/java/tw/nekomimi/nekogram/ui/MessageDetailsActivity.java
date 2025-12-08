@@ -88,8 +88,8 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
     private ListAdapter listAdapter;
     private TLRPC.Chat fromChat;
     private TLRPC.User fromUser;
-    private String filePath;
     private String fileName;
+    private String filePath;
     private int width;
     private int height;
     private String video_codec;
@@ -131,28 +131,6 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
         if (messageObject.messageOwner.from_id.user_id != 0) {
             fromUser = getMessagesController().getUser(messageObject.messageOwner.from_id.user_id);
         }
-        filePath = messageObject.messageOwner.attachPath;
-        if (!TextUtils.isEmpty(filePath)) {
-            File temp = new File(filePath);
-            if (!temp.exists()) {
-                filePath = null;
-            }
-        }
-        if (TextUtils.isEmpty(filePath)) {
-            filePath = FileLoader.getInstance(currentAccount).getPathToMessage(messageObject.messageOwner).toString();
-            File temp = new File(filePath);
-            if (!temp.exists()) {
-                filePath = null;
-            }
-        }
-        if (TextUtils.isEmpty(filePath)) {
-            filePath = FileLoader.getInstance(currentAccount).getPathToAttach(messageObject.getDocument(), true).toString();
-            File temp = new File(filePath);
-            if (!temp.isFile()) {
-                filePath = null;
-            }
-        }
-
         var media = MessageObject.getMedia(messageObject.messageOwner);
         if (media != null) {
             filePath = MessageHelper.getPathToMessage(messageObject);
