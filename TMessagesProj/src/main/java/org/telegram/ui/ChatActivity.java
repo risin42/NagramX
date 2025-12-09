@@ -31280,12 +31280,7 @@ public class ChatActivity extends BaseFragment implements
             groupedMessages = null;
         }
 
-        // --- AyuGram hack
-        boolean isAyuDeleted =
-                message != null &&
-                message.messageOwner != null &&
-                message.messageOwner.ayuDeleted;
-        // --- AyuGram hack
+        boolean isAyuDeleted = message != null && message.messageOwner != null && message.messageOwner.ayuDeleted;
 
         boolean allowChatActions = true;
         boolean allowPin;
@@ -31347,16 +31342,6 @@ public class ChatActivity extends BaseFragment implements
         if (currentChat != null && (!ChatObject.canSendMessages(currentChat))) {
             allowChatActions = false;
         }
-
-        // --- AyuGram hack
-        if (isAyuDeleted) {
-            allowChatActions = false;
-            allowPin = false;
-            allowUnpin = false;
-            allowEdit = false;
-            noforwards = true;
-        }
-        // --- AyuGram hack
 
         if (single || type < 2 || type == 20) {
             if (getParentActivity() == null) {
@@ -31463,36 +31448,50 @@ public class ChatActivity extends BaseFragment implements
                 icons.add(R.drawable.msg_calendar2);
             }
 
-            // --- AyuGram menu
-            if (
-                NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool()
-                && message != null
-                && message.messageOwner.from_id != null
-                && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
-                && AyuMessagesController.getInstance().hasAnyRevisions(getAccountInstance().getUserConfig().getClientUserId(), dialog_id, message.messageOwner.id)
+            // AyuMoments menu start
+            if (NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool()
+                    && message.messageOwner.from_id != null
+                    && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
+                    && !(AyuMessageUtils.isExpiredDocument(message) && (message.messageOwner.media.voice || message.messageOwner.media.round))
+                    && AyuMessagesController.getInstance().hasAnyRevisions(getAccountInstance().getUserConfig().getClientUserId(), dialog_id, message.messageOwner.id)
             ) {
-                var idx = options.size() - 1;
-                items.add(idx, LocaleController.getString(R.string.EditsHistoryMenuText));
+                int idx = options.size() - 1;
+                items.add(idx, getString(R.string.EditsHistoryMenuText));
                 options.add(idx, AyuConstants.OPTION_HISTORY);
                 icons.add(idx, R.drawable.msg_log);
             }
 
-            if (message != null && !isAyuDeleted ) {
-                if (message.messageOwner.ttl > 0) {
-                    items.add(getString(R.string.BurnTtlMessage));
-                    options.add(AyuConstants.OPTION_TTL);
-                    icons.add(R.drawable.burn_solar);
+            if (!isAyuDeleted) {
+                if (message.messageOwner.ttl > 0 || message.isVoiceOnce() || message.isRoundOnce()) {
+                    boolean isExpiredVideo = AyuMessageUtils.isExpiredDocument(message);
+                    boolean isExpiredPhoto = AyuMessageUtils.isExpiredPhoto(message);
+                    if (!isExpiredPhoto && message.isPhoto()) {
+                        items.add(0, getString(R.string.SaveToGallery));
+                        options.add(0, AyuConstants.OPTION_TTL_SAVE);
+                        icons.add(0, R.drawable.msg_gallery);
+                    } else if (message.isVideo() || message.isRoundOnce() || message.isVoiceOnce()) {
+                        items.add(0, getString(R.string.SaveToDownloads));
+                        options.add(0, AyuConstants.OPTION_TTL_SAVE);
+                        icons.add(0, R.drawable.msg_download);
+                    }
+                    if (!isExpiredVideo && !isExpiredPhoto) {
+                        int idx = options.size() - 1;
+                        items.add(idx, getString(R.string.BurnTtlMessage));
+                        options.add(idx, AyuConstants.OPTION_TTL);
+                        icons.add(idx, R.drawable.burn_solar);
+                    }
                 }
                 if (!NekoConfig.sendReadMessagePackets.Bool()
                         && message.messageOwner.from_id != null
                         && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
                 ) {
-                    items.add(getString(R.string.GhostReadMessage));
-                    options.add(AyuConstants.OPTION_READ_MESSAGE);
-                    icons.add(R.drawable.msg_view_file);
+                    int idx = options.size() - 1;
+                    items.add(idx, getString(R.string.GhostReadMessage));
+                    options.add(idx, AyuConstants.OPTION_READ_MESSAGE);
+                    icons.add(idx, R.drawable.msg_view_file);
                 }
             }
-            // --- AyuGram menu
+            // AyuMoments menu end
 
             if (options.isEmpty() && optionsView == null) {
                 return false;
@@ -33647,6 +33646,111 @@ public class ChatActivity extends BaseFragment implements
 
                 Utilities.globalQueue.postRunnable(() -> sendSecretMediaDelete(selectedObject, true), 1000);
                 BotWebViewVibrationEffect.SELECTION_CHANGE.vibrate();
+                break;
+            case AyuConstants.OPTION_TTL_SAVE:
+                if ((Build.VERSION.SDK_INT <= 28 || BuildVars.NO_SCOPED_STORAGE) && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    getParentActivity().requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4);
+                    selectedObject = null;
+                    selectedObjectGroup = null;
+                    selectedObjectToEditCaption = null;
+                    return;
+                }
+                final MessageObject ttlMessage = selectedObject;
+                Utilities.globalQueue.postRunnable(() -> {
+                    File fileToSave = null;
+                    TLRPC.Document document = ttlMessage.getDocument();
+                    // save voiceOnce and roundOnce, see SecretVoicePlayer.setCell
+                    if (ttlMessage.isVoiceOnce() || ttlMessage.isRoundOnce()) {
+                        if (document != null) {
+                            fileToSave = FileLoader.getInstance(currentAccount).getPathToAttach(document);
+                            if (fileToSave != null && !fileToSave.exists()) {
+                                fileToSave = new File(fileToSave.getPath() + ".enc");
+                            }
+                            if (fileToSave == null || !fileToSave.exists()) {
+                                fileToSave = FileLoader.getInstance(currentAccount).getPathToMessage(ttlMessage.messageOwner);
+                                if (fileToSave != null && !fileToSave.exists()) {
+                                    fileToSave = new File(fileToSave.getPath() + ".enc");
+                                }
+                            }
+                            if ((fileToSave == null || !fileToSave.exists()) && ttlMessage.messageOwner.attachPath != null) {
+                                fileToSave = new File(ttlMessage.messageOwner.attachPath);
+                            }
+                            if (fileToSave != null && fileToSave.exists() && fileToSave.getName().endsWith(".enc")) {
+                                File decryptedFile = AyuMessageUtils.decryptAndSaveMedia(fileToSave.getName().replace(".enc", ""), fileToSave, ttlMessage);
+                                if (decryptedFile != null && decryptedFile.exists() && decryptedFile.length() > 0) {
+                                    fileToSave = decryptedFile;
+                                }
+                            }
+                            if (fileToSave != null && fileToSave.exists()) {
+                                MediaController.saveFile(fileToSave.getAbsolutePath(), getParentActivity(), 2, null, null);
+                                AndroidUtilities.runOnUIThread(() -> {
+                                    if (getParentActivity() != null) {
+                                        BulletinFactory.FileType fileType = BulletinFactory.FileType.VIDEO_TO_DOWNLOADS;
+                                        BulletinFactory.of(ChatActivity.this).createDownloadBulletin(fileType, themeDelegate).show();
+                                    }
+                                });
+                            } else {
+                                AndroidUtilities.runOnUIThread(() -> {
+                                    if (getParentActivity() != null) {
+                                        BulletinFactory.of(ChatActivity.this).createErrorBulletin(getString(R.string.UnsupportedAttachment), themeDelegate).show();
+                                    }
+                                });
+                            }
+                        }
+                        return;
+                    }
+                    // TTL media with encryption, see SecretMediaViewer.openMedia
+                    if (document != null) {
+                        if (ttlMessage.messageOwner.attachPath != null) {
+                            fileToSave = new File(ttlMessage.messageOwner.attachPath);
+                            if (!fileToSave.exists()) {
+                                fileToSave = null;
+                            }
+                        }
+                        if (fileToSave == null) {
+                            fileToSave = FileLoader.getInstance(currentAccount).getPathToMessage(ttlMessage.messageOwner);
+                            File encryptedFile = new File(fileToSave.getAbsolutePath() + ".enc");
+                            if (encryptedFile.exists()) {
+                                File decryptedFile = AyuMessageUtils.decryptAndSaveMedia(fileToSave.getName(), encryptedFile, ttlMessage);
+                                if (decryptedFile != null && decryptedFile.exists() && decryptedFile.length() > 0) {
+                                    fileToSave = decryptedFile;
+                                }
+                            }
+                        }
+                    } else {
+                        TLRPC.PhotoSize sizeFull = FileLoader.getClosestPhotoSizeWithSize(ttlMessage.photoThumbs, AndroidUtilities.getPhotoSize());
+                        if (sizeFull != null) {
+                            fileToSave = FileLoader.getInstance(currentAccount).getPathToAttach(sizeFull, true);
+                            if (fileToSave == null || !fileToSave.exists()) {
+                                File encryptedPhotoFile = new File(fileToSave.getAbsolutePath() + ".enc");
+                                if (encryptedPhotoFile.exists()) {
+                                    File decryptedFile = AyuMessageUtils.decryptAndSaveMedia(fileToSave.getName(), encryptedPhotoFile, ttlMessage);
+                                    if (decryptedFile != null && decryptedFile.exists() && decryptedFile.length() > 0) {
+                                        fileToSave = decryptedFile;
+                                    } else {
+                                        fileToSave = null;
+                                    }
+                                } else {
+                                    fileToSave = null;
+                                }
+                            }
+                        }
+                    }
+                    if (fileToSave != null && fileToSave.exists()) {
+                        MediaController.saveFile(fileToSave.getAbsolutePath(), getParentActivity(), ttlMessage.isVideo() ? 2 : 0, null, null);
+                        AndroidUtilities.runOnUIThread(() -> {
+                            if (getParentActivity() != null) {
+                                BulletinFactory.of(ChatActivity.this).createDownloadBulletin(ttlMessage.isVideo() ? BulletinFactory.FileType.VIDEO_TO_DOWNLOADS : BulletinFactory.FileType.PHOTO, themeDelegate).show();
+                            }
+                        });
+                    } else {
+                        AndroidUtilities.runOnUIThread(() -> {
+                            if (getParentActivity() != null) {
+                                BulletinFactory.of(ChatActivity.this).createErrorBulletin(getString(R.string.UnsupportedAttachment), themeDelegate).show();
+                            }
+                        });
+                    }
+                });
                 break;
             case AyuConstants.OPTION_READ_MESSAGE:
                 AyuGhostUtils.markReadOnServer(selectedObject.messageOwner.id, getMessagesController().getInputPeer(selectedObject.messageOwner.peer_id), false);

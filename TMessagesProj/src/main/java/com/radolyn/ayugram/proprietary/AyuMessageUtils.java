@@ -720,8 +720,7 @@ public abstract class AyuMessageUtils {
             }
             return null;
         }
-        try (EncryptedFileInputStream inputStream = new EncryptedFileInputStream(encryptedFile, keyFile);
-             FileOutputStream outputStream = new FileOutputStream(outputFile)) {
+        try (EncryptedFileInputStream inputStream = new EncryptedFileInputStream(encryptedFile, keyFile); FileOutputStream outputStream = new FileOutputStream(outputFile)) {
             byte[] readBuffer = new byte[8 * 1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(readBuffer)) != -1) {
@@ -874,5 +873,22 @@ public abstract class AyuMessageUtils {
             return null;
         }
         return null;
+    }
+
+    public static boolean isExpiredDocument(MessageObject msg) {
+        if (msg == null || msg.messageOwner == null || msg.messageOwner.media == null) {
+            return false;
+        }
+        return msg.messageOwner.media.document instanceof TLRPC.TL_documentEmpty
+                || msg.messageOwner.media instanceof TLRPC.TL_messageMediaDocument
+                && msg.messageOwner.media.document == null;
+    }
+
+    public static boolean isExpiredPhoto(MessageObject msg) {
+        if (msg == null || msg.messageOwner == null || msg.messageOwner.media == null) {
+            return false;
+        }
+        return msg.messageOwner.media instanceof TLRPC.TL_messageMediaPhoto
+                && msg.messageOwner.media.photo instanceof TLRPC.TL_photoEmpty;
     }
 }
