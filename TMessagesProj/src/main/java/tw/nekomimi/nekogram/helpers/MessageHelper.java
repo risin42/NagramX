@@ -93,26 +93,30 @@ public class MessageHelper extends BaseController {
     public static String getPathToMessage(MessageObject messageObject) {
         String path = messageObject.messageOwner.attachPath;
         if (!TextUtils.isEmpty(path)) {
-            File temp = new File(path);
-            if (!temp.exists()) {
+            File f = new File(path);
+            if (!f.exists()) {
                 path = null;
             }
         }
         if (TextUtils.isEmpty(path)) {
             path = FileLoader.getInstance(UserConfig.selectedAccount).getPathToMessage(messageObject.messageOwner).toString();
-            File temp = new File(path);
-            if (!temp.exists()) {
+            File f = new File(path);
+            if (!f.exists() || f.getAbsolutePath().endsWith("/cache")) {
                 path = null;
             }
         }
         if (TextUtils.isEmpty(path)) {
-            path = FileLoader.getInstance(UserConfig.selectedAccount).getPathToAttach(messageObject.getDocument(), true).toString();
-            File temp = new File(path);
-            if (!temp.exists()) {
-                return null;
+            File f = FileLoader.getInstance(UserConfig.selectedAccount).getPathToAttach(messageObject.getDocument(), true);
+            if (f.exists() && !f.getAbsolutePath().endsWith("/cache")) {
+                path = f.getAbsolutePath();
+            } else {
+                f = FileLoader.getInstance(UserConfig.selectedAccount).getPathToAttach(messageObject.getDocument());
+                if (f.exists()) {
+                    path = f.getAbsolutePath();
+                }
             }
         }
-        return path;
+        return path != null && !path.endsWith("/cache") ? path : null;
     }
 
     public void resetMessageContent(long dialog_id, MessageObject messageObject) {
