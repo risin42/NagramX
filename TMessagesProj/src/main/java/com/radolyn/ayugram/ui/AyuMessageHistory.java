@@ -290,7 +290,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
             options.add(OPTION_SAVE_TO_GALLERY);
         }
 
-        if (msg.isDocument() || msg.isMusic()) {
+        if (msg.isDocument() || msg.isMusic() || msg.isVoice()) {
             items.add(msg.isMusic() ? getString(R.string.SaveToMusic) : getString(R.string.SaveToDownloads));
             icons.add(R.drawable.msg_download);
             options.add(OPTION_SAVE_TO_DOWNLOADS);
@@ -519,6 +519,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
             AyuMessageUtils.map(editedMessage, msg, currentAccount);
             AyuMessageUtils.mapMedia(editedMessage, msg, currentAccount);
 
+            msg.ayuDeleted = true;
             msg.date = editedMessage.entityCreateDate;
             msg.edit_hide = true;
             if (msg.media != null) {
@@ -532,7 +533,9 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
             }
             // prefer the current message's cached media only if the original file still exists
             boolean localFileFound = false;
-            if (editedMessage.documentType == AyuConstants.DOCUMENT_TYPE_FILE) {
+            if (messageObject.isVoice()) {
+                msg.media = messageObject.messageOwner.media;
+            } else if (editedMessage.documentType == AyuConstants.DOCUMENT_TYPE_FILE) {
                 File originalPath = FileLoader.getInstance(currentAccount).getPathToMessage(messageObject.messageOwner);
                 if (!messageObject.messageOwner.ayuDeleted && originalPath.exists() && Objects.equals(editedMessage.mediaPath, originalPath.getAbsolutePath())) {
                     msg.media.document = messageObject.messageOwner.media.document;

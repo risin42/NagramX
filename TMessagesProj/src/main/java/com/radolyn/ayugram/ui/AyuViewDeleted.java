@@ -543,7 +543,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
             options.add(OPTION_SAVE_TO_GALLERY);
         }
 
-        if (msg.isDocument() || msg.isMusic()) {
+        if (msg.isDocument() || msg.isMusic() || msg.isVoice()) {
             items.add(msg.isMusic() ? getString(R.string.SaveToMusic) : getString(R.string.SaveToDownloads));
             icons.add(R.drawable.msg_download);
             options.add(OPTION_SAVE_TO_DOWNLOADS);
