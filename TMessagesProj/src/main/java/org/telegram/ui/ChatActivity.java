@@ -33640,7 +33640,12 @@ public class ChatActivity extends BaseFragment implements
                     selectedObject.messageOwner.ttl = 1;
                 }
                 sendSecretMessageRead(selectedObject, true, true);
-                sendSecretMediaDelete(selectedObject, true);
+
+                var prefs = new AyuSavePreferences(selectedObject.messageOwner, currentAccount);
+                prefs.setDialogId(selectedObject.getDialogId());
+                AyuMessagesController.getInstance().onMessageDeleted(prefs);
+
+                Utilities.globalQueue.postRunnable(() -> sendSecretMediaDelete(selectedObject, true), 1000);
                 BotWebViewVibrationEffect.SELECTION_CHANGE.vibrate();
                 break;
             case AyuConstants.OPTION_READ_MESSAGE:
