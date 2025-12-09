@@ -173,6 +173,7 @@
     <string name="DebugMenuCleanAppUpdate">Wyczyść aktualizacje aplikacji</string>
     <string name="DebugMenuMakeMemoryDump">Zrób zrzut pamięci</string>
     <string name="TranslateMessageLLM">Tłumacz z AI</string>
+    <string name="EditLocalNameOverride">Edycja nadpisania nazwy lokalnej.</string>
     <string name="ResetChatNameOverrides">Zresetuj nadpisania nazw czatu</string>
     <string name="ResetChatNameNotification">Usunięto nadpisywanie nazw czatów.</string>
     <string name="TabStyle">Styl zakładki</string>
@@ -262,4 +263,6 @@
     <string name="BlockChannelsUnavailable">Niektóre kanały są tymczasowo niedostępne.</string>
     <string name="FixLinkPreview">Napraw podgląd łącza</string>
     <string name="NoQuoteForwardShort">Przekaż bez śledzenia</string>
+    <string name="ForceEdgeToEdge">Wymuś krawędź do krawędzi</string>
+    <string name="ViewDeleted">Wyświetl usunięte</string>
 </resources>
