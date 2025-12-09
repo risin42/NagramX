@@ -20,6 +20,8 @@ import com.radolyn.ayugram.database.entities.EditedMessage;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.DialogObject;
+import org.telegram.messenger.ImageLoader;
+import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.ImageReceiver;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.browser.Browser;
@@ -286,6 +288,24 @@ public class AyuMessageCell extends ChatMessageCell {
 
         if (editedMessage != null && !TextUtils.isEmpty(editedMessage.hqThumbPath)) {
             getPhotoImage().setImage(editedMessage.hqThumbPath, null, null, null, 0);
+        } else {
+            MessageObject msg = getMessageObject();
+            if (msg != null && msg.isVideo()) {
+                String videoPath = msg.messageOwner.attachPath;
+                if (TextUtils.isEmpty(videoPath) && msg.messageOwner.media != null && msg.messageOwner.media.document != null) {
+                    videoPath = msg.messageOwner.media.document.localPath;
+                }
+                if (!TextUtils.isEmpty(videoPath)) {
+                    getPhotoImage().setAllowStartAnimation(true);
+                    getPhotoImage().setImage(
+                            ImageLocation.getForPath(videoPath),
+                            ImageLoader.AUTOPLAY_FILTER,
+                            null, null, null, null,
+                            null, 0, null, msg, 0
+                    );
+                    getPhotoImage().startAnimation();
+                }
+            }
         }
     }
 

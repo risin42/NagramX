@@ -5,6 +5,8 @@ import static org.telegram.messenger.LocaleController.getString;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.media.MediaMetadataRetriever;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -28,6 +30,7 @@ import com.radolyn.ayugram.utils.AyuFileLocation;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLoader;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.NotificationCenter;
@@ -35,7 +38,6 @@ import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.TLRPC;
-import android.text.TextUtils;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenuSubItem;
 import org.telegram.ui.ActionBar.ActionBarPopupWindow;
@@ -519,6 +521,9 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
 
             msg.date = editedMessage.entityCreateDate;
             msg.edit_hide = true;
+            if (msg.media != null) {
+                msg.media.ttl_seconds = 0;
+            }
 
             // fix reply state
             if (messageObject.messageOwner.replyMessage != null) {
@@ -526,23 +531,31 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
                 msg.reply_to = messageObject.messageOwner.reply_to;
             }
             // prefer the current message's cached media only if the original file still exists
+            boolean localFileFound = false;
             if (editedMessage.documentType == AyuConstants.DOCUMENT_TYPE_FILE) {
                 File originalPath = FileLoader.getInstance(currentAccount).getPathToMessage(messageObject.messageOwner);
                 if (!messageObject.messageOwner.ayuDeleted && originalPath.exists() && Objects.equals(editedMessage.mediaPath, originalPath.getAbsolutePath())) {
                     msg.media.document = messageObject.messageOwner.media.document;
+                    localFileFound = true;
                 } else { // try to find local file for media that was saved
                     File localFile = findSavedMedia(editedMessage);
                     if (localFile != null) {
                         updateDocumentMediaWithLocalFile(msg, localFile, editedMessage);
+                        localFileFound = true;
                     }
                 }
             } else if (editedMessage.documentType == AyuConstants.DOCUMENT_TYPE_PHOTO) {
                 File localFile = findSavedMedia(editedMessage);
                 if (localFile != null) {
                     updatePhotoMediaWithLocalFile(msg, localFile);
+                    localFileFound = true;
                 }
             }
-            return new MessageObject(getCurrentAccount(), msg, false, true);
+            MessageObject messageObj = new MessageObject(getCurrentAccount(), msg, false, true);
+            if (localFileFound && msg.attachPath != null) {
+                messageObj.attachPathExists = true;
+            }
+            return messageObj;
         }
 
         private File findSavedMedia(EditedMessage editedMessage) {
@@ -577,7 +590,6 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
             if (msg.media instanceof TLRPC.TL_messageMediaPhoto mediaPhoto && msg.media.photo != null) {
                 mediaPhoto.photo.sizes.clear();
                 mediaPhoto.photo.sizes.add(photoSize);
-                mediaPhoto.ttl_seconds = 0;
             } else {
                 TLRPC.TL_messageMediaPhoto mediaPhoto = new TLRPC.TL_messageMediaPhoto();
                 mediaPhoto.flags = 1;
@@ -596,7 +608,6 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
             // if media already exists just update the path
             if (msg.media instanceof TLRPC.TL_messageMediaDocument && msg.media.document != null) {
                 msg.media.document.localPath = filePath;
-                msg.media.ttl_seconds = 0;
                 return;
             }
             // create new document media structure for video
@@ -612,6 +623,40 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
             // restore document attributes from serialized data
             if (editedMessage.documentAttributesSerialized != null && editedMessage.documentAttributesSerialized.length > 0) {
                 mediaDocument.document.attributes = AyuMessageUtils.deserializeMultiple(editedMessage.documentAttributesSerialized, nativeByteBuffer -> TLRPC.DocumentAttribute.TLdeserialize(nativeByteBuffer, nativeByteBuffer.readInt32(false), false));
+            }
+            // if mime_type indicates video but no video attribute exists, create one
+            String mimeType = mediaDocument.document.mime_type;
+            if (mimeType != null && mimeType.startsWith("video/")) {
+                boolean hasVideoAttr = false;
+                for (TLRPC.DocumentAttribute attr : mediaDocument.document.attributes) {
+                    if (attr instanceof TLRPC.TL_documentAttributeVideo) {
+                        hasVideoAttr = true;
+                        break;
+                    }
+                }
+                if (!hasVideoAttr) {
+                    TLRPC.TL_documentAttributeVideo videoAttr = new TLRPC.TL_documentAttributeVideo();
+                    videoAttr.supports_streaming = true;
+                    // extract video dimensions and duration from file
+                    try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
+                        retriever.setDataSource(filePath);
+                        String width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+                        String height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+                        String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                        if (width != null) {
+                            videoAttr.w = Integer.parseInt(width);
+                        }
+                        if (height != null) {
+                            videoAttr.h = Integer.parseInt(height);
+                        }
+                        if (duration != null) {
+                            videoAttr.duration = Long.parseLong(duration) / 1000.0;
+                        }
+                    } catch (Exception e) {
+                        FileLog.e(e);
+                    }
+                    mediaDocument.document.attributes.add(videoAttr);
+                }
             }
             // restore thumbnails from serialized data
             if (editedMessage.thumbsSerialized != null && editedMessage.thumbsSerialized.length > 0) {
