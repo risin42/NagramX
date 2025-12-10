@@ -101,6 +101,7 @@ public class DrawerActionCell extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         textView.setTextColor(Theme.getColor(Theme.key_chats_menuItemText));
+        imageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_menuItemIcon), PorterDuff.Mode.SRC_IN));
     }
 
     public void setTextAndIcon(int id, String text, int resId) {
