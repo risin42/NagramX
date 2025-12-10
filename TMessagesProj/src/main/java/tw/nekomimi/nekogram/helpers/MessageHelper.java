@@ -29,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
 import com.radolyn.ayugram.proprietary.AyuMessageUtils;
+import com.radolyn.ayugram.utils.AyuState;
 
 import org.telegram.SQLite.SQLiteCursor;
 import org.telegram.SQLite.SQLiteException;
@@ -589,6 +590,9 @@ public class MessageHelper extends BaseController {
                 }
                 Runnable deleteAction = () -> {
                     for (ArrayList<Integer> list : lists) {
+                        for (int msgId : list) {
+                            AyuState.permitDeleteMessage(dialogId, msgId);
+                        }
                         getMessagesController().deleteMessages(list, null, null, dialogId, 0, true, 0);
                     }
                 };
@@ -610,12 +614,21 @@ public class MessageHelper extends BaseController {
         req.limit = 100;
         req.q = "";
         req.offset_id = offsetId;
-        req.from_id = fromId;
-        req.flags |= 1;
         req.filter = new TLRPC.TL_inputMessagesFilterEmpty();
+        long dialogId = DialogObject.getPeerDialogId(peer);
+        boolean isMonoForum = getMessagesStorage().isMonoForum(dialogId);
+        if (!isMonoForum) {
+            req.from_id = fromId;
+            req.flags |= 1;
+        }
         if (replyMessageId != 0) {
-            req.top_msg_id = replyMessageId;
-            req.flags |= 2;
+            if (isMonoForum) {
+                req.saved_peer_id = getMessagesController().getInputPeer(replyMessageId);
+                req.flags |= 4;
+            } else {
+                req.top_msg_id = replyMessageId;
+                req.flags |= 2;
+            }
         }
         req.hash = hash;
         getConnectionsManager().sendRequest(req, (response, error) -> {
