@@ -213,6 +213,7 @@ public class DrawerActionCheckCell extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         textView.setTextColor(Theme.getColor(Theme.key_chats_menuItemText));
+        imageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_chats_menuItemIcon), PorterDuff.Mode.SRC_IN));
         checkBox.setColors(Theme.key_switchTrack, Theme.key_switchTrackChecked, Theme.key_windowBackgroundWhite, Theme.key_windowBackgroundWhite);
     }
 
