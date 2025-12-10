@@ -8186,7 +8186,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     ((MediaController.MediaEditState) entry).editedInfo = videoEditedInfo;
                 }
             }
-            if (parentChatActivity != null && parentChatActivity.getCurrentChat() != null) {
+            if (sendPhotoType != SELECT_TYPE_AVATAR && parentChatActivity != null && parentChatActivity.getCurrentChat() != null) {
                 boolean isVideo = (isCurrentVideo || videoEditedInfo != null);
                 if (isVideo && !ChatObject.canSendVideo(parentChatActivity.getCurrentChat())) {
                     BulletinFactory.of(containerView, resourcesProvider).createErrorBulletin(getString(R.string.GlobalAttachVideoRestricted)).show();
