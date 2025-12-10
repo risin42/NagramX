@@ -12350,6 +12350,10 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             if (dialogStoriesCell != null) {
                 dialogStoriesCell.updateColors();
             }
+            actionBarDefaultPaint.setColor(Theme.getColor(folderId == 0 ? Theme.key_actionBarDefault : Theme.key_actionBarDefaultArchived));
+            if (fragmentView instanceof SizeNotifierFrameLayout) {
+                ((SizeNotifierFrameLayout) fragmentView).invalidateBlurredViews();
+            }
         };
 
         ArrayList<ThemeDescription> arrayList = new ArrayList<>();
