@@ -187,9 +187,7 @@ public class ProfileGooeyView extends FrameLayout {
 
         @Override
         public void onSizeChanged(int w, int h) {
-            if (bitmap != null) {
-                bitmap.recycle();
-            }
+            AndroidUtilities.recycleBitmap(bitmap);
 
             optimizedW = Math.min(dp(120), w);
             optimizedH = Math.min(dp(220), h);
@@ -214,7 +212,9 @@ public class ProfileGooeyView extends FrameLayout {
             canvas.translate(0, -dp(BLACK_KING_BAR));
 
             if (alpha != 255) {
-                bitmap.eraseColor(0);
+                if (bitmap != null && !bitmap.isRecycled()) {
+                    bitmap.eraseColor(0);
+                }
 
                 bitmapCanvas.save();
                 bitmapCanvas.scale((float) bitmap.getWidth() / bitmapOrigW, (float) bitmap.getHeight() / bitmapOrigH);
@@ -274,9 +274,7 @@ public class ProfileGooeyView extends FrameLayout {
 
         @Override
         public void release() {
-            if (bitmap != null) {
-                bitmap.recycle();
-            }
+            AndroidUtilities.recycleBitmap(bitmap);
         }
     }
 
