@@ -165,6 +165,7 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.NotificationsController;
+import org.telegram.messenger.PasskeysController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SendMessagesHelper;
 import org.telegram.messenger.SharedConfig;
@@ -506,7 +507,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private boolean isTopic;
     private boolean openSimilar;
     public boolean myProfile;
-    // public boolean passkeySuggestion;
+    public boolean passkeySuggestion;
     public boolean openGifts;
     public int openGiftsCollection;
     public boolean openGiftsUpgradable;
@@ -3946,7 +3947,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             });
         }
         if (userId != 0 && imageUpdater != null || myProfile) {
-            /*passkeySuggestion = false && MessagesController.getInstance(currentAccount).pendingSuggestions.contains("SETUP_PASSKEY");
+            passkeySuggestion = false && MessagesController.getInstance(currentAccount).pendingSuggestions.contains("SETUP_PASSKEY");
 
             suggestionView = new ProfileSuggestionView(context, resourcesProvider);
             suggestionView.setVisibility(passkeySuggestion ? View.VISIBLE : View.GONE);
@@ -3957,7 +3958,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 passkeySuggestion = false;
 
                 finishFragment();
-            });*/
+            });
             if (avatarsBlurView != null) {
                 avatarsBlurView.setSize(getActionsExtraHeight());
             }
@@ -6211,9 +6212,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
     private int getActionsExtraHeight() {
         if (userId != 0 && imageUpdater != null || myProfile) {
-            /*if (passkeySuggestion) {
+            if (passkeySuggestion) {
                 return dp(88);
-            }*/
+            }
             return 0;
         }
         return dp(74);
@@ -9850,13 +9851,13 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 listAdapter.notifyDataSetChanged();
             }
 
-            /*final boolean passkey = false && suggestionView != null && MessagesController.getInstance(currentAccount).pendingSuggestions.contains("SETUP_PASSKEY");
+            final boolean passkey = false && suggestionView != null && MessagesController.getInstance(currentAccount).pendingSuggestions.contains("SETUP_PASSKEY");
             if (passkey != passkeySuggestion) {
                 passkeySuggestion = passkey;
                 if (!passkey) {
                     finishFragment();
                 }
-            }*/
+            }
         } else if (id == NotificationCenter.topicsDidLoaded) {
             if (isTopic) {
                 updateProfileData(false);

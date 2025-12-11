@@ -229,6 +229,9 @@ dependencies {
     }
     implementation 'com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1'
     implementation 'com.google.android.gms:play-services-mlkit-image-labeling:16.0.8'
+    implementation 'co.nstant.in:cbor:0.8'
+    implementation "androidx.credentials:credentials:1.6.0-alpha04"
+    implementation "androidx.credentials:credentials-play-services-auth:1.6.0-alpha04"
     // payment
     implementation 'com.google.android.gms:play-services-wallet:19.5.0' // 19.1.0
     implementation('com.stripe:stripe-android:2.0.2') {
