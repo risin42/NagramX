@@ -12,6 +12,7 @@ import org.telegram.ui.Components.PopupSwipeBackLayout;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.parts.MessageTransKt;
 import tw.nekomimi.nekogram.translate.Translator;
+import xyz.nextalone.nagram.NaConfig;
 
 public class TranslatePopupWrapper {
 
@@ -31,20 +32,22 @@ public class TranslatePopupWrapper {
 
         for (var id : TranslateItem.ITEM_IDS) {
             if (id == TranslateItem.ID_TRANSLATE_LLM) {
-                var item = ActionBarMenuItem.addItem(false, false, windowLayout, R.drawable.magic_stick_solar, TranslateItem.ITEM_TITLES.get(id), false, resourcesProvider);
-                item.setOnClickListener(view -> delegate.onItemClick(id));
-                item.setOnLongClickListener(view -> {
-                    Translator.showTargetLangSelect(view, (locale) -> {
-                        if (fragment.scrimPopupWindow != null) {
-                            fragment.scrimPopupWindow.dismiss();
-                            fragment.scrimPopupWindow = null;
-                            fragment.scrimPopupWindowItems = null;
-                        }
-                        MessageTransKt.translateMessages(fragment, locale, Translator.providerLLMTranslator);
-                        return Unit.INSTANCE;
+                if (NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider()) {
+                    var item = ActionBarMenuItem.addItem(false, false, windowLayout, R.drawable.magic_stick_solar, TranslateItem.ITEM_TITLES.get(id), false, resourcesProvider);
+                    item.setOnClickListener(view -> delegate.onItemClick(id));
+                    item.setOnLongClickListener(view -> {
+                        Translator.showTargetLangSelect(view, (locale) -> {
+                            if (fragment.scrimPopupWindow != null) {
+                                fragment.scrimPopupWindow.dismiss();
+                                fragment.scrimPopupWindow = null;
+                                fragment.scrimPopupWindowItems = null;
+                            }
+                            MessageTransKt.translateMessages(fragment, locale, Translator.providerLLMTranslator);
+                            return Unit.INSTANCE;
+                        });
+                        return true;
                     });
-                    return true;
-                });
+                }
             } else if (id == TranslateItem.ID_CHANGE_PROVIDER) {
                 var item = ActionBarMenuItem.addItem(windowLayout, R.drawable.msg_replace_solar, TranslateItem.ITEM_TITLES.get(id), false, resourcesProvider);
                 item.setOnClickListener(view -> Translator.showProviderSelect(view, (provider) -> {

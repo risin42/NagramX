@@ -32456,7 +32456,7 @@ public class ChatActivity extends BaseFragment implements
                             return true;
                         });
                     }
-                    if (option == nkbtn_translate && !(selectedObject.translated || selectedObject.messageOwner.translated) && !NaConfig.INSTANCE.getShowTranslateMessageLLM().Bool() && NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider()) {
+                    if (option == nkbtn_translate && !(selectedObject.translated || selectedObject.messageOwner.translated) && !NaConfig.INSTANCE.getShowTranslateMessageLLM().Bool()) {
                         var translatePopupWrapper = new TranslatePopupWrapper(this, popupLayout.getSwipeBack(), this::processSelectedOption, getResourceProvider());
                         int swipeBackIndex = popupLayout.addViewToSwipeBack(translatePopupWrapper.windowLayout);
                         cell.setRightIcon(R.drawable.msg_arrowright, v12 -> popupLayout.getSwipeBack().openForeground(swipeBackIndex));
