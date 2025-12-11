@@ -138,6 +138,7 @@ import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.NotificationCenter;
+import org.telegram.messenger.PasskeysController;
 import org.telegram.messenger.PushListenerController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SRPHelper;
@@ -3567,22 +3568,22 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                         }
                     }
                 }
-                /*if (activityMode == MODE_LOGIN) {
+                if (activityMode == MODE_LOGIN) {
                     requestPasskey(false);
-                }*/
+                }
             }, SHOW_DELAY);
         }
 
         @Override
         public void onDestroyActivity() {
             super.onDestroyActivity();
-            /*if (cancelRequestingPasskey != null) {
+            if (cancelRequestingPasskey != null) {
                 cancelRequestingPasskey.run();
                 cancelRequestingPasskey = null;
-            }*/
+            }
         }
 
-        /*private boolean requestedPasskey = false;
+        private boolean requestedPasskey = false;
         private boolean requestingPasskey = false;
         private Runnable cancelRequestingPasskey;
         private void requestPasskey(boolean clickedButton) {
@@ -3648,7 +3649,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     onAuthSuccess((TLRPC.TL_auth_authorization) authObject);
                 }
             });
-        }*/
+        }
 
         @Override
         public String getHeaderName() {
