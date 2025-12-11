@@ -31534,7 +31534,7 @@ public class ChatActivity extends BaseFragment implements
                     && !(AyuMessageUtils.isExpiredDocument(message) && (message.messageOwner.media.voice || message.messageOwner.media.round))
                     && AyuMessagesController.getInstance().hasAnyRevisions(getAccountInstance().getUserConfig().getClientUserId(), dialog_id, message.messageOwner.id)
             ) {
-                int idx = options.size() - 1;
+                int idx = options.isEmpty() ? 0 : options.size() - 1;
                 items.add(idx, getString(R.string.EditsHistoryMenuText));
                 options.add(idx, AyuConstants.OPTION_HISTORY);
                 icons.add(idx, R.drawable.msg_log);
@@ -31554,7 +31554,7 @@ public class ChatActivity extends BaseFragment implements
                         icons.add(0, R.drawable.msg_download);
                     }
                     if (!isExpiredVideo && !isExpiredPhoto) {
-                        int idx = options.size() - 1;
+                        int idx = options.isEmpty() ? 0 : options.size() - 1;
                         items.add(idx, getString(R.string.BurnTtlMessage));
                         options.add(idx, AyuConstants.OPTION_TTL);
                         icons.add(idx, R.drawable.burn_solar);
@@ -31564,7 +31564,7 @@ public class ChatActivity extends BaseFragment implements
                         && message.messageOwner.from_id != null
                         && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
                 ) {
-                    int idx = options.size() - 1;
+                    int idx = options.isEmpty() ? 0 : options.size() - 1;
                     items.add(idx, getString(R.string.GhostReadMessage));
                     options.add(idx, AyuConstants.OPTION_READ_MESSAGE);
                     icons.add(idx, R.drawable.msg_view_file);
