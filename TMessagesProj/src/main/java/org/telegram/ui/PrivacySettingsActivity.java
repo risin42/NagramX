@@ -462,6 +462,23 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
                 }
             } else if (position == passkeysRow) {
                 if (Build.VERSION.SDK_INT < 28 || !BuildVars.SUPPORTS_PASSKEYS) return;
+                if (currentPassword == null || !currentPassword.has_password) {
+                    BulletinFactory.of(PrivacySettingsActivity.this).createSimpleBulletin(
+                            R.raw.chats_infotip,
+                            AndroidUtilities.replaceTags(getString(R.string.PaymentCardSavePaymentInformationInfoLine2).replace("*", "**")),
+                            getString(R.string.Enable),
+                            () -> {
+                                int type;
+                                if (TextUtils.isEmpty(currentPassword.email_unconfirmed_pattern)) {
+                                    type = TwoStepVerificationSetupActivity.TYPE_INTRO;
+                                } else {
+                                    type = TwoStepVerificationSetupActivity.TYPE_EMAIL_CONFIRM;
+                                }
+                                presentFragment(new TwoStepVerificationSetupActivity(type, currentPassword));
+                            }
+                    ).show();
+                    return;
+                }
                 if (currentPasskeys != null && currentPasskeys.size() > 0) {
                     presentFragment(new PasskeysActivity(currentPasskeys));
                 } else {

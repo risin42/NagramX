@@ -809,6 +809,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         moreButtonView.setIcon(R.drawable.ic_ab_other);
         moreButtonView.addSubItem(0, R.drawable.msg_policy_solar, getString(R.string.Proxy));
         moreButtonView.addSubItem(1, R.drawable.msg_qrcode_solar, getString(R.string.ImportLogin));
+        if (BuildVars.SUPPORTS_PASSKEYS) moreButtonView.addSubItem(4, R.drawable.menu_passkey_add, getString(R.string.PasskeyLogin));
         moreButtonView.addSubItem(2, R.drawable.msg_permissions_solar, getString(R.string.CustomApi)).setContentDescription(getString(R.string.CustomApi));
         moreButtonView.addSubItem(3, R.drawable.msg_retry_solar, getString(R.string.TestBackend));
         moreButtonView.setDelegate(id -> {
@@ -826,6 +827,11 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                 PhoneView phoneView = (PhoneView)views[VIEW_PHONE_INPUT];
                 if (phoneView.testBackendCheckBox != null) {
                      phoneView.testBackendCheckBox.setVisibility(phoneView.testBackendCheckBox.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+                }
+            } else if (id == 4) {
+                PhoneView phoneView = (PhoneView)views[VIEW_PHONE_INPUT];
+                if (phoneView != null) {
+                    phoneView.requestPasskey(true, true);
                 }
             }
         });
@@ -3569,7 +3575,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     }
                 }
                 if (activityMode == MODE_LOGIN) {
-                    requestPasskey(false);
+                    // requestPasskey(false);
                 }
             }, SHOW_DELAY);
         }
@@ -3586,9 +3592,17 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         private boolean requestedPasskey = false;
         private boolean requestingPasskey = false;
         private Runnable cancelRequestingPasskey;
-        private void requestPasskey(boolean clickedButton) {
+        private void requestPasskey(boolean clickedButton, boolean force) {
             if (activityMode != MODE_LOGIN) return;
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P || !BuildVars.SUPPORTS_PASSKEYS) return;
+            if (force) {
+                if (cancelRequestingPasskey != null) {
+                    cancelRequestingPasskey.run();
+                    cancelRequestingPasskey = null;
+                }
+                requestingPasskey = false;
+                requestedPasskey = false;
+            }
             if (requestingPasskey || !clickedButton && requestedPasskey) return;
 
             requestingPasskey = true;
@@ -3599,8 +3613,11 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                 if (err != null && ("EMPTY".equals(err) || "CANCELLED".equals(err))) {
                     if (subtitleView != null && "CANCELLED".equals(err)) {
                         subtitleView.setText(AndroidUtilities.replaceArrows(AndroidUtilities.replaceSingleTag(getString(R.string.StartTextPasskey), () -> {
-                            requestPasskey(true);
+                            requestPasskey(true, false);
                         }), true));
+                    }
+                    if ("EMPTY".equals(err)) {
+                        BulletinFactory.of(LoginActivity.this).createSimpleBulletin(R.raw.info, getString(R.string.PasskeyNoCredentialAvailable)).show();
                     }
                     return;
                 }
@@ -3641,7 +3658,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                         }
                     }), ConnectionsManager.RequestFlagFailOnServerErrors | ConnectionsManager.RequestFlagWithoutLogin);
                 } else if (err != null) {
-                    if (BuildVars.DEBUG_VERSION)
+                    // if (BuildVars.DEBUG_VERSION)
                         BulletinFactory.of(LoginActivity.this).showForError(err);
                     return;
                 }

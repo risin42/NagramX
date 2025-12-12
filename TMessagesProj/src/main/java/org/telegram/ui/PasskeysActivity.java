@@ -44,6 +44,7 @@ import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.messenger.browser.Browser;
 import org.telegram.ui.Adapters.MessagesSearchAdapter;
 import org.telegram.ui.Components.AnimatedEmojiDrawable;
 import org.telegram.ui.Components.BackupImageView;
@@ -105,9 +106,14 @@ public class PasskeysActivity extends BaseFragment {
         if (passkeys.size() + 1 <= getMessagesController().config.passkeysAccountPasskeysMax.get()) {
             items.add(UItem.asButton(-1, R.drawable.menu_passkey_add, getString(R.string.PasskeyAdd)).accent());
         }
+        items.add(UItem.asButton(-2, R.drawable.menu_settings, getString(R.string.Settings)).accent());
         items.add(UItem.asShadow(AndroidUtilities.replaceArrows(AndroidUtilities.replaceSingleTag(getString(R.string.PasskeyInfo), () -> {
             showLearnSheet(getContext(), currentAccount, resourceProvider, passkeys.size() + 1 <= getMessagesController().config.passkeysAccountPasskeysMax.get());
         }), true)));
+        items.add(UItem.asShadow(AndroidUtilities.replaceMultipleTags(getString(R.string.PasskeyInfo2),
+            () -> Browser.openUrl(getContext(), "https://github.com/bitwarden/android"),
+            () -> Browser.openUrl(getContext(), "https://github.com/Kunzisoft/KeePassDX")
+        )));
     }
 
     private void openMenu(View view) {
@@ -165,6 +171,8 @@ public class PasskeysActivity extends BaseFragment {
                     added(passkey);
                 }
             });
+        } else if (item.id == -2) {
+            PasskeysController.openSettings(getParentActivity());
         } else if (item.object != null) {
             openMenu(view);
         }
@@ -348,7 +356,18 @@ public class PasskeysActivity extends BaseFragment {
                 if (fragment == null) return;
 
                 if (error != null) {
-                    BulletinFactory.of(sheet.topBulletinContainer, sheet.getResourcesProvider()).showForError(error);
+                    if (error.startsWith("No create options")) {
+                        BulletinFactory.of(sheet.topBulletinContainer, sheet.getResourcesProvider()).createSimpleBulletin(
+                                R.raw.error,
+                                getString(R.string.PasskeyUnsupportedTitle),
+                                AndroidUtilities.replaceMultipleTags(getString(R.string.PasskeyUnsupportedMessage),
+                                    () -> Browser.openUrl(context, "https://github.com/bitwarden/android"),
+                                    () -> Browser.openUrl(context, "https://github.com/Kunzisoft/KeePassDX")
+                                )
+                        ).show();
+                    } else {
+                        BulletinFactory.of(sheet.topBulletinContainer, sheet.getResourcesProvider()).showForError(error);
+                    }
                 } else if (passkey != null) {
                     MessagesController.getInstance(currentAccount).removeSuggestion(0, "SETUP_PASSKEY");
                     if (fragment instanceof PasskeysActivity) {
@@ -377,7 +396,7 @@ public class PasskeysActivity extends BaseFragment {
                                 fragment2.presentFragment(activity);
                                 AndroidUtilities.runOnUIThread(() -> activity.added(passkey), 150);
                             } else if (err != null) {
-                                BulletinFactory.of(sheet.topBulletinContainer, sheet.getResourcesProvider()).showForError(error);
+                                BulletinFactory.of(sheet.topBulletinContainer, sheet.getResourcesProvider()).showForError(err);
                             }
                         });
                     }
