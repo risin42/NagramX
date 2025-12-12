@@ -7209,7 +7209,7 @@ public class MessageObject {
             entities.add(entityItalic);
             return addEntitiesToText(text, entities, isOutOwner(), true, photoViewer, useManualParse);
         } else {
-            return addEntitiesToText(text, reparseMessageEntities(getEntities()), isOutOwner(), true, photoViewer, useManualParse);
+            return addEntitiesToText(text, getEntities(), isOutOwner(), true, photoViewer, useManualParse);
         }
     }
 
@@ -7250,7 +7250,7 @@ public class MessageObject {
             if (messageOwner.voiceTranscriptionOpen) {
                 return messageOwner.translatedVoiceTranscription != null ? messageOwner.translatedVoiceTranscription.entities : null;
             } else {
-                return messageOwner.translatedText != null ? messageOwner.translatedText.entities : null;
+                return messageOwner.translatedText != null ? reparseMessageEntities(messageOwner.translatedText.entities) : null;
             }
         }
         return messageOwner.entities;
