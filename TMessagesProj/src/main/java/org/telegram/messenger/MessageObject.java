@@ -4045,6 +4045,10 @@ public class MessageObject {
         return sponsoredId != null;
     }
 
+    public boolean isAyuDeleted() {
+        return messageOwner != null && messageOwner.ayuDeleted;
+    }
+
     public long getPollId() {
         if (type != TYPE_POLL) {
             return 0;
@@ -10603,7 +10607,7 @@ public class MessageObject {
     public boolean canForwardMessage() {
         if (isQuickReply()) return false;
         if (type == TYPE_GIFT_STARS || type == TYPE_GIFT_THEME_UPDATE || type == TYPE_SUGGEST_BIRTHDAY || type == TYPE_GIFT_OFFER) return false;
-        return !(messageOwner instanceof TLRPC.TL_message_secret) && !needDrawBluredPreview() && !isLiveLocation() && type != MessageObject.TYPE_PHONE_CALL && !isSponsored() && !messageOwner.noforwards && !messageOwner.ayuDeleted;
+        return !(messageOwner instanceof TLRPC.TL_message_secret) && !needDrawBluredPreview() && !isLiveLocation() && type != MessageObject.TYPE_PHONE_CALL && !isSponsored() && !messageOwner.noforwards && !isAyuDeleted();
     }
 
     public boolean isNoforwards() {
@@ -10742,7 +10746,7 @@ public class MessageObject {
         return (
             isStory() && messageOwner != null && messageOwner.dialog_id == UserConfig.getInstance(currentAccount).getClientUserId() ||
             eventId == 0 && sponsoredId == null && canDeleteMessage(currentAccount, inScheduleMode, messageOwner, chat) ||
-            messageOwner != null && messageOwner.ayuDeleted
+            isAyuDeleted()
         );
     }
 

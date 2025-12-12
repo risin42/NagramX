@@ -6014,7 +6014,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             transChanged = true;
         }
 
-        ayuDeleted = messageObject.messageOwner.ayuDeleted;
+        ayuDeleted = messageObject.isAyuDeleted();
         if (messageChanged || dataChanged || groupChanged || pollChanged || widthChanged && messageObject.isPoll() || isPhotoDataChanged(messageObject) || pinnedBottom != bottomNear || pinnedTop != topNear || transChanged || ayuDeleted) {
             updatedContent = true;
             if (stickerSetIcons != null) {
@@ -12192,7 +12192,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                                  boolean topNear,
                                  boolean firstInChat,
                                  boolean lastInChatList) {
-        ayuDeleted = messageObject.messageOwner != null && messageObject.messageOwner.ayuDeleted;
+        ayuDeleted = messageObject.isAyuDeleted();
         if (attachedToWindow && !frozen) {
             setMessageContent(messageObject, groupedMessages, bottomNear, topNear, firstInChat, lastInChatList);
         } else {
@@ -17275,7 +17275,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         }
         boolean hasReplies = messageObject.hasReplies();
 
-        var ayuDeletedVal = messageObject.messageOwner.ayuDeleted;
+        var ayuDeletedVal = messageObject.isAyuDeleted();
         var translated = messageObject.translated || messageObject.messageOwner.translated;
         if (currentMessagesGroup != null) {
             MessageObject captionMessage = currentMessagesGroup.findCaptionMessageObject();
@@ -17528,7 +17528,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
     protected boolean checkNeedDrawShareButton(MessageObject messageObject) {
         if (!messageObject.isSaved && NaConfig.INSTANCE.getHideShareButtonInChannel().Bool()) return false;
-        if (currentMessageObject.messageOwner.ayuDeleted) return false;
+        if (currentMessageObject.isAyuDeleted()) return false;
         if (isReportChat) return false;
         if (currentMessageObject.deleted && !currentMessageObject.deletedByThanos) return false;
         if (currentMessageObject.isSponsored()) return false;
@@ -17618,7 +17618,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             } else if (currentMessageObject.messageOwner.post) {
                 currentChat = messagesController.getChat(currentMessageObject.messageOwner.peer_id.channel_id);
             }
-            if (currentUser == null && currentMessageObject.messageOwner.ayuDeleted) {
+            if (currentUser == null && currentMessageObject.isAyuDeleted()) {
                 long userId = currentMessageObject.messageOwner.from_id.user_id;
                 final MessagesStorage messagesStorage = MessagesStorage.getInstance(currentAccount);
                 final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -22157,7 +22157,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         if (currentMessageObject != null && currentMessageObject.type == MessageObject.TYPE_JOINED_CHANNEL) {
             return;
         }
-        if (NekoConfig.hideTimeForSticker.Bool() && currentMessageObject != null && currentMessageObject.isAnyKindOfSticker() && !isDrawSelectionBackground() && !currentMessageObject.messageOwner.ayuDeleted) {
+        if (NekoConfig.hideTimeForSticker.Bool() && currentMessageObject != null && currentMessageObject.isAnyKindOfSticker() && !isDrawSelectionBackground() && !currentMessageObject.isAyuDeleted()) {
             return;
         }
         for (int i = 0; i < 2; i++) {

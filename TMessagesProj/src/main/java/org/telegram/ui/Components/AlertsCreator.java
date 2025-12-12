@@ -6678,12 +6678,12 @@ public class AlertsCreator {
         FrameLayout ayuFrameLayout = null;
         boolean hasAyuDeletedMessages = false;
         if (selectedMessage != null) {
-            hasAyuDeletedMessages = selectedMessage.messageOwner != null && selectedMessage.messageOwner.ayuDeleted;
+            hasAyuDeletedMessages = selectedMessage.isAyuDeleted();
         } else {
             for (SparseArray<MessageObject> message : selectedMessages) {
                 for (int j = 0; j < message.size(); ++j) {
                     MessageObject msg = message.valueAt(j);
-                    if (msg != null && msg.messageOwner != null && msg.messageOwner.ayuDeleted) {
+                    if (msg != null && msg.isAyuDeleted()) {
                         hasAyuDeletedMessages = true;
                     }
                 }

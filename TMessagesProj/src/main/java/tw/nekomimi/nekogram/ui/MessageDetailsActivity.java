@@ -219,7 +219,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
         });
         listView.setOnItemLongClickListener((view, position) -> {
             if (position == idRow) {
-                if (messageObject.messageOwner.ayuDeleted) return true;
+                if (messageObject.isAyuDeleted()) return true;
                 if (ChatObject.isChannel(fromChat)) {
                     TLRPC.TL_channels_exportMessageLink req = new TLRPC.TL_channels_exportMessageLink();
                     req.id = messageObject.getId();

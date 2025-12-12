@@ -1700,7 +1700,7 @@ public class ImageLoader {
             AndroidUtilities.runOnUIThread(() -> {
                 // save deleted media from cache
                 if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool() && cacheImage.finalFilePath != null && cacheImage.parentObject instanceof MessageObject messageObject) {
-                    if (messageObject.messageOwner != null && messageObject.messageOwner.ayuDeleted) {
+                    if (messageObject.isAyuDeleted()) {
                         String fileName = cacheImage.finalFilePath.getName();
                         if (fileName.endsWith(".jpg") || fileName.endsWith(".mp4")) {
                             NotificationCenter.getInstance(cacheImage.currentAccount).postNotificationName(AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION, fileName, cacheImage.finalFilePath);
@@ -2218,7 +2218,7 @@ public class ImageLoader {
                                 MessageObject messageObject = null;
                                 if (parentObject instanceof MessageObject) {
                                     messageObject = (MessageObject) parentObject;
-                                    ayuDeleted = messageObject.messageOwner != null && messageObject.messageOwner.ayuDeleted;
+                                    ayuDeleted = messageObject.isAyuDeleted();
                                 }
                                 long dialogId = meta.dialogId;
                                 int flag;
