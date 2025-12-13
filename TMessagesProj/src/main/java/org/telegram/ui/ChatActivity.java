@@ -31686,12 +31686,13 @@ public class ChatActivity extends BaseFragment implements
                 }
                 boolean showRateTranscription = false && selectedObject != null && selectedObject.isVoice() && selectedObject.messageOwner != null && getUserConfig().isPremium() && !TextUtils.isEmpty(selectedObject.messageOwner.voiceTranscription) && selectedObject.messageOwner != null && !selectedObject.messageOwner.voiceTranscriptionRated && selectedObject.messageOwner.voiceTranscriptionId != 0 && selectedObject.messageOwner.voiceTranscriptionOpen;
 
-                if (!showRateTranscription && message.probablyRingtone() && currentEncryptedChat == null) {
-                    ActionBarMenuSubItem cell = new ActionBarMenuSubItem(getParentActivity(), !showPrivateMessageSeen && !showPrivateMessageEdit && !showPrivateMessageFwdOriginal, false, themeDelegate);
-                    cell.setMinimumWidth(AndroidUtilities.dp(200));
-                    cell.setTextAndIcon(getString(R.string.SaveForNotifications), R.drawable.msg_tone_add);
-                    popupLayout.addView(cell);
-                    cell.setOnClickListener(v1 -> {
+                if (!showRateTranscription && (message.probablyRingtone() || message.isVoice() && !message.isVoiceOnce()) /* && currentEncryptedChat == null*/) {
+                    ActionBarMenuSubItem saveForNotificationsCell = new ActionBarMenuSubItem(getParentActivity(), !showPrivateMessageSeen && !showPrivateMessageEdit && !showPrivateMessageFwdOriginal, false, themeDelegate);
+                    saveForNotificationsCell.setMinimumWidth(AndroidUtilities.dp(200));
+                    saveForNotificationsCell.setTextAndIcon(getString(R.string.SaveForNotifications), R.drawable.msg_tone_add);
+                    saveForNotificationsCell.setVisibility(message.probablyRingtone() ? View.VISIBLE : View.GONE);
+                    popupLayout.addView(saveForNotificationsCell);
+                    saveForNotificationsCell.setOnClickListener(v1 -> {
                         if (getMediaDataController().saveToRingtones(message.getDocument())) {
                             UndoView undoView = getUndoView();
                             if (undoView != null) {
@@ -31709,6 +31710,17 @@ public class ChatActivity extends BaseFragment implements
                                 });
                             }
                         }
+                        closeMenu(true);
+                    });
+
+                    ActionBarMenuSubItem saveToDownloadsCell = new ActionBarMenuSubItem(getParentActivity(), false, false, themeDelegate);
+                    saveToDownloadsCell.setMinimumWidth(AndroidUtilities.dp(200));
+                    saveToDownloadsCell.setTextAndIcon(getString(R.string.SaveToDownloads), R.drawable.msg_download);
+                    popupLayout.addView(saveToDownloadsCell);
+                    saveToDownloadsCell.setOnClickListener(v1 -> {
+                        selectedObject = message;
+                        selectedObjectGroup = null;
+                        processSelectedOption(OPTION_SAVE_TO_DOWNLOADS_OR_MUSIC);
                         closeMenu(true);
                     });
                     addGap = true;
