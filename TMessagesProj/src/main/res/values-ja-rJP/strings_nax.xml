@@ -264,4 +264,9 @@
     <string name="NoQuoteForwardShort">引用なし</string>
     <string name="ForceEdgeToEdge">エッジ ツー エッジ対応</string>
     <string name="ViewDeleted">削除済みを表示</string>
+    <string name="PasskeyLogin">パスキーログイン</string>
+    <string name="PasskeyInfo2">この機能は、**Bitwarden** や **KeePassDX** など、特権アプリの信頼設定をユーザーが管理できるパスワードマネージャーでのみ動作します。</string>
+    <string name="PasskeyUnsupportedTitle">非対応のパスワードマネージャー</string>
+    <string name="PasskeyUnsupportedMessage">**Bitwarden** や **KeePassDX** などの他のパスワードマネージャーをお試しください。</string>
+    <string name="PasskeyNoCredentialAvailable">有効な認証情報がありません。</string>
 </resources>

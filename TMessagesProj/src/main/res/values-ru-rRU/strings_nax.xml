@@ -172,7 +172,7 @@
     <string name="DebugMenuCleanAppUpdate">Очистить обновления приложения</string>
     <string name="DebugMenuMakeMemoryDump">Создать дамп памяти</string>
     <string name="TranslateMessageLLM">Перевести с помощью ИИ</string>
-    <string name="EditLocalNameOverride">Редактирование локального названия чата.</string>
+    <string name="EditLocalNameOverride">Изменение локального названия.</string>
     <string name="ResetChatNameOverrides">Сбросить названия чатов</string>
     <string name="ResetChatNameNotification">Изменённые названия чатов очищены.</string>
     <string name="TabStyle">Стиль вкладок</string>
@@ -264,4 +264,9 @@
     <string name="NoQuoteForwardShort">Без автора</string>
     <string name="ForceEdgeToEdge">«От края до края» принудительно</string>
     <string name="ViewDeleted">Просмотреть удалённые</string>
+    <string name="PasskeyLogin">Вход по паролю</string>
+    <string name="PasskeyInfo2">Эта функция работает только с менеджерами паролей, которые позволяют пользователю управлять настройками доверия для привилегированных приложений, такими как **Bitwarden** и **KeePassDX**.</string>
+    <string name="PasskeyUnsupportedTitle">Неподдерживаемый менеджер паролей</string>
+    <string name="PasskeyUnsupportedMessage">Попробуйте другие менеджеры паролей. Например, Bitwarden или KeePassDX.</string>
+    <string name="PasskeyNoCredentialAvailable">Нет действительных учётных данных.</string>
 </resources>
