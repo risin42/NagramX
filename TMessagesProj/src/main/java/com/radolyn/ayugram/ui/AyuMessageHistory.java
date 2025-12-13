@@ -491,7 +491,9 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new RecyclerListView.Holder(new AyuMessageCell(context, currentAccount));
+            AyuMessageCell cell = new AyuMessageCell(context, currentAccount);
+            cell.setShowAyuDeletedMark(false);
+            return new RecyclerListView.Holder(cell);
         }
 
         @Override

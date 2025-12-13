@@ -40,6 +40,7 @@ public class AyuMessageCell extends ChatMessageCell {
     private float downX, downY;
     private boolean urlLongPressHandled;
     private boolean avatarPressedDown;
+    private boolean showAyuDeletedMark = true;
     @Nullable
     private AyuMessageCellDelegate ayuDelegate;
 
@@ -142,8 +143,17 @@ public class AyuMessageCell extends ChatMessageCell {
         return false;
     }
 
+    @Override
+    protected boolean shouldShowAyuDeletedMark(MessageObject messageObject) {
+        return showAyuDeletedMark;
+    }
+
     public void setEditedMessage(EditedMessage editedMessage) {
         this.editedMessage = editedMessage;
+    }
+
+    public void setShowAyuDeletedMark(boolean show) {
+        showAyuDeletedMark = show;
     }
 
     public void setAyuDelegate(@Nullable AyuMessageCellDelegate ayuDelegate) {

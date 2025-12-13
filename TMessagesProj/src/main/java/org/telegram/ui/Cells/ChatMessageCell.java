@@ -17301,6 +17301,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 }
             }
         }
+        boolean showAyuDeletedMark = ayuDeleted && shouldShowAyuDeletedMark(currentMessageObject);
         if (currentMessageObject.notime || currentMessageObject.isSponsored() || currentMessageObject.isQuickReply()) {
             timeString = "";
         } else if (currentMessageObject.scheduled && currentMessageObject.messageOwner.date == 0x7FFFFFFE) {
@@ -17309,11 +17310,11 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             timeString = LocaleController.formatSmallDateChat(currentMessageObject.realDate) + ", " + LocaleController.getInstance().getFormatterDay().format((long) (currentMessageObject.realDate) * 1000);
         } else if (currentMessageObject.isRepostPreview) {
             timeString = LocaleController.formatSmallDateChat(messageObject.messageOwner.date) + ", " + LocaleController.getInstance().getFormatterDay().format((long) (messageObject.messageOwner.date) * 1000);
-        } else if (edited && !ayuDeleted) {
+        } else if (edited && !showAyuDeletedMark) {
             timeString = TimeStringHelper.createEditedString(currentMessageObject, translated);
-        } else if (!edited && ayuDeleted) {
+        } else if (!edited && showAyuDeletedMark) {
             timeString = TimeStringHelper.createDeletedString(currentMessageObject, edited, translated);
-        } else if (edited && ayuDeleted) {
+        } else if (edited && showAyuDeletedMark) {
             timeString = TimeStringHelper.createDeletedString(currentMessageObject, edited, translated);
         } else if (translated) {
             timeString = TimeStringHelper.createTranslatedString(currentMessageObject, false);
@@ -27246,6 +27247,10 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     private TL_stars.StarGift instantViewTypeIsGiftAuction;
+
+    protected boolean shouldShowAyuDeletedMark(MessageObject messageObject) {
+        return true;
+    }
 
     protected boolean shouldTranslucentDeleted() {
         return NaConfig.INSTANCE.getTranslucentDeletedMessages().Bool();
