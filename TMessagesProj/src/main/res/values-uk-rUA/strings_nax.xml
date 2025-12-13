@@ -37,7 +37,6 @@
     <string name="ArticleTranslationProvider">Сервіс перекладу статей</string>
     <string name="EnableSeparateArticleTranslator">Використовувати інший сервіс для статей</string>
     <string name="DisableCrashlyticsCollection">Вимкнути Firebase Crashlytics</string>
-    <string name="ShowStickersRowToplevel">Показувати наліпки у Головних Налаштуваннях</string>
     <string name="HideShareButtonInChannel">Сховати бокову кнопку «Поділитися»</string>
     <string name="DeleteCloudBackup">Видалити дані з хмари</string>
     <string name="DeleteCloudBackupFailed">Не вдалося очистити дані із хмари</string>

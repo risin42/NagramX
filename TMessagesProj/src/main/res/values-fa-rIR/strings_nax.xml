@@ -38,7 +38,6 @@
     <string name="ArticleTranslationProvider">ارائه‌دهنده ترجمه مقالات</string>
     <string name="EnableSeparateArticleTranslator">استفاده از ارائه‌دهنده دیگر برای مقالات</string>
     <string name="DisableCrashlyticsCollection">غیرفعال کردن Firebase Crashlytics</string>
-    <string name="ShowStickersRowToplevel">نمایش استیکرها در صفحه اصلی تنظیمات</string>
     <string name="HideShareButtonInChannel">پنهان کردن دکمه اشتراک‌گذاری در کانال</string>
     <string name="DeleteCloudBackup">پاک کردن پشتیبان ابری</string>
     <string name="DeleteCloudBackupFailed">پشتیبان ابری پاک نشد</string>
