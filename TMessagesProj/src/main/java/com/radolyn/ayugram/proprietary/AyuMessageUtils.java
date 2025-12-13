@@ -92,6 +92,7 @@ public abstract class AyuMessageUtils {
         target.noforwards = false;
         target.edit_date = source.editDate;
         target.views = source.views;
+        target.forwards = source.forwards;
         if ((flags & 4) != 0) {
             TLRPC.TL_messageFwdHeader forwardHeader = new TLRPC.TL_messageFwdHeader();
             target.fwd_from = forwardHeader;
@@ -182,6 +183,7 @@ public abstract class AyuMessageUtils {
         out.flags = message.flags;
         out.editDate = message.edit_date;
         out.views = message.views;
+        out.forwards = message.forwards;
         TLRPC.MessageFwdHeader fwdHeader = message.fwd_from;
         if (fwdHeader != null) {
             out.fwdFlags = fwdHeader.flags;

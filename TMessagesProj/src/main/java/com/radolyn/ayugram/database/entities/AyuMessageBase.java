@@ -23,6 +23,7 @@ public abstract class AyuMessageBase {
 
     public int editDate;
     public int views;
+    public int forwards;
 
     public int fwdFlags;
     public long fwdFromId;
