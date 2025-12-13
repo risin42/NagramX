@@ -6206,8 +6206,8 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             @Override
             public void onSuccess(@NotNull String translation) {
                 status.dismiss();
-                if (start == end) messageEditText.setText(translation);
-                else messageEditText.getText().replace(start, end, translation);
+                if (start == end) messageEditText.replaceTextInternal(0, messageEditText.getText().length(), translation);
+                else messageEditText.replaceTextInternal(start, end, translation);
             }
 
             @Override
@@ -6216,7 +6216,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                 AlertUtil.showTransFailedDialog(parentActivity, unsupported, message, () -> {
                     status = AlertUtil.showProgress(parentActivity);
                     status.show();
-                    Translator.translate(origin, this);
+                    Translator.translate(target, origin, 0, this);
                 });
             }
 
