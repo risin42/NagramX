@@ -32,6 +32,7 @@ import org.telegram.tgnet.TLRPC;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import tw.nekomimi.nekogram.utils.FileUtil;
 
@@ -39,15 +40,36 @@ public class AyuMessagesController {
     public static final String attachmentsSubfolder = "Saved Attachments";
     public static final File attachmentsPath = new File(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AyuConstants.APP_NAME), attachmentsSubfolder);
     private static AyuMessagesController instance;
-    private final EditedMessageDao editedMessageDao;
-    private final DeletedMessageDao deletedMessageDao;
+    private EditedMessageDao editedMessageDao;
+    private DeletedMessageDao deletedMessageDao;
 
     private AyuMessagesController() {
         initializeAttachmentsFolder();
         AyuSavePreferences.loadAllExclusions();
 
+        refreshDaos();
+    }
+
+    private void refreshDaos() {
         editedMessageDao = AyuData.getEditedMessageDao();
         deletedMessageDao = AyuData.getDeletedMessageDao();
+    }
+
+    private <T> T withDaoRetry(String tag, Callable<T> callable) {
+        try {
+            return callable.call();
+        } catch (Exception e) {
+            FileLog.e(tag, e);
+        }
+
+        try {
+            refreshDaos();
+            return callable.call();
+        } catch (Exception e) {
+            FileLog.e(tag, e);
+        }
+
+        return null;
     }
 
     private static void initializeAttachmentsFolder() {
@@ -68,7 +90,7 @@ public class AyuMessagesController {
                     FileLog.d("Created .nomedia file in attachments folder by renaming a random file");
                 }
             } else {
-               FileLog.d(".nomedia file already exists in attachments folder");
+                FileLog.d(".nomedia file already exists in attachments folder");
             }
         } catch (Exception e) {
             FileLog.e("initializeAttachmentsFolder", e);
@@ -116,16 +138,31 @@ public class AyuMessagesController {
         AyuMessageUtils.mapMedia(prefs, revision, !sameMedia);
 
         if (!sameMedia && !TextUtils.isEmpty(revision.mediaPath)) {
-            var lastRevision = editedMessageDao.getLastRevision(prefs.getUserId(), prefs.getDialogId(), prefs.getMessageId());
+            var lastRevision = withDaoRetry(
+                    "onMessageEditedInner#getLastRevision",
+                    () -> editedMessageDao.getLastRevision(prefs.getUserId(), prefs.getDialogId(), prefs.getMessageId())
+            );
 
             if (lastRevision != null && !TextUtils.equals(revision.mediaPath, lastRevision.mediaPath) && lastRevision.mediaPath != null && !lastRevision.mediaPath.contains(attachmentsSubfolder)) {
                 // update previous revisions to reflect media change
                 // like, there's no previous file, so replace it with one we copied before...
-                editedMessageDao.updateAttachmentForRevisionsBetweenDates(prefs.getUserId(), prefs.getDialogId(), prefs.getMessageId(), lastRevision.mediaPath, revision.mediaPath);
+                withDaoRetry(
+                        "onMessageEditedInner#updateAttachmentForRevisionsBetweenDates",
+                        () -> {
+                            editedMessageDao.updateAttachmentForRevisionsBetweenDates(prefs.getUserId(), prefs.getDialogId(), prefs.getMessageId(), lastRevision.mediaPath, revision.mediaPath);
+                            return null;
+                        }
+                );
             }
         }
 
-        editedMessageDao.insert(revision);
+        withDaoRetry(
+                "onMessageEditedInner#insert",
+                () -> {
+                    editedMessageDao.insert(revision);
+                    return null;
+                }
+        );
 
         AndroidUtilities.runOnUIThread(() -> NotificationCenter.getInstance(prefs.getAccountId()).postNotificationName(AyuConstants.MESSAGE_EDITED_NOTIFICATION, prefs.getDialogId(), prefs.getMessageId()));
     }
@@ -169,7 +206,12 @@ public class AyuMessagesController {
             return;
         }
 
-        if (deletedMessageDao.exists(prefs.getUserId(), prefs.getDialogId(), prefs.getTopicId(), prefs.getMessageId())) {
+        Boolean exists = withDaoRetry(
+                "onMessageDeletedInner#exists",
+                () -> deletedMessageDao.exists(prefs.getUserId(), prefs.getDialogId(), prefs.getTopicId(), prefs.getMessageId())
+        );
+
+        if (exists == null || exists) {
             return;
         }
 
@@ -186,7 +228,14 @@ public class AyuMessagesController {
         AyuMessageUtils.map(prefs, deletedMessage);
         AyuMessageUtils.mapMedia(prefs, deletedMessage, true);
 
-        var fakeMsgId = deletedMessageDao.insert(deletedMessage);
+        Long fakeMsgId = withDaoRetry(
+                "onMessageDeletedInner#insert",
+                () -> deletedMessageDao.insert(deletedMessage)
+        );
+
+        if (fakeMsgId == null) {
+            return;
+        }
 
         if (msg != null && msg.reactions != null) {
             processDeletedReactions(fakeMsgId, msg.reactions);
@@ -213,7 +262,13 @@ public class AyuMessagesController {
                 continue;
             }
 
-            deletedMessageDao.insertReaction(deletedReaction);
+            withDaoRetry(
+                    "processDeletedReactions#insertReaction",
+                    () -> {
+                        deletedMessageDao.insertReaction(deletedReaction);
+                        return null;
+                    }
+            );
         }
     }
 
@@ -389,6 +444,8 @@ public class AyuMessagesController {
     public void clean() {
         AyuData.clean();
         AyuData.create();
+
+        refreshDaos();
 
         cleanAttachmentsFolder();
 

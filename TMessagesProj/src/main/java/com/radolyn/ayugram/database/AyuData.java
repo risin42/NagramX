@@ -78,7 +78,7 @@ public class AyuData {
         create();
     }
 
-    public static void create() {
+    public static synchronized void create() {
         database = Room.databaseBuilder(ApplicationLoader.applicationContext, AyuDatabase.class, AyuConstants.AYU_DATABASE)
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigrationOnDowngrade()
@@ -101,8 +101,18 @@ public class AyuData {
         return deletedMessageDao;
     }
 
-    public static void clean() {
-        database.close();
+    public static synchronized void clean() {
+        if (database != null) {
+            try {
+                database.close();
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
+        }
+
+        database = null;
+        editedMessageDao = null;
+        deletedMessageDao = null;
 
         ApplicationLoader.applicationContext.deleteDatabase(AyuConstants.AYU_DATABASE);
     }
