@@ -203,7 +203,6 @@
     <string name="ShowIdAndDc">在个人资料中显示 ID/ DC</string>
     <string name="UseDefaultTheme">使用默认主题 *</string>
     <string name="DialogsSettings">聊天列表</string>
-    <string name="SortMenu">聊天列表排序</string>
     <string name="SortByUnread">未读优先排序</string>
     <string name="SortByUnmuted">未静音优先排序</string>
     <string name="SortByUser">用户优先排序</string>

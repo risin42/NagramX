@@ -202,7 +202,6 @@
     <string name="ShowIdAndDc">Показывать ID и DC в профиле</string>
     <string name="UseDefaultTheme">Использовать тему по умолчанию *</string>
     <string name="DialogsSettings">Настройки чатов</string>
-    <string name="SortMenu">Сортировать чаты</string>
     <string name="SortByUnread">Сначала непрочитанные</string>
     <string name="SortByUnmuted">Сначала со звуком</string>
     <string name="SortByUser">Сначала личные</string>
