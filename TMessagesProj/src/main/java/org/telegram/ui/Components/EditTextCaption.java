@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -303,19 +304,57 @@ public class EditTextCaption extends EditTextBoldCursor {
 
     }
 
+    void replaceTextInternal(int start, int end, CharSequence replacement) {
+        Editable editable = getText();
+        if (editable == null) {
+            return;
+        }
+
+        int safeStart = Math.max(0, Math.min(start, end));
+        int safeEnd = Math.min(editable.length(), Math.max(start, end));
+
+        try {
+            clearComposingText();
+        } catch (Exception ignore) {
+        }
+
+        try {
+            editable.replace(safeStart, safeEnd, replacement);
+            int cursor = Math.min(safeStart + (replacement == null ? 0 : replacement.length()), editable.length());
+            setSelection(cursor, cursor);
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+
+        try {
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.restartInput(this);
+            }
+        } catch (Exception ignore) {
+        }
+    }
+
     public void makeSelectedTranslate() {
-        String text = getText().toString();
-        if (TextUtils.isEmpty(text)) return;
+        Editable editable = getText();
+        if (editable == null || TextUtils.isEmpty(editable)) {
+            return;
+        }
 
         Locale toLocale = Translator.getInputTranslateLangLocaleForChat(ChatsHelper.getChatId());
 
-        int start = getSelectionStart();
-        int end = getSelectionEnd();
-        String selectedText = getText().subSequence(start, end).toString();
+        int selectionStart = getSelectionStart();
+        int selectionEnd = getSelectionEnd();
+        if (selectionStart < 0 || selectionEnd < 0) {
+            selectionStart = selectionEnd = 0;
+        }
+        final int start = Math.min(selectionStart, selectionEnd);
+        final int end = Math.min(editable.length(), Math.max(selectionStart, selectionEnd));
+        final String query = (start == end ? editable : editable.subSequence(start, end)).toString();
 
         int provider = NaConfig.INSTANCE.isLLMTranslatorAvailable() ? Translator.providerLLMTranslator : 0;
 
-        Translator.translate(toLocale, selectedText, provider, new Translator.Companion.TranslateCallBack() {
+        Translator.translate(toLocale, query, provider, new Translator.Companion.TranslateCallBack() {
             AlertDialog status = AlertUtil.showProgress(getContext());
 
             {
@@ -325,7 +364,8 @@ public class EditTextCaption extends EditTextBoldCursor {
             @Override
             public void onSuccess(@NotNull String translation) {
                 status.dismiss();
-                setText(replaceAt(text, start, end, translation));
+                if (start == end) replaceTextInternal(0, getText().length(), translation);
+                else replaceTextInternal(start, end, translation);
             }
 
             @Override
@@ -334,7 +374,7 @@ public class EditTextCaption extends EditTextBoldCursor {
                 AlertUtil.showTransFailedDialog(getContext(), unsupported, message, () -> {
                     status = AlertUtil.showProgress(getContext());
                     status.show();
-                    Translator.translate(text, this);
+                    Translator.translate(toLocale, query, 0, this);
                 });
             }
         });
@@ -828,6 +868,7 @@ public class EditTextCaption extends EditTextBoldCursor {
         } else if (itemId == R.id.menu_translate) {
             // NekoX
             makeSelectedTranslate();
+            return true;
         } else if (itemId == R.id.menu_quote) {
             makeSelectedQuote();
             return true;
