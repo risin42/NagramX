@@ -910,7 +910,7 @@ object NaConfig {
         addConfig(
             "SpringAnimation",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val springAnimationCrossfade =
         addConfig(
