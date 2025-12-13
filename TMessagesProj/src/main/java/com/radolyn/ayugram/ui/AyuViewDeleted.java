@@ -10,6 +10,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -63,6 +64,10 @@ import org.telegram.ui.Components.ChatScrimPopupContainerLayout;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;
+import org.telegram.ui.Components.blur3.BlurredBackgroundDrawableViewFactory;
+import org.telegram.ui.Components.blur3.drawable.color.BlurredBackgroundColorProviderThemed;
+import org.telegram.ui.Components.blur3.source.BlurredBackgroundSourceColor;
+import org.telegram.ui.Components.chat.layouts.ChatActivitySideControlsButtonsLayout;
 import org.telegram.ui.Components.inset.WindowInsetsStateHolder;
 
 import java.io.File;
@@ -93,6 +98,8 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
     private int rowCount;
     private RecyclerListView listView;
     private LinearLayoutManager layoutManager;
+    private ChatActivitySideControlsButtonsLayout sideControlsButtonsLayout;
+    private boolean pagedownButtonManuallyHidden;
     private boolean loading;
     private boolean noMoreOlder;
     private int oldestId = Integer.MAX_VALUE;
@@ -115,19 +122,59 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
         if (listView != null) {
             listView.setPadding(0, 0, 0, windowInsetsStateHolder.getCurrentNavigationBarInset() + dp(8));
         }
+        updatePagedownButtonPosition();
+    }
+
+    private void updatePagedownButtonPosition() {
+        if (sideControlsButtonsLayout == null) {
+            return;
+        }
+        ViewGroup.LayoutParams lp = sideControlsButtonsLayout.getLayoutParams();
+        if (!(lp instanceof ViewGroup.MarginLayoutParams params)) {
+            return;
+        }
+        int bottomMargin = windowInsetsStateHolder.getCurrentNavigationBarInset() + dp(16);
+        if (params.bottomMargin != bottomMargin) {
+            params.bottomMargin = bottomMargin;
+            sideControlsButtonsLayout.setLayoutParams(params);
+        }
+    }
+
+    private void updatePagedownButtonVisibility(boolean animated) {
+        if (sideControlsButtonsLayout == null || listView == null) {
+            return;
+        }
+        boolean canScrollDown = rowCount > 0 && listView.canScrollVertically(1);
+        if (!canScrollDown) {
+            pagedownButtonManuallyHidden = false;
+        }
+        boolean show = canScrollDown && !pagedownButtonManuallyHidden;
+        sideControlsButtonsLayout.showButton(ChatActivitySideControlsButtonsLayout.BUTTON_PAGE_DOWN, show, animated);
+    }
+
+    private void onPageDownClicked() {
+        if (listView == null || rowCount <= 0) {
+            return;
+        }
+        pagedownButtonManuallyHidden = true;
+        updatePagedownButtonVisibility(true);
+        listView.smoothScrollToPosition(rowCount - 1);
     }
 
     private final RecyclerView.OnScrollListener listScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                pagedownButtonManuallyHidden = false;
                 scrollingFloatingDate = true;
                 updateFloatingDateView();
                 showFloatingDateView();
             } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                pagedownButtonManuallyHidden = false;
                 scrollingFloatingDate = false;
                 hideFloatingDateView(true);
             }
+            updatePagedownButtonVisibility(true);
         }
 
         @Override
@@ -139,6 +186,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
                 }
             }
             updateFloatingDateView();
+            updatePagedownButtonVisibility(true);
         }
     };
 
@@ -326,6 +374,19 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
         emptyView.setPadding(dp(20), dp(4), dp(20), dp(6));
         frameLayout.addView(emptyView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
 
+        BlurredBackgroundSourceColor pagedownSourceColor = new BlurredBackgroundSourceColor();
+        pagedownSourceColor.setColor(Color.TRANSPARENT);
+        BlurredBackgroundDrawableViewFactory pagedownBackgroundDrawableFactory = new BlurredBackgroundDrawableViewFactory(pagedownSourceColor);
+        BlurredBackgroundColorProviderThemed pagedownColorProvider = new BlurredBackgroundColorProviderThemed(getResourceProvider(), Theme.key_chat_messagePanelBackground);
+        sideControlsButtonsLayout = new ChatActivitySideControlsButtonsLayout(context, getResourceProvider(), pagedownColorProvider, pagedownBackgroundDrawableFactory);
+        sideControlsButtonsLayout.setOnClickListener((buttonId, v) -> {
+            if (buttonId == ChatActivitySideControlsButtonsLayout.BUTTON_PAGE_DOWN) {
+                onPageDownClicked();
+            }
+        });
+        frameLayout.addView(sideControlsButtonsLayout, LayoutHelper.createFrame(57, 300, Gravity.RIGHT | Gravity.BOTTOM, 0, 0, 0, 16));
+        updatePagedownButtonPosition();
+
         listView.post(updateFloatingDateRunnable);
 
         updateEmptyView();
@@ -334,6 +395,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
             if (rowCount > 0 && listView != null) {
                 listView.scrollToPosition(rowCount - 1);
             }
+            updatePagedownButtonVisibility(false);
         });
 
         return fragmentView;
@@ -396,6 +458,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
                 loading = false;
 
                 if (!TextUtils.isEmpty(searchQuery)) updateActionBarCount();
+                updatePagedownButtonVisibility(false);
                 AndroidUtilities.runOnUIThread(updateFloatingDateRunnable);
             });
         });
@@ -497,7 +560,6 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
             }
         }
     }
-
 
     private void createMenu(View v, float x, float y, int position) {
         final MessageObject msg = (v instanceof ChatMessageCell) ? ((ChatMessageCell) v).getMessageObject() : null;
@@ -875,6 +937,11 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
         notifyAdapterDataChanged();
         updateActionBarCount();
         updateEmptyView();
+        if (listView != null) {
+            listView.post(() -> updatePagedownButtonVisibility(false));
+        } else {
+            updatePagedownButtonVisibility(false);
+        }
     }
 
     private void updateEmptyView() {
