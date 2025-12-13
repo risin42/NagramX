@@ -270,22 +270,23 @@ object LLMTranslator : Translator {
     }
 
     private fun isGPT5(model: String): Boolean {
-        return model.startsWith("gpt-5")
+        return !model.startsWith("gpt-5.") && model.startsWith("gpt-5") && !model.contains("instant") && !model.contains("chat")
     }
 
     private fun isReasoning(modelName: String): Boolean {
         val model = modelName.lowercase()
         return model == "gemini-flash-latest"
-                || model.startsWith("gemini-2.5")
-                || model.startsWith("gpt-5")
+                || model.startsWith("gemini-2.5-flash")
                 || model.startsWith("gpt-oss")
-                || (model.startsWith("gpt-5.1") && !model.contains("instant") && !model.contains("chat"))
+                || (model.startsWith("gpt-5.") && !model.contains("instant") && !model.contains("chat"))
+                || (model.startsWith("gpt-5") && !model.contains("instant") && !model.contains("chat"))
     }
 
     private fun getReasoningEffort(model: String) = when {
-        model.startsWith("gpt-5") -> "minimal"
         model.startsWith("gpt-oss") -> "low"
-        else -> "none" // gemini-flash, gpt-5.1
+        model.startsWith("gpt-5.") -> "none"
+        model.startsWith("gpt-5") -> "minimal"
+        else -> "none" // gemini-flash
     }
 
     class RateLimitException(message: String) : Exception(message)
