@@ -76,8 +76,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import kotlin.Unit;
+import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
+import tw.nekomimi.nekogram.translate.Translator;
+import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
+import tw.nekomimi.nekogram.utils.AlertUtil;
+import xyz.nextalone.nagram.NaConfig;
 
 public class AyuViewDeleted extends AyuMessageDelegateFragment {
     private static final int OPTION_SHOW_IN_CHAT = 1;
@@ -88,6 +94,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
     private static final int OPTION_DETAILS = 6;
     private static final int OPTION_SAVE_TO_GALLERY = 7;
     private static final int OPTION_SAVE_TO_DOWNLOADS = 8;
+    private static final int OPTION_TRANSLATE = 9;
     private final long dialogId;
     private final boolean isEncrypted;
     private final ArrayList<DeletedMessageFull> deletedMessages = new ArrayList<>();
@@ -611,6 +618,14 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
             options.add(OPTION_SAVE_TO_DOWNLOADS);
         }
 
+        String textToTranslate = msg.messageOwner != null ? msg.messageOwner.message : null;
+        if (!TextUtils.isEmpty(textToTranslate)) {
+            boolean translated = msg.messageOwner.translated;
+            items.add(getString(translated ? R.string.HideTranslation : R.string.Translate));
+            icons.add(NaConfig.INSTANCE.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate);
+            options.add(OPTION_TRANSLATE);
+        }
+
         items.add(getString(R.string.Delete));
         icons.add(R.drawable.msg_delete);
         options.add(OPTION_DELETE_FROM_DATABASE);
@@ -712,11 +727,29 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
                     });
                 } else if (option == OPTION_DETAILS) {
                     presentFragment(new MessageDetailsActivity(msg, null));
+                } else if (option == OPTION_TRANSLATE) {
+                    toggleOrTranslate((ChatMessageCell) v, msg, null);
                 }
                 if (scrimPopupWindow != null) {
                     scrimPopupWindow.dismiss();
                 }
             });
+            if (option == OPTION_TRANSLATE) {
+                cell.setOnLongClickListener(v1 -> {
+                    if (msg.messageOwner != null && msg.messageOwner.translated) {
+                        return true;
+                    }
+                    Translator.showTargetLangSelect(cell, false, false, (locale) -> {
+                        if (scrimPopupWindow != null) {
+                            scrimPopupWindow.dismiss();
+                            scrimPopupWindow = null;
+                        }
+                        toggleOrTranslate((ChatMessageCell) v, msg, locale);
+                        return Unit.INSTANCE;
+                    });
+                    return true;
+                });
+            }
         }
 
         ChatScrimPopupContainerLayout scrimPopupContainerLayout = new ChatScrimPopupContainerLayout(fragmentView.getContext()) {
@@ -796,6 +829,95 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
         scrimPopupContainerLayout.setMaxHeight(totalHeight - popupY);
         scrimPopupWindow.showAtLocation(listView, Gravity.LEFT | Gravity.TOP, popupX, popupY);
         scrimPopupWindow.dimBehind();
+    }
+
+    private void toggleOrTranslate(@NonNull ChatMessageCell messageCell, @NonNull MessageObject messageObject, Locale targetLocale) {
+        if (messageObject.messageOwner == null || messageCell.getMessageObject() != messageObject) {
+            return;
+        }
+        String originalText = messageObject.messageOwner.message;
+        if (TextUtils.isEmpty(originalText)) {
+            return;
+        }
+
+        if (messageObject.messageOwner.translated) {
+            messageObject.messageOwner.translated = false;
+            messageObject.messageOwner.translatedMessage = null;
+            messageObject.messageOwner.translatedText = null;
+            messageObject.messageOwner.translatedToLanguage = null;
+            messageObject.translated = false;
+            messageObject.translating = false;
+            messageObject.applyNewText(originalText);
+            messageObject.caption = null;
+            messageObject.generateCaption();
+            messageObject.forceUpdate = true;
+            messageCell.setMessageObject(messageObject, null, false, false, false);
+            messageObject.forceUpdate = false;
+            return;
+        }
+
+        final Locale resolvedTargetLocale;
+        if (targetLocale == null) {
+            String lang = NekoConfig.translateToLang.String();
+            resolvedTargetLocale = TranslatorKt.getCode2Locale(lang == null ? "" : lang);
+        } else {
+            resolvedTargetLocale = targetLocale;
+        }
+
+        int mode = NaConfig.INSTANCE.getTranslatorMode().Int();
+        ArrayList<TLRPC.MessageEntity> entities = messageObject.messageOwner.entities;
+        if (entities == null) {
+            entities = new ArrayList<>();
+        }
+
+        messageObject.translating = true;
+        messageCell.invalidate();
+
+        Translator.translate(resolvedTargetLocale, originalText, entities, new Translator.Companion.TranslateCallBack2() {
+            @Override
+            public void onSuccess(@NonNull TLRPC.TL_textWithEntities finalText) {
+                if (messageCell.getMessageObject() != messageObject) {
+                    return;
+                }
+                messageObject.translating = false;
+                String translatedText = finalText.text;
+                if (TextUtils.isEmpty(translatedText)) {
+                    messageCell.invalidate();
+                    return;
+                }
+                messageObject.messageOwner.translated = true;
+                messageObject.messageOwner.translatedToLanguage = TranslatorKt.getLocale2code(resolvedTargetLocale).toLowerCase(Locale.getDefault());
+                if (mode == 0) {
+                    String finalMessageText = originalText + "\n\n--------\n\n" + translatedText;
+                    messageObject.messageOwner.translatedMessage = finalMessageText;
+                    messageObject.messageOwner.translatedText = null;
+                    messageObject.translated = false;
+                    messageObject.applyNewText(finalMessageText);
+                } else {
+                    messageObject.messageOwner.translatedMessage = translatedText;
+                    messageObject.messageOwner.translatedText = finalText;
+                    messageObject.translated = true;
+                    messageObject.applyNewText(translatedText);
+                }
+                messageObject.caption = null;
+                messageObject.generateCaption();
+                messageObject.forceUpdate = true;
+                messageCell.setMessageObject(messageObject, null, false, false, false);
+                messageObject.forceUpdate = false;
+            }
+
+            @Override
+            public void onFailed(boolean unsupported, @NonNull String message) {
+                if (messageCell.getMessageObject() != messageObject) {
+                    return;
+                }
+                messageObject.translating = false;
+                messageCell.invalidate();
+                if (getParentActivity() != null) {
+                    AlertUtil.showTransFailedDialog(getParentActivity(), unsupported, message, () -> toggleOrTranslate(messageCell, messageObject, resolvedTargetLocale));
+                }
+            }
+        });
     }
 
     private void updateActionBarCount() {
