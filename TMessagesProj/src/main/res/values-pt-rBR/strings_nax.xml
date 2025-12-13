@@ -37,7 +37,6 @@
     <string name="ArticleTranslationProvider">Provedor de Tradução do Artigo</string>
     <string name="EnableSeparateArticleTranslator">Use um Provedor Diferente para Artigos</string>
     <string name="DisableCrashlyticsCollection">Desativar Crashlytics Firebase</string>
-    <string name="ShowStickersRowToplevel">Mostrar Stickers nas Configurações Principais</string>
     <string name="HideShareButtonInChannel">Ocultar o botão \"Compartilhar\"</string>
     <string name="DeleteCloudBackup">Limpar dados da nuvem</string>
     <string name="DeleteCloudBackupFailed">Falha ao limpar dados na nuvem</string>

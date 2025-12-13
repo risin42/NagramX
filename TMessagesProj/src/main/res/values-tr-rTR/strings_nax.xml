@@ -37,7 +37,6 @@
     <string name="ArticleTranslationProvider">Makale Çeviri Sağlayıcısı</string>
     <string name="EnableSeparateArticleTranslator">Makaleler için Farklı Sağlayıcı Kullan</string>
     <string name="DisableCrashlyticsCollection">Firebase Crashlytics\'i Devre Dışı Bırak</string>
-    <string name="ShowStickersRowToplevel">Ana Ayarlar\'da Çıkartmaları Göster</string>
     <string name="HideShareButtonInChannel">Yandaki \"Paylaş\" Düğmesini Gizle</string>
     <string name="DeleteCloudBackup">Bulut verilerini temizle</string>
     <string name="DeleteCloudBackupFailed">Bulut verileri temizlenemedi</string>

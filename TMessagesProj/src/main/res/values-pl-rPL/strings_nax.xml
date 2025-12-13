@@ -37,7 +37,6 @@
     <string name="ArticleTranslationProvider">Dostawca tłumaczeń artykułów</string>
     <string name="EnableSeparateArticleTranslator">Użyj innego dostawcy dla artykułu</string>
     <string name="DisableCrashlyticsCollection">Wyłącz Firebase rozbita analityka</string>
-    <string name="ShowStickersRowToplevel">Pokaż naklejki w ustawieniach głównych</string>
     <string name="HideShareButtonInChannel">Ukryj przycisk „Udostępnij” z boku</string>
     <string name="DeleteCloudBackup">Wyczyść dane w chmurze</string>
     <string name="DeleteCloudBackupFailed">Nie udało się wyczyścić danych w chmurze</string>
