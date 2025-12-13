@@ -204,7 +204,6 @@
     <string name="ShowIdAndDc">Show ID / DC in Profile</string>
     <string name="UseDefaultTheme">Use default theme *</string>
     <string name="DialogsSettings">Dialogs</string>
-    <string name="SortMenu">Sort Chats</string>
     <string name="SortByUnread">Sort By Unread</string>
     <string name="SortByUnmuted">Sort By Unmuted</string>
     <string name="SortByUser">Sort By User</string>

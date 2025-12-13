@@ -201,7 +201,6 @@
     <string name="ShowIdAndDc">Mostrar ID / DC en el perfil</string>
     <string name="UseDefaultTheme">Usar tema por defecto *</string>
     <string name="DialogsSettings">Cuadros de diálogo</string>
-    <string name="SortMenu">Ordenar Chats</string>
     <string name="SortByUnread">Ordenar por no leído</string>
     <string name="SortByUnmuted">Ordenar por no silenciado</string>
     <string name="SortByUser">Ordenar por usuario</string>

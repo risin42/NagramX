@@ -131,7 +131,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -505,7 +504,6 @@ public class MessagesController extends BaseController implements NotificationCe
         }
     };
 
-    public int thisDc; // nekox
     public boolean enableJoined;
     public String linkPrefix;
     public int maxGroupCount;
@@ -1405,82 +1403,6 @@ public class MessagesController extends BaseController implements NotificationCe
                 return 0;
             }
         }
-
-        boolean is1user = !DialogObject.isChannel(dialog1) && dialog1.id > 0;
-        boolean is2user = !DialogObject.isChannel(dialog2) && dialog2.id > 0;
-
-        if (NekoConfig.sortByUnread.Bool()) {
-            if (dialog1.unread_count == 0 && dialog2.unread_count > 0) {
-                return 1;
-            } else if (dialog1.unread_count > 0 && dialog2.unread_count == 0) {
-                return -1;
-            } else if (dialog1.unread_count > 0 && dialog2.unread_count > 0) {
-                if (NekoConfig.sortByUnmuted.Bool()) {
-                    if (isDialogMuted(dialog1.id) && !isDialogMuted(dialog2.id)) {
-                        return 1;
-                    } else if (!isDialogMuted(dialog1.id) && isDialogMuted(dialog2.id)) {
-                        return -1;
-                    } else if (!isDialogMuted(dialog1.id) && !isDialogMuted(dialog2.id)) {
-                        if (NekoConfig.sortByUser.Bool()) {
-                            if (!is1user && is2user) {
-                                return 1;
-                            } else if (is1user && !is2user) {
-                                return -1;
-                            } else if (is1user && is2user) {
-                                if (NekoConfig.sortByContacts.Bool()) {
-                                    boolean is1contact = is1user && getContactsController().isContact((int) dialog1.id);
-                                    boolean is2contact = is2user && getContactsController().isContact((int) dialog2.id);
-                                    if (!is1contact && is2contact) {
-                                        return 1;
-                                    } else if (is1contact && !is2contact) {
-                                        return -1;
-                                    } else {
-                                        return 0;
-                                    }
-                                } else {
-                                    return 0;
-                                }
-                            }
-                        } else {
-                            return 0;
-                        }
-                    }
-                } else {
-                    return 0;
-                }
-            }
-        } else if (NekoConfig.sortByUnmuted.Bool()) {
-            if (dialog1.unread_count == 0 && dialog2.unread_count > 0 && isDialogMuted(dialog1.id) && !isDialogMuted(dialog2.id)) {
-                return 1;
-            } else if (dialog1.unread_count > 0 && dialog2.unread_count == 0 && !isDialogMuted(dialog1.id) && isDialogMuted(dialog2.id)) {
-                return -1;
-            } else if (dialog1.unread_count > 0 && dialog2.unread_count > 0 && !isDialogMuted(dialog1.id) && !isDialogMuted(dialog2.id)) {
-                if (NekoConfig.sortByUser.Bool()) {
-                    if (!is1user && is2user) {
-                        return 1;
-                    } else if (is1user && !is2user) {
-                        return -1;
-                    } else if (is1user && is2user) {
-                        if (NekoConfig.sortByContacts.Bool()) {
-                            boolean is1contact = is1user && getContactsController().isContact((int) dialog1.id);
-                            boolean is2contact = is2user && getContactsController().isContact((int) dialog2.id);
-                            if (!is1contact && is2contact) {
-                                return 1;
-                            } else if (is1contact && !is2contact) {
-                                return -1;
-                            } else {
-                                return 0;
-                            }
-                        } else {
-                            return 0;
-                        }
-                    }
-                } else {
-                    return 0;
-                }
-            }
-        }
-
         MediaDataController mediaDataController = getMediaDataController();
         long date1 = DialogObject.getLastMessageOrDraftDate(dialog1, mediaDataController.getDraft(dialog1.id, 0));
         long date2 = DialogObject.getLastMessageOrDraftDate(dialog2, mediaDataController.getDraft(dialog2.id, 0));
@@ -5651,7 +5573,6 @@ public class MessagesController extends BaseController implements NotificationCe
             getDownloadController().loadAutoDownloadConfig(false);
             loadAppConfig(true);
             checkPeerColors(true);
-            thisDc = config.this_dc;
             remoteConfigLoaded = true;
             maxMegagroupCount = config.megagroup_size_max;
             maxGroupCount = config.chat_size_max;
@@ -20096,7 +20017,7 @@ public class MessagesController extends BaseController implements NotificationCe
                     getNotificationCenter().postNotificationName(NotificationCenter.messagesReadContent, key, value);
                 }
             }
-            if (deletedMessagesFinal != null) { // --- AyuGram: don't notify that messages were deleted; already handled by MESSAGES_DELETED_NOTIFICATION
+            if (deletedMessagesFinal != null) {
                 for (int a = 0, size = deletedMessagesFinal.size(); a < size; a++) {
                     long dialogId = deletedMessagesFinal.keyAt(a);
                     ArrayList<Integer> arrayList = deletedMessagesFinal.valueAt(a);
@@ -21113,17 +21034,7 @@ public class MessagesController extends BaseController implements NotificationCe
 
         try {
             Collections.sort(allDialogs, dialogComparator);
-        } catch (Exception e) {
-            NekoConfig.sortByUnread.setConfigBool(false);
-            NekoConfig.sortByUnmuted.setConfigBool(false);
-            NekoConfig.sortByUser.setConfigBool(false);
-            NekoConfig.sortByContacts.setConfigBool(false);
-            try {
-                Collections.sort(allDialogs, dialogComparator);
-            } catch (Exception ex) {
-                FileLog.e(ex);
-            }
-        }
+        } catch (Exception e) {}
         isLeftPromoChannel = true;
         if (promoDialog != null && promoDialog.id < 0) {
             TLRPC.Chat chat = getChat(-promoDialog.id);

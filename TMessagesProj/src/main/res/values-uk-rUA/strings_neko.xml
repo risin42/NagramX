@@ -201,7 +201,6 @@
     <string name="ShowIdAndDc">Показати ID/DC в профілі</string>
     <string name="UseDefaultTheme">Використовувати стандартну тему *</string>
     <string name="DialogsSettings">Чати</string>
-    <string name="SortMenu">Сортувати чати</string>
     <string name="SortByUnread">Сортувати за непрочитаними</string>
     <string name="SortByUnmuted">Сортувати за ввімк. звуком</string>
     <string name="SortByUser">Сортувати за користувачем</string>
