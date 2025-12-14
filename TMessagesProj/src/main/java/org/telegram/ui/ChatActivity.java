@@ -25759,6 +25759,17 @@ public class ChatActivity extends BaseFragment implements
 
             updateVisibleRows();
         } else {
+            boolean wasAtBottom = false;
+            if (hasAyuDeleted && chatListView != null && chatLayoutManager != null) {
+                int firstVisible = chatLayoutManager.findFirstVisibleItemPosition();
+                if (firstVisible == RecyclerView.NO_POSITION) {
+                    firstVisible = 0;
+                }
+                View child = chatLayoutManager.findViewByPosition(firstVisible);
+                int diff = child != null ? child.getBottom() - chatListView.getMeasuredHeight() : 0;
+                wasAtBottom = firstVisible == 0 && diff <= AndroidUtilities.dp(5);
+            }
+
             LongSparseArray<MessageObject.GroupedMessages> newGroups = null;
             HashMap<String, ArrayList<MessageObject>> webpagesToReload = null;
             if (BuildVars.LOGS_ENABLED) {
@@ -26140,8 +26151,12 @@ public class ChatActivity extends BaseFragment implements
                 } else {
                     diff = 0;
                 }
-                if (!isAd && !hasAyuDeleted) {
-                    if (lastVisible == 0 && diff <= AndroidUtilities.dp(5) || hasFromMe) {
+                if (!isAd && (!hasAyuDeleted || wasAtBottom)) {
+                    boolean shouldScrollToBottom = lastVisible == 0 && diff <= AndroidUtilities.dp(5) || hasFromMe;
+                    if (hasAyuDeleted) {
+                        shouldScrollToBottom = wasAtBottom;
+                    }
+                    if (shouldScrollToBottom) {
                         newUnreadMessageCount = 0;
                         if (!firstLoading && chatMode != MODE_SCHEDULED) {
                             if (paused) {
@@ -26155,7 +26170,7 @@ public class ChatActivity extends BaseFragment implements
                         if (newUnreadMessageCount != 0 && sideControlsButtonsLayout != null) {
                             if (prevSetUnreadCount != newUnreadMessageCount) {
                                 prevSetUnreadCount = newUnreadMessageCount;
-                                sideControlsButtonsLayout.setButtonCount(ChatActivitySideControlsButtonsLayout.BUTTON_PAGE_DOWN,  newUnreadMessageCount, true);
+                                sideControlsButtonsLayout.setButtonCount(ChatActivitySideControlsButtonsLayout.BUTTON_PAGE_DOWN, newUnreadMessageCount, true);
                             }
                         }
                         canShowPagedownButton = true;
