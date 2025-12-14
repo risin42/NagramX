@@ -182,6 +182,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
                 hideFloatingDateView(true);
             }
             updatePagedownButtonVisibility(true);
+            updateVisibleMessageCells();
         }
 
         @Override
@@ -194,11 +195,45 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
             }
             updateFloatingDateView();
             updatePagedownButtonVisibility(true);
+            updateVisibleMessageCells();
         }
     };
 
     private static boolean hasContent(DeletedMessageFull messageFull) {
         return messageFull != null && messageFull.message != null && (!TextUtils.isEmpty(messageFull.message.text) || !TextUtils.isEmpty(messageFull.message.mediaPath) || messageFull.message.documentSerialized != null);
+    }
+
+    private void updateVisibleMessageCells() {
+        if (listView == null || fragmentView == null) {
+            return;
+        }
+        int parentHeight = listView.getMeasuredHeight();
+        if (parentHeight <= 0) {
+            return;
+        }
+        int parentWidth = fragmentView.getMeasuredWidth();
+        int backgroundHeight = fragmentView.getMeasuredHeight();
+        if (fragmentView instanceof SizeNotifierFrameLayout frameLayout) {
+            backgroundHeight = frameLayout.getBackgroundSizeY();
+        }
+
+        float listY = listView.getY();
+        for (int i = 0, count = listView.getChildCount(); i < count; i++) {
+            View child = listView.getChildAt(i);
+            if (!(child instanceof ChatMessageCell cell)) {
+                continue;
+            }
+            int childTop = child.getTop();
+            int childHeight = child.getMeasuredHeight();
+            int viewTop = Math.max(0, -childTop);
+            int viewBottom = Math.min(childHeight, parentHeight - childTop);
+            int visibleHeight = viewBottom - viewTop;
+            if (visibleHeight <= 0) {
+                continue;
+            }
+            cell.setParentBounds(0, parentHeight);
+            cell.setVisiblePart(viewTop, visibleHeight, parentHeight, 0f, child.getY() + listY, parentWidth, backgroundHeight, 0, 0);
+        }
     }
 
     private void updateDeleted() {
@@ -401,6 +436,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
         updateDeleted(() -> {
             if (rowCount > 0 && listView != null) {
                 listView.scrollToPosition(rowCount - 1);
+                listView.post(this::updateVisibleMessageCells);
             }
             updatePagedownButtonVisibility(false);
         });
@@ -467,6 +503,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
                 if (!TextUtils.isEmpty(searchQuery)) updateActionBarCount();
                 updatePagedownButtonVisibility(false);
                 AndroidUtilities.runOnUIThread(updateFloatingDateRunnable);
+                updateVisibleMessageCells();
             });
         });
     }
@@ -1060,7 +1097,10 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
         updateActionBarCount();
         updateEmptyView();
         if (listView != null) {
-            listView.post(() -> updatePagedownButtonVisibility(false));
+            listView.post(() -> {
+                updatePagedownButtonVisibility(false);
+                updateVisibleMessageCells();
+            });
         } else {
             updatePagedownButtonVisibility(false);
         }
