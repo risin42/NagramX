@@ -1574,6 +1574,15 @@ public class BottomSheet extends Dialog implements BaseFragment.AttachedSheet {
     }
 
     protected boolean isTouchOutside(float x, float y) {
+        if (topBulletinContainer != null) {
+            float left = topBulletinContainer.getX();
+            float top = topBulletinContainer.getY();
+            float right = left + topBulletinContainer.getWidth();
+            float bottom = top + topBulletinContainer.getHeight();
+            if (x >= left && x <= right && y >= top && y <= bottom) {
+                return false;
+            }
+        }
         return y < containerView.getTop() || x < containerView.getLeft() || x > containerView.getRight();
     }
 
