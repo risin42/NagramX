@@ -69,6 +69,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
     private static final int OPTION_SAVE_TO_DOWNLOADS = 7;
     private final MessageObject messageObject;
     private List<EditedMessage> messages;
+    private final ArrayList<MessageObject> messageObjects = new ArrayList<>();
     private int rowCount;
     private RecyclerListView listView;
     private ActionBarPopupWindow scrimPopupWindow;
@@ -88,6 +89,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
     private void updateHistory() {
         messages = AyuMessagesController.getInstance().getRevisions(getUserConfig().clientUserId, messageObject.messageOwner.dialog_id, messageObject.messageOwner.id);
         rowCount = messages.size();
+        rebuildMessageObjects();
     }
 
     @Override
@@ -179,6 +181,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
         super.onFragmentCreate();
 
         NotificationCenter.getInstance(UserConfig.selectedAccount).addObserver(this, AyuConstants.MESSAGE_EDITED_NOTIFICATION);
+        NotificationCenter.getInstance(UserConfig.selectedAccount).addObserver(this, NotificationCenter.voiceTranscriptionUpdate);
 
         return true;
     }
@@ -188,6 +191,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
         super.onFragmentDestroy();
 
         NotificationCenter.getInstance(UserConfig.selectedAccount).removeObserver(this, AyuConstants.MESSAGE_EDITED_NOTIFICATION);
+        NotificationCenter.getInstance(UserConfig.selectedAccount).removeObserver(this, NotificationCenter.voiceTranscriptionUpdate);
         Bulletin.removeDelegate(this);
 
         if (scrimPopupWindow != null) {
@@ -214,6 +218,8 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
                     listView.getAdapter().notifyDataSetChanged();
                 }
             }
+        } else if (id == NotificationCenter.voiceTranscriptionUpdate) {
+            handleVoiceTranscriptionUpdate(args);
         }
     }
 
@@ -321,6 +327,9 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
                     Utilities.globalQueue.postRunnable(() -> AyuMessagesController.getInstance().deleteRevision(edited.fakeId));
                     if (pos >= 0 && pos < messages.size()) {
                         messages.remove(pos);
+                        if (pos < messageObjects.size()) {
+                            messageObjects.remove(pos);
+                        }
                         rowCount = messages.size();
                         var adapter = listView.getAdapter();
                         if (adapter != null) {
@@ -502,7 +511,16 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
                 var ayuMessageDetailCell = (AyuMessageCell) holder.itemView;
 
                 var editedMessage = messages.get(position);
-                var msg = createMessageObject(editedMessage);
+                MessageObject msg;
+                if (position >= 0 && position < messageObjects.size()) {
+                    msg = messageObjects.get(position);
+                    if (msg == null) {
+                        msg = createMessageObject(editedMessage);
+                        messageObjects.set(position, msg);
+                    }
+                } else {
+                    msg = createMessageObject(editedMessage);
+                }
 
                 ayuMessageDetailCell.setAyuDelegate(AyuMessageHistory.this);
                 ayuMessageDetailCell.setMessageObject(msg, null, false, false, false);
@@ -515,164 +533,242 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
         public int getItemViewType(int position) {
             return position >= 0 && position < messages.size() ? 1 : 0;
         }
+    }
 
-        private MessageObject createMessageObject(EditedMessage editedMessage) {
-            var msg = new TLRPC.TL_message();
-            AyuMessageUtils.map(editedMessage, msg, currentAccount);
-            AyuMessageUtils.mapMedia(editedMessage, msg, currentAccount);
+    private MessageObject createMessageObject(EditedMessage editedMessage) {
+        int currentAccount = getCurrentAccount();
+        var msg = new TLRPC.TL_message();
+        AyuMessageUtils.map(editedMessage, msg, currentAccount);
+        AyuMessageUtils.mapMedia(editedMessage, msg, currentAccount);
 
-            msg.ayuDeleted = true;
-            msg.date = editedMessage.entityCreateDate;
-            msg.edit_hide = true;
-            if (msg.media != null) {
+        msg.ayuDeleted = true;
+        msg.date = editedMessage.entityCreateDate;
+        msg.edit_hide = true;
+        if (msg.media != null) {
+            if (messageObject.isVoiceOnce() || messageObject.isRoundOnce()) {
+                inheritTtlSeconds(msg, messageObject.messageOwner);
+            } else {
                 msg.media.ttl_seconds = 0;
             }
-
-            // fix reply state
-            if (messageObject.messageOwner.replyMessage != null) {
-                msg.replyMessage = messageObject.messageOwner.replyMessage;
-                msg.reply_to = messageObject.messageOwner.reply_to;
-            }
-            // prefer the current message's cached media only if the original file still exists
-            boolean localFileFound = false;
-            if (messageObject.isVoice()) {
-                msg.media = messageObject.messageOwner.media;
-            } else if (editedMessage.documentType == AyuConstants.DOCUMENT_TYPE_FILE) {
-                File originalPath = FileLoader.getInstance(currentAccount).getPathToMessage(messageObject.messageOwner);
-                if (!messageObject.isAyuDeleted() && originalPath.exists() && Objects.equals(editedMessage.mediaPath, originalPath.getAbsolutePath())) {
-                    msg.media.document = messageObject.messageOwner.media.document;
-                    localFileFound = true;
-                } else { // try to find local file for media that was saved
-                    File localFile = findSavedMedia(editedMessage);
-                    if (localFile != null) {
-                        updateDocumentMediaWithLocalFile(msg, localFile, editedMessage);
-                        localFileFound = true;
-                    }
-                }
-            } else if (editedMessage.documentType == AyuConstants.DOCUMENT_TYPE_PHOTO) {
+        }
+        // fix reply state
+        if (messageObject.messageOwner.replyMessage != null) {
+            msg.replyMessage = messageObject.messageOwner.replyMessage;
+            msg.reply_to = messageObject.messageOwner.reply_to;
+        }
+        // prefer the current message's cached media only if the original file still exists
+        boolean localFileFound = false;
+        if (messageObject.isVoice()) {
+            msg.media = messageObject.messageOwner.media;
+        } else if (editedMessage.documentType == AyuConstants.DOCUMENT_TYPE_FILE) {
+            File originalPath = FileLoader.getInstance(currentAccount).getPathToMessage(messageObject.messageOwner);
+            if (!messageObject.isAyuDeleted() && originalPath.exists() && Objects.equals(editedMessage.mediaPath, originalPath.getAbsolutePath())) {
+                msg.media.document = messageObject.messageOwner.media.document;
+                localFileFound = true;
+            } else { // try to find local file for media that was saved
                 File localFile = findSavedMedia(editedMessage);
                 if (localFile != null) {
-                    updatePhotoMediaWithLocalFile(msg, localFile);
+                    updateDocumentMediaWithLocalFile(msg, localFile, editedMessage);
                     localFileFound = true;
                 }
             }
-            MessageObject messageObj = new MessageObject(getCurrentAccount(), msg, false, true);
-            if (localFileFound && msg.attachPath != null) {
-                messageObj.attachPathExists = true;
+        } else if (editedMessage.documentType == AyuConstants.DOCUMENT_TYPE_PHOTO) {
+            File localFile = findSavedMedia(editedMessage);
+            if (localFile != null) {
+                updatePhotoMediaWithLocalFile(msg, localFile);
+                localFileFound = true;
             }
-            return messageObj;
         }
+        MessageObject messageObj = new MessageObject(getCurrentAccount(), msg, false, true);
+        if (localFileFound && msg.attachPath != null) {
+            messageObj.attachPathExists = true;
+        }
+        return messageObj;
+    }
 
-        private File findSavedMedia(EditedMessage editedMessage) {
-            File attachmentsDir = AyuMessagesController.attachmentsPath;
-            if (!attachmentsDir.exists() && !attachmentsDir.mkdirs()) {
-                return null;
-            }
-            String ttlPrefix = "ttl_" + editedMessage.dialogId + "_" + editedMessage.messageId + "_";
-            File[] matches = attachmentsDir.listFiles((dir, name) -> name.startsWith(ttlPrefix));
-            File ttlMatch = AyuMessageUtils.getLargestNonEmpty(matches);
-            if (ttlMatch != null) {
-                return ttlMatch;
-            }
-            if (editedMessage.mediaPath != null && !editedMessage.mediaPath.isEmpty()) {
-                String baseName = new File(editedMessage.mediaPath).getName();
-                return AyuMessageUtils.findExistingFileByBaseName(baseName);
-            }
+    private File findSavedMedia(EditedMessage editedMessage) {
+        File attachmentsDir = AyuMessagesController.attachmentsPath;
+        if (!attachmentsDir.exists() && !attachmentsDir.mkdirs()) {
             return null;
         }
+        String ttlPrefix = "ttl_" + editedMessage.dialogId + "_" + editedMessage.messageId + "_";
+        File[] matches = attachmentsDir.listFiles((dir, name) -> name.startsWith(ttlPrefix));
+        File ttlMatch = AyuMessageUtils.getLargestNonEmpty(matches);
+        if (ttlMatch != null) {
+            return ttlMatch;
+        }
+        if (editedMessage.mediaPath != null && !editedMessage.mediaPath.isEmpty()) {
+            String baseName = new File(editedMessage.mediaPath).getName();
+            return AyuMessageUtils.findExistingFileByBaseName(baseName);
+        }
+        return null;
+    }
 
-        private void updatePhotoMediaWithLocalFile(TLRPC.Message msg, File localFile) {
-            Pair<Integer, Integer> size = AyuUtils.extractImageSizeFromFile(localFile.getAbsolutePath());
-            if (size == null) {
-                size = new Pair<>(500, 500); // fallback
+    private void updatePhotoMediaWithLocalFile(TLRPC.Message msg, File localFile) {
+        Pair<Integer, Integer> size = AyuUtils.extractImageSizeFromFile(localFile.getAbsolutePath());
+        if (size == null) {
+            size = new Pair<>(500, 500); // fallback
+        }
+        TLRPC.TL_photoSize photoSize = new TLRPC.TL_photoSize();
+        photoSize.size = (int) localFile.length();
+        photoSize.w = size.first;
+        photoSize.h = size.second;
+        photoSize.type = "y";
+        photoSize.location = new AyuFileLocation(localFile.getAbsolutePath());
+        if (msg.media instanceof TLRPC.TL_messageMediaPhoto mediaPhoto && msg.media.photo != null) {
+            mediaPhoto.photo.sizes.clear();
+            mediaPhoto.photo.sizes.add(photoSize);
+        } else {
+            TLRPC.TL_messageMediaPhoto mediaPhoto = new TLRPC.TL_messageMediaPhoto();
+            mediaPhoto.flags = 1;
+            mediaPhoto.photo = new TLRPC.TL_photo();
+            mediaPhoto.photo.has_stickers = false;
+            mediaPhoto.photo.date = msg.date;
+            mediaPhoto.photo.sizes.add(photoSize);
+            msg.media = mediaPhoto;
+        }
+        msg.attachPath = localFile.getAbsolutePath();
+    }
+
+    private void updateDocumentMediaWithLocalFile(TLRPC.Message msg, File localFile, EditedMessage editedMessage) {
+        String filePath = localFile.getAbsolutePath();
+        msg.attachPath = filePath;
+        // if media already exists just update the path
+        if (msg.media instanceof TLRPC.TL_messageMediaDocument && msg.media.document != null) {
+            msg.media.document.localPath = filePath;
+            return;
+        }
+        // create new document media structure for video
+        TLRPC.TL_messageMediaDocument mediaDocument = new TLRPC.TL_messageMediaDocument();
+        mediaDocument.flags = 1;
+        mediaDocument.document = new TLRPC.TL_document();
+        mediaDocument.document.date = msg.date;
+        mediaDocument.document.localPath = filePath;
+        mediaDocument.document.file_name = AyuUtils.getReadableFilename(localFile.getName());
+        mediaDocument.document.file_name_fixed = AyuUtils.getReadableFilename(localFile.getName());
+        mediaDocument.document.size = localFile.length();
+        mediaDocument.document.mime_type = editedMessage.mimeType != null ? editedMessage.mimeType : "video/mp4";
+        // restore document attributes from serialized data
+        if (editedMessage.documentAttributesSerialized != null && editedMessage.documentAttributesSerialized.length > 0) {
+            mediaDocument.document.attributes = AyuMessageUtils.deserializeMultiple(editedMessage.documentAttributesSerialized, nativeByteBuffer -> TLRPC.DocumentAttribute.TLdeserialize(nativeByteBuffer, nativeByteBuffer.readInt32(false), false));
+        }
+        // if mime_type indicates video but no video attribute exists, create one
+        String mimeType = mediaDocument.document.mime_type;
+        if (mimeType != null && mimeType.startsWith("video/")) {
+            boolean hasVideoAttr = false;
+            for (TLRPC.DocumentAttribute attr : mediaDocument.document.attributes) {
+                if (attr instanceof TLRPC.TL_documentAttributeVideo) {
+                    hasVideoAttr = true;
+                    break;
+                }
             }
-            TLRPC.TL_photoSize photoSize = new TLRPC.TL_photoSize();
-            photoSize.size = (int) localFile.length();
-            photoSize.w = size.first;
-            photoSize.h = size.second;
-            photoSize.type = "y";
-            photoSize.location = new AyuFileLocation(localFile.getAbsolutePath());
-            if (msg.media instanceof TLRPC.TL_messageMediaPhoto mediaPhoto && msg.media.photo != null) {
-                mediaPhoto.photo.sizes.clear();
-                mediaPhoto.photo.sizes.add(photoSize);
-            } else {
-                TLRPC.TL_messageMediaPhoto mediaPhoto = new TLRPC.TL_messageMediaPhoto();
-                mediaPhoto.flags = 1;
-                mediaPhoto.photo = new TLRPC.TL_photo();
-                mediaPhoto.photo.has_stickers = false;
-                mediaPhoto.photo.date = msg.date;
-                mediaPhoto.photo.sizes.add(photoSize);
-                msg.media = mediaPhoto;
+            if (!hasVideoAttr) {
+                TLRPC.TL_documentAttributeVideo videoAttr = new TLRPC.TL_documentAttributeVideo();
+                videoAttr.supports_streaming = true;
+                // extract video dimensions and duration from file
+                try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
+                    retriever.setDataSource(filePath);
+                    String width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+                    String height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+                    String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                    if (width != null) {
+                        videoAttr.w = Integer.parseInt(width);
+                    }
+                    if (height != null) {
+                        videoAttr.h = Integer.parseInt(height);
+                    }
+                    if (duration != null) {
+                        videoAttr.duration = Long.parseLong(duration) / 1000.0;
+                    }
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+                mediaDocument.document.attributes.add(videoAttr);
             }
-            msg.attachPath = localFile.getAbsolutePath();
+        }
+        // restore thumbnails from serialized data
+        if (editedMessage.thumbsSerialized != null && editedMessage.thumbsSerialized.length > 0) {
+            ArrayList<TLRPC.PhotoSize> thumbs = AyuMessageUtils.deserializeMultiple(editedMessage.thumbsSerialized, nativeByteBuffer -> TLRPC.PhotoSize.TLdeserialize(0L, 0L, 0L, nativeByteBuffer, nativeByteBuffer.readInt32(false), false));
+            for (TLRPC.PhotoSize photoSize : thumbs) {
+                if (photoSize != null) {
+                    mediaDocument.document.thumbs.add(photoSize);
+                }
+            }
+        }
+        msg.media = mediaDocument;
+    }
+
+    private void rebuildMessageObjects() {
+        messageObjects.clear();
+        if (messages == null) {
+            return;
+        }
+        for (int i = 0; i < messages.size(); i++) {
+            messageObjects.add(createMessageObject(messages.get(i)));
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void handleVoiceTranscriptionUpdate(Object... args) {
+        if (listView == null || listView.getAdapter() == null || messageObjects.isEmpty()) {
+            return;
         }
 
-        private void updateDocumentMediaWithLocalFile(TLRPC.Message msg, File localFile, EditedMessage editedMessage) {
-            String filePath = localFile.getAbsolutePath();
-            msg.attachPath = filePath;
-            // if media already exists just update the path
-            if (msg.media instanceof TLRPC.TL_messageMediaDocument && msg.media.document != null) {
-                msg.media.document.localPath = filePath;
-                return;
+        MessageObject updated = args != null && args.length > 0 && args[0] instanceof MessageObject ? (MessageObject) args[0] : null;
+        long transcriptionId = 0;
+        String transcriptionText = null;
+        if (args != null && args.length > 1 && args[1] != null) {
+            transcriptionId = (Long) args[1];
+            transcriptionText = (String) args[2];
+        }
+
+        int indexToUpdate = -1;
+        for (int i = 0; i < messageObjects.size(); i++) {
+            MessageObject local = messageObjects.get(i);
+            if (local == null || local.messageOwner == null) {
+                continue;
             }
-            // create new document media structure for video
-            TLRPC.TL_messageMediaDocument mediaDocument = new TLRPC.TL_messageMediaDocument();
-            mediaDocument.flags = 1;
-            mediaDocument.document = new TLRPC.TL_document();
-            mediaDocument.document.date = msg.date;
-            mediaDocument.document.localPath = filePath;
-            mediaDocument.document.file_name = AyuUtils.getReadableFilename(localFile.getName());
-            mediaDocument.document.file_name_fixed = AyuUtils.getReadableFilename(localFile.getName());
-            mediaDocument.document.size = localFile.length();
-            mediaDocument.document.mime_type = editedMessage.mimeType != null ? editedMessage.mimeType : "video/mp4";
-            // restore document attributes from serialized data
-            if (editedMessage.documentAttributesSerialized != null && editedMessage.documentAttributesSerialized.length > 0) {
-                mediaDocument.document.attributes = AyuMessageUtils.deserializeMultiple(editedMessage.documentAttributesSerialized, nativeByteBuffer -> TLRPC.DocumentAttribute.TLdeserialize(nativeByteBuffer, nativeByteBuffer.readInt32(false), false));
+            if (updated == local) {
+                indexToUpdate = i;
+                break;
             }
-            // if mime_type indicates video but no video attribute exists, create one
-            String mimeType = mediaDocument.document.mime_type;
-            if (mimeType != null && mimeType.startsWith("video/")) {
-                boolean hasVideoAttr = false;
-                for (TLRPC.DocumentAttribute attr : mediaDocument.document.attributes) {
-                    if (attr instanceof TLRPC.TL_documentAttributeVideo) {
-                        hasVideoAttr = true;
-                        break;
-                    }
+            if (transcriptionId != 0 && local.messageOwner.voiceTranscriptionId == transcriptionId) {
+                indexToUpdate = i;
+                break;
+            }
+            if (updated != null && updated.getId() == local.getId() && updated.getDialogId() == local.getDialogId()) {
+                indexToUpdate = i;
+                break;
+            }
+        }
+
+        if (indexToUpdate >= 0) {
+            MessageObject local = messageObjects.get(indexToUpdate);
+            if (local != null && local.messageOwner != null) {
+                if (transcriptionText != null) {
+                    local.messageOwner.voiceTranscription = transcriptionText;
                 }
-                if (!hasVideoAttr) {
-                    TLRPC.TL_documentAttributeVideo videoAttr = new TLRPC.TL_documentAttributeVideo();
-                    videoAttr.supports_streaming = true;
-                    // extract video dimensions and duration from file
-                    try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
-                        retriever.setDataSource(filePath);
-                        String width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
-                        String height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
-                        String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                        if (width != null) {
-                            videoAttr.w = Integer.parseInt(width);
-                        }
-                        if (height != null) {
-                            videoAttr.h = Integer.parseInt(height);
-                        }
-                        if (duration != null) {
-                            videoAttr.duration = Long.parseLong(duration) / 1000.0;
-                        }
-                    } catch (Exception e) {
-                        FileLog.e(e);
-                    }
-                    mediaDocument.document.attributes.add(videoAttr);
+                if (args.length > 3 && args[3] != null) {
+                    local.messageOwner.voiceTranscriptionOpen = (Boolean) args[3];
+                }
+                if (args.length > 4 && args[4] != null) {
+                    local.messageOwner.voiceTranscriptionFinal = (Boolean) args[4];
                 }
             }
-            // restore thumbnails from serialized data
-            if (editedMessage.thumbsSerialized != null && editedMessage.thumbsSerialized.length > 0) {
-                ArrayList<TLRPC.PhotoSize> thumbs = AyuMessageUtils.deserializeMultiple(editedMessage.thumbsSerialized, nativeByteBuffer -> TLRPC.PhotoSize.TLdeserialize(0L, 0L, 0L, nativeByteBuffer, nativeByteBuffer.readInt32(false), false));
-                for (TLRPC.PhotoSize photoSize : thumbs) {
-                    if (photoSize != null) {
-                        mediaDocument.document.thumbs.add(photoSize);
-                    }
-                }
-            }
-            msg.media = mediaDocument;
+            listView.getAdapter().notifyItemChanged(indexToUpdate);
+        } else {
+            listView.getAdapter().notifyDataSetChanged();
+        }
+    }
+
+    static void inheritTtlSeconds(TLRPC.Message targetMessage, TLRPC.Message sourceMessage) {
+        if (targetMessage == null || targetMessage.media == null) {
+            return;
+        }
+        if (sourceMessage != null && sourceMessage.media != null) {
+            targetMessage.media.ttl_seconds = sourceMessage.media.ttl_seconds;
+        } else {
+            targetMessage.media.ttl_seconds = 0;
         }
     }
 

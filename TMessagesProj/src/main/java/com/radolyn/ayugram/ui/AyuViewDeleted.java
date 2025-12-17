@@ -99,6 +99,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
     private final boolean isEncrypted;
     private final ArrayList<DeletedMessageFull> deletedMessages = new ArrayList<>();
     private final ArrayList<DeletedMessageFull> filteredMessages = new ArrayList<>();
+    private final ArrayList<MessageObject> messageObjects = new ArrayList<>();
     private final SparseArray<DeletedMessageFull> messageIdMap = new SparseArray<>();
     private final int pageSize = 50;
     private final int pageSizeEncrypted = Integer.MAX_VALUE;
@@ -485,6 +486,11 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
 
                 if (TextUtils.isEmpty(searchQuery)) {
                     filteredMessages.addAll(0, older);
+                    ArrayList<MessageObject> olderObjects = new ArrayList<>(insertCount);
+                    for (int i = 0; i < insertCount; i++) {
+                        olderObjects.add(createMessageObject(older.get(i), true));
+                    }
+                    messageObjects.addAll(0, olderObjects);
                     rowCount = filteredMessages.size();
                     if (listView != null && listView.getAdapter() != null) {
                         listView.getAdapter().notifyItemRangeInserted(0, insertCount);
@@ -514,6 +520,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
 
         NotificationCenter.getInstance(UserConfig.selectedAccount).addObserver(this, AyuConstants.MESSAGES_DELETED_NOTIFICATION);
         NotificationCenter.getInstance(UserConfig.selectedAccount).addObserver(this, AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION);
+        NotificationCenter.getInstance(UserConfig.selectedAccount).addObserver(this, NotificationCenter.voiceTranscriptionUpdate);
 
         return true;
     }
@@ -524,6 +531,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
 
         NotificationCenter.getInstance(UserConfig.selectedAccount).removeObserver(this, AyuConstants.MESSAGES_DELETED_NOTIFICATION);
         NotificationCenter.getInstance(UserConfig.selectedAccount).removeObserver(this, AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION);
+        NotificationCenter.getInstance(UserConfig.selectedAccount).removeObserver(this, NotificationCenter.voiceTranscriptionUpdate);
         Bulletin.removeDelegate(this);
 
         if (scrimPopupWindow != null) {
@@ -582,6 +590,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
         if (id == AyuConstants.MESSAGES_DELETED_NOTIFICATION) {
@@ -602,6 +611,8 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
             } catch (Exception e) {
                 FileLog.e(e);
             }
+        } else if (id == NotificationCenter.voiceTranscriptionUpdate) {
+            handleVoiceTranscriptionUpdate(args);
         }
     }
 
@@ -1093,6 +1104,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
             }
         }
         rowCount = filteredMessages.size();
+        rebuildMessageObjects();
         notifyAdapterDataChanged();
         updateActionBarCount();
         updateEmptyView();
@@ -1156,7 +1168,16 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
             if (holder.getItemViewType() == 1) {
                 var cell = (AyuMessageCell) holder.itemView;
                 var deleted = filteredMessages.get(position);
-                var msg = createMessageObject(deleted, true);
+                MessageObject msg;
+                if (position >= 0 && position < messageObjects.size()) {
+                    msg = messageObjects.get(position);
+                    if (msg == null) {
+                        msg = createMessageObject(deleted, true);
+                        messageObjects.set(position, msg);
+                    }
+                } else {
+                    msg = createMessageObject(deleted, true);
+                }
                 msg.forceAvatar = !msg.isOutOwner();
                 cell.setAyuDelegate(AyuViewDeleted.this);
                 cell.setMessageObject(msg, null, false, false, false);
@@ -1169,37 +1190,98 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
         public int getItemViewType(int position) {
             return position >= 0 && position < filteredMessages.size() ? 1 : 0;
         }
+    }
 
-        private MessageObject createMessageObject(DeletedMessageFull deletedMessageFull, boolean resolveReply) {
-            var base = deletedMessageFull.message;
-            var tl = new TLRPC.TL_message();
-            AyuMessageUtils.map(base, tl, currentAccount);
-            AyuMessageUtils.mapMedia(base, tl, currentAccount);
+    private MessageObject createMessageObject(DeletedMessageFull deletedMessageFull, boolean resolveReply) {
+        int currentAccount = getCurrentAccount();
+        var base = deletedMessageFull.message;
+        var tl = new TLRPC.TL_message();
+        AyuMessageUtils.map(base, tl, currentAccount);
+        AyuMessageUtils.mapMedia(base, tl, currentAccount);
 
-            if (resolveReply && base.replyMessageId != 0) {
-                boolean found = false;
-                ArrayList<MessageObject> messages = MessagesController.getInstance(currentAccount).dialogMessage.get(base.dialogId);
-                if (messages != null) {
-                    for (int i = 0; i < messages.size(); i++) {
-                        MessageObject m = messages.get(i);
-                        if (m.getId() == base.replyMessageId) {
-                            tl.replyMessage = m.messageOwner;
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!found) {
-                    DeletedMessageFull m = messageIdMap.get(base.replyMessageId);
-                    if (m != null) {
-                        tl.replyMessage = createMessageObject(m, false).messageOwner;
+        if (resolveReply && base.replyMessageId != 0) {
+            boolean found = false;
+            ArrayList<MessageObject> messages = MessagesController.getInstance(currentAccount).dialogMessage.get(base.dialogId);
+            if (messages != null) {
+                for (int i = 0; i < messages.size(); i++) {
+                    MessageObject m = messages.get(i);
+                    if (m.getId() == base.replyMessageId) {
+                        tl.replyMessage = m.messageOwner;
+                        found = true;
+                        break;
                     }
                 }
             }
 
-            tl.ayuDeleted = true;
-            return new MessageObject(getCurrentAccount(), tl, false, true);
+            if (!found) {
+                DeletedMessageFull m = messageIdMap.get(base.replyMessageId);
+                if (m != null) {
+                    tl.replyMessage = createMessageObject(m, false).messageOwner;
+                }
+            }
+        }
+
+        tl.ayuDeleted = true;
+        return new MessageObject(getCurrentAccount(), tl, false, true);
+    }
+
+    private void rebuildMessageObjects() {
+        messageObjects.clear();
+        for (int i = 0; i < filteredMessages.size(); i++) {
+            messageObjects.add(createMessageObject(filteredMessages.get(i), true));
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void handleVoiceTranscriptionUpdate(Object... args) {
+        if (listView == null || listView.getAdapter() == null || messageObjects.isEmpty()) {
+            return;
+        }
+
+        MessageObject updated = args != null && args.length > 0 && args[0] instanceof MessageObject ? (MessageObject) args[0] : null;
+        long transcriptionId = 0;
+        String transcriptionText = null;
+        if (args != null && args.length > 1 && args[1] != null) {
+            transcriptionId = (Long) args[1];
+            transcriptionText = (String) args[2];
+        }
+
+        int indexToUpdate = -1;
+        for (int i = 0; i < messageObjects.size(); i++) {
+            MessageObject local = messageObjects.get(i);
+            if (local == null || local.messageOwner == null) {
+                continue;
+            }
+            if (updated == local) {
+                indexToUpdate = i;
+                break;
+            }
+            if (transcriptionId != 0 && local.messageOwner.voiceTranscriptionId == transcriptionId) {
+                indexToUpdate = i;
+                break;
+            }
+            if (updated != null && updated.getId() == local.getId() && updated.getDialogId() == local.getDialogId()) {
+                indexToUpdate = i;
+                break;
+            }
+        }
+
+        if (indexToUpdate >= 0) {
+            MessageObject local = messageObjects.get(indexToUpdate);
+            if (local != null && local.messageOwner != null) {
+                if (transcriptionText != null) {
+                    local.messageOwner.voiceTranscription = transcriptionText;
+                }
+                if (args.length > 3 && args[3] != null) {
+                    local.messageOwner.voiceTranscriptionOpen = (Boolean) args[3];
+                }
+                if (args.length > 4 && args[4] != null) {
+                    local.messageOwner.voiceTranscriptionFinal = (Boolean) args[4];
+                }
+            }
+            listView.getAdapter().notifyItemChanged(indexToUpdate);
+        } else {
+            listView.getAdapter().notifyDataSetChanged();
         }
     }
 

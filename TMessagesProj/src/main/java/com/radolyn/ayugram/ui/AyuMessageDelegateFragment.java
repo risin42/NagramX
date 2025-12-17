@@ -10,6 +10,7 @@ import android.view.HapticFeedbackConstants;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
@@ -37,13 +38,14 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
     @Override
     public void onImagePressed(ChatMessageCell cell) {
         if (cell.getMessageObject() != null) {
-            if (cell.getMessageObject().isSticker()) {
-                var inputStickerSet = cell.getMessageObject().getInputStickerSet();
+            MessageObject messageObject = cell.getMessageObject();
+            if (messageObject.isSticker()) {
+                var inputStickerSet = messageObject.getInputStickerSet();
                 if (inputStickerSet != null) {
                     showDialog(new StickersAlert(getParentActivity(), this, inputStickerSet, null, null, false));
                 }
             } else {
-                AndroidUtilities.openForView(cell.getMessageObject(), getParentActivity(), null, false);
+                AndroidUtilities.openForView(messageObject, getParentActivity(), null, false);
             }
         }
     }
@@ -182,6 +184,17 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
             FileLog.e(e);
             return false;
         }
+    }
+
+    @Override
+    public boolean needPlayMessage(ChatMessageCell cell, MessageObject messageObject, boolean muted) {
+        if (messageObject == null) {
+            return false;
+        }
+        if (messageObject.isVoice() || messageObject.isRoundVideo() || messageObject.isMusic()) {
+            return MediaController.getInstance().playMessage(messageObject, muted);
+        }
+        return false;
     }
 
     @Override

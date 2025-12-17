@@ -113,6 +113,14 @@ public class AyuMessageCell extends ChatMessageCell {
             }
 
             @Override
+            public boolean needPlayMessage(ChatMessageCell cell, MessageObject messageObject, boolean muted) {
+                if (ayuDelegate != null) {
+                    return ayuDelegate.needPlayMessage(cell, messageObject, muted);
+                }
+                return false;
+            }
+
+            @Override
             public void didLongPress(ChatMessageCell cell, float x, float y) {
                 boolean hasText = (editedMessage != null && !TextUtils.isEmpty(editedMessage.text)) || (getMessageObject() != null && getMessageObject().messageOwner != null && !TextUtils.isEmpty(getMessageObject().messageOwner.message));
                 if (hasText && isInMessageBubble(x, y) && !isInImageArea(x, y)) {
@@ -331,5 +339,7 @@ public class AyuMessageCell extends ChatMessageCell {
         void didPressBotButton(ChatMessageCell cell, TLRPC.KeyboardButton button);
 
         boolean didLongPressBotButton(ChatMessageCell cell, TLRPC.KeyboardButton button);
+
+        boolean needPlayMessage(ChatMessageCell cell, MessageObject messageObject, boolean muted);
     }
 }
