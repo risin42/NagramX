@@ -13,6 +13,7 @@ import com.radolyn.ayugram.messages.AyuMessagesController;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessageObject;
+import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.UserConfig;
@@ -30,6 +31,7 @@ public abstract class AyuHistoryHook {
 
     public static void doHookAsync(int currentAccount, long startId, long endId, long dialogId, int limit, long topicId, int loadType, boolean isChannelComment, long threadMessageId, boolean isTopic) {
         MessagesStorage storage = MessagesStorage.getInstance(currentAccount);
+        MessagesController messagesController = MessagesController.getInstance(currentAccount);
         storage.getStorageQueue().postRunnable(() -> {
             long clientUserId = UserConfig.getInstance(currentAccount).clientUserId;
             AyuMessagesController ayuController = AyuMessagesController.getInstance();
@@ -99,14 +101,36 @@ public abstract class AyuHistoryHook {
             ArrayList<TLRPC.Chat> fetchedChats = new ArrayList<>();
             try {
                 if (!usersToLoad.isEmpty()) {
-                    storage.getUsersInternal(usersToLoad, fetchedUsers);
+                    ArrayList<Long> missingUserIds = new ArrayList<>();
+                    for (Long userId : usersToLoad) {
+                        TLRPC.User user = messagesController.getUser(userId);
+                        if (user != null) {
+                            fetchedUsers.add(user);
+                        } else {
+                            missingUserIds.add(userId);
+                        }
+                    }
+                    if (!missingUserIds.isEmpty()) {
+                        storage.getUsersInternal(missingUserIds, fetchedUsers);
+                    }
                 }
             } catch (Exception e) {
                 FileLog.e(e);
             }
             try {
                 if (!chatsToLoad.isEmpty()) {
-                    storage.getChatsInternal(TextUtils.join(",", chatsToLoad), fetchedChats);
+                    ArrayList<Long> missingChatIds = new ArrayList<>();
+                    for (Long chatId : chatsToLoad) {
+                        TLRPC.Chat chat = messagesController.getChat(chatId);
+                        if (chat != null) {
+                            fetchedChats.add(chat);
+                        } else {
+                            missingChatIds.add(chatId);
+                        }
+                    }
+                    if (!missingChatIds.isEmpty()) {
+                        storage.getChatsInternal(TextUtils.join(",", missingChatIds), fetchedChats);
+                    }
                 }
             } catch (Exception e) {
                 FileLog.e(e);
@@ -128,7 +152,7 @@ public abstract class AyuHistoryHook {
 
             final ArrayList<MessageObject> messageObjects = new ArrayList<>();
             for (int i = 0; i < messagesById.size(); i++) {
-                messageObjects.add(new MessageObject(currentAccount, messagesById.get(messagesById.keyAt(i)), usersById, chatsById, false, true));
+                messageObjects.add(createMessageObject(currentAccount, messagesById.get(messagesById.keyAt(i)), usersById, chatsById, messagesController));
             }
 
             SparseArray<MessageObject> indexById = new SparseArray<>(messageObjects.size());
@@ -137,8 +161,6 @@ public abstract class AyuHistoryHook {
             }
             for (int idx = 0; idx < messageObjects.size(); idx++) {
                 MessageObject messageObj = messageObjects.get(idx);
-                messageObj.setIsRead();
-                messageObj.setContentIsRead();
                 if (messageObj.messageOwner.reply_to != null) {
                     int replyId = messageObj.messageOwner.reply_to.reply_to_msg_id;
                     MessageObject candidate = indexById.get(replyId);
@@ -224,6 +246,13 @@ public abstract class AyuHistoryHook {
         tlMessage.ayuDeleted = true;
         AyuMessageUtils.mapMedia(deletedMessageFull.message, tlMessage, accountId);
         return tlMessage;
+    }
+
+    private static MessageObject createMessageObject(int currentAccount, TLRPC.TL_message message, LongSparseArray<TLRPC.User> usersById, LongSparseArray<TLRPC.Chat> chatsById, MessagesController messagesController) {
+        MessageObject messageObj = new MessageObject(currentAccount, message, usersById, chatsById, false, true);
+        messageObj.setIsRead();
+        messageObj.setContentIsRead();
+        return messageObj;
     }
 
     private static boolean hasContent(DeletedMessageFull messageFull) {
