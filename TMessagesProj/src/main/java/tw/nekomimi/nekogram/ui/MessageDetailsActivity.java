@@ -7,7 +7,11 @@ import static tw.nekomimi.nekogram.DatacenterActivity.getDCName;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.SpannableString;
@@ -49,6 +53,7 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.TranslateController;
+import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.AlertDialog;
@@ -84,6 +89,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
     public static final Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
     private final MessageObject messageObject;
     private final MessageObject.GroupedMessages messageGroup;
+    private volatile boolean fragmentDestroyed;
     private RecyclerListView listView;
     private ListAdapter listAdapter;
     private TLRPC.Chat fromChat;
@@ -93,6 +99,13 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
     private int width;
     private int height;
     private String video_codec;
+    private float frameRate;
+    private long bitRate;
+    private boolean isBitRateEstimated;
+    private long audioBitRate;
+    private boolean isAudioBitRateEstimated;
+    private boolean hasMultipleTracks;
+    private int sampleRate;
     private int dc;
     private int rowCount;
     private int idRow;
@@ -157,6 +170,161 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
                         video_codec = attribute.video_codec;
                     }
                 }
+                // extract metadata
+                if (!TextUtils.isEmpty(filePath)) {
+                    final String path = filePath;
+                    Utilities.globalQueue.postRunnable(() -> {
+                        if (fragmentDestroyed) {
+                            return;
+                        }
+                        extractMediaMetadata(path);
+                        AndroidUtilities.runOnUIThread(() -> {
+                            if (fragmentDestroyed || isFinishing() || getParentActivity() == null) {
+                                return;
+                            }
+                            updateRows();
+                        }, 300);
+                    });
+                }
+            }
+        }
+    }
+
+    private void extractMediaMetadata(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return;
+        }
+
+        frameRate = 0;
+        bitRate = 0;
+        audioBitRate = 0;
+        sampleRate = 0;
+        isBitRateEstimated = false;
+        isAudioBitRateEstimated = false;
+        hasMultipleTracks = false;
+
+        MediaExtractor extractor = new MediaExtractor();
+        try {
+            extractor.setDataSource(filePath);
+            boolean isVideo = false;
+            boolean isAudio = false;
+            for (int i = 0; i < extractor.getTrackCount(); i++) {
+                MediaFormat format = extractor.getTrackFormat(i);
+                String mime = format.getString(MediaFormat.KEY_MIME);
+                if (mime != null && mime.startsWith("video/")) {
+                    isVideo = true;
+                    if (format.containsKey(MediaFormat.KEY_FRAME_RATE)) {
+                        try {
+                            frameRate = format.getFloat(MediaFormat.KEY_FRAME_RATE);
+                        } catch (ClassCastException e) {
+                            frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE);
+                        }
+                    }
+                    if (format.containsKey(MediaFormat.KEY_BIT_RATE)) {
+                        bitRate = format.getInteger(MediaFormat.KEY_BIT_RATE);
+                    } else if (format.containsKey("max-bitrate")) {
+                        bitRate = format.getInteger("max-bitrate");
+                    }
+                } else if (mime != null && mime.startsWith("audio/")) {
+                    isAudio = true;
+                    if (format.containsKey(MediaFormat.KEY_SAMPLE_RATE)) {
+                        sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+                    }
+                    if (format.containsKey(MediaFormat.KEY_BIT_RATE)) {
+                        audioBitRate = format.getInteger(MediaFormat.KEY_BIT_RATE);
+                    } else if (format.containsKey("max-bitrate")) {
+                        audioBitRate = format.getInteger("max-bitrate");
+                    }
+                }
+            }
+            hasMultipleTracks = isVideo && isAudio;
+            if (isVideo) {
+                float extractorFrameRate = frameRate;
+                frameRate = 0;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
+                        retriever.setDataSource(filePath);
+                        String frameCountStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_FRAME_COUNT);
+                        String durationStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                        if (frameCountStr != null && durationStr != null) {
+                            long frameCount = Long.parseLong(frameCountStr);
+                            long durationMs = Long.parseLong(durationStr);
+                            if (frameCount > 0 && durationMs > 0) {
+                                frameRate = (float) (frameCount / (durationMs / 1000.0));
+                            }
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+                if (frameRate == 0) {
+                    frameRate = extractorFrameRate;
+                }
+            }
+        } catch (Exception e) {
+            FileLog.e(e);
+        } finally {
+            extractor.release();
+        }
+        if (bitRate == 0 || audioBitRate == 0 || sampleRate == 0) {
+            try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
+                retriever.setDataSource(filePath);
+                if (bitRate == 0 || audioBitRate == 0) {
+                    String bitrateStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+                    if (bitrateStr != null) {
+                        long totalBitrate = Long.parseLong(bitrateStr);
+                        String hasVideo = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
+                        String hasAudio = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO);
+                        boolean isVideoFile = "yes".equals(hasVideo);
+                        boolean isAudioFile = "yes".equals(hasAudio);
+                        if (isVideoFile && !isAudioFile && bitRate == 0) {
+                            bitRate = totalBitrate;
+                        } else if (!isVideoFile && isAudioFile && audioBitRate == 0) {
+                            audioBitRate = totalBitrate;
+                        } else if (isVideoFile && isAudioFile) {
+                            hasMultipleTracks = true;
+                            if (bitRate == 0 && audioBitRate > 0) {
+                                bitRate = totalBitrate - audioBitRate;
+                                if (bitRate < 0) bitRate = totalBitrate;
+                            } else if (audioBitRate == 0 && bitRate > 0) {
+                                audioBitRate = totalBitrate - bitRate;
+                                if (audioBitRate < 0) audioBitRate = 0;
+                            }
+                        }
+                    }
+                }
+                if (sampleRate == 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    String sampleRateStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_SAMPLERATE);
+                    if (sampleRateStr != null) {
+                        sampleRate = Integer.parseInt(sampleRateStr);
+                    }
+                }
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
+        }
+        if (bitRate == 0 || (audioBitRate == 0 && sampleRate > 0)) {
+            try (MediaMetadataRetriever r = new MediaMetadataRetriever()) {
+                r.setDataSource(filePath);
+                String durationStr = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                String hasVideo = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
+                boolean isVideoFile = "yes".equals(hasVideo);
+                if (durationStr != null) {
+                    long durationMs = Long.parseLong(durationStr);
+                    if (durationMs > 0) {
+                        long fileSizeBytes = file.length();
+                        double durationSeconds = durationMs / 1000.0;
+                        long estimatedTotalBitrate = (long) ((fileSizeBytes * 8) / durationSeconds);
+                        if (bitRate == 0 && isVideoFile) {
+                            bitRate = estimatedTotalBitrate;
+                            isBitRateEstimated = true;
+                        } else if (audioBitRate == 0 && sampleRate > 0 && !isVideoFile) {
+                            audioBitRate = estimatedTotalBitrate;
+                            isAudioBitRateEstimated = true;
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
             }
         }
     }
@@ -338,7 +506,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
         filePathRow = TextUtils.isEmpty(filePath) ? -1 : rowCount++;
         fileSizeRow = messageObject.getSize() != 0 ? rowCount++ : -1;
         fileMimeTypeRow = !TextUtils.isEmpty(messageObject.getMimeType()) ? rowCount++ : -1;
-        mediaRow = width > 0 && height > 0 ? rowCount++ : -1;
+        mediaRow = (width > 0 && height > 0) || !TextUtils.isEmpty(video_codec) || frameRate > 0 || bitRate > 0 || audioBitRate > 0 || sampleRate > 0 ? rowCount++ : -1;
         dcRow = dc != 0 ? rowCount++ : -1;
         languageRow = TextUtils.isEmpty(MessageHelper.getMessagePlainText(messageObject, messageGroup)) ? -1 : rowCount++;
         buttonsRow = messageObject.messageOwner.reply_markup instanceof TLRPC.TL_replyInlineMarkup ? rowCount++ : -1;
@@ -404,6 +572,7 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
     @Override
     public void onFragmentDestroy() {
         super.onFragmentDestroy();
+        fragmentDestroyed = true;
         NotificationCenter.getGlobalInstance().removeObserver(this, NotificationCenter.emojiLoaded);
     }
 
@@ -546,8 +715,37 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
                     } else if (position == fileMimeTypeRow) {
                         textCell.setTextAndValue("MIME Type", messageObject.getMimeType(), divider);
                     } else if (position == mediaRow) {
-                        textCell.setTextAndValue("Media", String.format(Locale.US, "%dx%d", width, height) +
-                                (TextUtils.isEmpty(video_codec) ? "" : (", " + video_codec)), divider);
+                        StringBuilder mediaInfo = new StringBuilder();
+                        if (width > 0 && height > 0) {
+                            mediaInfo.append(String.format(Locale.US, "%dx%d", width, height));
+                        }
+                        if (!TextUtils.isEmpty(video_codec)) {
+                            if (mediaInfo.length() > 0) mediaInfo.append(", ");
+                            mediaInfo.append(video_codec);
+                        }
+                        if (frameRate > 0) {
+                            if (mediaInfo.length() > 0) mediaInfo.append(", ");
+                            mediaInfo.append(String.format(Locale.US, "%.2f fps", frameRate));
+                        }
+                        if (bitRate > 0) {
+                            if (mediaInfo.length() > 0) mediaInfo.append(", ");
+                            String trackPrefix = hasMultipleTracks ? "V: " : "";
+                            String estimatedPrefix = isBitRateEstimated ? "~" : "";
+                            String bitRateStr = String.format(Locale.US, "%s%s%.0f Kbps", trackPrefix, estimatedPrefix, bitRate / 1000.0);
+                            mediaInfo.append(bitRateStr);
+                        }
+                        if (audioBitRate > 0) {
+                            if (mediaInfo.length() > 0) mediaInfo.append(", ");
+                            String trackPrefix = hasMultipleTracks ? "A: " : "";
+                            String estimatedPrefix = isAudioBitRateEstimated ? "~" : "";
+                            String audioBitRateStr = String.format(Locale.US, "%s%s%.0f Kbps", trackPrefix, estimatedPrefix, audioBitRate / 1000.0);
+                            mediaInfo.append(audioBitRateStr);
+                        }
+                        if (sampleRate > 0) {
+                            if (mediaInfo.length() > 0) mediaInfo.append(", ");
+                            mediaInfo.append(String.format(Locale.US, "%d Hz", sampleRate));
+                        }
+                        textCell.setTextAndValue("Media", mediaInfo.toString(), divider);
                     } else if (position == dcRow) {
                         String value = String.format(Locale.US, "DC%d %s, %s", dc, getDCName(dc), getDCLocation(dc));
                         textCell.setTextAndValue("DC", value, divider);
