@@ -69,11 +69,12 @@ public abstract class AyuMessageUtils {
 
     public static void map(AyuMessageBase source, TLRPC.Message target, int accountId) {
         MessagesController messagesController = MessagesController.getInstance(accountId);
+        TLRPC.Chat dialogChat = source.dialogId < 0 ? messagesController.getChat(-source.dialogId) : null;
         int flags = source.flags;
         target.dialog_id = source.dialogId;
         target.grouped_id = source.groupedId;
         target.peer_id = messagesController.getPeer(source.peerId);
-        target.from_id = messagesController.getPeer(source.fromId);
+        target.from_id = getFromPeer(messagesController, source.fromId, dialogChat);
         int messageId = source.messageId;
         target.id = messageId;
         target.realId = messageId;
@@ -896,4 +897,20 @@ public abstract class AyuMessageUtils {
         return msg.messageOwner.media instanceof TLRPC.TL_messageMediaPhoto
                 && msg.messageOwner.media.photo instanceof TLRPC.TL_photoEmpty;
     }
+
+    public static TLRPC.Peer getFromPeer(MessagesController messagesController, long peerId, TLRPC.Chat dialogChat) {
+        if (peerId < 0) {
+            TLRPC.Chat chat = messagesController.getChat(-peerId);
+            if (chat == null && dialogChat != null) {
+                boolean isGroup = ChatObject.isChannel(dialogChat) && dialogChat.megagroup;
+                if (isGroup) {
+                    TLRPC.TL_peerChannel peerChannel = new TLRPC.TL_peerChannel();
+                    peerChannel.channel_id = -peerId;
+                    return peerChannel;
+                }
+            }
+        }
+        return messagesController.getPeer(peerId);
+    }
+
 }
