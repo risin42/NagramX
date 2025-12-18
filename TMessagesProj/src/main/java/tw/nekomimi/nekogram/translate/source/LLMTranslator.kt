@@ -170,6 +170,7 @@ object LLMTranslator : Translator {
         val model = providerModels.getOrDefault(
             llmProviderPreset,
             NaConfig.llmModelName.String().ifEmpty { getString(R.string.LlmModelNameDefault) })
+            .lowercase()
 
         val sysPrompt = NaConfig.llmSystemPrompt.String()?.takeIf { it.isNotEmpty() } ?: generateSystemPrompt()
         val llmUserPrompt = NaConfig.llmUserPrompt.String()
@@ -204,7 +205,7 @@ object LLMTranslator : Translator {
             if (isReasoning(model)) {
                 put("reasoning_effort", getReasoningEffort(model))
             }
-            if (NaConfig.llmProviderPreset.Int() > 1 || (NaConfig.llmProviderPreset.Int() == 0 && !NaConfig.llmModelName.String().startsWith("gpt-5"))) {
+            if (llmProviderPreset > 1 || (llmProviderPreset == 0 && !model.startsWith("gpt-5"))) {
                 put("temperature", NaConfig.llmTemperature.Float())
             }
         }.toString()
@@ -273,10 +274,10 @@ object LLMTranslator : Translator {
         return !model.startsWith("gpt-5.") && model.startsWith("gpt-5") && !model.contains("instant") && !model.contains("chat")
     }
 
-    private fun isReasoning(modelName: String): Boolean {
-        val model = modelName.lowercase()
+    private fun isReasoning(model: String): Boolean {
         return model == "gemini-flash-latest"
                 || model.startsWith("gemini-2.5-flash")
+                || model.startsWith("gemini-3-flash")
                 || model.startsWith("gpt-oss")
                 || (model.startsWith("gpt-5.") && !model.contains("instant") && !model.contains("chat"))
                 || (model.startsWith("gpt-5") && !model.contains("instant") && !model.contains("chat"))
@@ -286,6 +287,7 @@ object LLMTranslator : Translator {
         model.startsWith("gpt-oss") -> "low"
         model.startsWith("gpt-5.") -> "none"
         model.startsWith("gpt-5") -> "minimal"
+        // model.startsWith("gemini-3-flash") -> "minimal"
         else -> "none" // gemini-flash
     }
 
