@@ -32,6 +32,9 @@ public class VoipAudioManager {
     public void setSpeakerphoneOn(boolean on) {
         isSpeakerphoneOn = on;
         final AudioManager audioManager = getAudioManager();
+        if (audioManager == null) {
+            return;
+        }
         Utilities.globalQueue.postRunnable(() -> {
             audioManager.setSpeakerphoneOn(on);
         });
@@ -44,6 +47,9 @@ public class VoipAudioManager {
     public boolean isSpeakerphoneOn() {
         if (isSpeakerphoneOn == null) {
             AudioManager audioManager = getAudioManager();
+            if (audioManager == null) {
+                return false;
+            }
             return audioManager.isSpeakerphoneOn();
         }
         return isSpeakerphoneOn;
@@ -52,6 +58,10 @@ public class VoipAudioManager {
     public void isBluetoothAndSpeakerOnAsync(Utilities.Callback2<Boolean, Boolean> onDone) {
         Utilities.globalQueue.postRunnable(() -> {
             AudioManager audioManager = getAudioManager();
+            if (audioManager == null) {
+                AndroidUtilities.runOnUIThread(() -> onDone.run(false, false));
+                return;
+            }
             boolean isBluetoothScoOn = audioManager.isBluetoothScoOn();
             boolean isSpeakerphoneOn = audioManager.isSpeakerphoneOn();
             AndroidUtilities.runOnUIThread(() -> onDone.run(isBluetoothScoOn, isSpeakerphoneOn));
