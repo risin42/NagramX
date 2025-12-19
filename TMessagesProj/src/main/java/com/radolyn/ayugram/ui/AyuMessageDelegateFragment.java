@@ -27,6 +27,7 @@ import org.telegram.ui.ProfileActivity;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 
 public abstract class AyuMessageDelegateFragment extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, AyuMessageCell.AyuMessageCellDelegate {
 
@@ -45,7 +46,7 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
                     showDialog(new StickersAlert(getParentActivity(), this, inputStickerSet, null, null, false));
                 }
             } else {
-                AndroidUtilities.openForView(messageObject, getParentActivity(), null, false);
+                AndroidUtil.openForView(messageObject, getParentActivity(), getResourceProvider());
             }
         }
     }
