@@ -94,6 +94,7 @@ import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.GsonUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
+import xyz.nextalone.nagram.helper.BookmarksHelper;
 import xyz.nextalone.nagram.helper.LocalPeerColorHelper;
 import xyz.nextalone.nagram.helper.LocalPremiumStatusHelper;
 
@@ -919,7 +920,8 @@ public class NekoSettingsActivity extends BaseFragment {
                 NekoConfig.channelAliasPrefix,
                 DialogConfig.customForumTabPrefix,
                 LocalPeerColorHelper.KEY_PREFIX,
-                LocalPremiumStatusHelper.KEY_PREFIX
+                LocalPremiumStatusHelper.KEY_PREFIX,
+                BookmarksHelper.KEY_PREFIX
         };
 
         for (Map.Entry<String, JsonElement> element : configJson.entrySet()) {

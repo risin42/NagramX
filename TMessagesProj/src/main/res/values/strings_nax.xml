@@ -278,4 +278,13 @@
     <string name="PasskeyUnsupportedTitle">Unsupported password manager</string>
     <string name="PasskeyUnsupportedMessage">Try other password managers like **Bitwarden** or **KeePassDX**.</string>
     <string name="PasskeyNoCredentialAvailable">No viable credential is available.</string>
+    <string name="BookmarksManager">Bookmarks</string>
+    <string name="AddBookmark">Bookmark</string>
+    <string name="RemoveBookmark">Remove bookmark</string>
+    <string name="BookmarkAdded">Added to **bookmarks**.</string>
+    <string name="BookmarkRemoved">Removed from **bookmarks**.</string>
+    <string name="BookmarksLimitReached">You can save up to %d messages per chat.</string>
+    <string name="NoBookmarks">No bookmarks</string>
+    <string name="ClearAllBookmarks">Clear All Bookmarks</string>
+    <string name="ClearAllBookmarksNotification">All bookmarks cleared.</string>
 </resources>
