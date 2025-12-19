@@ -264,4 +264,18 @@
     <string name="NoQuoteForwardShort">Przekaż bez śledzenia</string>
     <string name="ForceEdgeToEdge">Wymuś krawędź do krawędzi</string>
     <string name="ViewDeleted">Wyświetl usunięte</string>
+    <string name="PasskeyLogin">Logowanie za pomocą klucza</string>
+    <string name="PasskeyInfo2">Funkcja ta działa wyłącznie w menedżerach haseł umożliwiających użytkownikowi zarządzanie ustawieniami zaufania dla aplikacji z uprawnieniami, takich jak **Bitwarden** i **KeePassDX**.</string>
+    <string name="PasskeyUnsupportedTitle">Nieobsługiwany menedżer haseł</string>
+    <string name="PasskeyUnsupportedMessage">Wypróbuj inne menedżery haseł, takie jak **Bitwarden** lub **KeePassDX**.</string>
+    <string name="PasskeyNoCredentialAvailable">Brak dostępnych dokumentów potwierdzających kwalifikacje.</string>
+    <string name="BookmarksManager">Zakładki</string>
+    <string name="AddBookmark">Zakładka</string>
+    <string name="RemoveBookmark">Usuń zakładkę</string>
+    <string name="BookmarkAdded">Dodano do **zakładek**.</string>
+    <string name="BookmarkRemoved">Usunięto z **zakładek**.</string>
+    <string name="BookmarksLimitReached">Możesz zapisać do %d wiadomości na czacie.</string>
+    <string name="NoBookmarks">Brak zakładek</string>
+    <string name="ClearAllBookmarks">Wyczyść wszystkie zakładki</string>
+    <string name="ClearAllBookmarksNotification">Wszystkie zakładki zostały usunięte.</string>
 </resources>

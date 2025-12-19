@@ -269,4 +269,13 @@
     <string name="PasskeyUnsupportedTitle">非対応のパスワードマネージャー</string>
     <string name="PasskeyUnsupportedMessage">**Bitwarden** や **KeePassDX** などの他のパスワードマネージャーをお試しください。</string>
     <string name="PasskeyNoCredentialAvailable">有効な認証情報がありません。</string>
+    <string name="BookmarksManager">ブックマーク</string>
+    <string name="AddBookmark">ブックマークに追加</string>
+    <string name="RemoveBookmark">ブックマークから削除</string>
+    <string name="BookmarkAdded">**ブックマーク**に追加しました。</string>
+    <string name="BookmarkRemoved">**ブックマーク**から削除しました。</string>
+    <string name="BookmarksLimitReached">チャットごとに最大 %d 件のメッセージを保存できます。</string>
+    <string name="NoBookmarks">ブックマークはありません</string>
+    <string name="ClearAllBookmarks">すべてのブックマークを削除</string>
+    <string name="ClearAllBookmarksNotification">すべてのブックマークを削除しました。</string>
 </resources>

@@ -172,6 +172,7 @@
     <string name="DebugMenuCleanAppUpdate">Temiz Uygulama Güncellemesi</string>
     <string name="DebugMenuMakeMemoryDump">Bellek Dökümü Oluştur</string>
     <string name="TranslateMessageLLM">Yapay Zeka ile Çevir</string>
+    <string name="EditLocalNameOverride">Yerel ad geçersiz kılma düzenleniyor.</string>
     <string name="ResetChatNameOverrides">Sohbet Adı Değişikliklerini Sıfırla</string>
     <string name="ResetChatNameNotification">Sohbet adı değişiklikleri temizlendi.</string>
     <string name="TabStyle">Sekme Stili</string>
@@ -262,4 +263,10 @@
     <string name="FixLinkPreview">Bağlantı Önizlemesini Düzelt</string>
     <string name="NoQuoteForwardShort">Alıntı Yapma</string>
     <string name="ForceEdgeToEdge">Uçtan Uca Zorla</string>
+    <string name="ViewDeleted">Silinenleri Görüntüle</string>
+    <string name="PasskeyLogin">Geçiş Anahtarı Girişi</string>
+    <string name="PasskeyInfo2">Bu özellik, yalnızca kullanıcının **Bitwarden** ve **KeePassDX** gibi ayrıcalıklı uygulamalar için güven ayarlarını yönetmesine izin veren parola yöneticileriyle çalışır.</string>
+    <string name="PasskeyUnsupportedTitle">Desteklenmeyen parola yöneticisi</string>
+    <string name="PasskeyUnsupportedMessage">**Bitwarden** veya **KeePassDX** gibi diğer parola yöneticilerini deneyin.</string>
+    <string name="PasskeyNoCredentialAvailable">Geçerli bir kimlik bilgisi bulunmuyor.</string>
 </resources>

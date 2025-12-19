@@ -16,7 +16,7 @@
     <string name="FirstLast">Pierwszy ostatni</string>
     <string name="LastFirst">Ostatni jako pierwszy</string>
     <string name="TypefaceUseDefault">Użyj czcionki systemowej</string>
-    <string name="NoQuoteForward">Przekaż bez śledzenia</string>
+    <string name="NoQuoteForward">Bez nadawcy</string>
     <string name="Repeat">Ponownie opublikować</string>
     <string name="AddToSavedMessages">Zapisz</string>
     <string name="CreateMention">Utwórz wzmiankę</string>
@@ -49,7 +49,7 @@
     <string name="TranslationProvider">Dostawca tłumaczeń</string>
     <string name="ProviderGoogleTranslate">Tłumacz Google</string>
     <string name="TranslateApiUnsupported">Wybrany przez Ciebie dostawca usług tłumaczeniowych nie obsługuje Twojego języka.</string>
-    <string name="ProviderLingocloud">Tłumacz chmure językową</string>
+    <string name="ProviderLingocloud">Tłumacz chmurę językową</string>
     <string name="UndoTranslate">Ukryj tłumaczenie</string>
     <string name="DisablePhotoViewerSideAction">Wyłącz opcję przełączania zdjęć bocznym dotknięciem</string>
     <string name="BotToken">Żeton</string>

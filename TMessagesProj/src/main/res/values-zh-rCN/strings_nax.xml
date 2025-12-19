@@ -269,4 +269,13 @@
     <string name="PasskeyUnsupportedTitle">不支持的密码管理器</string>
     <string name="PasskeyUnsupportedMessage">尝试使用其他密码管理器，例如 **Bitwarden** 或 **KeePassDX**。</string>
     <string name="PasskeyNoCredentialAvailable">没有可用的有效凭证。</string>
+    <string name="BookmarksManager">书签</string>
+    <string name="AddBookmark">添加书签</string>
+    <string name="RemoveBookmark">移除书签</string>
+    <string name="BookmarkAdded">已添加到 **书签**。</string>
+    <string name="BookmarkRemoved">已从**书签**中移除。</string>
+    <string name="BookmarksLimitReached">每个聊天最多可以保存 %d 条消息。</string>
+    <string name="NoBookmarks">暂无书签</string>
+    <string name="ClearAllBookmarks">清除所有书签</string>
+    <string name="ClearAllBookmarksNotification">所有书签已清除。</string>
 </resources>

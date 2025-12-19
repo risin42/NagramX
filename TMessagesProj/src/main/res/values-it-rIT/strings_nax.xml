@@ -268,4 +268,9 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="NoQuoteForwardShort">Ness. cit.</string>
     <string name="ForceEdgeToEdge">Forza edge-to-edge</string>
     <string name="ViewDeleted">Visualizza eliminati</string>
+    <string name="PasskeyLogin">Accesso con Passkey</string>
+    <string name="PasskeyInfo2">Questa funzione è compatibile solo con i gestori di password che consentono all\'utente di gestire le impostazioni di affidabilità per le app privilegiate, come **Bitwarden** e **KeePassDX**.</string>
+    <string name="PasskeyUnsupportedTitle">Password manager non supportato</string>
+    <string name="PasskeyUnsupportedMessage">Prova altri gestori di password come **Bitwarden** o **KeePassDX**.</string>
+    <string name="PasskeyNoCredentialAvailable">Non è disponibile nessuna credenziale valida.</string>
 </resources>
