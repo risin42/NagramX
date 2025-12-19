@@ -264,4 +264,18 @@
     <string name="NoQuoteForwardShort">Без цитати</string>
     <string name="ForceEdgeToEdge">Примусово на весь екран</string>
     <string name="ViewDeleted">Переглянути видалені</string>
+    <string name="PasskeyLogin">Вхід за ключем доступу</string>
+    <string name="PasskeyInfo2">Ця функція працює лише з менеджерами паролів, які дозволяють користувачу керувати налаштуваннями довіри для привілейованих програм таких як **Bitwarden** та **KeePassDX**.</string>
+    <string name="PasskeyUnsupportedTitle">Непідтримуваний менеджер паролів</string>
+    <string name="PasskeyUnsupportedMessage">Спробуйте інші менеджери паролів, такі як **Bitwarden** або **KeePassDX**.</string>
+    <string name="PasskeyNoCredentialAvailable">Відсутні доступні облікові дані.</string>
+    <string name="BookmarksManager">Закладки</string>
+    <string name="AddBookmark">Додати в закладки</string>
+    <string name="RemoveBookmark">Видалити закладку</string>
+    <string name="BookmarkAdded">Додано до **закладок**.</string>
+    <string name="BookmarkRemoved">Видалено з **закладок**.</string>
+    <string name="BookmarksLimitReached">Ви можете зберегти до %d повідомлень у кожному чаті.</string>
+    <string name="NoBookmarks">Закладок немає</string>
+    <string name="ClearAllBookmarks">Очистити всі закладки</string>
+    <string name="ClearAllBookmarksNotification">Усі закладки очищено.</string>
 </resources>
