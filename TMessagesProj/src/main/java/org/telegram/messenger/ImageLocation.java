@@ -1,5 +1,7 @@
 package org.telegram.messenger;
 
+import android.text.TextUtils;
+
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
@@ -75,6 +77,9 @@ public class ImageLocation {
         if (document == null) {
             return null;
         }
+        if (!TextUtils.isEmpty(document.localPath) && (document.id == 0 || document.dc_id == 0 || document.id == Integer.MIN_VALUE || document.dc_id == Integer.MIN_VALUE)) {
+            return ImageLocation.getForPath(document.localPath);
+        }
         ImageLocation imageLocation = new ImageLocation();
         imageLocation.document = document;
         imageLocation.key = document.key;
@@ -134,13 +139,9 @@ public class ImageLocation {
         } else if (photoSize == null || photo == null) {
             return null;
         }
-
-        // --- AyuGram hook
-        if (photoSize.location instanceof AyuFileLocation) {
-            return ImageLocation.getForPath(((AyuFileLocation) photoSize.location).path);
+        if (photoSize.location instanceof AyuFileLocation ayuFileLocation) {
+            return ImageLocation.getForPath(ayuFileLocation.path);
         }
-        // --- AyuGram hook
-
         int dc_id;
         if (photo.dc_id != 0) {
             dc_id = photo.dc_id;
@@ -323,6 +324,9 @@ public class ImageLocation {
             return imageLocation;
         } else if (photoSize == null || document == null) {
             return null;
+        }
+        if (photoSize.location instanceof AyuFileLocation ayuFileLocation) {
+            return ImageLocation.getForPath(ayuFileLocation.path);
         }
         return getForPhoto(photoSize.location, photoSize.size, null, document, null, TYPE_SMALL, document.dc_id, null, photoSize.type);
     }
