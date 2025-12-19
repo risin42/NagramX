@@ -134,6 +134,7 @@ import java.util.Objects;
 
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
+import xyz.nextalone.nagram.helper.BookmarksHelper;
 
 public class CacheControlActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -221,6 +222,7 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
     private static final int clear_database_id = 3;
     private static final int reset_database_id = 4;
     private static final int reset_chat_name_overrides_id = 1001;
+    private static final int clear_bookmarks_id = 1002;
     private boolean loadingDialogs;
     private NestedSizeNotifierLayout nestedSizeNotifierLayout;
 
@@ -1301,6 +1303,17 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
                     clearDatabase(false);
                 } else if (id == reset_database_id) {
                     clearDatabase(true);
+                } else if (id == clear_bookmarks_id) {
+                    AlertDialog progressDialog = new AlertDialog(getContext(), AlertDialog.ALERT_TYPE_SPINNER);
+                    progressDialog.setCanCancel(false);
+                    progressDialog.show();
+                    Utilities.globalQueue.postRunnable(() -> {
+                        BookmarksHelper.clearAllBookmarks(currentAccount);
+                        AndroidUtilities.runOnUIThread(() -> {
+                            progressDialog.dismiss();
+                            BulletinFactory.of(CacheControlActivity.this).createSimpleBulletin(R.raw.done, getString(R.string.ClearAllBookmarksNotification)).show();
+                        });
+                    });
                 } else if (id == reset_chat_name_overrides_id) {
                     AlertDialog progressDialog = new AlertDialog(getContext(), AlertDialog.ALERT_TYPE_SPINNER);
                     progressDialog.setCanCancel(false);
@@ -1360,6 +1373,11 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
             resetDatabaseItem.setTextColor(Theme.getColor(Theme.key_text_RedBold));
             resetDatabaseItem.setSelectorColor(Theme.multAlpha(Theme.getColor(Theme.key_text_RedRegular), .12f));
         }
+
+        ActionBarMenuSubItem clearBookmarksItem = otherItem.addSubItem(clear_bookmarks_id, R.drawable.msg_delete, LocaleController.getString(R.string.ClearAllBookmarks));
+        clearBookmarksItem.setIconColor(Theme.getColor(Theme.key_text_RedRegular));
+        clearBookmarksItem.setTextColor(Theme.getColor(Theme.key_text_RedBold));
+        clearBookmarksItem.setSelectorColor(Theme.multAlpha(Theme.getColor(Theme.key_text_RedRegular), .12f));
 
         ActionBarMenuSubItem resetChatNameOverridesItem = otherItem.addSubItem(reset_chat_name_overrides_id, R.drawable.msg_delete, LocaleController.getString(R.string.ResetChatNameOverrides));
         resetChatNameOverridesItem.setIconColor(Theme.getColor(Theme.key_text_RedRegular));

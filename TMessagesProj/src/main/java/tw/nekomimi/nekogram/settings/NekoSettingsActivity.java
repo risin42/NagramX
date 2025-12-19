@@ -92,6 +92,7 @@ import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.GsonUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
+import xyz.nextalone.nagram.helper.BookmarksHelper;
 import xyz.nextalone.nagram.NaConfig;
 
 public class NekoSettingsActivity extends BaseFragment {
@@ -913,7 +914,8 @@ public class NekoSettingsActivity extends BaseFragment {
         String[] preservePrefixes = {
                 ChatNameHelper.chatNameOverridePrefix,
                 NekoConfig.channelAliasPrefix,
-                DialogConfig.customForumTabPrefix
+                DialogConfig.customForumTabPrefix,
+                BookmarksHelper.KEY_PREFIX
         };
 
         for (Map.Entry<String, JsonElement> element : configJson.entrySet()) {

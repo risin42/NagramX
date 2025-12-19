@@ -5,3 +5,9 @@ enum class TabStyle(val value: Int) {
     PURE(1),
     PILLS(2),
 }
+
+enum class ToggleResult {
+    ADDED,
+    REMOVED,
+    LIMIT_REACHED,
+}
