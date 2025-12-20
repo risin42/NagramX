@@ -233,6 +233,9 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
             Map<String, ?> values = preferences.getAll();
             for (Map.Entry<String, ?> entry : values.entrySet()) {
                 String key = entry.getKey();
+                if (key == null) {
+                    continue;
+                }
                 if (key.startsWith("notify2_")) {
                     key = key.replace("notify2_", "");
                     if (key.contains("_")) {
@@ -299,6 +302,9 @@ public class NotificationsSettingsActivity extends BaseFragment implements Notif
             final HashSet<Long> customStories = new HashSet<>();
             for (Map.Entry<String, ?> entry : values.entrySet()) {
                 String key = entry.getKey();
+                if (key == null) {
+                    continue;
+                }
                 if (key.startsWith("stories_")) {
                     key = key.substring(8);
                     try {
