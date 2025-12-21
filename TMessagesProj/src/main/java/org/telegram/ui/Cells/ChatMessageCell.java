@@ -17306,7 +17306,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 }
             }
             boolean isBookmarked = BookmarksHelper.isBookmarked(currentAccount, messageObject.getDialogId(), messageObject.getId());
-            showBookmarkInTime = groupHasBookmark || (isBookmarked && !shouldDrawNameLayoutForMessage(messageObject));
+            showBookmarkInTime = groupHasBookmark || (isBookmarked && (!shouldDrawNameLayoutForMessage(messageObject) || isSideMenuEnabled));
             if (showBookmarkInTime) {
                 senderNameColor = getSenderNameColor(isBookmarked);
             }
