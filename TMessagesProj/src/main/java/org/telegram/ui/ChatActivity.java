@@ -28684,6 +28684,9 @@ public class ChatActivity extends BaseFragment implements
                                 pinnedMessageEnterOffset = (float) animation.getAnimatedValue();
                                 invalidateChatListViewTopPadding();
                                 invalidateMessagesVisiblePart();
+                                if (contentView != null && SharedConfig.getDevicePerformanceClass() == SharedConfig.PERFORMANCE_CLASS_HIGH) {
+                                    contentView.invalidateBlurredViews();
+                                }
                             }
                         });
                         pinnedMessageView.setVisibility(View.VISIBLE);
@@ -28695,6 +28698,9 @@ public class ChatActivity extends BaseFragment implements
                             public void onAnimationEnd(Animator animation) {
                                 if (pinnedMessageViewAnimator != null && pinnedMessageViewAnimator.equals(animation)) {
                                     pinnedMessageViewAnimator = null;
+                                }
+                                if (contentView != null && SharedConfig.getDevicePerformanceClass() != SharedConfig.PERFORMANCE_CLASS_HIGH) {
+                                    contentView.invalidateBlurredViews();
                                 }
                             }
 
@@ -28711,6 +28717,9 @@ public class ChatActivity extends BaseFragment implements
                         invalidateChatListViewTopPadding();
                         invalidateMessagesVisiblePart();
                         pinnedMessageView.setVisibility(View.VISIBLE);
+                        if (contentView != null) {
+                            contentView.invalidateBlurredViews();
+                        }
                     }
                 }
                 for (int a = 0; a < pinnedNextAnimation.length; a++) {
@@ -30055,6 +30064,9 @@ public class ChatActivity extends BaseFragment implements
                         topChatPanelViewOffset = (float) animation.getAnimatedValue();
                         invalidateChatListViewTopPadding();
                         invalidateMessagesVisiblePart();
+                        if (contentView != null && SharedConfig.getDevicePerformanceClass() == SharedConfig.PERFORMANCE_CLASS_HIGH) {
+                            contentView.invalidateBlurredViews();
+                        }
                     });
                     reportSpamViewAnimator.playTogether(animator);
                     reportSpamViewAnimator.setDuration(200);
@@ -30063,6 +30075,9 @@ public class ChatActivity extends BaseFragment implements
                         public void onAnimationEnd(Animator animation) {
                             if (reportSpamViewAnimator != null && reportSpamViewAnimator.equals(animation)) {
                                 reportSpamViewAnimator = null;
+                            }
+                            if (contentView != null && SharedConfig.getDevicePerformanceClass() != SharedConfig.PERFORMANCE_CLASS_HIGH) {
+                                contentView.invalidateBlurredViews();
                             }
                         }
 
@@ -30078,6 +30093,9 @@ public class ChatActivity extends BaseFragment implements
                     topChatPanelViewOffset = 0;
                     invalidateChatListViewTopPadding();
                     invalidateMessagesVisiblePart();
+                    if (contentView != null) {
+                        contentView.invalidateBlurredViews();
+                    }
                 }
             }
         } else if (topChatPanelView != null) {
