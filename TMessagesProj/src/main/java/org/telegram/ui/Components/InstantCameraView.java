@@ -733,6 +733,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         selectedCamera = null;
         if (!fromPaused) {
             isFrontface = !NekoConfig.rearVideoMessages.Bool();
+            surfaceIndex = 0;
             updateFlash();
             recordedTime = 0;
             progress = 0;
@@ -787,8 +788,8 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
                     }
                 }
                 updateFlash();
-                camera2SessionCurrent = camera2Sessions[isFrontface ? 0 : 1];
-                if (camera2SessionCurrent != null && camera2Sessions[isFrontface ? 1 : 0] == null) {
+                camera2SessionCurrent = camera2Sessions[isFrontface == !NekoConfig.rearVideoMessages.Bool() ? 0 : 1];
+                if (camera2SessionCurrent != null && camera2Sessions[isFrontface == !NekoConfig.rearVideoMessages.Bool() ? 1 : 0] == null) {
                     bothCameras = false;
                 }
                 if (camera2SessionCurrent == null) return;
@@ -1137,7 +1138,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         updateFlash();
         if (useCamera2) {
             if (bothCameras) {
-                camera2SessionCurrent = camera2Sessions[!NekoConfig.rearVideoMessages.Bool() ? 0 : 1];
+                camera2SessionCurrent = camera2Sessions[isFrontface == !NekoConfig.rearVideoMessages.Bool() ? 0 : 1];
                 cameraThread.flipSurfaces();
                 return;
             } else {
