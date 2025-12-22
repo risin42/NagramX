@@ -8261,7 +8261,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 setMessageObjectInternal(messageObject);
 
                 totalHeight = dp(82) + namesOffset;
-                if (dp(76) + durationWidth >= backgroundWidth - timeWidth - dp(12)) {
+                boolean canDrawTime = currentMessagesGroup == null || currentPosition == null || currentPosition.last;
+                boolean noCaption = TextUtils.isEmpty(messageObject.caption);
+                if (canDrawTime && noCaption && dp(76) + durationWidth >= backgroundWidth - timeWidth - dp(12)) {
                     totalHeight += dp(14);
                 }
 
@@ -11704,7 +11706,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     break;
                 }
             }
-            int durationWidth = (int) Math.ceil(Theme.chat_audioTimePaint.measureText(AndroidUtilities.formatShortDuration((int) duration, (int) duration)));
+            String durationString = AndroidUtilities.formatShortDuration((int) duration, (int) duration);
+            durationString = String.format("%s, %s", durationString, AndroidUtilities.formatFileSize(documentAttach.size));
+            int durationWidth = (int) Math.ceil(Theme.chat_audioTimePaint.measureText(durationString));
             widthBeforeNewTimeLine = backgroundWidth - dp(10 + 76) - durationWidth;
             availableTimeWidth = backgroundWidth - dp(28);
             return durationWidth;
