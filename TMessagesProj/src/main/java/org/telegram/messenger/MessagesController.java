@@ -824,7 +824,7 @@ public class MessagesController extends BaseController implements NotificationCe
         if (dialogFilters.isEmpty()) {
             return;
         }
-        if (!premium) {
+        if (!premium && !NekoConfig.localPremium.Bool()) {
             if (!dialogFilters.get(0).isDefault()) {
                 for (int i = 1; i < dialogFilters.size(); i++) {
                     if (dialogFilters.get(i).isDefault()) {
@@ -857,7 +857,7 @@ public class MessagesController extends BaseController implements NotificationCe
                     if (!filtersSortedById.get(i).locked) {
                         changed = true;
                     }
-                    filtersSortedById.get(i).locked = true;
+                    filtersSortedById.get(i).locked = !NekoConfig.localPremium.Bool();
                 } else {
                     if (filtersSortedById.get(i).locked) {
                         changed = true;

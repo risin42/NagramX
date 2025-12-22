@@ -191,7 +191,6 @@ public class FilterTabsView extends FrameLayout {
         private int textOffsetX;
         private String currentEmoticon;
         private Drawable icon;
-        private Drawable activeIcon;
 
         public boolean animateChange;
         public float changeProgress;
@@ -1357,7 +1356,7 @@ public class FilterTabsView extends FrameLayout {
 
         Tab tab = new Tab(id, text(text, entities), emoticon, noanimate);
         tab.isDefault = isDefault;
-        tab.isLocked = isLocked;
+        tab.isLocked = isLocked && !NekoConfig.localPremium.Bool();
         allTabsWidth += tab.getWidth(true) + FolderIconHelper.getPaddingTab();
         tabs.add(tab);
     }
@@ -1376,7 +1375,7 @@ public class FilterTabsView extends FrameLayout {
 
         Tab tab = new Tab(id, text, null, noanimate);
         tab.isDefault = isDefault;
-        tab.isLocked = isLocked;
+        tab.isLocked = isLocked && !NekoConfig.localPremium.Bool();
         allTabsWidth += tab.getWidth(true) + FolderIconHelper.getPaddingTab();
         tabs.add(tab);
     }
@@ -1987,7 +1986,7 @@ public class FilterTabsView extends FrameLayout {
 
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            if (!NekoConfig.hideAllTab.Bool() && (MessagesController.getInstance(UserConfig.selectedAccount).premiumFeaturesBlocked() && (!isEditing || (viewHolder.getAdapterPosition() == 0 && tabs.get(0).isDefault && !UserConfig.getInstance(UserConfig.selectedAccount).isPremium())))) {
+            if (!NekoConfig.hideAllTab.Bool() && (!isEditing || (viewHolder.getAdapterPosition() == 0 && tabs.get(0).isDefault && !UserConfig.getInstance(UserConfig.selectedAccount).isPremium()))) {
                 return makeMovementFlags(0, 0);
             }
             return makeMovementFlags(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, 0);
@@ -1995,7 +1994,7 @@ public class FilterTabsView extends FrameLayout {
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder source, RecyclerView.ViewHolder target) {
-            if (!NekoConfig.hideAllTab.Bool() && (MessagesController.getInstance(UserConfig.selectedAccount).premiumFeaturesBlocked() && ((source.getAdapterPosition() == 0 || target.getAdapterPosition() == 0) && !UserConfig.getInstance(UserConfig.selectedAccount).isPremium()))) {
+            if (!NekoConfig.hideAllTab.Bool() && ((source.getAdapterPosition() == 0 || target.getAdapterPosition() == 0) && !UserConfig.getInstance(UserConfig.selectedAccount).isPremium())) {
                 return false;
             }
             adapter.swapElements(source.getAdapterPosition(), target.getAdapterPosition());
