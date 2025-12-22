@@ -215,6 +215,7 @@ public class TimeStringHelper {
         }
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder("\u200B");
         ColoredImageSpan imageSpan = new ColoredImageSpan(bookmarkDrawable, true);
+        imageSpan.setTopOffset(-1);
         imageSpan.setOverrideColor(senderNameColor);
         spannableStringBuilder.setSpan(imageSpan, 0, 1, 0);
         return spannableStringBuilder;
