@@ -239,6 +239,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
     public boolean opened;
 
     float pinchStartDistance;
+    float pinchStartZoom;
 
     float pinchScale;
 
@@ -261,6 +262,8 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
 
     private final LinearLayout buttonsLayout;
     private final int buttonsSizePx;
+    private final ZoomControlView zoomControlView;
+    private float lockedZoom;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -318,6 +321,11 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
 
         addView(cameraContainer, new LayoutParams(AndroidUtilities.roundPlayingMessageSize, AndroidUtilities.roundPlayingMessageSize, Gravity.CENTER));
         addView(flashViews.foregroundView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.FILL));
+
+        zoomControlView = new ZoomControlView(context);
+        zoomControlView.setAlpha(0.0f);
+        zoomControlView.setDelegate(this::setLockedZoom);
+        addView(zoomControlView, new LayoutParams(LayoutHelper.MATCH_PARENT, dp(50), Gravity.CENTER));
 
 
         buttonsLayout = new LinearLayout(context);
@@ -520,9 +528,11 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
                 textureViewSize = newSize;
                 textureOverlayView.getLayoutParams().width = textureOverlayView.getLayoutParams().height = textureViewSize;
                 cameraContainer.getLayoutParams().width = cameraContainer.getLayoutParams().height = textureViewSize;
+                zoomControlView.getLayoutParams().width = textureViewSize;
                 ((LayoutParams) muteImageView.getLayoutParams()).topMargin = textureViewSize / 2 - dp(24);
                 textureOverlayView.setRoundRadius(textureViewSize / 2);
                 cameraContainer.invalidateOutline();
+                updateTranslationY();
             }
             updateTextureViewSize = false;
         }
@@ -637,6 +647,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         super.setVisibility(visibility);
 
         buttonsLayout.setAlpha(0.0f);
+        zoomControlView.setAlpha(0.0f);
         cameraContainer.setAlpha(0.0f);
         textureOverlayView.setAlpha(0.0f);
         muteImageView.setAlpha(0.0f);
@@ -734,6 +745,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         if (!fromPaused) {
             isFrontface = !NekoConfig.rearVideoMessages.Bool();
             surfaceIndex = 0;
+            setLockedZoom(0.0f);
             updateFlash();
             recordedTime = 0;
             progress = 0;
@@ -799,6 +811,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
                 camera2SessionCurrent.setRecordingVideo(true);
                 previewSize[0] = new Size(camera2SessionCurrent.getPreviewWidth(), camera2SessionCurrent.getPreviewHeight());
             }
+            applyLockedZoomToCamera();
         }
         textureView = new TextureView(getContext());
         textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
@@ -879,6 +892,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         if (open && !opened) {
             cameraContainer.setTranslationX(0);
             textureOverlayView.setTranslationX(0);
+            zoomControlView.setTranslationX(0);
 
             animationTranslationY = fromPaused ? 0 : getMeasuredHeight() / 2f;
             updateTranslationY();
@@ -899,6 +913,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         });
         animatorSet.playTogether(
                 ObjectAnimator.ofFloat(buttonsLayout, View.ALPHA, open ? 1.0f : 0.0f),
+                ObjectAnimator.ofFloat(zoomControlView, View.ALPHA, open ? 1.0f : 0.0f),
                 ObjectAnimator.ofFloat(muteImageView, View.ALPHA, 0.0f),
                 ObjectAnimator.ofInt(paint, AnimationProperties.PAINT_ALPHA, open ? 255 : 0),
                 ObjectAnimator.ofFloat(cameraContainer, View.ALPHA, open ? 1.0f : 0.0f),
@@ -909,6 +924,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
                 ObjectAnimator.ofFloat(textureOverlayView, View.SCALE_X, open ? 1.0f : 0.1f),
                 ObjectAnimator.ofFloat(textureOverlayView, View.SCALE_Y, open ? 1.0f : 0.1f),
                 ObjectAnimator.ofFloat(textureOverlayView, View.TRANSLATION_X, toX),
+                ObjectAnimator.ofFloat(zoomControlView, View.TRANSLATION_X, toX),
                 translationYAnimator
         );
         if (!open) {
@@ -931,8 +947,16 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
     }
 
     private void updateTranslationY() {
-        textureOverlayView.setTranslationY(animationTranslationY + panTranslationY);
-        cameraContainer.setTranslationY(animationTranslationY + panTranslationY);
+        final float translationY = animationTranslationY + panTranslationY;
+        textureOverlayView.setTranslationY(translationY);
+        cameraContainer.setTranslationY(translationY);
+
+        final float cameraBottom = translationY + textureViewSize / 2f + dp(8);
+        final float bottomControlsTop = getMeasuredHeight() / 2f - internalPaddingBottom;
+        float zoomControlCenterY = (cameraBottom + bottomControlsTop) / 2f;
+        final float maxZoomY = getMeasuredHeight() / 2f - dp(89);
+        zoomControlCenterY = Math.min(zoomControlCenterY, maxZoomY);
+        zoomControlView.setTranslationY(zoomControlCenterY);
     }
 
     public Rect getCameraRect() {
@@ -1111,6 +1135,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         destroy(async);
         cameraContainer.setTranslationX(0);
         textureOverlayView.setTranslationX(0);
+        zoomControlView.setTranslationX(0);
         animationTranslationY = 0;
         updateTranslationY();
         MediaController.getInstance().resumeByRewind();
@@ -1139,6 +1164,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         if (useCamera2) {
             if (bothCameras) {
                 camera2SessionCurrent = camera2Sessions[isFrontface == !NekoConfig.rearVideoMessages.Bool() ? 0 : 1];
+                applyLockedZoomToCamera();
                 cameraThread.flipSurfaces();
                 return;
             } else {
@@ -1152,6 +1178,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
                 camera2SessionCurrent.setRecordingVideo(true);
                 previewSize[0] = new Size(camera2SessionCurrent.getPreviewWidth(), camera2SessionCurrent.getPreviewHeight());
                 cameraThread.setCurrentSession(camera2SessionCurrent);
+                applyLockedZoomToCamera();
             }
         } else {
             if (cameraSession != null) {
@@ -1372,6 +1399,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
                             FileLog.d("InstantCamera camera initied");
                         }
                         cameraSession.setInitied();
+                        applyLockedZoomToCamera();
                         if (updateScale) {
                             if (cameraThread != null) {
                                 cameraThread.reinitForNewCamera();
@@ -2855,6 +2883,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
             AnimatorSet animatorSet = new AnimatorSet();
             animatorSet.playTogether(
                     ObjectAnimator.ofFloat(buttonsLayout, View.ALPHA, 0.0f),
+                    ObjectAnimator.ofFloat(zoomControlView, View.ALPHA, 0.0f),
                     ObjectAnimator.ofInt(paint, AnimationProperties.PAINT_ALPHA, 0),
                     ObjectAnimator.ofFloat(muteImageView, View.ALPHA, 1.0f));
             animatorSet.setDuration(180);
@@ -3730,7 +3759,8 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
             if (maybePinchToZoomTouchMode && !isInPinchToZoomTouchMode && ev.getPointerCount() == 2 && finishZoomTransition == null && recording) {
                 pinchStartDistance = (float) Math.hypot(ev.getX(1) - ev.getX(0), ev.getY(1) - ev.getY(0));
 
-                pinchScale = 1f;
+                pinchStartZoom = getCurrentZoom();
+                pinchScale = pinchStartZoom;
 
                 pointerId1 = ev.getPointerId(0);
                 pointerId2 = ev.getPointerId(1);
@@ -3758,15 +3788,21 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
                 finishZoom();
                 return false;
             }
-            pinchScale = (float) Math.hypot(ev.getX(index2) - ev.getX(index1), ev.getY(index2) - ev.getY(index1)) / pinchStartDistance;
+            float scale = (float) Math.hypot(ev.getX(index2) - ev.getX(index1), ev.getY(index2) - ev.getY(index1)) / pinchStartDistance;
             if (useCamera2) {
                 if (camera2SessionCurrent != null) {
-                    float zoom = Utilities.clamp(pinchScale, camera2SessionCurrent.getMaxZoom(), camera2SessionCurrent.getMinZoom());
+                    float zoom = Utilities.clamp(pinchStartZoom * scale, camera2SessionCurrent.getMaxZoom(), camera2SessionCurrent.getMinZoom());
                     camera2SessionCurrent.setZoom(zoom);
+                    pinchScale = zoom;
+                    syncZoomControlView(pinchScale);
                 }
             } else {
-                float zoom = Math.min(1f, Math.max(0, pinchScale - 1f));
-                cameraSession.setZoom(zoom);
+                float zoom = Utilities.clamp(pinchStartZoom + (scale - 1f), 1f, 0f);
+                if (cameraSession != null) {
+                    cameraSession.setZoom(zoom);
+                }
+                pinchScale = zoom;
+                syncZoomControlView(pinchScale);
             }
         } else if ((ev.getActionMasked() == MotionEvent.ACTION_UP || (ev.getActionMasked() == MotionEvent.ACTION_POINTER_UP && checkPointerIds(ev)) || ev.getActionMasked() == MotionEvent.ACTION_CANCEL) && isInPinchToZoomTouchMode) {
             isInPinchToZoomTouchMode = false;
@@ -3782,26 +3818,31 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
             return;
         }
 
-        float zoom;
+        float fromZoom;
+        float toZoom;
         if (useCamera2) {
             if (camera2SessionCurrent == null) return;
-            zoom = Utilities.clamp(pinchScale, camera2SessionCurrent.getMaxZoom(), camera2SessionCurrent.getMinZoom());
+            fromZoom = Utilities.clamp(pinchScale, camera2SessionCurrent.getMaxZoom(), camera2SessionCurrent.getMinZoom());
+            toZoom = getLockedZoomForCamera2();
         } else {
-            zoom = Math.min(1f, Math.max(0, pinchScale - 1f));
+            fromZoom = Utilities.clamp(pinchScale, 1f, 0f);
+            toZoom = lockedZoom;
         }
 
-        if (zoom > 0f) {
-            finishZoomTransition = ValueAnimator.ofFloat(zoom, 0);
+        if (Math.abs(fromZoom - toZoom) > 0.0001f) {
+            finishZoomTransition = ValueAnimator.ofFloat(fromZoom, toZoom);
             finishZoomTransition.addUpdateListener(valueAnimator -> {
+                final float zoom = (float) valueAnimator.getAnimatedValue();
                 if (useCamera2) {
                     if (camera2SessionCurrent != null) {
-                        camera2SessionCurrent.setZoom((float) valueAnimator.getAnimatedValue());
+                        camera2SessionCurrent.setZoom(zoom);
                     }
                 } else {
                     if (cameraSession != null) {
-                        cameraSession.setZoom((float) valueAnimator.getAnimatedValue());
+                        cameraSession.setZoom(zoom);
                     }
                 }
+                syncZoomControlView(zoom);
             });
             finishZoomTransition.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -3834,4 +3875,77 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
             return false;
         }
     }
+
+    private float getCurrentZoom() {
+        if (useCamera2) {
+            return camera2SessionCurrent == null ? 1f : camera2SessionCurrent.getZoom();
+        }
+        return lockedZoom;
+    }
+
+    private float getLockedZoomForCamera2() {
+        if (camera2SessionCurrent == null) {
+            return 1f;
+        }
+        float min = camera2SessionCurrent.getMinZoom();
+        float max = camera2SessionCurrent.getMaxZoom();
+        if (max <= min) {
+            return min;
+        }
+        return min + lockedZoom * (max - min);
+    }
+
+    private float getZoomControlValueFromCamera2(float zoom) {
+        final Camera2Session session = camera2SessionCurrent;
+        if (session == null) {
+            return lockedZoom;
+        }
+        final float min = session.getMinZoom();
+        final float max = session.getMaxZoom();
+        if (max <= min) {
+            return 0f;
+        }
+        return Utilities.clamp((zoom - min) / (max - min), 1f, 0f);
+    }
+
+    private void syncZoomControlView(float currentZoom) {
+        if (zoomControlView == null || zoomControlView.isTouch()) {
+            return;
+        }
+        final float value = useCamera2 ? getZoomControlValueFromCamera2(currentZoom) : Utilities.clamp01(currentZoom);
+        zoomControlView.setZoom(value, false);
+    }
+
+    private void setLockedZoom(float zoom) {
+        zoom = Utilities.clamp(zoom, 1f, 0f);
+        lockedZoom = zoom;
+        zoomControlView.setZoom(zoom, false);
+        cancelFinishZoomTransition();
+        applyLockedZoomToCamera();
+    }
+
+    private void cancelFinishZoomTransition() {
+        if (finishZoomTransition != null) {
+            finishZoomTransition.cancel();
+            finishZoomTransition = null;
+        }
+    }
+
+    private void applyLockedZoomToCamera() {
+        if (useCamera2) {
+            final Camera2Session session = camera2SessionCurrent;
+            if (session == null) {
+                return;
+            }
+            final float min = session.getMinZoom();
+            final float max = session.getMaxZoom();
+            final float zoom = max <= min ? min : min + lockedZoom * (max - min);
+            session.whenDone(() -> session.setZoom(zoom));
+        } else {
+            if (cameraSession != null) {
+                cameraSession.setZoom(lockedZoom);
+            }
+        }
+    }
+
 }
