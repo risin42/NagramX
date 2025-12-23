@@ -1286,7 +1286,7 @@ object NaConfig {
         if (translatorMode.Int() > 1) {
             translatorMode.setConfigInt(1)
         }
-        if (!preferences.getBoolean("ShowIdAndDc", true)) {
+        if (!preferences.contains(idDcType.key) && !preferences.getBoolean("ShowIdAndDc", true)) {
             idDcType.setConfigInt(0)
         }
     }
@@ -1420,7 +1420,7 @@ object NaConfig {
                                     HashMap<Int, Int>()
                             }
                             ois.close()
-                        } catch (e: Exception) {
+                        } catch (_: Exception) {
                             o.value =
                                 HashMap<Int, Int>()
                         }
