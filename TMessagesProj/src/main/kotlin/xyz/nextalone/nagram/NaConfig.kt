@@ -726,6 +726,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val showStickersRowToplevel=
+        addConfig(
+            "ShowStickersRowToplevel",
+            ConfigItem.configTypeBool,
+            true
+        )
     val hideShareButtonInChannel =
         addConfig(
             "HideShareButtonInChannel",

@@ -37,6 +37,7 @@
     <string name="ArticleTranslationProvider">Сервис перевода статей</string>
     <string name="EnableSeparateArticleTranslator">Использовать другой сервис для статей</string>
     <string name="DisableCrashlyticsCollection">Отключить Firebase Crashlytics</string>
+    <string name="ShowStickersRowToplevel">Показывать «Стикеры и эмодзи» в основных настройках</string>
     <string name="HideShareButtonInChannel">Скрыть боковую кнопку «Поделиться»</string>
     <string name="DeleteCloudBackup">Очистить облачные данные</string>
     <string name="DeleteCloudBackupFailed">Не удалось очистить облачные данные</string>

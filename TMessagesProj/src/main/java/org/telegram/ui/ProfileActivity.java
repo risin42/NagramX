@@ -11099,11 +11099,14 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
                 settingsSectionRow2 = rowCount++;
                 chatRow = rowCount++;
-                stickersRow = rowCount++;
+                if (NaConfig.INSTANCE.getShowStickersRowToplevel().Bool()) {
+                    stickersRow = rowCount++;
+                }
                 privacyRow = rowCount++;
                 notificationRow = rowCount++;
                 dataRow = rowCount++;
                 liteModeRow = rowCount++;
+//                stickersRow = rowCount++;
                 if (getMessagesController().filtersEnabled || !getMessagesController().dialogFilters.isEmpty()) {
                     filtersRow = rowCount++;
                 }
