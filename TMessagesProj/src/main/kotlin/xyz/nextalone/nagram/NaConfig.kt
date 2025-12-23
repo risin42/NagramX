@@ -2,10 +2,7 @@ package xyz.nextalone.nagram
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
-import android.os.Build
 import android.util.Base64
-import androidx.core.net.toUri
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.BuildVars
@@ -1403,7 +1400,7 @@ object NaConfig {
         if (translatorMode.Int() > 1) {
             translatorMode.setConfigInt(1)
         }
-        if (!preferences.getBoolean("ShowIdAndDc", true)) {
+        if (!preferences.contains(idDcType.key) && !preferences.getBoolean("ShowIdAndDc", true)) {
             idDcType.setConfigInt(0)
         }
     }
@@ -1537,7 +1534,7 @@ object NaConfig {
                                     HashMap<Int, Int>()
                             }
                             ois.close()
-                        } catch (e: Exception) {
+                        } catch (_: Exception) {
                             o.value =
                                 HashMap<Int, Int>()
                         }
