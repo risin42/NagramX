@@ -17,6 +17,7 @@ import org.telegram.ui.Components.TranslateAlert2
 import tw.nekomimi.nekogram.translate.HTMLKeeper
 import tw.nekomimi.nekogram.translate.Translator
 import tw.nekomimi.nekogram.translate.code2Locale
+import tw.nekomimi.nekogram.utils.AndroidUtil
 import xyz.nextalone.nagram.NaConfig
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -135,24 +136,33 @@ object LLMTranslator : Translator {
                 val waitTimeMillis = BASE_WAIT * 2.0.pow(retryCount - 1).toLong()
                 val jitter = Random.nextLong(waitTimeMillis / 2)
                 val actualWaitTimeMillis = waitTimeMillis + jitter
-
-                if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "Rate limited, retrying in ${actualWaitTimeMillis}ms, retry count: $retryCount")
+                if (BuildVars.LOGS_ENABLED) {
+                    AndroidUtil.showErrorDialog("Rate limited, retrying in ${actualWaitTimeMillis}ms, retry count: $retryCount")
+                }
                 delay(actualWaitTimeMillis)
             } catch (e: IOException) {
                 retryCount++
-                if (BuildVars.LOGS_ENABLED) Log.e("LLMTranslator", "Network error during LLM translation", e)
+                if (BuildVars.LOGS_ENABLED) {
+                    AndroidUtil.showErrorDialog(e)
+                }
                 if (retryCount >= MAX_RETRY) {
-                    if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "Max retry count reached due to network errors, falling back to GoogleAppTranslator")
+                    if (BuildVars.LOGS_ENABLED) {
+                        AndroidUtil.showErrorDialog("Max retry count reached due to network errors, falling back to GoogleAppTranslator")
+                    }
                     return GoogleAppTranslator.doTranslate(from, to, query, entities)
                 }
                 val waitTimeMillis = BASE_WAIT * 2.0.pow(retryCount - 1).toLong()
                 delay(waitTimeMillis)
             } catch (e: Exception) {
-                if (BuildVars.LOGS_ENABLED) Log.e("LLMTranslator", "Error during LLM translation, falling back", e)
+                if (BuildVars.LOGS_ENABLED) {
+                    AndroidUtil.showErrorDialog("Error during LLM translation, falling back: $e")
+                }
                 return GoogleAppTranslator.doTranslate(from, to, query, entities)
             }
         }
-        if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "Max retry count reached, falling back to GoogleAppTranslator")
+        if (BuildVars.LOGS_ENABLED) {
+            AndroidUtil.showErrorDialog("Max retry count reached, falling back to GoogleAppTranslator")
+        }
         return GoogleAppTranslator.doTranslate(from, to, query, entities)
     }
 

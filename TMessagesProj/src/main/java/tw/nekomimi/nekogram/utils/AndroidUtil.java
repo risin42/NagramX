@@ -167,16 +167,21 @@ public class AndroidUtil {
     }
 
     public static void showErrorDialog(Exception e) {
+        showErrorDialog(e.getLocalizedMessage());
+    }
+
+    public static void showErrorDialog(String message) {
         var fragment = LaunchActivity.getSafeLastFragment();
-        var message = e.getLocalizedMessage();
         if (!BulletinFactory.canShowBulletin(fragment) || message == null) {
             return;
         }
-        if (message.length() > 45) {
-            AlertsCreator.showSimpleAlert(fragment, getString(R.string.ErrorOccurred), e.getMessage());
-        } else {
-            BulletinFactory.of(fragment).createErrorBulletin(message).show();
-        }
+        AndroidUtilities.runOnUIThread(() -> {
+            if (message.length() > 45) {
+                AlertsCreator.showSimpleAlert(fragment, getString(R.string.ErrorOccurred), message);
+            } else {
+                BulletinFactory.of(fragment).createSimpleBulletin(R.raw.error, message).show();
+            }
+        });
     }
 
     public static String getFileNameWithoutEx(String filename) {
