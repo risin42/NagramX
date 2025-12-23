@@ -290,4 +290,9 @@
     <string name="ClearAllBookmarksNotification">All bookmarks cleared.</string>
     <string name="SortByUnread">Sort by Unread</string>
     <string name="MediaSettings">Media</string>
+    <string name="CameraInVideoMessages">Camera in Video Messages</string>
+    <string name="CameraInVideoMessagesFront">Front Camera</string>
+    <string name="CameraInVideoMessagesRear">Rear Camera</string>
+    <string name="CameraInVideoMessagesAsk">Ask</string>
+    <string name="CameraSettings">Camera</string>
 </resources>
