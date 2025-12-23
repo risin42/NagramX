@@ -204,10 +204,6 @@
     <string name="ShowIdAndDc">Show ID / DC in Profile</string>
     <string name="UseDefaultTheme">Use default theme *</string>
     <string name="DialogsSettings">Dialogs</string>
-    <string name="SortByUnread">Sort By Unread</string>
-    <string name="SortByUnmuted">Sort By Unmuted</string>
-    <string name="SortByUser">Sort By User</string>
-    <string name="SortByContacts">Sort By Contacts</string>
     <string name="NagramXPushService">Push Service</string>
     <string name="DisableSystemAccount">Disable System Account</string>
     <string name="FilterMenu">Dialogs Filter Menu</string>

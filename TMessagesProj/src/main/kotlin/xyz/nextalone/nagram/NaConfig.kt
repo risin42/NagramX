@@ -1239,6 +1239,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val sortByUnread =
+        addConfig(
+            "SortByUnread",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {
