@@ -126,6 +126,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import xyz.nextalone.nagram.NaConfig;
 
 @SuppressLint("ViewConstructor")
 public class InstantCameraView extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
@@ -146,6 +147,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
     private float progress;
     private CameraInfo selectedCamera;
     private boolean isFrontface = true;
+    private boolean initialCameraFront = true;
     private volatile boolean cameraReady;
     private AnimatorSet muteAnimation;
     private TLRPC.InputFile file;
@@ -462,8 +464,8 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         }
 
         if (useCamera2) {
-            if (camera2Sessions[NekoConfig.rearVideoMessages.Bool() ? 0 : 1] != null) {
-                camera2Sessions[NekoConfig.rearVideoMessages.Bool() ? 0 : 1].setFlash(flashing && !isFrontface && recording);
+            if (camera2Sessions[!initialCameraFront ? 0 : 1] != null) {
+                camera2Sessions[!initialCameraFront ? 0 : 1].setFlash(flashing && !isFrontface && recording);
             }
         } else {
             if (cameraSession != null) {
@@ -743,7 +745,11 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         cameraReady = false;
         selectedCamera = null;
         if (!fromPaused) {
-            isFrontface = !NekoConfig.rearVideoMessages.Bool();
+            int cameraMode = NaConfig.INSTANCE.getCameraInVideoMessages().Int();
+            if (cameraMode != 2) {
+                isFrontface = (cameraMode == 0); // 0 = front, 1 = rear
+                initialCameraFront = isFrontface;
+            }
             surfaceIndex = 0;
             setLockedZoom(0.0f);
             updateFlash();
@@ -800,8 +806,8 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
                     }
                 }
                 updateFlash();
-                camera2SessionCurrent = camera2Sessions[isFrontface == !NekoConfig.rearVideoMessages.Bool() ? 0 : 1];
-                if (camera2SessionCurrent != null && camera2Sessions[isFrontface == !NekoConfig.rearVideoMessages.Bool() ? 1 : 0] == null) {
+                camera2SessionCurrent = camera2Sessions[isFrontface == initialCameraFront ? 0 : 1];
+                if (camera2SessionCurrent != null && camera2Sessions[isFrontface == initialCameraFront ? 1 : 0] == null) {
                     bothCameras = false;
                 }
                 if (camera2SessionCurrent == null) return;
@@ -1163,7 +1169,7 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         updateFlash();
         if (useCamera2) {
             if (bothCameras) {
-                camera2SessionCurrent = camera2Sessions[isFrontface == !NekoConfig.rearVideoMessages.Bool() ? 0 : 1];
+                camera2SessionCurrent = camera2Sessions[isFrontface == initialCameraFront ? 0 : 1];
                 applyLockedZoomToCamera();
                 cameraThread.flipSurfaces();
                 return;
@@ -3948,4 +3954,8 @@ public class InstantCameraView extends FrameLayout implements NotificationCenter
         }
     }
 
+    public void setUseFrontCamera(boolean useFront) {
+        this.isFrontface = useFront;
+        this.initialCameraFront = useFront;
+    }
 }

@@ -1359,6 +1359,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val cameraInVideoMessages =
+        addConfig(
+            "CameraInVideoMessages",
+            ConfigItem.configTypeInt,
+            1 // 0: front; 1: rear; 2: ask
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {
@@ -1408,6 +1414,10 @@ object NaConfig {
         }
         if (!preferences.contains(idDcType.key) && !preferences.getBoolean("ShowIdAndDc", true)) {
             idDcType.setConfigInt(0)
+        }
+        if (!preferences.contains(cameraInVideoMessages.key)) {
+            val legacyRear = preferences.getBoolean("RearVideoMessages", false)
+            cameraInVideoMessages.setConfigInt(if (legacyRear) 1 else 0)
         }
     }
 
