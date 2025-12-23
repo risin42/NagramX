@@ -1,12 +1,3 @@
-/**
- * This is the source code of Cherrygram for Android.
- * It is licensed under GNU GPL v. 2 or later.
- * You should have received a copy of the license in this archive (see LICENSE).
- * Please, be respectful and credit the original author if you use this code.
- * <p>
- * Copyright github.com/arsLan4k1390, 2022-2025.
- */
-
 package tw.nekomimi.nekogram.helpers;
 
 import static org.telegram.messenger.LocaleController.getString;
@@ -333,4 +324,38 @@ public class ChatsHelper extends BaseController {
 
         return chatName;
     }
+
+    public boolean isUnreadSortPriority(TLRPC.Dialog dialog) {
+        if (dialog == null || dialog instanceof TLRPC.TL_dialogFolder) {
+            return false;
+        }
+        int unreadCount;
+        int mentionCount;
+        boolean counterMuted;
+        if (dialog.id < 0) {
+            TLRPC.Chat chat = MessagesController.getInstance(currentAccount).getChat(-dialog.id);
+            if (chat != null && (chat.forum || chat.monoforum && ChatObject.canManageMonoForum(currentAccount, chat))) {
+                int[] counts = MessagesController.getInstance(currentAccount).getTopicsController().getForumUnreadCount(chat.id);
+                unreadCount = counts[0];
+                mentionCount = counts[1];
+                counterMuted = counts[3] == 0;
+            } else {
+                unreadCount = dialog.unread_count;
+                mentionCount = dialog.unread_mentions_count;
+                counterMuted = MessagesController.getInstance(currentAccount).isDialogMuted(dialog.id);
+            }
+            if (ChatObject.isMonoForum(chat)) {
+                mentionCount = 0;
+            }
+        } else {
+            unreadCount = dialog.unread_count;
+            mentionCount = dialog.unread_mentions_count;
+            counterMuted = MessagesController.getInstance(currentAccount).isDialogMuted(dialog.id);
+        }
+        if (mentionCount > 0) {
+            return true;
+        }
+        return unreadCount > 0 && !counterMuted;
+    }
+
 }

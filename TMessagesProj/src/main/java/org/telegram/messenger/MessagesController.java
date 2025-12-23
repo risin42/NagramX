@@ -132,6 +132,7 @@ import java.util.stream.Collectors;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
+import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import xyz.nextalone.nagram.NaConfig;
@@ -1367,6 +1368,13 @@ public class MessagesController extends BaseController implements NotificationCe
                 return 0;
             }
         }
+        if (NaConfig.INSTANCE.getSortByUnread().Bool()) {
+            boolean priority1 = ChatsHelper.getInstance(currentAccount).isUnreadSortPriority(dialog1);
+            boolean priority2 = ChatsHelper.getInstance(currentAccount).isUnreadSortPriority(dialog2);
+            if (priority1 != priority2) {
+                return priority1 ? -1 : 1;
+            }
+        }
         MediaDataController mediaDataController = getMediaDataController();
         long date1 = DialogObject.getLastMessageOrDraftDate(dialog1, mediaDataController.getDraft(dialog1.id, 0));
         long date2 = DialogObject.getLastMessageOrDraftDate(dialog2, mediaDataController.getDraft(dialog2.id, 0));
@@ -1401,6 +1409,13 @@ public class MessagesController extends BaseController implements NotificationCe
                 return -1;
             } else {
                 return 0;
+            }
+        }
+        if (NaConfig.INSTANCE.getSortByUnread().Bool()) {
+            boolean priority1 = ChatsHelper.getInstance(currentAccount).isUnreadSortPriority(dialog1);
+            boolean priority2 = ChatsHelper.getInstance(currentAccount).isUnreadSortPriority(dialog2);
+            if (priority1 != priority2) {
+                return priority1 ? -1 : 1;
             }
         }
         MediaDataController mediaDataController = getMediaDataController();
