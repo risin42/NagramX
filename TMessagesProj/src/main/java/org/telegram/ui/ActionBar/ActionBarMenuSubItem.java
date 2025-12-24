@@ -22,6 +22,7 @@ import androidx.core.graphics.ColorUtils;
 
 import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.LocaleController;
+import org.telegram.messenger.SharedConfig;
 import org.telegram.ui.Components.AnimatedEmojiSpan;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.CheckBox2;
@@ -29,6 +30,8 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RLottieImageView;
 import org.telegram.ui.Components.ScaleStateListAnimator;
+
+import xyz.nextalone.nagram.NaConfig;
 
 public class ActionBarMenuSubItem extends FrameLayout {
 
@@ -407,7 +410,13 @@ public class ActionBarMenuSubItem extends FrameLayout {
     }
 
     public void updateBackground() {
-        setBackground(Theme.createRadSelectorDrawable(selectorColor, top ? selectorRad : 0, bottom ? selectorRad : 0));
+        if (NaConfig.INSTANCE.getSmoothRoundedMenu().Bool()) {
+            selectorRad = SharedConfig.bubbleRadius;
+        } else {
+            selectorRad = 10;
+        }
+        // setBackground(Theme.createRadSelectorDrawable(selectorColor, top ? selectorRad : 0, bottom ? selectorRad : 0));
+        setBackground(Theme.createRadSelectorDrawable(selectorColor, selectorRad, selectorRad, selectorRad, selectorRad));
     }
 
     private int getThemedColor(int key) {

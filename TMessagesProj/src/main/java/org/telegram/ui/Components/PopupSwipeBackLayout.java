@@ -1,5 +1,7 @@
 package org.telegram.ui.Components;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -24,12 +26,15 @@ import androidx.core.view.GestureDetectorCompat;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.AnimationNotificationsLocker;
+import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.ActionBarMenuSlider;
 import org.telegram.ui.ActionBar.ActionBarPopupWindow;
 import org.telegram.ui.ActionBar.Theme;
 
 import java.util.ArrayList;
+
+import xyz.nextalone.nagram.NaConfig;
 
 public class PopupSwipeBackLayout extends FrameLayout {
     private final static int DURATION = 300;
@@ -428,7 +433,7 @@ public class PopupSwipeBackLayout extends FrameLayout {
 
         int s = canvas.save();
         mPath.rewind();
-        int rad = AndroidUtilities.dp(6);
+        int rad = NaConfig.INSTANCE.getSmoothRoundedMenu().Bool() ? dp(SharedConfig.bubbleRadius) : dp(10);
         if (stickToRight) {
             mRect.set(getWidth() - w, y, getWidth(), y + h);
         } else {

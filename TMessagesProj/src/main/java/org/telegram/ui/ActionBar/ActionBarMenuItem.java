@@ -866,6 +866,9 @@ public class ActionBarMenuItem extends FrameLayout {
         //}
         processedPopupClick = false;
         popupWindow.setFocusable(true);
+        if (animationEnabled) {
+            popupLayout.prepareForShowAnimation();
+        }
         updateOrShowPopup(true, container.getMeasuredWidth() == 0);
         popupLayout.updateRadialSelectors();
         if (popupLayout.getSwipeBack() != null) {

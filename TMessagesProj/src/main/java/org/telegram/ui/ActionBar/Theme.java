@@ -6063,6 +6063,7 @@ public class Theme {
         private Path path = new Path();
         private float[] radii = new float[8];
         boolean invalidatePath = true;
+        private static final int INSET = dp(2);
 
         public RippleRadMaskDrawable(float top, float bottom) {
             radii[0] = radii[1] = radii[2] = radii[3] = dp(top);
@@ -6101,6 +6102,8 @@ public class Theme {
                 invalidatePath = false;
                 path.reset();
                 AndroidUtilities.rectTmp.set(getBounds());
+                AndroidUtilities.rectTmp.top += INSET;
+                AndroidUtilities.rectTmp.bottom -= INSET;
                 path.addRoundRect(AndroidUtilities.rectTmp, radii, Path.Direction.CW);
             }
             canvas.drawPath(path, maskPaint);
