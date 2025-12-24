@@ -201,10 +201,6 @@
     <string name="ShowIdAndDc">Pokaż ID / DC w profilu</string>
     <string name="UseDefaultTheme">Użyj motywu domyślnego *</string>
     <string name="DialogsSettings">Dialogi</string>
-    <string name="SortByUnread">Sortuj według nieprzeczytanych</string>
-    <string name="SortByUnmuted">Sortuj według wyciszenia</string>
-    <string name="SortByUser">Sortuj według użytkownika</string>
-    <string name="SortByContacts">Sortuj według kontaktów</string>
     <string name="NagramXPushService">Usługa push</string>
     <string name="DisableSystemAccount">Wyłącz konto systemowe</string>
     <string name="FilterMenu">Wyłącz konto systemowe</string>

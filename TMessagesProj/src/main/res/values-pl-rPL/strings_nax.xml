@@ -279,4 +279,5 @@
     <string name="NoBookmarks">Brak zakładek</string>
     <string name="ClearAllBookmarks">Wyczyść wszystkie zakładki</string>
     <string name="ClearAllBookmarksNotification">Wszystkie zakładki zostały usunięte.</string>
+    <string name="SortByUnread">Sortuj według nieprzeczytanych</string>
 </resources>

@@ -60,7 +60,7 @@
     <string name="UserRestrictionsSendStickers2">Отправка стикеров</string>
     <string name="UserRestrictionsSendGifs">Отправка GIF</string>
     <string name="CheckAllAdministrated">Добавить управляемые</string>
-    <string name="RearVideoMessages">Задняя камера для видеосообщений</string>
+    <string name="RearVideoMessages">Основная камера для видеосообщений</string>
     <string name="HideAllTab">Скрыть вкладку «Все чаты»</string>
     <string name="HideAllTabAbout">Долгое нажатие на заголовок в списке чатов показывает «Все чаты».</string>
     <string name="TabTitleType">Показывать на вкладках</string>
@@ -79,7 +79,7 @@
     <string name="SourceCode">Исходный код</string>
     <string name="ResetStickerSize">Размер стикеров по умолчанию</string>
     <string name="RestartAppToTakeEffect">Перезапустите приложение.</string>
-    <string name="DisableAppBarShadow">Отключить тень заголовка</string>
+    <string name="DisableAppBarShadow">Скрыть разделитель верхней панели</string>
     <string name="MediaPreview">Предпросмотр медиа в списке чатов</string>
     <string name="AutoPauseVideo">Останавливать видео</string>
     <string name="AutoPauseVideoAbout">При блокировке экрана или сворачивании приложения.</string>
@@ -202,10 +202,6 @@
     <string name="ShowIdAndDc">Показывать ID и DC в профиле</string>
     <string name="UseDefaultTheme">Использовать тему по умолчанию *</string>
     <string name="DialogsSettings">Настройки чатов</string>
-    <string name="SortByUnread">Сначала непрочитанные</string>
-    <string name="SortByUnmuted">Сначала со звуком</string>
-    <string name="SortByUser">Сначала личные</string>
-    <string name="SortByContacts">Сначала контакты</string>
     <string name="NagramXPushService">Push-сервис</string>
     <string name="DisableSystemAccount">Скрыть аккаунт в системе</string>
     <string name="FilterMenu">Меню фильтра диалогов</string>

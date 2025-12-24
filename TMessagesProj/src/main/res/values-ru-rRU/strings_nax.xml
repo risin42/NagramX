@@ -123,13 +123,14 @@
     <string name="GhostModeEnabled">Режим призрака включён</string>
     <string name="GhostModeDisabled">Режим призрака выключен</string>
     <string name="GhostModeInDrawer">Показывать в боковом меню</string>
+    <string name="GhostModeStatusIndicator">Индикатор режима призрака</string>
     <string name="DontSendReadMessagePackets">Не читать сообщения</string>
     <string name="DontReadStoriesPackets">Не читать истории</string>
     <string name="DontSendOnlinePackets">Не отправлять онлайн-статус</string>
     <string name="DontSendUploadProgress">Не отправлять статус ввода текста</string>
     <string name="SendOfflinePacketAfterOnline">Автоматически переходить в офлайн</string>
     <string name="MarkReadAfterSend">Отмечать прочитанным после взаимодействия</string>
-    <string name="GhostModeNotice">Долгое нажатие на любую опцию предотвращает её изменение при переключении «Режима призрака».</string>
+    <string name="GhostModeNotice">Долгое нажатие на любую опцию предотвращает её изменение при переключении режима призрака.</string>
     <string name="MarkReadAfterSendNotice">Когда вы отправляете новое сообщение или нажимаете на реакцию, сообщение автоматически отмечается как прочитанное.</string>
     <string name="SendWithoutSoundRowNotice">Автоматически отправлять исходящие сообщения без звука.</string>
     <string name="GhostReadMessage">Прочитать сообщение</string>
@@ -275,8 +276,16 @@
     <string name="RemoveBookmark">Удалить закладку</string>
     <string name="BookmarkAdded">Добавлено в **закладки**.</string>
     <string name="BookmarkRemoved">Удалено из **закладок**.</string>
-    <string name="BookmarksLimitReached">Вы можете сохранять до %d сообщений в каждом чате.</string>
+    <string name="BookmarksLimitReached">Вы можете сохранить до %d сообщений в каждом чате.</string>
     <string name="NoBookmarks">Закладок нет</string>
     <string name="ClearAllBookmarks">Очистить все закладки</string>
     <string name="ClearAllBookmarksNotification">Все закладки очищены.</string>
+    <string name="SortByUnread">Сначала непрочитанные</string>
+    <string name="MediaSettings">Медиа</string>
+    <string name="CameraInVideoMessages">Камера для видеосообщений</string>
+    <string name="CameraInVideoMessagesFront">Фронтальная</string>
+    <string name="CameraInVideoMessagesRear">Основная</string>
+    <string name="CameraInVideoMessagesAsk">Спрашивать</string>
+    <string name="CameraSettings">Камера</string>
+    <string name="SmoothRoundedMenu">Плавно закруглённое контекстное меню</string>
 </resources>

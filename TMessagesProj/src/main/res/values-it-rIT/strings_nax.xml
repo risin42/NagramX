@@ -123,6 +123,7 @@
     <string name="GhostModeEnabled">Modalità Ghost attivata</string>
     <string name="GhostModeDisabled">Modalità Ghost disattivata</string>
     <string name="GhostModeInDrawer">Mostra nel drawer</string>
+    <string name="GhostModeStatusIndicator">Indicatore Modalità Fantasma</string>
     <string name="DontSendReadMessagePackets">Non Leggere Messaggi</string>
     <string name="DontReadStoriesPackets">Non Leggere Storie</string>
     <string name="DontSendOnlinePackets">Non Inviare stato Online</string>
@@ -173,8 +174,8 @@
     <string name="DebugMenuCleanAppUpdate">Aggiornamento pulito dell\'app</string>
     <string name="DebugMenuMakeMemoryDump">Crea un dump della memoria</string>
     <string name="TranslateMessageLLM">Traduci con IA</string>
-    <string name="EditLocalNameOverride">Modificare l\'override del nome locale.</string>
-    <string name="ResetChatNameOverrides">Reimposta gli override dei nomi della chat</string>
+    <string name="EditLocalNameOverride">Modifica il nome del gruppo in locale.</string>
+    <string name="ResetChatNameOverrides">Reimposta i Nomi Originali dei Gruppi</string>
     <string name="ResetChatNameNotification">I nomi delle chat sono stati sostituiti.</string>
     <string name="TabStyle">Stile cartelle</string>
     <string name="TabStylePure">Puro</string>
@@ -274,4 +275,21 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="PasskeyUnsupportedTitle">Password manager non supportato</string>
     <string name="PasskeyUnsupportedMessage">Prova altri gestori di password come **Bitwarden** o **KeePassDX**.</string>
     <string name="PasskeyNoCredentialAvailable">Non è disponibile nessuna credenziale valida.</string>
+    <string name="BookmarksManager">Segnalibri</string>
+    <string name="AddBookmark">Segnalibro</string>
+    <string name="RemoveBookmark">Rimuovi segnalibro</string>
+    <string name="BookmarkAdded">Aggiunto ai **segnalibri**.</string>
+    <string name="BookmarkRemoved">Rimosso dai **segnalibri**.</string>
+    <string name="BookmarksLimitReached">Puoi salvare fino a %d messaggi per chat.</string>
+    <string name="NoBookmarks">Nessun segnalibro</string>
+    <string name="ClearAllBookmarks">Cancella Tutti i Segnalibri</string>
+    <string name="ClearAllBookmarksNotification">Tutti i segnalibri sono stati cancellati.</string>
+    <string name="SortByUnread">Ordina per non letti</string>
+    <string name="MediaSettings">Media</string>
+    <string name="CameraInVideoMessages">Camera per videomessaggi</string>
+    <string name="CameraInVideoMessagesFront">Camera frontale</string>
+    <string name="CameraInVideoMessagesRear">Camera posteriore</string>
+    <string name="CameraInVideoMessagesAsk">Chiedi</string>
+    <string name="CameraSettings">Camera</string>
+    <string name="SmoothRoundedMenu">Menu contestuali arrotondati</string>
 </resources>

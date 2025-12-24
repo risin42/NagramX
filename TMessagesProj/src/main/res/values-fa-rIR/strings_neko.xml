@@ -201,10 +201,6 @@
     <string name="ShowIdAndDc">نمایش شناسه (ID) / دیتاسنتر (DC) در پروفایل</string>
     <string name="UseDefaultTheme">استفاده از پوسته پیش‌فرض *</string>
     <string name="DialogsSettings">تنظیمات گفتگوها</string>
-    <string name="SortByUnread">مرتب‌سازی بر اساس خوانده نشده</string>
-    <string name="SortByUnmuted">مرتب‌سازی بر اساس بی‌صدا نشده</string>
-    <string name="SortByUser">مرتب‌سازی بر اساس کاربر</string>
-    <string name="SortByContacts">مرتب‌سازی بر اساس مخاطبین</string>
     <string name="NagramXPushService">سرویس اعلان</string>
     <string name="DisableSystemAccount">غیرفعال کردن حساب سیستمی</string>
     <string name="FilterMenu">منوی فیلتر گفتگوها</string>

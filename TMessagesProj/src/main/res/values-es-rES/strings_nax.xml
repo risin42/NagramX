@@ -242,4 +242,5 @@
     <string name="ExportSettingsIncludeApiKeys">Incluir claves de API</string>
     <string name="DisableInAppBrowserGestures">Deshabilitar gestos</string>
     <string name="HowToObtain">¿Cómo obtener?</string>
+    <string name="SortByUnread">Ordenar por no leído</string>
 </resources>

@@ -123,6 +123,7 @@
     <string name="GhostModeEnabled">幽灵模式已启用</string>
     <string name="GhostModeDisabled">幽灵模式已禁用</string>
     <string name="GhostModeInDrawer">在侧栏中显示</string>
+    <string name="GhostModeStatusIndicator">幽灵模式指示器</string>
     <string name="DontSendReadMessagePackets">不显示消息已读</string>
     <string name="DontReadStoriesPackets">不显示动态已读</string>
     <string name="DontSendOnlinePackets">不发送在线状态</string>
@@ -279,4 +280,12 @@
     <string name="NoBookmarks">暂无书签</string>
     <string name="ClearAllBookmarks">清除所有书签</string>
     <string name="ClearAllBookmarksNotification">所有书签已清除。</string>
+    <string name="SortByUnread">未读优先排序</string>
+    <string name="MediaSettings">媒体</string>
+    <string name="CameraInVideoMessages">视频消息中的摄像头</string>
+    <string name="CameraInVideoMessagesFront">前置摄像头</string>
+    <string name="CameraInVideoMessagesRear">后置摄像头</string>
+    <string name="CameraInVideoMessagesAsk">询问</string>
+    <string name="CameraSettings">相机</string>
+    <string name="SmoothRoundedMenu">平滑圆角上下文菜单</string>
 </resources>

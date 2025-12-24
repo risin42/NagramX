@@ -123,6 +123,7 @@
     <string name="GhostModeEnabled">ゴーストモードが有効です</string>
     <string name="GhostModeDisabled">ゴーストモードが無効です</string>
     <string name="GhostModeInDrawer">ドロワーに表示</string>
+    <string name="GhostModeStatusIndicator">ゴーストモード標識</string>
     <string name="DontSendReadMessagePackets">メッセージの既読を送信しない</string>
     <string name="DontReadStoriesPackets">ストーリーの既読を送信しない</string>
     <string name="DontSendOnlinePackets">オンライン状態を送信しない</string>
@@ -279,4 +280,12 @@
     <string name="NoBookmarks">ブックマークはありません</string>
     <string name="ClearAllBookmarks">すべてのブックマークを削除</string>
     <string name="ClearAllBookmarksNotification">すべてのブックマークを削除しました。</string>
+    <string name="SortByUnread">未読で並べ替え</string>
+    <string name="MediaSettings">メディア</string>
+    <string name="CameraInVideoMessages">ビデオメッセージのカメラ</string>
+    <string name="CameraInVideoMessagesFront">フロントカメラ</string>
+    <string name="CameraInVideoMessagesRear">リアカメラ</string>
+    <string name="CameraInVideoMessagesAsk">尋ねる</string>
+    <string name="CameraSettings">カメラ</string>
+    <string name="SmoothRoundedMenu">滑らかな角丸コンテキストメニュー</string>
 </resources>

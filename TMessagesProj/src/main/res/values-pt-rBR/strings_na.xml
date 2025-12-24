@@ -5,7 +5,7 @@
     <string name="CombineMessage">Combinar Mensagens</string>
     <string name="TextStyle">Estilo de Texto</string>
     <string name="NoiseSuppressAndVoiceEnhance">Supressão de Ruído e Melhoramento de Voz</string>
-    <string name="RepeatAsCopy">Respostar como Cópia</string>
+    <string name="RepeatAsCopy">Repostar como cópia</string>
     <string name="DoubleTapAction">Ação de Toque Duplo</string>
     <string name="SendReactions">Enviar Reações</string>
     <string name="ShowReactions">Mostrar Reações</string>
@@ -13,7 +13,7 @@
     <string name="CustomTitleHint">Deixe em branco para usar Nagram X</string>
     <string name="CreateMono">Criar monoespaço</string>
     <string name="CreateMonoLanguage">Linguagem do Código</string>
-    <string name="CopyPhoto">Copiar foto</string>
+    <string name="CopyPhoto">Copiar Foto</string>
     <string name="PhotoCopied">Foto copiada para área de transferência</string>
     <string name="ToTheBeginning">Para o Início</string>
     <string name="DateOfForwardedMsg">Mostrar Data nas Mensagens Encaminhadas</string>
@@ -65,7 +65,7 @@
     <string name="SendWithMarkdown">Enviar com Markdown</string>
     <string name="TipsChannel">Canal de Dicas</string>
     <string name="ShowSmallGIF">Mostrar GIF Pequeno</string>
-    <string name="DisableClickCommandToSend">Perguntar antes de enviar comando do Bot</string>
+    <string name="DisableClickCommandToSend">Perguntar Antes de Enviar Comando do Bot</string>
     <string name="DisableDialogsFloatingButton">Ocultar Botão Flutuante</string>
     <string name="DisableFlagSecure">Desativar FLAG_SEGURE</string>
     <string name="CenterActionBarTitleType">Usar Título Centralizado</string>
@@ -85,7 +85,7 @@
     <string name="PreviewSendVideo">Enviar Vídeo</string>
     <string name="PreviewSendFile">Enviar Arquivo</string>
     <string name="UnblockDeleted">Desbloquear Usuários Excluídos</string>
-    <string name="UnblockDeletedWarn">Você tem certeza que deseja desbloquear **todos os usuários excluídos**?</string>
+    <string name="UnblockDeletedWarn">Tem certeza de que deseja desbloquear **todos os usuários excluídos**?</string>
     <string name="RegexFilters">Filtros de Mensagens</string>
     <string name="RegexFiltersHeader">Filtros</string>
     <string name="RegexFiltersSharedHeader">Filtros Compartilhados</string>

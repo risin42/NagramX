@@ -289,4 +289,5 @@
     <string name="ClearAllBookmarks">Clear All Bookmarks</string>
     <string name="ClearAllBookmarksNotification">All bookmarks cleared.</string>
     <string name="SortByUnread">Sort by Unread</string>
+    <string name="MediaSettings">Media</string>
 </resources>

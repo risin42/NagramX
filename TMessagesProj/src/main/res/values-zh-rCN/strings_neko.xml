@@ -79,7 +79,7 @@
     <string name="SourceCode">源代码</string>
     <string name="ResetStickerSize">重置贴纸大小</string>
     <string name="RestartAppToTakeEffect">重启应用以生效。</string>
-    <string name="DisableAppBarShadow">禁用标题栏阴影</string>
+    <string name="DisableAppBarShadow">隐藏顶部面板分隔线</string>
     <string name="MediaPreview">聊天列表中的媒体预览</string>
     <string name="AutoPauseVideo">自动暂停视频</string>
     <string name="AutoPauseVideoAbout">当锁定屏幕/切换到后台时。</string>
@@ -203,10 +203,6 @@
     <string name="ShowIdAndDc">在个人资料中显示 ID/ DC</string>
     <string name="UseDefaultTheme">使用默认主题 *</string>
     <string name="DialogsSettings">聊天列表</string>
-    <string name="SortByUnread">未读优先排序</string>
-    <string name="SortByUnmuted">未静音优先排序</string>
-    <string name="SortByUser">用户优先排序</string>
-    <string name="SortByContacts">联系人优先排序</string>
     <string name="NagramXPushService">推送服务</string>
     <string name="DisableSystemAccount">禁用系统帐户</string>
     <string name="FilterMenu">分类菜单</string>
