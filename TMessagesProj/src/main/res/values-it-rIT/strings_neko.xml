@@ -79,7 +79,6 @@
     <string name="SourceCode">Codice Sorgente</string>
     <string name="ResetStickerSize">Reimposta la dimensione dello sticker</string>
     <string name="RestartAppToTakeEffect">Riavvia l\'app per applicare i cambiamenti.</string>
-    <string name="DisableAppBarShadow">Disabilita l\'ombra della barra del titolo</string>
     <string name="MediaPreview">Anteprima multimediale nell\'elenco delle chat</string>
     <string name="AutoPauseVideo">Pausa automatica del video</string>
     <string name="AutoPauseVideoAbout">Quando si blocca lo schermo/si passa allo sfondo.</string>
@@ -201,10 +200,6 @@
     <string name="ShowIdAndDc">Mostra ID / DC nel profilo</string>
     <string name="UseDefaultTheme">Usa tema predefinito *</string>
     <string name="DialogsSettings">Finestre di dialogo</string>
-    <string name="SortByUnread">Ordina per non letti</string>
-    <string name="SortByUnmuted">Ordina per non silenziati</string>
-    <string name="SortByUser">Ordina per utente</string>
-    <string name="SortByContacts">Ordina per contatti</string>
     <string name="NagramXPushService">Servizio Push</string>
     <string name="DisableSystemAccount">Disabilita account di sistema</string>
     <string name="FilterMenu">Menu Filtro Dialoghi</string>

@@ -79,7 +79,6 @@
     <string name="SourceCode">Вихідний код</string>
     <string name="ResetStickerSize">Скинути розмір наліпки</string>
     <string name="RestartAppToTakeEffect">Перезапустіть додаток для застосування змін.</string>
-    <string name="DisableAppBarShadow">Вимкнути тінь панелі заголовку</string>
     <string name="MediaPreview">Попередній перегляд медіа в списку чатів</string>
     <string name="AutoPauseVideo">Призупинити відео</string>
     <string name="AutoPauseVideoAbout">При блокуванні екрана або згортанні програми.</string>
@@ -201,10 +200,6 @@
     <string name="ShowIdAndDc">Показати ID/DC в профілі</string>
     <string name="UseDefaultTheme">Використовувати стандартну тему *</string>
     <string name="DialogsSettings">Чати</string>
-    <string name="SortByUnread">Сортувати за непрочитаними</string>
-    <string name="SortByUnmuted">Сортувати за ввімк. звуком</string>
-    <string name="SortByUser">Сортувати за користувачем</string>
-    <string name="SortByContacts">Сортувати за контактами</string>
     <string name="NagramXPushService">Служба Push-сповіщень</string>
     <string name="DisableSystemAccount">Приховати акаунт у системі</string>
     <string name="FilterMenu">Меню фільтру діалогів</string>

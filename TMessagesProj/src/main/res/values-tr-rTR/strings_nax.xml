@@ -270,4 +270,5 @@
     <string name="PasskeyUnsupportedTitle">Desteklenmeyen parola yöneticisi</string>
     <string name="PasskeyUnsupportedMessage">**Bitwarden** veya **KeePassDX** gibi diğer parola yöneticilerini deneyin.</string>
     <string name="PasskeyNoCredentialAvailable">Geçerli bir kimlik bilgisi bulunmuyor.</string>
+    <string name="SortByUnread">Okunmamışa Göre Sırala</string>
 </resources>
