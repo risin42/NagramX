@@ -14,8 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.BuildVars;
-import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.tgnet.TLRPC;
@@ -66,38 +64,43 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
     private final CellGroup cellGroup = new CellGroup(this);
 
-    // Experimental
-    private final AbstractConfigCell headerExperimental = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.Experimental)));
-    private final AbstractConfigCell enhancedFileLoaderRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.enhancedFileLoader));
-    private final AbstractConfigCell boostUploadRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.uploadBoost));
-    private final AbstractConfigCell disableFilteringRow = cellGroup.appendCell(new ConfigCellCustom("SensitiveDisableFiltering", CellGroup.ITEM_TYPE_TEXT_CHECK, true));
-    private final AbstractConfigCell unlimitedFavedStickersRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.unlimitedFavedStickers, getString(R.string.UnlimitedFavoredStickersAbout)));
-    private final AbstractConfigCell unlimitedPinnedDialogsRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.unlimitedPinnedDialogs, getString(R.string.UnlimitedPinnedDialogsAbout)));
-    private final AbstractConfigCell useMediaStreamInVoipRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useMediaStreamInVoip));
-    private final AbstractConfigCell saveToChatSubfolderRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSaveToChatSubfolder()));
+    // General
+    private final AbstractConfigCell headerGeneral = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.General)));
     private final AbstractConfigCell springAnimationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimation()));
     private final AbstractConfigCell springAnimationCrossfadeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimationCrossfade()));
     private final AbstractConfigCell forceEdgeToEdgeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getForceEdgeToEdge()));
+    private final AbstractConfigCell saveToChatSubfolderRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSaveToChatSubfolder()));
+    private final AbstractConfigCell unlimitedPinnedDialogsRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.unlimitedPinnedDialogs, getString(R.string.UnlimitedPinnedDialogsAbout)));
+    private final AbstractConfigCell unlimitedFavedStickersRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.unlimitedFavedStickers, getString(R.string.UnlimitedFavoredStickersAbout)));
+    private final AbstractConfigCell dividerGeneral = cellGroup.appendCell(new ConfigCellDivider());
+
+    // Connections
+    private final AbstractConfigCell headerConnection = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.Connection)));
+    private final AbstractConfigCell boostUploadRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.uploadBoost));
+    private final AbstractConfigCell enhancedFileLoaderRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.enhancedFileLoader));
+    private final AbstractConfigCell dividerConnection = cellGroup.appendCell(new ConfigCellDivider());
+
+    // Media
+    private final AbstractConfigCell headerMedia = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.MediaSettings)));
+    private final AbstractConfigCell audioEnhanceRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getNoiseSuppressAndVoiceEnhance()));
+    private final AbstractConfigCell useMediaStreamInVoipRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useMediaStreamInVoip));
+    private final AbstractConfigCell sendMp4DocumentAsVideoRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSendMp4DocumentAsVideo()));
+    private final AbstractConfigCell enhancedVideoBitrateRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnhancedVideoBitrate()));
     private final AbstractConfigCell customAudioBitrateRow = cellGroup.appendCell(new ConfigCellCustom("customGroupVoipAudioBitrate", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
     private final AbstractConfigCell playerDecoderRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getPlayerDecoder(), new String[]{
             getString(R.string.VideoPlayerDecoderHardware),
             getString(R.string.VideoPlayerDecoderPreferHW),
             getString(R.string.VideoPlayerDecoderPreferSW),
     }, null));
-    private final AbstractConfigCell dividerExperimental = cellGroup.appendCell(new ConfigCellDivider());
+    private final AbstractConfigCell dividerMedia = cellGroup.appendCell(new ConfigCellDivider());
 
     // N-Config
     private final AbstractConfigCell headerNConfig = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.N_Config)));
-    private final AbstractConfigCell regexFiltersEnabledRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getRegexFiltersEnabled(), getString(R.string.RegexFiltersNotice)));
     private final AbstractConfigCell forceCopyRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getForceCopy()));
     private final AbstractConfigCell disableFlagSecureRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableFlagSecure()));
-    private final AbstractConfigCell audioEnhanceRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getNoiseSuppressAndVoiceEnhance()));
     private final AbstractConfigCell showRPCErrorRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowRPCError()));
-    private final AbstractConfigCell sendMp4DocumentAsVideoRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSendMp4DocumentAsVideo()));
-    private final AbstractConfigCell enhancedVideoBitrateRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getEnhancedVideoBitrate()));
-    private final AbstractConfigCell disableChatActionRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableChatAction));
     private final AbstractConfigCell disableChoosingStickerRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableChoosingSticker));
-    private final AbstractConfigCell showAdsRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowAds()));
+    private final AbstractConfigCell disableFilteringRow = cellGroup.appendCell(new ConfigCellCustom("SensitiveDisableFiltering", CellGroup.ITEM_TYPE_TEXT_CHECK, true));
     private final AbstractConfigCell devicePerformanceClassRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getPerformanceClass(), new String[]{
             getString(R.string.QualityAuto) + " [" + SharedConfig.getPerformanceClassName(SharedConfig.measureDevicePerformanceClass()) + "]",
             getString(R.string.PerformanceClassHigh),
@@ -121,15 +124,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         if (!NaConfig.INSTANCE.getSpringAnimation().Bool()) {
             cellGroup.rows.remove(springAnimationCrossfadeRow);
         }
-        checkStoriesCellRows();
-        if (!BuildVars.LOGS_ENABLED) {
-            cellGroup.rows.remove(unlimitedFavedStickersRow);
-            cellGroup.rows.remove(unlimitedPinnedDialogsRow);
-            cellGroup.rows.remove(forceCopyRow);
-            cellGroup.rows.remove(disableFlagSecureRow);
-            cellGroup.rows.remove(disableChatActionRow);
-            cellGroup.rows.remove(showAdsRow);
-        }
+        checkStoriesRows();
         addRowsToMap(cellGroup);
     }
 
@@ -163,10 +158,6 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         listView.setOnItemClickListener((view, position, x, y) -> {
             AbstractConfigCell a = cellGroup.rows.get(position);
             if (a instanceof ConfigCellTextCheck) {
-                if (position == cellGroup.rows.indexOf(regexFiltersEnabledRow) && (LocaleController.isRTL && x > AndroidUtilities.dp(76) || !LocaleController.isRTL && x < (view.getMeasuredWidth() - AndroidUtilities.dp(76)))) {
-                    presentFragment(new RegexFiltersSettingActivity());
-                    return;
-                }
                 ((ConfigCellTextCheck) a).onClick((TextCheckCell) view);
             } else if (a instanceof ConfigCellSelectBox) {
                 ((ConfigCellSelectBox) a).onClick(view);
@@ -252,10 +243,10 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             if (key.equals(NaConfig.INSTANCE.getDisableFlagSecure().getKey())) {
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getDisableStories().getKey())) {
-                checkStoriesCellRows();
+                checkStoriesRows();
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getSpringAnimation().getKey())) {
-                 if (!(boolean) newValue) {
+                if (!(boolean) newValue) {
                     if (cellGroup.rows.contains(springAnimationCrossfadeRow)) {
                         final int index = cellGroup.rows.indexOf(springAnimationCrossfadeRow);
                         cellGroup.rows.remove(springAnimationCrossfadeRow);
@@ -282,7 +273,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             }
         };
 
-        //Cells: Set ListAdapter
+        // Cells: Set ListAdapter
         cellGroup.setListAdapter(listView, listAdapter);
 
         return superView;
@@ -406,7 +397,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         }));
     }
 
-    //impl ListAdapter
+    // impl ListAdapter
     private class ListAdapter extends RecyclerListView.SelectionAdapter {
 
         private final Context mContext;
@@ -499,13 +490,13 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                     view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
             }
-            //noinspection ConstantConditions
+            // noinspection ConstantConditions
             view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
             return new RecyclerListView.Holder(view);
         }
     }
 
-    private void checkStoriesCellRows() {
+    private void checkStoriesRows() {
         boolean disabled = NaConfig.INSTANCE.getDisableStories().Bool();
         if (listAdapter == null) {
             if (disabled) {
