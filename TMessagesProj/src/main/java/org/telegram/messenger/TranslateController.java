@@ -153,6 +153,7 @@ public class TranslateController extends BaseController {
                 messageObject.type == MessageObject.TYPE_TEXT ||
                 messageObject.type == MessageObject.TYPE_VIDEO ||
                 messageObject.type == MessageObject.TYPE_PHOTO ||
+                messageObject.type == MessageObject.TYPE_GIF ||
                 messageObject.type == MessageObject.TYPE_VOICE ||
                 messageObject.type == MessageObject.TYPE_ROUND_VIDEO ||
                 messageObject.type == MessageObject.TYPE_FILE ||
