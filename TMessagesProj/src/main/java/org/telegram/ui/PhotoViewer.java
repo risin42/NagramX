@@ -20464,6 +20464,15 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     file = FileLoader.getInstance(currentAccount).getPathToMessage(currentMessageObject.messageOwner);
                 }
                 if (file == null || !file.exists()) {
+                    String p = MessageHelper.getPathToMessage(currentMessageObject);
+                    if (!TextUtils.isEmpty(p)) {
+                        File f = new File(p);
+                        if (f.exists()) {
+                            file = f;
+                        }
+                    }
+                }
+                if (file == null || !file.exists()) {
                     file = null;
                     if (currentMessageObject.isVideo() && (currentMessageObject.hasVideoQualities() || SharedConfig.streamMedia) && !DialogObject.isEncryptedDialog(currentMessageObject.getDialogId()) && currentMessageObject.canStreamVideo()) {
                         final int reference = FileLoader.getInstance(currentMessageObject.currentAccount).getFileReference(currentMessageObject);
