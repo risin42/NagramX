@@ -12769,6 +12769,9 @@ public class ChatActivity extends BaseFragment implements
                 bottomOverlayAnimation.setStartDelay(200);
             } else {
                 View text = bottomOverlayLinks ? bottomOverlayLinksText : bottomOverlayChatText;
+                if (text != null) {
+                    text.setVisibility(View.VISIBLE);
+                }
                 bottomOverlayAnimation.playTogether(
                         ObjectAnimator.ofFloat(bottomOverlayProgress, View.SCALE_X, 0.1f),
                         ObjectAnimator.ofFloat(bottomOverlayProgress, View.SCALE_Y, 0.1f),
