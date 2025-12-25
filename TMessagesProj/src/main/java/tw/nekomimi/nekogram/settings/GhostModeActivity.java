@@ -46,6 +46,7 @@ public class GhostModeActivity extends BaseNekoSettingsActivity {
     private int sendWithoutSoundRow;
     private int sendWithoutSoundNoticeRow;
     private int showGhostInDrawerRow;
+    private int showGhostModeStatusRow;
     private boolean ghostModeMenuExpanded;
 
     @Override
@@ -74,6 +75,7 @@ public class GhostModeActivity extends BaseNekoSettingsActivity {
         sendWithoutSoundRow = addRow();
         sendWithoutSoundNoticeRow = addRow();
         showGhostInDrawerRow = addRow();
+        showGhostModeStatusRow = addRow();
     }
 
     @Override
@@ -148,6 +150,10 @@ public class GhostModeActivity extends BaseNekoSettingsActivity {
         } else if (position == showGhostInDrawerRow) {
             NekoConfig.showGhostInDrawer.toggleConfigBool();
             ((TextCheckCell) view).setChecked(NekoConfig.showGhostInDrawer.Bool());
+            NotificationCenter.getInstance(UserConfig.selectedAccount).postNotificationName(NotificationCenter.mainUserInfoChanged);
+        } else if (position == showGhostModeStatusRow) {
+            NekoConfig.showGhostModeStatus.toggleConfigBool();
+            ((TextCheckCell) view).setChecked(NekoConfig.showGhostModeStatus.Bool());
             NotificationCenter.getInstance(UserConfig.selectedAccount).postNotificationName(NotificationCenter.mainUserInfoChanged);
         }
     }
@@ -248,6 +254,8 @@ public class GhostModeActivity extends BaseNekoSettingsActivity {
                         textCheckCell.setTextAndCheck(getString(R.string.SilentMessageByDefault), NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), true);
                     } else if (position == showGhostInDrawerRow) {
                         textCheckCell.setTextAndCheck(getString(R.string.GhostModeInDrawer), NekoConfig.showGhostInDrawer.Bool(), true);
+                    } else if (position == showGhostModeStatusRow) {
+                        textCheckCell.setTextAndCheck(getString(R.string.GhostModeStatusIndicator), NekoConfig.showGhostModeStatus.Bool(), false);
                     }
                     break;
                 case TYPE_HEADER:

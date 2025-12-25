@@ -2819,6 +2819,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             getNotificationCenter().addObserver(this, NotificationCenter.forceImportContactsStart);
             getNotificationCenter().addObserver(this, NotificationCenter.userEmojiStatusUpdated);
             getNotificationCenter().addObserver(this, NotificationCenter.currentUserPremiumStatusChanged);
+            getNotificationCenter().addObserver(this, NotificationCenter.mainUserInfoChanged);
 
             NotificationCenter.getGlobalInstance().addObserver(this, NotificationCenter.didSetPasscode);
             NotificationCenter.getGlobalInstance().addObserver(this, NotificationCenter.appUpdateAvailable);
@@ -2890,9 +2891,43 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     }
 
     private Drawable premiumStar;
+    private Drawable ghostDrawable;
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void updateStatus(TLRPC.User user, boolean animated) {
         if (statusDrawable == null || actionBar == null) {
+            return;
+        }
+        if (NekoConfig.isGhostModeActive() && NekoConfig.showGhostModeStatus.Bool()) {
+            if (ghostDrawable == null) {
+                ghostDrawable = getContext().getResources().getDrawable(R.drawable.ayu_ghost).mutate();
+                ghostDrawable = new AnimatedEmojiDrawable.WrapSizeDrawable(ghostDrawable, dp(20), dp(20)) {
+                    @Override
+                    public void draw(@NonNull Canvas canvas) {
+                        canvas.save();
+                        canvas.translate(dp(-1), dp(1));
+                        super.draw(canvas);
+                        canvas.restore();
+                    }
+                };
+            }
+            ghostDrawable.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_profile_verifiedBackground), PorterDuff.Mode.SRC_IN));
+            statusDrawable.set(ghostDrawable, animated);
+            statusDrawable.setParticles(false, animated);
+            statusDrawableGiftId = null;
+            actionBar.setRightDrawableOnClick(null);
+            boolean isOnDefaultTab = filterTabsView == null || filterTabsView.getCurrentTabId() == filterTabsView.getDefaultTabId();
+            if (!NaConfig.INSTANCE.getFolderNameAsTitle().Bool() || isOnDefaultTab) {
+                SimpleTextView titleTextView = actionBar.getTitleTextView();
+                if (titleTextView != null && titleTextView.getRightDrawable() != statusDrawable) {
+                    titleTextView.setRightDrawable(statusDrawable);
+                    statusDrawable.setParentView(titleTextView);
+                }
+            }
+            statusDrawable.setColor(Theme.getColor(Theme.key_profile_verifiedBackground));
+            if (animatedStatusView != null) {
+                animatedStatusView.setColor(Theme.getColor(Theme.key_profile_verifiedBackground));
+            }
             return;
         }
         Long emojiStatusId = UserObject.getEmojiStatusDocumentId(user);
@@ -2989,6 +3024,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             getNotificationCenter().removeObserver(this, NotificationCenter.forceImportContactsStart);
             getNotificationCenter().removeObserver(this, NotificationCenter.userEmojiStatusUpdated);
             getNotificationCenter().removeObserver(this, NotificationCenter.currentUserPremiumStatusChanged);
+            getNotificationCenter().removeObserver(this, NotificationCenter.mainUserInfoChanged);
 
             NotificationCenter.getGlobalInstance().removeObserver(this, NotificationCenter.didSetPasscode);
             NotificationCenter.getGlobalInstance().removeObserver(this, NotificationCenter.appUpdateAvailable);
@@ -11120,6 +11156,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         } else if (id == NotificationCenter.currentUserPremiumStatusChanged) {
             updateStatus(UserConfig.getInstance(account).getCurrentUser(), true);
             updateStoriesPosting();
+        } else if (id == NotificationCenter.mainUserInfoChanged) {
+            updateStatus(UserConfig.getInstance(account).getCurrentUser(), true);
         } else if (id == NotificationCenter.onDatabaseReset) {
             dialogsLoaded[currentAccount] = false;
             loadDialogs(getAccountInstance());
