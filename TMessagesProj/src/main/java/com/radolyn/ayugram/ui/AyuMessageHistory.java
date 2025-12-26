@@ -74,6 +74,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
     private RecyclerListView listView;
     private ActionBarPopupWindow scrimPopupWindow;
     private final WindowInsetsStateHolder windowInsetsStateHolder = new WindowInsetsStateHolder(this::checkInsets);
+    private String[] cachedAttachmentFileNames;
 
     public AyuMessageHistory(MessageObject messageObject) {
         this.messageObject = messageObject;
@@ -89,7 +90,17 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
     private void updateHistory() {
         messages = AyuMessagesController.getInstance().getRevisions(getUserConfig().clientUserId, messageObject.messageOwner.dialog_id, messageObject.messageOwner.id);
         rowCount = messages.size();
+        cacheAttachmentFileNames();
         rebuildMessageObjects();
+    }
+
+    private void cacheAttachmentFileNames() {
+        File attachmentsDir = AyuMessagesController.attachmentsPath;
+        if (attachmentsDir.exists()) {
+            cachedAttachmentFileNames = attachmentsDir.list();
+        } else {
+            cachedAttachmentFileNames = null;
+        }
     }
 
     @Override
@@ -591,17 +602,64 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
         if (!attachmentsDir.exists() && !attachmentsDir.mkdirs()) {
             return null;
         }
+        String[] fileNames = cachedAttachmentFileNames;
+        if (fileNames == null) {
+            return null;
+        }
         String ttlPrefix = "ttl_" + editedMessage.dialogId + "_" + editedMessage.messageId + "_";
-        File[] matches = attachmentsDir.listFiles((dir, name) -> name.startsWith(ttlPrefix));
-        File ttlMatch = AyuMessageUtils.getLargestNonEmpty(matches);
-        if (ttlMatch != null) {
-            return ttlMatch;
+        ArrayList<File> ttlMatches = new ArrayList<>();
+        for (String name : fileNames) {
+            if (name.startsWith(ttlPrefix)) {
+                ttlMatches.add(new File(attachmentsDir, name));
+            }
+        }
+        if (!ttlMatches.isEmpty()) {
+            File ttlMatch = AyuMessageUtils.getLargestNonEmpty(ttlMatches.toArray(new File[0]));
+            if (ttlMatch != null) {
+                return ttlMatch;
+            }
         }
         if (editedMessage.mediaPath != null && !editedMessage.mediaPath.isEmpty()) {
             String baseName = new File(editedMessage.mediaPath).getName();
-            return AyuMessageUtils.findExistingFileByBaseName(baseName);
+            return findExistingFileByBaseNameCached(attachmentsDir, fileNames, baseName);
         }
         return null;
+    }
+
+    private File findExistingFileByBaseNameCached(File attachmentsDir, String[] fileNames, String baseName) {
+        // exact match
+        File exactMatch = new File(attachmentsDir, baseName);
+        if (exactMatch.exists()) {
+            return exactMatch;
+        }
+        String nameWithoutExtension = AyuUtils.removeExtension(baseName);
+        String extension = AyuUtils.getExtension(baseName);
+        // find matching files from cache
+        ArrayList<File> matchingFiles = new ArrayList<>();
+        for (String name : fileNames) {
+            if (!name.endsWith(extension)) {
+                continue;
+            }
+            if (name.equals(baseName)) {
+                matchingFiles.add(new File(attachmentsDir, name));
+                continue;
+            }
+            if (!name.startsWith(nameWithoutExtension)) {
+                continue;
+            }
+            int length = nameWithoutExtension.length();
+            if (name.length() <= length) {
+                continue;
+            }
+            char ch = name.charAt(length);
+            if (ch == '@' || ch == '#') {
+                matchingFiles.add(new File(attachmentsDir, name));
+            }
+        }
+        if (matchingFiles.isEmpty()) {
+            return null;
+        }
+        return AyuMessageUtils.getLargestNonEmpty(matchingFiles.toArray(new File[0]));
     }
 
     private void updatePhotoMediaWithLocalFile(TLRPC.Message msg, File localFile) {
