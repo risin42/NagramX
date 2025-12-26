@@ -47,6 +47,8 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 import java.util.List;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.ui.icons.IconsResources;
+import xyz.nextalone.nagram.NaConfig;
 
 public class QuickShareSelectorDrawable extends Drawable implements Animator.AnimatorListener {
     public static class Sizes {
@@ -262,9 +264,15 @@ public class QuickShareSelectorDrawable extends Drawable implements Animator.Ani
     }
 
     private void closeImpl () {
-        if (openAnimation.isRunning()) {
-            openAnimation.cancel();
-            openAnimationCompleted = true;
+        if (NaConfig.INSTANCE.getIconReplacements().Int() == IconsResources.ICON_REPLACE_SOLAR) {
+            if (openAnimation.isRunning()) {
+                openAnimation.cancel();
+                openAnimation.setFloatValues(openProgress, 0);
+                openAnimation.setDuration((long) (openProgress * OPEN_DURATION));
+                openAnimation.start();
+            } else if (!openAnimationCompleted) {
+                openAnimationCompleted = true;
+            }
         }
 
         closeAnimation.start();
