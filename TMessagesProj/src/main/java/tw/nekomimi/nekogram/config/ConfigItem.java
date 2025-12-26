@@ -9,10 +9,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import tw.nekomimi.nekogram.NekoConfig;
 
+@SuppressWarnings({"unchecked", "unused"})
 public class ConfigItem {
     public static final int configTypeBool = 0;
     public static final int configTypeInt = 1;
@@ -33,13 +35,14 @@ public class ConfigItem {
         this.key = key;
         this.type = type;
         this.defaultValue = defaultValue;
+        this.value = defaultValue;
     }
 
     public String getKey() {
         return key;
     }
 
-    // 读配置
+    // Read config
 
     public boolean Bool() {
         return (boolean) value;
@@ -78,13 +81,13 @@ public class ConfigItem {
         value = o;
     }
 
-    //写配置
-    //这里没有检查类型哦
+    // Write config
+    // Note: no type checking here
 
     public boolean toggleConfigBool() {
         value = !this.Bool();
         saveConfig();
-        return this.Bool();//返回toggle之后的
+        return this.Bool(); // return value after toggle
     }
 
     public void setConfigBool(boolean v) {
@@ -108,11 +111,7 @@ public class ConfigItem {
     }
 
     public void setConfigString(String v) {
-        if (v == null) {
-            value = "";
-        } else {
-            value = v;
-        }
+        value = Objects.requireNonNullElse(v, "");
         saveConfig();
     }
 
@@ -130,7 +129,7 @@ public class ConfigItem {
     public void saveConfig() {
         synchronized (NekoConfig.sync) {
             try {
-                SharedPreferences.Editor editor = NekoConfig.preferences.edit();
+                SharedPreferences.Editor editor = NekoConfig.getPreferences().edit();
 
                 if (this.type == configTypeBool) {
                     editor.putBoolean(this.key, (boolean) this.value);
@@ -171,20 +170,14 @@ public class ConfigItem {
 
     public Object checkConfigFromString(String value) {
         try {
-            switch (type) {
-                case configTypeBool:
-                    return Boolean.parseBoolean(value);
-                case configTypeInt:
-                    return Integer.parseInt(value);
-                case configTypeString:
-                    return value;
-                case configTypeLong:
-                    return Long.parseLong(value);
-                case configTypeFloat:
-                    return Float.parseFloat(value);
-                default:
-                    return null;
-            }
+            return switch (type) {
+                case configTypeBool -> Boolean.parseBoolean(value);
+                case configTypeInt -> Integer.parseInt(value);
+                case configTypeString -> value;
+                case configTypeLong -> Long.parseLong(value);
+                case configTypeFloat -> Float.parseFloat(value);
+                default -> null;
+            };
         } catch (Exception ignored) {}
         return null;
     }

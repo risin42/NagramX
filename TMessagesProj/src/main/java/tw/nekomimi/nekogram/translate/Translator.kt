@@ -73,14 +73,14 @@ interface Translator {
         @JvmStatic
         fun getInputTranslateLangForChat(chatId: Long): String {
             val key = "translateInputLang_$chatId"
-            return NekoConfig.preferences.getString(key, null)
+            return NekoConfig.getPreferences().getString(key, null)
                 ?: NekoConfig.translateInputLang.String()
         }
 
         @JvmStatic
         fun setInputTranslateLangForChat(chatId: Long, langCode: String) {
             val key = "translateInputLang_$chatId"
-            NekoConfig.preferences.edit {
+            NekoConfig.getPreferences().edit {
                 putString(key, langCode)
             }
         }

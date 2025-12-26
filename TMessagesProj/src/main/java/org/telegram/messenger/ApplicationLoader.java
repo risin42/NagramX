@@ -261,6 +261,8 @@ public class ApplicationLoader extends Application {
         }
 
         SharedConfig.loadConfig();
+        NekoConfig.init();
+        NaConfig.init();
         SharedPrefsHelper.init(applicationContext);
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!NaConfig.INSTANCE.getDisableCrashlyticsCollection().Bool());
         for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) { //TODO improve account
