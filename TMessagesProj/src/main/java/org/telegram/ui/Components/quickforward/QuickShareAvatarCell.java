@@ -27,6 +27,9 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.ChatMessageCell;
 import org.telegram.ui.Components.AvatarDrawable;
 
+import tw.nekomimi.nekogram.ui.icons.IconsResources;
+import xyz.nextalone.nagram.NaConfig;
+
 class QuickShareAvatarCell implements ValueAnimator.AnimatorUpdateListener {
     private static final long DURATION = 180L;
 
@@ -126,8 +129,10 @@ class QuickShareAvatarCell implements ValueAnimator.AnimatorUpdateListener {
         if (blurredAvatarDrawable != null) {
             blurredAvatarDrawable.recycle();
         }
-        if (imageReceiver != null) {
-            imageReceiver.onDetachedFromWindow();
+        if (NaConfig.INSTANCE.getIconReplacements().Int() == IconsResources.ICON_REPLACE_SOLAR) {
+            if (imageReceiver != null) {
+                imageReceiver.onDetachedFromWindow();
+            }
         }
     }
 
