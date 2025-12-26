@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.fonts.Font;
 import android.graphics.fonts.SystemFonts;
@@ -273,12 +272,7 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
         }
         try {
             Typeface typeface;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                typeface = new Typeface.Builder(path)
-                        .build();
-            } else {
-                typeface = Typeface.createFromFile(path);
-            }
+            typeface = new Typeface.Builder(path).build();
             return typeface != null && !typeface.equals(Typeface.DEFAULT);
         } catch (Exception ignored) {
             return false;
@@ -303,7 +297,7 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
 
     public Long getEmojiSize() {
         return getAllEmojis().parallelStream()
-                .filter(file -> !file.getName().startsWith(emojiPack))
+                .filter(file -> !(file.getName().startsWith(emojiPack) || file.getName().endsWith(emojiPack)))
                 .filter(file -> !isValidCustomPack(file))
                 .map(EmojiHelper::calculateFolderSize)
                 .reduce(0L, Long::sum);
@@ -311,7 +305,7 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
 
     public void deleteAll() {
         getAllEmojis().parallelStream()
-                .filter(file -> !file.getName().startsWith(emojiPack))
+                .filter(file -> !(file.getName().startsWith(emojiPack) || file.getName().endsWith(emojiPack)))
                 .filter(file -> !isValidCustomPack(file))
                 .forEach(EmojiHelper::deleteFolder);
     }
@@ -498,7 +492,7 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
 
     public ArrayList<File> getAllVersions(String emojiID, int version) {
         return getAllEmojis().parallelStream()
-                .filter(file -> file.getName().startsWith(emojiID))
+                .filter(file -> file.getName().startsWith(emojiID) || file.getName().endsWith(emojiID))
                 .filter(file -> version == -1 || !file.getName().endsWith("_v" + version))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
@@ -552,7 +546,7 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
             try (FileInputStream inputStream = new FileInputStream(old)) {
                 AndroidUtilities.copyFile(inputStream, newFile);
             } catch (IOException e) {
-                e.printStackTrace();
+                FileLog.e(e);
             }
             if (newFile.isFile() && newFile.exists() && newFile.canRead()) {
                 loadingEmojiPacks.remove(pack.fileLocation);
@@ -679,30 +673,46 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
         emojiPacksInfo.addAll(customPacks);
+
+        if (emojiPack != null && !emojiPack.isEmpty()) {
+            boolean matched = customPacks.stream().anyMatch(p -> Objects.equals(p.getPackId(), emojiPack));
+            if (!matched) {
+                for (File f : getAllEmojis()) {
+                    if (isValidCustomPack(f)) {
+                        String name = f.getName();
+                        if (name.endsWith(emojiPack) || name.startsWith(emojiPack)) {
+                            EmojiPackBase pm = new EmojiPackBase();
+                            pm.loadFromFile(f);
+                            String newPackId = pm.getPackId();
+                            preferences.edit().putString("emoji_pack", newPackId).apply();
+                            emojiPack = newPackId;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public boolean isSelectedCustomEmojiPack() {
         return getAllEmojis().parallelStream()
                 .filter(EmojiHelper::isValidCustomPack)
-                .anyMatch(file -> file.getName().endsWith(emojiPack));
+                .anyMatch(file -> file.getName().startsWith(emojiPack) || file.getName().endsWith(emojiPack));
     }
 
     public void cancelableDelete(BaseFragment fragment, EmojiPackBase emojiPackBase, OnBulletinAction onUndoBulletinAction) {
         if (emojiPackBulletin != null && pendingDeleteEmojiPackId != null) {
             AlertDialog progressDialog = new AlertDialog(fragment.getParentActivity(), 3);
             emojiPackBulletin.hide(false, 0);
-            new Thread() {
-                @Override
-                public void run() {
-                    do {
-                        SystemClock.sleep(50);
-                    } while (pendingDeleteEmojiPackId != null);
-                    AndroidUtilities.runOnUIThread(() -> {
-                        progressDialog.dismiss();
-                        cancelableDelete(fragment, emojiPackBase, onUndoBulletinAction);
-                    });
-                }
-            }.start();
+            new Thread(() -> {
+                do {
+                    SystemClock.sleep(50);
+                } while (pendingDeleteEmojiPackId != null);
+                AndroidUtilities.runOnUIThread(() -> {
+                    progressDialog.dismiss();
+                    cancelableDelete(fragment, emojiPackBase, onUndoBulletinAction);
+                });
+            }).start();
             progressDialog.setCanCancel(false);
             progressDialog.showDelayed(150);
             return;
@@ -726,14 +736,11 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
             }
             pendingDeleteEmojiPackId = null;
             onUndoBulletinAction.onUndo();
-        }).setDelayedAction(() -> new Thread() {
-            @Override
-            public void run() {
-                deleteEmojiPack(emojiPackBase);
-                reloadEmoji();
-                pendingDeleteEmojiPackId = null;
-            }
-        }.start());
+        }).setDelayedAction(() -> new Thread(() -> {
+            deleteEmojiPack(emojiPackBase);
+            reloadEmoji();
+            pendingDeleteEmojiPackId = null;
+        }).start());
         bulletinLayout.setButton(undoButton);
         emojiPackBulletin = Bulletin.make(fragment, bulletinLayout, Bulletin.DURATION_LONG).show();
     }
@@ -821,7 +828,7 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
 
     @Override
     protected void onLoadSuccess(ArrayList<JSONObject> responses, Delegate delegate) {
-        var json = responses.size() > 0 ? responses.get(0) : null;
+        var json = !responses.isEmpty() ? responses.get(0) : null;
         if (json == null) {
             return;
         }
@@ -926,8 +933,7 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
                 return;
             }
             for (EmojiPackBase emojiPackBase : emojiPacksInfo) {
-                if (emojiPackBase instanceof EmojiPackInfo) {
-                    EmojiPackInfo emojiPackInfo = (EmojiPackInfo) emojiPackBase;
+                if (emojiPackBase instanceof EmojiPackInfo emojiPackInfo) {
                     boolean update = isInstalledOldVersion(emojiPackInfo.packId, emojiPackInfo.packVersion);
                     if (emojiPack.equals(emojiPackInfo.packId)) {
                         if (!isPackInstalled(emojiPackInfo)) {
@@ -983,10 +989,14 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
 
         public void loadFromFile(File file) {
             String fileName = file.getName();
-            packName = fileName;
-            int versionSep = packName.lastIndexOf("_v");
-            packName = packName.substring(0, versionSep);
-            packId = fileName.substring(versionSep);
+            int versionSep = fileName.lastIndexOf("_v");
+            if (versionSep == -1) {
+                packName = fileName;
+                packId = fileName;
+            } else {
+                packName = fileName.substring(0, versionSep);
+                packId = packName;
+            }
             File fileFont = new File(file, packName + ".ttf");
             fileLocation = fileFont.getAbsolutePath();
             preview = file.getAbsolutePath() + "/preview.png";
