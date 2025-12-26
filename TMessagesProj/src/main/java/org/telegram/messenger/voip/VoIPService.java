@@ -2983,12 +2983,13 @@ public class VoIPService extends Service implements SensorEventListener, AudioMa
 				String key = videoChannel == 0 ? ("" + timestamp) : (videoChannel + "_" + timestamp + "_" + quality);
 				int reqId = AccountInstance.getInstance(currentAccount).getConnectionsManager().sendRequest(req, (response, error, responseTime) -> {
 					AndroidUtilities.runOnUIThread(() -> currentStreamRequestTimestamp.remove(key));
-					if (tgVoip[type] == null) {
+					NativeInstance instance = tgVoip[type];
+					if (instance == null) {
 						return;
 					}
 					if (response != null) {
 						TLRPC.TL_upload_file res = (TLRPC.TL_upload_file) response;
-						tgVoip[type].onStreamPartAvailable(timestamp, res.bytes.buffer, res.bytes.limit(), responseTime, videoChannel, quality);
+						instance.onStreamPartAvailable(timestamp, res.bytes.buffer, res.bytes.limit(), responseTime, videoChannel, quality);
 					} else {
 						if ("GROUPCALL_JOIN_MISSING".equals(error.text)) {
 							AndroidUtilities.runOnUIThread(() -> createGroupInstance(type, false, true));
@@ -2999,7 +3000,7 @@ public class VoIPService extends Service implements SensorEventListener, AudioMa
 							} else {
 								status = -1;
 							}
-							tgVoip[type].onStreamPartAvailable(timestamp, null, status, responseTime, videoChannel, quality);
+							instance.onStreamPartAvailable(timestamp, null, status, responseTime, videoChannel, quality);
 						}
 					}
 				}, ConnectionsManager.RequestFlagFailOnServerErrorsExceptFloodWait, ConnectionsManager.ConnectionTypeDownload, groupCall.call.stream_dc_id);
