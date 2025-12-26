@@ -17,7 +17,7 @@ object BookmarksHelper {
 
     private fun getIds(key: String): IntArray {
         return cache.computeIfAbsent(key) { k ->
-            val raw = NaConfig.preferences.getString(k, null)
+            val raw = NaConfig.getPreferences().getString(k, null)
             if (raw.isNullOrBlank()) {
                 intArrayOf()
             } else {
@@ -101,8 +101,8 @@ object BookmarksHelper {
     @JvmStatic
     fun clearAllBookmarks(accountId: Int) {
         val prefix = KEY_PREFIX + accountId + "_"
-        NaConfig.preferences.edit {
-            for (key in NaConfig.preferences.all.keys) {
+        NaConfig.getPreferences().edit {
+            for (key in NaConfig.getPreferences().all.keys) {
                 if (key.startsWith(prefix)) {
                     remove(key)
                 }
@@ -168,12 +168,12 @@ object BookmarksHelper {
 
     private fun persist(key: String, ids: List<Int>) {
         if (ids.isEmpty()) {
-            NaConfig.preferences.edit { remove(key) }
+            NaConfig.getPreferences().edit { remove(key) }
             cache[key] = intArrayOf()
             return
         }
         val normalized = ids.distinct().takeLast(MAX_PER_CHAT)
-        NaConfig.preferences.edit { putString(key, normalized.joinToString(",")) }
+        NaConfig.getPreferences().edit { putString(key, normalized.joinToString(",")) }
         cache[key] = normalized.toIntArray()
     }
 }

@@ -82,7 +82,6 @@ import kotlin.text.StringsKt;
 import tw.nekomimi.nekogram.DatacenterActivity;
 import tw.nekomimi.nekogram.DialogConfig;
 import tw.nekomimi.nekogram.NekoConfig;
-import xyz.nextalone.nagram.NaConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.helpers.CloudSettingsHelper;
@@ -94,6 +93,7 @@ import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.GsonUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
+import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.BookmarksHelper;
 import xyz.nextalone.nagram.helper.LocalPeerColorHelper;
 import xyz.nextalone.nagram.helper.LocalPremiumStatusHelper;
@@ -101,9 +101,6 @@ import xyz.nextalone.nagram.helper.LocalPremiumStatusHelper;
 public class NekoSettingsActivity extends BaseFragment {
     public static final int PAGE_TYPE = 0;
     public static final int PAGE_ABOUT = 1;
-
-    private FrameLayout contentView;
-    private PeerColorActivity.ColoredActionBar colorBar;
 
     private Page typePage;
     private Page abountPage;
@@ -135,7 +132,7 @@ public class NekoSettingsActivity extends BaseFragment {
 
         FrameLayout frameLayout = getFrameLayout(context);
 
-        colorBar = new PeerColorActivity.ColoredActionBar(context, resourceProvider) {
+        PeerColorActivity.ColoredActionBar colorBar = new PeerColorActivity.ColoredActionBar(context, resourceProvider) {
             @Override
             protected void onUpdateColor() {
                 updateActionBarButtonsColor();
@@ -145,6 +142,7 @@ public class NekoSettingsActivity extends BaseFragment {
             }
 
             private int lastBtnColor = 0;
+
             public void updateActionBarButtonsColor() {
                 final int btnColor = getActionBarButtonColor();
                 if (lastBtnColor != btnColor) {
@@ -243,12 +241,15 @@ public class NekoSettingsActivity extends BaseFragment {
         searchButton.setOnClickListener(v -> showSettingsSearchDialog());
         actionBarContainer.addView(searchButton, LayoutHelper.createFrame(54, 54, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 42, 0));
 
+        FrameLayout contentView;
         fragmentView = contentView = frameLayout;
 
         return contentView;
     }
 
-    /** @noinspection SizeReplaceableByIsEmpty*/
+    /**
+     * @noinspection SizeReplaceableByIsEmpty
+     */
     private void showSettingsSearchDialog() {
         try {
             Activity parent = getParentActivity();
@@ -458,7 +459,6 @@ public class NekoSettingsActivity extends BaseFragment {
         private static final int VIEW_TYPE_TEXT_LINK = 4;
 
         private final RecyclerListView listView;
-        private final RecyclerView.Adapter listAdapter;
         private final int type;
 
         private int rowCount;
@@ -493,7 +493,7 @@ public class NekoSettingsActivity extends BaseFragment {
             listView.setVerticalScrollBarEnabled(false);
             listView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
             addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
-            listView.setAdapter(listAdapter = new RecyclerListView.SelectionAdapter() {
+            listView.setAdapter(new RecyclerListView.SelectionAdapter() {
                 @Override
                 public int getItemCount() {
                     return rowCount;
@@ -520,7 +520,7 @@ public class NekoSettingsActivity extends BaseFragment {
                             view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
                             break;
                     }
-                    //noinspection ConstantConditions
+                    // noinspection ConstantConditions
                     view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
                     return new RecyclerListView.Holder(view);
                 }
@@ -599,7 +599,7 @@ public class NekoSettingsActivity extends BaseFragment {
                     } else if (position == nSettingsHeaderRow || position == otherRow) {
                         return VIEW_TYPE_HEADER;
                     } else if (position == chatRow || position == generalRow || position == passcodeRow || position == experimentRow || position == translatorRow ||
-                                position == importSettingsRow || position == exportSettingsRow || position == resetSettingsRow || position == appRestartRow) {
+                            position == importSettingsRow || position == exportSettingsRow || position == resetSettingsRow || position == appRestartRow) {
                         return VIEW_TYPE_TEXT;
                     }
                     return VIEW_TYPE_TEXT_LINK;
@@ -646,7 +646,7 @@ public class NekoSettingsActivity extends BaseFragment {
                             () -> {
                                 ApplicationLoader.applicationContext.getSharedPreferences("nekocloud", Activity.MODE_PRIVATE).edit().clear().commit();
                                 ApplicationLoader.applicationContext.getSharedPreferences("nekox_config", Activity.MODE_PRIVATE).edit().clear().commit();
-                                ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Activity.MODE_PRIVATE).edit().clear().commit();
+                                NekoConfig.getPreferences().edit().clear().commit();
                                 AppRestartHelper.triggerRebirth(context, new Intent(context, LaunchActivity.class));
                             });
                 } else if (position == exportSettingsRow) {
@@ -691,7 +691,7 @@ public class NekoSettingsActivity extends BaseFragment {
         }
 
         @Override
-        protected void dispatchDraw(Canvas canvas) {
+        protected void dispatchDraw(@NonNull Canvas canvas) {
             super.dispatchDraw(canvas);
             if (getParentLayout() != null) {
                 getParentLayout().drawHeaderShadow(canvas, actionBarHeight);
@@ -851,7 +851,7 @@ public class NekoSettingsActivity extends BaseFragment {
 
     private DocumentSelectActivity getDocumentSelectActivity(Activity parent) {
         try {
-            if (Build.VERSION.SDK_INT >= 23 && parent.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (parent.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 parent.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, BasePermissionsActivity.REQUEST_CODE_EXTERNAL_STORAGE);
                 return null;
             }

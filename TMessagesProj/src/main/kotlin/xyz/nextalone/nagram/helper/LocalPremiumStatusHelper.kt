@@ -60,13 +60,13 @@ object LocalPremiumStatusHelper {
             val gson = Gson()
             val userKey = KEY_PREFIX + userId
 
-            var jsonStr = NaConfig.preferences.getString(userKey, null)
+            var jsonStr = NaConfig.getPreferences().getString(userKey, null)
 
             if (jsonStr.isNullOrEmpty()) {
                 val legacyJson = NaConfig.useLocalEmojiStatusData.String()
                 if (legacyJson.isNotEmpty()) {
                     jsonStr = legacyJson
-                    NaConfig.preferences.edit { putString(userKey, jsonStr) }
+                    NaConfig.getPreferences().edit { putString(userKey, jsonStr) }
                 }
             }
 
@@ -91,7 +91,7 @@ object LocalPremiumStatusHelper {
 
         if (status == null || status is TLRPC.TL_emojiStatusEmpty) {
             dataMap[userId] = null
-            NaConfig.preferences.edit { putString(userKey, "") }
+            NaConfig.getPreferences().edit { putString(userKey, "") }
             return
         }
 
@@ -111,6 +111,6 @@ object LocalPremiumStatusHelper {
 
         val localData = LocalEmojiStatusData(documentId, until)
         dataMap[userId] = localData
-        NaConfig.preferences.edit { putString(userKey, Gson().toJson(localData)) }
+        NaConfig.getPreferences().edit { putString(userKey, Gson().toJson(localData)) }
     }
 }

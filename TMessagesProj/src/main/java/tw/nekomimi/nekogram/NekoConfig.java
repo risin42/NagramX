@@ -58,7 +58,15 @@ public class NekoConfig {
     public static final int ID_TYPE_API = 1;
     public static final int ID_TYPE_BOT_API = 2;
 
-    public static final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Context.MODE_PRIVATE);
+    private static SharedPreferences preferences;
+
+    public static SharedPreferences getPreferences() {
+        if (preferences == null) {
+            preferences = ApplicationLoader.applicationContext.getSharedPreferences("nkmrcfg", Context.MODE_PRIVATE);
+        }
+        return preferences;
+    }
+
     public static final Object sync = new Object();
     public static final String channelAliasPrefix = "channelAliasPrefix_";
 
@@ -205,6 +213,10 @@ public class NekoConfig {
     // --- Ghost Mode ---
 
     static {
+        init();
+    }
+
+    public static void init() {
         loadConfig(false);
         checkMigration();
     }
@@ -220,26 +232,29 @@ public class NekoConfig {
             if (configLoaded && !force) {
                 return;
             }
+            if (ApplicationLoader.applicationContext == null) {
+                return;
+            }
             for (int i = 0; i < configs.size(); i++) {
                 ConfigItem o = configs.get(i);
 
                 if (o.type == configTypeBool) {
-                    o.value = preferences.getBoolean(o.key, (boolean) o.defaultValue);
+                    o.value = getPreferences().getBoolean(o.key, (boolean) o.defaultValue);
                 }
                 if (o.type == configTypeInt) {
-                    o.value = preferences.getInt(o.key, (int) o.defaultValue);
+                    o.value = getPreferences().getInt(o.key, (int) o.defaultValue);
                 }
                 if (o.type == configTypeLong) {
-                    o.value = preferences.getLong(o.key, (Long) o.defaultValue);
+                    o.value = getPreferences().getLong(o.key, (Long) o.defaultValue);
                 }
                 if (o.type == configTypeFloat) {
-                    o.value = preferences.getFloat(o.key, (Float) o.defaultValue);
+                    o.value = getPreferences().getFloat(o.key, (Float) o.defaultValue);
                 }
                 if (o.type == configTypeString) {
-                    o.value = preferences.getString(o.key, (String) o.defaultValue);
+                    o.value = getPreferences().getString(o.key, (String) o.defaultValue);
                 }
                 if (o.type == configTypeSetInt) {
-                    Set<String> ss = preferences.getStringSet(o.key, new HashSet<>());
+                    Set<String> ss = getPreferences().getStringSet(o.key, new HashSet<>());
                     HashSet<Integer> si = new HashSet<>();
                     for (String s : ss) {
                         si.add(Integer.parseInt(s));
@@ -247,16 +262,15 @@ public class NekoConfig {
                     o.value = si;
                 }
                 if (o.type == configTypeMapIntInt) {
-                    String cv = preferences.getString(o.key, "");
-                    // Log.e("NC", String.format("Getting pref %s val %s", o.key, cv));
-                    if (cv.length() == 0) {
+                    String cv = getPreferences().getString(o.key, "");
+                    if (cv.isEmpty()) {
                         o.value = new HashMap<Integer, Integer>();
                     } else {
                         try {
                             byte[] data = Base64.decode(cv, Base64.DEFAULT);
                             ObjectInputStream ois = new ObjectInputStream(
                                     new ByteArrayInputStream(data));
-                            o.value = (HashMap<Integer, Integer>) ois.readObject();
+                            o.value = ois.readObject();
                             if (o.value == null) {
                                 o.value = new HashMap<Integer, Integer>();
                             }
@@ -268,7 +282,7 @@ public class NekoConfig {
                 }
             }
             if (!configLoaded)
-                preferences.registerOnSharedPreferenceChangeListener(CloudSettingsHelper.listener);
+                getPreferences().registerOnSharedPreferenceChangeListener(CloudSettingsHelper.listener);
             for (int a = 1; a <= 5; a++) {
                 datacenterInfos.add(new DatacenterInfo(a));
             }
@@ -296,14 +310,17 @@ public class NekoConfig {
     }
 
     public static void checkMigration() {
+        if (ApplicationLoader.applicationContext == null) {
+            return;
+        }
         if (!configMigrated.Bool()) {
             configMigrated.setConfigBool(true);
 
-            if (preferences.contains("DisableChatAction")) {
-                sendUploadProgress.setConfigBool(!preferences.getBoolean("DisableChatAction", true));
+            if (getPreferences().contains("DisableChatAction")) {
+                sendUploadProgress.setConfigBool(!getPreferences().getBoolean("DisableChatAction", true));
             }
-            if (preferences.contains("DisableSendReadStories")) {
-                sendReadStoriesPackets.setConfigBool(!preferences.getBoolean("DisableSendReadStories", true));
+            if (getPreferences().contains("DisableSendReadStories")) {
+                sendReadStoriesPackets.setConfigBool(!getPreferences().getBoolean("DisableSendReadStories", true));
             }
         }
     }

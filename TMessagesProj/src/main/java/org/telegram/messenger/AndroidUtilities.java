@@ -2872,6 +2872,9 @@ public class AndroidUtilities {
 
     public static boolean isTabletInternal() {
         if (isTablet == null) {
+            if (ApplicationLoader.applicationContext == null) {
+                return false;
+            }
             isTablet = isTabletForce();
         }
         return isTablet;

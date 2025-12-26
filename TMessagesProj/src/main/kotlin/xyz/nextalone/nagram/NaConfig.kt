@@ -1,6 +1,5 @@
 package xyz.nextalone.nagram
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
 import org.telegram.messenger.AndroidUtilities
@@ -17,17 +16,34 @@ import java.io.ObjectInputStream
 
 
 object NaConfig {
-    val preferences: SharedPreferences =
-        ApplicationLoader.applicationContext.getSharedPreferences(
-            "nkmrcfg",
-            Context.MODE_PRIVATE
-        )
-    val sync =
-        Any()
-    private var configLoaded =
-        false
-    private val configs =
-        ArrayList<ConfigItem>()
+    @Volatile
+    private var initialized = false
+
+    @JvmStatic
+    fun getPreferences(): SharedPreferences {
+        return NekoConfig.getPreferences()
+    }
+
+    @JvmStatic
+    fun init() {
+        if (initialized) return
+        synchronized(sync) {
+            if (initialized) return
+            if (ApplicationLoader.applicationContext == null) return
+
+            loadConfig(false)
+            updatePreferredTranslateTargetLangList()
+            fixConfig()
+            if (!BuildVars.LOGS_ENABLED) {
+                showRPCError.setConfigBool(false)
+            }
+            initialized = true
+        }
+    }
+
+    val sync = Any()
+    private var configLoaded = false
+    private val configs = ArrayList<ConfigItem>()
 
     // Configs
     val forceCopy =
@@ -497,7 +513,7 @@ object NaConfig {
             "DisableBotOpenButton",
             ConfigItem.configTypeBool,
             false
-    )
+        )
     val customTitleUserName =
         addConfig(
             "CustomTitleUserName",
@@ -704,26 +720,26 @@ object NaConfig {
             "TranslucentDeletedMessages",
             ConfigItem.configTypeBool,
             true
-    )
+        )
     val enableSeparateArticleTranslator =
         addConfig(
             "EnableSeparateArticleTranslator",
             ConfigItem.configTypeBool,
             false
-    )
+        )
     val articleTranslationProvider =
         addConfig(
             "ArticleTranslationProvider",
             ConfigItem.configTypeInt,
             1
-    )
+        )
     val disableCrashlyticsCollection =
         addConfig(
             "DisableCrashlyticsCollection",
             ConfigItem.configTypeBool,
             false
         )
-    val showStickersRowToplevel=
+    val showStickersRowToplevel =
         addConfig(
             "ShowStickersRowToplevel",
             ConfigItem.configTypeBool,
@@ -1341,7 +1357,7 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-   val forceEdgeToEdge =
+    val forceEdgeToEdge =
         addConfig(
             "ForceEdgeToEdge",
             ConfigItem.configTypeBool,
@@ -1402,55 +1418,59 @@ object NaConfig {
 
     private fun getIgnoreMutedCountLegacy(): Int {
         return when {
-            preferences.getBoolean("IgnoreFolderCount", false) -> NekoConfig.DIALOG_FILTER_EXCLUDE_ALL
-            preferences.getBoolean("IgnoreMutedCount", true) -> NekoConfig.DIALOG_FILTER_EXCLUDE_MUTED
+            getPreferences().getBoolean(
+                "IgnoreFolderCount", false
+            ) -> NekoConfig.DIALOG_FILTER_EXCLUDE_ALL
+
+            getPreferences().getBoolean(
+                "IgnoreMutedCount", true
+            ) -> NekoConfig.DIALOG_FILTER_EXCLUDE_MUTED
+
             else -> NekoConfig.DIALOG_FILTER_EXCLUDE_NONE
         }
     }
 
     private fun fixConfig() {
+        if (ApplicationLoader.applicationContext == null) {
+            return
+        }
         if (translatorMode.Int() > 1) {
             translatorMode.setConfigInt(1)
         }
-        if (!preferences.contains(idDcType.key) && !preferences.getBoolean("ShowIdAndDc", true)) {
+        if (!getPreferences().contains(idDcType.key) && !getPreferences().getBoolean(
+                "ShowIdAndDc", true
+            )
+        ) {
             idDcType.setConfigInt(0)
         }
-        if (!preferences.contains(cameraInVideoMessages.key)) {
-            val legacyRear = preferences.getBoolean("RearVideoMessages", false)
+        if (!getPreferences().contains(cameraInVideoMessages.key)) {
+            val legacyRear = getPreferences().getBoolean("RearVideoMessages", false)
             cameraInVideoMessages.setConfigInt(if (legacyRear) 1 else 0)
         }
     }
 
     private fun addConfig(
-        k: String,
-        t: Int,
-        d: Any?
+        k: String, t: Int, d: Any?
     ): ConfigItem {
-        val a =
-            ConfigItem(
-                k,
-                t,
-                d
-            )
+        val a = ConfigItem(
+            k, t, d
+        )
         configs.add(
             a
         )
         return a
     }
 
+    @Suppress("SameParameterValue")
     private fun addConfig(
-        k: String,
-        t: ConfigItem,
-        d: Int,
-        e: Any?
+        k: String, t: ConfigItem, d: Int, e: Any?
     ): ConfigItem {
-        val a =
-            ConfigItemKeyLinked(
-                k,
-                t,
-                d,
-                e,
-            )
+        val a = ConfigItemKeyLinked(
+            k,
+            t,
+            d,
+            e,
+        )
         configs.add(
             a
         )
@@ -1466,103 +1486,81 @@ object NaConfig {
             if (configLoaded && !force) {
                 return
             }
+            if (ApplicationLoader.applicationContext == null) {
+                return
+            }
             for (i in configs.indices) {
-                val o =
-                    configs[i]
+                val o = configs[i]
                 if (o.type == ConfigItem.configTypeBool) {
-                    o.value =
-                        preferences.getBoolean(
-                            o.key,
-                            o.defaultValue as Boolean
-                        )
+                    o.value = getPreferences().getBoolean(
+                        o.key, o.defaultValue as Boolean
+                    )
                 }
                 if (o.type == ConfigItem.configTypeInt) {
-                    o.value =
-                        preferences.getInt(
-                            o.key,
-                            o.defaultValue as Int
-                        )
+                    o.value = getPreferences().getInt(
+                        o.key, o.defaultValue as Int
+                    )
                 }
                 if (o.type == ConfigItem.configTypeLong) {
-                    o.value =
-                        preferences.getLong(
-                            o.key,
-                            (o.defaultValue as Long)
-                        )
+                    o.value = getPreferences().getLong(
+                        o.key, (o.defaultValue as Long)
+                    )
                 }
                 if (o.type == ConfigItem.configTypeFloat) {
-                    o.value =
-                        preferences.getFloat(
-                            o.key,
-                            (o.defaultValue as Float)
-                        )
+                    o.value = getPreferences().getFloat(
+                        o.key, (o.defaultValue as Float)
+                    )
                 }
                 if (o.type == ConfigItem.configTypeString) {
-                    o.value =
-                        preferences.getString(
-                            o.key,
-                            o.defaultValue as String
-                        )
+                    o.value = getPreferences().getString(
+                        o.key, o.defaultValue as String
+                    )
                 }
                 if (o.type == ConfigItem.configTypeSetInt) {
-                    val ss =
-                        preferences.getStringSet(
-                            o.key,
-                            HashSet()
-                        )
-                    val si =
-                        HashSet<Int>()
+                    val ss = getPreferences().getStringSet(
+                        o.key, HashSet()
+                    )
+                    val si = HashSet<Int>()
                     for (s in ss!!) {
                         si.add(
                             s.toInt()
                         )
                     }
-                    o.value =
-                        si
+                    o.value = si
                 }
                 if (o.type == ConfigItem.configTypeMapIntInt) {
-                    val cv =
-                        preferences.getString(
-                            o.key,
-                            ""
-                        )
+                    val cv = getPreferences().getString(
+                        o.key, ""
+                    )
                     // Log.e("NC", String.format("Getting pref %s val %s", o.key, cv));
                     if (cv!!.isEmpty()) {
-                        o.value =
-                            HashMap<Int, Int>()
+                        o.value = HashMap<Int, Int>()
                     } else {
                         try {
-                            val data =
-                                Base64.decode(
-                                    cv,
-                                    Base64.DEFAULT
+                            val data = Base64.decode(
+                                cv, Base64.DEFAULT
+                            )
+                            val ois = ObjectInputStream(
+                                ByteArrayInputStream(
+                                    data
                                 )
-                            val ois =
-                                ObjectInputStream(
-                                    ByteArrayInputStream(
-                                        data
-                                    )
-                                )
-                            o.value =
-                                ois.readObject() as HashMap<*, *>
+                            )
+                            o.value = ois.readObject() as HashMap<*, *>
                             if (o.value == null) {
-                                o.value =
-                                    HashMap<Int, Int>()
+                                o.value = HashMap<Int, Int>()
                             }
                             ois.close()
                         } catch (_: Exception) {
-                            o.value =
-                                HashMap<Int, Int>()
+                            o.value = HashMap<Int, Int>()
                         }
                     }
                 }
                 if (o.type == ConfigItem.configTypeBoolLinkInt) {
                     o as ConfigItemKeyLinked
-                    o.changedFromKeyLinked(preferences.getInt(o.keyLinked.key, 0))
+                    o.changedFromKeyLinked(getPreferences().getInt(o.keyLinked.key, 0))
                 }
             }
-            configLoaded =
-                true
+            configLoaded = true
         }
     }
 
@@ -1573,13 +1571,7 @@ object NaConfig {
     }
 
     init {
-        loadConfig(
-            false
-        )
-        updatePreferredTranslateTargetLangList()
-        fixConfig()
-        if (!BuildVars.LOGS_ENABLED) {
-            showRPCError.setConfigBool(false)
-        }
+        init()
     }
+
 }

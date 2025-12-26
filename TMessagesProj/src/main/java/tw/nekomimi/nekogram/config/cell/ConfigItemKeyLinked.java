@@ -38,7 +38,7 @@ public class ConfigItemKeyLinked extends ConfigItem {
     public void saveConfig() {
         synchronized (NekoConfig.sync) {
             try {
-                SharedPreferences.Editor editor = NekoConfig.preferences.edit();
+                SharedPreferences.Editor editor = NekoConfig.getPreferences().edit();
 
                 if (this.type == configTypeBoolLinkInt) {
                     int currentConfig = this.keyLinked.Int();
