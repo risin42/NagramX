@@ -28,6 +28,7 @@ import org.telegram.ui.Components.CheckBox2;
 import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RLottieImageView;
+import org.telegram.ui.Components.ScaleStateListAnimator;
 
 public class ActionBarMenuSubItem extends FrameLayout {
 
@@ -80,6 +81,7 @@ public class ActionBarMenuSubItem extends FrameLayout {
 
         updateBackground();
         setPadding(dp(18), 0, dp(18), 0);
+        ScaleStateListAnimator.apply(this, .04f, 1.2f);
 
         imageView = new RLottieImageView(context);
         imageView.setScaleType(ImageView.ScaleType.CENTER);
