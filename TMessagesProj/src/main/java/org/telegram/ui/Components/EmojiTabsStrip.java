@@ -579,7 +579,7 @@ public class EmojiTabsStrip extends ScrollableHorizontalScrollView {
                     }
                 }
                 currentPackButton.id = newPack.forGroup ? (long) "forGroup".hashCode() : null;
-                currentPackButton.updateSelect(selected == i, false);
+                currentPackButton.updateSelect(selected == packsIndexStart + i, false);
                 if (currentType == SelectAnimatedEmojiDialog.TYPE_AVATAR_CONSTRUCTOR) {
                     currentPackButton.setLock(!isPremium && !free ? true : null, false);
                 } else if (currentType == SelectAnimatedEmojiDialog.TYPE_CHAT_REACTIONS || currentType == SelectAnimatedEmojiDialog.TYPE_SET_REPLY_ICON || currentType == SelectAnimatedEmojiDialog.TYPE_SET_REPLY_ICON_BOTTOM) {
@@ -609,23 +609,33 @@ public class EmojiTabsStrip extends ScrollableHorizontalScrollView {
         updateClickListeners();
     }
 
+    private boolean isUnindexableTab(View view) {
+        return view == null || view.getVisibility() == View.GONE;
+    }
+
     public void updateClickListeners() {
-        for (int i = 0, j = 0; i < contentView.getChildCount(); ++i, ++j) {
+        int index = 0;
+        for (int i = 0; i < contentView.getChildCount(); ++i) {
             View child = contentView.getChildAt(i);
-            if (child instanceof EmojiTabsView) {
-                EmojiTabsView tabsView = (EmojiTabsView) child;
-                for (int a = 0; a < tabsView.contentView.getChildCount(); ++a, ++j) {
-                    final int index = j;
-                    tabsView.contentView.getChildAt(a).setOnClickListener(e -> {
-                        onTabClick(index);
-                    });
+            if (isUnindexableTab(child)) {
+                if (child != null) {
+                    child.setOnClickListener(null);
                 }
-                --j;
-            } else if (child != null) {
-                final int index = j;
-                child.setOnClickListener(e -> {
-                    onTabClick(index);
-                });
+                continue;
+            }
+            if (child instanceof EmojiTabsView tabsView) {
+                for (int a = 0; a < tabsView.contentView.getChildCount(); ++a) {
+                    View tab = tabsView.contentView.getChildAt(a);
+                    if (isUnindexableTab(tab)) {
+                        tab.setOnClickListener(null);
+                        continue;
+                    }
+                    final int tabIndex = index++;
+                    tab.setOnClickListener(e -> onTabClick(tabIndex));
+                }
+            } else {
+                final int tabIndex = index++;
+                child.setOnClickListener(e -> onTabClick(tabIndex));
             }
         }
         if (settingsTab != null) {
@@ -673,23 +683,39 @@ public class EmojiTabsStrip extends ScrollableHorizontalScrollView {
         }
         selectedFullIndex = index;
         final int wasSelected = selected;
-        for (int i = 0, j = 0; i < contentView.getChildCount(); ++i, ++j) {
+        int tabIndex = 0;
+        for (int i = 0; i < contentView.getChildCount(); ++i) {
             View child = contentView.getChildAt(i);
-            int from = j;
-            if (child instanceof EmojiTabsView) {
-                EmojiTabsView tabs = (EmojiTabsView) child;
-                for (int a = 0; a < tabs.contentView.getChildCount(); ++a, ++j) {
-                    View child2 = tabs.contentView.getChildAt(a);
-                    if (child2 instanceof EmojiTabButton) {
-                        ((EmojiTabButton) child2).updateSelect(index == j, animated);
-                    }
-                }
-                --j;
-            } else if (child instanceof EmojiTabButton) {
-                ((EmojiTabButton) child).updateSelect(index == j, animated);
+            if (isUnindexableTab(child)) {
+                continue;
             }
-            if (index >= from && index <= j) {
-                selected = i;
+            final int from = tabIndex;
+            if (child instanceof EmojiTabsView tabs) {
+                for (int a = 0; a < tabs.contentView.getChildCount(); ++a) {
+                    View child2 = tabs.contentView.getChildAt(a);
+                    if (isUnindexableTab(child2)) {
+                        continue;
+                    }
+                    if (child2 instanceof EmojiTabButton) {
+                        ((EmojiTabButton) child2).updateSelect(index == tabIndex, animated);
+                    }
+                    tabIndex++;
+                }
+                final int to = tabIndex - 1;
+                if (index >= from && index <= to) {
+                    selected = i;
+                }
+            } else if (child instanceof EmojiTabButton) {
+                ((EmojiTabButton) child).updateSelect(index == tabIndex, animated);
+                if (index == tabIndex) {
+                    selected = i;
+                }
+                tabIndex++;
+            } else {
+                if (index == tabIndex) {
+                    selected = i;
+                }
+                tabIndex++;
             }
         }
         if (wasSelected != selected) {
