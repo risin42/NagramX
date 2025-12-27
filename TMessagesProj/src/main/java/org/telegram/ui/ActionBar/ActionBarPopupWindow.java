@@ -624,14 +624,15 @@ public class ActionBarPopupWindow extends PopupWindow {
                 if (child.getVisibility() != View.VISIBLE) {
                     continue;
                 }
-                Object tag = child.getTag(R.id.object_tag);
-                if (child instanceof ActionBarMenuSubItem) {
-                    ((ActionBarMenuSubItem) child).updateSelectorBackground(child == firstVisible || prevGap, child == lastVisible);
+                Object tag = null;
+                if (!USE_SMOOTH_CORNERS) {
+                    tag = child.getTag(R.id.object_tag);
                 }
-                if (tag != null) {
-                    prevGap = true;
-                } else {
-                    prevGap = false;
+                if (child instanceof ActionBarMenuSubItem) {
+                    ((ActionBarMenuSubItem) child).updateSelectorBackground(child == firstVisible || (!USE_SMOOTH_CORNERS && prevGap), child == lastVisible);
+                }
+                if (!USE_SMOOTH_CORNERS) {
+                    prevGap = tag != null;
                 }
             }
         }
