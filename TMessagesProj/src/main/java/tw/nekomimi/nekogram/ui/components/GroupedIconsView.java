@@ -119,6 +119,7 @@ public class GroupedIconsView extends FrameLayout {
 
     private void addOption(OptionConfig config) {
         var imageView = new ImageView(context);
+        imageView.setPadding(dp(8), dp(8), dp(8), dp(8));
         imageView.setScaleType(ImageView.ScaleType.CENTER);
         imageView.setImageDrawable(Objects.requireNonNull(ContextCompat.getDrawable(context, config.iconResId)).mutate());
         imageView.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
@@ -129,7 +130,7 @@ public class GroupedIconsView extends FrameLayout {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        params.setMargins(dp(14), dp(12), dp(14), dp(12));
+        params.setMargins(dp(6), dp(6), dp(6), dp(6));
         imageView.setLayoutParams(params);
 
         linearLayout.addView(imageView);
