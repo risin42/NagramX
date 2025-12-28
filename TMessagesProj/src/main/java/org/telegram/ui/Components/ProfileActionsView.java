@@ -696,7 +696,11 @@ public class ProfileActionsView extends View {
                     insertIfAvailable(out, KEY_VOICE_CHAT);
                     insertIfNotAvailable(out, KEY_STREAM, KEY_VOICE_CHAT);
                 }
-                insertIfAvailable(out, KEY_NOTIFICATION);
+                if (join && allAvailableActions.contains(KEY_DISCUSS)) {
+                    insertIfAvailable(out, KEY_DISCUSS);
+                } else {
+                    insertIfAvailable(out, KEY_NOTIFICATION);
+                }
                 if (!join) {
                     insertIfAvailable(out, KEY_DISCUSS);
                     insertIfNotAvailable2(out, KEY_GIFT, KEY_DISCUSS, KEY_STORY);
