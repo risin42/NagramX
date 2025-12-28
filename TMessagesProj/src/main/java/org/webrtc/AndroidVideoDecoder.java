@@ -368,9 +368,13 @@ class AndroidVideoDecoder implements VideoDecoder, VideoSink {
       // exceeded, deliverDecodedFrame() will be called again on the next iteration of the output
       // thread's loop.  Blocking here prevents the output thread from busy-waiting while the codec
       // is idle.
-      int index = codec.dequeueOutputBuffer(info, DEQUEUE_OUTPUT_BUFFER_TIMEOUT_US);
+      MediaCodecWrapper localCodec = codec;
+      if (localCodec == null) {
+        return;
+      }
+      int index = localCodec.dequeueOutputBuffer(info, DEQUEUE_OUTPUT_BUFFER_TIMEOUT_US);
       if (index == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-        reformat(codec.getOutputFormat());
+        reformat(localCodec.getOutputFormat());
         return;
       }
 
@@ -412,13 +416,17 @@ class AndroidVideoDecoder implements VideoDecoder, VideoSink {
 
     synchronized (renderedTextureMetadataLock) {
       if (renderedTextureMetadata != null) {
-        codec.releaseOutputBuffer(index, false);
+        if (codec != null) {
+          codec.releaseOutputBuffer(index, false);
+        }
         return; // We are still waiting for texture for the previous frame, drop this one.
       }
       surfaceTextureHelper.setTextureSize(width, height);
       surfaceTextureHelper.setFrameRotation(rotation);
       renderedTextureMetadata = new DecodedTextureMetadata(info.presentationTimeUs, decodeTimeMs);
-      codec.releaseOutputBuffer(index, /* render= */ true);
+      if (codec != null) {
+        codec.releaseOutputBuffer(index, /* render= */ true);
+      }
     }
   }
 
@@ -482,7 +490,9 @@ class AndroidVideoDecoder implements VideoDecoder, VideoSink {
       // All other supported color formats are NV12.
       frameBuffer = copyNV12ToI420Buffer(buffer, stride, sliceHeight, width, height);
     }
-    codec.releaseOutputBuffer(index, /* render= */ false);
+    if (codec != null) {
+      codec.releaseOutputBuffer(index, /* render= */ false);
+    }
 
     long presentationTimeNs = info.presentationTimeUs * 1000;
     VideoFrame frame = new VideoFrame(frameBuffer, rotation, presentationTimeNs);
