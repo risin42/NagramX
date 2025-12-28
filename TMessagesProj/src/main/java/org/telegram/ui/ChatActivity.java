@@ -448,8 +448,6 @@ public class ChatActivity extends BaseFragment implements
     private final static int nkbtn_clearDeleted = 2100;
     private final static int nkbtn_viewDeleted = 2101;
 
-    private final static int BOTTOM_TAG_MUTE = 200;
-
     public int shareAlertDebugMode = DEBUG_SHARE_ALERT_MODE_NORMAL;
     public boolean shareAlertDebugTopicsSlowMotion;
 
@@ -27808,7 +27806,7 @@ public class ChatActivity extends BaseFragment implements
     private boolean shouldHideBottomFor3ButtonNav() {
         return NaConfig.INSTANCE.getDisableChannelMuteButton().Bool() && !isGesture() &&
                 chatMode == MODE_DEFAULT && !isReport() && currentChat != null &&
-                ChatObject.isChannel(currentChat) && currentChat.broadcast && !ChatObject.canWriteToChat(currentChat);
+                ChatObject.isChannelAndNotMegaGroup(currentChat) && !ChatObject.canWriteToChat(currentChat) && !ChatObject.isNotInChat(currentChat);
     }
 
     private boolean shouldHideBottomForGesture() {
@@ -27836,11 +27834,10 @@ public class ChatActivity extends BaseFragment implements
         if (actionBar != null && actionBar.isActionModeShowed()) {
             return false;
         }
-        if ((searchItem != null && searchItemVisible) || chatMode == MODE_SEARCH) {
+        if (searchItem != null && searchItemVisible) {
             return false;
         }
-        Object tag = bottomOverlayChatText.getTag();
-        return tag instanceof Integer && (Integer) tag == BOTTOM_TAG_MUTE;
+        return chatMode == MODE_DEFAULT && !ChatObject.canWriteToChat(currentChat) && !ChatObject.isNotInChat(currentChat);
     }
     // hide bottom end
 
@@ -27937,11 +27934,9 @@ public class ChatActivity extends BaseFragment implements
             if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                 bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMuteNoCaps), false);
                 bottomOverlayChatText.setEnabled(true);
-                bottomOverlayChatText.setTag(BOTTOM_TAG_MUTE);
             } else {
                 bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelUnmuteNoCaps), true);
                 bottomOverlayChatText.setEnabled(true);
-                bottomOverlayChatText.setTag(BOTTOM_TAG_MUTE);
             }
             showBottomOverlayProgress(false, bottomOverlayProgress.getTag() != null);
         } else if (currentChat != null) {
@@ -27980,11 +27975,9 @@ public class ChatActivity extends BaseFragment implements
                     if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                         bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMuteNoCaps), false);
                         bottomOverlayChatText.setEnabled(true);
-                        bottomOverlayChatText.setTag(BOTTOM_TAG_MUTE);
                     } else {
                         bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelUnmuteNoCaps), true);
                         bottomOverlayChatText.setEnabled(true);
-                        bottomOverlayChatText.setTag(BOTTOM_TAG_MUTE);
                     }
                     showBottomOverlayProgress(false, bottomOverlayProgress.getTag() != null);
                     showGiftButton = chatInfo != null && chatInfo.stargifts_available;
@@ -28038,10 +28031,8 @@ public class ChatActivity extends BaseFragment implements
             } else if (UserObject.isReplyUser(currentUser)) {
                 if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                     bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMuteNoCaps), false);
-                    bottomOverlayChatText.setTag(BOTTOM_TAG_MUTE);
                 } else {
                     bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelUnmuteNoCaps), true);
-                    bottomOverlayChatText.setTag(BOTTOM_TAG_MUTE);
                 }
                 showBottomOverlayProgress(false, true);
             } else if (botUser != null && currentUser.bot && !UserObject.isDeleted(currentUser) && !UserObject.isBotForum(currentUser)) {
