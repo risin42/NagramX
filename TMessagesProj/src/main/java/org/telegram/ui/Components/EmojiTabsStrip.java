@@ -696,8 +696,8 @@ public class EmojiTabsStrip extends ScrollableHorizontalScrollView {
                     if (isUnindexableTab(child2)) {
                         continue;
                     }
-                    if (child2 instanceof EmojiTabButton) {
-                        ((EmojiTabButton) child2).updateSelect(index == tabIndex, animated);
+                    if (child2 instanceof EmojiTabButton emojiTabButton) {
+                        emojiTabButton.updateSelect(index == tabIndex, animated);
                     }
                     tabIndex++;
                 }
@@ -705,8 +705,8 @@ public class EmojiTabsStrip extends ScrollableHorizontalScrollView {
                 if (index >= from && index <= to) {
                     selected = i;
                 }
-            } else if (child instanceof EmojiTabButton) {
-                ((EmojiTabButton) child).updateSelect(index == tabIndex, animated);
+            } else if (child instanceof EmojiTabButton emojiTabButton) {
+                emojiTabButton.updateSelect(index == tabIndex, animated);
                 if (index == tabIndex) {
                     selected = i;
                 }
