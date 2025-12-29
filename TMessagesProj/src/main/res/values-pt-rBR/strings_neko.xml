@@ -16,7 +16,7 @@
     <string name="FirstLast">Primeiro Último</string>
     <string name="LastFirst">Último Primeiro</string>
     <string name="TypefaceUseDefault">Usar Fonte do Sistema</string>
-    <string name="NoQuoteForward">Encaminhar sem Citar</string>
+    <string name="NoQuoteForward">Encaminhar sem citar</string>
     <string name="Repeat">Repostar</string>
     <string name="AddToSavedMessages">Salvar</string>
     <string name="CreateMention">Criar Menção</string>
@@ -158,7 +158,6 @@
     <string name="EmojiSetApplied">Pacote de emojis aplicado.</string>
     <string name="EmojiSetAppliedInfo">%1$s é agora o seu pacote de emojis.</string>
     <string name="EmojiSetAlreadyApplied">Pacote de emojis já aplicado.</string>
-    <string name="ProviderTelegramAPI">API do Telegram</string>
     <string name="RecentChats">Chats recentes</string>
     <string name="ClearRecentChats">Limpar chats recentes</string>
     <string name="ClearRecentChatAlert">Você deseja limpar suas conversas recentes?</string>
@@ -209,7 +208,7 @@
     <string name="DisableProxyWhenVpnEnabled">Desativar Proxy Quando a VPN Estiver Ativada</string>
     <string name="UseProxyItem">Mostrar Proxy na Gaveta</string>
     <string name="HideProxyByDefault">Ocultar Proxy Inativo</string>
-    <string name="SkipOpenLinkConfirm">Pular Confirmação de Abrir Link</string>
+    <string name="SkipOpenLinkConfirm">Ignorar Confirmação ao Abrir Links</string>
     <string name="DeleteAllInChatAlert">Aviso! Isso irá **excluir todas as mensagens** neste chat para **todos** os participantes.</string>
     <string name="UnblockAll">Desbloquear Tudo</string>
     <string name="UnblockAllWarn">Tem certeza de que deseja desbloquear **todos os usuários e bots**?</string>
