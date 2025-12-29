@@ -7050,16 +7050,16 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
         } else if (botKeyboardViewVisible && botButtonsMessageObject != null && botButtonsMessageObject.messageOwner.reply_markup != null && !TextUtils.isEmpty(botButtonsMessageObject.messageOwner.reply_markup.placeholder)) {
             messageEditText.setHintText(botButtonsMessageObject.messageOwner.reply_markup.placeholder, animated);
         } else if (parentFragment != null && parentFragment.isForumInViewAsMessagesMode()) {
+            String topicTitle;
             if (replyingTopMessage != null && replyingTopMessage.replyToForumTopic != null && replyingTopMessage.replyToForumTopic.title != null) {
-                messageEditText.setHintText(LocaleController.formatString(R.string.TypeMessageIn, replyingTopMessage.replyToForumTopic.title), animated);
+                topicTitle = replyingTopMessage.replyToForumTopic.title;
             } else {
                 final TLRPC.TL_forumTopic topic = MessagesController.getInstance(currentAccount).getTopicsController().findTopic(parentFragment.getCurrentChat().id, 1);
-                if (topic != null && topic.title != null) {
-                    messageEditText.setHintText(LocaleController.formatString(R.string.TypeMessageIn, topic.title), animated);
-                } else {
-                    messageEditText.setHintText(getString(R.string.TypeMessage), animated);
-                }
+                topicTitle = (topic != null && topic.title != null) ? topic.title : null;
             }
+            SpannableStringBuilder hintText = new SpannableStringBuilder(topicTitle != null ? LocaleController.formatString(R.string.TypeMessageIn, topicTitle) : getString(R.string.TypeMessage));
+            maybeAppendSendAsUnderMessageHint(hintText);
+            messageEditText.setHintText(hintText, animated);
         } else {
             boolean isChannel = false;
             boolean anonymously = false;
@@ -7085,48 +7085,55 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                         messageEditText.setHintText(getString(R.string.ChannelBroadcast), animated);
                     }
                 } else {
-                    TLRPC.Chat chat = accountInstance.getMessagesController().getChat(-dialog_id);
-                    TLRPC.User us = accountInstance.getMessagesController().getUser(dialog_id);
                     SpannableStringBuilder messageEditTextText = SpannableStringBuilder.valueOf(getString(R.string.TypeMessage));
-                    SpannableString sendAsText = null;
                     if (NaConfig.INSTANCE.getTypeMessageHintUseGroupName().Bool()) {
+                        TLRPC.Chat chat = accountInstance.getMessagesController().getChat(-dialog_id);
+                        TLRPC.User user = accountInstance.getMessagesController().getUser(dialog_id);
                         if (chat != null) {
                             messageEditTextText = SpannableStringBuilder.valueOf(chat.title);
-                        } else if (us != null && us != accountInstance.getUserConfig().getCurrentUser()) {
-                            messageEditTextText = SpannableStringBuilder.valueOf((us.first_name != null ? us.first_name : "") + " " + (us.last_name != null ? us.last_name : ""));
+                        } else if (user != null && user != accountInstance.getUserConfig().getCurrentUser()) {
+                            messageEditTextText = SpannableStringBuilder.valueOf((user.first_name != null ? user.first_name : "") + " " + (user.last_name != null ? user.last_name : ""));
                         }
                     }
-                    if (NaConfig.INSTANCE.getShowSendAsUnderMessageHint().Bool() && delegate != null) {
-                        TLRPC.ChatFull full = accountInstance.getMessagesController().getChatFull(-dialog_id);
-                        TLRPC.Peer defPeer = full != null ? full.default_send_as : null;
-                        if (defPeer == null && delegate.getSendAsPeers() != null && !delegate.getSendAsPeers().peers.isEmpty()) {
-                            defPeer = delegate.getSendAsPeers().peers.get(0).peer;
-                        }
-                        if (defPeer != null) {
-                            if (defPeer.channel_id != 0) {
-                                TLRPC.Chat ch = accountInstance.getMessagesController().getChat(defPeer.channel_id);
-                                sendAsText = new SpannableString(ch != null ? "\nas " + ch.title : "");
-                            } else {
-                                TLRPC.User user = accountInstance.getMessagesController().getUser(defPeer.user_id);
-                                sendAsText = new SpannableString(user != null ? "\nas " + UserObject.getUserName(user) : "");
-                            }
-                        } else {
-                            TLRPC.User user = UserConfig.getInstance(currentAccount).getCurrentUser();
-                            sendAsText = new SpannableString(user != null ? "\nas " + UserObject.getUserName(user) : "");
-                        }
-                    }
-                    SpannableStringBuilder builder;
-                    if (sendAsText != null) {
-                        messageEditTextText.setSpan(new RelativeSizeSpan(0.9f), 0, messageEditTextText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        sendAsText.setSpan(new RelativeSizeSpan(0.6f), 0, sendAsText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        builder = new SpannableStringBuilder(messageEditTextText);
-                        builder.append(sendAsText);
-                    } else {
-                        builder = new SpannableStringBuilder(messageEditTextText);
-                    }
-                    messageEditText.setHintText(builder, animated);
+                    maybeAppendSendAsUnderMessageHint(messageEditTextText);
+                    messageEditText.setHintText(messageEditTextText, animated);
                 }
             }
+        }
+    }
+
+    private void maybeAppendSendAsUnderMessageHint(SpannableStringBuilder hintText) {
+        SpannableString sendAsText = getSendAsUnderMessageHintText();
+        if (sendAsText == null) {
+            return;
+        }
+        hintText.setSpan(new RelativeSizeSpan(0.9f), 0, hintText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sendAsText.setSpan(new RelativeSizeSpan(0.6f), 0, sendAsText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        hintText.append(sendAsText);
+    }
+
+    private SpannableString getSendAsUnderMessageHintText() {
+        if (!NaConfig.INSTANCE.getShowSendAsUnderMessageHint().Bool() || delegate == null) {
+            return null;
+        }
+
+        TLRPC.ChatFull full = accountInstance.getMessagesController().getChatFull(-dialog_id);
+        TLRPC.Peer defPeer = full != null ? full.default_send_as : null;
+        if (defPeer == null && delegate.getSendAsPeers() != null && !delegate.getSendAsPeers().peers.isEmpty()) {
+            defPeer = delegate.getSendAsPeers().peers.get(0).peer;
+        }
+
+        if (defPeer != null) {
+            if (defPeer.channel_id != 0) {
+                TLRPC.Chat ch = accountInstance.getMessagesController().getChat(defPeer.channel_id);
+                return new SpannableString(ch != null ? "\nas " + ch.title : "");
+            } else {
+                TLRPC.User user = accountInstance.getMessagesController().getUser(defPeer.user_id);
+                return new SpannableString(user != null ? "\nas " + UserObject.getUserName(user) : "");
+            }
+        } else {
+            TLRPC.User user = UserConfig.getInstance(currentAccount).getCurrentUser();
+            return new SpannableString(user != null ? "\nas " + UserObject.getUserName(user) : "");
         }
     }
 
