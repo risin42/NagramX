@@ -2576,13 +2576,17 @@ public class ChatActionCell extends BaseCell implements DownloadController.FileD
                     avatarStoryParams.storyItem = messageObject.messageOwner.media.storyItem;
                 }
                 avatarStoryParams.originalAvatarRect.set(x, y, x + imageSize, y + imageSize);
+                boolean restoreImageSize = false;
                 if (messageObject.type == MessageObject.TYPE_GIFT_THEME_UPDATE || messageObject.type == MessageObject.TYPE_GIFT_OFFER || messageObject.type == MessageObject.TYPE_GIFT_OFFER_REJECTED) {
                     x += dp(10);
                     y += dp(10);
                     imageSize -= dp(20);
+                    restoreImageSize = true;
                 }
                 imageReceiver.setImageCoords(x, y, Math.max(0, imageSize), Math.max(0, imageSize));
-                imageSize += dp(20);
+                if (restoreImageSize) {
+                    imageSize += dp(20);
+                }
 
             } else if (messageObject.type == MessageObject.TYPE_ACTION_PHOTO) {
                 imageReceiver.setImageCoords((previousWidth - stickerSize) / 2f, textY + textHeight + giftRectSize * 0.075f, stickerSize, stickerSize);
