@@ -338,8 +338,8 @@ public class ItemOptions {
         subItem.setOnLongClickListener(view1 -> {
             if (onLongClickListener != null) {
                 onLongClickListener.run();
+                dismiss();
             }
-            dismiss();
             return true;
         });
         if (minWidthDp > 0) {
