@@ -1976,7 +1976,7 @@ public class SharedMediaLayout extends FrameLayout implements NotificationCenter
                 addZoomInZoomOutItemOptions(options);
 
                 final boolean hasDifferentTypes = isStories || (sharedMediaData[0].hasPhotos && sharedMediaData[0].hasVideos) || !sharedMediaData[0].endReached[0] || !sharedMediaData[0].endReached[1] || !sharedMediaData[0].startReached;
-                if (!DialogObject.isEncryptedDialog(dialog_id) && !(user != null && user.bot)) {
+                if (!DialogObject.isEncryptedDialog(dialog_id)) {
                     options.add(R.drawable.msg_calendar2, getString(R.string.Calendar), () -> {
                         showMediaCalendar(tab, false);
                         options.dismiss();
