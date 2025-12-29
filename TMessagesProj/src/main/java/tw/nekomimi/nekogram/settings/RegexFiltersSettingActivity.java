@@ -63,9 +63,12 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
     private int filtersOptionDividerRow;
     private int filtersHeaderRow;
     private int addFilterBtnRow;
+    private int filtersStartRow;
+    private int filtersEndRow;
     private int dividerRow;
     private int chatFiltersHeaderRow;
     private int chatFiltersStartRow;
+    private int chatFiltersEndRow;
     private int addChatFilterBtnRow;
 
     public RegexFiltersSettingActivity() {
@@ -86,17 +89,19 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
         filtersOptionDividerRow = rowCount++;
 
         filtersHeaderRow = rowCount++;
-        var filters = AyuFilter.getRegexFilters();
-        rowCount += filters.size();
-
         addFilterBtnRow = rowCount++;
+        var filters = AyuFilter.getRegexFilters();
+        filtersStartRow = rowCount;
+        rowCount += filters.size();
+        filtersEndRow = rowCount;
         dividerRow = rowCount++;
         // Chat-specific filters section
         chatFiltersHeaderRow = rowCount++;
+        addChatFilterBtnRow = rowCount++;
         var chatEntries = checkChatFilters(AyuFilter.getChatFilterEntries());
         chatFiltersStartRow = rowCount;
         rowCount += chatEntries.size();
-        addChatFilterBtnRow = rowCount++;
+        chatFiltersEndRow = rowCount;
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -309,9 +314,9 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
             boolean enabled = !cell.isChecked();
             cell.setChecked(enabled);
             NekoConfig.ignoreBlocked.setConfigBool(enabled);
-        } else if (position > filtersHeaderRow && position < addFilterBtnRow) {
+        } else if (position >= filtersStartRow && position < filtersEndRow) {
             ArrayList<AyuFilter.FilterModel> filterModels = AyuFilter.getRegexFilters();
-            int filterIndex = position - filtersHeaderRow - 1;
+            int filterIndex = position - filtersStartRow;
             if (filterIndex < 0 || filterIndex >= filterModels.size()) {
                 return;
             }
@@ -331,7 +336,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
             presentFragment(new RegexFilterEditActivity());
         } else if (position == addChatFilterBtnRow) {
             presentFragment(getDialogsActivity());
-        } else if (position >= chatFiltersStartRow && position < addChatFilterBtnRow) {
+        } else if (position >= chatFiltersStartRow && position < chatFiltersEndRow) {
             int idx = position - chatFiltersStartRow;
             var chatEntries = checkChatFilters(AyuFilter.getChatFilterEntries());
             if (idx >= 0 && idx < chatEntries.size()) {
@@ -438,9 +443,9 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                         textCheckCell.setTextAndCheck(getString(R.string.RegexFiltersEnableInChats), NaConfig.INSTANCE.getRegexFiltersEnableInChats().Bool(), true);
                     } else if (position == ignoreBlockedRow) {
                         textCheckCell.setTextAndCheck(getString(R.string.IgnoreBlocked), NekoConfig.ignoreBlocked.Bool(), true);
-                    } else if (position > filtersHeaderRow && position < addFilterBtnRow) {
+                    } else if (position >= filtersStartRow && position < filtersEndRow) {
                         ArrayList<AyuFilter.FilterModel> filterModels = AyuFilter.getRegexFilters();
-                        int filterIndex = position - filtersHeaderRow - 1;
+                        int filterIndex = position - filtersStartRow;
                         if (filterIndex >= 0 && filterIndex < filterModels.size()) {
                             AyuFilter.FilterModel filterModel = filterModels.get(filterIndex);
                             textCheckCell.setTextAndCheck(filterModel.regex, filterModel.isEnabled(dialogId), true);
@@ -450,10 +455,16 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                 case TYPE_TEXT:
                     TextCell textCell = (TextCell) holder.itemView;
                     textCell.setColors(Theme.key_windowBackgroundWhiteBlueIcon, Theme.key_windowBackgroundWhiteBlueButton);
-                    textCell.setTextAndIcon(getString(R.string.RegexFiltersAdd), R.drawable.msg_add, false);
+                    boolean needDivider = false;
+                    if (position == addFilterBtnRow) {
+                        needDivider = filtersStartRow < filtersEndRow;
+                    } else if (position == addChatFilterBtnRow) {
+                        needDivider = chatFiltersStartRow < chatFiltersEndRow;
+                    }
+                    textCell.setTextAndIcon(getString(R.string.RegexFiltersAdd), R.drawable.msg_add, needDivider);
                     break;
                 case TYPE_ACCOUNT:
-                    if (position >= chatFiltersStartRow && position < addChatFilterBtnRow) {
+                    if (position >= chatFiltersStartRow && position < chatFiltersEndRow) {
                         int idx = position - chatFiltersStartRow;
                         var chatEntries = checkChatFilters(AyuFilter.getChatFilterEntries());
                         if (idx >= 0 && idx < chatEntries.size()) {
@@ -486,7 +497,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                 return TYPE_HEADER;
             } else if (position == addFilterBtnRow || position == addChatFilterBtnRow) {
                 return TYPE_TEXT;
-            } else if (position >= chatFiltersStartRow && position < addChatFilterBtnRow) {
+            } else if (position >= chatFiltersStartRow && position < chatFiltersEndRow) {
                 return TYPE_ACCOUNT;
             }
             return TYPE_CHECK;

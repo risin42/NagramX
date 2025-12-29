@@ -30,6 +30,7 @@ public class RegexChatFiltersListActivity extends BaseNekoSettingsActivity {
     private final long dialogId;
     private int headerRow;
     private int startRow;
+    private int endRow;
     private int addBtnRow;
 
     public RegexChatFiltersListActivity(long dialogId) {
@@ -41,10 +42,11 @@ public class RegexChatFiltersListActivity extends BaseNekoSettingsActivity {
         super.updateRows();
 
         headerRow = rowCount++;
+        addBtnRow = rowCount++;
         startRow = rowCount;
         var filters = AyuFilter.getChatFiltersForDialog(dialogId);
         rowCount += filters.size();
-        addBtnRow = rowCount++;
+        endRow = rowCount;
     }
 
     @Override
@@ -87,7 +89,7 @@ public class RegexChatFiltersListActivity extends BaseNekoSettingsActivity {
 
     @Override
     protected void onItemClick(View view, int position, float x, float y) {
-        if (position > headerRow && position < addBtnRow) {
+        if (position >= startRow && position < endRow) {
             int idx = position - startRow;
             var filters = AyuFilter.getChatFiltersForDialog(dialogId);
             if (idx >= 0 && idx < filters.size()) {
@@ -131,12 +133,12 @@ public class RegexChatFiltersListActivity extends BaseNekoSettingsActivity {
                     if (position == addBtnRow) {
                         TextCell textCell = (TextCell) holder.itemView;
                         textCell.setColors(Theme.key_windowBackgroundWhiteBlueIcon, Theme.key_windowBackgroundWhiteBlueButton);
-                        textCell.setTextAndIcon(getString(R.string.RegexFiltersAdd), R.drawable.msg_add, false);
+                        textCell.setTextAndIcon(getString(R.string.RegexFiltersAdd), R.drawable.msg_add, startRow < endRow);
                     }
                     break;
                 case TYPE_CHECK:
                     TextCheckCell textCheckCell = (TextCheckCell) holder.itemView;
-                    if (position > headerRow && position < addBtnRow) {
+                    if (position >= startRow && position < endRow) {
                         int idx = position - startRow;
                         var filters = AyuFilter.getChatFiltersForDialog(dialogId);
                         if (idx >= 0 && idx < filters.size()) {
