@@ -29,13 +29,13 @@
     <string name="AppIconDarkBlue">Azul Escuro</string>
     <string name="AppIconBlurBlue">Azul desfocado</string>
     <string name="InputMessageId">Inserir ID da Mensagem</string>
-    <string name="ToTheMessage">Ir Para</string>
+    <string name="ToTheMessage">Ir para</string>
     <string name="ZalgoFilter">Filtrar Símbolos \"Zalgo\"</string>
     <string name="ZalgoFilterNotice">Todos os símbolos \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" em apelidos ou mensagens serão removidos.</string>
     <string name="labelChannelUser">Etiqueta Usuários de Canal</string>
     <string name="CustomChannelLabel">Etiqueta de Canal Personalizado</string>
     <string name="AlwaysShowDownloadIcon">Sempre Mostrar Ícone de Download</string>
-    <string name="HideTitle">Ocultar Título</string>
+    <string name="HideTitle">Ocultar título</string>
     <string name="IgnoreUnreadCount">Ocultar Contador de Não Lidas</string>
     <string name="SendWithoutMarkdown">Enviar sem formatação</string>
     <string name="SendAsEmoji">Enviar como emoji</string>
