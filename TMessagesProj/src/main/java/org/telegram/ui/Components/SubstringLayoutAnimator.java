@@ -8,6 +8,7 @@ import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.view.View;
 
 import org.telegram.messenger.AndroidUtilities;
@@ -32,28 +33,37 @@ public class SubstringLayoutAnimator {
     }
 
     public void create(StaticLayout hintLayout, CharSequence hint, CharSequence text, TextPaint paint) {
-        if (hintLayout != null && !hint.equals(text)) {
+        if (hint == null) {
+            hint = "";
+        }
+        if (text == null) {
+            text = "";
+        }
+
+        if (hintLayout != null && !TextUtils.equals(hint, text)) {
 
             if (valueAnimator != null) {
                 valueAnimator.cancel();
             }
 
             boolean animateOut;
-            String maxStr;
-            String substring;
+            CharSequence maxText;
+            CharSequence subText;
             if (hint.length() > text.length()) {
                 animateOut = true;
-                maxStr = hint.toString();
-                substring = text.toString();
+                maxText = hint;
+                subText = text;
             } else {
                 animateOut = false;
-                maxStr = text.toString();
-                substring = hint.toString();
+                maxText = text;
+                subText = hint;
             }
+            final String maxStr = maxText.toString();
+            final String substring = subText.toString();
             int startFrom = maxStr.indexOf(substring);
             if (startFrom >= 0) {
-                SpannableStringBuilder inStr = new SpannableStringBuilder(maxStr);
-                SpannableStringBuilder stabeStr = new SpannableStringBuilder(maxStr);
+                SpannableStringBuilder inStr = new SpannableStringBuilder(maxText);
+                SpannableStringBuilder stabeStr = new SpannableStringBuilder(maxText);
                 if (startFrom != 0) {
                     stabeStr.setSpan(new EmptyStubSpan(), 0, startFrom, 0);
                 }
