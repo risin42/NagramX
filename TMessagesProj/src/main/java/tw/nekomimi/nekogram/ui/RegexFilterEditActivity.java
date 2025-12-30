@@ -190,6 +190,7 @@ public class RegexFilterEditActivity extends BaseFragment {
 
         if (filterModel != null) {
             editField.setText(filterModel.regex);
+            editField.setSelection(editField.length());
         }
 
         linearLayout.addView(editField, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 24, 24, 24, 0));
@@ -240,8 +241,12 @@ public class RegexFilterEditActivity extends BaseFragment {
     @Override
     public void onTransitionAnimationEnd(boolean isOpen, boolean backward) {
         if (isOpen) {
-            editField.requestFocus();
-            AndroidUtilities.showKeyboard(editField);
+            AndroidUtilities.runOnUIThread(() -> {
+                if (editField != null) {
+                    editField.requestFocus();
+                    AndroidUtilities.showKeyboard(editField);
+                }
+            }, 200);
         }
     }
 
