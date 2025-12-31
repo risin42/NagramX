@@ -307,58 +307,70 @@ public class ActionBar extends FrameLayout {
             canvas.clipRect(0, -getTranslationY() + (occupyStatusBar ? AndroidUtilities.statusBarHeight : 0), getMeasuredWidth(), getMeasuredHeight());
         }
         boolean result = super.drawChild(canvas, child, drawingTime);
-        if (supportsHolidayImage && !titleOverlayShown && !LocaleController.isRTL && (child == titleTextView[0] || child == titleTextView[1] || child == titlesContainer && useContainerForTitles)) {
-            Drawable drawable = Theme.getCurrentHolidayDrawable();
-            if (drawable != null) {
-                SimpleTextView titleView = child == titlesContainer ? titleTextView[0] : (SimpleTextView) child;
-                if (titleView != null && titleView.getVisibility() == View.VISIBLE && titleView.getText() instanceof String) {
-                    TextPaint textPaint = titleView.getTextPaint();
-                    textPaint.getFontMetricsInt(fontMetricsInt);
-                    textPaint.getTextBounds((String) titleView.getText(), 0, 1, rect);
-                    int x = titleView.getTextStartX() + Theme.getCurrentHolidayDrawableXOffset() + (rect.width() - (drawable.getIntrinsicWidth() + Theme.getCurrentHolidayDrawableXOffset())) / 2;
-                    int y = titleView.getTextStartY() + Theme.getCurrentHolidayDrawableYOffset() + (int) Math.ceil((titleView.getTextHeight() - rect.height()) / 2.0f) + (int) (dp(8) * (1f - titlesContainer.getScaleY()));
-                    drawable.setBounds(x, y - drawable.getIntrinsicHeight(), x + drawable.getIntrinsicWidth(), y);
-                    drawable.setAlpha((int) (255 * titlesContainer.getAlpha() * titleView.getAlpha()));
-                    drawable.draw(canvas);
-                    if (overlayTitleAnimationInProgress) {
-                        child.invalidate();
-                        invalidate();
-                    }
-                }
-            }
-            if (NekoConfig.actionBarDecoration.Int() == 3) {
-                if (snowflakesEffect != null) {
-                    snowflakesEffect = null;
-                }
-                if (fireworksEffect != null) {
-                    fireworksEffect = null;
-                }
-            } else if (NekoConfig.actionBarDecoration.Int() == 2) {
-                if (fireworksEffect == null) {
-                    fireworksEffect = new FireworksEffect();
-                }
-            } else if (NekoConfig.actionBarDecoration.Int() == 1 || Theme.canStartHolidayAnimation()) {
-                if (snowflakesEffect == null) {
-                    snowflakesEffect = new SnowflakesEffect(0);
-                }
-            } else if (!manualStart) {
-                if (snowflakesEffect != null) {
-                    snowflakesEffect = null;
-                }
-                if (fireworksEffect != null) {
-                    fireworksEffect = null;
-                }
-            }
-            if (snowflakesEffect != null) {
-                snowflakesEffect.onDraw(this, canvas);
-            } else if (fireworksEffect != null) {
-                fireworksEffect.onDraw(this, canvas);
-            }
-        }
+        drawHolidayDecorations(canvas, child);
         if (clip) {
             canvas.restore();
         }
         return result;
+    }
+
+    private void drawHolidayDecorations(Canvas canvas, View titleChild) {
+        if (!(supportsHolidayImage && !titleOverlayShown && !LocaleController.isRTL && (titleChild == titleTextView[0] || titleChild == titleTextView[1] || titleChild == titlesContainer && useContainerForTitles))) {
+            return;
+        }
+
+        if (titlesContainer == null || fontMetricsInt == null || rect == null) {
+            return;
+        }
+
+        Drawable drawable = Theme.getCurrentHolidayDrawable();
+        if (drawable != null) {
+            SimpleTextView titleView = titleChild == titlesContainer ? titleTextView[0] : (SimpleTextView) titleChild;
+            if (titleView != null && titleView.getVisibility() == View.VISIBLE && titleView.getText() instanceof String) {
+                TextPaint textPaint = titleView.getTextPaint();
+                textPaint.getFontMetricsInt(fontMetricsInt);
+                textPaint.getTextBounds((String) titleView.getText(), 0, 1, rect);
+                int x = titleView.getTextStartX() + Theme.getCurrentHolidayDrawableXOffset() + (rect.width() - (drawable.getIntrinsicWidth() + Theme.getCurrentHolidayDrawableXOffset())) / 2;
+                int y = titleView.getTextStartY() + Theme.getCurrentHolidayDrawableYOffset() + (int) Math.ceil((titleView.getTextHeight() - rect.height()) / 2.0f) + (int) (dp(8) * (1f - titlesContainer.getScaleY()));
+                drawable.setBounds(x, y - drawable.getIntrinsicHeight(), x + drawable.getIntrinsicWidth(), y);
+                drawable.setAlpha((int) (255 * titlesContainer.getAlpha() * titleView.getAlpha()));
+                drawable.draw(canvas);
+                if (overlayTitleAnimationInProgress) {
+                    titleChild.invalidate();
+                    invalidate();
+                }
+            }
+        }
+
+        if (NekoConfig.actionBarDecoration.Int() == 3) {
+            if (snowflakesEffect != null) {
+                snowflakesEffect = null;
+            }
+            if (fireworksEffect != null) {
+                fireworksEffect = null;
+            }
+        } else if (NekoConfig.actionBarDecoration.Int() == 2) {
+            if (fireworksEffect == null) {
+                fireworksEffect = new FireworksEffect();
+            }
+        } else if (NekoConfig.actionBarDecoration.Int() == 1 || Theme.canStartHolidayAnimation()) {
+            if (snowflakesEffect == null) {
+                snowflakesEffect = new SnowflakesEffect(0);
+            }
+        } else if (!manualStart) {
+            if (snowflakesEffect != null) {
+                snowflakesEffect = null;
+            }
+            if (fireworksEffect != null) {
+                fireworksEffect = null;
+            }
+        }
+
+        if (snowflakesEffect != null) {
+            snowflakesEffect.onDraw(this, canvas);
+        } else if (fireworksEffect != null) {
+            fireworksEffect.onDraw(this, canvas);
+        }
     }
 
     @Override
@@ -700,16 +712,6 @@ public class ActionBar extends FrameLayout {
     }
 
     public void onDrawCrossfadeContent(Canvas canvas, boolean front, boolean hideBackDrawable, float progress) {
-        for (int i = 0; i < getChildCount(); i++) {
-            View ch = getChildAt(i);
-            if ((!hideBackDrawable || ch != backButtonImageView) && ch.getVisibility() == View.VISIBLE && ch instanceof ActionBarMenu) {
-                canvas.save();
-                canvas.translate(ch.getX(), ch.getY());
-                ch.draw(canvas);
-                canvas.restore();
-            }
-        }
-
         canvas.save();
         canvas.translate(front ? getWidth() * progress * 0.5f : -getWidth() * 0.4f * (1f - progress), 0);
         for (int i = 0; i < getChildCount(); i++) {
@@ -719,9 +721,20 @@ public class ActionBar extends FrameLayout {
                 canvas.translate(ch.getX(), ch.getY());
                 ch.draw(canvas);
                 canvas.restore();
+                drawHolidayDecorations(canvas, ch);
             }
         }
         canvas.restore();
+
+        for (int i = 0; i < getChildCount(); i++) {
+            View ch = getChildAt(i);
+            if ((!hideBackDrawable || ch != backButtonImageView) && ch.getVisibility() == View.VISIBLE && ch instanceof ActionBarMenu) {
+                canvas.save();
+                canvas.translate(ch.getX(), ch.getY());
+                ch.draw(canvas);
+                canvas.restore();
+            }
+        }
     }
 
     public void showActionMode() {
