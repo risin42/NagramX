@@ -331,6 +331,7 @@ public class ChatsHelper extends BaseController {
         }
         int unreadCount;
         int mentionCount;
+        int reactionCount;
         boolean counterMuted;
         if (dialog.id < 0) {
             TLRPC.Chat chat = MessagesController.getInstance(currentAccount).getChat(-dialog.id);
@@ -338,10 +339,12 @@ public class ChatsHelper extends BaseController {
                 int[] counts = MessagesController.getInstance(currentAccount).getTopicsController().getForumUnreadCount(chat.id);
                 unreadCount = counts[0];
                 mentionCount = counts[1];
+                reactionCount = counts[2];
                 counterMuted = counts[3] == 0;
             } else {
                 unreadCount = dialog.unread_count;
                 mentionCount = dialog.unread_mentions_count;
+                reactionCount = dialog.unread_reactions_count;
                 counterMuted = MessagesController.getInstance(currentAccount).isDialogMuted(dialog.id);
             }
             if (ChatObject.isMonoForum(chat)) {
@@ -350,9 +353,13 @@ public class ChatsHelper extends BaseController {
         } else {
             unreadCount = dialog.unread_count;
             mentionCount = dialog.unread_mentions_count;
+            reactionCount = dialog.unread_reactions_count;
             counterMuted = MessagesController.getInstance(currentAccount).isDialogMuted(dialog.id);
         }
         if (mentionCount > 0) {
+            return true;
+        }
+        if (reactionCount > 0) {
             return true;
         }
         return unreadCount > 0 && !counterMuted;
