@@ -281,6 +281,7 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="BookmarkAdded">Aggiunto ai **segnalibri**.</string>
     <string name="BookmarkRemoved">Rimosso dai **segnalibri**.</string>
     <string name="BookmarksLimitReached">Puoi salvare fino a %d messaggi per chat.</string>
+    <string name="BookmarksFilterUsers">Utenti</string>
     <string name="NoBookmarks">Nessun segnalibro</string>
     <string name="ClearAllBookmarks">Cancella Tutti i Segnalibri</string>
     <string name="ClearAllBookmarksNotification">Tutti i segnalibri sono stati cancellati.</string>

@@ -123,6 +123,7 @@
     <string name="GhostModeEnabled">Włączono tryb ducha</string>
     <string name="GhostModeDisabled">Wyłączono tryb ducha</string>
     <string name="GhostModeInDrawer">Pokaż w szufladzie</string>
+    <string name="GhostModeStatusIndicator">Wskaźnik trybu ducha</string>
     <string name="DontSendReadMessagePackets">Nie czytaj wiadomości</string>
     <string name="DontReadStoriesPackets">Nie czytaj storek</string>
     <string name="DontSendOnlinePackets">Nie wysyłaj online</string>
@@ -276,8 +277,16 @@
     <string name="BookmarkAdded">Dodano do **zakładek**.</string>
     <string name="BookmarkRemoved">Usunięto z **zakładek**.</string>
     <string name="BookmarksLimitReached">Możesz zapisać do %d wiadomości na czacie.</string>
+    <string name="BookmarksFilterUsers">Użytkownicy</string>
     <string name="NoBookmarks">Brak zakładek</string>
     <string name="ClearAllBookmarks">Wyczyść wszystkie zakładki</string>
     <string name="ClearAllBookmarksNotification">Wszystkie zakładki zostały usunięte.</string>
     <string name="SortByUnread">Sortuj według nieprzeczytanych</string>
+    <string name="MediaSettings">Media</string>
+    <string name="CameraInVideoMessages">Kamera w wiadomościach wideo</string>
+    <string name="CameraInVideoMessagesFront">Kamera przednia</string>
+    <string name="CameraInVideoMessagesRear">Kamera tylnia</string>
+    <string name="CameraInVideoMessagesAsk">Zapytaj</string>
+    <string name="CameraSettings">Kamera</string>
+    <string name="SmoothRoundedMenu">Płynne, zaokrąglone menu kontekstowe</string>
 </resources>

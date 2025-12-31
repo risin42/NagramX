@@ -170,8 +170,8 @@
     <string name="CloudConfigRestore">Restaurar da nuvem</string>
     <string name="CloudConfigRestoreShort">Restaurar</string>
     <string name="CloudConfigSyncing">Sincronizando...</string>
-    <string name="CloudConfigAutoSync">Sincronização automática</string>
-    <string name="CloudConfigAutoSyncDesc">Sincronizar automaticamente com a nuvem após fazer alterações nas N-Configurações.</string>
+    <string name="CloudConfigAutoSync">Sincronizar automaticamente</string>
+    <string name="CloudConfigAutoSyncDesc">Sincronizar com a nuvem automaticamente após alterar as N-Configurações.</string>
     <string name="CloudConfigSyncFailed">Falha ao sincronizar as configurações com a nuvem</string>
     <string name="CloudConfigRestoreFailed">Falha ao restaurar as configurações da nuvem</string>
     <string name="CopyCallback">Copiar Dados de Callback</string>
