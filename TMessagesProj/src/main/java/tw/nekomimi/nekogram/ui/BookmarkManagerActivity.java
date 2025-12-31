@@ -9,7 +9,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -50,6 +49,7 @@ import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.ScrollSlidingTextTabStrip;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Map;
@@ -84,6 +84,7 @@ public class BookmarkManagerActivity extends BaseFragment {
     private boolean tabsAnimationInProgress;
     private boolean backAnimation;
     private boolean animatingForward;
+    private float additionalOffset;
     private int maximumVelocity;
     private int startedTrackingPointerId;
     private boolean startedTracking;
@@ -157,12 +158,18 @@ public class BookmarkManagerActivity extends BaseFragment {
         tabsView.setDelegate(new ScrollSlidingTextTabStrip.ScrollSlidingTabStripDelegate() {
             @Override
             public void onPageSelected(int page, boolean forward) {
-                if (selectedTabId == page) {
+                if (viewPages == null || viewPages[0].tabId == page) {
                     return;
                 }
                 selectedTabId = page;
-                if (viewPages != null) {
-                    setPageTab(viewPages[0], page, true);
+                viewPages[1].tabId = page;
+                setPageTab(viewPages[1], page, true);
+                viewPages[1].setVisibility(View.VISIBLE);
+                animatingForward = forward;
+                if (forward) {
+                    viewPages[1].setTranslationX(viewPages[0].getMeasuredWidth());
+                } else {
+                    viewPages[1].setTranslationX(-viewPages[0].getMeasuredWidth());
                 }
                 updateSwipeBackEnabled();
                 updateEmptyView();
@@ -171,6 +178,28 @@ public class BookmarkManagerActivity extends BaseFragment {
 
             @Override
             public void onPageScrolled(float progress) {
+                if (viewPages == null) {
+                    return;
+                }
+                if (progress == 1.0f && viewPages[1].getVisibility() != View.VISIBLE) {
+                    return;
+                }
+                if (animatingForward) {
+                    viewPages[0].setTranslationX(-progress * viewPages[0].getMeasuredWidth());
+                    viewPages[1].setTranslationX(viewPages[0].getMeasuredWidth() - progress * viewPages[0].getMeasuredWidth());
+                } else {
+                    viewPages[0].setTranslationX(progress * viewPages[0].getMeasuredWidth());
+                    viewPages[1].setTranslationX(progress * viewPages[0].getMeasuredWidth() - viewPages[0].getMeasuredWidth());
+                }
+                if (progress == 1.0f) {
+                    ViewPage tempPage = viewPages[0];
+                    viewPages[0] = viewPages[1];
+                    viewPages[1] = tempPage;
+                    viewPages[1].setVisibility(View.GONE);
+                    updateSwipeBackEnabled();
+                    updateEmptyView();
+                    invalidateGestureExclusion();
+                }
             }
         });
         updateTabs();
@@ -222,6 +251,9 @@ public class BookmarkManagerActivity extends BaseFragment {
     @Override
     public boolean onBackPressed() {
         if (!super.onBackPressed()) {
+            return false;
+        }
+        if (tabsAnimationInProgress || startedTracking || maybeStartTracking || tabsView != null && tabsView.isAnimatingIndicator()) {
             return false;
         }
         if (selectedTabId != TAB_ALL) {
@@ -408,7 +440,10 @@ public class BookmarkManagerActivity extends BaseFragment {
         if (viewPages == null) {
             return;
         }
-        setPageTab(viewPages[0], selectedTabId, false);
+        setPageTab(viewPages[0], viewPages[0].tabId, false);
+        if (viewPages[1].getVisibility() == View.VISIBLE) {
+            setPageTab(viewPages[1], viewPages[1].tabId, false);
+        }
         updateSwipeBackEnabled();
         updateEmptyView();
         invalidateGestureExclusion();
@@ -475,7 +510,7 @@ public class BookmarkManagerActivity extends BaseFragment {
         if (emptyView == null || viewPages == null) {
             return;
         }
-        if (tabsAnimationInProgress || startedTracking || maybeStartTracking) {
+        if (tabsAnimationInProgress || startedTracking || maybeStartTracking || tabsView != null && tabsView.isAnimatingIndicator()) {
             emptyView.setVisibility(View.GONE);
             return;
         }
@@ -483,7 +518,7 @@ public class BookmarkManagerActivity extends BaseFragment {
     }
 
     private void updateSwipeBackEnabled() {
-        swipeBackEnabled = !tabsAnimationInProgress && !startedTracking && !maybeStartTracking && selectedTabId == TAB_ALL;
+        swipeBackEnabled = !tabsAnimationInProgress && !startedTracking && !maybeStartTracking && (tabsView == null || !tabsView.isAnimatingIndicator()) && selectedTabId == TAB_ALL;
     }
 
     private void invalidateGestureExclusion() {
@@ -506,7 +541,7 @@ public class BookmarkManagerActivity extends BaseFragment {
         }
         maybeStartTracking = false;
         startedTracking = true;
-        startedTrackingX = (int) ev.getX();
+        startedTrackingX = (int) (ev.getX() + additionalOffset);
         actionBar.setEnabled(false);
         tabsView.setEnabled(false);
         viewPages[1].tabId = id;
@@ -645,145 +680,189 @@ public class BookmarkManagerActivity extends BaseFragment {
             if (parentLayout != null && parentLayout.checkTransitionAnimation()) {
                 return false;
             }
-            if (!checkTabsAnimationInProgress()) {
-                if (ev != null) {
-                    if (velocityTracker == null) {
-                        velocityTracker = VelocityTracker.obtain();
-                    }
-                    velocityTracker.addMovement(ev);
+            if (ev != null) {
+                if (velocityTracker == null) {
+                    velocityTracker = VelocityTracker.obtain();
                 }
-
-                if (ev != null && ev.getAction() == MotionEvent.ACTION_DOWN && !startedTracking && !maybeStartTracking) {
-                    startedTrackingPointerId = ev.getPointerId(0);
-                    maybeStartTracking = true;
-                    startedTrackingX = (int) ev.getX();
-                    startedTrackingY = (int) ev.getY();
-                    velocityTracker.clear();
-                } else if (ev != null && ev.getAction() == MotionEvent.ACTION_MOVE && ev.getPointerId(0) == startedTrackingPointerId) {
-                    int dx = (int) (ev.getX() - startedTrackingX);
-                    int dy = Math.abs((int) ev.getY() - startedTrackingY);
-
-                    if (startedTracking && (animatingForward && dx > 0 || !animatingForward && dx < 0)) {
-                        if (!prepareForMoving(ev, dx < 0)) {
-                            maybeStartTracking = true;
-                            startedTracking = false;
-                            viewPages[0].setTranslationX(0);
-                            viewPages[1].setTranslationX(animatingForward ? viewPages[0].getMeasuredWidth() : -viewPages[0].getMeasuredWidth());
-                            tabsView.selectTabWithId(viewPages[1].tabId, 0);
-                        }
-                    }
-
-                    if (maybeStartTracking && !startedTracking) {
-                        float touchSlop = AndroidUtilities.getPixelsInCM(0.3f, true);
-                        if (Math.abs(dx) >= touchSlop && Math.abs(dx) > dy) {
-                            prepareForMoving(ev, dx < 0);
-                        }
-                    } else if (startedTracking) {
-                        viewPages[0].setTranslationX(dx);
-                        if (animatingForward) {
-                            viewPages[1].setTranslationX(viewPages[0].getMeasuredWidth() + dx);
-                        } else {
-                            viewPages[1].setTranslationX(dx - viewPages[0].getMeasuredWidth());
-                        }
-                        float scrollProgress = Math.abs(dx) / (float) viewPages[0].getMeasuredWidth();
-                        tabsView.selectTabWithId(viewPages[1].tabId, scrollProgress);
-                    }
-                } else if (ev == null || ev.getPointerId(0) == startedTrackingPointerId && (ev.getAction() == MotionEvent.ACTION_CANCEL || ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_POINTER_UP)) {
-                    velocityTracker.computeCurrentVelocity(1000, maximumVelocity);
-                    float velX;
-                    float velY;
-                    if (ev != null && ev.getAction() != MotionEvent.ACTION_CANCEL) {
-                        velX = velocityTracker.getXVelocity();
-                        velY = velocityTracker.getYVelocity();
-                        if (!startedTracking) {
-                            if (Math.abs(velX) >= 3000 && Math.abs(velX) > Math.abs(velY)) {
-                                prepareForMoving(ev, velX < 0);
-                            }
-                        }
-                    } else {
-                        velX = 0;
-                        velY = 0;
-                    }
-
-                    if (startedTracking) {
-                        float x = viewPages[0].getTranslationX();
-                        tabsAnimation = new AnimatorSet();
-                        backAnimation = Math.abs(x) < viewPages[0].getMeasuredWidth() / 3.0f && (Math.abs(velX) < 3500 || Math.abs(velX) < Math.abs(velY));
-                        float dx;
-                        if (backAnimation) {
-                            dx = Math.abs(x);
-                            if (animatingForward) {
-                                tabsAnimation.playTogether(ObjectAnimator.ofFloat(viewPages[0], View.TRANSLATION_X, 0), ObjectAnimator.ofFloat(viewPages[1], View.TRANSLATION_X, viewPages[1].getMeasuredWidth()));
-                            } else {
-                                tabsAnimation.playTogether(ObjectAnimator.ofFloat(viewPages[0], View.TRANSLATION_X, 0), ObjectAnimator.ofFloat(viewPages[1], View.TRANSLATION_X, -viewPages[1].getMeasuredWidth()));
-                            }
-                        } else {
-                            dx = viewPages[0].getMeasuredWidth() - Math.abs(x);
-                            if (animatingForward) {
-                                tabsAnimation.playTogether(ObjectAnimator.ofFloat(viewPages[0], View.TRANSLATION_X, -viewPages[0].getMeasuredWidth()), ObjectAnimator.ofFloat(viewPages[1], View.TRANSLATION_X, 0));
-                            } else {
-                                tabsAnimation.playTogether(ObjectAnimator.ofFloat(viewPages[0], View.TRANSLATION_X, viewPages[0].getMeasuredWidth()), ObjectAnimator.ofFloat(viewPages[1], View.TRANSLATION_X, 0));
-                            }
-                        }
-                        tabsAnimation.setInterpolator(interpolator);
-
-                        int width = getMeasuredWidth();
-                        int halfWidth = width / 2;
-                        float distanceRatio = Math.min(1.0f, dx / (float) width);
-                        float distance = (float) halfWidth + (float) halfWidth * AndroidUtilities.distanceInfluenceForSnapDuration(distanceRatio);
-                        velX = Math.abs(velX);
-                        int duration;
-                        if (velX > 0) {
-                            duration = 4 * Math.round(1000.0f * Math.abs(distance / velX));
-                        } else {
-                            float pageDelta = dx / getMeasuredWidth();
-                            duration = (int) ((pageDelta + 1.0f) * 100.0f);
-                        }
-                        duration = Math.max(150, Math.min(duration, 600));
-                        tabsAnimation.setDuration(duration);
-                        tabsAnimation.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animator) {
-                                tabsAnimation = null;
-                                if (backAnimation) {
-                                    viewPages[1].setVisibility(View.GONE);
-                                    tabsView.selectTabWithId(viewPages[0].tabId, 1.0f, true);
-                                } else {
-                                    ViewPage tempPage = viewPages[0];
-                                    viewPages[0] = viewPages[1];
-                                    viewPages[1] = tempPage;
-                                    viewPages[1].setVisibility(View.GONE);
-                                    selectedTabId = viewPages[0].tabId;
-                                    tabsView.selectTabWithId(selectedTabId, 1.0f, true);
-                                }
-                                tabsAnimationInProgress = false;
-                                maybeStartTracking = false;
-                                startedTracking = false;
-                                actionBar.setEnabled(true);
-                                tabsView.setEnabled(true);
-                                updateSwipeBackEnabled();
-                                updateEmptyView();
-                                invalidateGestureExclusion();
-                            }
-                        });
-                        tabsAnimation.start();
-                        tabsAnimationInProgress = true;
-                        startedTracking = false;
-                    } else {
-                        maybeStartTracking = false;
-                        actionBar.setEnabled(true);
-                        tabsView.setEnabled(true);
-                    }
-
-                    if (velocityTracker != null) {
-                        velocityTracker.recycle();
-                        velocityTracker = null;
-                    }
-                }
-                updateSwipeBackEnabled();
-                return startedTracking;
+                velocityTracker.addMovement(ev);
             }
-            return false;
+
+            if (ev != null && ev.getAction() == MotionEvent.ACTION_DOWN && checkTabsAnimationInProgress()) {
+                startedTracking = true;
+                maybeStartTracking = false;
+                startedTrackingPointerId = ev.getPointerId(0);
+                startedTrackingX = (int) ev.getX();
+                actionBar.setEnabled(false);
+                tabsView.setEnabled(false);
+                if (animatingForward) {
+                    if (startedTrackingX < viewPages[0].getMeasuredWidth() + viewPages[0].getTranslationX()) {
+                        additionalOffset = viewPages[0].getTranslationX();
+                    } else {
+                        ViewPage page = viewPages[0];
+                        viewPages[0] = viewPages[1];
+                        viewPages[1] = page;
+                        animatingForward = false;
+                        additionalOffset = viewPages[0].getTranslationX();
+                        tabsView.selectTabWithId(viewPages[0].tabId, 1.0f, true);
+                        tabsView.selectTabWithId(viewPages[1].tabId, additionalOffset / viewPages[0].getMeasuredWidth());
+                    }
+                } else {
+                    if (startedTrackingX < viewPages[1].getMeasuredWidth() + viewPages[1].getTranslationX()) {
+                        ViewPage page = viewPages[0];
+                        viewPages[0] = viewPages[1];
+                        viewPages[1] = page;
+                        animatingForward = true;
+                        additionalOffset = viewPages[0].getTranslationX();
+                        tabsView.selectTabWithId(viewPages[0].tabId, 1.0f, true);
+                        tabsView.selectTabWithId(viewPages[1].tabId, -additionalOffset / viewPages[0].getMeasuredWidth());
+                    } else {
+                        additionalOffset = viewPages[0].getTranslationX();
+                    }
+                }
+                if (tabsAnimation != null) {
+                    tabsAnimation.removeAllListeners();
+                    tabsAnimation.cancel();
+                    tabsAnimation = null;
+                }
+                tabsAnimationInProgress = false;
+            } else if (ev != null && ev.getAction() == MotionEvent.ACTION_DOWN) {
+                additionalOffset = 0;
+            }
+
+            if (ev != null && ev.getAction() == MotionEvent.ACTION_DOWN && !startedTracking && !maybeStartTracking) {
+                startedTrackingPointerId = ev.getPointerId(0);
+                maybeStartTracking = true;
+                startedTrackingX = (int) ev.getX();
+                startedTrackingY = (int) ev.getY();
+                if (velocityTracker != null) {
+                    velocityTracker.clear();
+                }
+            } else if (ev != null && ev.getAction() == MotionEvent.ACTION_MOVE && ev.getPointerId(0) == startedTrackingPointerId) {
+                int dx = (int) (ev.getX() - startedTrackingX + additionalOffset);
+                int dy = Math.abs((int) ev.getY() - startedTrackingY);
+
+                if (startedTracking && (animatingForward && dx > 0 || !animatingForward && dx < 0)) {
+                    if (!prepareForMoving(ev, dx < 0)) {
+                        maybeStartTracking = true;
+                        startedTracking = false;
+                        viewPages[0].setTranslationX(0);
+                        viewPages[1].setTranslationX(animatingForward ? viewPages[0].getMeasuredWidth() : -viewPages[0].getMeasuredWidth());
+                        tabsView.selectTabWithId(viewPages[1].tabId, 0);
+                    }
+                }
+
+                if (maybeStartTracking && !startedTracking) {
+                    float touchSlop = AndroidUtilities.getPixelsInCM(0.3f, true);
+                    int dxLocal = (int) (ev.getX() - startedTrackingX);
+                    if (Math.abs(dxLocal) >= touchSlop && Math.abs(dxLocal) > dy) {
+                        prepareForMoving(ev, dx < 0);
+                    }
+                } else if (startedTracking) {
+                    viewPages[0].setTranslationX(dx);
+                    if (animatingForward) {
+                        viewPages[1].setTranslationX(viewPages[0].getMeasuredWidth() + dx);
+                    } else {
+                        viewPages[1].setTranslationX(dx - viewPages[0].getMeasuredWidth());
+                    }
+                    float scrollProgress = Math.abs(dx) / (float) viewPages[0].getMeasuredWidth();
+                    tabsView.selectTabWithId(viewPages[1].tabId, scrollProgress);
+                }
+            } else if (ev == null || ev.getPointerId(0) == startedTrackingPointerId && (ev.getAction() == MotionEvent.ACTION_CANCEL || ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_POINTER_UP)) {
+                if (velocityTracker != null) {
+                    velocityTracker.computeCurrentVelocity(1000, maximumVelocity);
+                }
+                float velX;
+                float velY;
+                if (ev != null && ev.getAction() != MotionEvent.ACTION_CANCEL && velocityTracker != null) {
+                    velX = velocityTracker.getXVelocity();
+                    velY = velocityTracker.getYVelocity();
+                    if (!startedTracking) {
+                        if (Math.abs(velX) >= 3000 && Math.abs(velX) > Math.abs(velY)) {
+                            prepareForMoving(ev, velX < 0);
+                        }
+                    }
+                } else {
+                    velX = 0;
+                    velY = 0;
+                }
+
+                if (startedTracking) {
+                    float x = viewPages[0].getTranslationX();
+                    tabsAnimation = new AnimatorSet();
+                    backAnimation = Math.abs(x) < viewPages[0].getMeasuredWidth() / 3.0f && (Math.abs(velX) < 3500 || Math.abs(velX) < Math.abs(velY));
+                    float dx;
+                    if (backAnimation) {
+                        dx = Math.abs(x);
+                        if (animatingForward) {
+                            tabsAnimation.playTogether(ObjectAnimator.ofFloat(viewPages[0], View.TRANSLATION_X, 0), ObjectAnimator.ofFloat(viewPages[1], View.TRANSLATION_X, viewPages[1].getMeasuredWidth()));
+                        } else {
+                            tabsAnimation.playTogether(ObjectAnimator.ofFloat(viewPages[0], View.TRANSLATION_X, 0), ObjectAnimator.ofFloat(viewPages[1], View.TRANSLATION_X, -viewPages[1].getMeasuredWidth()));
+                        }
+                    } else {
+                        dx = viewPages[0].getMeasuredWidth() - Math.abs(x);
+                        if (animatingForward) {
+                            tabsAnimation.playTogether(ObjectAnimator.ofFloat(viewPages[0], View.TRANSLATION_X, -viewPages[0].getMeasuredWidth()), ObjectAnimator.ofFloat(viewPages[1], View.TRANSLATION_X, 0));
+                        } else {
+                            tabsAnimation.playTogether(ObjectAnimator.ofFloat(viewPages[0], View.TRANSLATION_X, viewPages[0].getMeasuredWidth()), ObjectAnimator.ofFloat(viewPages[1], View.TRANSLATION_X, 0));
+                        }
+                    }
+                    tabsAnimation.setInterpolator(interpolator);
+
+                    int width = getMeasuredWidth();
+                    int halfWidth = width / 2;
+                    float distanceRatio = Math.min(1.0f, dx / (float) width);
+                    float distance = (float) halfWidth + (float) halfWidth * AndroidUtilities.distanceInfluenceForSnapDuration(distanceRatio);
+                    velX = Math.abs(velX);
+                    int duration;
+                    if (velX > 0) {
+                        duration = 4 * Math.round(1000.0f * Math.abs(distance / velX));
+                    } else {
+                        float pageDelta = dx / getMeasuredWidth();
+                        duration = (int) ((pageDelta + 1.0f) * 100.0f);
+                    }
+                    duration = Math.max(150, Math.min(duration, 600));
+                    tabsAnimation.setDuration(duration);
+                    tabsAnimation.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            tabsAnimation = null;
+                            if (backAnimation) {
+                                viewPages[1].setVisibility(View.GONE);
+                                tabsView.selectTabWithId(viewPages[0].tabId, 1.0f, true);
+                            } else {
+                                ViewPage tempPage = viewPages[0];
+                                viewPages[0] = viewPages[1];
+                                viewPages[1] = tempPage;
+                                viewPages[1].setVisibility(View.GONE);
+                                selectedTabId = viewPages[0].tabId;
+                                tabsView.selectTabWithId(selectedTabId, 1.0f, true);
+                            }
+                            tabsAnimationInProgress = false;
+                            maybeStartTracking = false;
+                            startedTracking = false;
+                            actionBar.setEnabled(true);
+                            tabsView.setEnabled(true);
+                            updateSwipeBackEnabled();
+                            updateEmptyView();
+                            invalidateGestureExclusion();
+                        }
+                    });
+                    tabsAnimation.start();
+                    tabsAnimationInProgress = true;
+                    startedTracking = false;
+                } else {
+                    maybeStartTracking = false;
+                    actionBar.setEnabled(true);
+                    tabsView.setEnabled(true);
+                }
+
+                if (velocityTracker != null) {
+                    velocityTracker.recycle();
+                    velocityTracker = null;
+                }
+            }
+            updateSwipeBackEnabled();
+            return startedTracking;
         }
 
         @Override
@@ -796,24 +875,7 @@ public class BookmarkManagerActivity extends BaseFragment {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 return;
             }
-            int edge = dp(80);
-            int w = getMeasuredWidth();
-            int h = getMeasuredHeight();
-            if (w <= 0 || h <= 0) {
-                return;
-            }
-
-            boolean excludeLeft = selectedTabId != TAB_ALL;
-            boolean excludeRight = tabsView != null && tabsView.getNextPageId(true) >= 0;
-
-            ArrayList<Rect> rects = new ArrayList<>(2);
-            if (excludeLeft) {
-                rects.add(new Rect(0, 0, edge, h));
-            }
-            if (excludeRight) {
-                rects.add(new Rect(w - edge, 0, w, h));
-            }
-            setSystemGestureExclusionRects(rects);
+            setSystemGestureExclusionRects(Collections.emptyList());
         }
     }
 }
