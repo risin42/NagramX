@@ -286,6 +286,7 @@
     <string name="BookmarkAdded">Added to **bookmarks**.</string>
     <string name="BookmarkRemoved">Removed from **bookmarks**.</string>
     <string name="BookmarksLimitReached">You can save up to %d messages per chat.</string>
+    <string name="BookmarksFilterUsers">Users</string>
     <string name="NoBookmarks">No bookmarks</string>
     <string name="ClearAllBookmarks">Clear All Bookmarks</string>
     <string name="ClearAllBookmarksNotification">All bookmarks cleared.</string>
