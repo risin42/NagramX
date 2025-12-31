@@ -277,6 +277,7 @@
     <string name="BookmarkAdded">已添加到 **书签**。</string>
     <string name="BookmarkRemoved">已从**书签**中移除。</string>
     <string name="BookmarksLimitReached">每个聊天最多可以保存 %d 条消息。</string>
+    <string name="BookmarksFilterUsers">用户</string>
     <string name="NoBookmarks">暂无书签</string>
     <string name="ClearAllBookmarks">清除所有书签</string>
     <string name="ClearAllBookmarksNotification">所有书签已清除。</string>

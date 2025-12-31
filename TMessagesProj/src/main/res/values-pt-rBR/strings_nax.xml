@@ -4,7 +4,7 @@
     <string name="EnableSaveDeletedMessages">Salvar Mensagens Excluídas</string>
     <string name="DeletedMessage">excluído</string>
     <string name="EnableSaveEditsHistory">Salvar Histórico de Edições</string>
-    <string name="EditsHistoryMenuText">Histórico de Edições</string>
+    <string name="EditsHistoryMenuText">Histórico de edições</string>
     <string name="DeleteKeepLocally">Manter localmente</string>
     <string name="ClearMessageDatabase">Limpar DB de Mensagens</string>
     <string name="ClearMessageDatabaseNotification">Dados de mensagens limpos.</string>
@@ -133,7 +133,7 @@
     <string name="GhostModeNotice">Toque e segure em qualquer opção para impedir que mude ao ativar e desativar o Modo Fantasma.</string>
     <string name="MarkReadAfterSendNotice">Lê automaticamente a mensagem quando você envia uma nova ou toca em uma reação.</string>
     <string name="SendWithoutSoundRowNotice">Envia automaticamente mensagens sem som.</string>
-    <string name="GhostReadMessage">Ler Mensagem</string>
+    <string name="GhostReadMessage">Ler mensagem</string>
     <string name="SendWithSound">Enviar Com Som</string>
     <string name="PerformanceClass">Classe de Desempenho do Dispositivo</string>
     <string name="PerformanceClassHigh">Alta</string>
@@ -277,6 +277,7 @@
     <string name="BookmarkAdded">Adicionado aos **favoritos**.</string>
     <string name="BookmarkRemoved">Removido dos **favoritos**.</string>
     <string name="BookmarksLimitReached">Você pode salvar até %d mensagens por chat.</string>
+    <string name="BookmarksFilterUsers">Usuários</string>
     <string name="NoBookmarks">Nenhum favorito</string>
     <string name="ClearAllBookmarks">Limpar Todos os Favoritos</string>
     <string name="ClearAllBookmarksNotification">Todos os favoritos foram limpos.</string>

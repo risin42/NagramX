@@ -15,10 +15,10 @@
     <string name="CreateMonoLanguage">Linguagem do Código</string>
     <string name="CopyPhoto">Copiar Foto</string>
     <string name="PhotoCopied">Foto copiada para área de transferência</string>
-    <string name="ToTheBeginning">Para o Início</string>
+    <string name="ToTheBeginning">Para o início</string>
     <string name="DateOfForwardedMsg">Mostrar Data nas Mensagens Encaminhadas</string>
     <string name="ShowMessageID">Mostrar ID da Mensagem</string>
-    <string name="ShowRPCError">Erros de RPC do Toast</string>
+    <string name="ShowRPCError">Erros de RPC em Toast</string>
     <string name="ShowPremiumStickersAnimation">Mostrar Animação de Stickers Premium</string>
     <string name="AlwaysSaveChatOffset">Sempre salvar o deslocamento do chat</string>
     <string name="AppIconColorful">Colorido</string>
@@ -49,9 +49,9 @@
     <string name="ShowOnlineStatusNotice">Mostrar o status online de outras pessoas ao lado da foto de perfil nos grupos.</string>
     <string name="DoActionsInCommonGroups">Aplicado em grupos comuns</string>
     <string name="ShowFullAbout">Sempre Expandir Descrição do Chat</string>
-    <string name="TypeMessageHintUseGroupName">Usar O Nome Do Grupo Como Dica De Preenchimento</string>
+    <string name="TypeMessageHintUseGroupName">Usar o Nome do Grupo como Dica de Preenchimento</string>
     <string name="HideBotButtonInInputField">Ocultar Botão do Bot no Campo de Entrada</string>
-    <string name="ShowSendAsUnderMessageHint">Mostrar O Remetente Abaixo Da Dica Da Mensagem</string>
+    <string name="ShowSendAsUnderMessageHint">Mostrar o Remetente Abaixo da Dica da Mensagem</string>
     <string name="CheckAllForum">Adicionar fórum</string>
     <string name="DecorationNone">Nenhum</string>
     <string name="ChatDecoration">Decoração do Chat</string>
