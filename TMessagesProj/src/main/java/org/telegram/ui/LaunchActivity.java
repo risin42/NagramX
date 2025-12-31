@@ -277,6 +277,7 @@ import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
 import tw.nekomimi.nekogram.helpers.remote.PagePreviewRulesHelper;
 import tw.nekomimi.nekogram.helpers.remote.UpdateHelper;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
+import tw.nekomimi.nekogram.ui.BookmarkManagerActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
 import tw.nekomimi.nekogram.utils.BrowserUtils;
@@ -756,6 +757,9 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                         args.putLong("user_id", UserConfig.getInstance(currentAccount).getClientUserId());
                         presentFragment(new ChatActivity(args));
                     }
+                    drawerLayoutContainer.closeDrawer(false);
+                } else if (id == DrawerLayoutAdapter.nkbtnBookmarks) {
+                    presentFragment(new BookmarkManagerActivity());
                     drawerLayoutContainer.closeDrawer(false);
                 } else if (id == 13) {
                     if (MessagesController.getInstance(currentAccount).isFrozen()) {

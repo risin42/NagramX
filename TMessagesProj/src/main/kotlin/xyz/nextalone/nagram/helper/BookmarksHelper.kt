@@ -112,6 +112,24 @@ object BookmarksHelper {
     }
 
     @JvmStatic
+    fun getBookmarkedDialogsCounts(accountId: Int): Map<Long, Int> {
+        val prefix = KEY_PREFIX + accountId + "_"
+        val prefs = NaConfig.getPreferences()
+        val result = LinkedHashMap<Long, Int>()
+        for (key in prefs.all.keys) {
+            if (!key.startsWith(prefix)) {
+                continue
+            }
+            val dialogId = key.substring(prefix.length).toLongOrNull() ?: continue
+            val ids = getIds(key)
+            if (ids.isNotEmpty()) {
+                result[dialogId] = ids.size
+            }
+        }
+        return result
+    }
+
+    @JvmStatic
     fun toggleBookmarks(accountId: Int, dialogId: Long, messageIds: IntArray): ToggleResult {
         val ids = normalizeMessageIds(messageIds)
         if (ids.isEmpty()) {

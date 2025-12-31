@@ -62,6 +62,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
     public static int nkbtnRestartApp = 1004;
     public static int nkbtnBrowser = 1005;
     public static int nkbtnSessions = 1007;
+    public static int nkbtnBookmarks = 1008;
 
     public DrawerLayoutAdapter(Context context, SideMenultItemAnimator animator, DrawerLayoutContainer drawerLayoutContainer) {
         mContext = context;
@@ -383,6 +384,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         if (NaConfig.INSTANCE.getDrawerItemContacts().Bool()) items.add(new Item(6, LocaleController.getString(R.string.Contacts), contactsIcon));
         if (NaConfig.INSTANCE.getDrawerItemCalls().Bool()) items.add(new Item(10, LocaleController.getString(R.string.Calls), callsIcon));
         if (NaConfig.INSTANCE.getDrawerItemSaved().Bool()) items.add(new Item(11, LocaleController.getString(R.string.SavedMessages), savedIcon));
+        if (NaConfig.INSTANCE.getShowAddToBookmark().Bool()) items.add(new Item(nkbtnBookmarks, LocaleController.getString(R.string.BookmarksManager), R.drawable.msg_fave));
         if (NaConfig.INSTANCE.getDrawerItemSettings().Bool()) items.add(new Item(8, LocaleController.getString(R.string.Settings), settingsIcon));
 //        items.add(null); // divider
 //        items.add(new Item(7, LocaleController.getString(R.string.InviteFriends), inviteIcon));
