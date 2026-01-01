@@ -4573,6 +4573,9 @@ public class ChatActivity extends BaseFragment implements
             }
             headerItem = menu.addItem(chat_menu_options, R.drawable.ic_ab_other, themeDelegate);
             headerItem.setContentDescription(LocaleController.getString(R.string.AccDescrMoreOptions));
+            if (avatarContainer != null) {
+                avatarContainer.setAvatarOptionsMenuItem(headerItem);
+            }
 
             if (currentUser != null && currentUser.self && chatMode != MODE_SAVED) {
                 savedChatsItem = headerItem.lazilyAddSubItem(view_as_topics, R.drawable.msg_topics, LocaleController.getString(R.string.SavedViewAsChats));
