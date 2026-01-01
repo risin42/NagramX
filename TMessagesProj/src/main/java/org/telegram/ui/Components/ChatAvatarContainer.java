@@ -18,6 +18,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -52,6 +53,7 @@ import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
+import org.telegram.ui.ActionBar.ActionBarMenuItem;
 import org.telegram.ui.ActionBar.ActionBarPopupWindow;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.SimpleTextView;
@@ -73,6 +75,7 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
     public boolean allowDrawStories;
     private Integer storiesForceState;
     public BackupImageView avatarImageView;
+    private ActionBarMenuItem avatarOptionsMenuItem;
     private SimpleTextView titleTextView;
     private AtomicReference<SimpleTextView> titleTextLargerCopyView = new AtomicReference<>();
     private SimpleTextView subtitleTextView;
@@ -106,6 +109,10 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
     private CharSequence lastSubtitle;
     private int lastSubtitleColorKey = -1;
     private Integer overrideSubtitleColor;
+
+    private final Rect avatarOptionsMenuRect = new Rect();
+    private final int[] avatarOptionsMenuLocation = new int[2];
+    private View avatarOptionsSelectedView;
 
     private SharedMediaLayout.SharedMediaPreloader sharedMediaPreloader;
     private Theme.ResourcesProvider resourcesProvider;
@@ -250,6 +257,76 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
                         pressBounce.setPressed(false);
                     }
                 }
+                if (isCentered() && avatarOptionsMenuItem != null && avatarOptionsMenuItem.hasSubMenu()) {
+                    final int action = event.getActionMasked();
+                    if (action == MotionEvent.ACTION_MOVE) {
+                        if (!avatarOptionsMenuItem.isSubMenuShowing()) {
+                            if (event.getY() > getHeight()) {
+                                final ActionBar actionBar = parentFragment != null ? parentFragment.getActionBar() : null;
+                                if (actionBar != null && actionBar.actionBarMenuOnItemClick != null && !actionBar.actionBarMenuOnItemClick.canOpenMenu()) {
+                                    return false;
+                                }
+                                if (getParent() != null) {
+                                    getParent().requestDisallowInterceptTouchEvent(true);
+                                }
+                                avatarOptionsMenuItem.toggleSubMenu();
+                                setPressed(false);
+                                cancelLongPress();
+                                return true;
+                            }
+                        } else {
+                            final ActionBarPopupWindow.ActionBarPopupWindowLayout popupLayout = avatarOptionsMenuItem.getPopupLayout();
+                            final float x = event.getRawX();
+                            final float y = event.getRawY();
+
+                            popupLayout.getLocationOnScreen(avatarOptionsMenuLocation);
+                            float localX = x - avatarOptionsMenuLocation[0];
+                            float localY = y - avatarOptionsMenuLocation[1];
+
+                            avatarOptionsSelectedView = null;
+                            for (int a = 0; a < popupLayout.getItemsCount(); a++) {
+                                View child = popupLayout.getItemAt(a);
+                                child.getHitRect(avatarOptionsMenuRect);
+                                Object tag = child.getTag();
+                                if (tag instanceof Integer && (Integer) tag < 3000) {
+                                    if (!avatarOptionsMenuRect.contains((int) localX, (int) localY)) {
+                                        child.setPressed(false);
+                                        child.setSelected(false);
+                                    } else {
+                                        child.setPressed(true);
+                                        child.setSelected(true);
+                                        child.drawableHotspotChanged(localX, localY - child.getTop());
+                                        avatarOptionsSelectedView = child;
+                                    }
+                                }
+                            }
+                            setPressed(false);
+                            return true;
+                        }
+                    } else if (action == MotionEvent.ACTION_UP) {
+                        if (avatarOptionsMenuItem.isSubMenuShowing()) {
+                            if (avatarOptionsSelectedView != null) {
+                                avatarOptionsSelectedView.setSelected(false);
+                                avatarOptionsSelectedView.performClick();
+                            }
+                            if (avatarOptionsSelectedView == null || avatarOptionsMenuItem.isSubMenuShowing()) {
+                                avatarOptionsMenuItem.closeSubMenu();
+                            }
+                            avatarOptionsSelectedView = null;
+                            setPressed(false);
+                            return true;
+                        }
+                    } else if (action == MotionEvent.ACTION_CANCEL) {
+                        if (avatarOptionsMenuItem.isSubMenuShowing()) {
+                            avatarOptionsMenuItem.closeSubMenu();
+                        }
+                        if (avatarOptionsSelectedView != null) {
+                            avatarOptionsSelectedView.setSelected(false);
+                            avatarOptionsSelectedView = null;
+                        }
+                        setPressed(false);
+                    }
+                }
                 if (allowDrawStories && !isCentered()) {
                     if (params.checkOnTouchEvent(event, this)) {
                         return true;
@@ -375,6 +452,10 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
 
         emojiStatusDrawable = new AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable(titleTextView, dp(24));
         botVerificationDrawable = new AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable(titleTextView, dp(17));
+    }
+
+    public void setAvatarOptionsMenuItem(ActionBarMenuItem menuItem) {
+        avatarOptionsMenuItem = menuItem;
     }
 
     public ButtonBounce bounce = new ButtonBounce(this);
