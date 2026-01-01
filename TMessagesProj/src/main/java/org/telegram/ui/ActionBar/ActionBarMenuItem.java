@@ -64,6 +64,7 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.AnimationNotificationsLocker;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
+import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.TLRPC;
@@ -78,10 +79,13 @@ import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.LinkSpanDrawable;
 import org.telegram.ui.Components.RLottieDrawable;
 import org.telegram.ui.Components.RLottieImageView;
+import org.telegram.ui.Components.ScaleStateListAnimator;
 import org.telegram.ui.Components.Reactions.ReactionsLayoutInBubble;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import xyz.nextalone.nagram.NaConfig;
 
 public class ActionBarMenuItem extends FrameLayout {
 
@@ -479,7 +483,13 @@ public class ActionBarMenuItem extends FrameLayout {
         createPopupLayout();
         TextView textView = new TextView(getContext());
         textView.setTextColor(getThemedColor(Theme.key_actionBarDefaultSubmenuItem));
-        textView.setBackgroundDrawable(Theme.getSelectorDrawable(false));
+        // textView.setBackgroundDrawable(Theme.getSelectorDrawable(false));
+        int selectorRad = 10;
+        if (NaConfig.INSTANCE.getSmoothRoundedMenu().Bool()) {
+            selectorRad = SharedConfig.bubbleRadius;
+        }
+        textView.setBackgroundDrawable(Theme.createRadSelectorDrawable(Theme.getColor(Theme.key_dialogButtonSelector), selectorRad, selectorRad, selectorRad, selectorRad));
+        ScaleStateListAnimator.apply(textView, .04f, 1.2f);
         if (!LocaleController.isRTL) {
             textView.setGravity(Gravity.CENTER_VERTICAL);
         } else {
