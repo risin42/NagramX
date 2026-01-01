@@ -2426,6 +2426,11 @@ public class ChatActivity extends BaseFragment implements
         }
 
         @Override
+        public boolean isAttachItemVisible() {
+            return attachItem != null && attachItem.getVisibility() == View.VISIBLE;
+        }
+
+        @Override
         public void onMessageEditEnd(boolean loading) {
             if (chatListItemAnimator != null) {
                 chatActivityEnterViewAnimateFromTop = chatActivityEnterView.getBackgroundTop();
