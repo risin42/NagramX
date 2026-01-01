@@ -1,6 +1,5 @@
 package tw.nekomimi.nekogram.translate.source
 
-import android.text.TextUtils
 import android.util.Log
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -49,6 +48,7 @@ object LLMTranslator : Translator {
     private var apiKeys: List<String> = emptyList()
     private val apiKeyIndex = AtomicInteger(0)
     private var currentProvider = -1
+    private var cachedKeyString: String? = null
 
     private val httpClient = OkHttpClient.Builder()
         .callTimeout(60, TimeUnit.SECONDS)
@@ -59,10 +59,6 @@ object LLMTranslator : Translator {
 
     private fun updateApiKeys() {
         val llmProvider = NaConfig.llmProviderPreset.Int()
-        if (currentProvider == llmProvider && apiKeys.isNotEmpty()) {
-            return
-        }
-
         val keyConfig = when (llmProvider) {
             1 -> NaConfig.llmProviderOpenAIKey
             2 -> NaConfig.llmProviderGeminiKey
@@ -73,11 +69,16 @@ object LLMTranslator : Translator {
         }
         val key = keyConfig.String()
 
-        apiKeys = if (!TextUtils.isEmpty(key)) {
-            key.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+        if (currentProvider == llmProvider && cachedKeyString == key) {
+            return
+        }
+
+        apiKeys = if (!key.isNullOrBlank()) {
+            key.split(",").map { it.trim() }.filter { it.isNotEmpty() }.distinct()
         } else {
             emptyList()
         }
+        cachedKeyString = key
         currentProvider = llmProvider
         apiKeyIndex.set(0)
     }
@@ -153,9 +154,11 @@ object LLMTranslator : Translator {
                 }
                 val waitTimeMillis = BASE_WAIT * 2.0.pow(retryCount - 1).toLong()
                 delay(waitTimeMillis)
+            } catch (e: UnsupportedOperationException) {
+                throw e
             } catch (e: Exception) {
                 if (BuildVars.LOGS_ENABLED) {
-                    AndroidUtil.showErrorDialog("Error during LLM translation, falling back: $e")
+                    AndroidUtil.showErrorDialog("Error during LLM translation, falling back to GoogleAppTranslator.\n$e")
                 }
                 return GoogleAppTranslator.doTranslate(from, to, query, entities)
             }
@@ -166,9 +169,9 @@ object LLMTranslator : Translator {
         return GoogleAppTranslator.doTranslate(from, to, query, entities)
     }
 
-    @Throws(IOException::class, RateLimitException::class, IllegalStateException::class)
+    @Throws(IOException::class, RateLimitException::class, UnsupportedOperationException::class)
     private fun doLLMTranslate(to: String, query: String): String {
-        val apiKey = getNextApiKey() ?: throw IllegalStateException("Missing LLM API Key")
+        val apiKey = getNextApiKey() ?: throw UnsupportedOperationException("Missing LLM API Key")
         val apiKeyForLog = apiKey.takeLast(2)
         if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "createPost: Bearer $apiKeyForLog")
 
@@ -234,6 +237,8 @@ object LLMTranslator : Translator {
 
             if (response.code == 429) {
                 throw RateLimitException("LLM API rate limit exceeded")
+            } else if (response.code in 400..499) {
+                throw UnsupportedOperationException("HTTP ${response.code} : $responseBodyString")
             } else if (!response.isSuccessful) {
                 throw IOException("HTTP ${response.code} : $responseBodyString")
             }
