@@ -6063,7 +6063,7 @@ public class Theme {
         private Path path = new Path();
         private float[] radii = new float[8];
         boolean invalidatePath = true;
-        private static final int INSET = dp(2);
+        private static final int INSET = dp(3);
 
         public RippleRadMaskDrawable(float top, float bottom) {
             radii[0] = radii[1] = radii[2] = radii[3] = dp(top);
