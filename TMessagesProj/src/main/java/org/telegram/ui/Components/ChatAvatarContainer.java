@@ -192,6 +192,8 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
                 }
             };
 
+            private final ButtonBounce pressBounce = new ButtonBounce(this);
+
             @Override
             public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
                 super.onInitializeAccessibilityNodeInfo(info);
@@ -207,6 +209,12 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
 
             @Override
             protected void onDraw(Canvas canvas) {
+                final boolean scaleOnPress = isCentered();
+                if (scaleOnPress) {
+                    canvas.save();
+                    final float s = pressBounce.getScale(.05f);
+                    canvas.scale(s, s, getWidth() / 2f, getHeight() / 2f);
+                }
                 if (allowDrawStories && animatedEmojiDrawable == null && !isCentered()) {
                     params.originalAvatarRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
                     params.drawSegments = true;
@@ -227,10 +235,21 @@ public class ChatAvatarContainer extends FrameLayout implements NotificationCent
                 } else {
                     super.onDraw(canvas);
                 }
+                if (scaleOnPress) {
+                    canvas.restore();
+                }
             }
 
             @Override
             public boolean onTouchEvent(MotionEvent event) {
+                if (isCentered() && isClickable()) {
+                    final int action = event.getAction();
+                    if (action == MotionEvent.ACTION_DOWN) {
+                        pressBounce.setPressed(true);
+                    } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+                        pressBounce.setPressed(false);
+                    }
+                }
                 if (allowDrawStories && !isCentered()) {
                     if (params.checkOnTouchEvent(event, this)) {
                         return true;
