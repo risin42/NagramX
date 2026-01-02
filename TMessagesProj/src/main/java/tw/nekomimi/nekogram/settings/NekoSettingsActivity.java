@@ -37,6 +37,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.radolyn.ayugram.messages.AyuSavePreferences;
+import com.radolyn.ayugram.utils.AyuGhostPreferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -915,6 +916,7 @@ public class NekoSettingsActivity extends BaseFragment {
         } catch (Throwable ignore) {
         }
         String[] preservePrefixes = {
+                AyuGhostPreferences.ghostExclusionPrefix,
                 AyuSavePreferences.saveExclusionPrefix,
                 ChatNameHelper.chatNameOverridePrefix,
                 NekoConfig.channelAliasPrefix,

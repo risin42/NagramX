@@ -146,6 +146,7 @@ import com.radolyn.ayugram.ui.AyuMessageHistory;
 import com.radolyn.ayugram.ui.AyuViewDeleted;
 import com.radolyn.ayugram.ui.DummyView;
 import com.radolyn.ayugram.utils.AyuGhostUtils;
+import com.radolyn.ayugram.utils.AyuGhostPreferences;
 import com.radolyn.ayugram.utils.AyuState;
 
 import org.telegram.PhoneFormat.PhoneFormat;
@@ -31605,6 +31606,7 @@ public class ChatActivity extends BaseFragment implements
                 if (!NekoConfig.sendReadMessagePackets.Bool()
                         && message.messageOwner.from_id != null
                         && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
+                        && !AyuGhostPreferences.getGhostModeExclusion(getDialogId())
                 ) {
                     int idx = options.isEmpty() ? 0 : options.size() - 1;
                     items.add(idx, getString(R.string.GhostReadMessage));
