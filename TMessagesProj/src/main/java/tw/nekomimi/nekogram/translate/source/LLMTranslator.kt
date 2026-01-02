@@ -218,7 +218,7 @@ object LLMTranslator : Translator {
             if (isReasoning(model)) {
                 put("reasoning_effort", getReasoningEffort(model))
             }
-            if (llmProviderPreset > 1 || (llmProviderPreset == 0 && !model.startsWith("gpt-5"))) {
+            if (llmProviderPreset > 1 || (llmProviderPreset == 0 && !getBaseModelName(model).startsWith("gpt-5"))) {
                 put("temperature", NaConfig.llmTemperature.Float())
             }
         }.toString()
@@ -285,25 +285,35 @@ object LLMTranslator : Translator {
     """.trimIndent()
     }
 
+
+    private fun getBaseModelName(model: String): String {
+        return model.substringAfterLast('/')
+    }
+
     private fun isGPT5(model: String): Boolean {
-        return !model.startsWith("gpt-5.") && model.startsWith("gpt-5") && !model.contains("instant") && !model.contains("chat")
+        val base = getBaseModelName(model)
+        return !base.startsWith("gpt-5.") && base.startsWith("gpt-5") && !base.contains("instant") && !base.contains("chat")
     }
 
     private fun isReasoning(model: String): Boolean {
-        return model == "gemini-flash-latest"
-                || model.startsWith("gemini-2.5-flash")
-                || model.startsWith("gemini-3-flash")
-                || model.startsWith("gpt-oss")
-                || (model.startsWith("gpt-5.") && !model.contains("instant") && !model.contains("chat"))
-                || (model.startsWith("gpt-5") && !model.contains("instant") && !model.contains("chat"))
+        val base = getBaseModelName(model)
+        return base == "gemini-flash-latest"
+                || base.startsWith("gemini-2.5-flash")
+                || base.startsWith("gemini-3-flash")
+                || base.startsWith("gpt-oss")
+                || (base.startsWith("gpt-5.") && !base.contains("instant") && !base.contains("chat"))
+                || (base.startsWith("gpt-5") && !base.contains("instant") && !base.contains("chat"))
     }
 
-    private fun getReasoningEffort(model: String) = when {
-        model.startsWith("gpt-oss") -> "low"
-        model.startsWith("gpt-5.") -> "none"
-        model.startsWith("gpt-5") -> "minimal"
-        // model.startsWith("gemini-3-flash") -> "minimal"
-        else -> "none" // gemini-flash
+    private fun getReasoningEffort(model: String): String {
+        val base = getBaseModelName(model)
+        return when {
+            base.startsWith("gpt-oss") -> "low"
+            base.startsWith("gpt-5.") -> "none"
+            base.startsWith("gpt-5") -> "minimal"
+            // base.startsWith("gemini-3-flash") -> "minimal"
+            else -> "none" // gemini-flash
+        }
     }
 
     class RateLimitException(message: String) : Exception(message)
