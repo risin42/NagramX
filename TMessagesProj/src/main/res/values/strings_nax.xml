@@ -298,4 +298,12 @@
     <string name="CameraInVideoMessagesAsk">Ask</string>
     <string name="CameraSettings">Camera</string>
     <string name="SmoothRoundedMenu">Smooth Rounded Context Menus</string>
+    <string name="SyncContactToPhone">Sync Contact to Phone</string>
+    <string name="AddViaQRCode">Add via QR Code</string>
+    <string name="ContactNotes">Notes</string>
+    <string name="PhoneNotOnTelegramInvite">This phone number is not on Telegram. **Invite >**</string>
+    <string name="PhoneAlreadyInContacts">This phone number is already in your contacts. **View >**</string>
+    <string name="PhoneOnTelegram">This phone number is on Telegram.</string>
+    <string name="SIMCard">SIM Card</string>
+    <string name="DeviceAccount">Device</string>
 </resources>
