@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.HapticFeedbackConstants;
 
+import androidx.annotation.NonNull;
+
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLog;
@@ -25,9 +27,16 @@ import org.telegram.ui.Components.StickersAlert;
 import org.telegram.ui.ContactAddActivity;
 import org.telegram.ui.ProfileActivity;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
+import tw.nekomimi.nekogram.translate.Translator;
+import tw.nekomimi.nekogram.translate.TranslatorKt;
+import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
+import xyz.nextalone.nagram.NaConfig;
 
 public abstract class AyuMessageDelegateFragment extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, AyuMessageCell.AyuMessageCellDelegate {
 
@@ -201,6 +210,95 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
     @Override
     public boolean isSupportEdgeToEdge() {
         return true;
+    }
+
+    protected void toggleOrTranslate(@NonNull ChatMessageCell messageCell, @NonNull MessageObject messageObject, Locale targetLocale) {
+        if (messageObject.messageOwner == null || messageCell.getMessageObject() != messageObject) {
+            return;
+        }
+        String originalText = messageObject.messageOwner.message;
+        if (TextUtils.isEmpty(originalText)) {
+            return;
+        }
+
+        if (messageObject.messageOwner.translated) {
+            messageObject.messageOwner.translated = false;
+            messageObject.messageOwner.translatedMessage = null;
+            messageObject.messageOwner.translatedText = null;
+            messageObject.messageOwner.translatedToLanguage = null;
+            messageObject.translated = false;
+            messageObject.translating = false;
+            messageObject.applyNewText(originalText);
+            messageObject.caption = null;
+            messageObject.generateCaption();
+            messageObject.forceUpdate = true;
+            messageCell.setMessageObject(messageObject, null, false, false, false);
+            messageObject.forceUpdate = false;
+            return;
+        }
+
+        final Locale resolvedTargetLocale;
+        if (targetLocale == null) {
+            String lang = NekoConfig.translateToLang.String();
+            resolvedTargetLocale = TranslatorKt.getCode2Locale(lang == null ? "" : lang);
+        } else {
+            resolvedTargetLocale = targetLocale;
+        }
+
+        int mode = NaConfig.INSTANCE.getTranslatorMode().Int();
+        ArrayList<TLRPC.MessageEntity> entities = messageObject.messageOwner.entities;
+        if (entities == null) {
+            entities = new ArrayList<>();
+        }
+
+        messageObject.translating = true;
+        messageCell.invalidate();
+
+        Translator.translate(resolvedTargetLocale, originalText, entities, new Translator.Companion.TranslateCallBack2() {
+            @Override
+            public void onSuccess(@NonNull TLRPC.TL_textWithEntities finalText) {
+                if (messageCell.getMessageObject() != messageObject) {
+                    return;
+                }
+                messageObject.translating = false;
+                String translatedText = finalText.text;
+                if (TextUtils.isEmpty(translatedText)) {
+                    messageCell.invalidate();
+                    return;
+                }
+                messageObject.messageOwner.translated = true;
+                messageObject.messageOwner.translatedToLanguage = TranslatorKt.getLocale2code(resolvedTargetLocale).toLowerCase(Locale.getDefault());
+                if (mode == 0) {
+                    String finalMessageText = originalText + "\n\n--------\n\n" + translatedText;
+                    messageObject.messageOwner.translatedMessage = finalMessageText;
+                    messageObject.messageOwner.translatedText = null;
+                    messageObject.translated = false;
+                    messageObject.applyNewText(finalMessageText);
+                } else {
+                    messageObject.messageOwner.translatedMessage = translatedText;
+                    messageObject.messageOwner.translatedText = finalText;
+                    messageObject.translated = true;
+                    messageObject.applyNewText(translatedText);
+                }
+                messageObject.caption = null;
+                messageObject.generateCaption();
+                messageObject.forceUpdate = true;
+                messageCell.setMessageObject(messageObject, null, false, false, false);
+                messageObject.forceUpdate = false;
+            }
+
+            @Override
+            public void onFailed(boolean unsupported, @NonNull String message) {
+                if (messageCell.getMessageObject() != messageObject) {
+                    return;
+                }
+                messageObject.translating = false;
+                messageCell.invalidate();
+                if (getParentActivity() != null) {
+                    AlertUtil.showTransFailedDialog(getParentActivity(), unsupported, message, () -> toggleOrTranslate(messageCell, messageObject, resolvedTargetLocale));
+                }
+            }
+        });
     }
 
 }
