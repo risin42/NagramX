@@ -16,7 +16,8 @@ public class GhostModeExclusionPopupWrapper {
 
     private final long chatId;
     private final ActionBarMenuSubItem defaultItem;
-    private final ActionBarMenuSubItem exclusionItem;
+    private final ActionBarMenuSubItem readExclusionItem;
+    private final ActionBarMenuSubItem typingExclusionItem;
     public ActionBarPopupWindow.ActionBarPopupWindowLayout windowLayout;
 
     public GhostModeExclusionPopupWrapper(BaseFragment fragment, PopupSwipeBackLayout swipeBackLayout, long chatId, Theme.ResourcesProvider resourcesProvider) {
@@ -32,22 +33,35 @@ public class GhostModeExclusionPopupWrapper {
         }
 
         defaultItem = ActionBarMenuItem.addItem(windowLayout, 0, getString(R.string.Default), true, resourcesProvider);
-        defaultItem.setChecked(!AyuGhostPreferences.getGhostModeExclusion(chatId));
+        defaultItem.setChecked(!AyuGhostPreferences.getGhostModeTypingExclusion(chatId) && !AyuGhostPreferences.getGhostModeReadExclusion(chatId));
         defaultItem.setOnClickListener(view -> {
-            AyuGhostPreferences.setGhostModeExclusion(chatId, false);
+            AyuGhostPreferences.setGhostModeTypingExclusion(chatId, false);
+            AyuGhostPreferences.setGhostModeReadExclusion(chatId, false);
             updateItems();
         });
 
-        exclusionItem = ActionBarMenuItem.addItem(windowLayout, 0, getString(R.string.SaveDeletedExcluded), true, resourcesProvider);
-        exclusionItem.setChecked(AyuGhostPreferences.getGhostModeExclusion(chatId));
-        exclusionItem.setOnClickListener(view -> {
-            AyuGhostPreferences.setGhostModeExclusion(chatId, true);
+        readExclusionItem = ActionBarMenuItem.addItem(windowLayout, 0, getString(R.string.GhostModeExcludeRead), true, resourcesProvider);
+        readExclusionItem.setChecked(AyuGhostPreferences.getGhostModeReadExclusion(chatId));
+        readExclusionItem.setOnClickListener(view -> {
+            AyuGhostPreferences.setGhostModeReadExclusion(chatId, !AyuGhostPreferences.getGhostModeReadExclusion(chatId));
+            updateItems();
+        });
+
+        typingExclusionItem = ActionBarMenuItem.addItem(windowLayout, 0, getString(R.string.GhostModeExcludeTyping), true, resourcesProvider);
+        typingExclusionItem.setChecked(AyuGhostPreferences.getGhostModeTypingExclusion(chatId));
+        typingExclusionItem.setOnClickListener(view -> {
+            AyuGhostPreferences.setGhostModeTypingExclusion(chatId, !AyuGhostPreferences.getGhostModeTypingExclusion(chatId));
             updateItems();
         });
     }
 
     public void updateItems() {
-        defaultItem.setChecked(!AyuGhostPreferences.getGhostModeExclusion(chatId));
-        exclusionItem.setChecked(AyuGhostPreferences.getGhostModeExclusion(chatId));
+        boolean readExcluded = AyuGhostPreferences.getGhostModeReadExclusion(chatId);
+        boolean typingExcluded = AyuGhostPreferences.getGhostModeTypingExclusion(chatId);
+
+        defaultItem.setChecked(!typingExcluded && !readExcluded);
+        readExclusionItem.setChecked(readExcluded);
+        typingExclusionItem.setChecked(typingExcluded);
+
     }
 }

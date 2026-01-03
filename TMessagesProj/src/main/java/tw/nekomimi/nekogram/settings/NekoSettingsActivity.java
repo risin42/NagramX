@@ -916,7 +916,8 @@ public class NekoSettingsActivity extends BaseFragment {
         } catch (Throwable ignore) {
         }
         String[] preservePrefixes = {
-                AyuGhostPreferences.ghostExclusionPrefix,
+                AyuGhostPreferences.ghostReadExclusionPrefix,
+                AyuGhostPreferences.ghostTypingExclusionPrefix,
                 AyuSavePreferences.saveExclusionPrefix,
                 ChatNameHelper.chatNameOverridePrefix,
                 NekoConfig.channelAliasPrefix,

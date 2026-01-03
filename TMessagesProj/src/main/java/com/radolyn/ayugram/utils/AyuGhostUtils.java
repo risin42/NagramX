@@ -1,7 +1,9 @@
 package com.radolyn.ayugram.utils;
 
 import org.telegram.messenger.BuildVars;
+import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.UserConfig;
@@ -34,6 +36,13 @@ public class AyuGhostUtils {
 
     public static Long getDialogId(TLRPC.InputChannel peer) {
         return -peer.channel_id;
+    }
+
+    public static Long getDialogId(TLRPC.TL_inputEncryptedChat peer) {
+        if (peer == null) {
+            return null;
+        }
+        return (long) DialogObject.getEncryptedChatId(peer.chat_id);
     }
 
     public static ConnectionsManager getConnectionsManager() {
@@ -77,6 +86,46 @@ public class AyuGhostUtils {
         });
     }
 
+    public static void markReadOnServer(MessageObject message, boolean internal) {
+        int messageId = message.getId();
+        long dialogId = message.getDialogId();
+        TLRPC.EncryptedChat encryptedChat = getMessagesController().getEncryptedChat(DialogObject.getEncryptedChatId(dialogId));
+        TLRPC.InputPeer inputPeer = getMessagesController().getInputPeer(message.messageOwner.peer_id);
+        TLObject req;
+        if (inputPeer instanceof TLRPC.TL_inputPeerChannel) {
+            TLRPC.TL_channels_readHistory request = new TLRPC.TL_channels_readHistory();
+            request.channel = MessagesController.getInputChannel(inputPeer);
+            request.max_id = messageId;
+            req = request;
+        } else if (encryptedChat != null) {
+            TLRPC.TL_messages_readEncryptedHistory request = new TLRPC.TL_messages_readEncryptedHistory();
+            request.peer = new TLRPC.TL_inputEncryptedChat();
+            request.peer.chat_id = encryptedChat.id;
+            request.peer.access_hash = encryptedChat.access_hash;
+            request.max_date = message.messageOwner.date != 0 ? message.messageOwner.date : getConnectionsManager().getCurrentTime();
+            req = request;
+        } else {
+            TLRPC.TL_messages_readHistory request = new TLRPC.TL_messages_readHistory();
+            request.peer = inputPeer;
+            request.max_id = messageId;
+            req = request;
+        }
+
+        AyuState.setAllowReadPacket(true, 1);
+        getConnectionsManager().sendRequest(req, (response, error) -> {
+            if (error == null) {
+                if (response instanceof TLRPC.TL_messages_affectedMessages res) {
+                    getMessagesController().processNewDifferenceParams(-1, res.pts, -1, res.pts_count);
+                }
+                if (BuildVars.LOGS_ENABLED && internal) FileLog.d("GhostMode: Read-after-send request completed.");
+                // Go offline after sending
+                if (NekoConfig.sendOfflinePacketAfterOnline.Bool() && !internal) {
+                    Utilities.globalQueue.postRunnable(() -> performStatusRequest(true), OFFLINE_DELAY_MS);
+                }
+            }
+        });
+    }
+
     public static void performStatusRequest(Boolean offline) {
         TL_account.updateStatus offlineRequest = new TL_account.updateStatus();
         offlineRequest.offline = offline;
@@ -87,10 +136,13 @@ public class AyuGhostUtils {
     }
 
     public static InterceptResult interceptRequest(TLObject object, RequestDelegate onCompleteOrig) {
-        boolean isExcluded = isGhostModeExcluded(object);
+        Long dialogId = extractDialogId(object);
+        boolean readExcluded = dialogId != null && AyuGhostPreferences.getGhostModeReadExclusion(dialogId);
+        boolean typingExcluded = dialogId != null && AyuGhostPreferences.getGhostModeTypingExclusion(dialogId);
+
         // Block typing if disabled
         if (!NekoConfig.sendUploadProgress.Bool() && (object instanceof TLRPC.TL_messages_setTyping || object instanceof TLRPC.TL_messages_setEncryptedTyping)) {
-            if (!isExcluded) {
+            if (!typingExcluded) {
                 if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Blocking typing status request.");
                 return InterceptResult.Blocked(onCompleteOrig);
             }
@@ -98,14 +150,14 @@ public class AyuGhostUtils {
 
         // Block read receipts if disabled
         if (!NekoConfig.sendReadMessagePackets.Bool() && (isReadMessageRequest(object))) {
-            if (!AyuState.getAllowReadPacket() && !isExcluded) {
+            if (!AyuState.getAllowReadPacket() && !readExcluded) {
                 if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Blocking read status request and sending fake response.");
                 sendFakeReadResponse(onCompleteOrig);
                 return InterceptResult.Blocked(onCompleteOrig);
             }
         }
         if (!NekoConfig.sendReadStoriesPackets.Bool() && isReadStoriesRequest(object)) {
-            if (!isExcluded) {
+            if (!readExcluded) {
                 if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Blocking story read request.");
                 return InterceptResult.Blocked(onCompleteOrig);
             }
@@ -132,7 +184,7 @@ public class AyuGhostUtils {
 
             if (peer != null) {
                 var dialogId = AyuGhostUtils.getDialogId(peer);
-                if (AyuGhostPreferences.getGhostModeExclusion(dialogId)) {
+                if (AyuGhostPreferences.getGhostModeReadExclusion(dialogId)) {
                     return;
                 }
                 getMessagesStorage().getStorageQueue().postRunnable(() ->
@@ -147,7 +199,7 @@ public class AyuGhostUtils {
     private static RequestDelegate handleOfflineAfterSend(TLObject object, RequestDelegate onCompleteOrig) {
         if (NekoConfig.sendOfflinePacketAfterOnline.Bool() && isMessageSendRequest(object)) {
             TLRPC.InputPeer peer = extractPeerFromSendObject(object);
-            if (peer != null && AyuGhostPreferences.getGhostModeExclusion(getDialogId(peer))) {
+            if (peer != null && AyuGhostPreferences.getGhostModeTypingExclusion(getDialogId(peer))) {
                 return onCompleteOrig;
             }
             if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Wrapping callback for offline-after-send.");
@@ -164,30 +216,29 @@ public class AyuGhostUtils {
         return onCompleteOrig;
     }
 
-    private static boolean isGhostModeExcluded(TLObject object) {
-        Long dialogId = extractDialogId(object);
-        return dialogId != null && AyuGhostPreferences.getGhostModeExclusion(dialogId);
-    }
-
     private static Long extractDialogId(TLObject object) {
-        if (object instanceof TLRPC.TL_messages_setTyping) {
-            return getDialogId(((TLRPC.TL_messages_setTyping) object).peer);
-        } else if (object instanceof TLRPC.TL_messages_readHistory) {
-            return getDialogId(((TLRPC.TL_messages_readHistory) object).peer);
-        } else if (object instanceof TLRPC.TL_messages_readDiscussion) {
-            return getDialogId(((TLRPC.TL_messages_readDiscussion) object).peer);
-        } else if (object instanceof TLRPC.TL_messages_sendMessage) {
-            return getDialogId(((TLRPC.TL_messages_sendMessage) object).peer);
-        } else if (object instanceof TLRPC.TL_messages_sendMedia) {
-            return getDialogId(((TLRPC.TL_messages_sendMedia) object).peer);
-        } else if (object instanceof TLRPC.TL_messages_sendMultiMedia) {
-            return getDialogId(((TLRPC.TL_messages_sendMultiMedia) object).peer);
-        } else if (object instanceof TL_stories.TL_stories_readStories) {
-            return getDialogId(((TL_stories.TL_stories_readStories) object).peer);
-        } else if (object instanceof TL_stories.TL_stories_incrementStoryViews) {
-            return getDialogId(((TL_stories.TL_stories_incrementStoryViews) object).peer);
-        } else if (object instanceof TLRPC.TL_channels_readHistory) {
-            return getDialogId(((TLRPC.TL_channels_readHistory) object).channel);
+        if (object instanceof TLRPC.TL_messages_setTyping obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_setEncryptedTyping obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_readHistory obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_readEncryptedHistory obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_readDiscussion obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_sendMessage obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_sendMedia obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_sendMultiMedia obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TL_stories.TL_stories_readStories obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TL_stories.TL_stories_incrementStoryViews obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_channels_readHistory obj) {
+            return getDialogId(obj.channel);
         }
         return null;
     }

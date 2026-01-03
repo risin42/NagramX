@@ -31606,7 +31606,7 @@ public class ChatActivity extends BaseFragment implements
                 if (!NekoConfig.sendReadMessagePackets.Bool()
                         && message.messageOwner.from_id != null
                         && message.messageOwner.from_id.user_id != getAccountInstance().getUserConfig().getClientUserId()
-                        && !AyuGhostPreferences.getGhostModeExclusion(getDialogId())
+                        && !AyuGhostPreferences.getGhostModeReadExclusion(getDialogId())
                 ) {
                     int idx = options.isEmpty() ? 0 : options.size() - 1;
                     items.add(idx, getString(R.string.GhostReadMessage));
@@ -33894,7 +33894,7 @@ public class ChatActivity extends BaseFragment implements
                 });
                 break;
             case AyuConstants.OPTION_READ_MESSAGE:
-                AyuGhostUtils.markReadOnServer(selectedObject.messageOwner.id, getMessagesController().getInputPeer(selectedObject.messageOwner.peer_id), false);
+                AyuGhostUtils.markReadOnServer(selectedObject, false);
                 BotWebViewVibrationEffect.SELECTION_CHANGE.vibrate();
                 break;
             case OPTION_RETRY: {
