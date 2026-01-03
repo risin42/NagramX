@@ -305,4 +305,5 @@
     <string name="PhoneOnTelegram">This phone number is on Telegram.</string>
     <string name="SIMCard">SIM Card</string>
     <string name="DeviceAccount">Device</string>
+    <string name="ApiKeyNotSet">API Key is not configured.</string>
 </resources>
