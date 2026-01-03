@@ -1,18 +1,94 @@
 package xyz.nextalone.nagram.helper
 
 import androidx.core.content.edit
+import org.telegram.messenger.UserConfig
 import xyz.nextalone.nagram.NaConfig
 import xyz.nextalone.nagram.ToggleResult
 import java.util.concurrent.ConcurrentHashMap
 
 object BookmarksHelper {
-    const val KEY_PREFIX = "nax_bookmarks_v1_"
+    const val KEY_PREFIX = "nax_bookmarks_"
+    private const val LEGACY_KEY_PREFIX = "nax_bookmarks_v1_"
+    private const val CURRENT_KEY_PREFIX = "nax_bookmarks_v2_"
     const val MAX_PER_CHAT: Int = 30
 
     private val cache = ConcurrentHashMap<String, IntArray>()
+    private val migratedOwners = ConcurrentHashMap<Int, Long>()
+
+    private fun getOwnerId(accountId: Int): Long {
+        val userId = UserConfig.getInstance(accountId).getClientUserId()
+        return if (userId != 0L) userId else accountId.toLong()
+    }
+
+    @Synchronized
+    private fun ensureMigrated(accountId: Int): Long {
+        val ownerId = getOwnerId(accountId)
+        val previous = migratedOwners[accountId]
+        if (previous == ownerId) {
+            return ownerId
+        }
+        migratedOwners[accountId] = ownerId
+
+        val legacyPrefix = LEGACY_KEY_PREFIX + accountId + "_"
+        val prefs = NaConfig.getPreferences()
+        val legacyKeys = prefs.all.keys.filter { it.startsWith(legacyPrefix) }
+        if (legacyKeys.isEmpty()) {
+            return ownerId
+        }
+
+        val currentPrefix = CURRENT_KEY_PREFIX + ownerId + "_"
+        prefs.edit {
+            for (oldKey in legacyKeys) {
+                val dialogPart = oldKey.substring(legacyPrefix.length)
+                if (dialogPart.isEmpty()) {
+                    remove(oldKey)
+                    cache.remove(oldKey)
+                    continue
+                }
+                val newKey = currentPrefix + dialogPart
+
+                val merged = mergeIds(getIds(oldKey), getIds(newKey))
+                if (merged.isEmpty()) {
+                    remove(newKey)
+                    cache[newKey] = intArrayOf()
+                } else {
+                    putString(newKey, merged.joinToString(","))
+                    cache[newKey] = merged.toIntArray()
+                }
+                remove(oldKey)
+                cache.remove(oldKey)
+            }
+        }
+        return ownerId
+    }
+
+    private fun mergeIds(legacy: IntArray, current: IntArray): List<Int> {
+        if (legacy.isEmpty()) {
+            return current.toList()
+        }
+        if (current.isEmpty()) {
+            return legacy.toList()
+        }
+        val set = LinkedHashSet<Int>(legacy.size + current.size)
+        for (id in legacy) {
+            if (id != 0) {
+                set.add(id)
+            }
+        }
+        for (id in current) {
+            if (id == 0) {
+                continue
+            }
+            set.remove(id)
+            set.add(id)
+        }
+        val merged = set.toList()
+        return if (merged.size <= MAX_PER_CHAT) merged else merged.takeLast(MAX_PER_CHAT)
+    }
 
     private fun key(accountId: Int, dialogId: Long): String {
-        return KEY_PREFIX + accountId + "_" + dialogId
+        val ownerId = ensureMigrated(accountId)
+        return CURRENT_KEY_PREFIX + ownerId + "_" + dialogId
     }
 
     private fun getIds(key: String): IntArray {
@@ -100,20 +176,24 @@ object BookmarksHelper {
 
     @JvmStatic
     fun clearAllBookmarks(accountId: Int) {
-        val prefix = KEY_PREFIX + accountId + "_"
+        val ownerId = getOwnerId(accountId)
+        val legacyPrefix = LEGACY_KEY_PREFIX + accountId + "_"
+        val currentPrefix = CURRENT_KEY_PREFIX + ownerId + "_"
         NaConfig.getPreferences().edit {
             for (key in NaConfig.getPreferences().all.keys) {
-                if (key.startsWith(prefix)) {
+                if (key.startsWith(currentPrefix) || key.startsWith(legacyPrefix)) {
                     remove(key)
                 }
             }
         }
         cache.clear()
+        migratedOwners.remove(accountId)
     }
 
     @JvmStatic
     fun getBookmarkedDialogsCounts(accountId: Int): Map<Long, Int> {
-        val prefix = KEY_PREFIX + accountId + "_"
+        val ownerId = ensureMigrated(accountId)
+        val prefix = CURRENT_KEY_PREFIX + ownerId + "_"
         val prefs = NaConfig.getPreferences()
         val result = LinkedHashMap<Long, Int>()
         for (key in prefs.all.keys) {
