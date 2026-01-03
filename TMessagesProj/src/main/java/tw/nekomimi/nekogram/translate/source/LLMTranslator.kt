@@ -171,7 +171,7 @@ object LLMTranslator : Translator {
 
     @Throws(IOException::class, RateLimitException::class, UnsupportedOperationException::class)
     private fun doLLMTranslate(to: String, query: String): String {
-        val apiKey = getNextApiKey() ?: throw UnsupportedOperationException("Missing LLM API Key")
+        val apiKey = getNextApiKey() ?: throw UnsupportedOperationException(getString(R.string.ApiKeyNotSet))
         val apiKeyForLog = apiKey.takeLast(2)
         if (BuildVars.LOGS_ENABLED) Log.d("LLMTranslator", "createPost: Bearer $apiKeyForLog")
 
