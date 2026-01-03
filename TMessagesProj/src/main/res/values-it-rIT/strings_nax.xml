@@ -134,6 +134,8 @@
     <string name="MarkReadAfterSendNotice">Legge automaticamente i messaggi quando se ne invia uno nuovo o si tocca una reazione.</string>
     <string name="SendWithoutSoundRowNotice">Invia automaticamente i messaggi in uscita senza audio.</string>
     <string name="GhostReadMessage">Leggi messaggi</string>
+    <string name="GhostModeExcludeRead">Escludi Lette</string>
+    <string name="GhostModeExcludeTyping">Escludi Scrittura</string>
     <string name="SendWithSound">Invia con suono</string>
     <string name="PerformanceClass">Classe Prestazioni Dispositivo</string>
     <string name="PerformanceClassHigh">Alta</string>
@@ -293,4 +295,14 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="CameraInVideoMessagesAsk">Chiedi</string>
     <string name="CameraSettings">Camera</string>
     <string name="SmoothRoundedMenu">Menu contestuali arrotondati</string>
+    <string name="SyncContactToPhone">Sincronizza contatto sul telefono</string>
+    <string name="AddViaQRCode">Aggiungi tramite QR Code</string>
+    <string name="ContactNotes">Note</string>
+    <string name="PhoneNotOnTelegramInvite">Questo numero di telefono non è su Telegram. **Invita &gt;**</string>
+    <string name="PhoneAlreadyInContacts">Questo numero di telefono è già nei tuoi contatti. **Visualizza &gt;**</string>
+    <string name="PhoneOnTelegram">Questo numero di telefono è su Telegram.</string>
+    <string name="SIMCard">Scheda SIM</string>
+    <string name="DeviceAccount">Dispositivo</string>
+    <string name="ApiKeyNotSet">La chiave API non è configurata.</string>
+    <string name="SaveLocalLastSeen">Salva data dell\'ultimo accesso</string>
 </resources>

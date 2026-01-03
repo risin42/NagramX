@@ -134,6 +134,8 @@
     <string name="MarkReadAfterSendNotice">Когда вы отправляете новое сообщение или нажимаете на реакцию, сообщение автоматически отмечается как прочитанное.</string>
     <string name="SendWithoutSoundRowNotice">Автоматически отправлять исходящие сообщения без звука.</string>
     <string name="GhostReadMessage">Прочитать сообщение</string>
+    <string name="GhostModeExcludeRead">Исключить чтение</string>
+    <string name="GhostModeExcludeTyping">Исключить ввод текста</string>
     <string name="SendWithSound">Отправить со звуком</string>
     <string name="PerformanceClass">Класс производительности устройства</string>
     <string name="PerformanceClassHigh">Высокий</string>
@@ -289,4 +291,14 @@
     <string name="CameraInVideoMessagesAsk">Спрашивать</string>
     <string name="CameraSettings">Камера</string>
     <string name="SmoothRoundedMenu">Плавно закруглённое контекстное меню</string>
+    <string name="SyncContactToPhone">Синхронизировать контакт с телефоном</string>
+    <string name="AddViaQRCode">Добавить по QR-коду</string>
+    <string name="ContactNotes">Заметки</string>
+    <string name="PhoneNotOnTelegramInvite">Этого номера телефона нет в Telegram. **Пригласить &gt;**</string>
+    <string name="PhoneAlreadyInContacts">Этот номер телефона уже есть в ваших контактах. **Просмотреть &gt;**</string>
+    <string name="PhoneOnTelegram">Этот номер телефона есть в Telegram.</string>
+    <string name="SIMCard">SIM-карта</string>
+    <string name="DeviceAccount">Устройство</string>
+    <string name="ApiKeyNotSet">Ключ API не настроен.</string>
+    <string name="SaveLocalLastSeen">Сохранять дату последнего посещения</string>
 </resources>
