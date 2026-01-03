@@ -134,6 +134,8 @@
     <string name="MarkReadAfterSendNotice">Коли ви надсилаєте нове повідомлення або натискаєте на реакцію, повідомлення автоматично відзначається як прочитане.</string>
     <string name="SendWithoutSoundRowNotice">Автоматично надсилати вихідні повідомлення без звуку.</string>
     <string name="GhostReadMessage">Прочитати повідомлення</string>
+    <string name="GhostModeExcludeRead">Виключити читання</string>
+    <string name="GhostModeExcludeTyping">Виключити введення тексту</string>
     <string name="SendWithSound">Надіслати зі звуком</string>
     <string name="PerformanceClass">Клас продуктивності пристрою</string>
     <string name="PerformanceClassHigh">Високий</string>
@@ -277,6 +279,7 @@
     <string name="BookmarkAdded">Додано до **закладок**.</string>
     <string name="BookmarkRemoved">Видалено з **закладок**.</string>
     <string name="BookmarksLimitReached">Ви можете зберегти до %d повідомлень у кожному чаті.</string>
+    <string name="BookmarksFilterUsers">Користувачі</string>
     <string name="NoBookmarks">Закладок немає</string>
     <string name="ClearAllBookmarks">Очистити всі закладки</string>
     <string name="ClearAllBookmarksNotification">Усі закладки очищено.</string>
@@ -288,4 +291,14 @@
     <string name="CameraInVideoMessagesAsk">Запитувати</string>
     <string name="CameraSettings">Камера</string>
     <string name="SmoothRoundedMenu">Плавне закруглене контекстне меню</string>
+    <string name="SyncContactToPhone">Синхронізувати контакт з телефоном</string>
+    <string name="AddViaQRCode">Додати через QR-код</string>
+    <string name="ContactNotes">Нотатки</string>
+    <string name="PhoneNotOnTelegramInvite">Цього номера телефону немає в Telegram. **Запросити &gt;**</string>
+    <string name="PhoneAlreadyInContacts">Цей номер телефону вже є у ваших контактах. **Переглянути &gt;**</string>
+    <string name="PhoneOnTelegram">Цей номер телефону є в Telegram.</string>
+    <string name="SIMCard">SIM-карта</string>
+    <string name="DeviceAccount">Пристрій</string>
+    <string name="ApiKeyNotSet">Ключ API не налаштовано.</string>
+    <string name="SaveLocalLastSeen">Зберегти дату останнього перегляду</string>
 </resources>

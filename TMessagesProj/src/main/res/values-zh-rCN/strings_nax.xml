@@ -134,6 +134,8 @@
     <string name="MarkReadAfterSendNotice">发送新消息或点击表情回应时，自动将消息标记为已读。</string>
     <string name="SendWithoutSoundRowNotice">对方将不会收到声音提醒。</string>
     <string name="GhostReadMessage">标记已读</string>
+    <string name="GhostModeExcludeRead">阅读排除</string>
+    <string name="GhostModeExcludeTyping">输入排除</string>
     <string name="SendWithSound">有声发送</string>
     <string name="PerformanceClass">设备性能等级</string>
     <string name="PerformanceClassHigh">高</string>
@@ -289,4 +291,16 @@
     <string name="CameraInVideoMessagesAsk">询问</string>
     <string name="CameraSettings">相机</string>
     <string name="SmoothRoundedMenu">平滑圆角上下文菜单</string>
+    <string name="SyncContactToPhone">同步联系人到手机</string>
+    <string name="AddViaQRCode">通过二维码添加</string>
+    <string name="ContactNotes">备注</string>
+    <string name="PhoneNotOnTelegramInvite">该号码未在Telegram注册。**邀请 &gt;**</string>
+    <string name="PhoneAlreadyInContacts">此电话号码已在您的联系人中。**查看 &gt;**</string>
+    <string name="PhoneOnTelegram">此电话号码已在 Telegram 上。</string>
+    <string name="SIMCard">SIM 卡</string>
+    <string name="DeviceAccount">设备</string>
+    <string name="ApiKeyNotSet">API 密钥未配置。</string>
+    <string name="SaveLocalLastSeen">保存最后上线时间</string>
+    <string name="CopyVideoFrame">复制帧</string>
+    <string name="SetLocalName">设置备注</string>
 </resources>

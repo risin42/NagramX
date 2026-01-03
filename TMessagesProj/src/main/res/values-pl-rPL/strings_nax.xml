@@ -289,4 +289,12 @@
     <string name="CameraInVideoMessagesAsk">Zapytaj</string>
     <string name="CameraSettings">Kamera</string>
     <string name="SmoothRoundedMenu">Płynne, zaokrąglone menu kontekstowe</string>
+    <string name="SyncContactToPhone">Synchronizuj kontakt z telefonem</string>
+    <string name="AddViaQRCode">Dodaj za pomocą kodu QR</string>
+    <string name="ContactNotes">Notatki</string>
+    <string name="PhoneNotOnTelegramInvite">Tego numeru telefonu nie ma na Telegramie. **Zaproś &gt;**</string>
+    <string name="PhoneAlreadyInContacts">Ten numer telefonu jest już w Twoich kontaktach. **Wyświetl &gt;**</string>
+    <string name="PhoneOnTelegram">Ten numer telefonu jest na Telegramie.</string>
+    <string name="SIMCard">Karta SIM</string>
+    <string name="DeviceAccount">Urządzenie</string>
 </resources>

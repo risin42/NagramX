@@ -134,6 +134,8 @@
     <string name="MarkReadAfterSendNotice">新規メッセージ送信時またはリアクション時に、自動的に既読にします。</string>
     <string name="SendWithoutSoundRowNotice">メッセージは相手に通知音なしで送信されます。</string>
     <string name="GhostReadMessage">既読をつける</string>
+    <string name="GhostModeExcludeRead">既読を除外</string>
+    <string name="GhostModeExcludeTyping">入力を除外</string>
     <string name="SendWithSound">通知音ありで送信</string>
     <string name="PerformanceClass">デバイスのパフォーマンスクラス</string>
     <string name="PerformanceClassHigh">ハイエンド</string>
@@ -289,4 +291,16 @@
     <string name="CameraInVideoMessagesAsk">尋ねる</string>
     <string name="CameraSettings">カメラ</string>
     <string name="SmoothRoundedMenu">滑らかな角丸コンテキストメニュー</string>
+    <string name="SyncContactToPhone">連絡先をデバイスに同期</string>
+    <string name="AddViaQRCode">QRコードで追加</string>
+    <string name="ContactNotes">メモ</string>
+    <string name="PhoneNotOnTelegramInvite">この電話番号はTelegramに登録されていません。 **招待 &gt;**</string>
+    <string name="PhoneAlreadyInContacts">この電話番号は既に連絡先に登録されています。**表示 &gt;**</string>
+    <string name="PhoneOnTelegram">この電話番号は Telegram に登録されています。</string>
+    <string name="SIMCard">SIM カード</string>
+    <string name="DeviceAccount">デバイス</string>
+    <string name="ApiKeyNotSet">API キーが設定されていません。</string>
+    <string name="SaveLocalLastSeen">最終接続時間を保存</string>
+    <string name="CopyVideoFrame">フレームをコピー</string>
+    <string name="SetLocalName">表示名を変更</string>
 </resources>
