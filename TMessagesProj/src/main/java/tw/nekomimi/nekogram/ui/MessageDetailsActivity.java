@@ -272,23 +272,30 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
                 if (bitRate == 0 || audioBitRate == 0) {
                     String bitrateStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
                     if (bitrateStr != null) {
-                        long totalBitrate = Long.parseLong(bitrateStr);
                         String hasVideo = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
                         String hasAudio = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO);
                         boolean isVideoFile = "yes".equals(hasVideo);
                         boolean isAudioFile = "yes".equals(hasAudio);
-                        if (isVideoFile && !isAudioFile && bitRate == 0) {
-                            bitRate = totalBitrate;
-                        } else if (!isVideoFile && isAudioFile && audioBitRate == 0) {
-                            audioBitRate = totalBitrate;
-                        } else if (isVideoFile && isAudioFile) {
+                        if (isVideoFile && isAudioFile) {
                             hasMultipleTracks = true;
-                            if (bitRate == 0 && audioBitRate > 0) {
-                                bitRate = totalBitrate - audioBitRate;
-                                if (bitRate < 0) bitRate = totalBitrate;
-                            } else if (audioBitRate == 0 && bitRate > 0) {
-                                audioBitRate = totalBitrate - bitRate;
-                                if (audioBitRate < 0) audioBitRate = 0;
+                        }
+                        long totalBitrate = Utilities.parseLong(bitrateStr);
+                        if (totalBitrate <= 0 || totalBitrate > 1_000_000L) {
+                            totalBitrate = 0;
+                        }
+                        if (totalBitrate > 0) {
+                            if (isVideoFile && !isAudioFile && bitRate == 0) {
+                                bitRate = totalBitrate;
+                            } else if (!isVideoFile && isAudioFile && audioBitRate == 0) {
+                                audioBitRate = totalBitrate;
+                            } else if (isVideoFile && isAudioFile) {
+                                if (bitRate == 0 && audioBitRate > 0) {
+                                    bitRate = totalBitrate - audioBitRate;
+                                    if (bitRate < 0) bitRate = totalBitrate;
+                                } else if (audioBitRate == 0 && bitRate > 0) {
+                                    audioBitRate = totalBitrate - bitRate;
+                                    if (audioBitRate < 0) audioBitRate = 0;
+                                }
                             }
                         }
                     }
@@ -309,19 +316,26 @@ public class MessageDetailsActivity extends BaseFragment implements Notification
                 String durationStr = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                 String hasVideo = r.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
                 boolean isVideoFile = "yes".equals(hasVideo);
-                if (durationStr != null) {
-                    long durationMs = Long.parseLong(durationStr);
-                    if (durationMs > 0) {
-                        long fileSizeBytes = file.length();
-                        double durationSeconds = durationMs / 1000.0;
-                        long estimatedTotalBitrate = (long) ((fileSizeBytes * 8) / durationSeconds);
-                        if (bitRate == 0 && isVideoFile) {
-                            bitRate = estimatedTotalBitrate;
-                            isBitRateEstimated = true;
-                        } else if (audioBitRate == 0 && sampleRate > 0 && !isVideoFile) {
-                            audioBitRate = estimatedTotalBitrate;
-                            isAudioBitRateEstimated = true;
-                        }
+                long durationMs = Utilities.parseLong(durationStr);
+                if (durationMs == Long.MAX_VALUE) {
+                    durationMs = 0;
+                }
+                if (durationMs <= 0) {
+                    double messageDurationSeconds = messageObject.getDuration();
+                    if (messageDurationSeconds > 0) {
+                        durationMs = Math.round(messageDurationSeconds * 1000.0);
+                    }
+                }
+                if (durationMs > 0) {
+                    long fileSizeBytes = file.length();
+                    double durationSeconds = durationMs / 1000.0;
+                    long estimatedTotalBitrate = (long) ((fileSizeBytes * 8) / durationSeconds);
+                    if (bitRate == 0 && isVideoFile) {
+                        bitRate = estimatedTotalBitrate;
+                        isBitRateEstimated = true;
+                    } else if (audioBitRate == 0 && sampleRate > 0 && !isVideoFile) {
+                        audioBitRate = estimatedTotalBitrate;
+                        isAudioBitRateEstimated = true;
                     }
                 }
             } catch (Exception ignored) {
