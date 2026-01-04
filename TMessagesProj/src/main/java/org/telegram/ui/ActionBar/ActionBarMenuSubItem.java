@@ -416,7 +416,7 @@ public class ActionBarMenuSubItem extends FrameLayout {
             selectorRad = 10;
         }
         // setBackground(Theme.createRadSelectorDrawable(selectorColor, top ? selectorRad : 0, bottom ? selectorRad : 0));
-        setBackground(Theme.createRadSelectorDrawable(selectorColor, selectorRad, selectorRad, selectorRad, selectorRad));
+        setBackground(Theme.createRadSelectorDrawable(selectorColor, selectorRad, selectorRad, selectorRad, selectorRad, true));
     }
 
     private int getThemedColor(int key) {
