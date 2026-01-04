@@ -488,7 +488,7 @@ public class ActionBarMenuItem extends FrameLayout {
         if (NaConfig.INSTANCE.getSmoothRoundedMenu().Bool()) {
             selectorRad = SharedConfig.bubbleRadius;
         }
-        textView.setBackgroundDrawable(Theme.createRadSelectorDrawable(Theme.getColor(Theme.key_dialogButtonSelector), selectorRad, selectorRad, selectorRad, selectorRad));
+        textView.setBackgroundDrawable(Theme.createRadSelectorDrawable(Theme.getColor(Theme.key_dialogButtonSelector), selectorRad, selectorRad, selectorRad, selectorRad, true));
         ScaleStateListAnimator.apply(textView, .04f, 1.2f);
         if (!LocaleController.isRTL) {
             textView.setGravity(Gravity.CENTER_VERTICAL);
