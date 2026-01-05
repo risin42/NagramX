@@ -7,7 +7,6 @@ import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.TypedValue;
@@ -17,7 +16,6 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
@@ -59,7 +57,7 @@ public class TranscribeHelper {
     private static final Gson gson = new Gson();
     private static final ExecutorService executorService = Executors.newCachedThreadPool();
     public static final int TRANSCRIBE_AUTO = 0;
-    public static final int TRANSCRIBE_PREMIUM = 1;
+    // public static final int TRANSCRIBE_PREMIUM = 1;
     public static final int TRANSCRIBE_WORKERSAI = 2;
     public static final int TRANSCRIBE_GEMINI = 3;
     public static final int TRANSCRIBE_OPENAI = 4;
@@ -387,23 +385,16 @@ public class TranscribeHelper {
     }
 
     public static void sendRequest(String path, boolean video, BiConsumer<String, Exception> callback) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O &&
-                (NaConfig.INSTANCE.getTranscribeProvider().Int() == TRANSCRIBE_GEMINI ||
-                NaConfig.INSTANCE.getTranscribeProvider().Int() == TRANSCRIBE_OPENAI)) {
-            callback.accept(null, new Exception(getString(R.string.ApiNotSupportedOnAndroidVersion)));
-            return;
-        }
-
         switch (NaConfig.INSTANCE.getTranscribeProvider().Int()) {
             case TRANSCRIBE_AUTO:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                        (!TextUtils.isEmpty(NaConfig.INSTANCE.getTranscribeProviderGeminiApiKey().String()) ||
-                        !TextUtils.isEmpty(NaConfig.INSTANCE.getLlmProviderGeminiKey().String()))) {
+                if (!TextUtils.isEmpty(NaConfig.INSTANCE.getTranscribeProviderGeminiApiKey().String()) ||
+                        !TextUtils.isEmpty(NaConfig.INSTANCE.getLlmProviderGeminiKey().String())
+                ) {
                     requestGeminiAi(path, video, callback);
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                        !TextUtils.isEmpty(NaConfig.INSTANCE.getTranscribeProviderOpenAiApiBase().String()) &&
+                } else if (!TextUtils.isEmpty(NaConfig.INSTANCE.getTranscribeProviderOpenAiApiBase().String()) &&
                         !TextUtils.isEmpty(NaConfig.INSTANCE.getTranscribeProviderOpenAiModel().String()) &&
-                        !TextUtils.isEmpty(NaConfig.INSTANCE.getTranscribeProviderOpenAiApiKey().String())) {
+                        !TextUtils.isEmpty(NaConfig.INSTANCE.getTranscribeProviderOpenAiApiKey().String())
+                ) {
                     requestOpenAiCompatible(path, video, callback);
                 }
                 else {
@@ -439,11 +430,23 @@ public class TranscribeHelper {
             } else {
                 audioPath = path;
             }
+
+            byte[] audioBytes;
+            try {
+                audioBytes = Files.readAllBytes(new File(audioPath).toPath());
+            } catch (IOException e) {
+                callback.accept(null, e);
+                return;
+            }
+            String base64Audio = Base64.encodeToString(audioBytes, Base64.NO_WRAP);
+            String jsonBody = "{\"audio\":\"" + base64Audio + "\"}";
+
             var client = getOkHttpClient();
             var request = new Request.Builder()
-                    .url("https://api.cloudflare.com/client/v4/accounts/" + NaConfig.INSTANCE.getTranscribeProviderCfAccountID().String() + "/ai/run/@cf/openai/whisper")
+                    .url("https://api.cloudflare.com/client/v4/accounts/" + NaConfig.INSTANCE.getTranscribeProviderCfAccountID().String() + "/ai/run/@cf/openai/whisper-large-v3-turbo")
                     .header("Authorization", "Bearer " + NaConfig.INSTANCE.getTranscribeProviderCfApiToken().String())
-                    .post(RequestBody.create(new File(audioPath), MediaType.get(video ? "audio/m4a" : "audio/ogg")));
+                    .header("Content-Type", "application/json")
+                    .post(RequestBody.create(jsonBody, MediaType.get("application/json")));
             try (var response = client.newCall(request.build()).execute()) {
                 var body = response.body().string();
                 var whisperResponse = gson.fromJson(body, WhisperResponse.class);
@@ -459,7 +462,6 @@ public class TranscribeHelper {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private static void requestGeminiAi(String path, boolean video, BiConsumer<String, Exception> callback) {
         String apiKey = NaConfig.INSTANCE.getTranscribeProviderGeminiApiKey().String();
         if (TextUtils.isEmpty(apiKey)) {
@@ -546,7 +548,6 @@ public class TranscribeHelper {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private static void requestOpenAiCompatible(String path, boolean video, BiConsumer<String, Exception> callback) {
         String apiBaseUrl = NaConfig.INSTANCE.getTranscribeProviderOpenAiApiBase().String();
         String model = NaConfig.INSTANCE.getTranscribeProviderOpenAiModel().String();
