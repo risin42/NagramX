@@ -10618,6 +10618,9 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
     }
 
     public void updateColors() {
+        if (messageEditText != null) {
+            messageEditText.setHintColor(getThemedColor(Theme.key_chat_messagePanelHint));
+        }
         if (messageSendPreview != null) {
             messageSendPreview.updateColors();
         }
