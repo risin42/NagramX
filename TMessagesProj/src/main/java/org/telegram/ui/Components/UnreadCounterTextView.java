@@ -137,6 +137,13 @@ public class UnreadCounterTextView extends View {
         }
     }
 
+    @Override
+    public void dispatchDrawableHotspotChanged(float x, float y) {
+        if (selectableBackground != null) {
+            selectableBackground.setHotspot(x, y);
+        }
+    }
+
     protected Theme.ResourcesProvider getResourceProvider() {
         return null;
     }
