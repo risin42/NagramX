@@ -47,7 +47,9 @@ public class GroupedIconsView extends FrameLayout {
     public GroupedIconsView(Context context, ChatActivity chatActivity, MessageObject messageObject,
                             boolean allowReply, boolean allowReplyPm,
                             boolean allowEdit, boolean allowDelete, boolean allowForward,
-                            boolean allowCopy, boolean allowCopyPhoto, boolean allowCopyLink, boolean allowCopyLinkPm) {
+                            boolean allowCopy, boolean allowCopyPhoto,
+                            boolean allowCopyLink, boolean allowCopyLinkPm
+    ) {
         super(context);
 
         linearLayout = new LinearLayout(context);
@@ -127,11 +129,7 @@ public class GroupedIconsView extends FrameLayout {
         imageView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_actionBarDefaultSubmenuItemIcon), PorterDuff.Mode.MULTIPLY));
         ScaleStateListAnimator.apply(imageView, .1f, 1.5f);
 
-        var params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-
+        var params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(dp(6), dp(6), dp(6), dp(6));
         imageView.setLayoutParams(params);
 
@@ -150,31 +148,17 @@ public class GroupedIconsView extends FrameLayout {
         }
     }
 
-    public static class OptionConfig {
-        final int iconResId;
-        final int shortPressOptionId;
-        final Integer longPressOptionId;
-        final boolean isEnabled;
-        final boolean isLongClickEnabled;
-
-        public OptionConfig(int iconResId, int shortPressOptionId) {
+    private record OptionConfig(int iconResId, int shortPressOptionId, Integer longPressOptionId, boolean isEnabled, boolean isLongClickEnabled) {
+        private OptionConfig(int iconResId, int shortPressOptionId) {
             this(iconResId, shortPressOptionId, null, true, false);
         }
 
-        public OptionConfig(int iconResId, int shortPressOptionId, boolean isEnabled) {
+        private OptionConfig(int iconResId, int shortPressOptionId, boolean isEnabled) {
             this(iconResId, shortPressOptionId, null, isEnabled, false);
         }
 
-        public OptionConfig(int iconResId, int shortPressOptionId, int longPressOptionId) {
+        private OptionConfig(int iconResId, int shortPressOptionId, int longPressOptionId) {
             this(iconResId, shortPressOptionId, longPressOptionId, true, true);
-        }
-
-        public OptionConfig(int iconResId, int shortPressOptionId, Integer longPressOptionId, boolean isEnabled, boolean isLongClickEnabled) {
-            this.iconResId = iconResId;
-            this.shortPressOptionId = shortPressOptionId;
-            this.longPressOptionId = longPressOptionId;
-            this.isEnabled = isEnabled;
-            this.isLongClickEnabled = isLongClickEnabled;
         }
     }
 }
