@@ -1,7 +1,8 @@
 package com.radolyn.ayugram.utils;
 
-import org.telegram.messenger.BuildVars;
+import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.UserConfig;
@@ -36,6 +37,13 @@ public class AyuGhostUtils {
         return -peer.channel_id;
     }
 
+    public static Long getDialogId(TLRPC.TL_inputEncryptedChat peer) {
+        if (peer == null) {
+            return null;
+        }
+        return (long) DialogObject.getEncryptedChatId(peer.chat_id);
+    }
+
     public static ConnectionsManager getConnectionsManager() {
         return ConnectionsManager.getInstance(UserConfig.selectedAccount);
     }
@@ -68,7 +76,47 @@ public class AyuGhostUtils {
                 if (response instanceof TLRPC.TL_messages_affectedMessages res) {
                     getMessagesController().processNewDifferenceParams(-1, res.pts, -1, res.pts_count);
                 }
-                if (BuildVars.LOGS_ENABLED && internal) FileLog.d("GhostMode: Read-after-send request completed.");
+                if (internal) FileLog.d("GhostMode: Read-after-send request completed.");
+                // Go offline after sending
+                if (NekoConfig.sendOfflinePacketAfterOnline.Bool() && !internal) {
+                    Utilities.globalQueue.postRunnable(() -> performStatusRequest(true), OFFLINE_DELAY_MS);
+                }
+            }
+        });
+    }
+
+    public static void markReadOnServer(MessageObject message, boolean internal) {
+        int messageId = message.getId();
+        long dialogId = message.getDialogId();
+        TLRPC.EncryptedChat encryptedChat = getMessagesController().getEncryptedChat(DialogObject.getEncryptedChatId(dialogId));
+        TLRPC.InputPeer inputPeer = getMessagesController().getInputPeer(message.messageOwner.peer_id);
+        TLObject req;
+        if (inputPeer instanceof TLRPC.TL_inputPeerChannel) {
+            TLRPC.TL_channels_readHistory request = new TLRPC.TL_channels_readHistory();
+            request.channel = MessagesController.getInputChannel(inputPeer);
+            request.max_id = messageId;
+            req = request;
+        } else if (encryptedChat != null) {
+            TLRPC.TL_messages_readEncryptedHistory request = new TLRPC.TL_messages_readEncryptedHistory();
+            request.peer = new TLRPC.TL_inputEncryptedChat();
+            request.peer.chat_id = encryptedChat.id;
+            request.peer.access_hash = encryptedChat.access_hash;
+            request.max_date = message.messageOwner.date != 0 ? message.messageOwner.date : getConnectionsManager().getCurrentTime();
+            req = request;
+        } else {
+            TLRPC.TL_messages_readHistory request = new TLRPC.TL_messages_readHistory();
+            request.peer = inputPeer;
+            request.max_id = messageId;
+            req = request;
+        }
+
+        AyuState.setAllowReadPacket(true, 1);
+        getConnectionsManager().sendRequest(req, (response, error) -> {
+            if (error == null) {
+                if (response instanceof TLRPC.TL_messages_affectedMessages res) {
+                    getMessagesController().processNewDifferenceParams(-1, res.pts, -1, res.pts_count);
+                }
+                if (internal) FileLog.d("GhostMode: Read-after-send request completed.");
                 // Go offline after sending
                 if (NekoConfig.sendOfflinePacketAfterOnline.Bool() && !internal) {
                     Utilities.globalQueue.postRunnable(() -> performStatusRequest(true), OFFLINE_DELAY_MS);
@@ -81,34 +129,40 @@ public class AyuGhostUtils {
         TL_account.updateStatus offlineRequest = new TL_account.updateStatus();
         offlineRequest.offline = offline;
 
-        getConnectionsManager().sendRequest(offlineRequest, (response, error) -> {
-            if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Status request completed.");
-        });
+        getConnectionsManager().sendRequest(offlineRequest, (response, error) -> FileLog.d("GhostMode: Status request completed."));
     }
 
     public static InterceptResult interceptRequest(TLObject object, RequestDelegate onCompleteOrig) {
+        Long dialogId = extractDialogId(object);
+        boolean readExcluded = dialogId != null && AyuGhostPreferences.getGhostModeReadExclusion(dialogId);
+        boolean typingExcluded = dialogId != null && AyuGhostPreferences.getGhostModeTypingExclusion(dialogId);
+
         // Block typing if disabled
         if (!NekoConfig.sendUploadProgress.Bool() && (object instanceof TLRPC.TL_messages_setTyping || object instanceof TLRPC.TL_messages_setEncryptedTyping)) {
-            if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Blocking typing status request.");
-            return InterceptResult.Blocked(onCompleteOrig);
+            if (!typingExcluded) {
+                FileLog.d("GhostMode: Blocking typing status request.");
+                return InterceptResult.Blocked(onCompleteOrig);
+            }
         }
 
         // Block read receipts if disabled
         if (!NekoConfig.sendReadMessagePackets.Bool() && (isReadMessageRequest(object))) {
-            if (!AyuState.getAllowReadPacket()) {
-                if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Blocking read status request and sending fake response.");
+            if (!AyuState.getAllowReadPacket() && !readExcluded) {
+                FileLog.d("GhostMode: Blocking read status request and sending fake response.");
                 sendFakeReadResponse(onCompleteOrig);
                 return InterceptResult.Blocked(onCompleteOrig);
             }
         }
         if (!NekoConfig.sendReadStoriesPackets.Bool() && isReadStoriesRequest(object)) {
-            if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Blocking story read request.");
-            return InterceptResult.Blocked(onCompleteOrig);
+            if (!readExcluded) {
+                FileLog.d("GhostMode: Blocking story read request.");
+                return InterceptResult.Blocked(onCompleteOrig);
+            }
         }
 
         // Force offline if online status sending disabled
         if (!NekoConfig.sendOnlinePackets.Bool() && object instanceof TL_account.updateStatus updateStatus) {
-            if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Forcing offline status in updateStatus request.");
+            FileLog.d("GhostMode: Forcing offline status in updateStatus request.");
             updateStatus.offline = true;
         }
 
@@ -127,6 +181,9 @@ public class AyuGhostUtils {
 
             if (peer != null) {
                 var dialogId = AyuGhostUtils.getDialogId(peer);
+                if (AyuGhostPreferences.getGhostModeReadExclusion(dialogId)) {
+                    return;
+                }
                 getMessagesStorage().getStorageQueue().postRunnable(() ->
                     getMessagesStorage().getDialogMaxMessageId(dialogId, maxId ->
                         markReadOnServer(maxId, peer, true)
@@ -138,18 +195,49 @@ public class AyuGhostUtils {
 
     private static RequestDelegate handleOfflineAfterSend(TLObject object, RequestDelegate onCompleteOrig) {
         if (NekoConfig.sendOfflinePacketAfterOnline.Bool() && isMessageSendRequest(object)) {
-            if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Wrapping callback for offline-after-send.");
+            TLRPC.InputPeer peer = extractPeerFromSendObject(object);
+            if (peer != null && AyuGhostPreferences.getGhostModeTypingExclusion(getDialogId(peer))) {
+                return onCompleteOrig;
+            }
+            FileLog.d("GhostMode: Wrapping callback for offline-after-send.");
 
             return (response, error) -> {
                 if (onCompleteOrig != null) {
                     Utilities.stageQueue.postRunnable(() -> onCompleteOrig.run(response, error));
                 }
 
-                if (BuildVars.LOGS_ENABLED) FileLog.d("GhostMode: Scheduling delayed offline status update.");
+                FileLog.d("GhostMode: Scheduling delayed offline status update.");
                 Utilities.globalQueue.postRunnable(() -> performStatusRequest(true), OFFLINE_DELAY_MS);
             };
         }
         return onCompleteOrig;
+    }
+
+    private static Long extractDialogId(TLObject object) {
+        if (object instanceof TLRPC.TL_messages_setTyping obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_setEncryptedTyping obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_readHistory obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_readEncryptedHistory obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_readDiscussion obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_sendMessage obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_sendMedia obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_messages_sendMultiMedia obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TL_stories.TL_stories_readStories obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TL_stories.TL_stories_incrementStoryViews obj) {
+            return getDialogId(obj.peer);
+        } else if (object instanceof TLRPC.TL_channels_readHistory obj) {
+            return getDialogId(obj.channel);
+        }
+        return null;
     }
 
     private static void sendFakeReadResponse(RequestDelegate onCompleteOrig) {
@@ -197,21 +285,14 @@ public class AyuGhostUtils {
                 object instanceof TLRPC.TL_messages_sendMultiMedia;
     }
 
-    public static class InterceptResult {
-        public final boolean blockRequest;
-        public final RequestDelegate effectiveOnComplete;
-
-        InterceptResult(boolean block, RequestDelegate onComplete) {
-            this.blockRequest = block;
-            this.effectiveOnComplete = onComplete;
-        }
+    public record InterceptResult(boolean blockRequest, RequestDelegate effectiveOnComplete) {
 
         public static InterceptResult Blocked(RequestDelegate originalOnComplete) {
-            return new InterceptResult(true, originalOnComplete);
-        }
+                return new InterceptResult(true, originalOnComplete);
+            }
 
-        public static InterceptResult Proceed(RequestDelegate effectiveOnComplete) {
-            return new InterceptResult(false, effectiveOnComplete);
+            public static InterceptResult Proceed(RequestDelegate effectiveOnComplete) {
+                return new InterceptResult(false, effectiveOnComplete);
+            }
         }
-    }
 }

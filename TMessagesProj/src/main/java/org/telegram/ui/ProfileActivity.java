@@ -351,6 +351,7 @@ import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
 import tw.nekomimi.nekogram.helpers.remote.UpdateHelper;
 import tw.nekomimi.nekogram.menu.forum.CustomForumTabsPopupWrapper;
+import tw.nekomimi.nekogram.menu.ghostmode.GhostModeExclusionPopupWrapper;
 import tw.nekomimi.nekogram.menu.saveDeleted.SaveExclusionPopupWrapper;
 import tw.nekomimi.nekogram.menu.regexfilters.RegexFiltersExclusionPopupWrapper;
 import tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity;
@@ -12622,6 +12623,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         if (currentEncryptedChat == null) {
                             createAutoDeleteItem(context);
                         }
+                        createGhostModeExclusionItem(userId);
                         createSaveExclusionItem(userId);
                         createMessageFilterItem();
                         otherItem.addSubItem(add_shortcut, R.drawable.msg_home, LocaleController.getString(R.string.AddShortcut));
@@ -12659,6 +12661,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     if (currentEncryptedChat == null) {
                         createAutoDeleteItem(context);
                     }
+                    createGhostModeExclusionItem(userId);
                     createSaveExclusionItem(userId);
                     createMessageFilterItem();
                     if (!TextUtils.isEmpty(user.phone)) {
@@ -12688,6 +12691,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             if (topicId == 0 && ChatObject.canChangeChatInfo(chat)) {
                 createAutoDeleteItem(context);
             }
+            createGhostModeExclusionItem(chatId);
             createSaveExclusionItem(chatId);
             createMessageFilterItem();
             if (chat.forum) {
@@ -17169,6 +17173,18 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         if (collectibleHintVisible == null || collectibleHintVisible != visible) {
             collectibleHint.animate().alpha((collectibleHintVisible = visible) ? 1.0f : 0.0f).setInterpolator(CubicBezierInterpolator.EASE_OUT).setDuration(200).start();
         }
+    }
+
+    private void createGhostModeExclusionItem(long chatId) {
+        if (ChatObject.isChannelAndNotMegaGroup(currentChat)) {
+            return;
+        }
+        if (currentEncryptedChat instanceof TLRPC.TL_encryptedChat) {
+            chatId = currentEncryptedChat.id;
+        }
+        var ghostModePopupWrapper = new GhostModeExclusionPopupWrapper(ProfileActivity.this, otherItem.getPopupLayout().getSwipeBack(), chatId, getResourceProvider());
+        otherItem.addSwipeBackItem(R.drawable.ayu_ghost_solar, null, getString(R.string.GhostMode), ghostModePopupWrapper.windowLayout);
+        if (!NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool() && !NaConfig.INSTANCE.getRegexFiltersEnabled().Bool() && !ChatObject.isForum(currentChat)) otherItem.addColoredGap();
     }
 
     private void createSaveExclusionItem(long chatId) {

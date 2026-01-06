@@ -48,6 +48,7 @@ import androidx.annotation.UiThread;
 import androidx.collection.LongSparseArray;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
 
+import com.radolyn.ayugram.utils.AyuGhostPreferences;
 import com.radolyn.ayugram.utils.AyuGhostUtils;
 import com.radolyn.ayugram.utils.AyuState;
 
@@ -3464,7 +3465,9 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
         }
         // --- Ghost Mode ---
         if (req.msg_id != 0 && NekoConfig.markReadAfterSend.Bool() && !NekoConfig.sendReadMessagePackets.Bool()) {
-            AyuGhostUtils.markReadOnServer(req.msg_id, req.peer, false);
+            if (!AyuGhostPreferences.getGhostModeReadExclusion(AyuGhostUtils.getDialogId(req.peer))) {
+                AyuGhostUtils.markReadOnServer(req.msg_id, req.peer, false);
+            }
         }
         // --- Ghost Mode ---
         getConnectionsManager().sendRequest(req, (response, error) -> {
