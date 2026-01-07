@@ -60,6 +60,7 @@ import java.util.TimeZone;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.shamsicalendar.PersianDate;
+import com.radolyn.ayugram.utils.LastSeenHelper;
 
 public class LocaleController {
 
@@ -2984,11 +2985,14 @@ public class LocaleController {
                 if (user.status.expires == -1) {
                     return getString("Invisible", R.string.Invisible);
                 } else if (user.status.expires == -100 || user.status.expires == -1000) {
-                    return getString("Lately", R.string.Lately);
+                    return LastSeenHelper.getFormattedLastSeenOrDefault(user, madeShorter, getString(R.string.Lately));
+                    // return getString("Lately", R.string.Lately);
                 } else if (user.status.expires == -101 || user.status.expires == -1001) {
-                    return getString("WithinAWeek", R.string.WithinAWeek);
+                    return LastSeenHelper.getFormattedLastSeenOrDefault(user, madeShorter, getString(R.string.WithinAWeek));
+                    // return getString("WithinAWeek", R.string.WithinAWeek);
                 } else if (user.status.expires == -102 || user.status.expires == -1002) {
-                    return getString("WithinAMonth", R.string.WithinAMonth);
+                    return LastSeenHelper.getFormattedLastSeenOrDefault(user, madeShorter, getString(R.string.WithinAMonth));
+                    // return getString("WithinAMonth", R.string.WithinAMonth);
                 } else {
                     return formatDateOnline(user.status.expires, madeShorter);
                 }

@@ -16,6 +16,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.database.dao.DeletedMessageDao;
 import com.radolyn.ayugram.database.dao.EditedMessageDao;
+import com.radolyn.ayugram.database.dao.LastSeenDao;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 
 import org.telegram.messenger.AndroidUtilities;
@@ -33,6 +34,7 @@ public class AyuData {
     private static AyuDatabase database;
     private static EditedMessageDao editedMessageDao;
     private static DeletedMessageDao deletedMessageDao;
+    private static LastSeenDao lastSeenDao;
 
     private static final Migration MIGRATION_21_22 = new Migration(21, 22) {
         @Override
@@ -82,6 +84,13 @@ public class AyuData {
         }
     };
 
+    private static final Migration MIGRATION_25_26 = new Migration(25, 26) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS LastSeenEntity (userId INTEGER NOT NULL, lastSeen INTEGER NOT NULL, PRIMARY KEY(userId))");
+        }
+    };
+
     static {
         create();
     }
@@ -90,11 +99,12 @@ public class AyuData {
         database = Room.databaseBuilder(ApplicationLoader.applicationContext, AyuDatabase.class, AyuConstants.AYU_DATABASE)
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigrationOnDowngrade()
-                .addMigrations(MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25)
+                .addMigrations(MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25, MIGRATION_25_26)
                 .build();
 
         editedMessageDao = database.editedMessageDao();
         deletedMessageDao = database.deletedMessageDao();
+        lastSeenDao = database.lastSeenDao();
     }
 
     public static AyuDatabase getDatabase() {
@@ -109,6 +119,10 @@ public class AyuData {
         return deletedMessageDao;
     }
 
+    public static LastSeenDao getLastSeenDao() {
+        return lastSeenDao;
+    }
+
     public static synchronized void clean() {
         if (database != null) {
             try {
@@ -121,6 +135,7 @@ public class AyuData {
         database = null;
         editedMessageDao = null;
         deletedMessageDao = null;
+        lastSeenDao = null;
 
         ApplicationLoader.applicationContext.deleteDatabase(AyuConstants.AYU_DATABASE);
     }

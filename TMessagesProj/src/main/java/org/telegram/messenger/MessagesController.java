@@ -142,6 +142,7 @@ import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.messages.AyuSavePreferences;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.utils.AyuState;
+import com.radolyn.ayugram.utils.LastSeenHelper;
 
 
 public class MessagesController extends BaseController implements NotificationCenter.NotificationCenterDelegate {
@@ -6676,6 +6677,12 @@ public class MessagesController extends BaseController implements NotificationCe
         }
         fromCache = fromCache && user.id / 1000 != 333 && user.id != 777000;
         TLRPC.User oldUser = users.get(user.id);
+        if (NaConfig.INSTANCE.getSaveLocalLastSeen().Bool() && user.id != getUserConfig().getClientUserId() && user.status instanceof TLRPC.TL_userStatusOffline) {
+            int lastSeen = user.status.expires;
+            if (lastSeen > 0) {
+                LastSeenHelper.saveLastSeen(user.id, lastSeen);
+            }
+        }
         if (oldUser == user && !force) {
             return false;
         }
@@ -17095,6 +17102,7 @@ public class MessagesController extends BaseController implements NotificationCe
             }
             if (!updates.out && user != null && user.status != null && user.status.expires <= 0 && Math.abs(getConnectionsManager().getCurrentTime() - updates.date) < 30) {
                 onlinePrivacy.put(user.id, updates.date);
+                LastSeenHelper.saveLastSeen(user.id, updates.date);
                 updateStatus = true;
             }
 
@@ -17710,6 +17718,7 @@ public class MessagesController extends BaseController implements NotificationCe
                             }
                             if (!message.out && a == 1 && user.status != null && user.status.expires <= 0 && Math.abs(getConnectionsManager().getCurrentTime() - message.date) < 30) {
                                 onlinePrivacy.put(userId, message.date);
+                                LastSeenHelper.saveLastSeen(userId, message.date);
                                 interfaceUpdateMask |= UPDATE_MASK_STATUS;
                             }
                         }
@@ -17921,6 +17930,7 @@ public class MessagesController extends BaseController implements NotificationCe
                     TLRPC.User user = getUser(update.peer.user_id);
                     if (user != null && user.status != null && user.status.expires <= 0 && Math.abs(getConnectionsManager().getCurrentTime() - date) < 30) {
                         onlinePrivacy.put(update.peer.user_id, date);
+                        LastSeenHelper.saveLastSeen(update.peer.user_id, date);
                         interfaceUpdateMask |= UPDATE_MASK_STATUS;
                     }
                 }
@@ -18104,6 +18114,7 @@ public class MessagesController extends BaseController implements NotificationCe
                     }
                     if (Math.abs(getConnectionsManager().getCurrentTime() - date) < 30) {
                         onlinePrivacy.put(userId, date);
+                        LastSeenHelper.saveLastSeen(userId, date);
                     }
                 }
             } else if (baseUpdate instanceof TLRPC.TL_updateChatParticipants) {
@@ -18267,6 +18278,7 @@ public class MessagesController extends BaseController implements NotificationCe
                     }
                     if (Math.abs(getConnectionsManager().getCurrentTime() - date) < 30) {
                         onlinePrivacy.put(encryptedChat.user_id, date);
+                        LastSeenHelper.saveLastSeen(encryptedChat.user_id, date);
                     }
                 }
             } else if (baseUpdate instanceof TLRPC.TL_updateEncryptedMessagesRead) {
@@ -18947,6 +18959,12 @@ public class MessagesController extends BaseController implements NotificationCe
                             update.status.expires = -101;
                         } else if (update.status instanceof TLRPC.TL_userStatusLastMonth) {
                             update.status.expires = -102;
+                        }
+                        if (NaConfig.INSTANCE.getSaveLocalLastSeen().Bool() && update.status instanceof TLRPC.TL_userStatusOffline) {
+                            int lastSeen = update.status.expires;
+                            if (lastSeen > 0) {
+                                LastSeenHelper.saveLastSeen(update.user_id, lastSeen);
+                            }
                         }
                         if (currentUser != null) {
                             currentUser.id = update.user_id;

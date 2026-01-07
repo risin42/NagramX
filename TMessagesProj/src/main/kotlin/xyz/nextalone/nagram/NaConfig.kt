@@ -576,6 +576,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val saveLocalLastSeen =
+        addConfig(
+            "SaveLocalLastSeen",
+            ConfigItem.configTypeBool,
+            false
+        )
     val messageSavingSaveMedia =
         addConfig(
             "MessageSavingSaveMedia",

@@ -14,17 +14,22 @@ import androidx.room.RoomDatabase;
 
 import com.radolyn.ayugram.database.dao.DeletedMessageDao;
 import com.radolyn.ayugram.database.dao.EditedMessageDao;
+import com.radolyn.ayugram.database.dao.LastSeenDao;
 import com.radolyn.ayugram.database.entities.DeletedMessage;
 import com.radolyn.ayugram.database.entities.DeletedMessageReaction;
 import com.radolyn.ayugram.database.entities.EditedMessage;
+import com.radolyn.ayugram.database.entities.LastSeenEntity;
 
 @Database(entities = {
         EditedMessage.class,
         DeletedMessage.class,
-        DeletedMessageReaction.class
-}, version = 25)
+        DeletedMessageReaction.class,
+        LastSeenEntity.class
+}, version = 26)
 public abstract class AyuDatabase extends RoomDatabase {
     public abstract EditedMessageDao editedMessageDao();
 
     public abstract DeletedMessageDao deletedMessageDao();
+
+    public abstract LastSeenDao lastSeenDao();
 }
