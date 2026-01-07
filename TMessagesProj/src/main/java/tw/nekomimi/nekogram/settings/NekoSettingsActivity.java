@@ -82,8 +82,8 @@ import tw.nekomimi.nekogram.DatacenterActivity;
 import tw.nekomimi.nekogram.DialogConfig;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
-import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.helpers.CloudSettingsHelper;
+import tw.nekomimi.nekogram.helpers.LocalNameHelper;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
@@ -94,7 +94,6 @@ import tw.nekomimi.nekogram.utils.GsonUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.BookmarksHelper;
-import xyz.nextalone.nagram.NaConfig;
 
 public class NekoSettingsActivity extends BaseFragment {
     public static final int PAGE_TYPE = 0;
@@ -913,7 +912,8 @@ public class NekoSettingsActivity extends BaseFragment {
         } catch (Throwable ignore) {
         }
         String[] preservePrefixes = {
-                ChatNameHelper.chatNameOverridePrefix,
+                LocalNameHelper.chatNameOverridePrefix,
+                LocalNameHelper.userNameOverridePrefix,
                 NekoConfig.channelAliasPrefix,
                 DialogConfig.customForumTabPrefix,
                 BookmarksHelper.KEY_PREFIX
