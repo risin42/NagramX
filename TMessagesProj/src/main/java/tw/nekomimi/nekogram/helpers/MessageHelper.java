@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -48,6 +49,7 @@ import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
+import org.telegram.messenger.SendMessagesHelper;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.ConnectionsManager;
@@ -59,9 +61,11 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.CheckBoxCell;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.AlertsCreator;
+import org.telegram.ui.Components.AnimatedFileDrawable;
 import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.Bulletin;
+import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.ColoredImageSpan;
 import org.telegram.ui.Components.Forum.ForumUtilities;
 import org.telegram.ui.Components.LayoutHelper;
@@ -867,7 +871,7 @@ public class MessageHelper extends BaseController {
         try {
             Context context = ApplicationLoader.applicationContext;
             ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-            android.net.Uri uri = FileProvider.getUriForFile(context, ApplicationLoader.getApplicationId() + ".provider", file);
+            Uri uri = FileProvider.getUriForFile(context, ApplicationLoader.getApplicationId() + ".provider", file);
             ClipData clip = ClipData.newUri(context.getContentResolver(), "label", uri);
             clipboard.setPrimaryClip(clip);
             if (callback != null) callback.run();
@@ -991,5 +995,83 @@ public class MessageHelper extends BaseController {
         long fromId = MessageObject.getFromChatId(message);
         boolean blocked =  isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId);
         return blocked || AyuFilter.isFiltered(new MessageObject(currentAccount, message, false, false), null);
+    }
+
+    public static void copyVideoFrameToClipboard(File videoFile, long positionMs, View bulletinContainer, Theme.ResourcesProvider resourcesProvider, Runnable fallbackAction) {
+        Utilities.globalQueue.postRunnable(() -> {
+            Bitmap bitmap = null;
+            if (videoFile != null && videoFile.exists()) {
+                bitmap = createVideoFrameBitmap(videoFile, positionMs);
+            }
+            if (bitmap == null) {
+                if (fallbackAction != null) {
+                    AndroidUtilities.runOnUIThread(fallbackAction);
+                }
+                return;
+            }
+            saveFrameBitmapToClipboard(bitmap, bulletinContainer, resourcesProvider);
+        });
+    }
+
+    public static Bitmap createVideoFrameBitmap(File videoFile, long positionMs) {
+        Bitmap bitmap = null;
+        AnimatedFileDrawable fileDrawable = null;
+        try {
+            fileDrawable = new AnimatedFileDrawable(videoFile, true, 0, 0, null, null, null, 0, 0, true, null);
+            bitmap = fileDrawable.getFrameAtTime(positionMs, true);
+        } catch (Exception e) {
+            FileLog.e(e);
+        } finally {
+            if (fileDrawable != null) {
+                fileDrawable.recycle();
+            }
+        }
+        if (bitmap == null) {
+            bitmap = SendMessagesHelper.createVideoThumbnailAtTime(videoFile.getAbsolutePath(), positionMs * 1000);
+        }
+        return bitmap;
+    }
+
+    public static void saveFrameBitmapToClipboard(Bitmap bitmap, View bulletinContainer, Theme.ResourcesProvider resourcesProvider) {
+        if (bitmap == null) {
+            return;
+        }
+        Utilities.globalQueue.postRunnable(() -> {
+            File tempFile = null;
+            boolean saved = false;
+            try {
+                File cacheDir = FileLoader.getDirectory(FileLoader.MEDIA_DIR_CACHE);
+                tempFile = new File(cacheDir, "frame_" + System.currentTimeMillis() + ".png");
+                try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                    saved = bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                }
+            } catch (Exception e) {
+                FileLog.e(e);
+            } finally {
+                try {
+                    bitmap.recycle();
+                } catch (Exception ignore) {
+                }
+            }
+            if (!saved) {
+                if (tempFile != null) {
+                    try {
+                        if (!tempFile.delete()) {
+                            tempFile.deleteOnExit();
+                        }
+                    } catch (Exception ignore) {
+                    }
+                }
+                return;
+            }
+            final File finalTempFile = tempFile;
+            AndroidUtilities.runOnUIThread(() -> {
+                Runnable callback = null;
+                if (bulletinContainer instanceof FrameLayout container) {
+                    callback = () -> BulletinFactory.of(container, resourcesProvider).createCopyBulletin(getString(R.string.PhotoCopied)).show();
+                }
+                addFileToClipboard(finalTempFile, callback);
+            });
+        });
     }
 }

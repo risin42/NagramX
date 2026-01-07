@@ -1294,6 +1294,7 @@ public class ChatActivity extends BaseFragment implements
 
     private final static int OPTION_COPY_PHOTO = 150;
     private final static int OPTION_COPY_PHOTO_AS_STICKER = 151;
+    private final static int OPTION_COPY_FRAME = 152;
 
     private final static int[] allowedNotificationsDuringChatListAnimations = new int[]{
             AyuConstants.MESSAGES_DELETED_NOTIFICATION,
@@ -34821,6 +34822,33 @@ public class ChatActivity extends BaseFragment implements
                 });
                 break;
             }
+            case OPTION_COPY_FRAME: {
+                final MessageObject messageObject = selectedObject;
+                BaseCell cell = findMessageCell(messageObject.getId(), true);
+                if (!(cell instanceof ChatMessageCell)) {
+                    break;
+                }
+                AnimatedFileDrawable animation = ((ChatMessageCell) cell).getPhotoImage().getAnimation();
+                if (animation == null || !animation.hasBitmap()) {
+                    break;
+                }
+                final long positionMs = animation.getCurrentProgressMs();
+                final String videoPath = MessageHelper.getPathToMessage(messageObject);
+                final File videoFile = !TextUtils.isEmpty(videoPath) ? new File(videoPath) : null;
+                if (videoFile == null || !videoFile.exists()) {
+                    if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
+                        boolean alreadyDownloading = messageObject.isVideo() && FileLoader.getInstance(messageObject.currentAccount).isLoadingFile(messageObject.getFileName());
+                        BulletinFactory.of(this).createErrorBulletin(getString(alreadyDownloading ? R.string.PleaseStreamDownload : R.string.PleaseDownload), themeDelegate).show();
+                    }
+                    break;
+                }
+                MessageHelper.copyVideoFrameToClipboard(videoFile, positionMs, contentView, themeDelegate, () -> {
+                    if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
+                        BulletinFactory.of(ChatActivity.this).createErrorBulletin(getString(R.string.UnknownError), themeDelegate).show();
+                    }
+                });
+                break;
+            }
             case OPTION_HIDE_SPONSORED_MESSAGE: {
                 hideAds();
                 break;
@@ -46633,6 +46661,17 @@ public class ChatActivity extends BaseFragment implements
                             options.add(OPTION_SHARE);
                             icons.add(R.drawable.msg_shareout);
                         } else if (selectedObject.getDocument() != null && !selectedObject.isVoiceOnce() && !selectedObject.isRoundOnce()) {
+                            if (NaConfig.INSTANCE.getShowCopyFrame().Bool()) {
+                                BaseCell cell = findMessageCell(selectedObject.getId(), true);
+                                if (cell instanceof ChatMessageCell chatMessageCell) {
+                                    AnimatedFileDrawable animation = chatMessageCell.getPhotoImage().getAnimation();
+                                    if (animation != null && animation.hasBitmap()) {
+                                        items.add(getString(R.string.CopyVideoFrame));
+                                        options.add(OPTION_COPY_FRAME);
+                                        icons.add(R.drawable.msg_copy_photo);
+                                    }
+                                }
+                            }
                             if (MessageObject.isNewGifDocument(selectedObject.getDocument())) {
                                 items.add(LocaleController.getString(R.string.SaveToGIFs));
                                 options.add(OPTION_ADD_TO_GIFS);
@@ -46720,6 +46759,17 @@ public class ChatActivity extends BaseFragment implements
                     }
                 } else if (type == MESSAGE_TYPE_IMAGE_OR_VIDEO && !noforwardsOrPaidMedia && !selectedObject.hasRevealedExtendedMedia()) {
                     if (!selectedObject.needDrawBluredPreview() && !selectedObject.isVoiceOnce() && !selectedObject.isRoundOnce()) {
+                        if (NaConfig.INSTANCE.getShowCopyFrame().Bool()) {
+                            BaseCell cell = findMessageCell(selectedObject.getId(), true);
+                            if (cell instanceof ChatMessageCell chatMessageCell) {
+                                AnimatedFileDrawable animation = chatMessageCell.getPhotoImage().getAnimation();
+                                if (animation != null && animation.hasBitmap()) {
+                                    items.add(getString(R.string.CopyVideoFrame));
+                                    options.add(OPTION_COPY_FRAME);
+                                    icons.add(R.drawable.msg_copy_photo);
+                                }
+                            }
+                        }
                         items.add(LocaleController.getString(R.string.SaveToGallery));
                         options.add(OPTION_SAVE_TO_GALLERY2);
                         icons.add(R.drawable.msg_gallery);
