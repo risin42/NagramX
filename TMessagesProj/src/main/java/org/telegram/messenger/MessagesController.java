@@ -131,8 +131,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.helpers.ChatNameHelper;
 import tw.nekomimi.nekogram.helpers.ChatsHelper;
+import tw.nekomimi.nekogram.helpers.LocalNameHelper;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import xyz.nextalone.nagram.NaConfig;
@@ -208,7 +208,8 @@ public class MessagesController extends BaseController implements NotificationCe
     public long giveawayBoostsPerPremium = 4;
     public long boostsPerSentGift = 3;
 
-    public static ConcurrentHashMap<Long, String> overrideNameCache = new ConcurrentHashMap<>(); // custom chat name
+    public static ConcurrentHashMap<Long, String> chatOverrideNameCache = new ConcurrentHashMap<>(); // custom chat name
+    public static ConcurrentHashMap<Long, String> userOverrideNameCache = new ConcurrentHashMap<>(); // custom user name
 
     public static TLRPC.Peer getPeerFromInputPeer(TLRPC.InputPeer peer) {
         if (peer.chat_id != 0) {
@@ -6701,6 +6702,22 @@ public class MessagesController extends BaseController implements NotificationCe
             }
         }
         updateEmojiStatusUntilUpdate(user.id, user.emoji_status);
+
+        // user name override start
+        String overrideName = userOverrideNameCache.computeIfAbsent(user.id, k -> {
+            String fetchedName = LocalNameHelper.getUserNameOverride(k);
+            return (fetchedName != null) ? fetchedName : "";
+        });
+        if (!overrideName.isEmpty()) {
+            user.first_name = overrideName;
+            user.last_name = "";
+            if (oldUser != null) {
+                oldUser.first_name = overrideName;
+                oldUser.last_name = "";
+            }
+        }
+        // user name override end
+
         if (user.min) {
             if (oldUser != null) {
                 if (!fromCache) {
@@ -6832,17 +6849,20 @@ public class MessagesController extends BaseController implements NotificationCe
         }
         updateEmojiStatusUntilUpdate(-chat.id, chat.emoji_status);
 
-        // --- NagramX Start ---
+        // chat name override start
         if (ChatObject.isChannel(chat)) {
-            String name = overrideNameCache.computeIfAbsent(chat.id, k -> {
-                String fetchedName = ChatNameHelper.getChatNameOverride(k);
+            String overrideName = chatOverrideNameCache.computeIfAbsent(chat.id, k -> {
+                String fetchedName = LocalNameHelper.getChatNameOverride(k);
                 return (fetchedName != null) ? fetchedName : "";
             });
-            if (!name.isEmpty()) {
-                chat.title = name;
+            if (!overrideName.isEmpty()) {
+                chat.title = overrideName;
+                if (oldChat != null) {
+                    oldChat.title = overrideName;
+                }
             }
         }
-        // --- NagramX End ---
+        // chat name override end
 
         if (chat.min) {
             if (oldChat != null) {

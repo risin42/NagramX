@@ -117,11 +117,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.helpers.ChatNameHelper;
+import tw.nekomimi.nekogram.helpers.LocalNameHelper;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 
 public class ChatEditActivity extends BaseFragment implements ImageUpdater.ImageUpdaterDelegate, NotificationCenter.NotificationCenterDelegate {
 
@@ -461,7 +461,7 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         updateFields(true, true);
         imageUpdater.onResume();
 
-        if (currentUser == null && currentChat != null && !ChatObject.canChangeChatInfo(currentChat)) {
+        if (currentUser != null && currentUser.bot && !currentUser.bot_can_edit || currentUser == null && currentChat != null && !ChatObject.canChangeChatInfo(currentChat)) {
             AndroidUtilities.runOnUIThread(() -> {
                 if (getParentActivity() == null) {
                     return;
@@ -537,7 +537,11 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
                 } else if (id == done_button) {
                     processDone();
                 } else if (id == fake_done_button) {
-                    setChatNameOverride();
+                    if (currentUser != null) {
+                        setBotNameOverride();
+                    } else {
+                        setChatNameOverride();
+                    }
                 }
             }
         });
@@ -703,7 +707,7 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         };
         avatarImage.setRoundRadius(forum ? dp(16) : dp(32));
 
-        if (currentUser != null || ChatObject.canChangeChatInfo(currentChat)) {
+        if (canEditBotInfo() || currentUser == null && ChatObject.canChangeChatInfo(currentChat)) {
             frameLayout.addView(avatarImage, LayoutHelper.createFrame(64, 64, Gravity.TOP | (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT), LocaleController.isRTL ? 0 : 16, 12, LocaleController.isRTL ? 16 : 0, 8));
 
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -771,7 +775,8 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         } else {
             nameTextView.setHint(getString("GroupName", R.string.GroupName));
         }
-        nameTextView.setEnabled(currentChat != null || ChatObject.canChangeChatInfo(currentChat));
+        // nameTextView.setEnabled(currentChat != null || ChatObject.canChangeChatInfo(currentChat));
+        nameTextView.setEnabled(true);
         nameTextView.setFocusable(nameTextView.isEnabled());
         nameTextView.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -802,7 +807,7 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         settingsContainer.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
         linearLayout1.addView(settingsContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
-        if (currentUser != null || ChatObject.canChangeChatInfo(currentChat)) {
+        if (canEditBotInfo() || currentUser == null && ChatObject.canChangeChatInfo(currentChat)) {
             setAvatarCell = new TextCell(context) {
                 @Override
                 protected void onDraw(Canvas canvas) {
@@ -867,7 +872,7 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         descriptionTextView.setGravity(LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT);
         descriptionTextView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
         descriptionTextView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        descriptionTextView.setEnabled(currentUser != null || ChatObject.canChangeChatInfo(currentChat));
+        descriptionTextView.setEnabled(currentUser != null ? canEditBotInfo() : ChatObject.canChangeChatInfo(currentChat));
         descriptionTextView.setFocusable(descriptionTextView.isEnabled());
         inputFilters = new InputFilter[1];
         inputFilters[0] = new InputFilter.LengthFilter(255);
@@ -1218,10 +1223,10 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         }
 
         ActionBarMenu menu = actionBar.createMenu();
-        if (currentUser != null || ChatObject.canChangeChatInfo(currentChat) || /*signCell != null ||*/ historyCell != null) {
+        if (canEditBotInfo() || currentUser == null && (ChatObject.canChangeChatInfo(currentChat) || /*signCell != null ||*/ historyCell != null)) {
             doneButton = menu.addItemWithWidth(done_button, R.drawable.ic_ab_done, dp(56));
             doneButton.setContentDescription(getString("Done", R.string.Done));
-        } else if (currentUser == null && !ChatObject.canChangeChatInfo(currentChat)) {
+        } else {
             menu.addItemWithWidth(fake_done_button, R.drawable.ic_ab_done, dp(56));
         }
 
@@ -1952,10 +1957,16 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
             if (nameTextView != null && !currentUser.first_name.equals(nameTextView.getText().toString()) ||
                     descriptionTextView != null && !about.equals(descriptionTextView.getText().toString())) {
                 showDialog(new AlertDialog.Builder(getParentActivity())
-                        .setTitle(getString("UserRestrictionsApplyChanges", R.string.UserRestrictionsApplyChanges))
+                        .setTitle(getString(R.string.UserRestrictionsApplyChanges))
                         .setMessage(getString(R.string.BotSettingsChangedAlert))
-                        .setPositiveButton(getString("ApplyTheme", R.string.ApplyTheme), (dialogInterface, i) -> processDone())
-                        .setNegativeButton(getString("PassportDiscard", R.string.PassportDiscard), (dialog, which) -> finishFragment())
+                        .setPositiveButton(getString(R.string.ApplyTheme), (dialogInterface, i) -> {
+                            if (canEditBotInfo()) {
+                                processDone();
+                            } else {
+                                setBotNameOverride();
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.PassportDiscard), (dialog, which) -> finishFragment())
                         .create());
                 return false;
             }
@@ -2726,28 +2737,74 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         return themeDescriptions;
     }
 
-    // NagramX: custom chat name
-    private void setChatNameOverride() {
-        if (currentChat != null && nameTextView != null) {
-            String nameText = nameTextView.getText().toString().trim();
-            if (!currentChat.title.equals(nameText)) {
-                if (TextUtils.isEmpty(nameText)) {
-                    ChatNameHelper.clearChatNameOverride(currentChat.id);
-                    getMessagesController().loadFullChat(currentChat.id, 0, true);
-                } else {
-                    ChatNameHelper.setChatNameOverride(currentChat.id, nameText);
-                    currentChat.title = nameText;
-                }
-            }
-            AndroidUtilities.runOnUIThread(() -> {
-                getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_CHAT_NAME);
-                getNotificationCenter().postNotificationName(NotificationCenter.dialogFiltersUpdated);
-                getNotificationCenter().postNotificationName(NotificationCenter.dialogsNeedReload);
-            });
-            finishFragment();
-            try {
-                if (!NekoConfig.disableVibration.Bool()) Objects.requireNonNull(LaunchActivity.getLastFragment()).getFragmentView().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-            } catch (Exception ignored) {}
-        }
+    // local name override start
+    private boolean canEditBotInfo() {
+        return currentUser != null && currentUser.bot && currentUser.bot_can_edit;
     }
+
+    private void setBotNameOverride() {
+        if (currentUser == null || nameTextView == null) {
+            return;
+        }
+        String existingOverride = LocalNameHelper.getUserNameOverride(userId);
+        String newName = nameTextView.getText().toString().trim();
+        if (existingOverride != null) {
+            if (newName.equals(existingOverride)) {
+                finishFragment();
+                return;
+            }
+            if (newName.isEmpty()) {
+                LocalNameHelper.clearUserNameOverride(userId);
+                getMessagesController().loadFullUser(currentUser, 0, true);
+                AndroidUtilities.runOnUIThread(() -> getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_NAME), 200);
+                finishFragment();
+                return;
+            }
+        } else {
+            if (newName.isEmpty() || newName.equals(currentUser.first_name)) {
+                finishFragment();
+                return;
+            }
+        }
+        LocalNameHelper.setUserNameOverride(userId, newName);
+        currentUser.first_name = newName;
+        currentUser.last_name = "";
+        getMessagesController().putUser(currentUser, false);
+        AndroidUtilities.runOnUIThread(() -> getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_NAME), 200);
+        AndroidUtil.performHapticFeedback();
+        finishFragment();
+    }
+
+    private void setChatNameOverride() {
+        if (currentChat == null || nameTextView == null) {
+            return;
+        }
+        String existingOverride = LocalNameHelper.getChatNameOverride(currentChat.id);
+        String newName = nameTextView.getText().toString().trim();
+        if (existingOverride != null) {
+            if (newName.equals(existingOverride)) {
+                finishFragment();
+                return;
+            }
+            if (newName.isEmpty()) {
+                LocalNameHelper.clearChatNameOverride(currentChat.id);
+                getMessagesController().loadFullChat(currentChat.id, 0, true);
+                AndroidUtilities.runOnUIThread(() -> getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_CHAT_NAME), 200);
+                finishFragment();
+                return;
+            }
+        } else {
+            if (newName.isEmpty() || newName.equals(currentChat.title)) {
+                finishFragment();
+                return;
+            }
+        }
+        LocalNameHelper.setChatNameOverride(currentChat.id, newName);
+        currentChat.title = newName;
+        getMessagesController().putChat(currentChat, false);
+        AndroidUtilities.runOnUIThread(() -> getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_CHAT_NAME), 200);
+        AndroidUtil.performHapticFeedback();
+        finishFragment();
+    }
+    // local name override end
 }

@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,6 +33,7 @@ import org.telegram.ui.LaunchActivity;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -244,5 +246,19 @@ public class AndroidUtil {
         }
         String mimeType = message.type == MessageObject.TYPE_FILE || message.type == MessageObject.TYPE_TEXT ? message.getMimeType() : null;
         return AndroidUtilities.openForView(f, message.getFileName(), mimeType, activity, resourcesProvider, false);
+    }
+
+    public static void performHapticFeedback() {
+        if (!NekoConfig.disableVibration.Bool()) {
+            try {
+                Optional.ofNullable(LaunchActivity.getSafeLastFragment())
+                        .ifPresent(fragment ->
+                                fragment.getFragmentView()
+                                        .performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                                                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING)
+                        );
+            } catch (Exception ignored) {
+            }
+        }
     }
 }

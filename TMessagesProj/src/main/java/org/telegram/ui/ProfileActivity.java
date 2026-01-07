@@ -336,6 +336,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -346,6 +347,7 @@ import java.util.zip.ZipOutputStream;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.helpers.AyuFilter;
+import tw.nekomimi.nekogram.helpers.LocalNameHelper;
 import tw.nekomimi.nekogram.helpers.ProfileDateHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
@@ -366,7 +368,6 @@ import tw.nekomimi.nekogram.ui.RegexChatFiltersListActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
-import tw.nekomimi.nekogram.utils.LangsKt;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
 import xyz.nextalone.nagram.NaConfig;
@@ -2669,6 +2670,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 } else if (id == report) {
                     ReportBottomSheet.openChat(ProfileActivity.this, getDialogId());
                 } else if (id == edit_channel) {
+                    if (userId != 0 && chatId == 0 && !isBot && getContactsController().contactsDict.get(userId) == null) {
+                        setUserAlias();
+                        return;
+                    }
                     if (isTopic) {
                         Bundle args = new Bundle();
                         args.putLong("chat_id", chatId);
@@ -8116,6 +8121,78 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         editText.setSelection(0, editText.getText().length());
     }
 
+    private void setUserAlias() {
+        TLRPC.User user = getMessagesController().getUser(userId);
+        if (user == null) {
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setTitle(getString(R.string.SetLocalName));
+        final EditTextBoldCursor editText = new EditTextBoldCursor(getParentActivity()) {
+            @Override
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(dp(64), MeasureSpec.EXACTLY));
+            }
+        };
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        editText.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
+        editText.setHintText(getString(R.string.Name));
+        String existingOverride = LocalNameHelper.getUserNameOverride(userId);
+        editText.setText(Objects.requireNonNullElseGet(existingOverride, () -> UserObject.getUserName(user)));
+        editText.setHeaderHintColor(getThemedColor(Theme.key_windowBackgroundWhiteBlueHeader));
+        editText.setSingleLine(true);
+        editText.setFocusable(true);
+        editText.setTransformHintToHeader(true);
+        editText.setLineColors(getThemedColor(Theme.key_windowBackgroundWhiteInputField), getThemedColor(Theme.key_windowBackgroundWhiteInputFieldActivated), getThemedColor(Theme.key_windowBackgroundWhiteRedText3));
+        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        editText.setBackground(null);
+        editText.requestFocus();
+        editText.setPadding(0, 0, 0, 0);
+        builder.setView(editText);
+        builder.setPositiveButton(getString(R.string.OK),
+                (dialogInterface, i) -> {
+                    String newName = editText.getText().toString().trim();
+                    if (existingOverride != null) {
+                        if (newName.equals(existingOverride)) {
+                            return;
+                        }
+                        if (newName.isEmpty()) {
+                            LocalNameHelper.clearUserNameOverride(userId);
+                            getMessagesController().loadFullUser(user, 0, true);
+                        } else {
+                            LocalNameHelper.setUserNameOverride(userId, newName);
+                            user.first_name = newName;
+                            user.last_name = "";
+                        }
+                    } else {
+                        if (newName.isEmpty() || newName.equals(UserObject.getUserName(user))) {
+                            return;
+                        }
+                        LocalNameHelper.setUserNameOverride(userId, newName);
+                        user.first_name = newName;
+                        user.last_name = "";
+                    }
+                    updateProfileData(true);
+                    getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_NAME);
+                    AndroidUtil.performHapticFeedback();
+                });
+        builder.setNegativeButton(getString(R.string.Cancel), null);
+        builder.show().setOnShowListener(dialog -> {
+            editText.requestFocus();
+            AndroidUtilities.showKeyboard(editText);
+        });
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) editText.getLayoutParams();
+        if (layoutParams != null) {
+            if (layoutParams instanceof FrameLayout.LayoutParams lp) {
+                lp.gravity = Gravity.CENTER_HORIZONTAL;
+            }
+            layoutParams.rightMargin = layoutParams.leftMargin = dp(24);
+            layoutParams.height = dp(36);
+            editText.setLayoutParams(layoutParams);
+        }
+        editText.setSelection(0, editText.getText().length());
+    }
+
     private void getChannelParticipants(boolean reload) {
         if (loadingUsers || participantsMap == null || chatInfo == null) {
             return;
@@ -12605,9 +12682,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 selfUser = true;
             } else {
-                if (user.bot && user.bot_can_edit) {
+                /*if (user.bot && user.bot_can_edit) {
                     editItemVisible = true;
-                }
+                }*/
+                editItemVisible = getContactsController().contactsDict.get(userId) == null;
 
                 if (userInfo != null && userInfo.phone_calls_available) {
                     callItemVisible = true;
