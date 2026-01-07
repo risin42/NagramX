@@ -301,4 +301,6 @@
     <string name="DeviceAccount">Устройство</string>
     <string name="ApiKeyNotSet">Ключ API не настроен.</string>
     <string name="SaveLocalLastSeen">Сохранять дату последнего посещения</string>
+    <string name="CopyVideoFrame">Копировать кадр</string>
+    <string name="SetLocalName">Установить локальное имя</string>
 </resources>

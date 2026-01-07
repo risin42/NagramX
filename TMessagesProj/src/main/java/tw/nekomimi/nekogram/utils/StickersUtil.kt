@@ -4,8 +4,10 @@ import com.google.gson.JsonObject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.telegram.messenger.AndroidUtilities
+import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.MediaDataController
 import org.telegram.messenger.NotificationCenter
+import org.telegram.messenger.R
 import org.telegram.tgnet.ConnectionsManager
 import org.telegram.tgnet.TLRPC.StickerSet
 import org.telegram.tgnet.TLRPC.StickerSetCovered
@@ -71,7 +73,7 @@ object StickersUtil {
 
         loadStickers()
 
-        stickerObj.getAsJsonObject("stickerSets")?.also {
+        stickerObj.getAsJsonObject("stickerSets")?.also { it ->
 
             val stickerSets = LinkedList(it.entrySet().map {
 
@@ -109,7 +111,7 @@ object StickersUtil {
 
                         f.mediaDataController.loadStickers(MediaDataController.TYPE_IMAGE, false, true)
 
-                        progress.updateStatus("Installed: ${stickerSetObj.key}")
+                        progress.updateStatus(getString(R.string.InstalledEmojiSet) + ": ${stickerSetObj.key}")
 
                     } else if (response is TL_messages_stickerSetInstallResultArchive) {
 
@@ -121,11 +123,11 @@ object StickersUtil {
 
                         }
 
-                        progress.updateStatus("Archived: ${stickerSetObj.key}")
+                        progress.updateStatus(getString(R.string.FilterArchived) + ": ${stickerSetObj.key}")
 
                     } else if (error != null) {
 
-                        progress.updateStatus("Error ${error.code}: ${error.text}")
+                        progress.updateStatus(getString(R.string.ErrorOccurred) + ": ${error.code}: ${error.text}")
 
                     }
 
@@ -139,7 +141,7 @@ object StickersUtil {
 
         }
 
-        stickerObj.getAsJsonObject("archivedStickers")?.also {
+        stickerObj.getAsJsonObject("archivedStickers")?.also { it ->
 
             val stickerSets = LinkedList(it.entrySet().map {
 
@@ -184,11 +186,11 @@ object StickersUtil {
 
                         }
 
-                        progress.updateStatus("Archived: ${stickerSetObj.key}")
+                        progress.updateStatus(getString(R.string.FilterArchived) + ": ${stickerSetObj.key}")
 
                     } else if (error != null) {
 
-                        progress.updateStatus("Error ${error.code}: ${error.text}")
+                        progress.updateStatus(getString(R.string.ErrorOccurred) + ": ${error.code}: ${error.text}")
 
                     }
 

@@ -588,7 +588,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
             showError("Not a valid sticker backup file.", exitOnFail);
             return;
         } else if (file.length() > 3 * 1024 * 1024L) {
-            showError("File too large.", exitOnFail);
+            showError(getString(R.string.ImportFileTooLarge), exitOnFail);
             return;
         }
 
