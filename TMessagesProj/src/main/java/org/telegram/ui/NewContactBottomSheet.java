@@ -1421,14 +1421,14 @@ public class NewContactBottomSheet extends BottomSheet implements AdapterView.On
             }
             // Fallback to account name which should have slot info
             return accountName != null && !accountName.isEmpty() ?
-                    accountName : LocaleController.getString(R.string.SIMCard);
+                    accountName : getString(R.string.SIMCard);
         }
 
         // For local/device account
         if (accountType.equals("com.android.localphone") ||
                 accountName == null || accountName.isEmpty() ||
                 accountName.equals("Device")) {
-            return LocaleController.getString(R.string.DeviceAccount);
+            return getString(R.string.DeviceAccount);
         }
 
         // For other accounts (Exchange, Office365, etc.), use email/account name
