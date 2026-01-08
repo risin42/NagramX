@@ -108,7 +108,6 @@
     <string name="SaveToDownloadCount_many">%1$d dosya indirilenlere kaydediliyor</string>
     <string name="SaveToDownloadCount_other">%1$d dosya indirilenlere kaydediliyor</string>
     <string name="disableNotificationBubbles">Bildirim Baloncuklarını Devre Dışı Bırak</string>
-    <string name="ReactionsDisabled">Devre Dışı</string>
     <string name="customSavePath">Özel Depolama Yolu</string>
     <string name="customSavePathHint">Doğrudan kaydetmek için boş bırakın</string>
     <string name="channelLabel">kanal</string>

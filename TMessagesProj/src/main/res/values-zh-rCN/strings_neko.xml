@@ -108,7 +108,6 @@
     <string name="SaveToDownloadCount_many">正在保存%1$d个文件到下载</string>
     <string name="SaveToDownloadCount_other">正在保存%1$d个文件到下载</string>
     <string name="disableNotificationBubbles">禁用通知气泡</string>
-    <string name="ReactionsDisabled">禁用菜单回应</string>
     <string name="customSavePath">自定义存储路径</string>
     <string name="customSavePathHint">留空以直接保存</string>
     <string name="channelLabel">频道</string>
@@ -266,7 +265,7 @@
     <string name="rememberAllBackMessages">记住所有已点击的回复</string>
     <string name="DisableInstantCamera">禁用相机即时预览</string>
     <string name="showSeconds">以秒为单位显示时间戳</string>
-    <string name="Name">输入别名</string>
+    <string name="Name">名称</string>
     <string name="channelAlias">频道别名</string>
     <string name="ChannelAliasDetails">以自定义名称标记以特定频道身份发言的用户。启用后在对应频道资料页的菜单中设置别名。</string>
     <string name="setChannelAliasName">标记别名</string>
