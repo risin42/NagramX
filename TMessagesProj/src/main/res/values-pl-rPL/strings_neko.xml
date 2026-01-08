@@ -108,7 +108,6 @@
     <string name="SaveToDownloadCount_many">Zapisywanie %1$d plików do pobrania</string>
     <string name="SaveToDownloadCount_other">Zapisywanie %1$d plików do pobrania</string>
     <string name="disableNotificationBubbles">Wyłącz dymki powiadomień</string>
-    <string name="ReactionsDisabled">Wyłączyć</string>
     <string name="customSavePath">Niestandardowa ścieżka do przechowywania</string>
     <string name="customSavePathHint">Pozostaw puste, aby zapisać bezpośrednio</string>
     <string name="channelLabel">kanał</string>

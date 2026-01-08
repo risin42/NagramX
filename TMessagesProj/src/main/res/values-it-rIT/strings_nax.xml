@@ -305,4 +305,6 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="DeviceAccount">Dispositivo</string>
     <string name="ApiKeyNotSet">La chiave API non è configurata.</string>
     <string name="SaveLocalLastSeen">Salva data dell\'ultimo accesso</string>
+    <string name="CopyVideoFrame">Copia Frame</string>
+    <string name="SetLocalName">Imposta Nome Locale</string>
 </resources>

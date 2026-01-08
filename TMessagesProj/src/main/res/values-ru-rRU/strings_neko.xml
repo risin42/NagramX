@@ -108,7 +108,6 @@
     <string name="SaveToDownloadCount_many">Сохранение %1$d файлов для загрузки</string>
     <string name="SaveToDownloadCount_other">Сохранение %1$d файлов для загрузки</string>
     <string name="disableNotificationBubbles">Отключить всплывающие уведомления</string>
-    <string name="ReactionsDisabled">Отключить</string>
     <string name="customSavePath">Путь хранения загрузок</string>
     <string name="customSavePathHint">Оставьте пустым, чтобы сохранять напрямую в «Загрузки»</string>
     <string name="channelLabel">канал</string>

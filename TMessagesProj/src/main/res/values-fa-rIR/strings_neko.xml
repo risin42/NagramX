@@ -108,7 +108,6 @@
     <string name="SaveToDownloadCount_many">در حال ذخیره %1$d فایل در دانلودها</string>
     <string name="SaveToDownloadCount_other">در حال ذخیره %1$d فایل در دانلودها</string>
     <string name="disableNotificationBubbles">غیرفعال کردن حباب‌های اعلان</string>
-    <string name="ReactionsDisabled">غیرفعال</string>
     <string name="customSavePath">مسیر ذخیره‌سازی سفارشی</string>
     <string name="customSavePathHint">برای ذخیره مستقیم، خالی بگذارید</string>
     <string name="channelLabel">کانال</string>

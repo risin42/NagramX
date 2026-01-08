@@ -134,6 +134,8 @@
     <string name="MarkReadAfterSendNotice">Automatycznie odczytuje wiadomość, gdy wysyłasz nową lub klikasz reakcję.</string>
     <string name="SendWithoutSoundRowNotice">Automatyczne wysyłanie wiadomości bez dźwięku.</string>
     <string name="GhostReadMessage">Czytaj wiadomość w trybie duch</string>
+    <string name="GhostModeExcludeRead">Wyklucz czytanie</string>
+    <string name="GhostModeExcludeTyping">Wyklucz pisanie</string>
     <string name="SendWithSound">Wyślij z dźwiękiem</string>
     <string name="PerformanceClass">Klasa wydajności urządzenia</string>
     <string name="PerformanceClassHigh">Wysoki</string>
@@ -297,4 +299,8 @@
     <string name="PhoneOnTelegram">Ten numer telefonu jest na Telegramie.</string>
     <string name="SIMCard">Karta SIM</string>
     <string name="DeviceAccount">Urządzenie</string>
+    <string name="ApiKeyNotSet">Klucz API nie jest skonfigurowany.</string>
+    <string name="SaveLocalLastSeen">Zapisz datę ostatniego widzenia</string>
+    <string name="CopyVideoFrame">Kopiuj ramkę</string>
+    <string name="SetLocalName">Ustaw nazwę lokalną</string>
 </resources>

@@ -108,7 +108,6 @@
     <string name="SaveToDownloadCount_many">Guardando %1$d archivos en descargas</string>
     <string name="SaveToDownloadCount_other">Guardando %1$d archivos en descargas</string>
     <string name="disableNotificationBubbles">Desactivar Burbujas de Notificación</string>
-    <string name="ReactionsDisabled">Deshabilitar</string>
     <string name="customSavePath">Ruta de almacenamiento personalizada</string>
     <string name="customSavePathHint">Dejar en blanco para guardar directamente</string>
     <string name="channelLabel">canal</string>

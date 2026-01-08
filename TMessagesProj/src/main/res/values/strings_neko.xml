@@ -108,7 +108,6 @@
     <string name="SaveToDownloadCount_many">Saving %1$d files to downloads</string>
     <string name="SaveToDownloadCount_other">Saving %1$d files to downloads</string>
     <string name="disableNotificationBubbles">Disable Notification Bubbles</string>
-    <string name="ReactionsDisabled">Disable</string>
     <string name="customSavePath">Custom Storage Path</string>
     <string name="customSavePathHint">Leave blank to save directly</string>
     <string name="channelLabel">channel</string>
