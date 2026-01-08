@@ -11627,9 +11627,10 @@ public class ChatActivity extends BaseFragment implements
                     text = ChatObject.isChannel(currentChat) && !currentChat.megagroup ? LocaleController.getString(R.string.ActionUserInvitedToChannel) : LocaleController.getString(R.string.ActionUserInvitedToGroup);
                     text = MessageObject.replaceWithLink(text, "un1", user);
                     onClickListener = (v) -> {
-                        Bundle args = new Bundle();
+                        /*Bundle args = new Bundle();
                         args.putLong("user_id", chatInviterId);
-                        presentFragment(new ProfileActivity(args));
+                        presentFragment(new ProfileActivity(args));*/
+                        openUserProfile(chatInviterId);
                     };
                 }
             } else {
@@ -32100,12 +32101,13 @@ public class ChatActivity extends BaseFragment implements
                         @Override
                         protected void openUser(long userId) {
                             closeMenu(true);
-                            Bundle args = new Bundle();
+                            /*Bundle args = new Bundle();
                             args.putLong("user_id", userId);
                             if (userId == getUserConfig().getClientUserId()) {
                                 args.putBoolean("my_profile", true);
                             }
-                            presentFragment(new ProfileActivity(args));
+                            presentFragment(new ProfileActivity(args));*/
+                            openUserProfile(userId);
                         }
                     };
                     final FrameLayout messageSeenLayout = new FrameLayout(contentView.getContext());
@@ -40183,6 +40185,7 @@ public class ChatActivity extends BaseFragment implements
                 Bundle args = new Bundle();
                 args.putLong("user_id", user.id);
                 args.putBoolean("expandPhoto", expandPhoto);
+                ChatsHelper.getInstance(currentAccount).updateLastSeenFromLoadedMessages(user.id, messages, chatAdapter);
                 ProfileActivity fragment = new ProfileActivity(args);
                 fragment.setPlayProfileAnimation(currentUser != null && currentUser.id == user.id ? 1 : 0);
                 AndroidUtilities.setAdjustResizeToNothing(getParentActivity(), classGuid);
@@ -42185,6 +42188,7 @@ public class ChatActivity extends BaseFragment implements
             if (currentEncryptedChat != null && uid == currentUser.id) {
                 args.putLong("dialog_id", dialog_id);
             }
+            ChatsHelper.getInstance(currentAccount).updateLastSeenFromLoadedMessages(uid, messages, chatAdapter);
             ProfileActivity fragment = new ProfileActivity(args);
             fragment.setPlayProfileAnimation(currentUser != null && currentUser.id == uid ? 1 : 0);
             presentFragment(fragment);
