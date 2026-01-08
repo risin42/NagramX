@@ -274,7 +274,7 @@ public class BookmarkManagerActivity extends BaseFragment {
         if (ctx == null) {
             return;
         }
-        AlertUtil.showConfirm(ctx, getString(R.string.ClearAllBookmarks), null, R.drawable.msg_delete, getString(R.string.ClearAllBookmarks), true, this::clearAllBookmarksConfirmed);
+        AlertUtil.showConfirm(ctx, getString(R.string.ClearAllBookmarks), null, R.drawable.msg_delete, getString(R.string.Clear), true, this::clearAllBookmarksConfirmed);
     }
 
     private void clearAllBookmarksConfirmed() {

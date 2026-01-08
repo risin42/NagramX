@@ -231,6 +231,10 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
             }
             if (red) {
                 setColors(key_dialogTextRed, key_dialogTextRed)
+                background = Theme.getSelectorDrawable(
+                    Theme.multAlpha(Theme.getColor(Theme.key_text_RedRegular), .12f),
+                    false
+                )
             }
             this@BottomBuilder.rootView.addView(this, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, rtl))
         }
