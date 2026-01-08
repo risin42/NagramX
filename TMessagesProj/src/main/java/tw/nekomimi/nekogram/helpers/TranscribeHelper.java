@@ -1,5 +1,6 @@
 package tw.nekomimi.nekogram.helpers;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.content.Context;
@@ -93,7 +94,7 @@ public class TranscribeHelper {
         var editText = new EditTextBoldCursor(context) {
             @Override
             protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(64), View.MeasureSpec.EXACTLY));
+                super.onMeasure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(dp(64), View.MeasureSpec.EXACTLY));
             }
         };
         editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
@@ -560,7 +561,7 @@ public class TranscribeHelper {
         }
 
         final String finalPrompt = TextUtils.isEmpty(customPrompt) ? OPENAI_COMPATIBLE_DEFAULT_PROMPT : customPrompt;
-        final String endpointUrl = apiBaseUrl.endsWith("/") ? apiBaseUrl + "chat/completions" : apiBaseUrl + "/chat/completions";
+        final String endpointUrl = apiBaseUrl.trim().replaceAll("(/chat/completions)?/*$", "") + "/chat/completions";
 
         executorService.submit(() -> {
             String audioPathToUse;
