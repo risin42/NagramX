@@ -3303,6 +3303,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     }
                     showSearch(false, false, true);
                 }
+                updateFilterTabs(false, true);
                 updateProxyButton(false, false);
                 updatePasscodeButton();
                 if (menuDrawable != null) {
