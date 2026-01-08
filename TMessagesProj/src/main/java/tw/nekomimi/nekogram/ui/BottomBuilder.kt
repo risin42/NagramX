@@ -17,18 +17,21 @@ import org.telegram.messenger.R
 import org.telegram.ui.ActionBar.BottomSheet
 import org.telegram.ui.ActionBar.Theme
 import org.telegram.ui.ActionBar.Theme.key_dialogTextRed
-import tw.nekomimi.nekogram.ui.cells.HeaderCell
 import org.telegram.ui.Cells.RadioButtonCell
 import org.telegram.ui.Cells.TextCell
 import org.telegram.ui.Cells.TextCheckCell
 import org.telegram.ui.Components.LayoutHelper
+import tw.nekomimi.nekogram.ui.cells.HeaderCell
 import java.util.LinkedList
 
 
 class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor: Int = Theme.getColor(Theme.key_dialogBackground)) {
-    constructor(ctx: Context) : this(ctx, true) {}
-    constructor(ctx: Context, needFocus: Boolean) : this(ctx, needFocus, Theme.getColor(Theme.key_dialogBackground)) {}
+    constructor(ctx: Context) : this(ctx, true)
+    constructor(ctx: Context, needFocus: Boolean) : this(ctx, needFocus, Theme.getColor(Theme.key_dialogBackground))
+
     val builder = BottomSheet.Builder(ctx, needFocus)
+
+    private var onShowListener: DialogInterface.OnShowListener? = null
 
     private val rootView = LinearLayout(ctx).apply {
         orientation = LinearLayout.VERTICAL
@@ -200,7 +203,7 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
     }
 
     @JvmOverloads
-    fun addButton(text: String, noAutoDismiss: Boolean = false, left: Boolean = false, listener: ((TextView) -> Unit)): TextView {
+    fun addButton(text: String, noAutoDismiss: Boolean = false, left: Boolean = false, onClickListener: ((TextView) -> Unit)): TextView {
 
         return TextView(ctx).apply {
 
@@ -214,7 +217,7 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
             setText(text)
             typeface = AndroidUtilities.getTypeface("fonts/rmedium.ttf")
             (if (left) buttonsView else rightButtonsView).addView(this, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, rtl))
-            setOnClickListener { if (!noAutoDismiss) dismiss();listener(this) }
+            setOnClickListener { if (!noAutoDismiss) dismiss();onClickListener(this) }
 
         }
 
@@ -269,14 +272,28 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
         builder.setTitleMultipleLines(multilines)
     }
 
-    fun create() = builder.create()
-    fun show() = builder.show()
+    fun create(): BottomSheet {
+        return builder.create().also {
+            onShowListener?.also(it::setOnShowListener)
+        }
+    }
+
+    fun show(): BottomSheet {
+        return create().also {
+            it.show()
+        }
+    }
     fun dismiss() {
         builder.dismissRunnable.run()
     }
 
     fun setOnPreDismissListener(onDismissListener: DialogInterface.OnDismissListener?): BottomBuilder {
         builder.setOnPreDismissListener(onDismissListener)
+        return this
+    }
+
+    fun setOnShowListener(onShowListener: DialogInterface.OnShowListener?): BottomBuilder {
+        this.onShowListener = onShowListener
         return this
     }
 

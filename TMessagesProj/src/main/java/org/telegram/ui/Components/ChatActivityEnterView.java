@@ -219,6 +219,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.helpers.ChatsHelper;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 import tw.nekomimi.nekogram.utils.StringUtils;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.translate.Translator;
@@ -6322,24 +6323,21 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
 
         BottomBuilder builder = new BottomBuilder(getContext());
 
-        builder.addTitle(LocaleController.getString("ReplaceText", R.string.ReplaceText), true);
+        builder.addTitle(getString(R.string.ReplaceText), true);
 
-        TextCheckCell regex = builder.addCheckItem(LocaleController.getString("ReplaceRegex", R.string.ReplaceRegex), false, false, null);
-        EditText origin = builder.addEditText(LocaleController.getString("TextOrigin", R.string.TextOrigin));
-        EditText replace = builder.addEditText(LocaleController.getString("TextReplace", R.string.TextReplace));
-
+        TextCheckCell regexCheckCell = builder.addCheckItem(getString(R.string.ReplaceRegex), false, false, null);
+        EditText fromField = builder.addEditText(getString(R.string.TextOrigin));
+        EditText toField = builder.addEditText(getString(R.string.TextReplace));
 
         String finalText = text.toString();
-        builder.addButton(LocaleController.getString("TextReplace", R.string.TextReplace), true, it -> {
-
-            String originText = origin.getText().toString();
-            String replaceText = replace.getText().toString();
-
+        builder.addButton(getString(R.string.TextReplace), true, it -> {
+            String originText = fromField.getText().toString();
+            String replaceText = toField.getText().toString();
             if (originText.isEmpty()) {
-                AndroidUtilities.showKeyboard(origin);
+                AndroidUtil.showInputError(fromField);
+                return Unit.INSTANCE;
             }
-
-            boolean useRegex = regex.isChecked();
+            boolean useRegex = regexCheckCell.isChecked();
             AlertDialog progress = AlertUtil.showProgress(getContext());
             progress.show();
             Utilities.globalQueue.postRunnable(() -> {
@@ -6362,13 +6360,16 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                     builder.dismiss();
                 });
             });
-
             return Unit.INSTANCE;
         });
-
         builder.addCancelButton();
+        builder.setOnShowListener(dialog -> {
+            fromField.setFocusable(true);
+            fromField.setFocusableInTouchMode(true);
+            fromField.requestFocus();
+            AndroidUtilities.runOnUIThread(() -> AndroidUtilities.showKeyboard(fromField), 200);
+        });
         builder.show();
-
     }
     // --- Input Menu End---
 
