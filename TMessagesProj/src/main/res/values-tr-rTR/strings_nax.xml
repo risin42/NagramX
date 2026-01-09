@@ -31,6 +31,11 @@
     <string name="LlmSystemPromptNotice">Yapay zekanın rolünü ve davranışını tanımlayın.\n\nBu komut, yapay zeka için tonu, kişiliği ve sınırlamaları belirler. Yapay zekanın ne tür bir asistan olması gerektiğini tanımlamayı düşünün.\n\nBoş bırakılabilir.</string>
     <string name="LlmUserPrompt">Kullanıcı Komutu</string>
     <string name="LlmUserPromptNotice">Orijinal mesaj için @text ve hedef dil için @toLang (isteğe bağlı) yer tutucularını kullanın.\n\nÖrnek: \'@text metnini herhangi bir açıklama yapmadan @toLang diline çevir.\'\n\nBu alanı boş bırakmak, varsayılan komutu kullanacaktır.</string>
+    <string name="LlmUseContext">Bağlam Kullan</string>
+    <string name="LlmUseContextNotice">Daha fazla token karşılığında çeviri kalitesini artırır.</string>
+    <string name="LlmContextSize">Bağlam mesajları</string>
+    <string name="LlmUseContextInAutoTranslate">Otomatik Çeviride Bağlam Kullan</string>
+    <string name="LlmUseContextInAutoTranslateNotice">Token kullanımını ve gecikmeyi artırabilir.</string>
     <string name="LlmTemperature">Sıcaklık</string>
     <string name="AITranslatorSettings">Yapay Zeka Çevirmeni</string>
     <string name="TranslucentDeletedMessages">Yarı Saydam Silinmiş Mesajlar</string>

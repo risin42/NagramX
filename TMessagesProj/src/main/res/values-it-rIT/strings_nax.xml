@@ -31,6 +31,11 @@
     <string name="LlmSystemPromptNotice">Definisci il ruolo e il comportamento dell\'IA.\n\nQuesto prompt imposta il tono, la personalità e i limiti dell\'IA. Considera la possibilità di descrivere che tipo di assistente dovrebbe essere l\'IA.\n\nPuò essere lasciato vuoto.</string>
     <string name="LlmUserPrompt">Richiesta utente</string>
     <string name="LlmUserPromptNotice">Utilizza @text come segnaposto per il messaggio originale e @toLang per la lingua di destinazione (facoltativo).\n\nEsempio: \"Traduci @text in @toLang senza alcuna spiegazione.\"\n\nLasciando questo campo vuoto verrà utilizzato il prompt predefinito.</string>
+    <string name="LlmUseContext">Usa contesto</string>
+    <string name="LlmUseContextNotice">Migliora la qualità della traduzione a scapito di più token.</string>
+    <string name="LlmContextSize">Messaggi contestuali</string>
+    <string name="LlmUseContextInAutoTranslate">Usa il contesto nella traduzione automatica</string>
+    <string name="LlmUseContextInAutoTranslateNotice">Potrebbe aumentare l\'uso dei token e la latenza.</string>
     <string name="LlmTemperature">Temperatura</string>
     <string name="AITranslatorSettings">Traduttore AI</string>
     <string name="TranslucentDeletedMessages">Messaggi cancellati traslucidi</string>
@@ -307,4 +312,5 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="SaveLocalLastSeen">Salva data dell\'ultimo accesso</string>
     <string name="CopyVideoFrame">Copia Frame</string>
     <string name="SetLocalName">Imposta Nome Locale</string>
+    <string name="DeleteChatForBothSides">Usa \"Elimina anche per\" di default</string>
 </resources>

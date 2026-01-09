@@ -31,6 +31,11 @@
     <string name="LlmSystemPromptNotice">Defina el rol y el comportamiento de la IA.\n\nEste indicador establece el tono, la personalidad y las limitaciones para la IA. Considere describir qué tipo de asistente debería ser la IA.\n\nSe puede dejar vacío.</string>
     <string name="LlmUserPrompt">Prompt del usuario</string>
     <string name="LlmUserPromptNotice">Use @text como marcador de posición para el mensaje original y @tolang para el idioma de destino (opcional).\n\nejemplo: \'Traducir @text a @toLang sin ninguna explicación\'.\n\nSi deja esto en blanco, se utilizará el mensaje predeterminado.</string>
+    <string name="LlmUseContext">Usar contexto</string>
+    <string name="LlmUseContextNotice">Mejora la calidad de la traducción a costa de más tokens.</string>
+    <string name="LlmContextSize">Mensajes de contexto</string>
+    <string name="LlmUseContextInAutoTranslate">Usar contexto en traducción automática</string>
+    <string name="LlmUseContextInAutoTranslateNotice">Puede aumentar el uso de tokens y la latencia.</string>
     <string name="LlmTemperature">Temperatura</string>
     <string name="AITranslatorSettings">Traductor IA</string>
     <string name="TranslucentDeletedMessages">Mensajes eliminados translúcidos</string>
