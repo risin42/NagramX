@@ -74,6 +74,7 @@ import xyz.nextalone.nagram.NaConfig;
 
 public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
+    private final int initialTranslationProvider;
     private final CellGroup cellGroup = new CellGroup(this);
     private final AbstractConfigCell headerOptions = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.TranslatorOptions)));
     private final AbstractConfigCell showTranslateRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.showTranslate, null, getString(R.string.ShowTranslateButton)));
@@ -159,6 +160,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     private final boolean isAutoTranslateEnabled;
 
     public NekoTranslatorSettingsActivity() {
+        initialTranslationProvider = NekoConfig.translationProvider.Int();
         isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
         oldLlmProvider = NaConfig.INSTANCE.getLlmProviderPreset().Int();
         rebuildRowsForLlmProvider(oldLlmProvider);
@@ -593,6 +595,43 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onFragmentDestroy() {
+        maybeRestoreTranslationProvider();
+        super.onFragmentDestroy();
+    }
+
+    private void maybeRestoreTranslationProvider() {
+        if (NekoConfig.translationProvider.Int() != Translator.providerLLMTranslator) {
+            return;
+        }
+        if (!isCurrentLlmProviderApiKeyEmpty()) {
+            return;
+        }
+        int providerToRestore = initialTranslationProvider;
+        if (providerToRestore == Translator.providerLLMTranslator) {
+            providerToRestore = Translator.providerGoogle;
+        }
+        NekoConfig.translationProvider.setConfigInt(providerToRestore);
+    }
+
+    private boolean isCurrentLlmProviderApiKeyEmpty() {
+        ConfigItem apiKeyItem = getCurrentLlmProviderApiKeyItem();
+        return apiKeyItem == null || TextUtils.isEmpty(apiKeyItem.String().trim());
+    }
+
+    private ConfigItem getCurrentLlmProviderApiKeyItem() {
+        return switch (NaConfig.INSTANCE.getLlmProviderPreset().Int()) {
+            case 0 -> NaConfig.INSTANCE.getLlmApiKey();
+            case 1 -> NaConfig.INSTANCE.getLlmProviderOpenAIKey();
+            case 2 -> NaConfig.INSTANCE.getLlmProviderGeminiKey();
+            case 3 -> NaConfig.INSTANCE.getLlmProviderGroqKey();
+            case 4 -> NaConfig.INSTANCE.getLlmProviderDeepSeekKey();
+            case 5 -> NaConfig.INSTANCE.getLlmProviderXAIKey();
+            default -> null;
+        };
     }
 
     @Override
