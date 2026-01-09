@@ -238,6 +238,7 @@ import org.telegram.ui.Components.CanvasButton;
 import org.telegram.ui.Components.ChatActivityInterface;
 import org.telegram.ui.Components.ChatAvatarContainer;
 import org.telegram.ui.Components.ChatNotificationsPopupWrapper;
+import org.telegram.ui.Components.CircularProgressDrawable;
 import org.telegram.ui.Components.ColoredImageSpan;
 import org.telegram.ui.Components.CombinedDrawable;
 import org.telegram.ui.Components.CrossfadeDrawable;
@@ -347,6 +348,7 @@ import java.util.zip.ZipOutputStream;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.helpers.AyuFilter;
+import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.helpers.LocalNameHelper;
 import tw.nekomimi.nekogram.helpers.ProfileDateHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
@@ -8066,131 +8068,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             finishFragment();
             getNotificationCenter().postNotificationName(NotificationCenter.needDeleteDialog, -currentChat.id, null, currentChat, param);
         }, resourcesProvider);
-    }
-
-    private void setChannelAlias() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setTitle(getString(R.string.setChannelAliasName));
-        final EditTextBoldCursor editText = new EditTextBoldCursor(getParentActivity()) {
-            @Override
-            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                super.onMeasure(widthMeasureSpec,
-                        MeasureSpec.makeMeasureSpec(dp(64), MeasureSpec.EXACTLY));
-            }
-        };
-        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        editText.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
-        editText.setHintText(getString(R.string.Name));
-        if (NekoXConfig.getChannelAlias(getCurrentChat().id) != null) {
-            editText.setText(NekoXConfig.getChannelAlias(getCurrentChat().id));
-        }
-        editText.setHeaderHintColor(getThemedColor(Theme.key_windowBackgroundWhiteBlueHeader));
-        editText.setSingleLine(true);
-        editText.setFocusable(true);
-        editText.setTransformHintToHeader(true);
-        editText.setLineColors(getThemedColor(Theme.key_windowBackgroundWhiteInputField),
-                getThemedColor(Theme.key_windowBackgroundWhiteInputFieldActivated),
-                getThemedColor(Theme.key_windowBackgroundWhiteRedText3));
-        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        editText.setBackgroundDrawable(null);
-        editText.requestFocus();
-        editText.setPadding(0, 0, 0, 0);
-        builder.setView(editText);
-        builder.setPositiveButton(getString(R.string.OK),
-                (dialogInterface, i) -> {
-                    if (editText.getText().toString().trim().isEmpty()) {
-                        NekoXConfig.emptyChannelAlias(getCurrentChat().id);
-                    } else {
-                        NekoXConfig.setChannelAlias(getCurrentChat().id, editText.getText().toString());
-                    }
-                });
-        builder.setNegativeButton(getString(R.string.Cancel), null);
-        builder.show().setOnShowListener(dialog -> {
-            editText.requestFocus();
-            AndroidUtilities.showKeyboard(editText);
-        });
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) editText.getLayoutParams();
-        if (layoutParams != null) {
-            if (layoutParams instanceof FrameLayout.LayoutParams) {
-                ((FrameLayout.LayoutParams) layoutParams).gravity = Gravity.CENTER_HORIZONTAL;
-            }
-            layoutParams.rightMargin = layoutParams.leftMargin = dp(24);
-            layoutParams.height = dp(36);
-            editText.setLayoutParams(layoutParams);
-        }
-        editText.setSelection(0, editText.getText().length());
-    }
-
-    private void setUserAlias() {
-        TLRPC.User user = getMessagesController().getUser(userId);
-        if (user == null) {
-            return;
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setTitle(getString(R.string.SetLocalName));
-        final EditTextBoldCursor editText = new EditTextBoldCursor(getParentActivity()) {
-            @Override
-            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(dp(64), MeasureSpec.EXACTLY));
-            }
-        };
-        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        editText.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
-        editText.setHintText(getString(R.string.Name));
-        String existingOverride = LocalNameHelper.getUserNameOverride(userId);
-        editText.setText(Objects.requireNonNullElseGet(existingOverride, () -> UserObject.getUserName(user)));
-        editText.setHeaderHintColor(getThemedColor(Theme.key_windowBackgroundWhiteBlueHeader));
-        editText.setSingleLine(true);
-        editText.setFocusable(true);
-        editText.setTransformHintToHeader(true);
-        editText.setLineColors(getThemedColor(Theme.key_windowBackgroundWhiteInputField), getThemedColor(Theme.key_windowBackgroundWhiteInputFieldActivated), getThemedColor(Theme.key_windowBackgroundWhiteRedText3));
-        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        editText.setBackground(null);
-        editText.requestFocus();
-        editText.setPadding(0, 0, 0, 0);
-        builder.setView(editText);
-        builder.setPositiveButton(getString(R.string.OK),
-                (dialogInterface, i) -> {
-                    String newName = editText.getText().toString().trim();
-                    if (existingOverride != null) {
-                        if (newName.equals(existingOverride)) {
-                            return;
-                        }
-                        if (newName.isEmpty()) {
-                            LocalNameHelper.clearUserNameOverride(userId);
-                            getMessagesController().loadFullUser(user, 0, true);
-                        } else {
-                            LocalNameHelper.setUserNameOverride(userId, newName);
-                            user.first_name = newName;
-                            user.last_name = "";
-                        }
-                    } else {
-                        if (newName.isEmpty() || newName.equals(UserObject.getUserName(user))) {
-                            return;
-                        }
-                        LocalNameHelper.setUserNameOverride(userId, newName);
-                        user.first_name = newName;
-                        user.last_name = "";
-                    }
-                    updateProfileData(true);
-                    getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_NAME);
-                    AndroidUtil.performHapticFeedback();
-                });
-        builder.setNegativeButton(getString(R.string.Cancel), null);
-        builder.show().setOnShowListener(dialog -> {
-            editText.requestFocus();
-            AndroidUtilities.showKeyboard(editText);
-        });
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) editText.getLayoutParams();
-        if (layoutParams != null) {
-            if (layoutParams instanceof FrameLayout.LayoutParams lp) {
-                lp.gravity = Gravity.CENTER_HORIZONTAL;
-            }
-            layoutParams.rightMargin = layoutParams.leftMargin = dp(24);
-            layoutParams.height = dp(36);
-            editText.setLayoutParams(layoutParams);
-        }
-        editText.setSelection(0, editText.getText().length());
     }
 
     private void getChannelParticipants(boolean reload) {
@@ -17568,6 +17445,183 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             });
         }
         builder.show();
+    }
+
+    private void setChannelAlias() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setTitle(getString(R.string.setChannelAliasName));
+        final EditTextBoldCursor editText = new EditTextBoldCursor(getParentActivity()) {
+            @Override
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(dp(64), MeasureSpec.EXACTLY));
+            }
+        };
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        editText.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
+        editText.setHintText(getString(R.string.Name));
+        if (NekoXConfig.getChannelAlias(getCurrentChat().id) != null) {
+            editText.setText(NekoXConfig.getChannelAlias(getCurrentChat().id));
+        }
+        editText.setHeaderHintColor(getThemedColor(Theme.key_windowBackgroundWhiteBlueHeader));
+        editText.setSingleLine(true);
+        editText.setFocusable(true);
+        editText.setTransformHintToHeader(true);
+        editText.setLineColors(getThemedColor(Theme.key_windowBackgroundWhiteInputField), getThemedColor(Theme.key_windowBackgroundWhiteInputFieldActivated), getThemedColor(Theme.key_windowBackgroundWhiteRedText3));
+        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        editText.setBackground(null);
+        editText.requestFocus();
+        editText.setPadding(0, 0, 0, 0);
+        builder.setView(editText);
+        builder.setPositiveButton(getString(R.string.OK),
+                (dialogInterface, i) -> {
+                    if (editText.getText().toString().trim().isEmpty()) {
+                        NekoXConfig.emptyChannelAlias(getCurrentChat().id);
+                    } else {
+                        NekoXConfig.setChannelAlias(getCurrentChat().id, editText.getText().toString());
+                    }
+                });
+        builder.setNegativeButton(getString(R.string.Cancel), null);
+        builder.show().setOnShowListener(dialog -> {
+            editText.requestFocus();
+            AndroidUtilities.showKeyboard(editText);
+        });
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) editText.getLayoutParams();
+        if (layoutParams != null) {
+            if (layoutParams instanceof FrameLayout.LayoutParams lp) {
+                lp.gravity = Gravity.CENTER_HORIZONTAL;
+            }
+            layoutParams.rightMargin = layoutParams.leftMargin = dp(24);
+            layoutParams.height = dp(36);
+            editText.setLayoutParams(layoutParams);
+        }
+        editText.setSelection(0, editText.getText().length());
+    }
+
+    private void setUserAlias() {
+        TLRPC.User user = getMessagesController().getUser(userId);
+        if (user == null) {
+            return;
+        }
+        final boolean[] restoringServerName = {false};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setTitle(getString(R.string.SetLocalName));
+        final EditTextBoldCursor editText = new EditTextBoldCursor(getParentActivity()) {
+            @Override
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(dp(64), MeasureSpec.EXACTLY));
+            }
+        };
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        editText.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
+        editText.setHintText(getString(R.string.Name));
+        String existingOverride = LocalNameHelper.getUserNameOverride(userId);
+        editText.setText(Objects.requireNonNullElseGet(existingOverride, () -> UserObject.getUserName(user)));
+        editText.setHeaderHintColor(getThemedColor(Theme.key_windowBackgroundWhiteBlueHeader));
+        editText.setSingleLine(true);
+        editText.setFocusable(true);
+        editText.setTransformHintToHeader(true);
+        editText.setLineColors(getThemedColor(Theme.key_windowBackgroundWhiteInputField), getThemedColor(Theme.key_windowBackgroundWhiteInputFieldActivated), getThemedColor(Theme.key_windowBackgroundWhiteRedText3));
+        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        editText.setBackground(null);
+        editText.requestFocus();
+        editText.setPadding(0, 0, 0, 0);
+        builder.setView(editText);
+        builder.setPositiveButton(getString(R.string.OK),
+                (dialogInterface, i) -> {
+                    String newName = editText.getText().toString().trim();
+                    if (existingOverride != null) {
+                        if (newName.equals(existingOverride)) {
+                            return;
+                        }
+                        if (newName.isEmpty()) {
+                            LocalNameHelper.clearUserNameOverride(userId);
+                            getMessagesController().loadFullUser(user, 0, true);
+                        } else {
+                            LocalNameHelper.setUserNameOverride(userId, newName);
+                            user.first_name = newName;
+                            user.last_name = "";
+                        }
+                    } else {
+                        if (newName.isEmpty() || newName.equals(UserObject.getUserName(user))) {
+                            return;
+                        }
+                        LocalNameHelper.setUserNameOverride(userId, newName);
+                        user.first_name = newName;
+                        user.last_name = "";
+                    }
+                    updateProfileData(true);
+                    getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_NAME);
+                    AndroidUtil.performHapticFeedback();
+                });
+        builder.setNeutralButton(getString(R.string.Restore), null);
+        builder.setNegativeButton(getString(R.string.Cancel), null);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(dialog -> {
+            editText.requestFocus();
+            AndroidUtilities.showKeyboard(editText);
+
+            View restoreButton = alertDialog.getButton(Dialog.BUTTON_NEUTRAL);
+            if (restoreButton instanceof TextView restoreButtonTextView) {
+                Drawable[] originalButtonDrawables = restoreButtonTextView.getCompoundDrawables();
+                Drawable originalDrawableLeft = originalButtonDrawables[0];
+                Drawable originalDrawableTop = originalButtonDrawables[1];
+                Drawable originalDrawableRight = originalButtonDrawables[2];
+                Drawable originalDrawableBottom = originalButtonDrawables[3];
+                int originalCompoundDrawablePadding = restoreButtonTextView.getCompoundDrawablePadding();
+
+                restoreButtonTextView.setOnClickListener(v -> {
+                    if (restoringServerName[0]) {
+                        return;
+                    }
+                    restoringServerName[0] = true;
+
+                    CircularProgressDrawable spinner = new CircularProgressDrawable(restoreButtonTextView.getCurrentTextColor());
+                    restoreButtonTextView.setCompoundDrawablePadding(dp(6));
+                    if (LocaleController.isRTL) {
+                        restoreButtonTextView.setCompoundDrawablesWithIntrinsicBounds(
+                                originalDrawableLeft, originalDrawableTop, spinner, originalDrawableBottom
+                        );
+                    } else {
+                        restoreButtonTextView.setCompoundDrawablesWithIntrinsicBounds(
+                                spinner, originalDrawableTop, originalDrawableRight, originalDrawableBottom
+                        );
+                    }
+
+                    ChatsHelper.getInstance(currentAccount).loadServerUserName(userId, classGuid, (name, error) -> {
+                        restoringServerName[0] = false;
+                        restoreButtonTextView.setCompoundDrawablesWithIntrinsicBounds(
+                                originalDrawableLeft, originalDrawableTop, originalDrawableRight, originalDrawableBottom
+                        );
+                        restoreButtonTextView.setCompoundDrawablePadding(originalCompoundDrawablePadding);
+                        if (!alertDialog.isShowing()) {
+                            return;
+                        }
+                        if (error != null) {
+                            AlertUtil.showToast(error);
+                            return;
+                        }
+                        if (TextUtils.isEmpty(name)) {
+                            AlertUtil.showToast(getString(R.string.UnknownError));
+                            return;
+                        }
+                        editText.setText(name);
+                        editText.setSelection(0, editText.getText().length());
+                        editText.requestFocus();
+                    });
+                });
+            }
+        });
+        alertDialog.show();
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) editText.getLayoutParams();
+        if (layoutParams != null) {
+            if (layoutParams instanceof FrameLayout.LayoutParams lp) {
+                lp.gravity = Gravity.CENTER_HORIZONTAL;
+            }
+            layoutParams.rightMargin = layoutParams.leftMargin = dp(24);
+            layoutParams.height = dp(36);
+            editText.setLayoutParams(layoutParams);
+        }
+        editText.setSelection(0, editText.getText().length());
     }
 
     @Override
