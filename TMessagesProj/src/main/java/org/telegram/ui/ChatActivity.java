@@ -10084,9 +10084,7 @@ public class ChatActivity extends BaseFragment implements
         closeRestartTopicButton = new ImageView(getContext());
         closeRestartTopicButton.setVisibility(View.GONE);
         closeRestartTopicButton.setImageResource(R.drawable.miniplayer_close);
-        if (Build.VERSION.SDK_INT >= 21) {
-            closeRestartTopicButton.setBackground(Theme.AdaptiveRipple.circle(getThemedColor(Theme.key_chat_topPanelClose)));
-        }
+        closeRestartTopicButton.setBackground(Theme.AdaptiveRipple.circle(getThemedColor(Theme.key_chat_topPanelClose)));
         closeRestartTopicButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_topPanelClose), PorterDuff.Mode.MULTIPLY));
         closeRestartTopicButton.setScaleType(ImageView.ScaleType.CENTER);
         topChatPanelView.addView(closeRestartTopicButton, LayoutHelper.createFrame(36, 36, Gravity.RIGHT | Gravity.TOP, 0, 6, 2, 0));
@@ -24298,7 +24296,7 @@ public class ChatActivity extends BaseFragment implements
                     }
                 }
                 if (headerItem != null) {
-//                    showAudioCallAsIcon = userInfo.phone_calls_available && !inPreviewMode;
+                    // showAudioCallAsIcon = userInfo.phone_calls_available && !inPreviewMode;
                     showAudioCallAsIcon = false;
                     if (avatarContainer != null) {
                         avatarContainer.setTitleExpand(showAudioCallAsIcon);
@@ -30358,7 +30356,7 @@ public class ChatActivity extends BaseFragment implements
                     message = ((ChatMessageCell) view).getMessageObject();
                 } else if (view instanceof ChatActionCell) {
                     message = ((ChatActionCell) view).getMessageObject();
-                } else if (view instanceof DummyView) { // AyuGram
+                } else if (view instanceof DummyView) { // hide message
                     message = ((DummyView) view).getMessageObject();
                 }
                 if (message != null && message.messageOwner != null && message.messageOwner.media_unread && message.messageOwner.mentioned) {
@@ -37912,7 +37910,7 @@ public class ChatActivity extends BaseFragment implements
                     }
                 };
                 view.setBackgroundColor(0xFF00FF00);
-            } else if (viewType == -1000) {
+            } else if (viewType == -1000) { // hide message
                 view = new DummyView(mContext);
             } else {
                 view = new View(mContext);
@@ -38487,7 +38485,7 @@ public class ChatActivity extends BaseFragment implements
                     if (createUnreadMessageAfterId != 0) {
                         createUnreadMessageAfterId = 0;
                     }
-                } else if (view instanceof DummyView) { // Ayugram
+                } else if (view instanceof DummyView) { // hide message
                     DummyView dummyView = (DummyView) view;
                     dummyView.setMessageObject(message);
                 }
@@ -41645,6 +41643,16 @@ public class ChatActivity extends BaseFragment implements
                         locFile = f;
                     }
                 }
+                if (locFile == null) {
+                    var path = MessageHelper.getPathToMessage(message);
+                    if (!TextUtils.isEmpty(path)) {
+                        locFile = new File(path);
+                    }
+                }
+                if (locFile == null || !locFile.isFile()) {
+                    AlertUtil.showToast("FILE_NOT_FOUND");
+                    return;
+                }
                 if (message.getDocumentName().toLowerCase().endsWith("attheme")) {
                     Theme.ThemeInfo themeInfo = Theme.applyThemeFile(locFile, message.getDocumentName(), null, true);
                     if (themeInfo != null) {
@@ -41653,22 +41661,6 @@ public class ChatActivity extends BaseFragment implements
                     } else {
                         scrollToPositionOnRecreate = -1;
                     }
-                    boolean handled = false;
-                    if (message.canPreviewDocument()) {
-                        PhotoViewer.getInstance().setParentActivity(getParentActivity());
-                        PhotoViewer.getInstance().openPhoto(message, message.type != 0 ? dialog_id : 0, message.type != 0 ? mergeDialogId : 0, 0, photoViewerProvider, false);
-                        handled = true;
-                    }
-                    if (!handled) {
-                        try {
-                            AndroidUtilities.openForView(message, getParentActivity());
-                        } catch (Exception e) {
-                            FileLog.e(e);
-                            alertUserOpenError(message);
-                        }
-                    }
-                } else if (locFile == null || !locFile.isFile()) {
-                    AlertUtil.showToast("FILE_NOT_FOUND");
                 } else if (message.getDocumentName().toLowerCase().endsWith(".nekox.json")) {
                     File finalLocFile = locFile;
                     AlertUtil.showConfirm(getParentActivity(),
@@ -41678,7 +41670,7 @@ public class ChatActivity extends BaseFragment implements
                 } else if (message.getDocumentName().toLowerCase().endsWith(".nekox-stickers.json")) {
                     File finalLocFile = locFile;
                     AlertUtil.showConfirm(getParentActivity(),
-                            getString("ImportStickersList", R.string.ImportStickersList),
+                            getString(R.string.ImportStickersList),
                             R.drawable.msg_sticker, getString(R.string.Import), false, () -> {
                                 presentFragment(new StickersActivity(finalLocFile));
                             });

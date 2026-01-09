@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -95,11 +96,11 @@ public class AndroidUtil {
         if (diff > 0) {
             return Theme.getColor(Theme.key_chats_onlineCircle, resourcesProvider);
         } else if (diff > -15 * 60) {
-            return android.graphics.Color.argb(255, 234, 234, 30);
+            return Color.argb(255, 234, 234, 30);
         } else if (diff > -30 * 60) {
-            return android.graphics.Color.argb(255, 234, 132, 30);
+            return Color.argb(255, 234, 132, 30);
         } else if (diff > -60 * 60) {
-            return android.graphics.Color.argb(255, 234, 30, 30);
+            return Color.argb(255, 234, 30, 30);
         }
         return 0;
     }
@@ -184,16 +185,6 @@ public class AndroidUtil {
                 BulletinFactory.of(fragment).createSimpleBulletin(R.raw.error, message).show();
             }
         });
-    }
-
-    public static String getFileNameWithoutEx(String filename) {
-        if ((filename != null) && (filename.length() > 0)) {
-            int dot = filename.lastIndexOf('.');
-            if ((dot > -1) && (dot < (filename.length()))) {
-                return filename.substring(0, dot);
-            }
-        }
-        return filename;
     }
 
     public static void toggleLogs() {
