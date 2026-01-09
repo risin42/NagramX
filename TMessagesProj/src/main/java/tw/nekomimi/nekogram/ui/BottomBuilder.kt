@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import org.telegram.messenger.AndroidUtilities
+import org.telegram.messenger.AndroidUtilities.dp
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
@@ -20,6 +21,7 @@ import org.telegram.ui.ActionBar.Theme.key_dialogTextRed
 import org.telegram.ui.Cells.RadioButtonCell
 import org.telegram.ui.Cells.TextCell
 import org.telegram.ui.Cells.TextCheckCell
+import org.telegram.ui.Components.EditTextBoldCursor
 import org.telegram.ui.Components.LayoutHelper
 import tw.nekomimi.nekogram.ui.cells.HeaderCell
 import java.util.LinkedList
@@ -96,7 +98,7 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
             headerCell.setText2(it)
         }
         rootView.addView(headerCell, LayoutHelper.createLinear(-1, -2).apply {
-            bottomMargin = AndroidUtilities.dp(8F)
+            bottomMargin = dp(8f)
         })
         return headerCell
     }
@@ -106,7 +108,7 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
 
         val checkBoxCell = TextCheckCell(ctx, 21, !switch)
         checkBoxCell.background = Theme.getSelectorDrawable(false)
-        checkBoxCell.minimumHeight = AndroidUtilities.dp(50F)
+        checkBoxCell.minimumHeight = dp(50f)
 
         if (valueText == null) {
             checkBoxCell.setTextAndCheck(text, value, true)
@@ -160,7 +162,7 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
 
         val checkBoxCell = RadioButtonCell(ctx, true)
         checkBoxCell.background = Theme.getSelectorDrawable(false)
-        checkBoxCell.minimumHeight = AndroidUtilities.dp(50F)
+        checkBoxCell.minimumHeight = dp(50f)
         rootView.addView(checkBoxCell, LayoutHelper.createLinear(-1, -2))
 
         if (valueText == null) {
@@ -207,13 +209,13 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
 
         return TextView(ctx).apply {
 
-            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
+            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15f)
             setTextColor(Theme.getColor(Theme.key_dialogTextBlue4))
             gravity = Gravity.CENTER
             isSingleLine = true
             ellipsize = TextUtils.TruncateAt.END
             background = Theme.createSelectorDrawable(Theme.getColor(Theme.key_dialogButtonSelector), 0)
-            setPadding(AndroidUtilities.dp(18f), 0, AndroidUtilities.dp(18f), 0)
+            setPadding(dp(18f), 0, dp(18f), 0)
             setText(text)
             typeface = AndroidUtilities.getTypeface("fonts/rmedium.ttf")
             (if (left) buttonsView else rightButtonsView).addView(this, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, rtl))
@@ -255,16 +257,23 @@ class BottomBuilder(val ctx: Context, val needFocus: Boolean = true, val bgColor
 
     @JvmOverloads
     fun addEditText(hintText: String? = null): EditText {
-        return EditText(ctx).apply {
-            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
+        return EditTextBoldCursor(ctx).apply {
+            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15f)
             setTextColor(Theme.getColor(Theme.key_dialogTextBlack))
             setHintTextColor(Theme.getColor(Theme.key_dialogTextBlue4))
-            hintText?.also { hint = it }
+            setCursorSize(dp(18f))
+            setCursorColor(Theme.getColor(Theme.key_chat_TextSelectionCursor))
+            setHandlesColor(Theme.getColor(Theme.key_chat_TextSelectionCursor))
+            hintText?.also {
+                hint = it
+                setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteHintText))
+            }
             isSingleLine = true
             isFocusable = true
             background = null
 
-            this@BottomBuilder.rootView.addView(this, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, -2, rtl, AndroidUtilities.dp(6F), 0, 0, 0))
+            this@BottomBuilder.rootView.addView(this, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, -2, rtl,
+                dp(6f), 0, 0, 0))
         }
     }
 

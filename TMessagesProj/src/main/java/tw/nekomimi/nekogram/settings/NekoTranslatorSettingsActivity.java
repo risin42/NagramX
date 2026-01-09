@@ -184,6 +184,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         var keyField = builder.addEditText(hint);
         if (!bind.String().trim().isEmpty()) {
             keyField.setText(bind.String());
+            keyField.setSelection(bind.String().length());
         }
         builder.addCancelButton();
         builder.addOkButton((it) -> {
