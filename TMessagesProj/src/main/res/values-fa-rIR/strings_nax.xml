@@ -32,6 +32,11 @@
     <string name="LlmSystemPromptNotice">نقش و رفتار هوش مصنوعی را تعریف کنید.\n\nاین دستور، لحن، شخصیت و محدودیت‌های هوش مصنوعی را مشخص می‌کند. توضیح دهید که هوش مصنوعی باید چه نوع دستیاری باشد.\n\nمی‌توان این فیلد را خالی گذاشت.</string>
     <string name="LlmUserPrompt">دستور کاربر</string>
     <string name="LlmUserPromptNotice">از @text به عنوان جایگزین متن پیام اصلی و از @toLang برای زبان مقصد (اختیاری) استفاده کنید.\n\n مثال: \'Translate @text to @toLang without any description.\'\n\n اگر این فیلد خالی بماند، از دستور پیش‌فرض استفاده خواهد شد.</string>
+    <string name="LlmUseContext">استفاده از زمینه</string>
+    <string name="LlmUseContextNotice">کیفیت ترجمه را با مصرف توکن‌های بیشتر بهبود می‌بخشد.</string>
+    <string name="LlmContextSize">تعداد پیام‌های زمینه</string>
+    <string name="LlmUseContextInAutoTranslate">استفاده از زمینه در ترجمه خودکار</string>
+    <string name="LlmUseContextInAutoTranslateNotice">ممکن است مصرف توکن و تأخیر را افزایش دهد.</string>
     <string name="LlmTemperature">دما (خلاقیت)</string>
     <string name="AITranslatorSettings">تنظیمات مترجم هوش مصنوعی</string>
     <string name="TranslucentDeletedMessages">کم‌رنگ کردن پیام‌های حذف شده</string>

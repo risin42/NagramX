@@ -31,6 +31,11 @@
     <string name="LlmSystemPromptNotice">Определите роль и поведение ИИ.\n\nЭтот промпт задаёт тон, индивидуальность и ограничения для ИИ. Подумайте о том, каким типом помощника должен быть ИИ.\n\nМожно оставить пустым.</string>
     <string name="LlmUserPrompt">Пользовательский промпт</string>
     <string name="LlmUserPromptNotice">Используйте @text в качестве заполнителя для исходного сообщения и @toLang для целевого языка (необязательно).\n\nНапример: «Переведи @text на @toLang без объяснений».\n\nЕсли оставить это поле пустым, будет использоваться промпт по умолчанию.</string>
+    <string name="LlmUseContext">Использовать контекст</string>
+    <string name="LlmUseContextNotice">Улучшает качество перевода за счёт большего количества токенов.</string>
+    <string name="LlmContextSize">Контекстные сообщения</string>
+    <string name="LlmUseContextInAutoTranslate">Использовать контекст при автоматическом переводе</string>
+    <string name="LlmUseContextInAutoTranslateNotice">Может увеличить использование токенов и задержку.</string>
     <string name="LlmTemperature">Температура</string>
     <string name="AITranslatorSettings">ИИ-переводчик</string>
     <string name="TranslucentDeletedMessages">Полупрозрачные удалённые сообщения</string>
@@ -303,4 +308,5 @@
     <string name="SaveLocalLastSeen">Сохранять дату последнего посещения</string>
     <string name="CopyVideoFrame">Копировать кадр</string>
     <string name="SetLocalName">Установить локальное имя</string>
+    <string name="DeleteChatForBothSides">Использовать «Также удалить для» по умолчанию</string>
 </resources>

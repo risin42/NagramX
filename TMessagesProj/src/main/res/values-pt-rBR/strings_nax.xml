@@ -31,6 +31,11 @@
     <string name="LlmSystemPromptNotice">Defina o papel e o comportamento da IA.\n\nEste prompt estabelece o tom, a personalidade e as limitações da IA. Descreva que tipo de assistente a IA deve ser.\n\nPode ser deixado em branco.</string>
     <string name="LlmUserPrompt">Prompt do usuário</string>
     <string name="LlmUserPromptNotice">Use @text como um marcador de posição para a mensagem original e @toLang para o idioma de destino (opcional).\n\nExemplo: \'Traduza @text para @toLang sem explicações.\'\n\nDeixar em branco utilizará o prompt padrão.</string>
+    <string name="LlmUseContext">Usar contexto</string>
+    <string name="LlmUseContextNotice">Melhorar a qualidade da tradução ao custo de mais tokens.</string>
+    <string name="LlmContextSize">Mensagens de contexto</string>
+    <string name="LlmUseContextInAutoTranslate">Usar contexto na tradução automática</string>
+    <string name="LlmUseContextInAutoTranslateNotice">Pode aumentar o uso de tokens e a latência.</string>
     <string name="LlmTemperature">Temperatura</string>
     <string name="AITranslatorSettings">Tradutor por IA</string>
     <string name="TranslucentDeletedMessages">Mensagens excluídas translúcidas</string>
@@ -177,8 +182,8 @@
     <string name="DebugMenuMakeMemoryDump">Fazer despejo de memória</string>
     <string name="TranslateMessageLLM">Traduzir com IA</string>
     <string name="EditLocalNameOverride">Editando substituição de nome local.</string>
-    <string name="ResetChatNameOverrides">Redefinir Substituições de Apelidos do Chat</string>
-    <string name="ResetChatNameNotification">Substituições de apelidos limpas.</string>
+    <string name="ResetChatNameOverrides">Redefinir Substituições de Nomes do Chat</string>
+    <string name="ResetChatNameNotification">Substituições de nomes do chat limpas.</string>
     <string name="TabStyle">Estilo da aba</string>
     <string name="TabStylePure">Puro</string>
     <string name="TabStylePills">Pílula</string>
@@ -293,4 +298,7 @@
     <string name="SmoothRoundedMenu">Menus de contexto arredondados e suaves</string>
     <string name="ApiKeyNotSet">A chave da API não está configurada.</string>
     <string name="SaveLocalLastSeen">Salvar data do visto por último</string>
+    <string name="CopyVideoFrame">Copiar quadro</string>
+    <string name="SetLocalName">Definir nome local</string>
+    <string name="DeleteChatForBothSides">Usar \"Apagar também para\" por padrão</string>
 </resources>

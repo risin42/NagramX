@@ -31,6 +31,11 @@
     <string name="LlmSystemPromptNotice">AI の役割と行動指針を定義します。\n\nこのプロンプトは、AI の口調や個性、制約などを設定するものです。どのようなアシスタントとして振る舞ってほしいかを記述してください。\n\n特に設定が不要な場合は、空白のままでも構いません。</string>
     <string name="LlmUserPrompt">ユーザープロンプト</string>
     <string name="LlmUserPromptNotice">元のメッセージのプレースホルダーとして @text を、ターゲット言語のプレースホルダーとして @toLang を使用します（オプション）。\n\n例：\'@text を @toLang に説明なしで翻訳してください。\'\n\n空白のままにすると、デフォルトのプロンプトが使用されます。</string>
+    <string name="LlmUseContext">コンテキストを使用</string>
+    <string name="LlmUseContextNotice">より多くのトークンを消費しますが、翻訳品質が向上します。</string>
+    <string name="LlmContextSize">コンテキストメッセージ数</string>
+    <string name="LlmUseContextInAutoTranslate">自動翻訳でコンテキストを使用</string>
+    <string name="LlmUseContextInAutoTranslateNotice">トークン使用量と遅延が増加する可能性があります。</string>
     <string name="LlmTemperature">温度</string>
     <string name="AITranslatorSettings">AI 翻訳</string>
     <string name="TranslucentDeletedMessages">削除済みメッセージの透過</string>
@@ -303,4 +308,5 @@
     <string name="SaveLocalLastSeen">最終接続時間を保存</string>
     <string name="CopyVideoFrame">フレームをコピー</string>
     <string name="SetLocalName">表示名を変更</string>
+    <string name="DeleteChatForBothSides">デフォルトで「相手側も削除」を使用</string>
 </resources>

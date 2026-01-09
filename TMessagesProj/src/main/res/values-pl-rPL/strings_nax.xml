@@ -31,6 +31,11 @@
     <string name="LlmSystemPromptNotice">Zdefiniuj rolę i zachowanie sztucznej inteligencji AI.\n\nTo pole określa charakter, osobowość i ograniczenia sztucznej inteligencji. Rozważ opisanie, jakim typem asystenta powinna być sztuczna inteligencja.\n\nMożna pozostawić puste.</string>
     <string name="LlmUserPrompt">Monituj użytkownika</string>
     <string name="LlmUserPromptNotice">Użyj @text jako symbolu zastępczego dla oryginalnej wiadomości, a @toLang dla języka docelowego (opcjonalnie).\n\nPrzykład: „Przetłumacz @text na @toLang bez żadnego wyjaśnienia”.\n\nPozostawienie tego pola pustego spowoduje użycie domyślnego monitu.</string>
+    <string name="LlmUseContext">Użyj kontekstu</string>
+    <string name="LlmUseContextNotice">Poprawia jakość tłumaczenia kosztem większej liczby tokenów.</string>
+    <string name="LlmContextSize">Wiadomości kontekstowe</string>
+    <string name="LlmUseContextInAutoTranslate">Użyj kontekstu w automatycznym tłumaczeniu</string>
+    <string name="LlmUseContextInAutoTranslateNotice">Może zwiększyć zużycie tokenów i opóźnienie.</string>
     <string name="LlmTemperature">Temperatura</string>
     <string name="AITranslatorSettings">Translator AI</string>
     <string name="TranslucentDeletedMessages">Przezroczyste usunięte wiadomości</string>

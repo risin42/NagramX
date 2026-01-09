@@ -198,7 +198,7 @@
     <string name="TransToLang">Idioma de destino</string>
     <string name="TransInputToLang">Idioma de tradução pré-envio</string>
     <string name="More">Mais</string>
-    <string name="ShowIdAndDc">Mostrar ID / DC no perfil</string>
+    <string name="ShowIdAndDc">Mostrar ID e DC no perfil</string>
     <string name="UseDefaultTheme">Usar o tema padrão *</string>
     <string name="DialogsSettings">Diálogos</string>
     <string name="NagramXPushService">Serviço de notificação</string>
@@ -240,7 +240,7 @@
     <string name="TabletMode">Modo tablet</string>
     <string name="TabletModeDefault">Depende do aparelho</string>
     <string name="ReplaceText">Substituir texto</string>
-    <string name="TextOrigin">Origem</string>
+    <string name="TextOrigin">Original</string>
     <string name="TextReplace">Substituir</string>
     <string name="ReplaceRegex">Usar regex</string>
     <string name="DisableTrending">Desativar tendências</string>
@@ -266,7 +266,7 @@
     <string name="showSeconds">Mostrar data/hora em segundos</string>
     <string name="Name">Nome</string>
     <string name="channelAlias">Apelido do canal</string>
-    <string name="ChannelAliasDetails">Etiquetar usuários de canal com um nome personalizado. Ative para definir um apelido no menu de perfil do canal.</string>
+    <string name="ChannelAliasDetails">Etiquetar usuários do canal com um nome personalizado. Ative para definir um apelido no menu de perfil do canal.</string>
     <string name="setChannelAliasName">Definir apelido</string>
     <string name="StickerSettings">Stickers</string>
     <string name="ConfirmSettings">Confirmações</string>

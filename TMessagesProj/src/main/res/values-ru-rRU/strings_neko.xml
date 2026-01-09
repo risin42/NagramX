@@ -240,7 +240,7 @@
     <string name="TabletMode">Режим планшета</string>
     <string name="TabletModeDefault">Авто</string>
     <string name="ReplaceText">Заменить</string>
-    <string name="TextOrigin">Найти</string>
+    <string name="TextOrigin">Оригинал</string>
     <string name="TextReplace">Заменить на</string>
     <string name="ReplaceRegex">Используйте регулярные выражения</string>
     <string name="DisableTrending">Отключить тренды</string>
