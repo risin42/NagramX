@@ -94,6 +94,19 @@ public class MessageHelper extends BaseController {
         super(num);
     }
 
+    public static MessageHelper getInstance(int num) {
+        MessageHelper localInstance = Instance[num];
+        if (localInstance == null) {
+            synchronized (MessageHelper.class) {
+                localInstance = Instance[num];
+                if (localInstance == null) {
+                    Instance[num] = localInstance = new MessageHelper(num);
+                }
+            }
+        }
+        return localInstance;
+    }
+
     public static String getPathToMessage(MessageObject messageObject) {
         String path = messageObject.messageOwner.attachPath;
         if (!TextUtils.isEmpty(path)) {
@@ -140,19 +153,6 @@ public class MessageHelper extends BaseController {
             arrayList.add(obj);
         }
         getNotificationCenter().postNotificationName(NotificationCenter.replaceMessagesObjects, dialog_id, arrayList, false);
-    }
-
-    public static MessageHelper getInstance(int num) {
-        MessageHelper localInstance = Instance[num];
-        if (localInstance == null) {
-            synchronized (MessageHelper.class) {
-                localInstance = Instance[num];
-                if (localInstance == null) {
-                    Instance[num] = localInstance = new MessageHelper(num);
-                }
-            }
-        }
-        return localInstance;
     }
 
     public interface FilteredMessageCallback {

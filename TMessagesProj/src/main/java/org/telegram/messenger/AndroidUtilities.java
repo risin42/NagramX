@@ -206,7 +206,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -235,7 +234,6 @@ import me.vkryl.core.BitwiseUtils;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.TypefaceHelper;
-import tw.nekomimi.nekogram.utils.AndroidUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 public class AndroidUtilities {
@@ -4245,10 +4243,6 @@ public class AndroidUtilities {
         return false;
     }
 
-    public static boolean openForView(MessageObject message, Activity activity) {
-        return openForView(message, activity, null, false);
-    }
-
     public static boolean openForView(MessageObject message, Activity activity, Theme.ResourcesProvider resourcesProvider, boolean restrict) {
         File f = null;
         if (message.messageOwner.attachPath != null && message.messageOwner.attachPath.length() != 0) {
@@ -4763,7 +4757,7 @@ public class AndroidUtilities {
             dismissRunnable.run();
         });
 
-        pickerBottomLayout.middleButtonTextView.setText(LocaleController.getString("Save", R.string.Save).toUpperCase());
+        pickerBottomLayout.middleButtonTextView.setText(getString(R.string.Save).toUpperCase());
         pickerBottomLayout.middleButton.setVisibility(View.VISIBLE);
         pickerBottomLayout.middleButton.setOnClickListener((it) -> {
             int p = Utilities.parseInt(port);
