@@ -19,7 +19,8 @@ fun startTrans(
     ctx: Context,
     text: String,
     toLang: String = NekoConfig.translateToLang.String(),
-    provider: Int = 0
+    provider: Int = 0,
+    appendOriginal: Boolean = false
 ) {
 
     val dialog = AlertUtil.showProgress(ctx)
@@ -41,7 +42,12 @@ fun startTrans(
             if (!canceled.get()) {
                 withContext(Dispatchers.Main) {
                     dialog.uDismiss()
-                    AlertUtil.showCopyAlert(ctx, result)
+                    val finalText = if (appendOriginal) {
+                        "$text\n\n--------\n\n$result"
+                    } else {
+                        result
+                    }
+                    AlertUtil.showCopyAlert(ctx, finalText)
                 }
             }
         }.onFailure { e ->
@@ -52,7 +58,7 @@ fun startTrans(
                     AlertUtil.showTransFailedDialog(
                         ctx, e is UnsupportedOperationException, e.message ?: e.javaClass.simpleName
                     ) {
-                        startTrans(ctx, text, toLang, finalProvider)
+                        startTrans(ctx, text, toLang, finalProvider, appendOriginal)
                     }
                 }
             }
