@@ -159,7 +159,7 @@ public class MessageHelper extends BaseController {
 
         ArrayList<MessageObject> arrayList = new ArrayList<>();
         arrayList.add(obj);
-        getNotificationCenter().postNotificationName(NotificationCenter.replaceMessagesObjects, dialog_id, arrayList, false);
+        getNotificationCenter().postNotificationName(NotificationCenter.replaceMessagesObjects, dialog_id, arrayList, false, true);
     }
 
     public void resetMessageContent(long dialog_id, ArrayList<MessageObject> messageObjects) {

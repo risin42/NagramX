@@ -23683,6 +23683,10 @@ public class ChatActivity extends BaseFragment implements
                         if (messagePreviewParams != null) {
                             messagePreviewParams.updateReply(replyingMessageObject, replyingQuoteGroup != null ? replyingQuoteGroup : getGroup(replyingMessageObject.getGroupId()), dialog_id, replyingQuote);
                         }
+                        if (args.length > 3) {
+                            boolean fromMessageHelper = args[3] == Boolean.TRUE;
+                            if (fromMessageHelper && messageObjects.size() == 1 && isReplyChatComment()) break;
+                        }
                         fallbackFieldPanel();
                         break;
                     }
