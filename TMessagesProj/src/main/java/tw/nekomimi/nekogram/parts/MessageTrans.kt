@@ -29,6 +29,8 @@ import java.util.Locale
 const val TRANSLATE_MODE_APPEND = 0
 const val TRANSLATE_MODE_REPLACE = 1
 
+const val TRANSLATION_SEPARATOR = "\n\n--------\n\n"
+
 @JvmName("translateMessages")
 fun ChatActivity.translateMessages1() = translateMessages()
 
@@ -179,9 +181,9 @@ fun ChatActivity.translateMessages(
                         }
 
                         selectedObject.messageOwner.translatedMessage =
-                            "${if (translatorMode == TRANSLATE_MODE_APPEND) selectedObject.messageOwner.message + "\n\n--------\n\n" else ""}${result?.text}"
+                            "${if (translatorMode == TRANSLATE_MODE_APPEND) selectedObject.messageOwner.message + TRANSLATION_SEPARATOR else ""}${result?.text}"
 
-                        if (result != null && translatorMode == TRANSLATE_MODE_REPLACE) {
+                        if (result != null) {
                             selectedObject.messageOwner.translatedText = result
                         }
                     }
@@ -203,7 +205,7 @@ fun ChatActivity.translateMessages(
                         }
                     } else {
                         withContext(Dispatchers.Main) {
-                            clearTranslated(selectedObject, currentAccount)
+                            clearTranslated(selectedObject, currentAccount, translatorMode != TRANSLATE_MODE_APPEND)
                             messageHelper.resetMessageContent(dialogId, selectedObject)
                         }
                     }
@@ -241,8 +243,10 @@ private fun isTranslatedPoll(messageObject: MessageObject) =
         poll.translatedQuestion?.isNotEmpty() == true && poll.answers.all { it.translatedText?.isNotEmpty() == true }
     } ?: false
 
-private fun clearTranslated(messageObject: MessageObject, currentAccount: Int) {
-    messageObject.messageOwner.translatedText = null
+private fun clearTranslated(messageObject: MessageObject, currentAccount: Int, clearTranslatedText: Boolean) {
+    if (clearTranslatedText) {
+        messageObject.messageOwner.translatedText = null
+    }
     messageObject.messageOwner.translatedPoll = null
     MessagesStorage.getInstance(currentAccount).updateMessageCustomParams(
         messageObject.dialogId, messageObject.messageOwner
