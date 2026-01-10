@@ -2,6 +2,8 @@ package tw.nekomimi.nekogram.ui;
 
 import static org.telegram.messenger.LocaleController.getString;
 
+import static tw.nekomimi.nekogram.parts.MessageTransKt.TRANSLATION_SEPARATOR;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -271,9 +273,9 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
                 messageObject.messageOwner.translated = true;
                 messageObject.messageOwner.translatedToLanguage = TranslatorKt.getLocale2code(resolvedTargetLocale).toLowerCase(Locale.getDefault());
                 if (mode == 0) {
-                    String finalMessageText = originalText + "\n\n--------\n\n" + translatedText;
+                    String finalMessageText = originalText + TRANSLATION_SEPARATOR + translatedText;
                     messageObject.messageOwner.translatedMessage = finalMessageText;
-                    messageObject.messageOwner.translatedText = null;
+                    messageObject.messageOwner.translatedText = finalText;
                     messageObject.translated = false;
                     messageObject.applyNewText(finalMessageText);
                 } else {

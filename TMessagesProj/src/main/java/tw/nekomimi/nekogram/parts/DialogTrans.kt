@@ -43,7 +43,7 @@ fun startTrans(
                 withContext(Dispatchers.Main) {
                     dialog.uDismiss()
                     val finalText = if (appendOriginal) {
-                        "$text\n\n--------\n\n$result"
+                        "$text$TRANSLATION_SEPARATOR$result"
                     } else {
                         result
                     }

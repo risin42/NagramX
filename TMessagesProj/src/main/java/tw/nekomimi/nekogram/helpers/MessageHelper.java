@@ -996,4 +996,114 @@ public class MessageHelper extends BaseController {
             });
         });
     }
+
+    public static ArrayList<TLRPC.MessageEntity> reparseMessageEntities(ArrayList<TLRPC.MessageEntity> translatedEntities) {
+        if (translatedEntities == null) {
+            return null;
+        }
+        if (!NaConfig.INSTANCE.getTranslatorKeepMarkdown().Bool()) {
+            ArrayList<TLRPC.MessageEntity> entities = new ArrayList<>();
+            for (TLRPC.MessageEntity entity : translatedEntities) {
+                boolean isMarkdownEntity = entity instanceof TLRPC.TL_messageEntitySpoiler;
+                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityBold;
+                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityItalic;
+                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityCode;
+                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityStrike;
+                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityUnderline;
+                if (!isMarkdownEntity) {
+                    entities.add(entity);
+                }
+            }
+            return entities;
+        }
+        return translatedEntities;
+    }
+
+    public static ArrayList<TLRPC.MessageEntity> getEntitiesForText(MessageObject messageObject, CharSequence text) {
+        if (messageObject == null || messageObject.messageOwner == null) {
+            return null;
+        }
+        final TLRPC.Message messageOwner = messageObject.messageOwner;
+        if (messageObject.translated) {
+            if (messageOwner.voiceTranscriptionOpen) {
+                return messageOwner.translatedVoiceTranscription != null ? messageOwner.translatedVoiceTranscription.entities : null;
+            } else {
+                return messageOwner.translatedText != null ? reparseMessageEntities(messageOwner.translatedText.entities) : null;
+            }
+        }
+        if (messageOwner.translated && messageOwner.translatedText != null) {
+            return mergeAppendTranslatedEntities(messageOwner.entities, messageOwner.translatedText, text);
+        }
+        return messageOwner.entities;
+    }
+
+    public static ArrayList<TLRPC.MessageEntity> mergeAppendTranslatedEntities(ArrayList<TLRPC.MessageEntity> baseEntities, TLRPC.TL_textWithEntities translatedText, CharSequence fullText) {
+        if (fullText == null || translatedText == null || TextUtils.isEmpty(translatedText.text) || translatedText.entities == null) {
+            return baseEntities;
+        }
+        final int fullLen = fullText.length();
+        final int translatedLen = translatedText.text.length();
+        if (translatedLen == 0 || fullLen < translatedLen) {
+            return baseEntities;
+        }
+        final int translatedOffset = fullLen - translatedLen;
+        final ArrayList<TLRPC.MessageEntity> translatedEntities = reparseMessageEntities(translatedText.entities);
+        if (translatedEntities == null) {
+            return baseEntities;
+        }
+        if (translatedOffset == 0) {
+            return translatedEntities;
+        }
+        if (!TextUtils.regionMatches(fullText, translatedOffset, translatedText.text, 0, translatedLen)) {
+            return baseEntities;
+        }
+        final ArrayList<TLRPC.MessageEntity> merged = new ArrayList<>();
+        if (baseEntities != null) {
+            merged.addAll(baseEntities);
+        }
+        for (int i = 0, size = translatedEntities.size(); i < size; i++) {
+            final TLRPC.MessageEntity entity = translatedEntities.get(i);
+            if (entity == null) {
+                continue;
+            }
+            final TLRPC.MessageEntity copied = copyMessageEntity(entity);
+            if (copied == null) {
+                continue;
+            }
+            copied.offset += translatedOffset;
+            if (copied.length <= 0 || copied.offset < 0 || copied.offset >= fullLen) {
+                continue;
+            }
+            if (copied.offset + copied.length > fullLen) {
+                copied.length = fullLen - copied.offset;
+            }
+            merged.add(copied);
+        }
+        return merged;
+    }
+
+    public static TLRPC.MessageEntity copyMessageEntity(TLRPC.MessageEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        NativeByteBuffer data = null;
+        try {
+            data = new NativeByteBuffer(entity.getObjectSize());
+            entity.serializeToStream(data);
+            data.rewind();
+            final int constructor = data.readInt32(true);
+            final TLRPC.MessageEntity result = TLRPC.MessageEntity.TLdeserialize(data, constructor, true);
+            if (result instanceof TLRPC.TL_messageEntityCustomEmoji && entity instanceof TLRPC.TL_messageEntityCustomEmoji) {
+                ((TLRPC.TL_messageEntityCustomEmoji) result).document = ((TLRPC.TL_messageEntityCustomEmoji) entity).document;
+            }
+            return result;
+        } catch (Exception e) {
+            FileLog.e(e);
+        } finally {
+            if (data != null) {
+                data.reuse();
+            }
+        }
+        return null;
+    }
 }

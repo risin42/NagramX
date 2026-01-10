@@ -3551,17 +3551,19 @@ public class MessageObject {
     public boolean updateTranslation(boolean force) {
         boolean replyUpdated = replyMessageObject != null && replyMessageObject != this && replyMessageObject.updateTranslation(force);
         TranslateController translateController = MessagesController.getInstance(currentAccount).getTranslateController();
-        final TLRPC.TL_textWithEntities translatedText = messageOwner != null ? (messageOwner.voiceTranscriptionOpen ? messageOwner.translatedVoiceTranscription : messageOwner.translatedText) : null;
+        final boolean voiceTranscriptionOpen = messageOwner != null && messageOwner.voiceTranscriptionOpen;
+        final boolean manualTranslated = translateController.isManualTranslated(this);
+        final boolean autoTranslated = TranslateController.isTranslatable(this) && translateController.isTranslatingDialog(getDialogId());
+        final int translatorMode = NaConfig.INSTANCE.getTranslatorMode().Int();
+        final boolean showInline = autoTranslated || (manualTranslated && (voiceTranscriptionOpen || messageOwner != null && messageOwner.translatedPoll != null || translatorMode == MessageTransKt.TRANSLATE_MODE_REPLACE));
+        final TLRPC.TL_textWithEntities translatedText = messageOwner != null ? (voiceTranscriptionOpen ? messageOwner.translatedVoiceTranscription : messageOwner.translatedText) : null;
         if (
-            (translateController.isManualTranslated(this) ||
-                TranslateController.isTranslatable(this) &&
-                translateController.isTranslatingDialog(getDialogId())
-            ) &&
-//            !translateController.isTranslateDialogHidden(getDialogId()) &&
+            showInline &&
+            // !translateController.isTranslateDialogHidden(getDialogId()) &&
             messageOwner != null &&
             (translatedText != null || messageOwner.translatedPoll != null) &&
-            (translateController.isManualTranslated(this) ||
-                TextUtils.equals(translateController.isManualTranslated(this) ? NekoConfig.translateToLang.String() : translateController.getDialogTranslateTo(getDialogId()), messageOwner.translatedToLanguage)
+            (manualTranslated ||
+                TextUtils.equals(translateController.getDialogTranslateTo(getDialogId()), messageOwner.translatedToLanguage)
             )
         ) {
             if (translated) {
@@ -3597,14 +3599,7 @@ public class MessageObject {
             fromUser = MessagesController.getInstance(currentAccount).getUser(messageOwner.from_id.user_id);
         }
         messageText = text;
-        ArrayList<TLRPC.MessageEntity> entities =
-            translated ?
-                (messageOwner.voiceTranscriptionOpen ?
-                    (messageOwner.translatedVoiceTranscription != null ? messageOwner.translatedVoiceTranscription.entities : null) :
-                    (messageOwner.translatedText != null && (NaConfig.INSTANCE.getTranslatorMode().Int() == MessageTransKt.TRANSLATE_MODE_REPLACE || MessagesController.getInstance(currentAccount).getTranslateController().isTranslatingDialog(getDialogId()))
-                        ? reparseMessageEntities(messageOwner.translatedText.entities) : null)
-                ) :
-                messageOwner.entities;
+        ArrayList<TLRPC.MessageEntity> entities = MessageHelper.getEntitiesForText(this, messageText);
         TextPaint paint;
         if (getMedia(messageOwner) instanceof TLRPC.TL_messageMediaGame) {
             paint = Theme.chat_msgGameTextPaint;
@@ -3621,25 +3616,6 @@ public class MessageObject {
         checkEmojiOnly(emojiOnly);
         generateLayout(fromUser);
         setType();
-    }
-
-    private ArrayList<TLRPC.MessageEntity> reparseMessageEntities(ArrayList<TLRPC.MessageEntity> translatedEntities) {
-        if (!NaConfig.INSTANCE.getTranslatorKeepMarkdown().Bool()) {
-            ArrayList<TLRPC.MessageEntity> entities = new ArrayList<>();
-            for (TLRPC.MessageEntity entity : translatedEntities) {
-                boolean isMarkdownEntity = entity instanceof TLRPC.TL_messageEntitySpoiler;
-                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityBold;
-                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityItalic;
-                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityCode;
-                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityStrike;
-                isMarkdownEntity |= entity instanceof TLRPC.TL_messageEntityUnderline;
-                if (!isMarkdownEntity) {
-                    entities.add(entity);
-                }
-            }
-            return entities;
-        }
-        return translatedEntities;
     }
 
     private boolean allowsBigEmoji() {
@@ -6903,11 +6879,11 @@ public class MessageObject {
         if (messageOwner.translatedText != null && (captionTranslated = translated)) {
             text = messageOwner.translatedText.text;
             // entities = messageOwner.translatedText.entities;
-            entities = reparseMessageEntities(messageOwner.translatedText.entities);
+            entities = MessageHelper.reparseMessageEntities(messageOwner.translatedText.entities);
         } else if (messageOwner.translated) {
             // NekoX Translate
             text = messageOwner.translatedMessage;
-            // keep the entities as is
+            entities = MessageHelper.getEntitiesForText(this, text);
         }
         if (!isMediaEmpty() && !(getMedia(messageOwner) instanceof TLRPC.TL_messageMediaGame) && !TextUtils.isEmpty(text)) {
             caption = Emoji.replaceEmoji(text, Theme.chat_msgTextPaint.getFontMetricsInt(), false);
@@ -7209,7 +7185,7 @@ public class MessageObject {
             entities.add(entityItalic);
             return addEntitiesToText(text, entities, isOutOwner(), true, photoViewer, useManualParse);
         } else {
-            return addEntitiesToText(text, getEntities(), isOutOwner(), true, photoViewer, useManualParse);
+            return addEntitiesToText(text, MessageHelper.getEntitiesForText(this, text), isOutOwner(), true, photoViewer, useManualParse);
         }
     }
 
@@ -7245,15 +7221,16 @@ public class MessageObject {
     }
 
     public ArrayList<TLRPC.MessageEntity> getEntities() {
-        if (messageOwner == null) return null;
+        /*if (messageOwner == null) return null;
         if (translated) {
             if (messageOwner.voiceTranscriptionOpen) {
                 return messageOwner.translatedVoiceTranscription != null ? messageOwner.translatedVoiceTranscription.entities : null;
             } else {
-                return messageOwner.translatedText != null ? reparseMessageEntities(messageOwner.translatedText.entities) : null;
+                return messageOwner.translatedText != null ? messageOwner.translatedText.entities : null;
             }
         }
-        return messageOwner.entities;
+        return messageOwner.entities;*/
+        return MessageHelper.getEntitiesForText(this, messageText);
     }
 
     public Spannable replaceAnimatedEmoji(CharSequence text, Paint.FontMetricsInt fontMetricsInt) {
