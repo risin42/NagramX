@@ -1403,6 +1403,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val deleteChatForBothSides =
+        addConfig(
+            "DeleteChatForBothSides",
+            ConfigItem.configTypeBool,
+            true
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {
