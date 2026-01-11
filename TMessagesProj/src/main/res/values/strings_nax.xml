@@ -39,6 +39,11 @@
     <string name="LlmSystemPromptNotice">Define the AI\'s role and behavior.\n\nThis prompt sets the tone, personality, and limitations for the AI. Consider describing what type of assistant the AI should be.\n\nCan be left empty.</string>
     <string name="LlmUserPrompt">User Prompt</string>
     <string name="LlmUserPromptNotice">Use @text as a placeholder for the original message, and @toLang for the target language (optional).\n\nExample: \'Translate @text to @toLang without any explanation.\'\n\nLeaving this blank will use the default prompt.</string>
+    <string name="LlmUseContext">Use Context</string>
+    <string name="LlmUseContextNotice">Improves translation quality at the cost of more tokens.</string>
+    <string name="LlmContextSize">Context messages</string>
+    <string name="LlmUseContextInAutoTranslate">Use Context in Auto Translate</string>
+    <string name="LlmUseContextInAutoTranslateNotice">May increase token usage and latency.</string>
     <string name="LlmTemperature">Temperature</string>
     <string name="AITranslatorSettings">AI Translator</string>
     <string name="TranslucentDeletedMessages">Translucent Deleted Messages</string>

@@ -718,7 +718,24 @@ object NaConfig {
             ConfigItem.configTypeFloat,
             0.7f
         )
-
+    val llmUseContext =
+        addConfig(
+            "LlmUseContext",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val llmContextSize =
+        addConfig(
+            "LlmContextSize",
+            ConfigItem.configTypeInt,
+            2
+        )
+    val llmUseContextInAutoTranslate =
+        addConfig(
+            "LlmUseContextInAutoTranslate",
+            ConfigItem.configTypeBool,
+            false
+        )
     val translucentDeletedMessages =
         addConfig(
             "TranslucentDeletedMessages",

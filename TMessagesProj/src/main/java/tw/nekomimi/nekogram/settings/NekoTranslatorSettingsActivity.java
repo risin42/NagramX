@@ -67,6 +67,7 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
+import tw.nekomimi.nekogram.translate.source.LLMTranslator;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.ui.PopupBuilder;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
@@ -140,6 +141,15 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
     private final AbstractConfigCell llmSystemPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmSystemPrompt(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmSystemPrompt(), getString(R.string.LlmSystemPromptNotice), getString(R.string.LlmSystemPromptHint)), getString(R.string.Default)));
     private final AbstractConfigCell llmUserPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmUserPrompt(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmUserPrompt(), getString(R.string.LlmUserPromptNotice), ""), getString(R.string.Default)));
+    private final AbstractConfigCell llmUseContextRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getLlmUseContext(), getString(R.string.LlmUseContextNotice)));
+    private final AbstractConfigCell llmUseContextInAutoTranslateRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getLlmUseContextInAutoTranslate(), getString(R.string.LlmUseContextInAutoTranslateNotice)));
+    private final AbstractConfigCell llmContextSizeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getLlmContextSize(), new String[]{
+        "1",
+        "3",
+        "5",
+        "7",
+        "10",
+}, null));
     private final AbstractConfigCell headerTemperature = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.LlmTemperature)));
     private final AbstractConfigCell temperatureValueRow = cellGroup.appendCell(new ConfigCellCustom(getString(R.string.LlmTemperature), ConfigCellCustom.CUSTOM_ITEM_Temperature, false));
     private final AbstractConfigCell dividerAITranslatorSettings = cellGroup.appendCell(new ConfigCellDivider());
@@ -679,6 +689,9 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         }
         cellGroup.appendCell(llmSystemPromptRow);
         cellGroup.appendCell(llmUserPromptRow);
+        cellGroup.appendCell(llmUseContextRow);
+        cellGroup.appendCell(llmUseContextInAutoTranslateRow);
+        cellGroup.appendCell(llmContextSizeRow);
         cellGroup.appendCell(headerTemperature);
         cellGroup.appendCell(temperatureValueRow);
         cellGroup.appendCell(dividerAITranslatorSettings);
@@ -731,7 +744,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     }
 
     private void checkTemperatureRows() {
-        String modelName = NaConfig.INSTANCE.getLlmModelName().String();
+        String modelName = LLMTranslator.INSTANCE.getBaseModelName(NaConfig.INSTANCE.getLlmModelName().String());
         boolean showTemperature = NaConfig.INSTANCE.getLlmProviderPreset().Int() > 1 || (NaConfig.INSTANCE.getLlmProviderPreset().Int() == 0 && !modelName.startsWith("gpt-5"));
         if (listAdapter == null) {
             if (!showTemperature) {
@@ -741,7 +754,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
             return;
         }
         if (showTemperature) {
-            final int index = cellGroup.rows.indexOf(llmUserPromptRow);
+            final int index = cellGroup.rows.indexOf(llmContextSizeRow);
             if (!cellGroup.rows.contains(headerTemperature)) {
                 cellGroup.rows.add(index + 1, headerTemperature);
                 cellGroup.rows.add(index + 2, temperatureValueRow);
