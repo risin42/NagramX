@@ -9,6 +9,8 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.BuildVars
+import org.telegram.messenger.ChatObject
+import org.telegram.messenger.DialogObject
 import org.telegram.messenger.MessageObject
 import org.telegram.messenger.MessagesController
 import org.telegram.messenger.MessagesStorage
@@ -21,6 +23,7 @@ import tw.nekomimi.nekogram.helpers.MessageHelper
 import tw.nekomimi.nekogram.translate.Translator
 import tw.nekomimi.nekogram.translate.code2Locale
 import tw.nekomimi.nekogram.translate.locale2code
+import tw.nekomimi.nekogram.translate.source.LLMTranslator
 import tw.nekomimi.nekogram.utils.AlertUtil
 import tw.nekomimi.nekogram.utils.AppScope
 import xyz.nextalone.nagram.NaConfig
@@ -167,12 +170,25 @@ fun ChatActivity.translateMessages(
                         var result: TLRPC.TL_textWithEntities? = null
 
                         runCatching {
-                            result = Translator.translate(
-                                target,
-                                selectedObject.messageOwner.message,
-                                selectedObject.messageOwner.entities,
-                                provider
-                            )
+                            val shouldUseContext = shouldUseLlmContext(provider)
+                            val context = if (shouldUseContext) buildLlmContext(this@translateMessages, selectedObject) else null
+                            result = if (shouldUseContext) {
+                                LLMTranslator.withTranslationContext(context) {
+                                    Translator.translate(
+                                        target,
+                                        selectedObject.messageOwner.message,
+                                        selectedObject.messageOwner.entities,
+                                        provider
+                                    )
+                                }
+                            } else {
+                                Translator.translate(
+                                    target,
+                                    selectedObject.messageOwner.message,
+                                    selectedObject.messageOwner.entities,
+                                    provider
+                                )
+                            }
                         }.onFailure { e ->
                             handleTranslationError(parentActivity, e, controller, selectedObject) {
                                 translateMessages(target, listOf(selectedObject), provider)
@@ -214,6 +230,98 @@ fun ChatActivity.translateMessages(
             jobs.joinAll()
         }
     }
+}
+
+private fun shouldUseLlmContext(provider: Int): Boolean {
+    val effectiveProvider = provider.takeIf { it != 0 } ?: NekoConfig.translationProvider.Int()
+    return effectiveProvider == Translator.providerLLMTranslator && NaConfig.llmUseContext.Bool()
+}
+
+private fun buildLlmContext(chatActivity: ChatActivity, message: MessageObject): String? {
+    val maxMessages = LLMTranslator.getContextMessageLimit()
+    if (maxMessages <= 0) return null
+
+    val seen = HashSet<String>(maxMessages * 2)
+
+    fun extractWithDedup(candidate: MessageObject): String? {
+        val key = "${candidate.dialogId}:${candidate.id}"
+        if (!seen.add(key)) return null
+        return extractLlmContextText(candidate)
+    }
+
+    // Reply chain
+    val replyChainTexts = ArrayList<String>()
+    var reply = message.replyMessageObject
+    var isDirectReplyIncluded = false
+    while (reply != null && replyChainTexts.size < maxMessages) {
+        val text = extractWithDedup(reply)
+        if (text != null) {
+            replyChainTexts.add(text)
+            if (reply === message.replyMessageObject) isDirectReplyIncluded = true
+        }
+        reply = reply.replyMessageObject
+    }
+    if (replyChainTexts.isNotEmpty()) {
+        replyChainTexts.reverse() // oldest first
+    }
+
+    // Context messages
+    val contextTexts = ArrayList<String>()
+    val currentChat = chatActivity.currentChat
+    if (currentChat == null || !ChatObject.isChannelAndNotMegaGroup(currentChat)) {
+        val messages = chatActivity.chatAdapter?.messages
+        if (messages != null) {
+            val index = messages.indexOf(message).takeIf { it >= 0 }
+                ?: messages.indexOfFirst { it.dialogId == message.dialogId && it.id == message.id }.takeIf { it >= 0 }
+            if (index != null) {
+                val remaining = maxMessages - replyChainTexts.size
+                for (i in (index + 1) until messages.size) {
+                    if (contextTexts.size >= remaining) break
+                    val msg = messages[i]
+                    extractWithDedup(msg)?.let { contextTexts.add(it) }
+                }
+                if (contextTexts.isNotEmpty()) {
+                    contextTexts.reverse() // oldest first
+                }
+            }
+        }
+    }
+
+    if (replyChainTexts.isEmpty() && contextTexts.isEmpty()) return null
+
+    return buildString {
+        val dialogTitle = DialogObject.getName(chatActivity.currentAccount, message.dialogId).trim()
+        if (dialogTitle.isNotEmpty()) {
+            append("Chat: ").append(dialogTitle).append("\n\n")
+        }
+
+        if (replyChainTexts.isNotEmpty()) {
+            append("Reply chain (oldest → newest):\n")
+            replyChainTexts.forEachIndexed { index, text ->
+                append("R").append(index + 1).append(": ").append(text).append('\n')
+            }
+            if (isDirectReplyIncluded) {
+                append("\nMessage to translate replies to: R").append(replyChainTexts.size).append('\n')
+            } else if (message.replyMessageObject != null) {
+                append("\nMessage to translate is a reply, but the replied message text is unavailable.\n")
+            }
+            append('\n')
+        }
+
+        if (contextTexts.isNotEmpty()) {
+            append("Other context messages (chronological):\n")
+            contextTexts.forEachIndexed { index, text ->
+                append("C").append(index + 1).append(": ").append(text).append('\n')
+            }
+        }
+    }.trim().takeIf { it.isNotEmpty() }
+}
+
+private fun extractLlmContextText(message: MessageObject): String? {
+    val text = MessageHelper.getMessagePlainText(message, null)?.trim().orEmpty()
+    if (text.isEmpty()) return null
+    if (MessageHelper.shouldSkipTranslation(text)) return null
+    return text
 }
 
 private fun handleTranslationError(

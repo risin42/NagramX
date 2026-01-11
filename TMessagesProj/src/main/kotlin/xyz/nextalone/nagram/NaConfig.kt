@@ -1,13 +1,10 @@
 package xyz.nextalone.nagram
 
 import android.content.SharedPreferences
-import android.os.Build
 import android.util.Base64
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.BuildVars
-import org.telegram.messenger.LocaleController.getString
-import org.telegram.messenger.R
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.config.ConfigItem
 import tw.nekomimi.nekogram.config.ConfigItemKeyLinked
@@ -616,6 +613,24 @@ object NaConfig {
             "LlmTemperature",
             ConfigItem.configTypeFloat,
             0.7f
+        )
+    val llmUseContext =
+        addConfig(
+            "LlmUseContext",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val llmContextSize =
+        addConfig(
+            "LlmContextSize",
+            ConfigItem.configTypeInt,
+            2
+        )
+    val llmUseContextInAutoTranslate =
+        addConfig(
+            "LlmUseContextInAutoTranslate",
+            ConfigItem.configTypeBool,
+            false
         )
     val enableSeparateArticleTranslator =
         addConfig(

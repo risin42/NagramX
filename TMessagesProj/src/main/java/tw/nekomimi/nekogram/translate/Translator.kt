@@ -159,6 +159,31 @@ interface Translator {
         }
 
         @JvmStatic
+        fun translateWithContext(
+            to: Locale,
+            query: String,
+            entities: ArrayList<TLRPC.MessageEntity>,
+            context: String?,
+            translateCallBack: TranslateCallBack2
+        ) {
+            AppScope.io.launch {
+                runCatching {
+                    val result = LLMTranslator.withTranslationContext(context) {
+                        translateBase(to, query, entities, NekoConfig.translationProvider.Int())
+                    }
+                    AndroidUtilities.runOnUIThread { translateCallBack.onSuccess(result) }
+                }.onFailure {
+                    AndroidUtilities.runOnUIThread {
+                        translateCallBack.onFailed(
+                            it is UnsupportedOperationException,
+                            it.message ?: it.javaClass.simpleName
+                        )
+                    }
+                }
+            }
+        }
+
+        @JvmStatic
         fun translatePoll(
             to: Locale = NekoConfig.translateToLang.String()?.code2Locale
                 ?: LocaleController.getInstance().currentLocale,
