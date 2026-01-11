@@ -311,4 +311,5 @@
     <string name="SaveLocalLastSeen">Save Last Seen Date</string>
     <string name="CopyVideoFrame">Copy Frame</string>
     <string name="SetLocalName">Set Local Name</string>
+    <string name="DeleteChatForBothSides">Use \"Also delete for\" by Default</string>
 </resources>
