@@ -1,5 +1,6 @@
 package tw.nekomimi.nekogram;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.content.Context;
@@ -72,7 +73,7 @@ public class BackButtonMenuRecent {
                 canvas.save();
                 path.rewind();
                 AndroidUtilities.rectTmp.set(child.getLeft(), child.getTop(), child.getRight(), child.getBottom());
-                path.addRoundRect(AndroidUtilities.rectTmp, AndroidUtilities.dp(6), AndroidUtilities.dp(6), Path.Direction.CW);
+                path.addRoundRect(AndroidUtilities.rectTmp, dp(6), dp(6), Path.Direction.CW);
                 canvas.clipPath(path);
                 boolean draw = super.drawChild(canvas, child, drawingTime);
                 canvas.restore();
@@ -101,22 +102,21 @@ public class BackButtonMenuRecent {
         clearImageView.setColorFilter(Theme.getColor(Theme.key_actionBarDefaultSubmenuItemIcon));
         clearImageView.setImageResource(R.drawable.msg_close);
         clearImageView.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector)));
-        clearImageView.setOnClickListener(e2 -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(getString(R.string.ClearRecentChats));
-            builder.setMessage(getString(R.string.ClearRecentChatAlert));
-            builder.setPositiveButton(getString(R.string.ClearButton).toUpperCase(), (dialogInterface, i) -> {
-                if (scrimPopupWindowRef.get() != null) {
-                    scrimPopupWindowRef.getAndSet(null).dismiss();
-                }
-                clearRecentDialogs(currentAccount);
-            });
-            builder.setNegativeButton(getString(R.string.Cancel), null);
-            fragment.showDialog(builder.create());
-        });
+        clearImageView.setOnClickListener(e2 -> new AlertDialog.Builder(context, fragment.getResourceProvider())
+                .setTitle(getString(R.string.ClearRecentChats))
+                .setMessage(getString(R.string.ClearRecentChatAlert))
+                .setPositiveButton(getString(R.string.ClearButton).toUpperCase(), (dialogInterface, i) -> {
+                    if (scrimPopupWindowRef.get() != null) {
+                        scrimPopupWindowRef.getAndSet(null).dismiss();
+                    }
+                    clearRecentDialogs(currentAccount);
+                })
+                .setNegativeButton(getString(R.string.Cancel), null)
+                .makeRed(AlertDialog.BUTTON_POSITIVE)
+                .show());
         headerView.addView(clearImageView, LayoutHelper.createFrame(24, 24, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
 
-        headerView.setPadding(AndroidUtilities.dp(9), AndroidUtilities.dp(8), AndroidUtilities.dp(8), AndroidUtilities.dp(8));
+        headerView.setPadding(dp(9), dp(8), dp(8), dp(8));
         layout.addView(headerView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 4, 4, 4, 4));
 
         for (Long dialogId : dialogs) {
@@ -133,10 +133,10 @@ public class BackButtonMenuRecent {
                 continue;
             }
             FrameLayout cell = new FrameLayout(context);
-            cell.setMinimumWidth(AndroidUtilities.dp(200));
+            cell.setMinimumWidth(dp(200));
 
             BackupImageView imageView = new BackupImageView(context);
-            imageView.setRoundRadius(chat != null && chat.forum ? AndroidUtilities.dp(8) : AndroidUtilities.dp(16));
+            imageView.setRoundRadius(chat != null && chat.forum ? dp(8) : dp(16));
             cell.addView(imageView, LayoutHelper.createFrameRelatively(32, 32, Gravity.START | Gravity.CENTER_VERTICAL, 13, 0, 0, 0));
 
             TextView titleView = new TextView(context);
@@ -220,19 +220,19 @@ public class BackButtonMenuRecent {
         scrimPopupWindow.setClippingEnabled(true);
         scrimPopupWindow.setAnimationStyle(R.style.PopupContextAnimation);
         scrimPopupWindow.setFocusable(true);
-        layout.measure(View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(1000), View.MeasureSpec.AT_MOST), View.MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(1000), View.MeasureSpec.AT_MOST));
+        layout.measure(View.MeasureSpec.makeMeasureSpec(dp(1000), View.MeasureSpec.AT_MOST), View.MeasureSpec.makeMeasureSpec(dp(1000), View.MeasureSpec.AT_MOST));
         scrimPopupWindow.setInputMethodMode(ActionBarPopupWindow.INPUT_METHOD_NOT_NEEDED);
         scrimPopupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED);
         scrimPopupWindow.getContentView().setFocusableInTouchMode(true);
         layout.setFitItems(true);
 
-        int popupX = AndroidUtilities.dp(8) - backgroundPaddings.left;
+        int popupX = dp(8) - backgroundPaddings.left;
         if (AndroidUtilities.isTablet()) {
             int[] location = new int[2];
             fragmentView.getLocationInWindow(location);
             popupX += location[0];
         }
-        int popupY = backButton.getBottom() - backgroundPaddings.top - AndroidUtilities.dp(8);
+        int popupY = backButton.getBottom() - backgroundPaddings.top - dp(8);
         scrimPopupWindow.showAtLocation(fragmentView, Gravity.LEFT | Gravity.TOP, popupX, popupY);
         scrimPopupWindow.dimBehind();
     }
