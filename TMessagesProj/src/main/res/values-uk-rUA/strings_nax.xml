@@ -32,9 +32,9 @@
     <string name="LlmUserPrompt">Користувацький Промпт</string>
     <string name="LlmUserPromptNotice">Використовуйте @text як заповнювач для вихідного повідомлення і @toLang для цільової мови (необов\'язково).\n\nНаприклад: «Переклади @text на @toLang без пояснень».\n\n\nЯкщо залишити це поле порожнім, буде використовуватися промпт за замовчуванням.</string>
     <string name="LlmUseContext">Використовувати контекст</string>
-    <string name="LlmUseContextNotice">Покращує якість перекладу за рахунок більшого використання токенів.</string>
-    <string name="LlmContextSize">Повідомлення контексту</string>
-    <string name="LlmUseContextInAutoTranslate">Використовувати контекст в автоперекладі</string>
+    <string name="LlmUseContextNotice">Покращує якість перекладу за рахунок більшої кількості токенів.</string>
+    <string name="LlmContextSize">Контекстні повідомлення</string>
+    <string name="LlmUseContextInAutoTranslate">Використовувати контекст в автоматичному перекладі</string>
     <string name="LlmUseContextInAutoTranslateNotice">Може збільшити використання токенів та затримку.</string>
     <string name="LlmTemperature">Температура</string>
     <string name="AITranslatorSettings">AI Перекладач</string>
@@ -308,4 +308,6 @@
     <string name="SaveLocalLastSeen">Зберегти дату останнього перегляду</string>
     <string name="CopyVideoFrame">Копіювати кадр</string>
     <string name="SetLocalName">Встановити локальне ім\'я</string>
+    <string name="DeleteChatForBothSides">Використовувати «Також видалити для» за замовчуванням</string>
+    <string name="AutoPingProxy">Автоматичний пінг проксі</string>
 </resources>

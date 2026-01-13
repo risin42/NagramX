@@ -33,9 +33,9 @@
     <string name="LlmUserPromptNotice">Użyj @text jako symbolu zastępczego dla oryginalnej wiadomości, a @toLang dla języka docelowego (opcjonalnie).\n\nPrzykład: „Przetłumacz @text na @toLang bez żadnego wyjaśnienia”.\n\nPozostawienie tego pola pustego spowoduje użycie domyślnego monitu.</string>
     <string name="LlmUseContext">Użyj kontekstu</string>
     <string name="LlmUseContextNotice">Poprawia jakość tłumaczenia kosztem większej liczby tokenów.</string>
-    <string name="LlmContextSize">Wiadomości kontekstowe</string>
+    <string name="LlmContextSize">Komunikaty kontekstowe</string>
     <string name="LlmUseContextInAutoTranslate">Użyj kontekstu w automatycznym tłumaczeniu</string>
-    <string name="LlmUseContextInAutoTranslateNotice">Może zwiększyć zużycie tokenów i opóźnienie.</string>
+    <string name="LlmUseContextInAutoTranslateNotice">Może zwiększyć wykorzystanie tokenów i opóźnienie.</string>
     <string name="LlmTemperature">Temperatura</string>
     <string name="AITranslatorSettings">Translator AI</string>
     <string name="TranslucentDeletedMessages">Przezroczyste usunięte wiadomości</string>
@@ -308,4 +308,6 @@
     <string name="SaveLocalLastSeen">Zapisz datę ostatniego widzenia</string>
     <string name="CopyVideoFrame">Kopiuj ramkę</string>
     <string name="SetLocalName">Ustaw nazwę lokalną</string>
+    <string name="DeleteChatForBothSides">Domyślnie użyj opcji „Usuń także dla”</string>
+    <string name="AutoPingProxy">Automatyczne pingowanie serwera proxy</string>
 </resources>

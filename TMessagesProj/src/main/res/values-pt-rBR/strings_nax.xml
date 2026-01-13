@@ -296,9 +296,18 @@
     <string name="CameraInVideoMessagesAsk">Perguntar</string>
     <string name="CameraSettings">Câmera</string>
     <string name="SmoothRoundedMenu">Menus de contexto arredondados e suaves</string>
+    <string name="SyncContactToPhone">Sincronizar Contato com o Telefone</string>
+    <string name="AddViaQRCode">Adicionar via Código QR</string>
+    <string name="ContactNotes">Notas</string>
+    <string name="PhoneNotOnTelegramInvite">Este número de telefone não está no Telegram. **Convidar &gt;**</string>
+    <string name="PhoneAlreadyInContacts">Este número de telefone já está nos seus contatos. **Ver &gt;**</string>
+    <string name="PhoneOnTelegram">Este número de telefone está no Telegram.</string>
+    <string name="SIMCard">Cartão SIM</string>
+    <string name="DeviceAccount">Dispositivo</string>
     <string name="ApiKeyNotSet">A chave da API não está configurada.</string>
     <string name="SaveLocalLastSeen">Salvar data do visto por último</string>
     <string name="CopyVideoFrame">Copiar quadro</string>
     <string name="SetLocalName">Definir nome local</string>
     <string name="DeleteChatForBothSides">Usar \"Apagar também para\" por padrão</string>
+    <string name="AutoPingProxy">Ping automático do proxy</string>
 </resources>
