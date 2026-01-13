@@ -225,7 +225,9 @@ public class SpoilerEffect extends Drawable {
                 while (it.hasNext()) {
                     Particle p = it.next();
                     if (particlesPool.size() < maxParticles) {
-                        particlesPool.push(p);
+                        if (p != null) {
+                            particlesPool.push(p);
+                        }
                     }
                     it.remove();
                 }
@@ -293,11 +295,15 @@ public class SpoilerEffect extends Drawable {
         Iterator<Particle> it = particles.iterator();
         while (it.hasNext()) {
             Particle p = it.next();
+            if (p == null) {
+                it.remove();
+                continue;
+            }
             if (!getBounds().contains((int) p.x, (int) p.y)) {
                 it.remove();
-            }
-            if (particlesPool.size() < maxParticles) {
-                particlesPool.push(p);
+                if (particlesPool.size() < maxParticles) {
+                    particlesPool.push(p);
+                }
             }
         }
     }
@@ -317,7 +323,11 @@ public class SpoilerEffect extends Drawable {
             }
             for (int i = 0; i < particles.size(); i++) {
                 Particle particle = particles.get(i);
-
+                if (particle == null) {
+                    particles.remove(i);
+                    i--;
+                    continue;
+                }
                 particle.currentTime = Math.min(particle.currentTime + dt, particle.lifeTime);
                 if (particle.currentTime >= particle.lifeTime || isOutOfBounds(left, top, right, bottom, particle.x, particle.y)) {
                     if (particlesPool.size() < maxParticles) {
@@ -343,6 +353,9 @@ public class SpoilerEffect extends Drawable {
                     }
 
                     Particle newParticle = !particlesPool.isEmpty() ? particlesPool.pop() : new Particle();
+                    if (newParticle == null) {
+                        newParticle = new Particle();
+                    }
                     int attempts = 0;
                     do {
                         generateRandomLocation(newParticle, i);
