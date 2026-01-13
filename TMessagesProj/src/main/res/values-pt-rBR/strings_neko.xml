@@ -238,7 +238,7 @@
     <string name="UserRestrictionsSendGames">Enviar jogos</string>
     <string name="UserRestrictionsSendInline">Enviar via bots inline</string>
     <string name="TabletMode">Modo tablet</string>
-    <string name="TabletModeDefault">Depende do aparelho</string>
+    <string name="TabletModeDefault">Automático</string>
     <string name="ReplaceText">Substituir texto</string>
     <string name="TextOrigin">Original</string>
     <string name="TextReplace">Substituir</string>

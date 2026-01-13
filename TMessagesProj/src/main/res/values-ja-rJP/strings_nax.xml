@@ -309,4 +309,5 @@
     <string name="CopyVideoFrame">フレームをコピー</string>
     <string name="SetLocalName">表示名を変更</string>
     <string name="DeleteChatForBothSides">デフォルトで「相手側も削除」を使用</string>
+    <string name="AutoPingProxy">自動 Ping チェック</string>
 </resources>

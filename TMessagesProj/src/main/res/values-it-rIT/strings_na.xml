@@ -64,7 +64,7 @@
     <string name="DisableMarkdown">Disattiva Markdown</string>
     <string name="SendWithMarkdown">Invia con Markdown</string>
     <string name="TipsChannel">Caratteristiche Suggerimenti Canale</string>
-    <string name="ShowSmallGIF">Mastra GIF Piccole</string>
+    <string name="ShowSmallGIF">Mostra GIF Piccole</string>
     <string name="DisableClickCommandToSend">Chiedi prima di mandare comandi ai Bot</string>
     <string name="DisableDialogsFloatingButton">Nascondi Bottone Fluttuante</string>
     <string name="DisableFlagSecure">Disabilita FLAG_SECURE</string>
@@ -105,7 +105,7 @@
     <string name="SendWithPangu">Invia con Pangu</string>
     <string name="SendWithoutPangu">Invia senza Pangu</string>
     <string name="DefaultHlsVideoQuality">Qualità Video HLS Predefinita</string>
-    <string name="DisableBotOpenButton">Disabilita il bottone Apri nei Bot</string>
+    <string name="DisableBotOpenButton">Disabilita il bottone \"Apri\" nei Bot</string>
     <string name="CustomTitleUserName">Usa il Nome Utente come Titolo</string>
     <string name="EnhancedVideoBitrate">Bitrate Video Condiviso Migliorato</string>
     <string name="ActionBarButtons">Pulsanti della Barra delle Azioni</string>
