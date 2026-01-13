@@ -257,9 +257,9 @@ dependencies {
     // add for UnifiedPush
     implementation 'com.github.UnifiedPush:android-connector:2.3.1'
     // add for keep formatting in translations
-    implementation 'org.apache.commons:commons-text:1.14.0'
+    implementation 'org.apache.commons:commons-text:1.15.0'
     // translator from nekogram
-    implementation 'app.nekogram.translator:translator:1.5.4'
+    implementation 'app.nekogram.translator:translator:1.5.5'
 
     compileOnly fileTree('libs')
 }
