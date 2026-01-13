@@ -1304,6 +1304,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val autoPingProxy =
+        addConfig(
+            "AutoPingProxy",
+            ConfigItem.configTypeBool,
+            true
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {

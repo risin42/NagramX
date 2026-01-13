@@ -112,6 +112,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import android.view.inspector.WindowInspector;
 import android.webkit.MimeTypeMap;
 import android.widget.EdgeEffect;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -155,6 +156,7 @@ import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.ActionBar.INavigationLayout;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.TextDetailSettingsCell;
+import org.telegram.ui.Cells.TextCheckBoxCell;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.ChatBackgroundDrawable;
 import org.telegram.ui.Components.AlertsCreator;
@@ -4598,6 +4600,12 @@ public class AndroidUtilities {
         BottomSheet.Builder builder = new BottomSheet.Builder(activity);
         final Runnable dismissRunnable = builder.getDismissRunnable();
 
+        final TextDetailSettingsCell[] statusCell = new TextDetailSettingsCell[1];
+        final AtomicReference<EllipsizeSpanAnimator> statusEllRef = new AtomicReference<>();
+        final AtomicBoolean pingInProgress = new AtomicBoolean(false);
+        final Runnable[] pingRunnable = new Runnable[1];
+        final int[] pingRequestId = new int[] {0};
+
         builder.setApplyTopPadding(false);
         builder.setApplyBottomPadding(false);
         LinearLayout linearLayout = new LinearLayout(activity);
@@ -4640,7 +4648,7 @@ public class AndroidUtilities {
             if (TextUtils.isEmpty(text)) {
                 continue;
             }
-            AtomicReference<EllipsizeSpanAnimator> ellRef = new AtomicReference<>();
+            final AtomicReference<EllipsizeSpanAnimator> ellRef = a == 5 ? statusEllRef : new AtomicReference<>();
             TextDetailSettingsCell cell = new TextDetailSettingsCell(activity) {
                 @Override
                 protected void onAttachedToWindow() {
@@ -4659,39 +4667,144 @@ public class AndroidUtilities {
                 }
             };
             if (a == 5) {
-                SpannableStringBuilder spannableStringBuilder = SpannableStringBuilder.valueOf(text);
-                EllipsizeSpanAnimator ellipsizeAnimator = new EllipsizeSpanAnimator(cell);
-                ellipsizeAnimator.addView(cell);
-                SpannableString ell = new SpannableString("...");
-                ellipsizeAnimator.wrap(ell, 0);
-                spannableStringBuilder.append(ell);
-                ellRef.set(ellipsizeAnimator);
+                boolean autoPingProxy = NaConfig.INSTANCE.getAutoPingProxy().Bool();
+                if (autoPingProxy) {
+                    SpannableStringBuilder spannableStringBuilder = SpannableStringBuilder.valueOf(text);
+                    EllipsizeSpanAnimator ellipsizeAnimator = new EllipsizeSpanAnimator(cell);
+                    ellipsizeAnimator.addView(cell);
+                    SpannableString ell = new SpannableString("...");
+                    ellipsizeAnimator.wrap(ell, 0);
+                    spannableStringBuilder.append(ell);
+                    ellRef.set(ellipsizeAnimator);
 
-                cell.setTextAndValue(spannableStringBuilder, detail, true);
+                    cell.setTextAndValue(spannableStringBuilder, detail, true);
+                } else {
+                    cell.setTextAndValue("...", detail, true);
+                }
             } else {
                 cell.setTextAndValue(text, detail, true);
             }
             cell.getTextView().setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
             cell.getValueTextView().setTextColor(Theme.getColor(Theme.key_dialogTextGray3));
-            linearLayout.addView(cell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
             if (a == 5) {
-                try {
-                    ConnectionsManager.getInstance(UserConfig.selectedAccount).checkProxy(address, Integer.parseInt(port), user, password, secret, time -> AndroidUtilities.runOnUIThread(() -> {
-                        if (time == -1) {
-                            cell.getTextView().setText(getString(R.string.Unavailable));
-                            cell.getTextView().setTextColor(Theme.getColor(Theme.key_text_RedRegular));
-                        } else {
-                            cell.getTextView().setText(getString(R.string.Available) + ", " + LocaleController.formatString(R.string.Ping, time));
-                            cell.getTextView().setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGreenText));
+                statusCell[0] = cell;
+
+                pingRunnable[0] = () -> {
+                    if (statusCell[0] == null) {
+                        return;
+                    }
+                    if (!pingInProgress.compareAndSet(false, true)) {
+                        return;
+                    }
+                    final int requestId = ++pingRequestId[0];
+                    EllipsizeSpanAnimator old = statusEllRef.getAndSet(null);
+                    if (old != null) {
+                        old.onDetachedFromWindow();
+                    }
+                    SpannableStringBuilder spannableStringBuilder = SpannableStringBuilder.valueOf(getString(R.string.ProxyBottomSheetChecking));
+                    EllipsizeSpanAnimator ellipsizeAnimator = new EllipsizeSpanAnimator(statusCell[0]);
+                    ellipsizeAnimator.addView(statusCell[0]);
+                    SpannableString ell = new SpannableString("...");
+                    ellipsizeAnimator.wrap(ell, 0);
+                    spannableStringBuilder.append(ell);
+                    statusEllRef.set(ellipsizeAnimator);
+                    statusCell[0].getTextView().setText(spannableStringBuilder);
+                    statusCell[0].getTextView().setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
+                    try {
+                        ConnectionsManager.getInstance(UserConfig.selectedAccount).checkProxy(address, Integer.parseInt(port), user, password, secret, time -> AndroidUtilities.runOnUIThread(() -> {
+                            if (pingRequestId[0] != requestId) {
+                                return;
+                            }
+                            pingInProgress.set(false);
+                            EllipsizeSpanAnimator ellipsizeAnimator1 = statusEllRef.getAndSet(null);
+                            if (ellipsizeAnimator1 != null) {
+                                ellipsizeAnimator1.onDetachedFromWindow();
+                            }
+                            if (statusCell[0] == null) {
+                                return;
+                            }
+                            if (time == -1) {
+                                statusCell[0].getTextView().setText(getString(R.string.Unavailable));
+                                statusCell[0].getTextView().setTextColor(Theme.getColor(Theme.key_text_RedRegular));
+                            } else {
+                                statusCell[0].getTextView().setText(getString(R.string.Available) + ", " + LocaleController.formatString(R.string.Ping, time));
+                                statusCell[0].getTextView().setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGreenText));
+                            }
+                        }));
+                    } catch (NumberFormatException ignored) {
+                        pingInProgress.set(false);
+                        EllipsizeSpanAnimator ellipsizeAnimator1 = statusEllRef.getAndSet(null);
+                        if (ellipsizeAnimator1 != null) {
+                            ellipsizeAnimator1.onDetachedFromWindow();
                         }
-                    }));
-                } catch (NumberFormatException ignored) {
-                    cell.getTextView().setText(getString(R.string.Unavailable));
-                    cell.getTextView().setTextColor(Theme.getColor(Theme.key_text_RedRegular));
+                        statusCell[0].getTextView().setText(getString(R.string.Unavailable));
+                        statusCell[0].getTextView().setTextColor(Theme.getColor(Theme.key_text_RedRegular));
+                    }
+                };
+
+                TextView pingButton = new TextView(activity);
+                pingButton.setText("Ping");
+                pingButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                pingButton.setTypeface(AndroidUtilities.bold());
+                pingButton.setTextColor(Theme.getColor(Theme.key_dialogTextBlue2));
+                pingButton.setGravity(Gravity.CENTER);
+                pingButton.setPadding(dp(12), dp(6), dp(12), dp(6));
+                pingButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(dp(6), Color.TRANSPARENT, Theme.getColor(Theme.key_listSelector)));
+                pingButton.setOnClickListener(v -> {
+                    if (pingRunnable[0] != null) {
+                        pingRunnable[0].run();
+                    }
+                });
+                cell.addView(pingButton, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.CENTER_VERTICAL, 14, 0, 14, 0));
+
+                int reserve = dp(72);
+                FrameLayout.LayoutParams textLp = (FrameLayout.LayoutParams) cell.getTextView().getLayoutParams();
+                FrameLayout.LayoutParams valueLp = (FrameLayout.LayoutParams) cell.getValueTextView().getLayoutParams();
+                if (LocaleController.isRTL) {
+                    textLp.leftMargin += reserve;
+                    valueLp.leftMargin += reserve;
+                } else {
+                    textLp.rightMargin += reserve;
+                    valueLp.rightMargin += reserve;
                 }
+                cell.getTextView().setLayoutParams(textLp);
+                cell.getValueTextView().setLayoutParams(valueLp);
+            }
+            linearLayout.addView(cell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+            if (a == 5 && NaConfig.INSTANCE.getAutoPingProxy().Bool() && pingRunnable[0] != null) {
+                pingRunnable[0].run();
             }
         }
+
+        TextCheckBoxCell autoPingCell = new TextCheckBoxCell(activity, true, false);
+        autoPingCell.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector), Theme.RIPPLE_MASK_ALL));
+        autoPingCell.setTextAndCheck(getString(R.string.AutoPingProxy), NaConfig.INSTANCE.getAutoPingProxy().Bool(), true);
+        autoPingCell.setOnClickListener(v -> {
+            boolean newValue = !autoPingCell.isChecked();
+            autoPingCell.setChecked(newValue);
+            NaConfig.INSTANCE.getAutoPingProxy().setConfigBool(newValue);
+
+            if (statusCell[0] == null) {
+                return;
+            }
+            if (newValue) {
+                if (pingRunnable[0] != null) {
+                    pingRunnable[0].run();
+                }
+            } else {
+                EllipsizeSpanAnimator ellipsizeAnimator = statusEllRef.getAndSet(null);
+                if (ellipsizeAnimator != null) {
+                    ellipsizeAnimator.onDetachedFromWindow();
+                }
+                pingRequestId[0]++;
+                pingInProgress.set(false);
+                statusCell[0].getTextView().setText("...");
+                statusCell[0].getTextView().setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
+            }
+        });
+        linearLayout.addView(autoPingCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
         PickerBottomLayout pickerBottomLayout = new PickerBottomLayout(activity, false);
         pickerBottomLayout.setBackgroundColor(Theme.getColor(Theme.key_dialogBackground));

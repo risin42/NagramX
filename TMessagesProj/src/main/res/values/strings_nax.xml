@@ -317,4 +317,5 @@
     <string name="CopyVideoFrame">Copy Frame</string>
     <string name="SetLocalName">Set Local Name</string>
     <string name="DeleteChatForBothSides">Use \"Also delete for\" by Default</string>
+    <string name="AutoPingProxy">Auto Ping Proxy</string>
 </resources>
