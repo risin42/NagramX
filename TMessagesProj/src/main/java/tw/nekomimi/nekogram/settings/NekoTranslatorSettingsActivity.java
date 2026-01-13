@@ -174,6 +174,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         isAutoTranslateEnabled = NaConfig.INSTANCE.getTelegramUIAutoTranslate().Bool();
         oldLlmProvider = NaConfig.INSTANCE.getLlmProviderPreset().Int();
         rebuildRowsForLlmProvider(oldLlmProvider);
+        checkContextRows();
         checkTemperatureRows();
         addRowsToMap(cellGroup);
     }
@@ -449,6 +450,9 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                         listAdapter.notifyItemInserted(index);
                     }
                 }
+            } else if (key.equals(NaConfig.INSTANCE.getLlmUseContext().getKey())) {
+                checkContextRows();
+                checkTemperatureRows();
             }
         };
 
@@ -754,7 +758,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
             return;
         }
         if (showTemperature) {
-            final int index = cellGroup.rows.indexOf(llmContextSizeRow);
+            final int index = cellGroup.rows.indexOf(NaConfig.INSTANCE.getLlmUseContext().Bool() ? llmContextSizeRow : llmUseContextRow);
             if (!cellGroup.rows.contains(headerTemperature)) {
                 cellGroup.rows.add(index + 1, headerTemperature);
                 cellGroup.rows.add(index + 2, temperatureValueRow);
@@ -766,6 +770,38 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 cellGroup.rows.remove(headerTemperature);
                 cellGroup.rows.remove(temperatureValueRow);
                 listAdapter.notifyItemRangeRemoved(temperatureRowIndex, 2);
+            }
+        }
+    }
+
+    private void checkContextRows() {
+        boolean useContext = NaConfig.INSTANCE.getLlmUseContext().Bool();
+        if (listAdapter == null) {
+            if (!useContext) {
+                cellGroup.rows.remove(llmUseContextInAutoTranslateRow);
+                cellGroup.rows.remove(llmContextSizeRow);
+            }
+            return;
+        }
+        if (useContext) {
+            final int index = cellGroup.rows.indexOf(llmUseContextRow);
+            if (!cellGroup.rows.contains(llmUseContextInAutoTranslateRow)) {
+                cellGroup.rows.add(index + 1, llmUseContextInAutoTranslateRow);
+                cellGroup.rows.add(index + 2, llmContextSizeRow);
+                listAdapter.notifyItemRangeInserted(index + 1, 2);
+            }
+        } else {
+            int idxA = cellGroup.rows.indexOf(llmUseContextInAutoTranslateRow);
+            int idxB = cellGroup.rows.indexOf(llmContextSizeRow);
+            if (idxA != -1 || idxB != -1) {
+                List<Integer> toRemove = new ArrayList<>();
+                if (idxA != -1) toRemove.add(idxA);
+                if (idxB != -1) toRemove.add(idxB);
+                toRemove.sort((a, b) -> Integer.compare(b, a));
+                for (int idx : toRemove) {
+                    cellGroup.rows.remove(idx);
+                    listAdapter.notifyItemRemoved(idx);
+                }
             }
         }
     }
