@@ -2314,6 +2314,19 @@ public class EmojiView extends FrameLayout implements NotificationCenter.Notific
                 protected void invalidateOverlays() {
                     if (stickersTabContainer != null) {
                         stickersTabContainer.invalidate();
+                    } else {
+                        invalidate();
+                    }
+                }
+
+                @Override
+                protected void dispatchDraw(Canvas canvas) {
+                    super.dispatchDraw(canvas);
+                    if (stickersTabContainer == null) {
+                        canvas.save();
+                        canvas.translate(getScrollX(), 0);
+                        drawOverlays(canvas);
+                        canvas.restore();
                     }
                 }
 
