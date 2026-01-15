@@ -166,10 +166,23 @@ interface Translator {
             context: String?,
             translateCallBack: TranslateCallBack2
         ) {
+            translateWithContext(to, query, entities, context, 0, translateCallBack)
+        }
+
+        @JvmStatic
+        fun translateWithContext(
+            to: Locale,
+            query: String,
+            entities: ArrayList<TLRPC.MessageEntity>,
+            context: String?,
+            provider: Int,
+            translateCallBack: TranslateCallBack2
+        ) {
             AppScope.io.launch {
                 runCatching {
+                    val effectiveProvider = provider.takeIf { it != 0 } ?: NekoConfig.translationProvider.Int()
                     val result = LLMTranslator.withTranslationContext(context) {
-                        translateBase(to, query, entities, NekoConfig.translationProvider.Int())
+                        translateBase(to, query, entities, effectiveProvider)
                     }
                     AndroidUtilities.runOnUIThread { translateCallBack.onSuccess(result) }
                 }.onFailure {
