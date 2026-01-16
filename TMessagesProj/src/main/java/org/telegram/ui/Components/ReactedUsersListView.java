@@ -17,10 +17,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.radolyn.ayugram.utils.LastSeenHelper;
+
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
+import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
@@ -270,6 +273,7 @@ public class ReactedUsersListView extends FrameLayout {
                     TLRPC.TL_messages_messageReactionsList res = (TLRPC.TL_messages_messageReactionsList) response;
                     MessagesController.getInstance(currentAccount).putUsers(res.users, false);
                     MessagesController.getInstance(currentAccount).putChats(res.chats, false);
+                    LastSeenHelper.saveLastSeenFromPeerReactions(res.reactions, UserConfig.getInstance(currentAccount).getClientUserId());
 
                     HashSet<ReactionsLayoutInBubble.VisibleReaction> visibleCustomEmojiReactions = new HashSet<>();
                     for (int i = 0; i < res.reactions.size(); i++) {

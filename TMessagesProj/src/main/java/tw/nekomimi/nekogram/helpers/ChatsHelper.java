@@ -8,8 +8,6 @@ import android.widget.Toast;
 
 import androidx.collection.LongSparseArray;
 
-import com.radolyn.ayugram.utils.LastSeenHelper;
-
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BaseController;
 import org.telegram.messenger.ChatObject;
@@ -367,41 +365,6 @@ public class ChatsHelper extends BaseController {
             return true;
         }
         return unreadCount > 0 && !counterMuted;
-    }
-
-    public void updateLastSeenFromLoadedMessages(long userId, ArrayList<MessageObject> messages, ChatActivity.ChatActivityAdapter chatAdapter) {
-        if (!NaConfig.INSTANCE.getSaveLocalLastSeen().Bool()) {
-            return;
-        }
-        if (userId <= 0 || userId == getUserConfig().getClientUserId()) {
-            return;
-        }
-        ArrayList<MessageObject> messageObjects = chatAdapter != null ? chatAdapter.getMessages() : messages;
-        if (messageObjects == null) {
-            return;
-        }
-        int lastMessageDate = getLastMessageDate(userId, messageObjects);
-        if (lastMessageDate > 0) {
-            LastSeenHelper.saveLastSeen(userId, lastMessageDate);
-        }
-    }
-
-    private static int getLastMessageDate(long userId, ArrayList<MessageObject> messageObjects) {
-        int lastMessageDate = 0;
-        for (int i = 0, size = messageObjects.size(); i < size; i++) {
-            MessageObject messageObject = messageObjects.get(i);
-            if (messageObject == null || messageObject.messageOwner == null) {
-                continue;
-            }
-            if (messageObject.getFromChatId() != userId) {
-                continue;
-            }
-            int date = messageObject.messageOwner.date;
-            if (date > lastMessageDate) {
-                lastMessageDate = date;
-            }
-        }
-        return lastMessageDate;
     }
 
     @SuppressWarnings("rawtypes")

@@ -18674,6 +18674,9 @@ public class MessagesController extends BaseController implements NotificationCe
                 long dialogId = MessageObject.getPeerId(update.peer);
 
                 getMessagesStorage().updateMessageReactions(dialogId, update.msg_id, update.reactions);
+                if (NaConfig.INSTANCE.getSaveLocalLastSeen().Bool()) {
+                    LastSeenHelper.saveLastSeenFromMessageReactions(update.reactions, getUserConfig().getClientUserId());
+                }
 
                 if (update.updateUnreadState) {
                     SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();

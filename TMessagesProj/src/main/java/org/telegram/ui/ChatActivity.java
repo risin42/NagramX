@@ -148,6 +148,7 @@ import com.radolyn.ayugram.ui.DummyView;
 import com.radolyn.ayugram.utils.AyuGhostUtils;
 import com.radolyn.ayugram.utils.AyuGhostPreferences;
 import com.radolyn.ayugram.utils.AyuState;
+import com.radolyn.ayugram.utils.LastSeenHelper;
 
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AccountInstance;
@@ -40181,7 +40182,7 @@ public class ChatActivity extends BaseFragment implements
                 Bundle args = new Bundle();
                 args.putLong("user_id", user.id);
                 args.putBoolean("expandPhoto", expandPhoto);
-                ChatsHelper.getInstance(currentAccount).updateLastSeenFromLoadedMessages(user.id, messages, chatAdapter);
+                LastSeenHelper.saveLastSeenFromLoadedMessages(user.id, getUserConfig().getClientUserId(), messages, chatAdapter);
                 ProfileActivity fragment = new ProfileActivity(args);
                 fragment.setPlayProfileAnimation(currentUser != null && currentUser.id == user.id ? 1 : 0);
                 AndroidUtilities.setAdjustResizeToNothing(getParentActivity(), classGuid);
@@ -42178,7 +42179,7 @@ public class ChatActivity extends BaseFragment implements
             if (currentEncryptedChat != null && uid == currentUser.id) {
                 args.putLong("dialog_id", dialog_id);
             }
-            ChatsHelper.getInstance(currentAccount).updateLastSeenFromLoadedMessages(uid, messages, chatAdapter);
+            LastSeenHelper.saveLastSeenFromLoadedMessages(uid, getUserConfig().getClientUserId(), messages, chatAdapter);
             ProfileActivity fragment = new ProfileActivity(args);
             fragment.setPlayProfileAnimation(currentUser != null && currentUser.id == uid ? 1 : 0);
             presentFragment(fragment);

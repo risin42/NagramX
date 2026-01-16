@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Consumer;
 
+import com.radolyn.ayugram.utils.LastSeenHelper;
+
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.ImageLocation;
@@ -24,6 +26,7 @@ import org.telegram.messenger.MediaDataController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
+import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
@@ -234,6 +237,7 @@ public class ReactedHeaderView extends FrameLayout {
                 TLRPC.TL_messages_messageReactionsList list = (TLRPC.TL_messages_messageReactionsList) response;
                 int c = list.count;
                 int ic = list.users.size();
+                LastSeenHelper.saveLastSeenFromPeerReactions(list.reactions, UserConfig.getInstance(currentAccount).getClientUserId());
                 post(() -> {
                     String str;
                     if (seenUsers.isEmpty() || seenUsers.size() < c) {

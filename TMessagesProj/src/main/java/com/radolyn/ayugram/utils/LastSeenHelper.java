@@ -6,8 +6,10 @@ import com.radolyn.ayugram.database.entities.LastSeenEntity;
 
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
+import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.support.LongSparseIntArray;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.ui.ChatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,4 +154,111 @@ public class LastSeenHelper {
         return defaultValue;
     }
 
+    private static long getPeerId(TLRPC.Peer peer) {
+        if (peer == null) {
+            return 0;
+        }
+        if (peer.user_id != 0) {
+            return peer.user_id;
+        }
+        if (peer.chat_id != 0) {
+            return -peer.chat_id;
+        }
+        if (peer.channel_id != 0) {
+            return -peer.channel_id;
+        }
+        return 0;
+    }
+
+    private static int getLastMessageDate(long userId, ArrayList<MessageObject> messageObjects) {
+        int lastMessageDate = 0;
+        for (int i = 0, size = messageObjects.size(); i < size; i++) {
+            MessageObject messageObject = messageObjects.get(i);
+            if (messageObject == null || messageObject.messageOwner == null) {
+                continue;
+            }
+            if (messageObject.getFromChatId() != userId) {
+                continue;
+            }
+            int date = messageObject.messageOwner.date;
+            if (date > lastMessageDate) {
+                lastMessageDate = date;
+            }
+        }
+        return lastMessageDate;
+    }
+
+    private static int getLastReactionDate(long userId, ArrayList<MessageObject> messageObjects) {
+        int lastReactionDate = 0;
+        for (int i = 0, size = messageObjects.size(); i < size; i++) {
+            MessageObject messageObject = messageObjects.get(i);
+            if (messageObject == null || messageObject.messageOwner == null) {
+                continue;
+            }
+            if (messageObject.messageOwner.reactions == null || messageObject.messageOwner.reactions.recent_reactions == null) {
+                continue;
+            }
+            for (int j = 0, rSize = messageObject.messageOwner.reactions.recent_reactions.size(); j < rSize; j++) {
+                TLRPC.MessagePeerReaction reaction = messageObject.messageOwner.reactions.recent_reactions.get(j);
+                if (reaction == null || reaction.peer_id == null || reaction.date <= 0) {
+                    continue;
+                }
+                if (MessageObject.getPeerId(reaction.peer_id) != userId) {
+                    continue;
+                }
+                if (reaction.date > lastReactionDate) {
+                    lastReactionDate = reaction.date;
+                }
+            }
+        }
+        return lastReactionDate;
+    }
+
+    public static void saveLastSeenFromLoadedMessages(long userId, long selfUserId, ArrayList<MessageObject> messages, ChatActivity.ChatActivityAdapter chatAdapter) {
+        if (!NaConfig.INSTANCE.getSaveLocalLastSeen().Bool()) {
+            return;
+        }
+        if (userId <= 0 || userId == selfUserId) {
+            return;
+        }
+        ArrayList<MessageObject> messageObjects = chatAdapter != null ? chatAdapter.getMessages() : messages;
+        if (messageObjects == null) {
+            return;
+        }
+        int lastMessageDate = getLastMessageDate(userId, messageObjects);
+        if (lastMessageDate > 0) {
+            LastSeenHelper.saveLastSeen(userId, lastMessageDate);
+        }
+        int lastReactionDate = getLastReactionDate(userId, messageObjects);
+        if (lastReactionDate > 0) {
+            LastSeenHelper.saveLastSeen(userId, lastReactionDate);
+        }
+    }
+
+    public static void saveLastSeenFromMessageReactions(TLRPC.TL_messageReactions reactions, long selfUserId) {
+        if (reactions == null || reactions.recent_reactions == null || reactions.recent_reactions.isEmpty()) {
+            return;
+        }
+        saveLastSeenFromPeerReactions(reactions.recent_reactions, selfUserId);
+    }
+
+    public static void saveLastSeenFromPeerReactions(List<TLRPC.MessagePeerReaction> reactions, long selfUserId) {
+        if (!NaConfig.INSTANCE.getSaveLocalLastSeen().Bool()) {
+            return;
+        }
+        if (reactions == null || reactions.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < reactions.size(); i++) {
+            TLRPC.MessagePeerReaction reaction = reactions.get(i);
+            if (reaction == null || reaction.peer_id == null || reaction.date <= 0) {
+                continue;
+            }
+            long peerId = getPeerId(reaction.peer_id);
+            if (peerId <= 0 || peerId == selfUserId) {
+                continue;
+            }
+            saveLastSeen(peerId, reaction.date);
+        }
+    }
 }
