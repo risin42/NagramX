@@ -45242,6 +45242,9 @@ public class ChatActivity extends BaseFragment implements
             views.add(chatActivityEnterView);
             views.add(sideControlsButtonsLayout);
             views.add(chatInputViewsContainer);
+            if (chatInputViewsContainer != null) {
+                views.add(chatInputViewsContainer.getFadeView());
+            }
 
             views.removeAll(Collections.singleton(null));
         }
