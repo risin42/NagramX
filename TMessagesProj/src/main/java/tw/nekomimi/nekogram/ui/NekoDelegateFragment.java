@@ -18,6 +18,7 @@ import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
+import org.telegram.messenger.TranslateController;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -220,8 +221,20 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
         if (messageObject.messageOwner == null || messageCell.getMessageObject() != messageObject) {
             return;
         }
+
+        final boolean isPollMessage = MessageObject.getMedia(messageObject.messageOwner) instanceof TLRPC.TL_messageMediaPoll;
+
+        if (messageObject.messageOwner.translatedPoll != null) {
+            messageObject.messageOwner.translated = false;
+            messageObject.messageOwner.translatedPoll = null;
+            messageObject.messageOwner.translatedToLanguage = null;
+            messageObject.translated = false;
+            messageObject.translating = false;
+            return;
+        }
+
         String originalText = messageObject.messageOwner.message;
-        if (TextUtils.isEmpty(originalText)) {
+        if (TextUtils.isEmpty(originalText) && !isPollMessage) {
             return;
         }
 
@@ -247,6 +260,42 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
             resolvedTargetLocale = TranslatorKt.getCode2Locale(lang == null ? "" : lang);
         } else {
             resolvedTargetLocale = targetLocale;
+        }
+
+        if (isPollMessage) {
+            final TLRPC.TL_messageMediaPoll mediaPoll = (TLRPC.TL_messageMediaPoll) MessageObject.getMedia(messageObject.messageOwner);
+            final TranslateController.PollText pollText = TranslateController.PollText.fromPoll(mediaPoll);
+
+            messageObject.translating = true;
+            messageCell.invalidate();
+
+            Translator.translatePoll(resolvedTargetLocale, pollText, new Translator.Companion.TranslateCallBack3() {
+                @Override
+                public void onSuccess(@NonNull TranslateController.PollText poll) {
+                    if (messageCell.getMessageObject() != messageObject) {
+                        return;
+                    }
+                    messageObject.translating = false;
+                    messageObject.messageOwner.translated = true;
+                    messageObject.messageOwner.translatedToLanguage = TranslatorKt.getLocale2code(resolvedTargetLocale).toLowerCase(Locale.getDefault());
+                    messageObject.messageOwner.translatedText = null;
+                    messageObject.messageOwner.translatedPoll = poll;
+                    messageObject.translated = true;
+                }
+
+                @Override
+                public void onFailed(boolean unsupported, @NonNull String message) {
+                    if (messageCell.getMessageObject() != messageObject) {
+                        return;
+                    }
+                    messageObject.translating = false;
+                    messageCell.invalidate();
+                    if (getParentActivity() != null) {
+                        AlertUtil.showTransFailedDialog(getParentActivity(), unsupported, message, () -> toggleOrTranslate(messageCell, messageObject, resolvedTargetLocale));
+                    }
+                }
+            });
+            return;
         }
 
         int mode = NaConfig.INSTANCE.getTranslatorMode().Int();
