@@ -210,7 +210,7 @@ public class PinnedReactionsActivity extends BaseFragment {
         backButton.setImageResource(R.drawable.ic_ab_back);
         backButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_actionBarDefaultIcon), PorterDuff.Mode.SRC_IN));
         backButton.setOnClickListener(v -> {
-            if (onBackPressed()) {
+            if (onBackPressed(true)) {
                 finishFragment();
             }
         });
@@ -244,7 +244,7 @@ public class PinnedReactionsActivity extends BaseFragment {
     }
 
     @Override
-    public boolean onBackPressed() {
+    public boolean onBackPressed(boolean invoked) {
         if (chatsPage.emojiKeyboardVisible || channelsPage.emojiKeyboardVisible) {
             chatsPage.closeKeyboard();
             channelsPage.closeKeyboard();
@@ -254,7 +254,7 @@ public class PinnedReactionsActivity extends BaseFragment {
             showUnsavedAlert();
             return false;
         }
-        return super.onBackPressed();
+        return super.onBackPressed(invoked);
     }
 
     @Override

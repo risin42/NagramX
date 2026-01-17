@@ -510,12 +510,12 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
     }
 
     @Override
-    public boolean onBackPressed() {
+    public boolean onBackPressed(boolean invoked) {
         if (nameTextView != null && nameTextView.isPopupShowing()) {
-            nameTextView.hidePopup(true);
+            if (invoked) nameTextView.hidePopup(true);
             return false;
         }
-        return checkDiscard();
+        return checkDiscard(invoked);
     }
 
     @Override
@@ -531,7 +531,7 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
             @Override
             public void onItemClick(int id) {
                 if (id == -1) {
-                    if (checkDiscard()) {
+                    if (checkDiscard(true)) {
                         finishFragment();
                     }
                 } else if (id == done_button) {
@@ -1951,13 +1951,14 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
         undoView.showWithAction(0, UndoView.ACTION_GIGAGROUP_SUCCESS, null);
     }
 
-    private boolean checkDiscard() {
+    private boolean checkDiscard(boolean invoked) {
         if (userId != 0) {
             String about = userInfo != null && userInfo.about != null ? userInfo.about : "";
             if (nameTextView != null && !currentUser.first_name.equals(nameTextView.getText().toString()) ||
                     descriptionTextView != null && !about.equals(descriptionTextView.getText().toString())) {
-                showDialog(new AlertDialog.Builder(getParentActivity())
-                        .setTitle(getString(R.string.UserRestrictionsApplyChanges))
+                if (invoked) {
+                    showDialog(new AlertDialog.Builder(getParentActivity())
+                            .setTitle(getString(R.string.UserRestrictionsApplyChanges))
                         .setMessage(getString(R.string.BotSettingsChangedAlert))
                         .setPositiveButton(getString(R.string.ApplyTheme), (dialogInterface, i) -> {
                             if (canEditBotInfo()) {
@@ -1967,7 +1968,7 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
                             }
                         })
                         .setNegativeButton(getString(R.string.PassportDiscard), (dialog, which) -> finishFragment())
-                        .create());
+                        .create());}
                 return false;
             }
             return true;
@@ -1979,22 +1980,24 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
             descriptionTextView != null && !about.equals(descriptionTextView.getText().toString()) ||
             forum != currentChat.forum
         ) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-            builder.setTitle(getString("UserRestrictionsApplyChanges", R.string.UserRestrictionsApplyChanges));
-            if (isChannel) {
-                builder.setMessage(getString("ChannelSettingsChangedAlert", R.string.ChannelSettingsChangedAlert));
-            } else {
-                builder.setMessage(getString("GroupSettingsChangedAlert", R.string.GroupSettingsChangedAlert));
-            }
-            builder.setPositiveButton(getString("ApplyTheme", R.string.ApplyTheme), (dialogInterface, i) -> {
+            if (invoked) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+                builder.setTitle(getString("UserRestrictionsApplyChanges", R.string.UserRestrictionsApplyChanges));
+                if (isChannel) {
+                    builder.setMessage(getString("ChannelSettingsChangedAlert", R.string.ChannelSettingsChangedAlert));
+                } else {
+                    builder.setMessage(getString("GroupSettingsChangedAlert", R.string.GroupSettingsChangedAlert));
+                }
+                builder.setPositiveButton(getString("ApplyTheme", R.string.ApplyTheme), (dialogInterface, i) -> {
                 if (ChatObject.hasAdminRights(currentChat)) {
                     processDone();
                 } else {
                     setChatNameOverride();
                 }
             });
-            builder.setNegativeButton(getString("PassportDiscard", R.string.PassportDiscard), (dialog, which) -> finishFragment());
-            showDialog(builder.create());
+                builder.setNegativeButton(getString("PassportDiscard", R.string.PassportDiscard), (dialog, which) -> finishFragment());
+                showDialog(builder.create());
+            }
             return false;
         }
         return true;

@@ -419,7 +419,7 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
             int visibleHeight = viewBottom - viewTop;
             if (visibleHeight <= 0) continue;
             cell.setParentBounds(0, parentHeight);
-            cell.setVisiblePart(viewTop, visibleHeight, parentHeight, 0f, child.getY() + listY, parentWidth, backgroundHeight, 0, 0);
+            cell.setVisiblePart(viewTop, visibleHeight, parentHeight, 0f, child.getY() + listY, parentWidth, backgroundHeight, 0, 0, 0);
         }
     }
 
