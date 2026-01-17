@@ -1,21 +1,36 @@
 package tw.nekomimi.nekogram.ui;
 
 import static org.telegram.messenger.LocaleController.getString;
-
 import static tw.nekomimi.nekogram.parts.MessageTransKt.TRANSLATION_SEPARATOR;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.HapticFeedbackConstants;
+import android.view.View;
+import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.ChatListItemAnimator;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MessageObject;
+import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.TranslateController;
@@ -26,12 +41,15 @@ import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.Cells.ChatMessageCell;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.BulletinFactory;
+import org.telegram.ui.Components.SizeNotifierFrameLayout;
 import org.telegram.ui.Components.StickersAlert;
 import org.telegram.ui.ContactAddActivity;
 import org.telegram.ui.ProfileActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.WeakHashMap;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
@@ -43,6 +61,13 @@ import tw.nekomimi.nekogram.utils.AndroidUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 public abstract class NekoDelegateFragment extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, NekoMessageCell.NekoMessageCellDelegate {
+
+    private final WeakHashMap<ChatMessageCell, ValueAnimator> cellChangeAnimators = new WeakHashMap<>();
+    private final WeakHashMap<ChatMessageCell, ValueAnimator> cellTopClipAnimators = new WeakHashMap<>();
+    private final WeakHashMap<RecyclerView, ValueAnimator> overlaySnapshotAnimators = new WeakHashMap<>();
+    private final WeakHashMap<RecyclerView, ValueAnimator> visiblePartAnimators = new WeakHashMap<>();
+    private final WeakHashMap<RecyclerView, OwnedBitmapDrawable> overlayDrawables = new WeakHashMap<>();
+    private final WeakHashMap<RecyclerView, AnchorShiftPreDrawListener> pendingShiftListeners = new WeakHashMap<>();
 
     @Override
     public void onTextCopied() {
@@ -190,8 +215,7 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
                 showDialog(builder.create());
             }
             try {
-                if (!NekoConfig.disableVibration.Bool())
-                    cell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                if (!NekoConfig.disableVibration.Bool()) cell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             } catch (Exception ignore) {
             }
             return true;
@@ -225,11 +249,16 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
         final boolean isPollMessage = MessageObject.getMedia(messageObject.messageOwner) instanceof TLRPC.TL_messageMediaPoll;
 
         if (messageObject.messageOwner.translatedPoll != null) {
+            prepareMessageCellForSnapshot(messageCell);
+            final Bitmap snapshotBefore = shouldCaptureSnapshot(messageCell) ? captureCellSnapshot(messageCell) : null;
+
             messageObject.messageOwner.translated = false;
             messageObject.messageOwner.translatedPoll = null;
             messageObject.messageOwner.translatedToLanguage = null;
             messageObject.translated = false;
             messageObject.translating = false;
+
+            updateMessageCellAnimated(messageCell, messageObject, snapshotBefore);
             return;
         }
 
@@ -239,6 +268,9 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
         }
 
         if (messageObject.messageOwner.translated) {
+            prepareMessageCellForSnapshot(messageCell);
+            final Bitmap snapshotBefore = shouldCaptureSnapshot(messageCell) ? captureCellSnapshot(messageCell) : null;
+
             messageObject.messageOwner.translated = false;
             messageObject.messageOwner.translatedMessage = null;
             messageObject.messageOwner.translatedText = null;
@@ -248,9 +280,7 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
             messageObject.applyNewText(originalText);
             messageObject.caption = null;
             messageObject.generateCaption();
-            messageObject.forceUpdate = true;
-            messageCell.setMessageObject(messageObject, null, false, false, false);
-            messageObject.forceUpdate = false;
+            updateMessageCellAnimated(messageCell, messageObject, snapshotBefore);
             return;
         }
 
@@ -276,11 +306,16 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
                         return;
                     }
                     messageObject.translating = false;
+                    prepareMessageCellForSnapshot(messageCell);
+                    final Bitmap snapshotBefore = shouldCaptureSnapshot(messageCell) ? captureCellSnapshot(messageCell) : null;
+
                     messageObject.messageOwner.translated = true;
                     messageObject.messageOwner.translatedToLanguage = TranslatorKt.getLocale2code(resolvedTargetLocale).toLowerCase(Locale.getDefault());
                     messageObject.messageOwner.translatedText = null;
                     messageObject.messageOwner.translatedPoll = poll;
                     messageObject.translated = true;
+
+                    updateMessageCellAnimated(messageCell, messageObject, snapshotBefore);
                 }
 
                 @Override
@@ -319,6 +354,9 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
                     messageCell.invalidate();
                     return;
                 }
+                prepareMessageCellForSnapshot(messageCell);
+                final Bitmap snapshotBefore = shouldCaptureSnapshot(messageCell) ? captureCellSnapshot(messageCell) : null;
+
                 messageObject.messageOwner.translated = true;
                 messageObject.messageOwner.translatedToLanguage = TranslatorKt.getLocale2code(resolvedTargetLocale).toLowerCase(Locale.getDefault());
                 if (mode == 0) {
@@ -335,9 +373,7 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
                 }
                 messageObject.caption = null;
                 messageObject.generateCaption();
-                messageObject.forceUpdate = true;
-                messageCell.setMessageObject(messageObject, null, false, false, false);
-                messageObject.forceUpdate = false;
+                updateMessageCellAnimated(messageCell, messageObject, snapshotBefore);
             }
 
             @Override
@@ -352,5 +388,641 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
                 }
             }
         });
+    }
+
+    protected void updateVisibleChatMessageCells(@NonNull RecyclerView recyclerView) {
+        if (fragmentView == null) {
+            return;
+        }
+        int parentHeight = recyclerView.getMeasuredHeight();
+        if (parentHeight <= 0) {
+            return;
+        }
+        int parentWidth = fragmentView.getMeasuredWidth();
+        if (parentWidth <= 0) {
+            parentWidth = recyclerView.getMeasuredWidth();
+        }
+        int backgroundHeight = fragmentView.getMeasuredHeight();
+        if (fragmentView instanceof SizeNotifierFrameLayout frameLayout) {
+            backgroundHeight = frameLayout.getBackgroundSizeY();
+        }
+
+        float listY = recyclerView.getY();
+        for (int i = 0, count = recyclerView.getChildCount(); i < count; i++) {
+            View child = recyclerView.getChildAt(i);
+            if (!(child instanceof ChatMessageCell cell)) {
+                continue;
+            }
+            int top = (int) child.getY();
+            int viewTop = Math.max(0, -top);
+            int viewBottom = Math.min(child.getMeasuredHeight(), parentHeight - top);
+            int visibleHeight = viewBottom - viewTop;
+            if (visibleHeight <= 0) continue;
+            cell.setParentBounds(0, parentHeight);
+            cell.setVisiblePart(viewTop, visibleHeight, parentHeight, 0f, child.getY() + listY, parentWidth, backgroundHeight, 0, 0);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        cancelAyuMessageAnimations();
+    }
+
+    @Override
+    public void onFragmentDestroy() {
+        cancelAyuMessageAnimations();
+        super.onFragmentDestroy();
+    }
+
+    private HashMap<View, Float> captureChildY(@NonNull RecyclerView recyclerView) {
+        HashMap<View, Float> map = new HashMap<>();
+        for (int i = 0, count = recyclerView.getChildCount(); i < count; i++) {
+            View child = recyclerView.getChildAt(i);
+            map.put(child, child.getY());
+        }
+        return map;
+    }
+
+    @Nullable
+    private Bitmap captureCellSnapshot(@NonNull ChatMessageCell cell) {
+        int w = cell.getWidth();
+        int h = cell.getHeight();
+        if (w <= 0 || h <= 0) {
+            return null;
+        }
+        try {
+            Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            cell.draw(canvas);
+            return bitmap;
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    private boolean shouldCaptureSnapshot(@NonNull ChatMessageCell messageCell) {
+        if (!MessagesController.getGlobalMainSettings().getBoolean("view_animations", true)) {
+            return false;
+        }
+        return messageCell.getParent() instanceof RecyclerView;
+    }
+
+    private void prepareMessageCellForSnapshot(@NonNull ChatMessageCell messageCell) {
+        RecyclerView recyclerView = messageCell.getParent() instanceof RecyclerView ? (RecyclerView) messageCell.getParent() : null;
+        if (recyclerView != null) {
+            cancelChildShiftAnimations(recyclerView);
+            AnchorShiftPreDrawListener pending = pendingShiftListeners.remove(recyclerView);
+            if (pending != null) {
+                pending.dispose();
+            }
+            ValueAnimator runningOverlay = overlaySnapshotAnimators.remove(recyclerView);
+            if (runningOverlay != null) {
+                runningOverlay.cancel();
+            }
+            OwnedBitmapDrawable runningDrawable = overlayDrawables.remove(recyclerView);
+            if (runningDrawable != null) {
+                recyclerView.getOverlay().remove(runningDrawable);
+                runningDrawable.dispose();
+            }
+            ValueAnimator runningVisiblePart = visiblePartAnimators.remove(recyclerView);
+            if (runningVisiblePart != null) {
+                runningVisiblePart.cancel();
+            }
+        }
+        ValueAnimator runningChange = cellChangeAnimators.remove(messageCell);
+        if (runningChange != null) {
+            runningChange.cancel();
+        }
+        ValueAnimator runningClip = cellTopClipAnimators.remove(messageCell);
+        if (runningClip != null) {
+            runningClip.cancel();
+        }
+        messageCell.setClipBounds(null);
+    }
+
+    private static void cancelChildShiftAnimations(@NonNull RecyclerView recyclerView) {
+        for (int i = 0, count = recyclerView.getChildCount(); i < count; i++) {
+            View child = recyclerView.getChildAt(i);
+            child.animate().cancel();
+            child.setTranslationY(0f);
+        }
+    }
+
+    private void updateMessageCellAnimated(@NonNull ChatMessageCell messageCell, @NonNull MessageObject messageObject, @Nullable Bitmap snapshotBefore) {
+        final boolean animate = MessagesController.getGlobalMainSettings().getBoolean("view_animations", true);
+        final RecyclerView recyclerView = messageCell.getParent() instanceof RecyclerView ? (RecyclerView) messageCell.getParent() : null;
+
+        if (recyclerView != null) {
+            cancelChildShiftAnimations(recyclerView);
+            AnchorShiftPreDrawListener pending = pendingShiftListeners.remove(recyclerView);
+            if (pending != null) {
+                pending.dispose();
+            }
+        }
+
+        ValueAnimator runningChange = cellChangeAnimators.remove(messageCell);
+        if (runningChange != null) {
+            runningChange.cancel();
+        }
+        ValueAnimator runningClip = cellTopClipAnimators.remove(messageCell);
+        if (runningClip != null) {
+            runningClip.cancel();
+        }
+
+        messageCell.setClipBounds(null);
+
+        if (recyclerView != null) {
+            ValueAnimator runningOverlay = overlaySnapshotAnimators.remove(recyclerView);
+            if (runningOverlay != null) {
+                runningOverlay.cancel();
+            }
+            OwnedBitmapDrawable runningDrawable = overlayDrawables.remove(recyclerView);
+            if (runningDrawable != null) {
+                recyclerView.getOverlay().remove(runningDrawable);
+                runningDrawable.dispose();
+            }
+            ValueAnimator runningVisiblePart = visiblePartAnimators.remove(recyclerView);
+            if (runningVisiblePart != null) {
+                runningVisiblePart.cancel();
+            }
+        }
+
+        final HashMap<View, Float> beforeY;
+        final float anchorBottomBefore;
+        final int anchorHeightBefore;
+        final int anchorLeftBefore;
+        final int anchorWidthBefore;
+        if (animate && recyclerView != null) {
+            beforeY = captureChildY(recyclerView);
+            anchorBottomBefore = messageCell.getY() + messageCell.getHeight();
+            anchorHeightBefore = messageCell.getHeight();
+            anchorLeftBefore = Math.round(messageCell.getX());
+            anchorWidthBefore = messageCell.getWidth();
+        } else {
+            beforeY = null;
+            anchorBottomBefore = 0f;
+            anchorHeightBefore = 0;
+            anchorLeftBefore = 0;
+            anchorWidthBefore = 0;
+        }
+
+        messageObject.forceUpdate = true;
+        messageCell.setMessageObject(messageObject, messageCell.getCurrentMessagesGroup(), messageCell.isPinnedBottom(), messageCell.isPinnedTop(), messageCell.isFirstInChat(), messageCell.isLastInChatList());
+        messageObject.forceUpdate = false;
+
+        if (animate) {
+            animateCellChange(messageCell);
+        }
+        if (animate && recyclerView != null) {
+            animateRecyclerChildrenShift(recyclerView, messageCell, beforeY, anchorBottomBefore, anchorHeightBefore, anchorLeftBefore, anchorWidthBefore, snapshotBefore);
+        } else {
+            safeRecycle(snapshotBefore);
+        }
+    }
+
+    private void cancelAyuMessageAnimations() {
+        HashMap<RecyclerView, Boolean> recyclerViews = new HashMap<>();
+        for (RecyclerView recyclerView : overlaySnapshotAnimators.keySet()) {
+            recyclerViews.put(recyclerView, true);
+        }
+        for (RecyclerView recyclerView : visiblePartAnimators.keySet()) {
+            recyclerViews.put(recyclerView, true);
+        }
+        for (RecyclerView recyclerView : overlayDrawables.keySet()) {
+            recyclerViews.put(recyclerView, true);
+        }
+        for (RecyclerView recyclerView : pendingShiftListeners.keySet()) {
+            recyclerViews.put(recyclerView, true);
+        }
+        for (RecyclerView recyclerView : recyclerViews.keySet()) {
+            if (recyclerView != null) {
+                cancelChildShiftAnimations(recyclerView);
+            }
+        }
+
+        for (AnchorShiftPreDrawListener listener : new ArrayList<>(pendingShiftListeners.values())) {
+            listener.dispose();
+        }
+        pendingShiftListeners.clear();
+
+        for (ValueAnimator animator : new ArrayList<>(cellChangeAnimators.values())) {
+            animator.cancel();
+        }
+        cellChangeAnimators.clear();
+
+        for (ChatMessageCell cell : new ArrayList<>(cellTopClipAnimators.keySet())) {
+            ValueAnimator animator = cellTopClipAnimators.get(cell);
+            if (animator != null) {
+                animator.cancel();
+            }
+            if (cell != null) {
+                cell.setClipBounds(null);
+            }
+        }
+        cellTopClipAnimators.clear();
+
+        for (ValueAnimator animator : new ArrayList<>(overlaySnapshotAnimators.values())) {
+            animator.cancel();
+        }
+        overlaySnapshotAnimators.clear();
+
+        for (RecyclerView recyclerView : new ArrayList<>(overlayDrawables.keySet())) {
+            OwnedBitmapDrawable drawable = overlayDrawables.get(recyclerView);
+            if (drawable != null) {
+                if (recyclerView != null) {
+                    recyclerView.getOverlay().remove(drawable);
+                }
+                drawable.dispose();
+            }
+        }
+        overlayDrawables.clear();
+
+        for (ValueAnimator animator : new ArrayList<>(visiblePartAnimators.values())) {
+            animator.cancel();
+        }
+        visiblePartAnimators.clear();
+    }
+
+    private void animateCellChange(@NonNull ChatMessageCell messageCell) {
+        ChatMessageCell.TransitionParams params = messageCell.getTransitionParams();
+        if (!params.supportChangeAnimation()) {
+            return;
+        }
+        ValueAnimator running = cellChangeAnimators.remove(messageCell);
+        if (running != null) {
+            running.cancel();
+        }
+
+        if (!params.animateChange()) {
+            return;
+        }
+
+        params.animateChange = true;
+        params.animateChangeProgress = 0f;
+
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(ChatListItemAnimator.DEFAULT_DURATION);
+        animator.setInterpolator(ChatListItemAnimator.DEFAULT_INTERPOLATOR);
+        animator.addUpdateListener(animation -> {
+            params.animateChangeProgress = (float) animation.getAnimatedValue();
+            messageCell.invalidate();
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (cellChangeAnimators.get(messageCell) == animator) {
+                    cellChangeAnimators.remove(messageCell);
+                }
+                params.resetAnimation();
+                messageCell.invalidate();
+            }
+        });
+        cellChangeAnimators.put(messageCell, animator);
+        animator.start();
+    }
+
+    private void animateRecyclerChildrenShift(
+            @NonNull RecyclerView recyclerView,
+            @NonNull ChatMessageCell anchorCell,
+            @NonNull HashMap<View, Float> beforeY,
+            float anchorBottomBefore,
+            int anchorHeightBefore,
+            int anchorLeftBefore,
+            int anchorWidthBefore,
+            @Nullable Bitmap snapshotBefore
+    ) {
+        AnchorShiftPreDrawListener pending = pendingShiftListeners.remove(recyclerView);
+        if (pending != null) {
+            pending.dispose();
+        }
+
+        ViewTreeObserver viewTreeObserver = recyclerView.getViewTreeObserver();
+        if (!viewTreeObserver.isAlive()) {
+            safeRecycle(snapshotBefore);
+            return;
+        }
+
+        AnchorShiftPreDrawListener listener = new AnchorShiftPreDrawListener(recyclerView, anchorCell, beforeY, anchorBottomBefore, anchorHeightBefore, anchorLeftBefore, anchorWidthBefore, snapshotBefore);
+        pendingShiftListeners.put(recyclerView, listener);
+        viewTreeObserver.addOnPreDrawListener(listener);
+    }
+
+    private void animateAnchorTopChange(
+            @NonNull RecyclerView recyclerView,
+            @NonNull ChatMessageCell anchorCell,
+            float anchorBottomBefore,
+            int anchorHeightBefore,
+            int anchorLeftBefore,
+            int anchorWidthBefore,
+            int anchorHeightAfter,
+            int heightDelta,
+            @Nullable Bitmap snapshotBefore
+    ) {
+        ValueAnimator runningClip = cellTopClipAnimators.remove(anchorCell);
+        if (runningClip != null) {
+            runningClip.cancel();
+        }
+        anchorCell.setClipBounds(null);
+
+        if (heightDelta == 0) {
+            safeRecycle(snapshotBefore);
+            return;
+        }
+
+        if (heightDelta > 0) {
+            int width = anchorCell.getWidth();
+            if (width <= 0 || anchorHeightAfter <= 0) {
+                anchorCell.setClipBounds(null);
+                safeRecycle(snapshotBefore);
+                return;
+            }
+
+            Rect clip = new Rect(0, heightDelta, width, anchorHeightAfter);
+            anchorCell.setClipBounds(clip);
+
+            safeRecycle(snapshotBefore);
+
+            ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+            animator.setDuration(ChatListItemAnimator.DEFAULT_DURATION);
+            animator.setInterpolator(ChatListItemAnimator.DEFAULT_INTERPOLATOR);
+            animator.addUpdateListener(animation -> {
+                float p = (float) animation.getAnimatedValue();
+                clip.top = Math.round(heightDelta * (1f - p));
+                anchorCell.setClipBounds(clip);
+                anchorCell.invalidate();
+                recyclerView.invalidate();
+            });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (cellTopClipAnimators.get(anchorCell) == animator) {
+                        cellTopClipAnimators.remove(anchorCell);
+                    }
+                    anchorCell.setClipBounds(null);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    onAnimationEnd(animation);
+                }
+            });
+            cellTopClipAnimators.put(anchorCell, animator);
+            animator.start();
+            return;
+        }
+
+        if (snapshotBefore == null || snapshotBefore.isRecycled() || anchorWidthBefore <= 0 || anchorHeightBefore <= 0) {
+            safeRecycle(snapshotBefore);
+            return;
+        }
+
+        ValueAnimator runningOverlay = overlaySnapshotAnimators.remove(recyclerView);
+        if (runningOverlay != null) {
+            runningOverlay.cancel();
+        }
+        OwnedBitmapDrawable runningDrawable = overlayDrawables.remove(recyclerView);
+        if (runningDrawable != null) {
+            recyclerView.getOverlay().remove(runningDrawable);
+            runningDrawable.dispose();
+        }
+
+        int collapse = -heightDelta;
+        int top = Math.round(anchorBottomBefore - anchorHeightBefore);
+        int right = anchorLeftBefore + anchorWidthBefore;
+        int bottom = top + anchorHeightBefore;
+
+        OwnedBitmapDrawable drawable = new OwnedBitmapDrawable(snapshotBefore);
+        drawable.setBounds(anchorLeftBefore, top, right, bottom);
+        recyclerView.getOverlay().add(drawable);
+        overlayDrawables.put(recyclerView, drawable);
+
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(ChatListItemAnimator.DEFAULT_DURATION);
+        animator.setInterpolator(ChatListItemAnimator.DEFAULT_INTERPOLATOR);
+        animator.addUpdateListener(animation -> {
+            float p = (float) animation.getAnimatedValue();
+            drawable.setClipTop(Math.round(collapse * p));
+            drawable.setAlpha(Math.round(255f * (1f - p)));
+            recyclerView.invalidate();
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                recyclerView.getOverlay().remove(drawable);
+                if (overlayDrawables.get(recyclerView) == drawable) {
+                    overlayDrawables.remove(recyclerView);
+                }
+                drawable.dispose();
+                if (overlaySnapshotAnimators.get(recyclerView) == animator) {
+                    overlaySnapshotAnimators.remove(recyclerView);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                onAnimationEnd(animation);
+            }
+        });
+        overlaySnapshotAnimators.put(recyclerView, animator);
+        animator.start();
+    }
+
+    private void startVisiblePartTick(@NonNull RecyclerView recyclerView) {
+        ValueAnimator running = visiblePartAnimators.remove(recyclerView);
+        if (running != null) {
+            running.cancel();
+        }
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(ChatListItemAnimator.DEFAULT_DURATION);
+        animator.setInterpolator(ChatListItemAnimator.DEFAULT_INTERPOLATOR);
+        animator.addUpdateListener(animation -> {
+            updateVisibleChatMessageCells(recyclerView);
+            recyclerView.invalidate();
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (visiblePartAnimators.get(recyclerView) == animator) {
+                    visiblePartAnimators.remove(recyclerView);
+                }
+                updateVisibleChatMessageCells(recyclerView);
+            }
+        });
+        visiblePartAnimators.put(recyclerView, animator);
+        animator.start();
+    }
+
+    private static void safeRecycle(@Nullable Bitmap bitmap) {
+        if (bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
+        }
+    }
+
+    private static class OwnedBitmapDrawable extends Drawable {
+        private final Paint paint;
+        private final Rect srcRect;
+        @Nullable
+        private Bitmap bitmap;
+        private int clipTop;
+
+        private OwnedBitmapDrawable(@NonNull Bitmap bitmap) {
+            this.bitmap = bitmap;
+            paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+            srcRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        }
+
+        public void dispose() {
+            Bitmap b = bitmap;
+            bitmap = null;
+            if (b != null && !b.isRecycled()) {
+                b.recycle();
+            }
+        }
+
+        public void setClipTop(int clipTop) {
+            this.clipTop = clipTop;
+            invalidateSelf();
+        }
+
+        @Override
+        public void draw(@NonNull Canvas canvas) {
+            if (bitmap == null || bitmap.isRecycled()) {
+                return;
+            }
+            Rect bounds = getBounds();
+            int save = canvas.save();
+            canvas.clipRect(bounds.left, bounds.top + clipTop, bounds.right, bounds.bottom);
+            canvas.drawBitmap(bitmap, srcRect, bounds, paint);
+            canvas.restoreToCount(save);
+        }
+
+        @Override
+        public void setAlpha(int alpha) {
+            paint.setAlpha(alpha);
+            invalidateSelf();
+        }
+
+        @Override
+        public void setColorFilter(ColorFilter colorFilter) {
+            paint.setColorFilter(colorFilter);
+            invalidateSelf();
+        }
+
+        @Override
+        public int getOpacity() {
+            return PixelFormat.TRANSLUCENT;
+        }
+    }
+
+    private final class AnchorShiftPreDrawListener implements ViewTreeObserver.OnPreDrawListener {
+
+        private final RecyclerView recyclerView;
+        private final ChatMessageCell anchorCell;
+        private final HashMap<View, Float> beforeY;
+        private final float anchorBottomBefore;
+        private final int anchorHeightBefore;
+        private final int anchorLeftBefore;
+        private final int anchorWidthBefore;
+        @Nullable
+        private Bitmap snapshotBefore;
+
+        private AnchorShiftPreDrawListener(
+                @NonNull RecyclerView recyclerView,
+                @NonNull ChatMessageCell anchorCell,
+                @NonNull HashMap<View, Float> beforeY,
+                float anchorBottomBefore,
+                int anchorHeightBefore,
+                int anchorLeftBefore,
+                int anchorWidthBefore,
+                @Nullable Bitmap snapshotBefore
+        ) {
+            this.recyclerView = recyclerView;
+            this.anchorCell = anchorCell;
+            this.beforeY = beforeY;
+            this.anchorBottomBefore = anchorBottomBefore;
+            this.anchorHeightBefore = anchorHeightBefore;
+            this.anchorLeftBefore = anchorLeftBefore;
+            this.anchorWidthBefore = anchorWidthBefore;
+            this.snapshotBefore = snapshotBefore;
+        }
+
+        void dispose() {
+            ViewTreeObserver observer = recyclerView.getViewTreeObserver();
+            if (observer.isAlive()) {
+                observer.removeOnPreDrawListener(this);
+            }
+            safeRecycle(snapshotBefore);
+            snapshotBefore = null;
+        }
+
+        @Override
+        public boolean onPreDraw() {
+            ViewTreeObserver observer = recyclerView.getViewTreeObserver();
+            if (observer.isAlive()) {
+                observer.removeOnPreDrawListener(this);
+            }
+            if (pendingShiftListeners.get(recyclerView) == this) {
+                pendingShiftListeners.remove(recyclerView);
+            }
+
+            Bitmap snapshot = snapshotBefore;
+            snapshotBefore = null;
+
+            if (anchorCell.getParent() != recyclerView) {
+                safeRecycle(snapshot);
+                return true;
+            }
+
+            float anchorBottomAfter = anchorCell.getY() + anchorCell.getHeight();
+            int dyToFixBottom = Math.round(anchorBottomAfter - anchorBottomBefore);
+            if (dyToFixBottom != 0) {
+                recyclerView.scrollBy(0, dyToFixBottom);
+            }
+
+            final float anchorY = anchorCell.getY();
+            final int anchorHeightAfter = anchorCell.getHeight();
+            final int heightDelta = anchorHeightAfter - anchorHeightBefore;
+
+            for (int i = 0, count = recyclerView.getChildCount(); i < count; i++) {
+                View child = recyclerView.getChildAt(i);
+                child.animate().cancel();
+
+                if (child == anchorCell) {
+                    child.setTranslationY(0f);
+                    continue;
+                }
+
+                Float oldY = beforeY.get(child);
+                if (oldY == null) {
+                    child.setTranslationY(0f);
+                    continue;
+                }
+
+                final boolean isAbove = child.getY() < anchorY;
+                if (!isAbove) {
+                    child.setTranslationY(0f);
+                    continue;
+                }
+
+                float dy = oldY - child.getY();
+                if (dy == 0f) {
+                    child.setTranslationY(0f);
+                    continue;
+                }
+
+                child.setTranslationY(dy);
+                child.animate()
+                        .translationY(0f)
+                        .setDuration(ChatListItemAnimator.DEFAULT_DURATION)
+                        .setInterpolator(ChatListItemAnimator.DEFAULT_INTERPOLATOR)
+                        .start();
+            }
+
+            animateAnchorTopChange(recyclerView, anchorCell, anchorBottomBefore, anchorHeightBefore, anchorLeftBefore, anchorWidthBefore, anchorHeightAfter, heightDelta, snapshot);
+            updateVisibleChatMessageCells(recyclerView);
+            startVisiblePartTick(recyclerView);
+            return true;
+        }
     }
 }

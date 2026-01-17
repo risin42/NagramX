@@ -178,35 +178,8 @@ public class BookmarksActivity extends NekoDelegateFragment {
     };
 
     private void updateVisibleMessageCells() {
-        if (listView == null || fragmentView == null) {
-            return;
-        }
-        int parentHeight = listView.getMeasuredHeight();
-        if (parentHeight <= 0) {
-            return;
-        }
-        int parentWidth = fragmentView.getMeasuredWidth();
-        int backgroundHeight = fragmentView.getMeasuredHeight();
-        if (fragmentView instanceof SizeNotifierFrameLayout frameLayout) {
-            backgroundHeight = frameLayout.getBackgroundSizeY();
-        }
-
-        float listY = listView.getY();
-        for (int i = 0, count = listView.getChildCount(); i < count; i++) {
-            View child = listView.getChildAt(i);
-            if (!(child instanceof ChatMessageCell cell)) {
-                continue;
-            }
-            int childTop = child.getTop();
-            int childHeight = child.getMeasuredHeight();
-            int viewTop = Math.max(0, -childTop);
-            int viewBottom = Math.min(childHeight, parentHeight - childTop);
-            int visibleHeight = viewBottom - viewTop;
-            if (visibleHeight <= 0) {
-                continue;
-            }
-            cell.setParentBounds(0, parentHeight);
-            cell.setVisiblePart(viewTop, visibleHeight, parentHeight, 0f, child.getY() + listY, parentWidth, backgroundHeight, 0, 0);
+        if (listView != null) {
+            updateVisibleChatMessageCells(listView);
         }
     }
 
