@@ -801,7 +801,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                     presentFragment(new NekoSettingsActivity());
                     drawerLayoutContainer.closeDrawer(false);
                 } else if (id == DrawerLayoutAdapter.nkbtnQrLogin) {
-                    if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(new String[]{Manifest.permission.CAMERA}, ActionIntroActivity.CAMERA_PERMISSION_REQUEST_CODE);
                         return;
                     }
@@ -7276,22 +7276,17 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             }
         });
         onPasscodePause();
-        try {
-            if (actionBarLayout != null) {
-                actionBarLayout.onPause();
+        actionBarLayout.onPause();
+        if (AndroidUtilities.isTablet()) {
+            if (rightActionBarLayout != null) {
+                rightActionBarLayout.onPause();
             }
-            if (AndroidUtilities.isTablet()) {
-                if (rightActionBarLayout != null) {
-                    rightActionBarLayout.onPause();
-                }
-                if (layersActionBarLayout != null) {
-                    layersActionBarLayout.onPause();
-                }
+            if (layersActionBarLayout != null) {
+                layersActionBarLayout.onPause();
             }
-            if (passcodeDialog != null) {
-                passcodeDialog.passcodeView.onPause();
-            }
-        } catch (Exception ignored) {
+        }
+        if (passcodeDialog != null) {
+            passcodeDialog.passcodeView.onPause();
         }
         for (PasscodeView overlay : overlayPasscodeViews) {
             overlay.onPause();
@@ -8812,27 +8807,24 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
     @Override
     public void onBackPressed() {
-        try {
-            if (!onBackPressed(true)) {
-                return;
-            }
-            if (AndroidUtilities.isTablet()) {
-                if (layersActionBarLayout != null && layersActionBarLayout.getView().getVisibility() == View.VISIBLE) {
-                    layersActionBarLayout.onBackPressed();
-                } else if (rightActionBarLayout != null) {
-                    if (rightActionBarLayout != null && rightActionBarLayout.getView().getVisibility() == View.VISIBLE && !rightActionBarLayout.getFragmentStack().isEmpty()) {
-                        BaseFragment lastFragment = rightActionBarLayout.getFragmentStack().get(rightActionBarLayout.getFragmentStack().size() - 1);
-                        if (lastFragment.onBackPressed(true)) {
-                            lastFragment.finishFragment();
-                        }
-                    } else {
-                        actionBarLayout.onBackPressed();
-                    }
-                }
+        if (!onBackPressed(true)) {
+            return;
+        }
+        if (AndroidUtilities.isTablet()) {
+            if (layersActionBarLayout != null && layersActionBarLayout.getView().getVisibility() == View.VISIBLE) {
+                layersActionBarLayout.onBackPressed();
             } else {
-                actionBarLayout.onBackPressed();
+                if (rightActionBarLayout != null && rightActionBarLayout.getView().getVisibility() == View.VISIBLE && !rightActionBarLayout.getFragmentStack().isEmpty()) {
+                    BaseFragment lastFragment = rightActionBarLayout.getFragmentStack().get(rightActionBarLayout.getFragmentStack().size() - 1);
+                    if (lastFragment.onBackPressed(true)) {
+                        lastFragment.finishFragment();
+                    }
+                } else {
+                    actionBarLayout.onBackPressed();
+                }
             }
-        } catch (Exception ignored) {
+        } else {
+            actionBarLayout.onBackPressed();
         }
     }
 
