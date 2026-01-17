@@ -57,6 +57,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.util.Base64;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.ActionMode;
 import android.view.Gravity;
@@ -78,6 +79,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.window.BackEvent;
 import android.window.OnBackAnimationCallback;
+import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.NonNull;
@@ -1178,12 +1180,16 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         BackupAgent.requestBackup(this);
 
         RestrictedLanguagesSelectActivity.checkRestrictedLanguages(false);
-        if (Build.VERSION.SDK_INT >= 34) {
-            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
-                OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-                new OnBackAnimationCallback() {
+        if (Build.VERSION.SDK_INT >= 34 && NaConfig.INSTANCE.getBackAnimationStyle().Int() == ActionBarLayout.BACK_ANIMATION_PREDICTIVE) {
+            if (onBackAnimationCallback == null) {
+                onBackAnimationCallback =  new OnBackAnimationCallback() {
+                    private boolean started = false;
+                    private boolean invoked = false;
+
                     @Override
                     public void onBackInvoked() {
+                        invoked = true;
+
                         if (AndroidUtilities.isTablet()) {
                             onBackPressed();
                             return;
@@ -1199,6 +1205,12 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
                     @Override
                     public void onBackStarted(@NonNull BackEvent backEvent) {
+                        started = true;
+                        invoked = false;
+                        predictiveBackStarted = false;
+                    }
+
+                    private void onBackStartedInternal(BackEvent backEvent) {
                         if (AndroidUtilities.isTablet()) return;
                         if (!onBackPressed(false)) return;
                         if (actionBarLayout != null) {
@@ -1206,8 +1218,21 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                         }
                     }
 
+                    private static final float LAZY_START = 0.015f;
+                    private boolean predictiveBackStarted;
+                    private boolean predictiveBackInvoked;
+
                     @Override
                     public void onBackProgressed(@NonNull BackEvent backEvent) {
+                        if (started && invoked) return;
+
+                        final float progress = backEvent.getProgress();
+                        if (!predictiveBackStarted && progress > LAZY_START) {
+                            predictiveBackStarted = true;
+                            onBackStartedInternal(backEvent);
+                        }
+
+                        final float fixedProgress = Math.max(0, progress - LAZY_START) / (1 - LAZY_START);
                         if (AndroidUtilities.isTablet()) return;
                         if (actionBarLayout != null) {
                             actionBarLayout.onBackProgress(backEvent.getProgress());
@@ -1216,32 +1241,48 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
                     @Override
                     public void onBackCancelled() {
+                        started = false;
+                        invoked = false;
+
                         if (AndroidUtilities.isTablet()) return;
                         if (actionBarLayout != null) {
                             actionBarLayout.onBackCancelled();
                         }
                     }
-                }
-            );
-        } else if (Build.VERSION.SDK_INT >= 33) {
+                };
+            }
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                 OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-                () -> {
-                    if (AndroidUtilities.isTablet()) {
-                        onBackPressed();
-                        return;
+                (OnBackAnimationCallback) onBackAnimationCallback
+            );
+        } else if (Build.VERSION.SDK_INT >= 33) {
+            if (onBackInvokedCallback == null) {
+                onBackInvokedCallback = new OnBackInvokedCallback() {
+                    @Override
+                    public void onBackInvoked() {
+                        if (AndroidUtilities.isTablet()) {
+                            onBackPressed();
+                            return;
+                        }
+                        if (!onBackPressed(true))
+                            return;
+                        if (actionBarLayout != null) {
+                            actionBarLayout.onBackInvoked();
+                        } else {
+                            onBackPressed();
+                        }
                     }
-                    if (!onBackPressed(true))
-                        return;
-                    if (actionBarLayout != null) {
-                        actionBarLayout.onBackInvoked();
-                    } else {
-                        onBackPressed();
-                    }
-                }
+                };
+            }
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                (OnBackInvokedCallback) onBackInvokedCallback
             );
         }
     }
+
+    private Object onBackAnimationCallback;
+    private Object onBackInvokedCallback;
 
     private void showAttachMenuBot(TLRPC.TL_attachMenuBot attachMenuBot, String startApp, boolean sidemenu) {
         drawerLayoutContainer.closeDrawer();
@@ -7381,6 +7422,15 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             }
         } catch (Exception e) {
             FileLog.e(e);
+        }
+        if (Build.VERSION.SDK_INT >= 34) {
+            if (onBackAnimationCallback instanceof OnBackAnimationCallback) {
+                getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback((OnBackAnimationCallback) onBackAnimationCallback);
+            }
+        } else if (Build.VERSION.SDK_INT >= 33) {
+            if (onBackAnimationCallback instanceof OnBackInvokedCallback) {
+                getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback((OnBackInvokedCallback) onBackInvokedCallback);
+            }
         }
         clearFragments();
         super.onDestroy();

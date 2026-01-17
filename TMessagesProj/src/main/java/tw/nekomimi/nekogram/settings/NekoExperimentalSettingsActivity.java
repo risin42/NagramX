@@ -7,6 +7,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,6 +22,7 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.tl.TL_account;
 import org.telegram.ui.ActionBar.ActionBar;
+import org.telegram.ui.ActionBar.ActionBarLayout;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ActionBar.ThemeDescription;
@@ -66,7 +70,15 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
     // General
     private final AbstractConfigCell headerGeneral = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.General)));
-    private final AbstractConfigCell springAnimationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimation()));
+    private final AbstractConfigCell backAnimationStyleRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getBackAnimationStyle(),
+            Build.VERSION.SDK_INT >= 34 ? new String[]{
+                    getString(R.string.BackAnimationClassic),
+                    getString(R.string.BackAnimationSpring),
+                    getString(R.string.BackAnimationPredictive),
+            } : new String[]{
+                    getString(R.string.BackAnimationClassic),
+                    getString(R.string.BackAnimationSpring),
+            }, null));
     private final AbstractConfigCell springAnimationCrossfadeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimationCrossfade()));
     private final AbstractConfigCell forceEdgeToEdgeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getForceEdgeToEdge()));
     private final AbstractConfigCell smoothRoundedMenuRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSmoothRoundedMenu()));
@@ -122,7 +134,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     private final AbstractConfigCell dividerPangu = cellGroup.appendCell(new ConfigCellDivider());
 
     public NekoExperimentalSettingsActivity() {
-        if (!NaConfig.INSTANCE.getSpringAnimation().Bool()) {
+        if (NaConfig.INSTANCE.getBackAnimationStyle().Int() != ActionBarLayout.BACK_ANIMATION_SPRING) {
             cellGroup.rows.remove(springAnimationCrossfadeRow);
         }
         checkStoriesRows();
@@ -246,8 +258,9 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
             } else if (key.equals(NaConfig.INSTANCE.getDisableStories().getKey())) {
                 checkStoriesRows();
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
-            } else if (key.equals(NaConfig.INSTANCE.getSpringAnimation().getKey())) {
-                if (!(boolean) newValue) {
+            } else if (key.equals(NaConfig.INSTANCE.getBackAnimationStyle().getKey())) {
+                final int style = (int) newValue;
+                if (style != ActionBarLayout.BACK_ANIMATION_SPRING) {
                     if (cellGroup.rows.contains(springAnimationCrossfadeRow)) {
                         final int index = cellGroup.rows.indexOf(springAnimationCrossfadeRow);
                         cellGroup.rows.remove(springAnimationCrossfadeRow);
@@ -255,7 +268,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                     }
                 } else {
                     if (!cellGroup.rows.contains(springAnimationCrossfadeRow)) {
-                        final int index = cellGroup.rows.indexOf(springAnimationRow) + 1;
+                        final int index = cellGroup.rows.indexOf(backAnimationStyleRow) + 1;
                         cellGroup.rows.add(index, springAnimationCrossfadeRow);
                         listAdapter.notifyItemInserted(index);
                     }

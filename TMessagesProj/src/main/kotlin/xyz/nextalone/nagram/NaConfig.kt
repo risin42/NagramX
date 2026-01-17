@@ -1,7 +1,9 @@
 package xyz.nextalone.nagram
 
 import android.content.SharedPreferences
+import android.os.Build
 import android.util.Base64
+import androidx.core.content.edit
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.BuildVars
@@ -824,12 +826,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    val springAnimation =
-        addConfig(
-            "SpringAnimation",
-            ConfigItem.configTypeBool,
-            false
-        )
     val springAnimationCrossfade =
         addConfig(
             "SpringAnimationCrossfade",
@@ -1310,6 +1306,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val backAnimationStyle =
+        addConfig(
+            "BackAnimationStyle",
+            ConfigItem.configTypeInt,
+            0 // 0: Classic, 1: Spring, 2: Predictive Back
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {
@@ -1375,6 +1377,15 @@ object NaConfig {
         if (!getPreferences().contains(cameraInVideoMessages.key)) {
             val legacyRear = getPreferences().getBoolean("RearVideoMessages", false)
             cameraInVideoMessages.setConfigInt(if (legacyRear) 1 else 0)
+        }
+        if (!getPreferences().contains(backAnimationStyle.key) &&
+            getPreferences().contains("SpringAnimation")
+        ) {
+            val legacySpring = getPreferences().getBoolean("SpringAnimation", false)
+            if (legacySpring) {
+                backAnimationStyle.setConfigInt(1) // SPRING
+            }
+            getPreferences().edit { remove("SpringAnimation") }
         }
     }
 
