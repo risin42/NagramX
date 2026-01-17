@@ -4731,7 +4731,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             }
         }
 
-        emojiStatusView.setVisibility(emojiStatusVisible ? View.VISIBLE : View.GONE);
+        emojiStatusView.setVisibility(emojiStatusVisible ? View.VISIBLE : View.INVISIBLE);
 
         if (needInvalidate) {
             invalidate();

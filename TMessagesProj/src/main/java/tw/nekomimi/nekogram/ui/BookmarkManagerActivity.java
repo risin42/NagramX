@@ -104,7 +104,7 @@ public class BookmarkManagerActivity extends BaseFragment {
             @Override
             public void onItemClick(int id) {
                 if (id == -1) {
-                    if (onBackPressed()) {
+                    if (onBackPressed(true)) {
                         finishFragment();
                     }
                 } else if (id == CLEAR_ALL_BOOKMARKS) {
@@ -249,8 +249,8 @@ public class BookmarkManagerActivity extends BaseFragment {
     }
 
     @Override
-    public boolean onBackPressed() {
-        if (!super.onBackPressed()) {
+    public boolean onBackPressed(boolean invoked) {
+        if (!super.onBackPressed(invoked)) {
             return false;
         }
         if (tabsAnimationInProgress || startedTracking || maybeStartTracking || tabsView != null && tabsView.isAnimatingIndicator()) {

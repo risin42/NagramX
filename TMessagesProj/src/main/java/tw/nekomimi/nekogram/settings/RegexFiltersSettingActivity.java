@@ -353,7 +353,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
         b.putBoolean("allowGlobalSearch", false);
         b.putBoolean("checkCanWrite", false);
         DialogsActivity activity = new DialogsActivity(b);
-        activity.setDelegate((fragment, did, message, param, notify, scheduleDate, topicsFragment) -> {
+        activity.setDelegate((fragment, did, message, param, notify, scheduleDate, scheduleRepeatPeriod, topicsFragment) -> {
             if (did != null && !did.isEmpty()) {
                 long dialogId = did.get(0).dialogId;
                 parentLayout.removeFragmentFromStack(fragment, true);

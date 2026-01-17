@@ -2365,9 +2365,9 @@ public class ChatActionCell extends BaseCell implements DownloadController.FileD
 
                 if (user.self) {
                     TLRPC.User user2 = MessagesController.getInstance(currentAccount).getUser(messageObject.getDialogId());
-                    description = AndroidUtilities.replaceTags(formatString("StoryYouMentionedTitle", R.string.StoryYouMentionedTitle, user2.first_name));
+                    description = AndroidUtilities.replaceTags(formatString(R.string.StoryYouMentionedTitle, user2.first_name));
                 } else {
-                    description = AndroidUtilities.replaceTags(formatString("StoryMentionedTitle", R.string.StoryMentionedTitle, user.first_name));
+                    description = AndroidUtilities.replaceTags(formatString(R.string.StoryMentionedTitle, user.first_name));
                 }
                 action = getString(R.string.StoryMentionedAction);
 
@@ -2576,18 +2576,15 @@ public class ChatActionCell extends BaseCell implements DownloadController.FileD
                     avatarStoryParams.storyItem = messageObject.messageOwner.media.storyItem;
                 }
                 avatarStoryParams.originalAvatarRect.set(x, y, x + imageSize, y + imageSize);
-                boolean restoreImageSize = false;
                 if (messageObject.type == MessageObject.TYPE_GIFT_THEME_UPDATE || messageObject.type == MessageObject.TYPE_GIFT_OFFER || messageObject.type == MessageObject.TYPE_GIFT_OFFER_REJECTED) {
                     x += dp(10);
                     y += dp(10);
                     imageSize -= dp(20);
-                    restoreImageSize = true;
                 }
                 imageReceiver.setImageCoords(x, y, Math.max(0, imageSize), Math.max(0, imageSize));
-                if (restoreImageSize) {
+                if (messageObject.type == MessageObject.TYPE_GIFT_THEME_UPDATE || messageObject.type == MessageObject.TYPE_GIFT_OFFER || messageObject.type == MessageObject.TYPE_GIFT_OFFER_REJECTED) {
                     imageSize += dp(20);
                 }
-
             } else if (messageObject.type == MessageObject.TYPE_ACTION_PHOTO) {
                 imageReceiver.setImageCoords((previousWidth - stickerSize) / 2f, textY + textHeight + giftRectSize * 0.075f, stickerSize, stickerSize);
             } else if (messageObject.type == MessageObject.TYPE_GIFT_PREMIUM_CHANNEL) {

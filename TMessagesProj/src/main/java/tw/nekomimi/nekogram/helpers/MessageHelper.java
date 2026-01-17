@@ -1097,11 +1097,19 @@ public class MessageHelper extends BaseController {
         return translatedEntities;
     }
 
-    public static ArrayList<TLRPC.MessageEntity> getEntitiesForText(MessageObject messageObject, CharSequence text) {
+    public static ArrayList<TLRPC.MessageEntity> getEntitiesForText(MessageObject messageObject, CharSequence text, boolean summarized) {
         if (messageObject == null || messageObject.messageOwner == null) {
             return null;
         }
         final TLRPC.Message messageOwner = messageObject.messageOwner;
+        if (summarized) {
+            if (messageOwner.translated && messageOwner.translatedSummaryText != null) {
+                return messageOwner.translatedSummaryText.entities;
+            } else if (messageOwner.summaryText != null) {
+                return messageOwner.summaryText.entities;
+            }
+            return null;
+        }
         if (messageObject.translated) {
             if (messageOwner.voiceTranscriptionOpen) {
                 return messageOwner.translatedVoiceTranscription != null ? messageOwner.translatedVoiceTranscription.entities : null;
