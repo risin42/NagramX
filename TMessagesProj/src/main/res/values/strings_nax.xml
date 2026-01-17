@@ -319,4 +319,8 @@
     <string name="SetLocalName">Set Local Name</string>
     <string name="DeleteChatForBothSides">Use \"Also delete for\" by Default</string>
     <string name="AutoPingProxy">Auto Ping Proxy</string>
+    <string name="BackAnimationStyle">Navigation Animation</string>
+    <string name="BackAnimationClassic">Classic</string>
+    <string name="BackAnimationSpring">Spring</string>
+    <string name="BackAnimationPredictive">Predictive</string>
 </resources>

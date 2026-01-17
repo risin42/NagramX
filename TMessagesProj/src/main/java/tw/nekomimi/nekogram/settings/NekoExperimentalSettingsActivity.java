@@ -7,6 +7,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -30,6 +31,7 @@ import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.tl.TL_account;
 import org.telegram.ui.ActionBar.ActionBar;
+import org.telegram.ui.ActionBar.ActionBarLayout;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.ActionBar.Theme;
@@ -85,12 +87,20 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
     // General
     private final AbstractConfigCell headerGeneral = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.General)));
-    private final AbstractConfigCell localPremiumRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.localPremium));
-    private final AbstractConfigCell springAnimationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimation()));
+    private final AbstractConfigCell backAnimationStyleRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getBackAnimationStyle(),
+            Build.VERSION.SDK_INT >= 34 ? new String[]{
+                    getString(R.string.BackAnimationClassic),
+                    getString(R.string.BackAnimationSpring),
+                    getString(R.string.BackAnimationPredictive),
+            } : new String[]{
+                    getString(R.string.BackAnimationClassic),
+                    getString(R.string.BackAnimationSpring),
+            }, null));
     private final AbstractConfigCell springAnimationCrossfadeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSpringAnimationCrossfade()));
     private final AbstractConfigCell forceEdgeToEdgeRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getForceEdgeToEdge()));
     private final AbstractConfigCell smoothRoundedMenuRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSmoothRoundedMenu()));
     private final AbstractConfigCell saveToChatSubfolderRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSaveToChatSubfolder()));
+    private final AbstractConfigCell localPremiumRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.localPremium));
     private final AbstractConfigCell unlimitedPinnedDialogsRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.unlimitedPinnedDialogs, getString(R.string.UnlimitedPinnedDialogsAbout)));
     private final AbstractConfigCell unlimitedFavedStickersRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.unlimitedFavedStickers, getString(R.string.UnlimitedFavoredStickersAbout)));
     private final AbstractConfigCell dividerGeneral = cellGroup.appendCell(new ConfigCellDivider());
@@ -183,7 +193,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         if (!NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().Bool()) {
             cellGroup.rows.remove(saveDeletedMessageInBotChatRow);
         }
-        if (!NaConfig.INSTANCE.getSpringAnimation().Bool()) {
+        if (NaConfig.INSTANCE.getBackAnimationStyle().Int() != ActionBarLayout.BACK_ANIMATION_SPRING) {
             cellGroup.rows.remove(springAnimationCrossfadeRow);
         }
         checkStoriesRows();
@@ -341,8 +351,9 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                 checkUseDeletedIconRows();
             } else if (key.equals(NaConfig.INSTANCE.getSaveDeletedMessageForBotUser().getKey())) {
                 checkSaveBotMsgRows();
-            } else if (key.equals(NaConfig.INSTANCE.getSpringAnimation().getKey())) {
-                if (!(boolean) newValue) {
+            } else if (key.equals(NaConfig.INSTANCE.getBackAnimationStyle().getKey())) {
+                final int style = (int) newValue;
+                if (style != ActionBarLayout.BACK_ANIMATION_SPRING) {
                     if (cellGroup.rows.contains(springAnimationCrossfadeRow)) {
                         final int index = cellGroup.rows.indexOf(springAnimationCrossfadeRow);
                         cellGroup.rows.remove(springAnimationCrossfadeRow);
@@ -350,7 +361,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
                     }
                 } else {
                     if (!cellGroup.rows.contains(springAnimationCrossfadeRow)) {
-                        final int index = cellGroup.rows.indexOf(springAnimationRow) + 1;
+                        final int index = cellGroup.rows.indexOf(backAnimationStyleRow) + 1;
                         cellGroup.rows.add(index, springAnimationCrossfadeRow);
                         listAdapter.notifyItemInserted(index);
                     }

@@ -909,7 +909,7 @@ public class DrawerLayoutContainer extends FrameLayout {
         return WindowInsetsCompat.CONSUMED;
     }
 
-    private final boolean USE_SPRING_ANIMATION = NaConfig.INSTANCE.getSpringAnimation().Bool();
+    private final boolean USE_SPRING_ANIMATION = NaConfig.INSTANCE.getBackAnimationStyle().Int() == ActionBarLayout.BACK_ANIMATION_SPRING;
     private SpringAnimation currentSpringAnimation;
 
     private float getSpringStiffness(boolean fast) {

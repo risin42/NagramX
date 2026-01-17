@@ -4098,10 +4098,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                             webPage = null;
                         }
                     }
-                    HashSet<String> diceEmojies = new HashSet<>();
-                    diceEmojies.add("\uD83C\uDFB2");
-                    diceEmojies.add("\uD83C\uDFAF");
-                    if (canSendStickers && canSendGames && message.length() < 30 && webPage == null && (entities == null || entities.isEmpty()) && diceEmojies.contains(message.replace("\ufe0f", "")) && encryptedChat == null && scheduleDate == 0) {
+                    if (canSendStickers && canSendGames && message.length() < 30 && webPage == null && (entities == null || entities.isEmpty()) && getMessagesController().diceEmojies.contains(message.replace("\ufe0f", "")) && encryptedChat == null && scheduleDate == 0) {
                         final TLRPC.TL_messageMediaDice mediaDice = new TLRPC.TL_messageMediaDice();
                         mediaDice.emoticon = message;
                         mediaDice.value = -1;
