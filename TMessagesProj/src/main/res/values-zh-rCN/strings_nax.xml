@@ -35,7 +35,7 @@
     <string name="LlmUseContextNotice">提高翻译质量，但会消耗更多的令牌。</string>
     <string name="LlmContextSize">上下文消息数</string>
     <string name="LlmUseContextInAutoTranslate">自动翻译使用上下文</string>
-    <string name="LlmUseContextInAutoTranslateNotice">可能会增加令牌使用量和延迟。</string>
+    <string name="LlmUseContextInAutoTranslateNotice">可能会增加 Token 使用量和延迟。</string>
     <string name="LlmTemperature">严谨与想象</string>
     <string name="AITranslatorSettings">AI 翻译</string>
     <string name="TranslucentDeletedMessages">使已删除的消息半透明</string>
@@ -139,7 +139,7 @@
     <string name="MarkReadAfterSendNotice">发送新消息或点击表情回应时，自动将消息标记为已读。</string>
     <string name="SendWithoutSoundRowNotice">对方将不会收到声音提醒。</string>
     <string name="GhostReadMessage">标记已读</string>
-    <string name="GhostModeExcludeRead">阅读排除</string>
+    <string name="GhostModeExcludeRead">排除已读</string>
     <string name="GhostModeExcludeTyping">输入排除</string>
     <string name="SendWithSound">有声发送</string>
     <string name="PerformanceClass">设备性能等级</string>
@@ -308,6 +308,10 @@
     <string name="SaveLocalLastSeen">保存最后上线时间</string>
     <string name="CopyVideoFrame">复制帧</string>
     <string name="SetLocalName">设置备注</string>
-    <string name="DeleteChatForBothSides">默认使用“为双方删除”</string>
-    <string name="AutoPingProxy">自动 Ping 检测</string>
+    <string name="DeleteChatForBothSides">默认使用“同时为对方删除”</string>
+    <string name="AutoPingProxy">自动检测 Ping</string>
+    <string name="BackAnimationStyle">导航动画</string>
+    <string name="BackAnimationClassic">经典</string>
+    <string name="BackAnimationSpring">Spring</string>
+    <string name="BackAnimationPredictive">预测</string>
 </resources>
