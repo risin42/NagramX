@@ -6886,7 +6886,6 @@ public class AlertsCreator {
             }
 
             long clientUserId = UserConfig.getInstance(currentAccount).getClientUserId();
-            boolean finalHasAyuDeletedMessages = hasAyuDeletedMessages;
             ArrayList<TLObject> actionParticipants = messages
                     .stream()
                     .mapToLong(MessageObject::getFromChatId)
@@ -6900,9 +6899,6 @@ public class AlertsCreator {
                     })
                     .filter(Objects::nonNull)
                     .filter(userOrChat -> {
-                        if (finalHasAyuDeletedMessages) {
-                            return false;
-                        }
                         if (userOrChat instanceof TLRPC.User) {
                             TLRPC.User user1 = (TLRPC.User) userOrChat;
                             return user1.id != clientUserId;
@@ -6914,7 +6910,8 @@ public class AlertsCreator {
                     })
                     .collect(Collectors.toCollection(ArrayList::new));
 
-            if (!actionParticipants.isEmpty()) {
+            boolean canShowActionParticipantsSheet = ChatObject.canUserDoAdminAction(chat, ChatObject.ACTION_DELETE_MESSAGES) || canBan;
+            if (!actionParticipants.isEmpty() && canShowActionParticipantsSheet) {
                 if (channelParticipants == null) {
                     final AlertDialog[] progressDialog = new AlertDialog[]{new AlertDialog(activity, AlertDialog.ALERT_TYPE_SPINNER)};
 

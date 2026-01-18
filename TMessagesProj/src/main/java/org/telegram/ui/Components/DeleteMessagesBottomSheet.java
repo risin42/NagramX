@@ -414,7 +414,8 @@ public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
 //        if (prefs.getBoolean("delete_report", false)) {
 //            report.setAllChecks(true, false);
 //        }
-        deleteAll = new Action(ACTION_DELETE_ALL, actionParticipants);
+        final boolean canDeleteMessages = ChatObject.canUserDoAdminAction(inChat, ChatObject.ACTION_DELETE_MESSAGES);
+        deleteAll = new Action(ACTION_DELETE_ALL, canDeleteMessages ? actionParticipants : new ArrayList<>(0));
 //        if (prefs.getBoolean("delete_deleteAll", false)) {
 //            deleteAll.setAllChecks(true, false);
 //            onDeleteAllChanged();
@@ -1126,8 +1127,9 @@ public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
             } else if (participant instanceof TLRPC.Chat) {
                 req.participant = MessagesController.getInputPeer((TLRPC.Chat) participant);
             }
-            req.id = messages.stream()
+            ArrayList<Integer> ids = messages.stream()
                     .filter(msg -> msg.messageOwner.peer_id != null && msg.messageOwner.peer_id.chat_id != -mergeDialogId)
+                    .filter(msg -> !msg.isAyuDeleted())
                     .filter(msg -> {
                         if (participant instanceof TLRPC.User) {
                             return msg.messageOwner.from_id.user_id == ((TLRPC.User) participant).id;
@@ -1139,6 +1141,10 @@ public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
                     .map(MessageObject::getId)
                     .collect(Collectors.toCollection(ArrayList::new));
 
+            if (ids.isEmpty()) {
+                return;
+            }
+            req.id = ids;
             ConnectionsManager.getInstance(currentAccount).sendRequest(req, null);
         });
 
