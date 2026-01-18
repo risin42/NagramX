@@ -482,6 +482,9 @@ public class MessageObject {
 
     @Deprecated
     private static long getTopicId(int currentAccount, TLRPC.Message message, boolean sureIsForum, boolean sureIsMonoForum) {
+        if (message == null) {
+            return sureIsForum ? 1 : 0;
+        }
         final long selfId = UserConfig.getInstance(currentAccount).getClientUserId();
         if (sureIsMonoForum) {
             return getMonoForumTopicId(message);
