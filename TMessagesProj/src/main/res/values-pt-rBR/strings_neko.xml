@@ -157,6 +157,7 @@
     <string name="EmojiSetApplied">Pacote de emojis aplicado.</string>
     <string name="EmojiSetAppliedInfo">%1$s é agora o seu pacote de emojis.</string>
     <string name="EmojiSetAlreadyApplied">Pacote de emojis já aplicado.</string>
+    <string name="ProviderTelegramAPI">API do Telegram</string>
     <string name="RecentChats">Chats recentes</string>
     <string name="ClearRecentChats">Limpar chats recentes</string>
     <string name="ClearRecentChatAlert">Deseja limpar suas conversas recentes?</string>

@@ -132,14 +132,14 @@
     <string name="DontSendReadMessagePackets">Не читать сообщения</string>
     <string name="DontReadStoriesPackets">Не читать истории</string>
     <string name="DontSendOnlinePackets">Не отправлять онлайн-статус</string>
-    <string name="DontSendUploadProgress">Не отправлять статус ввода текста</string>
+    <string name="DontSendUploadProgress">Не отправлять ввод текста</string>
     <string name="SendOfflinePacketAfterOnline">Автоматический офлайн</string>
     <string name="MarkReadAfterSend">Отмечать прочитанным после взаимодействия</string>
     <string name="GhostModeNotice">Долгое нажатие на любую опцию предотвращает её изменение при переключении режима «Призрака».</string>
     <string name="MarkReadAfterSendNotice">Когда вы отправляете новое сообщение или нажимаете на реакцию, сообщение автоматически отмечается как прочитанное.</string>
     <string name="SendWithoutSoundRowNotice">Автоматически отправлять исходящие сообщения без звука.</string>
     <string name="GhostReadMessage">Прочитать сообщение</string>
-    <string name="GhostModeExcludeRead">Исключить чтение</string>
+    <string name="GhostModeExcludeRead">Исключить прочтение</string>
     <string name="GhostModeExcludeTyping">Исключить ввод текста</string>
     <string name="SendWithSound">Отправить со звуком</string>
     <string name="PerformanceClass">Класс производительности устройства</string>
@@ -310,4 +310,8 @@
     <string name="SetLocalName">Установить локальное имя</string>
     <string name="DeleteChatForBothSides">Использовать «Также удалить для» по умолчанию</string>
     <string name="AutoPingProxy">Автоматический пинг прокси</string>
+    <string name="BackAnimationStyle">Анимация навигации</string>
+    <string name="BackAnimationClassic">Классическая</string>
+    <string name="BackAnimationSpring">Spring</string>
+    <string name="BackAnimationPredictive">Предиктивная</string>
 </resources>
