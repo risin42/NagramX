@@ -284,7 +284,7 @@ public class TranslateButton extends FrameLayout {
 //            popupLayout.addView(translateFromButton);
 //        }
 
-//        popupLayout.addView(new ActionBarPopupWindow.GapView(getContext(), resourcesProvider), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 8));
+       popupLayout.addView(new ActionBarPopupWindow.GapView(getContext(), resourcesProvider), LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 8));
 
         translateToButton.setOnClickListener(e -> {
             addLanguages.run();
