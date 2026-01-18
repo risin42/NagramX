@@ -129,9 +129,9 @@
     <string name="GhostModeDisabled">Modo fantasma desativado</string>
     <string name="GhostModeInDrawer">Mostrar no menu lateral</string>
     <string name="GhostModeStatusIndicator">Indicador do modo fantasma</string>
-    <string name="DontSendReadMessagePackets">Não visualizar mensagens</string>
+    <string name="DontSendReadMessagePackets">Não ler mensagens</string>
     <string name="DontReadStoriesPackets">Não visualizar stories</string>
-    <string name="DontSendOnlinePackets">Ocultar online</string>
+    <string name="DontSendOnlinePackets">Ocultar status online</string>
     <string name="DontSendUploadProgress">Ocultar digitando</string>
     <string name="SendOfflinePacketAfterOnline">Ficar offline automaticamente</string>
     <string name="MarkReadAfterSend">Ler ao interagir</string>
@@ -242,7 +242,7 @@
     <string name="TestBackendOff">Esta conta se conectará ao servidor de produção.</string>
     <string name="DidNotGetTheCodeBlameDurov">Se você não recebeu o código em outro dispositivo ou não tem o Telegram conectado em outro aparelho, use o aplicativo oficial do Telegram para receber o código.\n\nO Telegram **desativou o login por SMS** em aplicativos de terceiros. Usuários que entram em aplicativos de terceiros só podem receber códigos de login via Telegram.\n\nNão podemos ajudar com isso. Se tiver problemas para entrar, entre em contato com o suporte do Telegram.</string>
     <string name="QRLoginMessage">Escaneie o código QR com outro dispositivo para entrar.</string>
-    <string name="DnsType">Resolutor de DNS</string>
+    <string name="DnsType">Resolução DNS</string>
     <string name="DnsTypeSystem">Sistema</string>
     <string name="CustomDoH">DoH personalizado</string>
     <string name="PinnedReactions">Reações Fixadas</string>
@@ -310,4 +310,8 @@
     <string name="SetLocalName">Definir nome local</string>
     <string name="DeleteChatForBothSides">Usar \"Apagar também para\" por padrão</string>
     <string name="AutoPingProxy">Ping automático do proxy</string>
+    <string name="BackAnimationStyle">Animação de navegação</string>
+    <string name="BackAnimationClassic">Clássica</string>
+    <string name="BackAnimationSpring">Mola</string>
+    <string name="BackAnimationPredictive">Preditiva</string>
 </resources>
