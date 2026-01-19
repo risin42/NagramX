@@ -5129,7 +5129,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 if (lastTime != currentProgress) {
                     lastTime = currentProgress;
                     String timeString = AndroidUtilities.formatShortDuration(currentProgress, (int) duration);
-                    timeString = String.format("%s, %s", timeString, AndroidUtilities.formatFileSize(documentAttach.size));
+                    timeString = String.format("%s・%s", timeString, AndroidUtilities.formatFileSize(documentAttach.size));
                     int timeWidth = (int) Math.ceil(Theme.chat_audioTimePaint.measureText(timeString));
                     durationLayout = new StaticLayout(timeString, Theme.chat_audioTimePaint, timeWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
                 }
@@ -25653,7 +25653,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                         sb.append(formatString("AccDescrMusicInfo", R.string.AccDescrMusicInfo, currentMessageObject.getMusicAuthor(), currentMessageObject.getMusicTitle()));
                         sb.append(", ");
                         sb.append(LocaleController.formatDuration((int) currentMessageObject.getDuration()));
-                        sb.append(", ");
+                        sb.append("・");
                         sb.append(AndroidUtilities.formatFileSize(documentAttach.size));
                     } else if (currentMessageObject.isVoice() || isRoundVideo) {
                         sb.append(", ");
