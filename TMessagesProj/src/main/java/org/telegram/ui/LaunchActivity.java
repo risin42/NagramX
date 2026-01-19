@@ -7435,8 +7435,11 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             if (onBackAnimationCallback instanceof OnBackAnimationCallback) {
                 getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback((OnBackAnimationCallback) onBackAnimationCallback);
             }
+            if (onBackInvokedCallback instanceof OnBackInvokedCallback) {
+                getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback((OnBackInvokedCallback) onBackInvokedCallback);
+            }
         } else if (Build.VERSION.SDK_INT >= 33) {
-            if (onBackAnimationCallback instanceof OnBackInvokedCallback) {
+            if (onBackInvokedCallback instanceof OnBackInvokedCallback) {
                 getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback((OnBackInvokedCallback) onBackInvokedCallback);
             }
         }
