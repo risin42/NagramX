@@ -26260,6 +26260,11 @@ public class ChatActivity extends BaseFragment implements
                             } else {
                                 forceScrollToTop = true;
                                 moveScrollToLastMessage(true);
+                                if (arr.size() < 7 && getMessagesController().getTranslateController().isTranslatingDialog(dialog_id)) {
+                                    for (MessageObject obj : arr) {
+                                        getMessagesController().getTranslateController().checkTranslation(obj, true);
+                                    }
+                                }
                             }
                         }
                     } else {
