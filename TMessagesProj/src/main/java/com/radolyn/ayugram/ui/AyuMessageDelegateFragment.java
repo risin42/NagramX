@@ -6,6 +6,7 @@ import static tw.nekomimi.nekogram.parts.MessageTransKt.TRANSLATION_SEPARATOR;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -17,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.HapticFeedbackConstants;
+import android.view.ViewGroup;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -67,6 +69,31 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
     private final WeakHashMap<RecyclerView, ValueAnimator> visiblePartAnimators = new WeakHashMap<>();
     private final WeakHashMap<RecyclerView, OwnedBitmapDrawable> overlayDrawables = new WeakHashMap<>();
     private final WeakHashMap<RecyclerView, AnchorShiftPreDrawListener> pendingShiftListeners = new WeakHashMap<>();
+
+    private static final float DEFAULT_SCRIM_DIM_AMOUNT = 0.2f;
+
+    @Nullable
+    private Paint scrimPaint;
+    @Nullable
+    private View scrimView;
+    @Nullable
+    private ValueAnimator scrimAnimator;
+    private final int[] scrimTmpLocation = new int[2];
+    private final int[] scrimTmpLocation2 = new int[2];
+    private final Rect scrimTmpRect = new Rect();
+
+    protected class ScrimFrameLayout extends SizeNotifierFrameLayout {
+
+        public ScrimFrameLayout(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void dispatchDraw(Canvas canvas) {
+            super.dispatchDraw(canvas);
+            AyuMessageDelegateFragment.this.drawScrimOverlay(this, canvas);
+        }
+    }
 
     @Override
     public void onTextCopied() {
@@ -426,12 +453,138 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
     public void onPause() {
         super.onPause();
         cancelAyuMessageAnimations();
+        dimBehindView(false);
     }
 
     @Override
     public void onFragmentDestroy() {
         cancelAyuMessageAnimations();
+        dimBehindView(false);
         super.onFragmentDestroy();
+    }
+
+    protected void dimBehindView(@Nullable View view, boolean enable) {
+        if (enable) {
+            setScrimView(view);
+        }
+        dimBehindView(enable ? DEFAULT_SCRIM_DIM_AMOUNT : 0f);
+    }
+
+    protected void dimBehindView(boolean enable) {
+        dimBehindView(null, enable);
+    }
+
+    protected void dimBehindView(float value) {
+        ensureScrimPaint();
+        if (scrimPaint == null) {
+            return;
+        }
+
+        if (scrimAnimator != null) {
+            scrimAnimator.cancel();
+            scrimAnimator = null;
+        }
+
+        final int startAlpha = scrimPaint.getAlpha();
+        final int targetAlpha = Math.round(255f * value);
+        if (startAlpha == targetAlpha) {
+            if (targetAlpha == 0) {
+                setScrimView(null);
+            } else if (fragmentView != null) {
+                fragmentView.invalidate();
+            }
+            return;
+        }
+
+        ValueAnimator animator = ValueAnimator.ofInt(startAlpha, targetAlpha);
+        animator.setDuration(targetAlpha > startAlpha ? 150 : 220);
+        animator.addUpdateListener(a -> {
+            if (scrimPaint != null) {
+                scrimPaint.setAlpha((int) a.getAnimatedValue());
+            }
+            if (fragmentView != null) {
+                fragmentView.invalidate();
+            }
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (scrimAnimator == animation) {
+                    scrimAnimator = null;
+                }
+                if (targetAlpha == 0) {
+                    setScrimView(null);
+                }
+                if (fragmentView != null) {
+                    fragmentView.invalidate();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                onAnimationEnd(animation);
+            }
+        });
+        scrimAnimator = animator;
+        animator.start();
+    }
+
+    private void ensureScrimPaint() {
+        if (scrimPaint != null) {
+            return;
+        }
+        scrimPaint = new Paint();
+        scrimPaint.setAlpha(0);
+    }
+
+    private void setScrimView(@Nullable View view) {
+        if (scrimView == view) {
+            return;
+        }
+        if (scrimView instanceof ChatMessageCell cell) {
+            cell.setInvalidatesParent(false);
+        }
+        scrimView = view;
+        if (scrimView instanceof ChatMessageCell cell) {
+            cell.setInvalidatesParent(true);
+        }
+        if (fragmentView != null) {
+            fragmentView.invalidate();
+        }
+    }
+
+    private void drawScrimOverlay(@NonNull ViewGroup container, @NonNull Canvas canvas) {
+        if (scrimPaint == null || scrimPaint.getAlpha() <= 0) {
+            return;
+        }
+
+        canvas.drawRect(0, 0, container.getWidth(), container.getHeight(), scrimPaint);
+
+        if (scrimView == null || scrimView.getParent() == null) {
+            return;
+        }
+
+        if (!scrimView.getGlobalVisibleRect(scrimTmpRect)) {
+            return;
+        }
+        container.getLocationInWindow(scrimTmpLocation);
+        scrimView.getLocationInWindow(scrimTmpLocation2);
+
+        int viewLeft = scrimTmpLocation2[0] - scrimTmpLocation[0];
+        int viewTop = scrimTmpLocation2[1] - scrimTmpLocation[1];
+
+        scrimTmpRect.offset(-scrimTmpLocation[0], -scrimTmpLocation[1]);
+
+        int save = canvas.save();
+        canvas.translate(viewLeft, viewTop);
+        canvas.clipRect(
+            scrimTmpRect.left - viewLeft,
+            scrimTmpRect.top - viewTop,
+            scrimTmpRect.right - viewLeft,
+            scrimTmpRect.bottom - viewTop
+        );
+        scrimView.draw(canvas);
+        canvas.restoreToCount(save);
     }
 
     private HashMap<View, Float> captureChildY(@NonNull RecyclerView recyclerView) {

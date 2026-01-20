@@ -133,7 +133,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
             }
         });
 
-        SizeNotifierFrameLayout frameLayout = new SizeNotifierFrameLayout(context) {
+        SizeNotifierFrameLayout frameLayout = new ScrimFrameLayout(context) {
             @Override
             protected boolean isActionBarVisible() {
                 return false;
@@ -468,6 +468,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
                 }
                 Bulletin.hideVisible();
                 scrimPopupWindow = null;
+                dimBehindView(false);
             }
         };
         scrimPopupWindow.setPauseNotifications(true);
@@ -508,7 +509,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
 
         scrimPopupContainerLayout.setMaxHeight(totalHeight - popupY);
         scrimPopupWindow.showAtLocation(listView, Gravity.LEFT | Gravity.TOP, popupX, popupY);
-        scrimPopupWindow.dimBehind();
+        dimBehindView(v, true);
     }
 
     private class ListAdapter extends RecyclerListView.SelectionAdapter {

@@ -301,7 +301,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
             }
         });
 
-        SizeNotifierFrameLayout frameLayout = new SizeNotifierFrameLayout(context) {
+        SizeNotifierFrameLayout frameLayout = new ScrimFrameLayout(context) {
             @Override
             protected boolean isActionBarVisible() {
                 return false;
@@ -806,6 +806,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
                 }
                 Bulletin.hideVisible();
                 scrimPopupWindow = null;
+                dimBehindView(false);
             }
         };
         scrimPopupWindow.setPauseNotifications(true);
@@ -846,7 +847,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
 
         scrimPopupContainerLayout.setMaxHeight(totalHeight - popupY);
         scrimPopupWindow.showAtLocation(listView, Gravity.LEFT | Gravity.TOP, popupX, popupY);
-        scrimPopupWindow.dimBehind();
+        dimBehindView(v, true);
     }
 
     private void updateActionBarCount() {
