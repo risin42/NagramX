@@ -15816,7 +15816,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
     @SuppressLint("Range")
     public void drawMessageText(float textX, float textY, Canvas canvas, ArrayList<MessageObject.TextLayoutBlock> textLayoutBlocks, float rtlOffset, boolean origin, float alpha, boolean drawAllBlocks, boolean drawOnlyText, boolean caption) {
-        if (textLayoutBlocks == null || textLayoutBlocks.isEmpty() || alpha == 0) {
+        if (textLayoutBlocks == null || textLayoutBlocks.isEmpty() || alpha == 0 || currentMessageObject == null) {
             return;
         }
         if (shouldTranslucentDeleted() && ayuDeleted && caption) {
@@ -15837,10 +15837,14 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         }
 
         final TranslateController translateController = MessagesController.getInstance(currentAccount).getTranslateController();
-        final boolean translating = translateController.isTranslating(currentMessageObject);
-        final boolean shouldTranslate = currentMessageObject != null && TranslateController.isTranslatable(currentMessageObject) && (translateController.isTranslatingDialog(currentMessageObject.getDialogId()) || translateController.isManualTranslated(currentMessageObject));
-        final boolean shouldSummarize = currentMessageObject != null && currentMessageObject.messageOwner.summarizedOpen;
-        final boolean isFinal = shouldTranslate == (currentMessageObject != null && currentMessageObject.translated) && shouldSummarize == (currentMessageObject != null && currentMessageObject.summarized);
+        final boolean translating = (caption && currentMessagesGroup != null)
+            ? translateController.isTranslating(currentMessageObject, currentMessagesGroup)
+            : translateController.isTranslating(currentMessageObject);
+        final MessageObject messageToCheck = (caption && currentMessagesGroup != null && currentMessagesGroup.captionMessage != null)
+            ? currentMessagesGroup.captionMessage : currentMessageObject;
+        final boolean shouldTranslate = TranslateController.isTranslatable(messageToCheck) && (translateController.isTranslatingDialog(messageToCheck.getDialogId()) || translateController.isManualTranslated(messageToCheck));
+        final boolean shouldSummarize = messageToCheck.messageOwner.summarizedOpen;
+        final boolean isFinal = shouldTranslate == messageToCheck.translated && shouldSummarize == messageToCheck.summarized;
         if (origin == !isFinal) {
             if (translationLoadingFloat == null) {
                 translationLoadingFloat = new AnimatedFloat(this, 350, CubicBezierInterpolator.EASE_OUT_QUINT);
