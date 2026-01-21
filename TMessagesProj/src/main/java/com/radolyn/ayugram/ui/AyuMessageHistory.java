@@ -614,6 +614,12 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
                     localFileFound = true;
                 }
             }
+        } else if (editedMessage.documentType == AyuConstants.DOCUMENT_TYPE_STORY) {
+            File localFile = findSavedMedia(editedMessage);
+            if (localFile != null) {
+                updateStoryMediaWithLocalFile(msg, localFile);
+                localFileFound = true;
+            }
         } else if (editedMessage.documentType == AyuConstants.DOCUMENT_TYPE_PHOTO) {
             File localFile = findSavedMedia(editedMessage);
             if (localFile != null) {
@@ -717,6 +723,36 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
             msg.media = mediaPhoto;
         }
         msg.attachPath = localFile.getAbsolutePath();
+    }
+
+    private void updateStoryMediaWithLocalFile(TLRPC.Message msg, File localFile) {
+        if (!(msg.media instanceof TLRPC.TL_messageMediaStory story) || story.storyItem == null || story.storyItem.media == null) {
+            return;
+        }
+        String filePath = localFile.getAbsolutePath();
+        msg.attachPath = filePath;
+        story.storyItem.attachPath = filePath;
+        TLRPC.MessageMedia storyMedia = story.storyItem.media;
+        if (storyMedia.document != null) {
+            storyMedia.document.localPath = filePath;
+            return;
+        }
+        if (storyMedia.photo != null) {
+            Pair<Integer, Integer> size = AyuUtils.extractImageSizeFromFile(filePath);
+            if (size == null) {
+                size = new Pair<>(500, 500);
+            }
+            TLRPC.TL_photoSize photoSize = new TLRPC.TL_photoSize();
+            photoSize.size = (int) localFile.length();
+            photoSize.w = size.first;
+            photoSize.h = size.second;
+            photoSize.type = "y";
+            photoSize.location = new AyuFileLocation(filePath);
+            if (storyMedia.photo.sizes != null) {
+                storyMedia.photo.sizes.clear();
+                storyMedia.photo.sizes.add(photoSize);
+            }
+        }
     }
 
     private void updateDocumentMediaWithLocalFile(TLRPC.Message msg, File localFile, EditedMessage editedMessage) {

@@ -279,6 +279,48 @@ public abstract class AyuMessageUtils {
                 }
                 return;
             }
+            // handle Story
+            if (documentType == AyuConstants.DOCUMENT_TYPE_STORY && serializedDocument != null && serializedDocument.length > 0) {
+                NativeByteBuffer data = null;
+                try {
+                    data = new NativeByteBuffer(serializedDocument.length);
+                    data.put(ByteBuffer.wrap(serializedDocument));
+                    data.rewind();
+                    TLRPC.MessageMedia deserialized = TLRPC.MessageMedia.TLdeserialize(data, data.readInt32(false), false);
+                    if (deserialized instanceof TLRPC.TL_messageMediaStory story) {
+                        target.media = deserialized;
+                        if (!TextUtils.isEmpty(mediaPath)) {
+                            target.attachPath = mediaPath;
+                            if (story.storyItem != null) {
+                                story.storyItem.attachPath = mediaPath;
+                                if (story.storyItem.media != null && story.storyItem.media.document != null) {
+                                    story.storyItem.media.document.localPath = mediaPath;
+                                }
+                            }
+                        } else {
+                            String resolvedPath = ensureAttachmentAndUpdateMediaPath(base, target, accountId);
+                            if (!TextUtils.isEmpty(resolvedPath)) {
+                                target.attachPath = resolvedPath;
+                                if (story.storyItem != null) {
+                                    story.storyItem.attachPath = resolvedPath;
+                                    if (story.storyItem.media != null && story.storyItem.media.document != null) {
+                                        story.storyItem.media.document.localPath = resolvedPath;
+                                    }
+                                }
+                            }
+                        }
+                        return;
+                    }
+                    target.media = deserialized;
+                } catch (Exception e) {
+                    FileLog.e("Failed to deserialize story media", e);
+                } finally {
+                    if (data != null) {
+                        data.reuse();
+                    }
+                }
+                return;
+            }
             // If we have serialized media data (and no file path), deserialize it directly
             // This handles cases where the file wasn't downloaded when the message was deleted
             if (documentType != AyuConstants.DOCUMENT_TYPE_STICKER && serializedDocument != null && serializedDocument.length > 0 && TextUtils.isEmpty(mediaPath)) {
@@ -419,6 +461,8 @@ public abstract class AyuMessageUtils {
                 out.documentType = AyuConstants.DOCUMENT_TYPE_NONE;
             } else if ((media instanceof TLRPC.TL_messageMediaPhoto) && media.photo != null) {
                 out.documentType = AyuConstants.DOCUMENT_TYPE_PHOTO;
+            } else if (media instanceof TLRPC.TL_messageMediaStory) {
+                out.documentType = AyuConstants.DOCUMENT_TYPE_STORY;
             } else if ((media instanceof TLRPC.TL_messageMediaDocument) && media.document != null && (MessageObject.isStickerMessage(message) || (media.document.mime_type != null && media.document.mime_type.equals("application/x-tgsticker")))) {
                 out.documentType = AyuConstants.DOCUMENT_TYPE_STICKER;
                 out.mimeType = message.media.document.mime_type;
@@ -462,7 +506,7 @@ public abstract class AyuMessageUtils {
                 out.documentType = AyuConstants.DOCUMENT_TYPE_FILE;
             }
             int docType = out.documentType;
-            if (docType == AyuConstants.DOCUMENT_TYPE_PHOTO || docType == AyuConstants.DOCUMENT_TYPE_FILE) {
+            if (docType == AyuConstants.DOCUMENT_TYPE_PHOTO || docType == AyuConstants.DOCUMENT_TYPE_FILE || docType == AyuConstants.DOCUMENT_TYPE_STORY) {
                 File finalFile = new File("/");
                 try {
                     if (copyFileToAttachments) {
@@ -501,7 +545,7 @@ public abstract class AyuMessageUtils {
 
                 // Serialize media object to preserve metadata even if file doesn't exist
                 // This allows showing file info, thumbnails, and attributes even without the actual file
-                if (out.mediaPath == null && message.media != null) {
+                if ((out.mediaPath == null || docType == AyuConstants.DOCUMENT_TYPE_STORY) && message.media != null) {
                     NativeByteBuffer data = null;
                     try {
                         int size = message.media.getObjectSize();
@@ -541,6 +585,15 @@ public abstract class AyuMessageUtils {
 
     private static File processAttachment(AyuSavePreferences prefs) {
         TLRPC.Message message = prefs.getMessage();
+        if (message == null) return new File("/");
+        if (message.media instanceof TLRPC.TL_messageMediaStory story && story.storyItem != null && story.storyItem.media != null) {
+            TLRPC.MessageMedia storyMedia = story.storyItem.media;
+            if (storyMedia.document != null) {
+                return processAttachment(prefs.getAccountId(), storyMedia.document);
+            } else if (storyMedia.photo != null) {
+                return processAttachment(prefs.getAccountId(), storyMedia.photo);
+            }
+        }
         File pathToMessage = FileLoader.getInstance(prefs.getAccountId()).getPathToMessage(message);
         if (!pathToMessage.exists() && !pathToMessage.getAbsolutePath().endsWith("/cache")) {
             pathToMessage = FileLoader.getInstance(prefs.getAccountId()).getPathToMessage(message, false);

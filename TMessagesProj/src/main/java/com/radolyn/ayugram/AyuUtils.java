@@ -121,31 +121,58 @@ public class AyuUtils {
         return sb.toString();
     }
 
-    public static String getBaseFilename(TLObject obj) {
-        String filename = null;
-        if (obj instanceof TLRPC.Message message && message.media != null) {
-            filename = FileLoader.getDocumentFileName(message.media.document);
+    public static String getBaseFilename(TLRPC.Message message) {
+        if (message == null) {
+            return null;
         }
-
-        if (obj instanceof TLRPC.Document document) {
-            filename = FileLoader.getDocumentFileName(document);
+        if (message.media instanceof TLRPC.TL_messageMediaStory story && story.storyItem != null && story.storyItem.media != null) {
+            TLRPC.MessageMedia storyMedia = story.storyItem.media;
+            if (storyMedia.document != null) {
+                String filename = FileLoader.getDocumentFileName(storyMedia.document);
+                if (TextUtils.isEmpty(filename)) {
+                    filename = FileLoader.getAttachFileName(storyMedia.document);
+                }
+                return filename;
+            } else if (storyMedia.photo != null && storyMedia.photo.sizes != null && !storyMedia.photo.sizes.isEmpty()) {
+                TLRPC.PhotoSize sizeFull = FileLoader.getClosestPhotoSizeWithSize(storyMedia.photo.sizes, AndroidUtilities.getPhotoSize(true), false, null, true);
+                if (sizeFull != null) {
+                    return FileLoader.getAttachFileName(sizeFull);
+                }
+            }
+            return null;
         }
-
-        if (TextUtils.isEmpty(filename) && obj instanceof TLRPC.Message message) {
-            filename = FileLoader.getMessageFileName(message);
+        if (message.media != null && message.media.document != null) {
+            String filename = FileLoader.getDocumentFileName(message.media.document);
+            if (!TextUtils.isEmpty(filename)) {
+                return filename;
+            }
         }
-        if (TextUtils.isEmpty(filename)) {
-            filename = "";
-        }
-        return filename;
+        String filename = FileLoader.getMessageFileName(message);
+        return TextUtils.isEmpty(filename) ? null : filename;
     }
 
-    public static String getPathToMessage(int currentAccount, TLObject obj) {
-        String path = "";
-        if (obj instanceof TLRPC.Message message && message.media != null) {
-            path = FileLoader.getInstance(currentAccount).getPathToMessage(message).toString();
+    public static String getPathToMessage(int accountId, TLRPC.Message message) {
+        if (message == null) {
+            return null;
         }
-        return path;
+        if (message.media instanceof TLRPC.TL_messageMediaStory story && story.storyItem != null) {
+            if (!TextUtils.isEmpty(story.storyItem.attachPath)) {
+                return story.storyItem.attachPath;
+            }
+            if (story.storyItem.media != null) {
+                TLRPC.MessageMedia storyMedia = story.storyItem.media;
+                if (storyMedia.document != null) {
+                    return FileLoader.getInstance(accountId).getPathToAttach(storyMedia.document).getAbsolutePath();
+                } else if (storyMedia.photo != null && storyMedia.photo.sizes != null && !storyMedia.photo.sizes.isEmpty()) {
+                    TLRPC.PhotoSize sizeFull = FileLoader.getClosestPhotoSizeWithSize(storyMedia.photo.sizes, AndroidUtilities.getPhotoSize(true), false, null, true);
+                    if (sizeFull != null) {
+                        return FileLoader.getInstance(accountId).getPathToAttach(sizeFull).getAbsolutePath();
+                    }
+                }
+            }
+            return null;
+        }
+        return FileLoader.getInstance(accountId).getPathToMessage(message).getAbsolutePath();
     }
 
     public static String getFilename(TLObject obj, File attachPathFile) {
