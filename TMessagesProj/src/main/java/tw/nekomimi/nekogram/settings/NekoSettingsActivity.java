@@ -814,6 +814,8 @@ public class NekoSettingsActivity extends BaseFragment {
 
         mainconfig.add("lang_code");
 
+        mainconfig.add("web_restricted_domains2");
+
         spToJSON("mainconfig", configJson, mainconfig::contains);
         if (!isCloud) spToJSON("themeconfig", configJson, null);
         spToJSON("nkmrcfg", configJson, null, includeApiKeys);
