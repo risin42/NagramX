@@ -1515,17 +1515,28 @@ public class TranslateController extends BaseController {
     }
 
     public boolean isTranslating(MessageObject messageObject) {
-        if (messageObject != null && messageObject.messageOwner != null && messageObject.messageOwner.summarizedOpen)
-            return loadingSummarizations.contains(Objects.hash(messageObject.getDialogId(), messageObject.getId(), isTranslatingDialog(messageObject.getDialogId()) ? 1 : 0));
+        if (messageObject == null || messageObject.messageOwner == null) {
+            return false;
+        }
+
+        final TLRPC.Message message = messageObject.messageOwner;
+        final long dialogId = messageObject.getDialogId();
+        final int msgId = messageObject.getId();
+
+        if (message.summarizedOpen) {
+            int hash = Objects.hash(dialogId, msgId, isTranslatingDialog(dialogId) ? 1 : 0);
+            if (loadingSummarizations.contains(hash)) {
+                return true;
+            }
+        }
+
         synchronized (this) {
-            return (
-                messageObject != null &&
-                messageObject.messageOwner != null &&
-                (messageObject.messageOwner.voiceTranscriptionOpen && messageObject.messageOwner.voiceTranscriptionFinal ?
-                    loadingTranscriptionTranslations : loadingTranslations
-                ).contains(messageObject.getId()) &&
-                (isTranslatingDialog(messageObject.getDialogId()) || isManualTranslated(messageObject))
-            );
+            if (!(isTranslatingDialog(dialogId) || isManualTranslated(messageObject))) {
+                return false;
+            }
+
+            final boolean isTranscription = message.voiceTranscriptionOpen && message.voiceTranscriptionFinal;
+            return (isTranscription ? loadingTranscriptionTranslations : loadingTranslations).contains(msgId);
         }
     }
 
@@ -1546,7 +1557,7 @@ public class TranslateController extends BaseController {
             if (group != null) {
                 for (MessageObject message : group.messages) {
                     if ((isTranscription ? loadingTranscriptionTranslations : loadingTranslations).contains(message.getId())) {
-                        if (isTranslatingDialog(messageObject.getDialogId()) || isManualTranslated(messageObject)) {
+                        if (isTranslatingDialog(message.getDialogId()) || isManualTranslated(message)) {
                             return true;
                         }
                     }
@@ -2422,11 +2433,21 @@ public class TranslateController extends BaseController {
     }
 
     public void addAsTranslatingItem(MessageObject messageObject) {
-        loadingTranslations.add(messageObject.getId());
+        if (messageObject == null) {
+            return;
+        }
+        synchronized (this) {
+            loadingTranslations.add(messageObject.getId());
+        }
     }
 
     public void removeAsTranslatingItem(MessageObject messageObject) {
-        loadingTranslations.remove(messageObject.getId());
+        if (messageObject == null) {
+            return;
+        }
+        synchronized (this) {
+            loadingTranslations.remove(messageObject.getId());
+        }
     }
 
     @Nullable

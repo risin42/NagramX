@@ -267,6 +267,10 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
         return true;
     }
 
+    protected TranslateController getTranslateController() {
+        return getMessagesController().getTranslateController();
+    }
+
     protected void toggleOrTranslate(@NonNull ChatMessageCell messageCell, @NonNull MessageObject messageObject, Locale targetLocale) {
         if (messageObject.messageOwner == null || messageCell.getMessageObject() != messageObject) {
             return;
@@ -278,11 +282,12 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
             prepareMessageCellForSnapshot(messageCell);
             final Bitmap snapshotBefore = shouldCaptureSnapshot(messageCell) ? captureCellSnapshot(messageCell) : null;
 
+            getTranslateController().removeAsTranslatingItem(messageObject);
+            getTranslateController().removeAsManualTranslate(messageObject);
             messageObject.messageOwner.translated = false;
             messageObject.messageOwner.translatedPoll = null;
             messageObject.messageOwner.translatedToLanguage = null;
             messageObject.translated = false;
-            messageObject.translating = false;
 
             updateMessageCellAnimated(messageCell, messageObject, snapshotBefore);
             return;
@@ -297,15 +302,17 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
             prepareMessageCellForSnapshot(messageCell);
             final Bitmap snapshotBefore = shouldCaptureSnapshot(messageCell) ? captureCellSnapshot(messageCell) : null;
 
+            getTranslateController().removeAsTranslatingItem(messageObject);
+            getTranslateController().removeAsManualTranslate(messageObject);
             messageObject.messageOwner.translated = false;
             messageObject.messageOwner.translatedMessage = null;
             messageObject.messageOwner.translatedText = null;
             messageObject.messageOwner.translatedToLanguage = null;
             messageObject.translated = false;
-            messageObject.translating = false;
-            messageObject.applyNewText(originalText);
             messageObject.caption = null;
+            messageObject.applyNewText(originalText);
             messageObject.generateCaption();
+
             updateMessageCellAnimated(messageCell, messageObject, snapshotBefore);
             return;
         }
@@ -322,7 +329,8 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
             final TLRPC.TL_messageMediaPoll mediaPoll = (TLRPC.TL_messageMediaPoll) MessageObject.getMedia(messageObject.messageOwner);
             final TranslateController.PollText pollText = TranslateController.PollText.fromPoll(mediaPoll);
 
-            messageObject.translating = true;
+            getTranslateController().addAsTranslatingItem(messageObject);
+            getTranslateController().addAsManualTranslate(messageObject);
             messageCell.invalidate();
 
             Translator.translatePoll(resolvedTargetLocale, pollText, new Translator.Companion.TranslateCallBack3() {
@@ -331,7 +339,8 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
                     if (messageCell.getMessageObject() != messageObject) {
                         return;
                     }
-                    messageObject.translating = false;
+                    getTranslateController().removeAsTranslatingItem(messageObject);
+
                     prepareMessageCellForSnapshot(messageCell);
                     final Bitmap snapshotBefore = shouldCaptureSnapshot(messageCell) ? captureCellSnapshot(messageCell) : null;
 
@@ -349,7 +358,8 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
                     if (messageCell.getMessageObject() != messageObject) {
                         return;
                     }
-                    messageObject.translating = false;
+                    getTranslateController().removeAsTranslatingItem(messageObject);
+                    getTranslateController().removeAsManualTranslate(messageObject);
                     messageCell.invalidate();
                     if (getParentActivity() != null) {
                         AlertUtil.showTransFailedDialog(getParentActivity(), unsupported, message, () -> toggleOrTranslate(messageCell, messageObject, resolvedTargetLocale));
@@ -365,7 +375,8 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
             entities = new ArrayList<>();
         }
 
-        messageObject.translating = true;
+        getTranslateController().addAsTranslatingItem(messageObject);
+        getTranslateController().addAsManualTranslate(messageObject);
         messageCell.invalidate();
 
         Translator.translate(resolvedTargetLocale, originalText, entities, new Translator.Companion.TranslateCallBack2() {
@@ -374,12 +385,14 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
                 if (messageCell.getMessageObject() != messageObject) {
                     return;
                 }
-                messageObject.translating = false;
+                getTranslateController().removeAsTranslatingItem(messageObject);
+
                 String translatedText = finalText.text;
                 if (TextUtils.isEmpty(translatedText)) {
                     messageCell.invalidate();
                     return;
                 }
+
                 prepareMessageCellForSnapshot(messageCell);
                 final Bitmap snapshotBefore = shouldCaptureSnapshot(messageCell) ? captureCellSnapshot(messageCell) : null;
 
@@ -399,6 +412,7 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
                 }
                 messageObject.caption = null;
                 messageObject.generateCaption();
+
                 updateMessageCellAnimated(messageCell, messageObject, snapshotBefore);
             }
 
@@ -407,7 +421,8 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
                 if (messageCell.getMessageObject() != messageObject) {
                     return;
                 }
-                messageObject.translating = false;
+                getTranslateController().removeAsTranslatingItem(messageObject);
+                getTranslateController().removeAsManualTranslate(messageObject);
                 messageCell.invalidate();
                 if (getParentActivity() != null) {
                     AlertUtil.showTransFailedDialog(getParentActivity(), unsupported, message, () -> toggleOrTranslate(messageCell, messageObject, resolvedTargetLocale));
