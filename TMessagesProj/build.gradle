@@ -5,7 +5,6 @@ plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
-    id 'org.jetbrains.kotlin.android'
 }
 
 def buildTimestamp = System.getenv('BUILD_TIMESTAMP') ?: '0'
@@ -57,12 +56,9 @@ if (nativeTarget == 'SKIP') {
 android {
     defaultConfig.applicationId = APP_PACKAGE
 
-    packagingOptions {
+    packaging {
         jniLibs {
             useLegacyPackaging = true
-        }
-        resources {
-            excludes += '**'
         }
     }
 
@@ -176,18 +172,22 @@ android {
 
     sourceSets.main.jniLibs.srcDirs = ['./jni/']
 
-    applicationVariants.configureEach { variant ->
-        variant.outputs.configureEach { output ->
+    namespace = 'org.telegram.messenger'
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.forEach { output ->
             String gramName = 'NagramX'
-            String first = String.format('%s-v%s(%s)', gramName, versionName, versionCode)
-            String name = outputFileName.replace('TMessagesProj', first)
-            name = name.replace('-release', '')
-            name = name.replace('-staging', '')
-            outputFileName = name
+            String first = String.format('%s-v%s(%s)', gramName, verName, verCode)
+            output.outputFileName.set(
+                output.outputFileName.get()
+                    .replace('TMessagesProj', first)
+                    .replace('-release', '')
+                    .replace('-staging', '')
+            )
         }
     }
-
-    namespace = 'org.telegram.messenger'
 }
 
 configurations.configureEach {
@@ -200,7 +200,7 @@ dependencies {
     // official
     implementation 'androidx.core:core-ktx:1.17.0' // 1.10.1
     implementation 'androidx.palette:palette-ktx:1.0.0'
-    implementation 'androidx.exifinterface:exifinterface:1.4.1' // 1.3.6
+    implementation 'androidx.exifinterface:exifinterface:1.4.2' // 1.3.6
     implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
     implementation 'androidx.mediarouter:mediarouter:1.8.0'
     implementation 'androidx.sharetarget:sharetarget:1.2.0'
@@ -210,9 +210,9 @@ dependencies {
     compileOnly 'org.checkerframework:checker-qual:2.5.2'
     compileOnly 'org.checkerframework:checker-compat-qual:2.5.0'
     implementation 'com.google.firebase:firebase-messaging:25.0.1' // 22.0.0
-    implementation 'com.google.firebase:firebase-crashlytics:20.0.3'
+    implementation 'com.google.firebase:firebase-crashlytics:20.0.4'
     implementation 'com.google.android.gms:play-services-cast-framework:22.2.0' // 21.4.0
-    implementation 'com.google.android.gms:play-services-maps:19.2.0' // 18.1.0
+    implementation 'com.google.android.gms:play-services-maps:20.0.0' // 18.1.0
     implementation 'com.google.android.gms:play-services-auth:21.4.0' // 20.4.0
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
     implementation 'com.google.android.gms:play-services-location:21.3.0'
@@ -240,7 +240,6 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.1.5'
 
     // kotlin
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.21'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
     // utilities
     implementation 'org.osmdroid:osmdroid-android:6.1.20'
