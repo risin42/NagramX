@@ -292,9 +292,6 @@ public class MessageObject {
 
     public boolean notime;
 
-    // nekogram
-    public boolean translating;
-
     public int getChatMode() {
         if (scheduled) {
             return ChatActivity.MODE_SCHEDULED;
@@ -3563,16 +3560,22 @@ public class MessageObject {
         final TLRPC.TL_textWithEntities translatedText = messageOwner != null ? (voiceTranscriptionOpen ? messageOwner.translatedVoiceTranscription : messageOwner.translatedText) : null;
         final TLRPC.TL_textWithEntities summarizedText = messageOwner != null && messageOwner.summarizedOpen ? messageOwner.summaryText : null;
         final TLRPC.TL_textWithEntities summarizeTranslatedText = messageOwner != null && messageOwner.summarizedOpen ? messageOwner.translatedSummaryText : null;
-        if (
+        final boolean showSummarizedTranslated =
             summarizeTranslatedText != null &&
             messageOwner != null &&
             messageOwner.summarizedOpen &&
             TranslateController.isSummarizable(this) &&
-            TranslateController.isTranslatable(this) &&
-            translateController.isTranslatingDialog(getDialogId()) &&
-            !translateController.isTranslateDialogHidden(getDialogId()) &&
-            TextUtils.equals(translateController.getDialogTranslateTo(getDialogId()), messageOwner.translatedSummaryLanguage)
-        ) {
+            (
+                (
+                    autoTranslated &&
+                    !translateController.isTranslateDialogHidden(getDialogId()) &&
+                    TextUtils.equals(translateController.getDialogTranslateTo(getDialogId()), messageOwner.translatedSummaryLanguage)
+                ) || (
+                    manualTranslated &&
+                    messageOwner.translatedSummaryLanguage != null
+                )
+            );
+        if (showSummarizedTranslated) {
             if (summarized && translated) {
                 return replyUpdated || false;
             }
