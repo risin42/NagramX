@@ -85,11 +85,15 @@ import org.telegram.ui.Stars.StarsIntroActivity;
 import java.util.ArrayList;
 import java.util.Map;
 
+import xyz.nextalone.nagram.NaConfig;
+
 public class AlertDialog extends Dialog implements Drawable.Callback, NotificationCenter.NotificationCenterDelegate {
 
     public static final int ALERT_TYPE_MESSAGE = 0;
     public static final int ALERT_TYPE_LOADING = 2;
     public static final int ALERT_TYPE_SPINNER = 3;
+
+    private static final boolean USE_SMOOTH_CORNERS = NaConfig.INSTANCE.getSmoothRoundedMenu().Bool();
 
     private int customWidth = -1;
     private boolean customMaxHeight;
@@ -342,6 +346,8 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
 
         private boolean inLayout;
 
+        private final Paint smoothBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
         @Override
         public boolean onTouchEvent(MotionEvent event) {
             if (withCancelDialog) {
@@ -553,7 +559,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
             if (blurredBackground && !blurredNativeBackground) {
                 float r;
                 if (progressViewStyle == ALERT_TYPE_SPINNER && progressViewContainer != null) {
-                    r = dp(18);
+                    r = USE_SMOOTH_CORNERS ? dp(SharedConfig.bubbleRadius) : dp(18);
                     float w = progressViewContainer.getWidth() * progressViewContainer.getScaleX();
                     float h = progressViewContainer.getHeight() * progressViewContainer.getScaleY();
                     AndroidUtilities.rectTmp.set(
@@ -563,7 +569,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
                             (getHeight() + h) / 2f
                     );
                 } else {
-                    r = dp(10);
+                    r = USE_SMOOTH_CORNERS ? dp(SharedConfig.bubbleRadius) : dp(10);
                     AndroidUtilities.rectTmp.set(getPaddingLeft(), getPaddingTop(), getMeasuredWidth() - getPaddingRight(), getMeasuredHeight() - getPaddingBottom());
                 }
 
@@ -592,15 +598,39 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
         @Override
         protected void dispatchDraw(Canvas canvas) {
             if (drawBackground && !blurredBackground) {
-                shadowDrawable.setBounds(0, 0, getMeasuredWidth(), getMeasuredHeight());
-                if (topView != null && notDrawBackgroundOnTopView) {
-                    int clipTop = topView.getBottom();
-                    canvas.save();
-                    canvas.clipRect(0, clipTop, getMeasuredWidth(), getMeasuredHeight());
-                    shadowDrawable.draw(canvas);
-                    canvas.restore();
+                if (USE_SMOOTH_CORNERS) {
+                    smoothBackgroundPaint.setColor(backgroundColor);
+                    smoothBackgroundPaint.clearShadowLayer();
+                    smoothBackgroundPaint.setShadowLayer(dp(4), 0, dp(1), 0x30000000);
+                    float rad = dp(SharedConfig.bubbleRadius);
+                    float left = backgroundPaddings.left;
+                    float top = backgroundPaddings.top;
+                    float right = getMeasuredWidth() - backgroundPaddings.right;
+                    float bottom = getMeasuredHeight() - backgroundPaddings.bottom;
+                    if (topView != null && notDrawBackgroundOnTopView) {
+                        int clipTop = topView.getBottom();
+                        canvas.save();
+                        canvas.clipRect(0, clipTop, getMeasuredWidth(), getMeasuredHeight());
+                        if (right > left && bottom > top) {
+                            canvas.drawRoundRect(left, top, right, bottom, rad, rad, smoothBackgroundPaint);
+                        }
+                        canvas.restore();
+                    } else {
+                        if (right > left && bottom > top) {
+                            canvas.drawRoundRect(left, top, right, bottom, rad, rad, smoothBackgroundPaint);
+                        }
+                    }
                 } else {
-                    shadowDrawable.draw(canvas);
+                    shadowDrawable.setBounds(0, 0, getMeasuredWidth(), getMeasuredHeight());
+                    if (topView != null && notDrawBackgroundOnTopView) {
+                        int clipTop = topView.getBottom();
+                        canvas.save();
+                        canvas.clipRect(0, clipTop, getMeasuredWidth(), getMeasuredHeight());
+                        shadowDrawable.draw(canvas);
+                        canvas.restore();
+                    } else {
+                        shadowDrawable.draw(canvas);
+                    }
                 }
             }
             super.dispatchDraw(canvas);
@@ -647,10 +677,18 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
                 containerView.setPadding(rect.left, rect.top, rect.right, rect.bottom);
                 drawBackground = true;
             } else {
-                containerView.setBackground(null);
-                containerView.setPadding(0, 0, 0, 0);
-                containerView.setBackground(shadowDrawable);
-                drawBackground = false;
+                if (USE_SMOOTH_CORNERS) {
+                    Rect rect = new Rect();
+                    shadowDrawable.getPadding(rect);
+                    containerView.setBackground(null);
+                    containerView.setPadding(rect.left, rect.top, rect.right, rect.bottom);
+                    drawBackground = true;
+                } else {
+                    containerView.setBackground(null);
+                    containerView.setPadding(0, 0, 0, 0);
+                    containerView.setBackground(shadowDrawable);
+                    drawBackground = false;
+                }
             }
         }
         View rootView = containerView;
@@ -1212,7 +1250,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
                 if (progressViewStyle == ALERT_TYPE_MESSAGE) {
                     blurredNativeBackground = true;
                     window.setBackgroundBlurRadius(50);
-                    float rad = dp(12);
+                    float rad = dp(USE_SMOOTH_CORNERS ? SharedConfig.bubbleRadius : 12);
                     ShapeDrawable shapeDrawable = new ShapeDrawable(new RoundRectShape(new float[]{rad, rad, rad, rad, rad, rad, rad, rad}, null, null));
                     shapeDrawable.getPaint().setColor(ColorUtils.setAlphaComponent(backgroundColor, (int) (blurAlpha * 255)));
                     window.setBackgroundDrawable(shapeDrawable);
