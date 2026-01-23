@@ -222,6 +222,12 @@ public class InviteLinkBottomSheet extends BottomSheet {
                     }
                 }
 
+                // Prevent the shadow drawable from ending above the bottom of the sheet on devices
+                // with unusually large status bar insets. (Pixel 9 ~)
+                if (height < getMeasuredHeight()) {
+                    height = getMeasuredHeight();
+                }
+
                 shadowDrawable.setBounds(0, top, getMeasuredWidth(), height);
                 shadowDrawable.draw(canvas);
 
