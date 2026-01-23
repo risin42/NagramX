@@ -1,5 +1,7 @@
 package org.telegram.ui.Components;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -10,7 +12,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -36,7 +37,6 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.ActionBar.Theme;
-import org.telegram.ui.DialogsActivity;
 
 import java.util.ArrayList;
 
@@ -101,12 +101,10 @@ public class FiltersListBottomSheet extends BottomSheet implements NotificationC
             @Override
             protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
                 int height = MeasureSpec.getSize(heightMeasureSpec);
-                if (Build.VERSION.SDK_INT >= 21) {
-                    ignoreLayout = true;
-                    setPadding(backgroundPaddingLeft, AndroidUtilities.statusBarHeight, backgroundPaddingLeft, 0);
-                    ignoreLayout = false;
-                }
-                int contentSize = AndroidUtilities.dp(48) + AndroidUtilities.dp(48) * adapter.getItemCount() + backgroundPaddingTop + AndroidUtilities.statusBarHeight;
+                ignoreLayout = true;
+                setPadding(backgroundPaddingLeft, AndroidUtilities.statusBarHeight, backgroundPaddingLeft, 0);
+                ignoreLayout = false;
+                int contentSize = dp(48) + dp(48) * adapter.getItemCount() + backgroundPaddingTop + AndroidUtilities.statusBarHeight;
                 int padding = contentSize < (height / 5 * 3.2) ? 0 : (height / 5 * 2);
                 if (padding != 0 && contentSize < height) {
                     padding -= (height - contentSize);
@@ -116,7 +114,7 @@ public class FiltersListBottomSheet extends BottomSheet implements NotificationC
                 }
                 if (listView.getPaddingTop() != padding) {
                     ignoreLayout = true;
-                    listView.setPadding(AndroidUtilities.dp(10), padding, AndroidUtilities.dp(10), 0);
+                    listView.setPadding(dp(10), padding, dp(10), 0);
                     ignoreLayout = false;
                 }
                 fullHeight = contentSize >= height;
@@ -139,25 +137,30 @@ public class FiltersListBottomSheet extends BottomSheet implements NotificationC
 
             @Override
             protected void onDraw(Canvas canvas) {
-                int top = scrollOffsetY - backgroundPaddingTop - AndroidUtilities.dp(8);
-                int height = getMeasuredHeight() + AndroidUtilities.dp(36) + backgroundPaddingTop;
+                int top = scrollOffsetY - backgroundPaddingTop - dp(8);
+                int height = getMeasuredHeight() + dp(36) + backgroundPaddingTop;
                 int statusBarHeight = 0;
                 float radProgress = 1.0f;
-                if (Build.VERSION.SDK_INT >= 21) {
-                    top += AndroidUtilities.statusBarHeight;
-                    height -= AndroidUtilities.statusBarHeight;
+                top += AndroidUtilities.statusBarHeight;
+                height -= AndroidUtilities.statusBarHeight;
 
-                    if (fullHeight) {
-                        if (top + backgroundPaddingTop < AndroidUtilities.statusBarHeight * 2) {
-                            int diff = Math.min(AndroidUtilities.statusBarHeight, AndroidUtilities.statusBarHeight * 2 - top - backgroundPaddingTop);
-                            top -= diff;
-                            height += diff;
-                            radProgress = 1.0f - Math.min(1.0f, (diff * 2) / (float) AndroidUtilities.statusBarHeight);
-                        }
-                        if (top + backgroundPaddingTop < AndroidUtilities.statusBarHeight) {
-                            statusBarHeight = Math.min(AndroidUtilities.statusBarHeight, AndroidUtilities.statusBarHeight - top - backgroundPaddingTop);
-                        }
+                if (fullHeight) {
+                    if (top + backgroundPaddingTop < AndroidUtilities.statusBarHeight * 2) {
+                        int diff = Math.min(AndroidUtilities.statusBarHeight, AndroidUtilities.statusBarHeight * 2 - top - backgroundPaddingTop);
+                        top -= diff;
+                        height += diff;
+                        radProgress = 1.0f - Math.min(1.0f, (diff * 2) / (float) AndroidUtilities.statusBarHeight);
                     }
+                    if (top + backgroundPaddingTop < AndroidUtilities.statusBarHeight) {
+                        statusBarHeight = Math.min(AndroidUtilities.statusBarHeight, AndroidUtilities.statusBarHeight - top - backgroundPaddingTop);
+                    }
+                }
+
+                // On some devices(Pixel 9 ~) the status bar inset can be larger than the extra space we add for the
+                // shadow drawable. In that case the drawable ends before the bottom of the sheet and the
+                // last rows appear as if their background is "cut".
+                if (height < getMeasuredHeight()) {
+                    height = getMeasuredHeight();
                 }
 
                 shadowDrawable.setBounds(0, top, getMeasuredWidth(), height);
@@ -165,8 +168,8 @@ public class FiltersListBottomSheet extends BottomSheet implements NotificationC
 
                 if (radProgress != 1.0f) {
                     Theme.dialogs_onlineCirclePaint.setColor(Theme.getColor(Theme.key_dialogBackground));
-                    rect.set(backgroundPaddingLeft, backgroundPaddingTop + top, getMeasuredWidth() - backgroundPaddingLeft, backgroundPaddingTop + top + AndroidUtilities.dp(24));
-                    canvas.drawRoundRect(rect, AndroidUtilities.dp(12) * radProgress, AndroidUtilities.dp(12) * radProgress, Theme.dialogs_onlineCirclePaint);
+                    rect.set(backgroundPaddingLeft, backgroundPaddingTop + top, getMeasuredWidth() - backgroundPaddingLeft, backgroundPaddingTop + top + dp(24));
+                    canvas.drawRoundRect(rect, dp(12) * radProgress, dp(12) * radProgress, Theme.dialogs_onlineCirclePaint);
                 }
 
                 if (statusBarHeight > 0) {
@@ -191,7 +194,7 @@ public class FiltersListBottomSheet extends BottomSheet implements NotificationC
         containerView.setPadding(backgroundPaddingLeft, 0, backgroundPaddingLeft, 0);
 
         FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(LayoutHelper.MATCH_PARENT, AndroidUtilities.getShadowHeight(), Gravity.TOP | Gravity.LEFT);
-        frameLayoutParams.topMargin = AndroidUtilities.dp(48);
+        frameLayoutParams.topMargin = dp(48);
         shadow = new View(context);
         shadow.setBackgroundColor(Theme.getColor(Theme.key_dialogShadowLine));
         shadow.setAlpha(0.0f);
@@ -212,7 +215,7 @@ public class FiltersListBottomSheet extends BottomSheet implements NotificationC
         listView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         listView.setAdapter(adapter = new ListAdapter(context));
         listView.setVerticalScrollBarEnabled(false);
-        listView.setPadding(AndroidUtilities.dp(10), 0, AndroidUtilities.dp(10), 0);
+        listView.setPadding(dp(10), 0, dp(10), 0);
         listView.setClipToPadding(false);
         listView.setGlowColor(Theme.getColor(Theme.key_dialogScrollGlow));
         listView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -235,7 +238,7 @@ public class FiltersListBottomSheet extends BottomSheet implements NotificationC
         titleTextView.setLinkTextColor(Theme.getColor(Theme.key_dialogTextLink));
         titleTextView.setHighlightColor(Theme.getColor(Theme.key_dialogLinkSelection));
         titleTextView.setEllipsize(TextUtils.TruncateAt.END);
-        titleTextView.setPadding(AndroidUtilities.dp(24), 0, AndroidUtilities.dp(24), 0);
+        titleTextView.setPadding(dp(24), 0, dp(24), 0);
         titleTextView.setGravity(Gravity.CENTER_VERTICAL);
         titleTextView.setText(LocaleController.getString(R.string.FilterChoose));
         titleTextView.setTypeface(AndroidUtilities.bold());
