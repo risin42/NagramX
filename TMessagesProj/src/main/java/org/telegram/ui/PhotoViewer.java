@@ -330,6 +330,7 @@ import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import xyz.nextalone.nagram.NaConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
@@ -843,6 +844,8 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
     public BlurringShader.BlurManager blurManager;
     private BlurringShader.StoryBlurDrawer shadowBlurer;
     private WindowManager.LayoutParams windowLayoutParams;
+    private boolean windowColorModeHdr;
+    private Boolean windowDisplayHdrCapable;
     private FrameLayoutDrawer containerView;
     private PhotoViewerWebView photoViewerWebView;
     public FrameLayout windowView;
@@ -4928,6 +4931,11 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         windowLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         windowLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
         windowLayoutParams.type = WindowManager.LayoutParams.LAST_APPLICATION_WINDOW;
+        windowColorModeHdr = false;
+        windowDisplayHdrCapable = null;
+        if (Build.VERSION.SDK_INT >= 34) {
+            windowLayoutParams.setColorMode(ActivityInfo.COLOR_MODE_DEFAULT);
+        }
         if (Build.VERSION.SDK_INT >= 28) {
             windowLayoutParams.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
         }
@@ -7865,6 +7873,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                 if (paintingOverlay.getVisibility() == View.VISIBLE) {
                     containerView.requestLayout();
                 }
+                updateWindowHdrColorMode();
                 detectFaces();
             }
             if (imageReceiver == centerImage && set && placeProvider != null && placeProvider.scaleToFill() && !ignoreDidSetImage && sendPhotoType != SELECT_TYPE_AVATAR && sendPhotoType != SELECT_TYPE_STICKER) {
@@ -15953,6 +15962,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         }
 
         if (!sameImage) {
+            setWindowHdrColorMode(false);
             draggingDown = false;
             translationX = 0;
             translationY = 0;
@@ -16104,6 +16114,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                 videoFrameBitmap = null;
             }
         }
+        updateWindowHdrColorMode();
         detectFaces();
         if (captionEdit != null) {
             long dialogId = 0;
@@ -18063,6 +18074,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             qualityPicker.cancelButton.callOnClick();
             return;
         }
+        setWindowHdrColorMode(false);
         isVisibleOrAnimating = false;
         openedFullScreenVideo = false;
         try {
@@ -18735,6 +18747,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
 
     public void onResume() {
         redraw(0); //workaround for camera bug
+        updateWindowHdrColorMode();
         if (videoPlayer != null) {
             videoPlayer.seekTo(videoPlayer.getCurrentPosition() + 1);
             if (playerLooping) {
@@ -18753,6 +18766,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
     public void onConfigurationChanged(Configuration newConfig) {}
 
     public void onPause() {
+        setWindowHdrColorMode(false);
         if (currentAnimation != null) {
             closePhoto(false, false);
             return;
@@ -23404,5 +23418,40 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             }
         }
         return false;
+    }
+
+    private void setWindowHdrColorMode(boolean enabled) {
+        if (Build.VERSION.SDK_INT < 34 || windowLayoutParams == null) {
+            return;
+        }
+        if (windowColorModeHdr == enabled) {
+            return;
+        }
+        windowColorModeHdr = enabled;
+        try {
+            windowLayoutParams.setColorMode(enabled ? ActivityInfo.COLOR_MODE_HDR : ActivityInfo.COLOR_MODE_DEFAULT);
+            if (parentActivity != null && windowView != null && windowView.getParent() != null) {
+                WindowManager wm = (WindowManager) parentActivity.getSystemService(Context.WINDOW_SERVICE);
+                wm.updateViewLayout(windowView, windowLayoutParams);
+            }
+        } catch (Throwable e) {
+            FileLog.e(e);
+        }
+    }
+
+    private void updateWindowHdrColorMode() {
+        if (Build.VERSION.SDK_INT < 34) {
+            return;
+        }
+        if (windowDisplayHdrCapable == null) {
+            windowDisplayHdrCapable = AndroidUtil.isScreenHDR();
+        }
+        if (!windowDisplayHdrCapable) {
+            setWindowHdrColorMode(false);
+            return;
+        }
+        Bitmap bitmap = centerImage != null ? centerImage.getBitmap() : null;
+        boolean enabled = !centerImageIsVideo && AndroidUtil.hasGainmap(bitmap);
+        setWindowHdrColorMode(enabled);
     }
 }

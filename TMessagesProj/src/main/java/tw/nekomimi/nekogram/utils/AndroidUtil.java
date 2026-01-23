@@ -1,18 +1,24 @@
 package tw.nekomimi.nekogram.utils;
 
+import static android.view.Display.DEFAULT_DISPLAY;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.RequiresApi;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
@@ -251,5 +257,23 @@ public class AndroidUtil {
             } catch (Exception ignored) {
             }
         }
+    }
+
+    public static boolean isScreenHDR() {
+        try {
+            DisplayManager displayManager = (DisplayManager) ApplicationLoader.applicationContext.getSystemService(Context.DISPLAY_SERVICE);
+            Display display = (displayManager != null) ? displayManager.getDisplay(DEFAULT_DISPLAY) : null;
+            return display != null && display.isHdr();
+        } catch (Throwable ignore) {
+            return false;
+        }
+    }
+
+    @RequiresApi(34)
+    public static boolean hasGainmap(Bitmap bitmap) {
+        if (bitmap == null || bitmap.isRecycled()) {
+            return false;
+        }
+        return bitmap.hasGainmap();
     }
 }
