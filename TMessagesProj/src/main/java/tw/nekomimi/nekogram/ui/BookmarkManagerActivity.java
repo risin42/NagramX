@@ -358,6 +358,9 @@ public class BookmarkManagerActivity extends BaseFragment {
         if (peer instanceof TLRPC.Chat chat) {
             return chat.title != null ? chat.title : "";
         } else if (peer instanceof TLRPC.User user) {
+            if (UserObject.isUserSelf(user)) {
+                return getString(R.string.SavedMessages);
+            }
             return UserObject.getUserName(user);
         } else {
             return getString(R.string.HiddenName);
