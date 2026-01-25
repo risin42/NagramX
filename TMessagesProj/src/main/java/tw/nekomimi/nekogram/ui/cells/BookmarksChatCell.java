@@ -15,12 +15,17 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
+import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
+import org.telegram.ui.Components.CombinedDrawable;
 import org.telegram.ui.Components.LayoutHelper;
+
+import tw.nekomimi.nekogram.ui.icons.IconsResources;
+import xyz.nextalone.nagram.NaConfig;
 
 public class BookmarksChatCell extends FrameLayout {
 
@@ -77,19 +82,32 @@ public class BookmarksChatCell extends FrameLayout {
 
     public void setData(TLObject peer, CharSequence title, CharSequence subtitle, int bookmarkCount, boolean divider) {
         needDivider = divider;
+        boolean useSolar = NaConfig.INSTANCE.getIconReplacements().Int() == IconsResources.ICON_REPLACE_SOLAR;
 
         if (peer instanceof TLRPC.User user) {
-            AvatarDrawable avatarDrawable = new AvatarDrawable();
-            avatarDrawable.setInfo(user);
+            if (UserObject.isUserSelf(user)) {
+                CombinedDrawable combinedDrawable = Theme.createCircleDrawableWithIcon(dp(40), useSolar ? R.drawable.chats_saved_solar : R.drawable.chats_saved);
+                combinedDrawable.setIconSize(dp(20), dp(20));
+                Theme.setCombinedDrawableColor(combinedDrawable, Theme.getColor(Theme.key_avatar_backgroundSaved), false);
+                Theme.setCombinedDrawableColor(combinedDrawable, Theme.getColor(Theme.key_avatar_text), true);
+                imageView.setImageDrawable(combinedDrawable);
+            } else {
+                AvatarDrawable avatarDrawable = new AvatarDrawable();
+                avatarDrawable.setInfo(user);
+                imageView.setForUserOrChat(user, avatarDrawable);
+            }
             imageView.setRoundRadius(dp(20));
-            imageView.setForUserOrChat(user, avatarDrawable);
         } else if (peer instanceof TLRPC.Chat chat) {
             AvatarDrawable avatarDrawable = new AvatarDrawable();
             avatarDrawable.setInfo(chat);
             imageView.setRoundRadius(ChatObject.isForum(chat) ? dp(16) : dp(20));
             imageView.setForUserOrChat(chat, avatarDrawable);
         } else {
-            imageView.setImageDrawable(null);
+            CombinedDrawable combinedDrawable = Theme.createCircleDrawableWithIcon(dp(40), useSolar ? R.drawable.ghost_solar : R.drawable.ghost);
+            combinedDrawable.setIconSize(dp(20), dp(20));
+            Theme.setCombinedDrawableColor(combinedDrawable, Theme.getColor(Theme.keys_avatar_background[AvatarDrawable.getColorIndex(0)]), false);
+            Theme.setCombinedDrawableColor(combinedDrawable, Theme.getColor(Theme.key_avatar_text), true);
+            imageView.setImageDrawable(combinedDrawable);
             imageView.setRoundRadius(dp(20));
         }
 
