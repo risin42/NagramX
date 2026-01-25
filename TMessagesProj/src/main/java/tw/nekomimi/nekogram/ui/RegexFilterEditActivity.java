@@ -54,6 +54,7 @@ public class RegexFilterEditActivity extends BaseFragment {
     private final AyuFilter.FilterModel filterModel;
     private final long targetDialogId;
     private final int chatFilterIdx;
+    private final String prefillText;
     private boolean caseInsensitive;
 
     private EditTextBoldCursor editField;
@@ -69,6 +70,7 @@ public class RegexFilterEditActivity extends BaseFragment {
         caseInsensitive = true;
         targetDialogId = 0L;
         chatFilterIdx = -1;
+        prefillText = null;
     }
 
     public RegexFilterEditActivity(long dialogId) {
@@ -77,6 +79,16 @@ public class RegexFilterEditActivity extends BaseFragment {
         caseInsensitive = true;
         targetDialogId = dialogId;
         chatFilterIdx = -1;
+        prefillText = null;
+    }
+
+    public RegexFilterEditActivity(long dialogId, String prefillText) {
+        filterIdx = -1;
+        filterModel = null;
+        caseInsensitive = true;
+        targetDialogId = dialogId;
+        chatFilterIdx = -1;
+        this.prefillText = prefillText;
     }
 
     public RegexFilterEditActivity(long dialogId, int chatFilterIdx) {
@@ -85,6 +97,7 @@ public class RegexFilterEditActivity extends BaseFragment {
         this.chatFilterIdx = chatFilterIdx;
         this.filterModel = AyuFilter.getChatFiltersForDialog(dialogId).size() > chatFilterIdx && chatFilterIdx >= 0 ? AyuFilter.getChatFiltersForDialog(dialogId).get(chatFilterIdx) : null;
         this.caseInsensitive = this.filterModel == null || this.filterModel.caseInsensitive;
+        this.prefillText = null;
     }
 
     public RegexFilterEditActivity(int filterIdx) {
@@ -93,6 +106,7 @@ public class RegexFilterEditActivity extends BaseFragment {
         this.caseInsensitive = filterModel.caseInsensitive;
         this.targetDialogId = 0L;
         this.chatFilterIdx = -1;
+        this.prefillText = null;
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -190,6 +204,9 @@ public class RegexFilterEditActivity extends BaseFragment {
 
         if (filterModel != null) {
             editField.setText(filterModel.regex);
+            editField.setSelection(editField.length());
+        } else if (prefillText != null) {
+            editField.setText(prefillText);
             editField.setSelection(editField.length());
         }
 
