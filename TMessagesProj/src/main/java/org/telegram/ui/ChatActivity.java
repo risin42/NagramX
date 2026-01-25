@@ -361,6 +361,7 @@ import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.ui.BookmarksActivity;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
+import tw.nekomimi.nekogram.ui.RegexFilterEditActivity;
 import tw.nekomimi.nekogram.ui.components.GroupedIconsView;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
@@ -3809,6 +3810,19 @@ public class ChatActivity extends BaseFragment implements
                         chatActivity.chatActivityEnterView.openKeyboard();
                     }
                 }
+            }
+        }
+
+        @Override
+        protected boolean canShowAddToFilter() {
+            if (chatActivity == null || !NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) return false;
+            return !(chatActivity.getDialogId() == chatActivity.getUserConfig().getClientUserId());
+        }
+
+        @Override
+        protected void onAddToFilterClick(String text) {
+            if (chatActivity != null) {
+                chatActivity.presentFragment(new RegexFilterEditActivity(chatActivity.getDialogId(), text));
             }
         }
     }

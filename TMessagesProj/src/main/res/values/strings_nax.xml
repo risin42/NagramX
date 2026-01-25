@@ -322,4 +322,5 @@
     <string name="BackAnimationClassic">Classic</string>
     <string name="BackAnimationSpring">Spring</string>
     <string name="BackAnimationPredictive">Predictive</string>
+    <string name="AddToFilter">Add to Filter</string>
 </resources>
