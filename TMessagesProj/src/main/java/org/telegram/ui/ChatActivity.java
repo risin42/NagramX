@@ -35035,6 +35035,7 @@ public class ChatActivity extends BaseFragment implements
             case nkbtn_translateVoice:
             case nkbtn_translate_llm:
             case nkbtn_translate: {
+                if (selectedObject == null || selectedObject.messageOwner == null) return 0;
                 ChatMessageCell messageCell = null;
                 int count = chatListView.getChildCount();
                 for (int a = 0; a < count; a++) {
@@ -35048,7 +35049,9 @@ public class ChatActivity extends BaseFragment implements
                     }
                 }
 
-                if (selectedObject.messageOwner.translated) {
+                boolean summarizedOpen = selectedObject.messageOwner.summarizedOpen;
+                boolean isCurrentlyTranslated = summarizedOpen ? selectedObject.translated : (selectedObject.translated || selectedObject.messageOwner.translated);
+                if (isCurrentlyTranslated) {
                     return 0;
                 }
 
@@ -47032,34 +47035,30 @@ public class ChatActivity extends BaseFragment implements
                     }
                     MessageObject messageObject = getMessageForTranslate();
                     MessageObject captionObject = null;
-                    boolean docsWithMessages = false;
                     if (selectedObjectGroup != null && selectedObjectGroup.isDocuments) {
-                        for (MessageObject object : selectedObjectGroup.messages) {
-                            if (!TextUtils.isEmpty(object.messageOwner.message)) {
-                                docsWithMessages = true;
-                                captionObject = object;
+                        for (MessageObject obj : selectedObjectGroup.messages) {
+                            if (!TextUtils.isEmpty(obj.messageOwner.message)) {
+                                captionObject = obj;
                             }
                         }
                     }
+                    final MessageObject msg = messageObject != null ? messageObject : captionObject;
                     boolean showTranslate = NekoConfig.showTranslate.Bool() || (NaConfig.INSTANCE.getShowTranslateMessageLLM().Bool() && NaConfig.INSTANCE.llmIsDefaultProvider());
                     boolean showTranslateLLM = NaConfig.INSTANCE.getShowTranslateMessageLLM().Bool() && NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider();
-                    boolean isTranslatableMessage = !selectedObject.isAnimatedEmoji() && !selectedObject.isDice() && (messageObject != null || docsWithMessages);
+                    boolean isTranslatableMessage = msg != null && !msg.isAnimatedEmoji() && !msg.isDice();
                     if ((showTranslate || showTranslateLLM) && isTranslatableMessage) {
-                        String fromLang = null;
-                        if (messageObject != null && messageObject.messageOwner.originalLanguage != null) {
-                            fromLang = messageObject.messageOwner.originalLanguage;
-                        } else if (captionObject != null && captionObject.messageOwner.originalLanguage != null) {
-                            fromLang = captionObject.messageOwner.originalLanguage;
-                        }
+                        String fromLang = msg.messageOwner.originalLanguage;
                         // check if language is restricted but don't detect language here to avoid extra delay
                         if (fromLang != null && RestrictedLanguagesSelectActivity.getRestrictedLanguages().contains(fromLang)) {
                             showTranslate = false;
                             showTranslateLLM = false;
                         }
                         boolean isLLMDefault = NaConfig.INSTANCE.llmIsDefaultProvider();
-                        boolean isOutgoingOrNotTranslatingDialog = selectedObject.isOutOwner() || !isTranslatingDialog(selectedObject);
-                        boolean isTranslated = messageObject != null ? (messageObject.messageOwner.translated || messageObject.translated) : (captionObject != null && captionObject.messageOwner.translated);
-                        boolean canUndoTranslate = isTranslated && isOutgoingOrNotTranslatingDialog;
+                        boolean isOutgoingOrNotTranslatingDialog = msg.isOutOwner() || !isTranslatingDialog(msg);
+                        boolean summarizedOpen = msg.messageOwner.summarizedOpen;
+                        boolean isTranslated = summarizedOpen ? msg.translated : (msg.translated || msg.messageOwner.translated);
+                        boolean isTranslatedSummary = msg.translated && msg.summarized && msg.messageOwner.translatedSummaryText != null;
+                        boolean canUndoTranslate = (isTranslated && !summarizedOpen || isTranslatedSummary && summarizedOpen) && isOutgoingOrNotTranslatingDialog;
                         if (showTranslate && (isOutgoingOrNotTranslatingDialog || isLLMDefault)) {
                             items.add(canUndoTranslate ? getString(R.string.UndoTranslate) : getString(R.string.Translate));
                             options.add(nkbtn_translate);
@@ -47072,12 +47071,10 @@ public class ChatActivity extends BaseFragment implements
                             icons.add(R.drawable.magic_stick_solar);
                         }
                     }
-                    if (NekoConfig.showShareMessages.Bool()) {
-                        if (messageObject != null || docsWithMessages) {
-                            items.add(LocaleController.getString(R.string.ShareMessages));
-                            options.add(nkbtn_sharemessage);
-                            icons.add(R.drawable.msg_shareout);
-                        }
+                    if (NekoConfig.showShareMessages.Bool() && msg != null) {
+                        items.add(LocaleController.getString(R.string.ShareMessages));
+                        options.add(nkbtn_sharemessage);
+                        icons.add(R.drawable.msg_shareout);
                     }
                 }
                 if (NekoConfig.showMessageHide.Bool()) {
