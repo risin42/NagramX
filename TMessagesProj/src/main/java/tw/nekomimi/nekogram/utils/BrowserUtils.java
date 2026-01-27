@@ -19,12 +19,28 @@ import org.telegram.ui.LaunchActivity;
 
 public class BrowserUtils {
     public static void openBrowserHome(OnHomePageOpened callback) {
+        openBrowserHome(callback, false);
+    }
+
+    public static void openBrowserHome(OnHomePageOpened callback, boolean forceInAppBrowser) {
+        final String url = getDefaultBrowserHome();
         if (SharedConfig.inappBrowser) {
             if (callback != null) {
                 callback.onHomePageOpened();
             }
 
-            Browser.openUrl(LaunchActivity.instance, getDefaultBrowserHome());
+            Browser.openUrl(LaunchActivity.instance, url);
+            return;
+        }
+
+        if (forceInAppBrowser) {
+            if (callback != null) {
+                callback.onHomePageOpened();
+            }
+
+            if (!Browser.openInTelegramBrowser(LaunchActivity.instance, url, null)) {
+                Browser.openUrl(LaunchActivity.instance, url);
+            }
             return;
         }
 
