@@ -60,9 +60,11 @@ import kotlin.Unit;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
+import tw.nekomimi.nekogram.ui.NekoDelegateFragment;
+import tw.nekomimi.nekogram.ui.cells.NekoMessageCell;
 import xyz.nextalone.nagram.NaConfig;
 
-public class AyuMessageHistory extends AyuMessageDelegateFragment {
+public class AyuMessageHistory extends NekoDelegateFragment {
     private static final int OPTION_DELETE = 1;
     private static final int OPTION_COPY = 2;
     private static final int OPTION_COPY_PHOTO = 3;
@@ -183,7 +185,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
         }
 
         listView.setOnItemClickListener((view, position, x, y) -> {
-            if (view instanceof AyuMessageCell) {
+            if (view instanceof NekoMessageCell) {
                 createMenu(view, x, y, position);
             }
         });
@@ -524,8 +526,8 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
 
         @Override
         public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
-            if (holder.itemView instanceof AyuMessageCell) {
-                ((AyuMessageCell) holder.itemView).setAyuDelegate(null);
+            if (holder.itemView instanceof NekoMessageCell) {
+                ((NekoMessageCell) holder.itemView).setAyuDelegate(null);
             }
         }
 
@@ -542,7 +544,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            AyuMessageCell cell = new AyuMessageCell(context, currentAccount);
+            NekoMessageCell cell = new NekoMessageCell(context, currentAccount);
             cell.setShowAyuDeletedMark(false);
             return new RecyclerListView.Holder(cell);
         }
@@ -550,7 +552,7 @@ public class AyuMessageHistory extends AyuMessageDelegateFragment {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (holder.getItemViewType() == 1) {
-                var ayuMessageDetailCell = (AyuMessageCell) holder.itemView;
+                var ayuMessageDetailCell = (NekoMessageCell) holder.itemView;
 
                 var editedMessage = messages.get(position);
                 MessageObject msg;

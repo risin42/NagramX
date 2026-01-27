@@ -80,9 +80,11 @@ import kotlin.Unit;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
+import tw.nekomimi.nekogram.ui.NekoDelegateFragment;
+import tw.nekomimi.nekogram.ui.cells.NekoMessageCell;
 import xyz.nextalone.nagram.NaConfig;
 
-public class AyuViewDeleted extends AyuMessageDelegateFragment {
+public class AyuViewDeleted extends NekoDelegateFragment {
     private static final int OPTION_SHOW_IN_CHAT = 1;
     private static final int OPTION_DELETE_FROM_DATABASE = 2;
     private static final int OPTION_COPY = 3;
@@ -347,7 +349,7 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         listView.setOnItemClickListener((view, position, x, y) -> {
-            if (view instanceof AyuMessageCell) {
+            if (view instanceof NekoMessageCell) {
                 createMenu(view, x, y, position);
             }
         });
@@ -1024,8 +1026,8 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
 
         @Override
         public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
-            if (holder.itemView instanceof AyuMessageCell) {
-                ((AyuMessageCell) holder.itemView).setAyuDelegate(null);
+            if (holder.itemView instanceof NekoMessageCell) {
+                ((NekoMessageCell) holder.itemView).setAyuDelegate(null);
             }
         }
 
@@ -1042,13 +1044,13 @@ public class AyuViewDeleted extends AyuMessageDelegateFragment {
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new RecyclerListView.Holder(new AyuMessageCell(context, currentAccount));
+            return new RecyclerListView.Holder(new NekoMessageCell(context, currentAccount));
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (holder.getItemViewType() == 1) {
-                var cell = (AyuMessageCell) holder.itemView;
+                var cell = (NekoMessageCell) holder.itemView;
                 var deleted = filteredMessages.get(position);
                 MessageObject msg;
                 if (position >= 0 && position < messageObjects.size()) {
