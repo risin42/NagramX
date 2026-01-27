@@ -34,8 +34,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.radolyn.ayugram.database.entities.DeletedMessageFull;
 import com.radolyn.ayugram.messages.AyuMessagesController;
 import com.radolyn.ayugram.proprietary.AyuMessageUtils;
-import com.radolyn.ayugram.ui.AyuMessageCell;
-import com.radolyn.ayugram.ui.AyuMessageDelegateFragment;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ChatObject;
@@ -78,10 +76,11 @@ import java.util.Locale;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.translate.Translator;
+import tw.nekomimi.nekogram.ui.cells.NekoMessageCell;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.BookmarksHelper;
 
-public class BookmarksActivity extends AyuMessageDelegateFragment {
+public class BookmarksActivity extends NekoDelegateFragment {
     private static final int OPTION_SHOW_IN_CHAT = 1;
     private static final int OPTION_DELETE_BOOKMARK = 2;
     private static final int OPTION_COPY = 3;
@@ -438,7 +437,7 @@ public class BookmarksActivity extends AyuMessageDelegateFragment {
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         listView.setOnItemClickListener((view, position, x, y) -> {
-            if (view instanceof AyuMessageCell) {
+            if (view instanceof NekoMessageCell) {
                 createMenu(view, x, y, position);
             }
         });
@@ -1000,8 +999,8 @@ public class BookmarksActivity extends AyuMessageDelegateFragment {
 
         @Override
         public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
-            if (holder.itemView instanceof AyuMessageCell) {
-                ((AyuMessageCell) holder.itemView).setAyuDelegate(null);
+            if (holder.itemView instanceof NekoMessageCell) {
+                ((NekoMessageCell) holder.itemView).setAyuDelegate(null);
             }
         }
 
@@ -1018,13 +1017,13 @@ public class BookmarksActivity extends AyuMessageDelegateFragment {
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new RecyclerListView.Holder(new AyuMessageCell(context, currentAccount));
+            return new RecyclerListView.Holder(new NekoMessageCell(context, currentAccount));
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (holder.getItemViewType() == 1) {
-                var cell = (AyuMessageCell) holder.itemView;
+                var cell = (NekoMessageCell) holder.itemView;
                 var msg = filteredMessages.get(position);
                 msg.forceAvatar = true;
                 cell.setAyuDelegate(BookmarksActivity.this);

@@ -1,12 +1,12 @@
-package com.radolyn.ayugram.ui;
+package tw.nekomimi.nekogram.ui.cells;
 
 import static org.telegram.messenger.AndroidUtilities.dp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.text.Spanned;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
@@ -35,7 +35,7 @@ import org.telegram.ui.Components.URLSpanMono;
 import java.util.Optional;
 
 @SuppressLint("ViewConstructor")
-public class AyuMessageCell extends ChatMessageCell {
+public class NekoMessageCell extends ChatMessageCell {
 
     private final int touchSlop;
     private EditedMessage editedMessage;
@@ -45,9 +45,9 @@ public class AyuMessageCell extends ChatMessageCell {
     private boolean avatarPressedDown;
     private boolean showAyuDeletedMark = true;
     @Nullable
-    private AyuMessageCellDelegate ayuDelegate;
+    private NekoMessageCellDelegate ayuDelegate;
 
-    public AyuMessageCell(Context context, int currentAccount) {
+    public NekoMessageCell(Context context, int currentAccount) {
         super(context, currentAccount);
 
         isChat = true;
@@ -65,14 +65,14 @@ public class AyuMessageCell extends ChatMessageCell {
                 if (longPress) {
                     urlLongPressHandled = true;
                     if (longPressRunnable != null) {
-                        AyuMessageCell.this.removeCallbacks(longPressRunnable);
+                        NekoMessageCell.this.removeCallbacks(longPressRunnable);
                     }
                     if (urlSpan instanceof URLSpanMono) {
                         ((URLSpanMono) urlSpan).copyToClipboard();
                     } else if (urlSpan instanceof URLSpan) {
                         AndroidUtilities.addToClipboard(((URLSpan) urlSpan).getURL());
                     }
-                    Optional.ofNullable(ayuDelegate).ifPresent(AyuMessageCellDelegate::onTextCopied);
+                    Optional.ofNullable(ayuDelegate).ifPresent(NekoMessageCellDelegate::onTextCopied);
                     return;
                 }
                 try {
@@ -99,7 +99,7 @@ public class AyuMessageCell extends ChatMessageCell {
                 SpannableString code = new SpannableString(string);
                 code.setSpan(new CodeHighlighting.Span(false, 0, null, block.language, string), 0, code.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 AndroidUtilities.addToClipboard(code);
-                Optional.ofNullable(ayuDelegate).ifPresent(AyuMessageCellDelegate::onTextCopied);
+                Optional.ofNullable(ayuDelegate).ifPresent(NekoMessageCellDelegate::onTextCopied);
             }
 
             @Override
@@ -153,12 +153,12 @@ public class AyuMessageCell extends ChatMessageCell {
                 MessageObject msg = cell.getMessageObject();
                 if (msg != null) {
                     msg.forceUpdate = true;
-                    AyuMessageCell.this.setMessageObject(msg, null, AyuMessageCell.this.pinnedBottom, AyuMessageCell.this.pinnedTop, AyuMessageCell.this.firstInChat);
+                    NekoMessageCell.this.setMessageObject(msg, null, NekoMessageCell.this.pinnedBottom, NekoMessageCell.this.pinnedTop, NekoMessageCell.this.firstInChat);
                     msg.forceUpdate = false;
                 }
-                AyuMessageCell.this.requestLayout();
-                AyuMessageCell.this.invalidate();
-                ViewParent p = AyuMessageCell.this.getParent();
+                NekoMessageCell.this.requestLayout();
+                NekoMessageCell.this.invalidate();
+                ViewParent p = NekoMessageCell.this.getParent();
                 if (p instanceof RecyclerView) {
                     p.requestLayout();
                 }
@@ -184,7 +184,7 @@ public class AyuMessageCell extends ChatMessageCell {
         showAyuDeletedMark = show;
     }
 
-    public void setAyuDelegate(@Nullable AyuMessageCellDelegate ayuDelegate) {
+    public void setAyuDelegate(@Nullable NekoMessageCellDelegate ayuDelegate) {
         this.ayuDelegate = ayuDelegate;
     }
 
@@ -217,7 +217,7 @@ public class AyuMessageCell extends ChatMessageCell {
         }
         if (TextUtils.isEmpty(text)) return;
         AndroidUtilities.addToClipboard(text);
-        Optional.ofNullable(ayuDelegate).ifPresent(AyuMessageCellDelegate::onTextCopied);
+        Optional.ofNullable(ayuDelegate).ifPresent(NekoMessageCellDelegate::onTextCopied);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -347,7 +347,7 @@ public class AyuMessageCell extends ChatMessageCell {
         }
     }
 
-    public interface AyuMessageCellDelegate {
+    public interface NekoMessageCellDelegate {
         void onTextCopied();
 
         void onImagePressed(ChatMessageCell cell);

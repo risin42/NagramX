@@ -1,4 +1,4 @@
-package com.radolyn.ayugram.ui;
+package tw.nekomimi.nekogram.ui;
 
 import static org.telegram.messenger.LocaleController.getString;
 import static tw.nekomimi.nekogram.parts.MessageTransKt.TRANSLATION_SEPARATOR;
@@ -18,8 +18,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.HapticFeedbackConstants;
-import android.view.ViewGroup;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
@@ -57,11 +57,12 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
+import tw.nekomimi.nekogram.ui.cells.NekoMessageCell;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
 import xyz.nextalone.nagram.NaConfig;
 
-public abstract class AyuMessageDelegateFragment extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, AyuMessageCell.AyuMessageCellDelegate {
+public abstract class NekoDelegateFragment extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, NekoMessageCell.NekoMessageCellDelegate {
 
     private final WeakHashMap<ChatMessageCell, ValueAnimator> cellChangeAnimators = new WeakHashMap<>();
     private final WeakHashMap<ChatMessageCell, ValueAnimator> cellTopClipAnimators = new WeakHashMap<>();
@@ -91,7 +92,7 @@ public abstract class AyuMessageDelegateFragment extends BaseFragment implements
         @Override
         protected void dispatchDraw(Canvas canvas) {
             super.dispatchDraw(canvas);
-            AyuMessageDelegateFragment.this.drawScrimOverlay(this, canvas);
+            NekoDelegateFragment.this.drawScrimOverlay(this, canvas);
         }
     }
 
