@@ -846,7 +846,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 } else if (id == DrawerLayoutAdapter.nkbtnRestartApp) {
                     AppRestartHelper.triggerRebirth(ApplicationLoader.applicationContext, new Intent(ApplicationLoader.applicationContext, LaunchActivity.class));
                 } else if (id == DrawerLayoutAdapter.nkbtnBrowser) {
-                    BrowserUtils.openBrowserHome(() -> drawerLayoutContainer.closeDrawer(true));
+                    BrowserUtils.openBrowserHome(() -> drawerLayoutContainer.closeDrawer(true), true);
                 } else if (id == DrawerLayoutAdapter.nkbtnSessions) {
                     presentFragment(new SessionsActivity(SessionsActivity.TYPE_DEVICES));
                     drawerLayoutContainer.closeDrawer(false);
