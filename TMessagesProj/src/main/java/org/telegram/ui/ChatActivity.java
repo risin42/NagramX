@@ -46936,7 +46936,12 @@ public class ChatActivity extends BaseFragment implements
         if (!isTranslatingDialog(selectedObject)) {
             return false;
         }
-        String text = getMessageHelper().getMessagePlainText(selectedObject, selectedObjectGroup);
+        String text;
+        if (selectedObject.messageOwner.summarizedOpen && selectedObject.messageOwner.summaryText != null && !TextUtils.isEmpty(selectedObject.messageOwner.summaryText.text)) {
+            text = selectedObject.messageOwner.summaryText.text;
+        } else {
+            text = getMessageHelper().getMessagePlainText(selectedObject, selectedObjectGroup);
+        }
         if (TextUtils.isEmpty(text)) {
             return false;
         }
