@@ -847,7 +847,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 } else if (id == DrawerLayoutAdapter.nkbtnRestartApp) {
                     AppRestartHelper.triggerRebirth(ApplicationLoader.applicationContext, new Intent(ApplicationLoader.applicationContext, LaunchActivity.class));
                 } else if (id == DrawerLayoutAdapter.nkbtnBrowser) {
-                    BrowserUtils.openBrowserHome(() -> drawerLayoutContainer.closeDrawer(true));
+                    BrowserUtils.openBrowserHome(() -> drawerLayoutContainer.closeDrawer(true), true);
                 } else if (id == DrawerLayoutAdapter.nkbtnGhostMode) {
                     var msg = NekoConfig.isGhostModeActive()
                             ? LocaleController.getString(R.string.GhostModeDisabled)
