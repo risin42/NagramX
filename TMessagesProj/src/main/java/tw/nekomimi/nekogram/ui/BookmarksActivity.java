@@ -687,7 +687,10 @@ public class BookmarksActivity extends NekoDelegateFragment {
                     if (!TextUtils.isEmpty(path)) {
                         MediaController.saveFile(msg, path, getParentActivity(), msg.isVideo() ? 1 : 0, null, null, uri -> {
                             if (getParentActivity() != null) {
-                                BulletinFactory.of(this).createDownloadBulletin(msg.isVideo() ? BulletinFactory.FileType.VIDEO : BulletinFactory.FileType.PHOTO, getResourceProvider()).show();
+                                BulletinFactory.of(this).createDownloadBulletin(
+                                        msg.isVideo() ? BulletinFactory.FileType.VIDEO : BulletinFactory.FileType.PHOTO,
+                                        getResourceProvider()
+                                ).show();
                             }
                         });
                     }
@@ -696,7 +699,11 @@ public class BookmarksActivity extends NekoDelegateFragment {
                     messageObjects.add(msg);
                     MediaController.saveFilesFromMessages(getParentActivity(), getAccountInstance(), messageObjects, (count) -> {
                         if (count > 0) {
-                            BulletinFactory.of(this).createDownloadBulletin(msg.isMusic() ? BulletinFactory.FileType.AUDIOS : BulletinFactory.FileType.UNKNOWNS, count, getResourceProvider()).show();
+                            BulletinFactory.of(this).createDownloadBulletin(
+                                    msg.isMusic() ? BulletinFactory.FileType.AUDIOS : BulletinFactory.FileType.UNKNOWNS,
+                                    count,
+                                    getResourceProvider()
+                            ).show();
                         }
                     });
                 } else if (option == OPTION_DETAILS) {

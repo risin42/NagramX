@@ -18,8 +18,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.HapticFeedbackConstants;
-import android.view.ViewGroup;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
@@ -92,7 +92,7 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
         @Override
         protected void dispatchDraw(Canvas canvas) {
             super.dispatchDraw(canvas);
-            AyuMessageDelegateFragment.this.drawScrimOverlay(this, canvas);
+            NekoDelegateFragment.this.drawScrimOverlay(this, canvas);
         }
     }
 
