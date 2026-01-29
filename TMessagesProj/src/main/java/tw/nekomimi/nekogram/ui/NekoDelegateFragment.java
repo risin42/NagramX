@@ -43,6 +43,7 @@ import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.Cells.ChatMessageCell;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.BulletinFactory;
+import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;
 import org.telegram.ui.Components.StickersAlert;
 import org.telegram.ui.ContactAddActivity;
@@ -70,6 +71,7 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
     private final WeakHashMap<RecyclerView, ValueAnimator> visiblePartAnimators = new WeakHashMap<>();
     private final WeakHashMap<RecyclerView, OwnedBitmapDrawable> overlayDrawables = new WeakHashMap<>();
     private final WeakHashMap<RecyclerView, AnchorShiftPreDrawListener> pendingShiftListeners = new WeakHashMap<>();
+    private final WeakHashMap<RecyclerListView, ChatListItemAnimator> messageListItemAnimators = new WeakHashMap<>();
 
     private static final float DEFAULT_SCRIM_DIM_AMOUNT = 0.2f;
 
@@ -94,6 +96,36 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
             super.dispatchDraw(canvas);
             NekoDelegateFragment.this.drawScrimOverlay(this, canvas);
         }
+    }
+
+    protected void setupMessageListItemAnimator(@NonNull RecyclerListView listView) {
+        if (!MessagesController.getGlobalMainSettings().getBoolean("view_animations", true)) {
+            if (listView.getItemAnimator() != null) {
+                listView.setItemAnimator(null);
+            }
+            return;
+        }
+
+        ChatListItemAnimator animator = messageListItemAnimators.get(listView);
+        if (animator == null) {
+            animator = new ChatListItemAnimator(null, listView, getResourceProvider());
+            messageListItemAnimators.put(listView, animator);
+        }
+        if (listView.getItemAnimator() != animator) {
+            listView.setItemAnimator(animator);
+        }
+    }
+
+    protected void notifyMessageListItemRemoved(@Nullable RecyclerListView listView, int position) {
+        if (listView == null) {
+            return;
+        }
+        RecyclerView.Adapter<?> adapter = listView.getAdapter();
+        if (adapter == null) {
+            return;
+        }
+        setupMessageListItemAnimator(listView);
+        adapter.notifyItemRemoved(position);
     }
 
     @Override

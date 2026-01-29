@@ -417,13 +417,12 @@ public class BookmarksActivity extends NekoDelegateFragment {
         });
 
         listView = new RecyclerListView(context);
-        listView.setItemAnimator(null);
         listView.setLayoutAnimation(null);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
-                return false;
+                return true;
             }
         };
         layoutManager.setStackFromEnd(true);
@@ -431,6 +430,7 @@ public class BookmarksActivity extends NekoDelegateFragment {
         listView.setLayoutManager(layoutManager);
         listView.setVerticalScrollBarEnabled(true);
         listView.setAdapter(new ListAdapter(context, getCurrentAccount()));
+        setupMessageListItemAnimator(listView);
         listView.setSelectorType(9);
         listView.setSelectorDrawableColor(0);
         listView.setClipToPadding(false);
@@ -672,9 +672,17 @@ public class BookmarksActivity extends NekoDelegateFragment {
                         filteredMessages.remove(position);
                         bookmarkedMessages.remove(toRemove);
                         rowCount = filteredMessages.size();
-                        notifyAdapterDataChanged();
+                        notifyMessageListItemRemoved(listView, position);
                         updateActionBarCount();
                         updateEmptyView();
+                        if (listView != null) {
+                            listView.post(() -> {
+                                updatePagedownButtonVisibility(false);
+                                updateVisibleMessageCells();
+                            });
+                        } else {
+                            updatePagedownButtonVisibility(false);
+                        }
                     } else {
                         updateBookmarks();
                     }

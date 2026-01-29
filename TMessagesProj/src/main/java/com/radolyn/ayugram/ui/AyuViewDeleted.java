@@ -329,13 +329,12 @@ public class AyuViewDeleted extends NekoDelegateFragment {
         });
 
         listView = new RecyclerListView(context);
-        listView.setItemAnimator(null);
         listView.setLayoutAnimation(null);
 
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
             @Override
             public boolean supportsPredictiveItemAnimations() {
-                return false;
+                return true;
             }
         };
         layoutManager.setStackFromEnd(true);
@@ -343,6 +342,7 @@ public class AyuViewDeleted extends NekoDelegateFragment {
         listView.setLayoutManager(layoutManager);
         listView.setVerticalScrollBarEnabled(true);
         listView.setAdapter(new ListAdapter(context, UserConfig.selectedAccount));
+        setupMessageListItemAnimator(listView);
         listView.setSelectorType(9);
         listView.setSelectorDrawableColor(0);
         listView.setClipToPadding(false);
@@ -690,10 +690,31 @@ public class AyuViewDeleted extends NekoDelegateFragment {
                     int messageId = msg.getId();
                     Utilities.globalQueue.postRunnable(() -> AyuMessagesController.getInstance().delete(userId, dialogId, messageId));
                     if (pos >= 0 && pos < filteredMessages.size()) {
-                        DeletedMessageFull toRemove = filteredMessages.get(pos);
+                        DeletedMessageFull toRemove = filteredMessages.remove(pos);
+                        if (pos < messageObjects.size()) {
+                            messageObjects.remove(pos);
+                        }
                         deletedMessages.remove(toRemove);
-                        messageIdMap.remove(toRemove.message.messageId);
-                        applySearchFilter();
+                        if (toRemove != null && toRemove.message != null) {
+                            messageIdMap.remove(toRemove.message.messageId);
+                        }
+                        rowCount = filteredMessages.size();
+                        if (!deletedMessages.isEmpty() && deletedMessages.get(0).message != null) {
+                            oldestId = deletedMessages.get(0).message.messageId;
+                        } else {
+                            oldestId = Integer.MAX_VALUE;
+                        }
+                        notifyMessageListItemRemoved(listView, pos);
+                        updateActionBarCount();
+                        updateEmptyView();
+                        if (listView != null) {
+                            listView.post(() -> {
+                                updatePagedownButtonVisibility(false);
+                                updateVisibleMessageCells();
+                            });
+                        } else {
+                            updatePagedownButtonVisibility(false);
+                        }
                     } else {
                         updateDeleted();
                         notifyAdapterDataChanged();
