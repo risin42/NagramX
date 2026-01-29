@@ -4068,6 +4068,18 @@ public class MessageObject {
         return messageOwner != null && messageOwner.ayuDeleted;
     }
 
+    public boolean isTranslated() {
+        if (messageOwner != null) {
+            if (messageOwner.summarizedOpen) return translated;
+            return messageOwner.translated || translated;
+        }
+        return translated;
+    }
+
+    public boolean isTranslatedSummary() {
+        return translated && summarized && messageOwner != null && messageOwner.translatedSummaryText != null;
+    }
+
     public long getPollId() {
         if (type != TYPE_POLL) {
             return 0;

@@ -17486,10 +17486,10 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         boolean hasReplies = messageObject.hasReplies();
 
         var ayuDeletedVal = messageObject.isAyuDeleted();
-        var translated = messageObject.translated || messageObject.messageOwner.translated;
+        var translated = messageObject.isTranslated();
         if (currentMessagesGroup != null) {
             MessageObject captionMessage = currentMessagesGroup.findCaptionMessageObject();
-            translated = captionMessage != null && (captionMessage.translated || captionMessage.messageOwner.translated);
+            translated = captionMessage != null && captionMessage.isTranslated();
         }
         if (messageObject.scheduled || messageObject.isLiveLocation() || messageObject.messageOwner.edit_hide || messageObject.getDialogId() == 777000 || messageObject.messageOwner.via_bot_id != 0 || messageObject.messageOwner.via_bot_name != null || author != null && author.bot) {
             edited = false;
