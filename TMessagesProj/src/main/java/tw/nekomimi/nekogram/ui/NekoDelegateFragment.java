@@ -105,7 +105,7 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
     public void onImagePressed(ChatMessageCell cell) {
         if (cell.getMessageObject() != null) {
             MessageObject messageObject = cell.getMessageObject();
-            if (messageObject.isSticker()) {
+            if (messageObject.isSticker() || messageObject.isAnimatedSticker()) {
                 var inputStickerSet = messageObject.getInputStickerSet();
                 if (inputStickerSet != null) {
                     showDialog(new StickersAlert(getParentActivity(), this, inputStickerSet, null, null, false));
