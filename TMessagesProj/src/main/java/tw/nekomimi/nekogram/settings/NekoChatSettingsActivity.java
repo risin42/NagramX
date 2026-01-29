@@ -483,6 +483,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         }
         checkSkipOpenLinkConfirmRows();
         checkChannelAliasRows();
+        checkConfirmAVRows();
         addRowsToMap(cellGroup);
     }
 
@@ -636,6 +637,8 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                 tooltip.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getConfirmAllLinks().getKey())) {
                 checkSkipOpenLinkConfirmRows();
+            } else if (key.equals(NekoConfig.useChatAttachMediaMenu.getKey())) {
+                checkConfirmAVRows();
             } else if (key.equals(NekoConfig.labelChannelUser.getKey())) {
                 checkChannelAliasRows();
             } else if (key.equals(NaConfig.INSTANCE.getUseEditedIcon().getKey())) {
@@ -1015,6 +1018,30 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             rowIndex = cellGroup.rows.indexOf(channelAliasRow);
             if (rowIndex != -1) {
                 cellGroup.rows.remove(channelAliasRow);
+                listAdapter.notifyItemRemoved(rowIndex);
+            }
+        }
+        addRowsToMap(cellGroup);
+    }
+
+    private void checkConfirmAVRows() {
+        boolean useChatAttachMediaMenu = NekoConfig.useChatAttachMediaMenu.Bool();
+        if (listAdapter == null) {
+            if (useChatAttachMediaMenu) {
+                cellGroup.rows.remove(confirmAVRow);
+            }
+            return;
+        }
+        if (!useChatAttachMediaMenu) {
+            final int index = cellGroup.rows.indexOf(disableClickCommandToSendRow);
+            if (!cellGroup.rows.contains(confirmAVRow)) {
+                cellGroup.rows.add(index + 1, confirmAVRow);
+                listAdapter.notifyItemInserted(index + 1);
+            }
+        } else {
+            int rowIndex = cellGroup.rows.indexOf(confirmAVRow);
+            if (rowIndex != -1) {
+                cellGroup.rows.remove(confirmAVRow);
                 listAdapter.notifyItemRemoved(rowIndex);
             }
         }
