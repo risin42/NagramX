@@ -43,6 +43,7 @@ import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.Cells.ChatMessageCell;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.BulletinFactory;
+import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;
 import org.telegram.ui.Components.StickersAlert;
 import org.telegram.ui.ContactAddActivity;
@@ -93,6 +94,44 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
         protected void dispatchDraw(Canvas canvas) {
             super.dispatchDraw(canvas);
             NekoDelegateFragment.this.drawScrimOverlay(this, canvas);
+        }
+    }
+
+    protected void setupMessageListItemAnimator(@NonNull RecyclerListView listView) {
+        if (!MessagesController.getGlobalMainSettings().getBoolean("view_animations", true)) {
+            if (listView.getItemAnimator() != null) {
+                listView.setItemAnimator(null);
+            }
+            return;
+        }
+
+        RecyclerView.ItemAnimator currentAnimator = listView.getItemAnimator();
+        if (!(currentAnimator instanceof ChatListItemAnimator)) {
+            listView.setItemAnimator(new ChatListItemAnimator(null, listView, getResourceProvider()));
+        }
+    }
+
+    protected void notifyMessageListItemRemoved(@Nullable RecyclerListView listView, int position) {
+        if (listView == null) {
+            return;
+        }
+        RecyclerView.Adapter<?> adapter = listView.getAdapter();
+        if (adapter == null) {
+            return;
+        }
+        setupMessageListItemAnimator(listView);
+        int newCount = adapter.getItemCount();
+        if (position < 0 || position > newCount) {
+            return;
+        }
+
+        adapter.notifyItemRemoved(position);
+        if (newCount > 0) {
+            int start = Math.max(0, position - 1);
+            int end = Math.min(newCount - 1, position);
+            if (end >= start) {
+                adapter.notifyItemRangeChanged(start, end - start + 1);
+            }
         }
     }
 

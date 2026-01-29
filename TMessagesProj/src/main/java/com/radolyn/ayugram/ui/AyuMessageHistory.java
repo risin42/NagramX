@@ -161,20 +161,15 @@ public class AyuMessageHistory extends NekoDelegateFragment {
         });
 
         listView = new RecyclerListView(context);
-        listView.setItemAnimator(null);
         listView.setLayoutAnimation(null);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
-            @Override
-            public boolean supportsPredictiveItemAnimations() {
-                return false;
-            }
-        };
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         layoutManager.setStackFromEnd(true);
 
         listView.setLayoutManager(layoutManager);
         listView.setVerticalScrollBarEnabled(true);
         listView.setAdapter(new ListAdapter(context, currentAccount));
+        setupMessageListItemAnimator(listView);
         listView.setSelectorType(9);
         listView.setSelectorDrawableColor(0);
         listView.setClipToPadding(false);
@@ -356,10 +351,7 @@ public class AyuMessageHistory extends NekoDelegateFragment {
                             messageObjects.remove(pos);
                         }
                         rowCount = messages.size();
-                        var adapter = listView.getAdapter();
-                        if (adapter != null) {
-                            adapter.notifyItemRemoved(pos);
-                        }
+                        notifyMessageListItemRemoved(listView, pos);
                     }
                 } else if (option == OPTION_COPY) {
                     String text = msg.messageOwner != null ? msg.messageOwner.message : null;

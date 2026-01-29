@@ -329,20 +329,15 @@ public class AyuViewDeleted extends NekoDelegateFragment {
         });
 
         listView = new RecyclerListView(context);
-        listView.setItemAnimator(null);
         listView.setLayoutAnimation(null);
 
-        layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
-            @Override
-            public boolean supportsPredictiveItemAnimations() {
-                return false;
-            }
-        };
+        layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         layoutManager.setStackFromEnd(true);
 
         listView.setLayoutManager(layoutManager);
         listView.setVerticalScrollBarEnabled(true);
         listView.setAdapter(new ListAdapter(context, UserConfig.selectedAccount));
+        setupMessageListItemAnimator(listView);
         listView.setSelectorType(9);
         listView.setSelectorDrawableColor(0);
         listView.setClipToPadding(false);
@@ -690,10 +685,33 @@ public class AyuViewDeleted extends NekoDelegateFragment {
                     int messageId = msg.getId();
                     Utilities.globalQueue.postRunnable(() -> AyuMessagesController.getInstance().delete(userId, dialogId, messageId));
                     if (pos >= 0 && pos < filteredMessages.size()) {
-                        DeletedMessageFull toRemove = filteredMessages.get(pos);
+                        DeletedMessageFull toRemove = filteredMessages.remove(pos);
+                        int removedMessageId = toRemove != null && toRemove.message != null ? toRemove.message.messageId : 0;
+                        if (pos < messageObjects.size()) {
+                            messageObjects.remove(pos);
+                        }
                         deletedMessages.remove(toRemove);
-                        messageIdMap.remove(toRemove.message.messageId);
-                        applySearchFilter();
+                        if (toRemove != null && toRemove.message != null) {
+                            messageIdMap.remove(toRemove.message.messageId);
+                        }
+                        rowCount = filteredMessages.size();
+                        if (!deletedMessages.isEmpty() && deletedMessages.get(0).message != null) {
+                            oldestId = deletedMessages.get(0).message.messageId;
+                        } else {
+                            oldestId = Integer.MAX_VALUE;
+                        }
+                        notifyMessageListItemRemoved(listView, pos);
+                        invalidateCachedReplyReferences(removedMessageId);
+                        updateActionBarCount();
+                        updateEmptyView();
+                        if (listView != null) {
+                            listView.post(() -> {
+                                updatePagedownButtonVisibility(false);
+                                updateVisibleMessageCells();
+                            });
+                        } else {
+                            updatePagedownButtonVisibility(false);
+                        }
                     } else {
                         updateDeleted();
                         notifyAdapterDataChanged();
@@ -963,6 +981,32 @@ public class AyuViewDeleted extends NekoDelegateFragment {
         var adapter = listView == null ? null : listView.getAdapter();
         if (adapter != null) {
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void invalidateCachedReplyReferences(int removedMessageId) {
+        if (removedMessageId == 0 || messageObjects.isEmpty()) {
+            return;
+        }
+        RecyclerView.Adapter<?> adapter = listView == null ? null : listView.getAdapter();
+        for (int i = 0; i < messageObjects.size(); i++) {
+            MessageObject messageObject = messageObjects.get(i);
+            if (messageObject == null || messageObject.replyMessageObject == null || messageObject.replyMessageObject == messageObject) {
+                continue;
+            }
+            if (messageObject.replyMessageObject.getId() != removedMessageId) {
+                continue;
+            }
+            messageObject.replyMessageObject = null;
+            if (messageObject.messageOwner != null) {
+                messageObject.messageOwner.replyMessage = null;
+                if (messageObject.messageOwner.reply_to != null && messageObject.messageOwner.reply_to.reply_to_msg_id == removedMessageId) {
+                    messageObject.messageOwner.reply_to = null;
+                }
+            }
+            if (adapter != null && i < adapter.getItemCount()) {
+                adapter.notifyItemChanged(i);
+            }
         }
     }
 
