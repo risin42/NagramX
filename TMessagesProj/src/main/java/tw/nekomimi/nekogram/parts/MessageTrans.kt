@@ -36,12 +36,6 @@ const val TRANSLATION_SEPARATOR = "\n\n--------\n\n"
 private val ChatActivity.translateController: TranslateController
     get() = messagesController.translateController
 
-private val MessageObject.isCurrentlyTranslated: Boolean
-    get() = if (messageOwner.summarizedOpen) {
-        translated
-    } else {
-        messageOwner.translated || translated
-    }
 
 @JvmName("translateMessages")
 fun ChatActivity.translateMessagesWithProvider(provider: Int) =
@@ -66,7 +60,7 @@ fun ChatActivity.translateMessages(
     val canReuseCache = provider == 0
 
     // Check if all messages are already translated, hide translation if so
-    if (messages.all { it.isCurrentlyTranslated }) {
+    if (messages.all { it.isTranslated }) {
         messages.forEach { msg ->
             hideTranslation(msg, translatorMode)
         }
