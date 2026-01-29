@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.text.TextPaint;
 import android.transition.TransitionManager;
 import android.view.Gravity;
@@ -29,9 +30,12 @@ import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.NotificationsService;
 import org.telegram.messenger.R;
+import org.telegram.messenger.SharedConfig;
+import org.telegram.messenger.UnifiedPushService;
 import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarLayout;
+import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.INavigationLayout;
 import org.telegram.ui.ActionBar.SimpleTextView;
 import org.telegram.ui.ActionBar.Theme;
@@ -44,6 +48,7 @@ import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Cells.TextDetailSettingsCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
 import org.telegram.ui.Cells.TextSettingsCell;
+import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.SeekBarView;
@@ -371,7 +376,34 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             }
         });
         listView.setOnItemLongClickListener((view, position, x, y) -> {
-            if (cellGroup.rows.get(position) instanceof ConfigCellCheckBox) {
+            AbstractConfigCell a = cellGroup.rows.get(position);
+            if (a == pushServiceTypeUnifiedGatewayRow) {
+                if (getParentActivity() == null) {
+                    return false;
+                }
+                String key = getRowKey(position);
+                String value = getRowValue(position);
+                ArrayList<CharSequence> itemsArray = new ArrayList<>();
+                itemsArray.add(getString(R.string.Statistics));
+                itemsArray.add(getString(R.string.CopyLink));
+                if (value != null) {
+                    itemsArray.add(getString(R.string.BackupSettings));
+                }
+                CharSequence[] items = itemsArray.toArray(new CharSequence[0]);
+                showDialog(new AlertDialog.Builder(getParentActivity()).setItems(items, (dialogInterface, i) -> {
+                    if (i == 0) {
+                        showUnifiedPushStatistics();
+                    } else if (i == 1) {
+                        AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s", getMessagesController().linkPrefix, "general", key));
+                        BulletinFactory.of(NekoGeneralSettingsActivity.this).createCopyLinkBulletin().show();
+                    } else if (i == 2 && value != null) {
+                        AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s&v=%s", getMessagesController().linkPrefix, "general", key, value));
+                        BulletinFactory.of(NekoGeneralSettingsActivity.this).createCopyLinkBulletin().show();
+                    }
+                }).create());
+                return true;
+            }
+            if (a instanceof ConfigCellCheckBox) {
                 return true;
             }
             var holder = listView.findViewHolderForAdapterPosition(position);
@@ -492,6 +524,31 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
         cellGroup.setListAdapter(listView, listAdapter);
 
         return superView;
+    }
+
+    private void showUnifiedPushStatistics() {
+        if (getParentActivity() == null) {
+            return;
+        }
+
+        String txt;
+        long num = UnifiedPushService.getNumOfReceivedNotifications();
+        if (num == 0) {
+            txt = getString(R.string.UnifiedPushNeverReceivedNotifications);
+        } else {
+            txt = LocaleController.formatString(
+                    R.string.UnifiedPushLastReceivedNotification,
+                    (SystemClock.elapsedRealtime() - UnifiedPushService.getLastReceivedNotification()) / 1000,
+                    num
+            );
+        }
+        txt += "\n\n" + LocaleController.formatString(R.string.UnifiedPushCurrentEndpoint, SharedConfig.pushString);
+
+        showDialog(new AlertDialog.Builder(getParentActivity())
+                .setTitle("UnifiedPush")
+                .setMessage(txt)
+                .setNegativeButton(getString(R.string.OK), null)
+                .create());
     }
 
     private class ConfigCellDrawerProfilePreview extends AbstractConfigCell {

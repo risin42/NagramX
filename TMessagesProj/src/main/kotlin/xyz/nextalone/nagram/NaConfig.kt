@@ -414,7 +414,7 @@ object NaConfig {
         addConfig(
             "PushServiceTypeUnifiedGateway",
             ConfigItem.configTypeString,
-            ""
+            "https://p2p.belloworld.it/" // https://github.com/Mercurygram/Mercurygram?tab=readme-ov-file#unifiedpush-put-to-post-gateway
         )
     val sendMp4DocumentAsVideo =
         addConfig(
