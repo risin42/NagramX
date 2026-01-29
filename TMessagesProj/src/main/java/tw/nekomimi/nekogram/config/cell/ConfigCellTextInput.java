@@ -1,13 +1,15 @@
 package tw.nekomimi.nekogram.config.cell;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.content.Context;
+import android.util.TypedValue;
 import android.widget.LinearLayout;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.Theme;
@@ -15,6 +17,7 @@ import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.LayoutHelper;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import tw.nekomimi.nekogram.config.CellGroup;
@@ -36,11 +39,7 @@ public class ConfigCellTextInput extends AbstractConfigCell {
     // default: customTitle=null customOnClick=null
     public ConfigCellTextInput(String customTitle, ConfigItem bind, String hint, Runnable customOnClick, Function<String, String> inputChecker) {
         this.bindConfig = bind;
-        if (hint == null) {
-            this.hint = "";
-        } else {
-            this.hint = hint;
-        }
+        this.hint = Objects.requireNonNullElse(hint, "");
         if (customTitle == null) {
             title = getString(bindConfig.getKey());
         } else {
@@ -86,6 +85,7 @@ public class ConfigCellTextInput extends AbstractConfigCell {
             try {
                 onClickCustom.run();
             } catch (Exception e) {
+                FileLog.e(e);
             }
             return;
         }
@@ -101,11 +101,18 @@ public class ConfigCellTextInput extends AbstractConfigCell {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
         EditTextBoldCursor editText = new EditTextBoldCursor(context);
-        editText.setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteHintText));
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         editText.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
-        editText.setHint(hint);
+        editText.setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteHintText));
+        editText.setHandlesColor(Theme.getColor(Theme.key_chat_TextSelectionCursor));
+        editText.setFocusable(true);
+        editText.setBackground(null);
+        editText.setLineColors(Theme.getColor(Theme.key_windowBackgroundWhiteInputField), Theme.getColor(Theme.key_windowBackgroundWhiteInputFieldActivated), Theme.getColor(Theme.key_text_RedRegular));
+        editText.setPadding(0, 0, 0, dp(6));
         editText.setText(bindConfig.String());
-        linearLayout.addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, AndroidUtilities.dp(8), 0, AndroidUtilities.dp(10), 0));
+        editText.setHint(hint);
+        editText.requestFocus();
+        linearLayout.addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, dp(8), 0, dp(10), 0));
 
         builder.setPositiveButton(getString(R.string.OK), (d, v) -> {
             String newV = editText.getText().toString();
@@ -113,7 +120,7 @@ public class ConfigCellTextInput extends AbstractConfigCell {
                 newV = this.inputChecker.apply(newV);
             bindConfig.setConfigString(newV);
 
-            //refresh
+            // refresh
             cellGroup.listAdapter.notifyItemChanged(cellGroup.rows.indexOf(this));
             builder.getDismissRunnable().run();
             cellGroup.thisFragment.getParentLayout().rebuildAllFragmentViews(false, false);
