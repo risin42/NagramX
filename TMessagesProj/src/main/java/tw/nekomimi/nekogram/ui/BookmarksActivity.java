@@ -668,8 +668,7 @@ public class BookmarksActivity extends NekoDelegateFragment {
                 } else if (option == OPTION_DELETE_BOOKMARK) {
                     BookmarksHelper.removeBookmark(getCurrentAccount(), dialogId, msg.getId());
                     if (position >= 0 && position < filteredMessages.size()) {
-                        MessageObject toRemove = filteredMessages.get(position);
-                        filteredMessages.remove(position);
+                        MessageObject toRemove = filteredMessages.remove(position);
                         bookmarkedMessages.remove(toRemove);
                         rowCount = filteredMessages.size();
                         notifyMessageListItemRemoved(listView, position);

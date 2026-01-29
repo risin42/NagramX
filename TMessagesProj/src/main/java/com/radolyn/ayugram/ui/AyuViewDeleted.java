@@ -691,6 +691,7 @@ public class AyuViewDeleted extends NekoDelegateFragment {
                     Utilities.globalQueue.postRunnable(() -> AyuMessagesController.getInstance().delete(userId, dialogId, messageId));
                     if (pos >= 0 && pos < filteredMessages.size()) {
                         DeletedMessageFull toRemove = filteredMessages.remove(pos);
+                        int removedMessageId = toRemove != null && toRemove.message != null ? toRemove.message.messageId : 0;
                         if (pos < messageObjects.size()) {
                             messageObjects.remove(pos);
                         }
@@ -705,6 +706,7 @@ public class AyuViewDeleted extends NekoDelegateFragment {
                             oldestId = Integer.MAX_VALUE;
                         }
                         notifyMessageListItemRemoved(listView, pos);
+                        invalidateCachedReplyReferences(removedMessageId, pos);
                         updateActionBarCount();
                         updateEmptyView();
                         if (listView != null) {
@@ -984,6 +986,32 @@ public class AyuViewDeleted extends NekoDelegateFragment {
         var adapter = listView == null ? null : listView.getAdapter();
         if (adapter != null) {
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void invalidateCachedReplyReferences(int removedMessageId, int removedPosition) {
+        if (removedMessageId == 0 || messageObjects.isEmpty()) {
+            return;
+        }
+        RecyclerView.Adapter<?> adapter = listView == null ? null : listView.getAdapter();
+        for (int i = 0; i < messageObjects.size(); i++) {
+            MessageObject messageObject = messageObjects.get(i);
+            if (messageObject == null || messageObject.replyMessageObject == null || messageObject.replyMessageObject == messageObject) {
+                continue;
+            }
+            if (messageObject.replyMessageObject.getId() != removedMessageId) {
+                continue;
+            }
+            messageObject.replyMessageObject = null;
+            if (messageObject.messageOwner != null) {
+                messageObject.messageOwner.replyMessage = null;
+                if (messageObject.messageOwner.reply_to != null && messageObject.messageOwner.reply_to.reply_to_msg_id == removedMessageId) {
+                    messageObject.messageOwner.reply_to = null;
+                }
+            }
+            if (adapter != null && i >= 0 && i < adapter.getItemCount() && i < removedPosition) {
+                adapter.notifyItemChanged(i);
+            }
         }
     }
 

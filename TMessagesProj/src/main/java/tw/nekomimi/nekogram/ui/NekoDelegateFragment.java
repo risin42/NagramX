@@ -71,7 +71,6 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
     private final WeakHashMap<RecyclerView, ValueAnimator> visiblePartAnimators = new WeakHashMap<>();
     private final WeakHashMap<RecyclerView, OwnedBitmapDrawable> overlayDrawables = new WeakHashMap<>();
     private final WeakHashMap<RecyclerView, AnchorShiftPreDrawListener> pendingShiftListeners = new WeakHashMap<>();
-    private final WeakHashMap<RecyclerListView, ChatListItemAnimator> messageListItemAnimators = new WeakHashMap<>();
 
     private static final float DEFAULT_SCRIM_DIM_AMOUNT = 0.2f;
 
@@ -106,13 +105,9 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
             return;
         }
 
-        ChatListItemAnimator animator = messageListItemAnimators.get(listView);
-        if (animator == null) {
-            animator = new ChatListItemAnimator(null, listView, getResourceProvider());
-            messageListItemAnimators.put(listView, animator);
-        }
-        if (listView.getItemAnimator() != animator) {
-            listView.setItemAnimator(animator);
+        RecyclerView.ItemAnimator currentAnimator = listView.getItemAnimator();
+        if (!(currentAnimator instanceof ChatListItemAnimator)) {
+            listView.setItemAnimator(new ChatListItemAnimator(null, listView, getResourceProvider()));
         }
     }
 
@@ -126,6 +121,10 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
         }
         setupMessageListItemAnimator(listView);
         adapter.notifyItemRemoved(position);
+        int changedCount = adapter.getItemCount() - position;
+        if (changedCount > 0) {
+            adapter.notifyItemRangeChanged(position, changedCount);
+        }
     }
 
     @Override
