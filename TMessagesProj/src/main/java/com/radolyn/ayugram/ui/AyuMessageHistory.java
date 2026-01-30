@@ -5,16 +5,21 @@ import static org.telegram.messenger.LocaleController.getString;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.media.MediaMetadataRetriever;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -78,6 +83,7 @@ public class AyuMessageHistory extends NekoDelegateFragment {
     private final ArrayList<MessageObject> messageObjects = new ArrayList<>();
     private int rowCount;
     private RecyclerListView listView;
+    private TextView emptyView;
     private ActionBarPopupWindow scrimPopupWindow;
     private final WindowInsetsStateHolder windowInsetsStateHolder = new WindowInsetsStateHolder(this::checkInsets);
     private String[] cachedAttachmentFileNames;
@@ -95,9 +101,13 @@ public class AyuMessageHistory extends NekoDelegateFragment {
 
     private void updateHistory() {
         messages = AyuMessagesController.getInstance().getRevisions(getUserConfig().clientUserId, messageObject.messageOwner.dialog_id, messageObject.messageOwner.id);
+        if (messages == null) {
+            messages = new ArrayList<>();
+        }
         rowCount = messages.size();
         cacheAttachmentFileNames();
         rebuildMessageObjects();
+        updateEmptyView();
     }
 
     private void cacheAttachmentFileNames() {
@@ -111,8 +121,8 @@ public class AyuMessageHistory extends NekoDelegateFragment {
 
     @Override
     public View createView(Context context) {
-        var firstMsg = messages.get(0);
-        var peer = getMessagesController().getUserOrChat(firstMsg.dialogId);
+        long dialogId = messageObject.messageOwner.dialog_id;
+        var peer = getMessagesController().getUserOrChat(dialogId);
         int currentAccount = UserConfig.selectedAccount;
 
         String name = switch (peer) {
@@ -125,7 +135,7 @@ public class AyuMessageHistory extends NekoDelegateFragment {
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setAllowOverlayTitle(true);
         actionBar.setTitle(name);
-        actionBar.setSubtitle(String.valueOf(firstMsg.messageId));
+        actionBar.setSubtitle(String.valueOf(messageObject.getId()));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -185,7 +195,44 @@ public class AyuMessageHistory extends NekoDelegateFragment {
             }
         });
 
+        emptyView = new AppCompatTextView(context) {
+            @Override
+            protected void onDraw(Canvas canvas) {
+                Theme.applyServiceShaderMatrix(getMeasuredWidth(), frameLayout.getBackgroundSizeY(), getX(), getY());
+                Paint backgroundPaint = getThemedPaint(Theme.key_paint_chatActionBackground);
+                AndroidUtilities.rectTmp.set(0, 0, getWidth(), getHeight());
+                canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(30), dp(30), backgroundPaint);
+                if (Theme.hasGradientService()) {
+                    canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(30), dp(30), Theme.getThemePaint(Theme.key_paint_chatActionBackgroundDarken, getResourceProvider()));
+                }
+                super.onDraw(canvas);
+            }
+        };
+        emptyView.setText(getString(R.string.NoMessages));
+        emptyView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        emptyView.setTypeface(AndroidUtilities.bold());
+        emptyView.setTextColor(Theme.getColor(Theme.key_chat_serviceText, getResourceProvider()));
+        emptyView.setGravity(Gravity.CENTER);
+        emptyView.setVisibility(View.GONE);
+        emptyView.setPadding(dp(20), dp(4), dp(20), dp(6));
+        frameLayout.addView(emptyView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+
+        updateEmptyView();
+
         return fragmentView;
+    }
+
+    private void updateEmptyView() {
+        if (emptyView == null || listView == null) {
+            return;
+        }
+        if (rowCount == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -352,6 +399,7 @@ public class AyuMessageHistory extends NekoDelegateFragment {
                         }
                         rowCount = messages.size();
                         notifyMessageListItemRemoved(listView, pos);
+                        updateEmptyView();
                     }
                 } else if (option == OPTION_COPY) {
                     String text = msg.messageOwner != null ? msg.messageOwner.message : null;
