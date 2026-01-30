@@ -314,4 +314,8 @@
     <string name="BackAnimationClassic">经典</string>
     <string name="BackAnimationSpring">Spring</string>
     <string name="BackAnimationPredictive">预测</string>
+    <string name="AddToFilter">添加过滤器</string>
+    <string name="UnifiedPushNeverReceivedNotifications">自 Nagram X 启动后，您从未收到 UnifiedPush 的通知。</string>
+    <string name="UnifiedPushLastReceivedNotification">最后一次通过 UnifiedPush 接收到的通知是 %1$d 秒前。\n\n自 Nagram X 启动以来，您已收到 %2$d 条通知。</string>
+    <string name="UnifiedPushCurrentEndpoint">当前的 UnifiedPush 端点是：%1$s</string>
 </resources>

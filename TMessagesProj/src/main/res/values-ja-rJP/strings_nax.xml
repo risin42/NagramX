@@ -314,4 +314,8 @@
     <string name="BackAnimationClassic">クラシック</string>
     <string name="BackAnimationSpring">Spring</string>
     <string name="BackAnimationPredictive">予測型</string>
+    <string name="AddToFilter">フィルターに追加</string>
+    <string name="UnifiedPushNeverReceivedNotifications">Nagram X の起動以降、UnifiedPush 経由で通知を受信したことはありません。</string>
+    <string name="UnifiedPushLastReceivedNotification">UnifiedPush で最後に受信した通知は %1$d 秒前です。\n\nNagram X の起動以降、 %2$d 件の通知を受信しました。</string>
+    <string name="UnifiedPushCurrentEndpoint">現在の UnifiedPush エンドポイントは：%1$s</string>
 </resources>

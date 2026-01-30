@@ -318,4 +318,5 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="BackAnimationClassic">Classica</string>
     <string name="BackAnimationSpring">Rimbalzo</string>
     <string name="BackAnimationPredictive">Predittiva</string>
+    <string name="AddToFilter">Aggiungi al filtro</string>
 </resources>
