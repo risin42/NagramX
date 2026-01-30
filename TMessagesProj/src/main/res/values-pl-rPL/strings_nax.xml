@@ -314,4 +314,8 @@
     <string name="BackAnimationClassic">Klasyczny</string>
     <string name="BackAnimationSpring">Wiosna</string>
     <string name="BackAnimationPredictive">Proroczy</string>
+    <string name="AddToFilter">Dodaj do filtra</string>
+    <string name="UnifiedPushNeverReceivedNotifications">Od momentu uruchomienia Nagram X nie otrzymałeś żadnych powiadomień za pomocą UnifiedPush.</string>
+    <string name="UnifiedPushLastReceivedNotification">Ostatnie powiadomienie otrzymane za pomocą UnifiedPush zostało otrzymane %1$d sekund temu.\n\nOtrzymałeś %2$d powiadomień od momentu uruchomienia Nagram X.</string>
+    <string name="UnifiedPushCurrentEndpoint">Aktualny punkt końcowy UnifiedPush to: %1$s</string>
 </resources>

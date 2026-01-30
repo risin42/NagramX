@@ -19,7 +19,7 @@
     <string name="LlmApiUrlNotice">URL базової URL-адреси для кінцевих точок OpenAI — сумісних, таких як Gemini, xAI (Grok), Groq, Mistral, DeepSeek та ін.\n\nзалишаючи це поле порожнім, за замовчуванням буде кінцева точка сумісності Gemini OpenAI.</string>
     <string name="LlmApiKeyNotice">Ключ API буде використовуватися для надсилання запитів на URL API.\n\nВведіть кілька ключів, розділених комами (наприклад, key1, key2, key3).\nЯкщо ви надасте кілька ключів, вони будуть використовуватися по черзі.</string>
     <string name="LlmModelNameNotice">Якщо залишити це поле порожнім, за замовчуванням буде використовуватися `gemini-2.5-flash`.\n\nДля швидшого відгуку розгляньте менші моделі, такі як gpt-nano або gemini-flash.</string>
-    <string name="LlmProviderPreset">Провайдер моделей</string>
+    <string name="LlmProviderPreset">Провайдер моделі</string>
     <string name="LlmProviderCustom">Користувацька</string>
     <string name="LlmProviderOpenAIKey">Ключ API OpenAI</string>
     <string name="LlmProviderGeminiKey">Ключ API Gemini</string>
@@ -34,7 +34,7 @@
     <string name="LlmUseContext">Використовувати контекст</string>
     <string name="LlmUseContextNotice">Покращує якість перекладу за рахунок більшої кількості токенів.</string>
     <string name="LlmContextSize">Контекстні повідомлення</string>
-    <string name="LlmUseContextInAutoTranslate">Використовувати контекст в автоматичному перекладі</string>
+    <string name="LlmUseContextInAutoTranslate">Автопереклад з контекстом</string>
     <string name="LlmUseContextInAutoTranslateNotice">Може збільшити використання токенів та затримку.</string>
     <string name="LlmTemperature">Температура</string>
     <string name="AITranslatorSettings">AI Перекладач</string>
@@ -310,4 +310,9 @@
     <string name="SetLocalName">Встановити локальне ім\'я</string>
     <string name="DeleteChatForBothSides">Використовувати «Також видалити для» за замовчуванням</string>
     <string name="AutoPingProxy">Автоматичний пінг проксі</string>
+    <string name="BackAnimationStyle">Анімація навігації</string>
+    <string name="BackAnimationClassic">Класична</string>
+    <string name="BackAnimationSpring">Пружна</string>
+    <string name="BackAnimationPredictive">Прогнозована</string>
+    <string name="AddToFilter">Додати до фільтра</string>
 </resources>
