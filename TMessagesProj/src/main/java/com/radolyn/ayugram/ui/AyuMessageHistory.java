@@ -84,6 +84,7 @@ public class AyuMessageHistory extends NekoDelegateFragment {
     private int rowCount;
     private RecyclerListView listView;
     private TextView emptyView;
+    private Runnable showEmptyViewRunnable;
     private ActionBarPopupWindow scrimPopupWindow;
     private final WindowInsetsStateHolder windowInsetsStateHolder = new WindowInsetsStateHolder(this::checkInsets);
     private String[] cachedAttachmentFileNames;
@@ -226,9 +227,20 @@ public class AyuMessageHistory extends NekoDelegateFragment {
         if (emptyView == null || listView == null) {
             return;
         }
+        if (showEmptyViewRunnable != null) {
+            AndroidUtilities.cancelRunOnUIThread(showEmptyViewRunnable);
+            showEmptyViewRunnable = null;
+        }
         if (rowCount == 0) {
-            emptyView.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.GONE);
+            showEmptyViewRunnable = () -> {
+                if (emptyView != null) {
+                    emptyView.setVisibility(View.VISIBLE);
+                }
+                if (listView != null) {
+                    listView.setVisibility(View.GONE);
+                }
+            };
+            AndroidUtilities.runOnUIThread(showEmptyViewRunnable, 250);
         } else {
             emptyView.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
@@ -256,6 +268,11 @@ public class AyuMessageHistory extends NekoDelegateFragment {
         if (scrimPopupWindow != null) {
             scrimPopupWindow.dismiss();
             scrimPopupWindow = null;
+        }
+
+        if (showEmptyViewRunnable != null) {
+            AndroidUtilities.cancelRunOnUIThread(showEmptyViewRunnable);
+            showEmptyViewRunnable = null;
         }
 
         if (listView != null) {

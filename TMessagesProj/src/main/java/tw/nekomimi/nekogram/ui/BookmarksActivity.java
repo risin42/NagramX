@@ -102,6 +102,7 @@ public class BookmarksActivity extends NekoDelegateFragment {
     private ActionBarPopupWindow scrimPopupWindow;
     private ChatActionCell floatingDateView;
     private TextView emptyView;
+    private Runnable showEmptyViewRunnable;
     private ActionBarMenuItem searchItem;
     private String searchQuery = "";
     private AnimatorSet floatingDateAnimation;
@@ -551,6 +552,11 @@ public class BookmarksActivity extends NekoDelegateFragment {
             floatingDateAnimation = null;
         }
 
+        if (showEmptyViewRunnable != null) {
+            AndroidUtilities.cancelRunOnUIThread(showEmptyViewRunnable);
+            showEmptyViewRunnable = null;
+        }
+
         AndroidUtilities.cancelRunOnUIThread(updateFloatingDateRunnable);
 
         if (listView != null) {
@@ -976,9 +982,20 @@ public class BookmarksActivity extends NekoDelegateFragment {
         if (emptyView == null || listView == null) {
             return;
         }
+        if (showEmptyViewRunnable != null) {
+            AndroidUtilities.cancelRunOnUIThread(showEmptyViewRunnable);
+            showEmptyViewRunnable = null;
+        }
         if (rowCount == 0) {
-            emptyView.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.GONE);
+            showEmptyViewRunnable = () -> {
+                if (emptyView != null) {
+                    emptyView.setVisibility(View.VISIBLE);
+                }
+                if (listView != null) {
+                    listView.setVisibility(View.GONE);
+                }
+            };
+            AndroidUtilities.runOnUIThread(showEmptyViewRunnable, 250);
         } else {
             emptyView.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
