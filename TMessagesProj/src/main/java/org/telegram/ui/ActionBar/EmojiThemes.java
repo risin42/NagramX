@@ -349,17 +349,29 @@ public class EmojiThemes {
             final ITheme iTheme = getITheme(index);
             final TLRPC.TL_theme tlTheme = getTlTheme(index);
             Theme.ThemeInfo baseTheme;
+            final TLRPC.ThemeSettings settings = iTheme != null ? iTheme.getThemeSettings(settingsIndex) : null;
+            final String baseThemeKey = Theme.getBaseThemeKey(settings);
             if (iTheme != null) {
-                baseTheme = Theme.getTheme(Theme.getBaseThemeKey(iTheme.getThemeSettings(settingsIndex)));
+                baseTheme = Theme.getTheme(baseThemeKey);
             } else {
                 baseTheme = Theme.getTheme("Blue");
             }
+            if (baseTheme == null) {
+                if ("Night".equals(baseThemeKey) || "Dark Blue".equals(baseThemeKey)) {
+                    baseTheme = Theme.getTheme("Dark Blue");
+                } else if ("Blue".equals(baseThemeKey) || "Day".equals(baseThemeKey) || "Arctic Blue".equals(baseThemeKey)) {
+                    baseTheme = Theme.getTheme("Blue");
+                }
+                if (baseTheme == null) {
+                    baseTheme = Theme.getTheme("Blue");
+                }
+            }
             if (baseTheme != null) {
                 themeInfo = new Theme.ThemeInfo(baseTheme);
-                if (iTheme != null) {
+                if (iTheme != null && settings != null) {
                     accent = themeInfo.createNewAccent(
                         iTheme.getThemeId(),
-                        iTheme.getThemeSettings(settingsIndex),
+                        settings,
                         tlTheme,
                         currentAccount,
                         true
@@ -376,7 +388,7 @@ public class EmojiThemes {
         }
 
         if (themeInfo == null) {
-            return currentColors;
+            return new SparseIntArray();
         }
 
         SparseIntArray currentColorsNoAccent;
@@ -695,6 +707,9 @@ public class EmojiThemes {
                 continue;
             }
             SparseIntArray colorsMap = getPreviewColors(currentAccount, i);
+            if (colorsMap == null) {
+                colorsMap = new SparseIntArray();
+            }
             items.get(i).inBubbleColor = getOrDefault(colorsMap, Theme.key_chat_inBubble);
             items.get(i).outBubbleColor = getOrDefault(colorsMap, Theme.key_chat_outBubble);
             items.get(i).outLineColor = getOrDefault(colorsMap, Theme.key_featuredStickers_addButton);
