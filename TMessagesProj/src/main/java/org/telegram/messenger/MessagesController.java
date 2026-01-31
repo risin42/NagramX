@@ -21955,10 +21955,16 @@ public class MessagesController extends BaseController implements NotificationCe
     public void updateEmojiStatusUntil() {
         final int now = (int) (System.currentTimeMillis() / 1000L);
         Long timeout = null;
-        for (Iterator<Long> it = emojiStatusUntilValues.keySet().iterator(); it.hasNext(); ) {
-            int until = emojiStatusUntilValues.get(it.next());
+        for (Iterator<Map.Entry<Long, Integer>> it = emojiStatusUntilValues.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<Long, Integer> entry = it.next();
+            Integer untilObj = entry.getValue();
+            if (untilObj == null) {
+                it.remove();
+                continue;
+            }
+            int until = untilObj;
             if (until > now) {
-                timeout = Math.min(timeout == null ? Long.MAX_VALUE : timeout, until - now);
+                timeout = Math.min(timeout == null ? Long.MAX_VALUE : timeout, (long) until - now);
             } else {
                 it.remove();
             }
