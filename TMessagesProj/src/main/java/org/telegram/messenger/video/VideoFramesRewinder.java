@@ -99,12 +99,35 @@ public class VideoFramesRewinder {
         final long start = System.currentTimeMillis();
 
         final int fps = meta[4];
-        int w = Math.min(this.w / 4, meta[0]), h = Math.min(this.h / 4, meta[1]);
+        int w, h;
+        if (this.w > 0 && this.h > 0) {
+            int viewW = this.w / 4;
+            int viewH = this.h / 4;
+            if (viewW <= 0) viewW = 1;
+            if (viewH <= 0) viewH = 1;
+            w = Math.min(viewW, meta[0]);
+            h = Math.min(viewH, meta[1]);
+        } else {
+            w = meta[0];
+            h = meta[1];
+        }
+        if (w <= 0 || h <= 0) {
+            FileLog.d("[VideoFramesRewinder] can't prepare frames: view=" + this.w + "x" + this.h + " video=" + meta[0] + "x" + meta[1]);
+            AndroidUtilities.runOnUIThread(() -> {
+                isPreparing = false;
+                if (destroyAfterPrepare) {
+                    release();
+                    stop.set(false);
+                }
+            });
+            return;
+        }
         if (w > maxFrameSide || h > maxFrameSide) {
             final float scale = (float) maxFrameSide / Math.max(w, h);
             w = (int) (w * scale);
             h = (int) (h * scale);
         }
+
         final long toMs = prepareToMs;
         AnimatedFileDrawable.seekToMs(ptr, toMs - (long) (350 * prepareWithSpeed), meta, false);
         long ms = meta[3];
@@ -121,6 +144,9 @@ public class VideoFramesRewinder {
                 AndroidUtilities.recycleBitmap(frame.bitmap);
                 try {
                     frame.bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+                } catch (IllegalArgumentException e) {
+                    FileLog.e(e);
+                    break;
                 } catch (OutOfMemoryError e) {
                     FileLog.d("[VideoFramesRewinder] failed to create bitmap: out of memory");
                     break;
