@@ -6230,7 +6230,7 @@ public class MessageObject {
         } else if (getMedia(messageOwner) instanceof TLRPC.TL_messageMediaPhoto) {
             return "image/jpeg";
         } else if (getMedia(messageOwner) instanceof TLRPC.TL_messageMediaWebPage) {
-            if (getMedia(messageOwner).webpage.photo != null) {
+            if (getMedia(messageOwner).webpage != null && getMedia(messageOwner).webpage.photo != null) {
                 return "image/jpeg";
             }
         }
@@ -6513,7 +6513,7 @@ public class MessageObject {
                     photoThumbsObject = photoThumbsObject2;
                     photoThumbsObject2 = null;
                 }
-            } else if (getMedia(messageOwner) instanceof TLRPC.TL_messageMediaWebPage) {
+            } else if (getMedia(messageOwner) instanceof TLRPC.TL_messageMediaWebPage && getMedia(messageOwner).webpage != null) {
                 TLRPC.Photo photo = getMedia(messageOwner).webpage.photo;
                 TLRPC.Document document = getMedia(messageOwner).webpage.document;
                 if (photo != null) {
@@ -9712,28 +9712,36 @@ public class MessageObject {
     }
 
     public static TLRPC.Document getDocument(TLRPC.Message message) {
-        if (getMedia(message) instanceof TLRPC.TL_messageMediaWebPage) {
-            return getMedia(message).webpage.document;
-        } else if (getMedia(message) instanceof TLRPC.TL_messageMediaGame) {
-            return getMedia(message).game.document;
-        } else if (getMedia(message) instanceof TLRPC.TL_messageMediaStory) {
-            TLRPC.TL_messageMediaStory story = (TLRPC.TL_messageMediaStory) getMedia(message);
-            if (story.storyItem != null && story.storyItem.media != null && story.storyItem.media.document != null)
+        if (message == null) {
+            return null;
+        }
+        TLRPC.MessageMedia media = getMedia(message);
+        if (media instanceof TLRPC.TL_messageMediaWebPage) {
+            return media.webpage != null ? media.webpage.document : null;
+        } else if (media instanceof TLRPC.TL_messageMediaGame) {
+            return media.game != null ? media.game.document : null;
+        } else if (media instanceof TLRPC.TL_messageMediaStory story) {
+            if (story.storyItem != null && story.storyItem.media != null && story.storyItem.media.document != null) {
                 return story.storyItem.media.document;
-        } else if (getMedia(message) instanceof TLRPC.TL_messageMediaPaidMedia) {
-            TLRPC.TL_messageMediaPaidMedia paidMedia = (TLRPC.TL_messageMediaPaidMedia) getMedia(message);
+            }
+        } else if (media instanceof TLRPC.TL_messageMediaPaidMedia paidMedia) {
             if (paidMedia.extended_media.size() == 1 && paidMedia.extended_media.get(0) instanceof TLRPC.TL_messageExtendedMedia) {
-                return ((TLRPC.TL_messageExtendedMedia) paidMedia.extended_media.get(0)).media.document;
+                TLRPC.MessageMedia extendedMedia = ((TLRPC.TL_messageExtendedMedia) paidMedia.extended_media.get(0)).media;
+                return extendedMedia != null ? extendedMedia.document : null;
             }
         }
-        return getMedia(message) != null ? getMedia(message).document : null;
+        return media != null ? media.document : null;
     }
 
     public static TLRPC.Photo getPhoto(TLRPC.Message message) {
-        if (getMedia(message) instanceof TLRPC.TL_messageMediaWebPage) {
-            return getMedia(message).webpage.photo;
+        if (message == null) {
+            return null;
         }
-        return getMedia(message) != null ? getMedia(message).photo : null;
+        TLRPC.MessageMedia media = getMedia(message);
+        if (media instanceof TLRPC.TL_messageMediaWebPage) {
+            return media.webpage != null ? media.webpage.photo : null;
+        }
+        return media != null ? media.photo : null;
     }
 
     public static boolean isStickerMessage(TLRPC.Message message) {
@@ -9757,17 +9765,25 @@ public class MessageObject {
     }
 
     public static boolean isMusicMessage(TLRPC.Message message) {
-        if (getMedia(message) instanceof TLRPC.TL_messageMediaWebPage) {
-            return isMusicDocument(getMedia(message).webpage.document);
+        if (message == null) {
+            return false;
         }
-        return getMedia(message) != null && isMusicDocument(getMedia(message).document);
+        TLRPC.MessageMedia media = getMedia(message);
+        if (media instanceof TLRPC.TL_messageMediaWebPage) {
+            return media.webpage != null && isMusicDocument(media.webpage.document);
+        }
+        return media != null && isMusicDocument(media.document);
     }
 
     public static boolean isGifMessage(TLRPC.Message message) {
-        if (getMedia(message) instanceof TLRPC.TL_messageMediaWebPage) {
-            return isGifDocument(getMedia(message).webpage.document);
+        if (message == null) {
+            return false;
         }
-        return getMedia(message) != null && isGifDocument(getMedia(message).document, message.grouped_id != 0);
+        TLRPC.MessageMedia media = getMedia(message);
+        if (media instanceof TLRPC.TL_messageMediaWebPage) {
+            return media.webpage != null && isGifDocument(media.webpage.document);
+        }
+        return media != null && isGifDocument(media.document, message.grouped_id != 0);
     }
 
     public static boolean isRoundVideoMessage(TLRPC.Message message) {
@@ -9778,27 +9794,39 @@ public class MessageObject {
     }
 
     public static boolean isPhoto(TLRPC.Message message) {
-        if (getMedia(message) instanceof TLRPC.TL_messageMediaWebPage) {
-            return getMedia(message).webpage.photo instanceof TLRPC.TL_photo && !(getMedia(message).webpage.document instanceof TLRPC.TL_document);
+        if (message == null) {
+            return false;
         }
-        if (message != null && message.action != null && message.action.photo != null) {
+        TLRPC.MessageMedia media = getMedia(message);
+        if (media instanceof TLRPC.TL_messageMediaWebPage) {
+            return media.webpage != null && media.webpage.photo instanceof TLRPC.TL_photo && !(media.webpage.document instanceof TLRPC.TL_document);
+        }
+        if (message.action != null && message.action.photo != null) {
             return message.action.photo instanceof TLRPC.TL_photo;
         }
-        return getMedia(message) instanceof TLRPC.TL_messageMediaPhoto;
+        return media instanceof TLRPC.TL_messageMediaPhoto;
     }
 
     public static boolean isVoiceMessage(TLRPC.Message message) {
-        if (getMedia(message) instanceof TLRPC.TL_messageMediaWebPage) {
-            return isVoiceDocument(getMedia(message).webpage.document);
+        if (message == null) {
+            return false;
         }
-        return getMedia(message) != null && isVoiceDocument(getMedia(message).document);
+        TLRPC.MessageMedia media = getMedia(message);
+        if (media instanceof TLRPC.TL_messageMediaWebPage) {
+            return media.webpage != null && isVoiceDocument(media.webpage.document);
+        }
+        return media != null && isVoiceDocument(media.document);
     }
 
     public static boolean isNewGifMessage(TLRPC.Message message) {
-        if (getMedia(message) instanceof TLRPC.TL_messageMediaWebPage) {
-            return isNewGifDocument(getMedia(message).webpage.document);
+        if (message == null) {
+            return false;
         }
-        return getMedia(message) != null && isNewGifDocument(getMedia(message).document);
+        TLRPC.MessageMedia media = getMedia(message);
+        if (media instanceof TLRPC.TL_messageMediaWebPage) {
+            return media.webpage != null && isNewGifDocument(media.webpage.document);
+        }
+        return media != null && isNewGifDocument(media.document);
     }
 
     public static boolean isLiveLocationMessage(TLRPC.Message message) {
@@ -9806,13 +9834,17 @@ public class MessageObject {
     }
 
     public static boolean isVideoMessage(TLRPC.Message message) {
-        if (getMedia(message) != null && isVideoSticker(getMedia(message).document)) {
+        if (message == null) {
             return false;
         }
-        if (getMedia(message) instanceof TLRPC.TL_messageMediaWebPage) {
-            return isVideoDocument(getMedia(message).webpage.document);
+        TLRPC.MessageMedia media = getMedia(message);
+        if (media != null && isVideoSticker(media.document)) {
+            return false;
         }
-        return getMedia(message) != null && isVideoDocument(getMedia(message).document);
+        if (media instanceof TLRPC.TL_messageMediaWebPage) {
+            return media.webpage != null && isVideoDocument(media.webpage.document);
+        }
+        return media != null && isVideoDocument(media.document);
     }
 
     public static boolean isGameMessage(TLRPC.Message message) {
@@ -10397,7 +10429,7 @@ public class MessageObject {
     }
 
     public boolean isWebpageDocument() {
-        return getMedia(messageOwner) instanceof TLRPC.TL_messageMediaWebPage && getMedia(messageOwner).webpage.document != null && !isGifDocument(getMedia(messageOwner).webpage.document);
+        return getMedia(messageOwner) instanceof TLRPC.TL_messageMediaWebPage && getMedia(messageOwner).webpage != null && getMedia(messageOwner).webpage.document != null && !isGifDocument(getMedia(messageOwner).webpage.document);
     }
 
     public boolean isWebpage() {
