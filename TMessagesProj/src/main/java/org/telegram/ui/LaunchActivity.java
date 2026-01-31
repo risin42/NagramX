@@ -7443,7 +7443,10 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback((OnBackInvokedCallback) onBackInvokedCallback);
             }
         }
-        clearFragments();
+        if (instance == this) {
+            clearFragments();
+            instance = null;
+        }
         super.onDestroy();
         onFinish();
         FloatingDebugController.onDestroy();
