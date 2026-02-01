@@ -253,7 +253,7 @@ dependencies {
     // add for emoji
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
     // add for UnifiedPush
-    implementation 'com.github.UnifiedPush:android-connector:2.3.1'
+    implementation 'org.unifiedpush.android:connector:3.2.0'
     // add for keep formatting in translations
     implementation 'org.apache.commons:commons-text:1.15.0'
     // translator from nekogram
