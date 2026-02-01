@@ -1,22 +1,28 @@
 package org.telegram.messenger;
 
-import android.content.Context;
 import android.os.SystemClock;
 
 import androidx.annotation.NonNull;
 
 import org.telegram.tgnet.ConnectionsManager;
-
-import org.unifiedpush.android.connector.MessagingReceiver;
+import org.unifiedpush.android.connector.FailedReason;
+import org.unifiedpush.android.connector.PushService;
 import org.unifiedpush.android.connector.UnifiedPush;
+import org.unifiedpush.android.connector.data.PushEndpoint;
+import org.unifiedpush.android.connector.data.PushMessage;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 
 import xyz.nextalone.nagram.NaConfig;
 
-public class UnifiedPushReceiver extends MessagingReceiver {
+public class UnifiedPushService extends PushService {
+
+    public static final String UP_GATEWAY_DEFAULT = "https://p2p.belloworld.it/"; // https://github.com/Mercurygram/Mercurygram?tab=readme-ov-file#unifiedpush-put-to-post-gateway
+
+    private static final String DISTRIBUTOR_NTFY = "io.heckel.ntfy";
+    private static final String UP_FAILED = "__UNIFIEDPUSH_FAILED__";
 
     private static long lastReceivedNotification = 0;
     private static long numOfReceivedNotifications = 0;
@@ -30,27 +36,30 @@ public class UnifiedPushReceiver extends MessagingReceiver {
     }
 
     @Override
-    public void onNewEndpoint(Context context, String endpoint, String instance){
+    public void onNewEndpoint(@NonNull PushEndpoint endpoint, @NonNull String instance) {
         Utilities.globalQueue.postRunnable(() -> {
             SharedConfig.pushStringGetTimeEnd = SystemClock.elapsedRealtime();
 
-            String savedDistributor = UnifiedPush.getSavedDistributor(context);
+            String savedDistributor = UnifiedPush.getSavedDistributor(this);
 
-            if (savedDistributor.equals("io.heckel.ntfy")) {
-                PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_SIMPLE, endpoint);
+            if (DISTRIBUTOR_NTFY.equals(savedDistributor)) {
+                PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_SIMPLE, endpoint.getUrl());
                 return;
             }
 
-            try {
-                PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_SIMPLE, NaConfig.INSTANCE.getPushServiceTypeUnifiedGateway().String() + URLEncoder.encode(endpoint, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                FileLog.e(e);
+            String gateway = NaConfig.INSTANCE.getPushServiceTypeUnifiedGateway().String();
+            if (gateway.isEmpty()) {
+                gateway = UP_GATEWAY_DEFAULT;
+            } else if (!gateway.endsWith("/")) {
+                gateway += "/";
             }
+
+            PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_SIMPLE, gateway + URLEncoder.encode(endpoint.getUrl(), StandardCharsets.UTF_8));
         });
     }
 
     @Override
-    public void onMessage(Context context, byte[] message, String instance){
+    public void onMessage(@NonNull PushMessage message, @NonNull String instance) {
         final long receiveTime = SystemClock.elapsedRealtime();
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -58,17 +67,16 @@ public class UnifiedPushReceiver extends MessagingReceiver {
         numOfReceivedNotifications++;
 
         AndroidUtilities.runOnUIThread(() -> {
-            if (BuildVars.LOGS_ENABLED) {
-                FileLog.d("UP PRE INIT APP");
-            }
+
+            FileLog.d("UP PRE INIT APP");
+
             ApplicationLoader.postInitApplication();
-            if (BuildVars.LOGS_ENABLED) {
-                FileLog.d("UP POST INIT APP");
-            }
+
+            FileLog.d("UP POST INIT APP");
+
             Utilities.stageQueue.postRunnable(() -> {
-                if (BuildVars.LOGS_ENABLED) {
-                    FileLog.d("UP START PROCESSING");
-                }
+                FileLog.d("UP START PROCESSING");
+
                 for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
                     if (UserConfig.getInstance(a).isClientActivated()) {
                         ConnectionsManager.onInternalPushReceived(a);
@@ -78,37 +86,34 @@ public class UnifiedPushReceiver extends MessagingReceiver {
                 countDownLatch.countDown();
             });
         });
-        Utilities.globalQueue.postRunnable(()-> {
+        Utilities.globalQueue.postRunnable(() -> {
             try {
                 countDownLatch.await();
             } catch (Throwable ignore) {
+            }
 
-            }
-            if (BuildVars.DEBUG_VERSION) {
-                FileLog.d("finished UP service, time = " + (SystemClock.elapsedRealtime() - receiveTime));
-            }
+            FileLog.d("finished UP service, time = " + (SystemClock.elapsedRealtime() - receiveTime));
         });
     }
 
     @Override
-    public void onRegistrationFailed(Context context, String instance){
-        if (BuildVars.LOGS_ENABLED) {
-            FileLog.d("Failed to get endpoint");
-        }
-        SharedConfig.pushStringStatus = "__UNIFIEDPUSH_FAILED__";
+    public void onRegistrationFailed(@NonNull FailedReason reason, @NonNull String instance) {
+        FileLog.e("Failed to get endpoint: " + reason);
+
+        SharedConfig.pushStringStatus = UP_FAILED;
+
         Utilities.globalQueue.postRunnable(() -> {
             SharedConfig.pushStringGetTimeEnd = SystemClock.elapsedRealtime();
-
             PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_SIMPLE, null);
         });
     }
 
     @Override
-    public void onUnregistered(Context context, String instance){
-        SharedConfig.pushStringStatus = "__UNIFIEDPUSH_FAILED__";
+    public void onUnregistered(@NonNull String instance) {
+        SharedConfig.pushStringStatus = UP_FAILED;
+
         Utilities.globalQueue.postRunnable(() -> {
             SharedConfig.pushStringGetTimeEnd = SystemClock.elapsedRealtime();
-
             PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_SIMPLE, null);
         });
     }

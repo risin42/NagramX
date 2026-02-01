@@ -5,15 +5,14 @@ import android.text.TextUtils;
 
 import org.unifiedpush.android.connector.UnifiedPush;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UnifiedPushListenerServiceProvider implements PushListenerController.IPushListenerServiceProvider {
-    public UnifiedPushListenerServiceProvider(){};
+    public UnifiedPushListenerServiceProvider(){}
 
     @Override
     public boolean hasServices() {
-        return !UnifiedPush.getDistributors(ApplicationLoader.applicationContext, new ArrayList<>()).isEmpty();
+        return !UnifiedPush.getDistributors(ApplicationLoader.applicationContext).isEmpty();
     }
 
     @Override
@@ -25,30 +24,26 @@ public class UnifiedPushListenerServiceProvider implements PushListenerControlle
     public void onRequestPushToken() {
         String currentPushString = SharedConfig.pushString;
         if (!TextUtils.isEmpty(currentPushString)) {
-            if (BuildVars.DEBUG_PRIVATE_VERSION && BuildVars.LOGS_ENABLED) {
-                FileLog.d("UnifiedPush endpoint = " + currentPushString);
-            }
+            FileLog.d("UnifiedPush endpoint = " + currentPushString);
         } else {
-            if (BuildVars.LOGS_ENABLED) {
-                FileLog.d("No UnifiedPush string found");
-            }
+            FileLog.d("No UnifiedPush string found");
         }
         Utilities.globalQueue.postRunnable(() -> {
             try {
                 SharedConfig.pushStringGetTimeStart = SystemClock.elapsedRealtime();
                 SharedConfig.saveConfig();
                 if (UnifiedPush.getAckDistributor(ApplicationLoader.applicationContext) == null) {
-                    List<String> distributors = UnifiedPush.getDistributors(ApplicationLoader.applicationContext, new ArrayList<>());
+                    List<String> distributors = UnifiedPush.getDistributors(ApplicationLoader.applicationContext);
                     if (distributors.size() > 0) {
                         String distributor =  distributors.get(0);
                         UnifiedPush.saveDistributor(ApplicationLoader.applicationContext, distributor);
                     }
                 }
-                UnifiedPush.registerApp(
+                UnifiedPush.register(
                         ApplicationLoader.applicationContext,
                         "default",
-                        new ArrayList<>(),
-                        "Telegram Simple Push"
+                        "Telegram Simple Push",
+                        null
                 );
             } catch (Throwable e) {
                 FileLog.e(e);
