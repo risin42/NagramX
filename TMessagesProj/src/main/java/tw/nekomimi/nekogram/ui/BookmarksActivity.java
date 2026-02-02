@@ -488,8 +488,6 @@ public class BookmarksActivity extends NekoDelegateFragment {
 
         listView.post(updateFloatingDateRunnable);
 
-        updateEmptyView();
-
         updateBookmarks(() -> {
             if (rowCount > 0 && listView != null) {
                 listView.scrollToPosition(rowCount - 1);
@@ -674,7 +672,7 @@ public class BookmarksActivity extends NekoDelegateFragment {
                         rowCount = filteredMessages.size();
                         notifyMessageListItemRemoved(listView, position);
                         updateActionBarCount();
-                        updateEmptyView();
+                        updateEmptyView(rowCount == 0);
                         if (listView != null) {
                             listView.post(() -> {
                                 updatePagedownButtonVisibility(false);
@@ -979,27 +977,11 @@ public class BookmarksActivity extends NekoDelegateFragment {
     }
 
     private void updateEmptyView() {
-        if (emptyView == null || listView == null) {
-            return;
-        }
-        if (showEmptyViewRunnable != null) {
-            AndroidUtilities.cancelRunOnUIThread(showEmptyViewRunnable);
-            showEmptyViewRunnable = null;
-        }
-        if (rowCount == 0) {
-            showEmptyViewRunnable = () -> {
-                if (emptyView != null) {
-                    emptyView.setVisibility(View.VISIBLE);
-                }
-                if (listView != null) {
-                    listView.setVisibility(View.GONE);
-                }
-            };
-            AndroidUtilities.runOnUIThread(showEmptyViewRunnable, 250);
-        } else {
-            emptyView.setVisibility(View.GONE);
-            listView.setVisibility(View.VISIBLE);
-        }
+        updateEmptyView(false);
+    }
+
+    private void updateEmptyView(boolean delayIfEmpty) {
+        showEmptyViewRunnable = updateListEmptyView(() -> emptyView, () -> listView, rowCount == 0, delayIfEmpty, showEmptyViewRunnable, () -> showEmptyViewRunnable = null);
     }
 
     @Override
