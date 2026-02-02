@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.WeakHashMap;
+import java.util.function.Supplier;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
@@ -132,6 +133,61 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
             if (end >= start) {
                 adapter.notifyItemRangeChanged(start, end - start + 1);
             }
+        }
+    }
+
+    protected long getEmptyViewDelayMs(@Nullable RecyclerListView listView) {
+        if (listView == null) {
+            return 0;
+        }
+        RecyclerView.ItemAnimator itemAnimator = listView.getItemAnimator();
+        if (itemAnimator == null) {
+            return 0;
+        }
+        return Math.max(itemAnimator.getRemoveDuration(), ChatListItemAnimator.DEFAULT_DURATION);
+    }
+
+    @Nullable
+    protected Runnable updateListEmptyView(@NonNull Supplier<? extends View> emptyViewProvider, @NonNull Supplier<? extends RecyclerListView> listViewProvider, boolean isEmpty, boolean delayIfEmpty, @Nullable Runnable showEmptyViewRunnable, @NonNull Runnable clearEmptyViewRunnable) {
+        View emptyView = emptyViewProvider.get();
+        RecyclerListView listView = listViewProvider.get();
+        if (emptyView == null || listView == null) {
+            return showEmptyViewRunnable;
+        }
+        if (showEmptyViewRunnable != null) {
+            AndroidUtilities.cancelRunOnUIThread(showEmptyViewRunnable);
+            clearEmptyViewRunnable.run();
+        }
+        if (isEmpty) {
+            if (delayIfEmpty) {
+                long delayMs = getEmptyViewDelayMs(listView);
+                if (delayMs <= 0) {
+                    emptyView.setVisibility(View.VISIBLE);
+                    listView.setVisibility(View.GONE);
+                    return null;
+                }
+                Runnable newRunnable = () -> {
+                    clearEmptyViewRunnable.run();
+                    View updatedEmptyView = emptyViewProvider.get();
+                    if (updatedEmptyView != null) {
+                        updatedEmptyView.setVisibility(View.VISIBLE);
+                    }
+                    RecyclerListView updatedListView = listViewProvider.get();
+                    if (updatedListView != null) {
+                        updatedListView.setVisibility(View.GONE);
+                    }
+                };
+                AndroidUtilities.runOnUIThread(newRunnable, delayMs);
+                return newRunnable;
+            } else {
+                emptyView.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
+                return null;
+            }
+        } else {
+            emptyView.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            return null;
         }
     }
 
