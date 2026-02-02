@@ -40268,7 +40268,7 @@ public class ChatActivity extends BaseFragment implements
                 Bundle args = new Bundle();
                 args.putLong("user_id", user.id);
                 args.putBoolean("expandPhoto", expandPhoto);
-                LastSeenHelper.saveLastSeenFromLoadedMessages(user.id, getUserConfig().getClientUserId(), messages, chatAdapter);
+                if (!user.bot) LastSeenHelper.saveLastSeenFromLoadedMessages(user.id, getUserConfig().getClientUserId(), messages, chatAdapter);
                 ProfileActivity fragment = new ProfileActivity(args);
                 fragment.setPlayProfileAnimation(currentUser != null && currentUser.id == user.id ? 1 : 0);
                 AndroidUtilities.setAdjustResizeToNothing(getParentActivity(), classGuid);
@@ -42277,7 +42277,10 @@ public class ChatActivity extends BaseFragment implements
             if (currentEncryptedChat != null && uid == currentUser.id) {
                 args.putLong("dialog_id", dialog_id);
             }
-            LastSeenHelper.saveLastSeenFromLoadedMessages(uid, getUserConfig().getClientUserId(), messages, chatAdapter);
+            TLRPC.User user = getMessagesController().getUser(uid);
+            if (user != null && !user.bot) {
+                LastSeenHelper.saveLastSeenFromLoadedMessages(uid, getUserConfig().getClientUserId(), messages, chatAdapter);
+            }
             ProfileActivity fragment = new ProfileActivity(args);
             fragment.setPlayProfileAnimation(currentUser != null && currentUser.id == uid ? 1 : 0);
             presentFragment(fragment);

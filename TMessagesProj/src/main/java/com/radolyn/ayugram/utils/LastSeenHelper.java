@@ -53,7 +53,7 @@ public class LastSeenHelper {
     }
 
     public static void saveLastSeen(long userId, int timestamp) {
-        if (!NaConfig.INSTANCE.getSaveLocalLastSeen().Bool()) {
+        if (!NaConfig.INSTANCE.getSaveLocalLastSeen().Bool() || timestamp <= 0) {
             return;
         }
         synchronized (cache) {
