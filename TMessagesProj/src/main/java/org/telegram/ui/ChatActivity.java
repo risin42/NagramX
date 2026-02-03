@@ -45061,15 +45061,11 @@ public class ChatActivity extends BaseFragment implements
     public void setScrollToMessage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
         builder.setTitle(LocaleController.getString("InputMessageId", R.string.InputMessageId));
-        final EditTextBoldCursor editText = new EditTextBoldCursor(getParentActivity()) {
-            @Override
-            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                super.onMeasure(widthMeasureSpec,
-                        MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(64), MeasureSpec.EXACTLY));
-            }
-        };
+        final EditTextBoldCursor editText = new EditTextBoldCursor(getParentActivity());
         editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         editText.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
+        editText.setSingleLine(true);
+        editText.setGravity((LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT) | Gravity.CENTER_VERTICAL);
         editText.setFocusable(true);
         editText.setLineColors(getThemedColor(Theme.key_windowBackgroundWhiteInputField),
                 getThemedColor(Theme.key_windowBackgroundWhiteInputFieldActivated),
