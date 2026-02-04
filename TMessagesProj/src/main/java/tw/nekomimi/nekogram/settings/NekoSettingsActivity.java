@@ -1,5 +1,6 @@
 package tw.nekomimi.nekogram.settings;
 
+import static android.view.View.OVER_SCROLL_NEVER;
 import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
@@ -319,6 +320,7 @@ public class NekoSettingsActivity extends BaseFragment {
             });
 
             RecyclerListView listView = new RecyclerListView(parent);
+            listView.setOverScrollMode(OVER_SCROLL_NEVER);
             listView.setLayoutManager(new LinearLayoutManager(parent, LinearLayoutManager.VERTICAL, false));
 
             var adapter = new RecyclerListView.SelectionAdapter() {
