@@ -270,7 +270,7 @@
     <string name="StickerSettings">Naklejki</string>
     <string name="ConfirmSettings">Potwierdzenia</string>
     <string name="InteractionSettings">Interakcje</string>
-    <string name="localPremium">Lokalne premium</string>
+    <string name="localPremium">Włącz funkcje premium</string>
     <string name="ReactionSettings">Reakcje</string>
     <string name="UpgradeGroup">Ulepsz Grupę</string>
     <string name="AccDescrShowKeyboard">Pokaż klawiaturę</string>
