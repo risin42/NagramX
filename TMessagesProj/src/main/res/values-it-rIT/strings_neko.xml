@@ -219,7 +219,7 @@
     <string name="ImportStickersX">Importa stickers da file</string>
     <string name="ImportStickersList">Importa stickers</string>
     <string name="StickerSets">Set di stickers</string>
-    <string name="InvalidStickersFile">File stickers non valido:</string>
+    <string name="InvalidStickersFile">File stickers non valido: </string>
     <string name="ImportedProxies">Server proxy importati: </string>
     <string name="DeleteAllServer">Elimina tutti i server</string>
     <string name="DeleteUnavailableServer">Elimina i server non disponibili</string>
