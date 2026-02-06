@@ -177,7 +177,15 @@ public class WebBrowserSettings extends UniversalFragment implements Notificatio
             }
         };
 
-        return super.createView(context);
+        View view = super.createView(context);
+        listView.setItemSelectorColorProvider(position -> {
+            UItem item = listView.adapter.getItem(position);
+            if (item != null && item.id == BUTTON_CLEAR_LIST) {
+                return Theme.multAlpha(getThemedColor(Theme.key_text_RedRegular), .1f);
+            }
+            return null;
+        });
+        return view;
     }
 
     @Override
