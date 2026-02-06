@@ -495,7 +495,13 @@ public class AnimatedTextView extends View {
                 toSetTextMoveDown = false;
                 t = 0;
 
-                if (!text.equals(currentText)) {
+                boolean textChanged = !TextUtils.equals(text, currentText);
+                boolean widthChanged = currentParts == null
+                        || currentParts.length == 0
+                        || currentParts[0] == null
+                        || currentParts[0].layout == null
+                        || currentParts[0].layout.getWidth() != width;
+                if (textChanged || widthChanged) {
                     clearCurrentParts();
                     currentParts = new Part[1];
                     currentParts[0] = new Part(makeLayout(currentText = text, width), 0, -1);
