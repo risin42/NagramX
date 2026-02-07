@@ -1780,12 +1780,19 @@ public class SharedConfig {
         int cpuCount = ConnectionsManager.CPU_COUNT;
         int memoryClass = ((ActivityManager) ApplicationLoader.applicationContext.getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && Build.SOC_MODEL != null) {
-            int hash = Build.SOC_MODEL.toUpperCase().hashCode();
-            for (int i = 0; i < LOW_SOC.length; ++i) {
-                if (LOW_SOC[i] == hash) {
-                    return PERFORMANCE_CLASS_LOW;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            try {
+                String socModel = Build.SOC_MODEL;
+                if (socModel != null) {
+                    int hash = socModel.toUpperCase().hashCode();
+                    for (int i = 0; i < LOW_SOC.length; ++i) {
+                        if (LOW_SOC[i] == hash) {
+                            return PERFORMANCE_CLASS_LOW;
+                        }
+                    }
                 }
+            } catch (NoSuchFieldError ignored) {
+                // SOC_MODEL field may not exist on some devices
             }
         }
 
