@@ -1,6 +1,7 @@
-.*
-!.gitignore
-!.github/
+.gradle
+.idea
+.kotlin
+.vscode
 *.aar
 *.so
 *.iml
