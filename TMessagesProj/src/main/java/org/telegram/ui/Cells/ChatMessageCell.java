@@ -5226,7 +5226,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             invalidate();
         }
 
-        if (currentMessageObject != null && currentMessageObject.textLayoutBlocks != null || needHide) {
+        if (currentMessageObject != null && currentMessageObject.textLayoutBlocks != null && !needHide) {
             int p = position - textY;
 
             int newFirst = -1, newLast = -1, newCount = 0;
