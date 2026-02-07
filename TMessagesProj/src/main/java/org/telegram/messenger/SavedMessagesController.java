@@ -470,6 +470,7 @@ public class SavedMessagesController {
     public boolean updatedDialogCount(long dialogId, int messagesCount, boolean forceIfCountNotLoaded) {
         for (int i = 0; i < allDialogs.size(); ++i) {
             SavedDialog d = allDialogs.get(i);
+            if (d == null) continue;
             if (d.dialogId == dialogId) {
                 if (d.messagesCount != messagesCount || (!d.messagesCountLoaded && forceIfCountNotLoaded)) {
                     d.messagesCount = messagesCount;
