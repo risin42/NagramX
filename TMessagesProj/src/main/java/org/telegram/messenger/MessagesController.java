@@ -10812,9 +10812,10 @@ public class MessagesController extends BaseController implements NotificationCe
                 ArrayList<PrintingUser> arr = threadEntry.getValue();
                 // ignoreBlocked start
                 if (NekoConfig.ignoreBlocked.Bool()) {
+                    LongSparseIntArray blockePeersCopy = blockePeers.clone();
                     ArrayList<PrintingUser> filteredArr = new ArrayList<>();
                     for (PrintingUser pu : arr) {
-                        if (blockePeers.indexOfKey(pu.userId) < 0) {
+                        if (blockePeersCopy.indexOfKey(pu.userId) < 0) {
                             filteredArr.add(pu);
                         }
                     }
