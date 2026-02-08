@@ -71,7 +71,6 @@ import org.telegram.ui.Components.AnimatedEmojiSpan;
 import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.Bulletin;
-import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.ChatThemeBottomSheet;
 import org.telegram.ui.Components.QuoteSpan;
 import org.telegram.ui.Components.Reactions.ReactionsLayoutInBubble;
@@ -3409,6 +3408,10 @@ public class MediaDataController extends BaseController {
         loadHash[type] = calcStickersHash(stickerSets[type]);
         putStickersToCache(type, stickerSets[type], loadDate[type], loadHash[type]);
 
+        if (context == null && baseFragment != null && baseFragment.getParentActivity() != null) {
+            context = baseFragment.getParentActivity();
+        }
+
         if (toggle == 2) {
             if (!cancelRemovingStickerSet(stickerSet.id)) {
                 toggleStickerSetInternal(context, toggle, baseFragment, showSettings, stickerSetObject, stickerSet, type, showTooltip);
@@ -3416,6 +3419,7 @@ public class MediaDataController extends BaseController {
         } else if (!showTooltip || baseFragment == null) {
             toggleStickerSetInternal(context, toggle, baseFragment, showSettings, stickerSetObject, stickerSet, type, false);
         } else {
+            final Context finalContext = context;
             StickerSetBulletinLayout bulletinLayout = new StickerSetBulletinLayout(context, stickerSetObject, toggle, null, baseFragment == null ? null : baseFragment.getResourceProvider());
             int finalCurrentIndex = currentIndex;
             boolean[] undoDone = new boolean[1];
@@ -3448,7 +3452,7 @@ public class MediaDataController extends BaseController {
                     return;
                 }
                 undoDone[0] = true;
-                toggleStickerSetInternal(context, toggle, baseFragment, showSettings, stickerSetObject, stickerSet, type, false);
+                toggleStickerSetInternal(finalContext, toggle, baseFragment, showSettings, stickerSetObject, stickerSet, type, false);
             });
             bulletinLayout.setButton(undoButton);
             removingStickerSetsUndos.put(stickerSet.id, undoButton::undo);
@@ -3940,11 +3944,7 @@ public class MediaDataController extends BaseController {
                     req.saved_reaction.add(reaction.toTLReaction());
                     req.flags |= 8;
                 }
-                if (filter == null) {
-                    req.filter = new TLRPC.TL_inputMessagesFilterEmpty();
-                } else {
-                    req.filter = filter;
-                }
+                req.filter = Objects.requireNonNullElseGet(filter, TLRPC.TL_inputMessagesFilterEmpty::new);
                 mergeReqId = getConnectionsManager().sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
                     if (lastMergeDialogId == mergeDialogId) {
                         mergeReqId = 0;
@@ -4030,11 +4030,7 @@ public class MediaDataController extends BaseController {
             req.saved_reaction.add(reaction.toTLReaction());
             req.flags |= 8;
         }
-        if (filter == null) {
-            req.filter = new TLRPC.TL_inputMessagesFilterEmpty();
-        } else {
-            req.filter = filter;
-        }
+        req.filter = Objects.requireNonNullElseGet(filter, TLRPC.TL_inputMessagesFilterEmpty::new);
         lastSearchQuery = query;
         long queryWithDialogFinal = queryWithDialog;
         String finalQuery = query;
@@ -4181,9 +4177,6 @@ public class MediaDataController extends BaseController {
             }
 
             if (type == MEDIA_PHOTOVIDEO) {
-                req.filter = skipPhotos
-                        ? new TLRPC.TL_inputMessagesFilterVideo()
-                        : new TLRPC.TL_inputMessagesFilterPhotoVideo();
                 req.filter = new TLRPC.TL_inputMessagesFilterPhotoVideo();
             } else if (type == MEDIA_PHOTOS_ONLY) {
                 req.filter = new TLRPC.TL_inputMessagesFilterPhotos();
