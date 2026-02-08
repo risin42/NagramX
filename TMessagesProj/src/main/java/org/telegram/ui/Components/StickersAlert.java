@@ -1242,6 +1242,7 @@ public class StickersAlert extends BottomSheet implements NotificationCenter.Not
                 moreDeleteOptions.setFitItems(true);
                 ActionBarMenuSubItem backItem = ActionBarMenuItem.addItem(moreDeleteOptions, R.drawable.msg_arrow_back, LocaleController.getString(R.string.Back), false, resourcesProvider);
                 backItem.setOnClickListener(view -> optionsButton.getPopupLayout().getSwipeBack().closeForeground());
+                ActionBarMenuItem.addColoredGap(moreDeleteOptions, resourcesProvider);
                 ActionBarMenuSubItem deleteForeverItem = ActionBarMenuItem.addItem(moreDeleteOptions, 0, LocaleController.getString(R.string.StickersDeleteForEveryone), false, resourcesProvider);
                 int redColor = getThemedColor(Theme.key_text_RedBold);
                 deleteForeverItem.setColors(redColor, redColor);
@@ -1261,7 +1262,7 @@ public class StickersAlert extends BottomSheet implements NotificationCenter.Not
                 });
                 deleteItem = optionsButton.addSwipeBackItem(R.drawable.msg_delete, null, LocaleController.getString(R.string.Delete), moreDeleteOptions);
             }
-            optionsButton.addColoredGap();
+            ActionBarMenuItem.addColoredGap(optionsButton.getPopupLayout(), resourcesProvider);
             View stickersBotBtn = new MessageContainsEmojiButton(currentAccount, getContext(), resourcesProvider, new ArrayList<>(), MessageContainsEmojiButton.STICKERS_BOT_TYPE);
             stickersBotBtn.setOnClickListener(v -> {
                 optionsButton.closeSubMenu();
