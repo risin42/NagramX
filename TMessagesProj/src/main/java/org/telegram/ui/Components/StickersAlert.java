@@ -171,6 +171,7 @@ public class StickersAlert extends BottomSheet implements NotificationCenter.Not
     private final int menu_archive = 102;
     private final int menu_copy_sticker_set = 103;
     private final int menu_user_profile = 105;
+    private final int menu_refresh = 106;
 
     public TLRPC.TL_messages_stickerSet stickerSet;
     private TLRPC.Document selectedSticker;
@@ -1123,6 +1124,7 @@ public class StickersAlert extends BottomSheet implements NotificationCenter.Not
         optionsButton.addSubItem(1, R.drawable.msg_share, LocaleController.getString(R.string.StickersShare));
         optionsButton.addSubItem(2, R.drawable.msg_link, LocaleController.getString(R.string.CopyLink));
         optionsButton.addSubItem(menu_archive, R.drawable.msg_archive, LocaleController.getString(R.string.Archive));
+        optionsButton.addSubItem(menu_refresh, R.drawable.msg_retry, LocaleController.getString(R.string.Refresh));
         optionsButton.addSubItem(menu_copy_sticker_set, R.drawable.msg_copy, LocaleController.getString(R.string.StickersCopyStickerSet));
         optionsButton.addSubItem(menu_user_profile, R.drawable.msg_openprofile, LocaleController.getString(R.string.ChannelAdmin));
 
@@ -1437,6 +1439,9 @@ public class StickersAlert extends BottomSheet implements NotificationCenter.Not
                 context = getContext();
             }
             MediaDataController.getInstance(currentAccount).toggleStickerSet(context, stickerSet, 1, parentFragment, false, true);
+        } else if (id == menu_refresh) {
+            stickerSet = null;
+            loadStickerSet(true);
         } else if (id == menu_copy_sticker_set) {
             // Na: copy sticker set
             dismiss();
