@@ -79,6 +79,7 @@ public class ChatNotificationsPopupWrapper {
                 swipeBackLayout.closeForeground();
             });
         }
+        ActionBarMenuItem.addColoredGap(windowLayout, resourcesProvider);
 
         soundToggle = ActionBarMenuItem.addItem(windowLayout, R.drawable.msg_tone_on, LocaleController.getString(R.string.SoundOn), false, resourcesProvider);
         soundToggle.setOnClickListener(view -> {
