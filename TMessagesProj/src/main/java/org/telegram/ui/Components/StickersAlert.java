@@ -1428,7 +1428,14 @@ public class StickersAlert extends BottomSheet implements NotificationCenter.Not
             });
         } else if (id == menu_archive) {
             dismiss();
-            MediaDataController.getInstance(currentAccount).toggleStickerSet(parentActivity, stickerSet, 1, parentFragment, false, true);
+            Context context = parentActivity;
+            if (context == null && parentFragment != null) {
+                context = parentFragment.getParentActivity();
+            }
+            if (context == null) {
+                context = getContext();
+            }
+            MediaDataController.getInstance(currentAccount).toggleStickerSet(context, stickerSet, 1, parentFragment, false, true);
         } else if (id == menu_copy_sticker_set) {
             // Na: copy sticker set
             dismiss();
