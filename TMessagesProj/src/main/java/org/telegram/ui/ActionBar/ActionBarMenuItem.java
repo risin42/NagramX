@@ -774,6 +774,10 @@ public class ActionBarMenuItem extends FrameLayout {
     }
 
     public void toggleSubMenu(View topView, View fromView) {
+        toggleSubMenu(topView, fromView, false);
+    }
+
+    public void toggleSubMenu(View topView, View fromView, boolean fromStickersAlert) {
         if (popupWindow == null || !popupWindow.isShowing()) {
             layoutLazyItems();
         }
@@ -884,7 +888,7 @@ public class ActionBarMenuItem extends FrameLayout {
         if (popupLayout.getSwipeBack() != null) {
             popupLayout.getSwipeBack().closeForeground(false);
         }
-        popupWindow.startAnimation();
+        popupWindow.startAnimation(fromStickersAlert);
         if (dimMenu > 0) {
             popupWindow.dimBehind(dimMenu);
         }

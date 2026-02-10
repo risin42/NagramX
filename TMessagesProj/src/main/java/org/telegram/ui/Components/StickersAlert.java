@@ -1131,7 +1131,7 @@ public class StickersAlert extends BottomSheet implements NotificationCenter.Not
 
         optionsButton.setOnClickListener(v -> {
             checkOptions();
-            optionsButton.toggleSubMenu();
+            optionsButton.toggleSubMenu(null, null, true);
         });
         optionsButton.setDelegate(this::onSubItemClick);
         optionsButton.setContentDescription(LocaleController.getString(R.string.AccDescrMoreOptions));
