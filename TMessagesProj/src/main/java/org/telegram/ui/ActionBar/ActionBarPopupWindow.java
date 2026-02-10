@@ -968,6 +968,10 @@ public class ActionBarPopupWindow extends PopupWindow {
     }
 
     public void startAnimation() {
+        startAnimation(false);
+    }
+
+    public void startAnimation(boolean fromStickersAlert) {
         if (animationEnabled) {
             if (windowAnimatorSet != null) {
                 return;
@@ -1020,7 +1024,9 @@ public class ActionBarPopupWindow extends PopupWindow {
             float finalScaleY = 1f;
             if (content.getSwipeBack() != null) {
                 content.getSwipeBack().invalidateTransforms();
-                finalScaleY = content.backScaleY;
+                if (!fromStickersAlert) {
+                    finalScaleY = content.backScaleY;
+                }
             }
             windowAnimatorSet = new AnimatorSet();
             windowAnimatorSet.playTogether(
