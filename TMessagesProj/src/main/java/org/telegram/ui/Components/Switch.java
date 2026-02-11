@@ -41,6 +41,7 @@ import org.telegram.messenger.Utilities;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.BaseCell;
 
+import tw.nekomimi.nekogram.NekoConfig;
 import xyz.nextalone.nagram.NaConfig;
 
 public class Switch extends View {
@@ -127,7 +128,7 @@ public class Switch extends View {
             checkDrawable.setColorFilter(new PorterDuffColorFilter(Theme.getColor(trackCheckedColorKey, resourcesProvider), PorterDuff.Mode.MULTIPLY));
         }
 
-        setHapticFeedbackEnabled(true);
+        setHapticFeedbackEnabled(!NekoConfig.disableVibration.Bool());
     }
 
     @Keep
