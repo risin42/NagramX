@@ -222,6 +222,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.helpers.ChatsHelper;
+import tw.nekomimi.nekogram.llm.LlmConfig;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
 import tw.nekomimi.nekogram.utils.StringUtils;
 import tw.nekomimi.nekogram.NekoConfig;
@@ -4808,7 +4809,7 @@ public class ChatActivityEnterView extends FrameLayout implements
             }
 
             // AI Translate
-            if (NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider()) {
+            if (LlmConfig.isLLMTranslatorAvailable() && !LlmConfig.llmIsDefaultProvider()) {
                 cell.setTextAndIcon(getString(R.string.TranslateMessageLLM) + " (" + languageText + ")", R.drawable.magic_stick_solar);
                 cell.setOnClickListener(v -> {
                     if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
@@ -4834,7 +4835,7 @@ public class ChatActivityEnterView extends FrameLayout implements
             }
 
             // Normal Translate
-            cell.setTextAndIcon(getString(R.string.TranslateMessage) + " (" + languageText + ")", NaConfig.INSTANCE.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate);
+            cell.setTextAndIcon(getString(R.string.TranslateMessage) + " (" + languageText + ")", LlmConfig.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate);
             cell.setOnClickListener(v -> {
                 if (menuPopupWindow != null && menuPopupWindow.isShowing()) {
                     menuPopupWindow.dismiss();
@@ -5034,14 +5035,14 @@ public class ChatActivityEnterView extends FrameLayout implements
                         });
                         return true;
                     });
-                    preSendTranslateLlmButton.setVisibility(NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider());
+                    preSendTranslateLlmButton.setVisibility(LlmConfig.isLLMTranslatorAvailable() && !LlmConfig.llmIsDefaultProvider());
                     sendPopupLayout.addView(preSendTranslateLlmButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48));
                 }
                 if (messageEditText != null && messageEditText.getText().length() > 0) {
                     ActionBarMenuSubItem preSendTranslateButton = new ActionBarMenuSubItem(getContext(), false, false, resourcesProvider);
                     long chatId = ChatsHelper.getChatId();
                     String languageText = Translator.getInputTranslateLangForChat(chatId).toUpperCase();
-                    preSendTranslateButton.setTextAndIcon(LocaleController.getString(R.string.TranslateMessage) + " (" + languageText + ")", NaConfig.INSTANCE.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate);
+                    preSendTranslateButton.setTextAndIcon(LocaleController.getString(R.string.TranslateMessage) + " (" + languageText + ")", LlmConfig.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate);
                     preSendTranslateButton.setMinimumWidth(AndroidUtilities.dp(196));
                     preSendTranslateButton.setOnClickListener(v -> {
                         if (sendPopupWindow != null && sendPopupWindow.isShowing()) {
@@ -5373,7 +5374,7 @@ public class ChatActivityEnterView extends FrameLayout implements
             long chatId = ChatsHelper.getChatId();
             String languageText = Translator.getInputTranslateLangForChat(chatId).toUpperCase();
             StringBuilder sb;
-            if (NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider()) {
+            if (LlmConfig.isLLMTranslatorAvailable() && !LlmConfig.llmIsDefaultProvider()) {
                 sb = new StringBuilder();
                 sb.append(getString(R.string.TranslateMessageLLM));
                 sb.append(' ').append("(").append(languageText).append(")");
@@ -5404,7 +5405,7 @@ public class ChatActivityEnterView extends FrameLayout implements
             sb = new StringBuilder();
             sb.append(getString(R.string.TranslateMessage));
             sb.append(' ').append("(").append(languageText).append(")");
-            options.add(NaConfig.INSTANCE.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate, sb,
+            options.add(LlmConfig.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate, sb,
                     () -> {
                         if (messageSendPreview != null) {
                             messageSendPreview.dismiss(false);

@@ -1,5 +1,6 @@
 package tw.nekomimi.nekogram.settings;
 
+import static android.view.View.OVER_SCROLL_NEVER;
 import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getPluralString;
 import static org.telegram.messenger.LocaleController.getString;
@@ -10,35 +11,50 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.text.Editable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.style.ClickableSpan;
 import android.text.style.DynamicDrawableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.EditorInfo;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BotWebViewVibrationEffect;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.Utilities;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.ui.ActionBar.ActionBar;
+import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Cells.TextDetailSettingsCell;
+import org.telegram.ui.Cells.TextInfoPrivacyCell;
 import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.AnimatedEmojiDrawable;
 import org.telegram.ui.Components.BulletinFactory;
+import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.Premium.PremiumGradient;
 import org.telegram.ui.Components.RecyclerListView;
@@ -50,7 +66,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
@@ -65,14 +84,18 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellSelectBox;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
+import tw.nekomimi.nekogram.llm.LlmConfig;
+import tw.nekomimi.nekogram.llm.net.OpenAICompatClient;
+import tw.nekomimi.nekogram.llm.preset.LlmPresetRegistry;
+import tw.nekomimi.nekogram.llm.ui.LlmEditTextFactory;
+import tw.nekomimi.nekogram.llm.utils.LlmModelUtil;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
-import tw.nekomimi.nekogram.translate.source.LLMTranslator;
-import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.ui.PopupBuilder;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 import xyz.nextalone.nagram.NaConfig;
 
+@SuppressLint("NotifyDataSetChanged")
 public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
     private final int initialTranslationProvider;
@@ -105,7 +128,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                     }
             )
     );
-    private final AbstractConfigCell googleCloudTranslateKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.googleCloudTranslateKey, (view, position) -> customDialog_BottomInputString(position, NekoConfig.googleCloudTranslateKey, getString(R.string.GoogleCloudTransKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true));
+    private final AbstractConfigCell googleCloudTranslateKeyRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.googleCloudTranslateKey, (view, position) -> showConfigDialog(position, NekoConfig.googleCloudTranslateKey, getString(R.string.GoogleCloudTransKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true));
 
     private final AbstractConfigCell dividerTranslation = cellGroup.appendCell(new ConfigCellDivider());
 
@@ -113,43 +136,55 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell headerAITranslatorSettings = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.AITranslatorSettings)));
     private final AbstractConfigCell llmProviderRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getLlmProviderPreset(), new String[]{
             getString(R.string.LlmProviderCustom),
-            "OpenAI " + getString(R.string.LlmProviderOpenAIModel),
-            "Google " + "gemini-2.5-flash-lite",
-            "Groq " + "meta/llama-4-maverick",
-            "DeepSeek " + "DeepSeek-V3.2",
-            "xAI " + "grok-4.1-fast",
+            "OpenAI",
+            "Google AI Studio",
+            "Groq",
+            "DeepSeek",
+            "xAI",
+            "Cerebras",
+            "Ollama",
+            "OpenRouter",
+            "Vercel AI Gateway",
     }, null));
+    private final AbstractConfigCell llmModelRow = cellGroup.appendCell(new ConfigCellCustom("LlmModelName", CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL, true));
 
     private final Map<Integer, List<AbstractConfigCell>> llmProviderConfigMap = new HashMap<>();
 
     {
-        llmProviderConfigMap.put(0, List.of(  // Custom
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true),
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiUrl(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmApiUrl(), getString(R.string.LlmApiUrlNotice), getString(R.string.LlmApiUrlHint)), getString(R.string.LlmApiUrlDefault)),
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmModelName(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmModelName(), getString(R.string.LlmModelNameNotice), getString(R.string.LlmModelNameDefault)), getString(R.string.LlmModelNameDefault))));
-        llmProviderConfigMap.put(1, List.of( // OpenAI
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderOpenAIKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderOpenAIKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true)));
-        llmProviderConfigMap.put(2, List.of( // Gemini
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGeminiKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderGeminiKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true)));
-        llmProviderConfigMap.put(3, List.of( // Groq
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGroqKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderGroqKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true)));
-        llmProviderConfigMap.put(4, List.of( // DeepSeek
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true)));
-        llmProviderConfigMap.put(5, List.of( // xAI
-                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderXAIKey(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmProviderXAIKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true)));
+        llmProviderConfigMap.put(LlmPresetRegistry.CUSTOM, List.of(
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiKey(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmApiKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true),
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmApiUrl(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmApiUrl(), getString(R.string.LlmApiUrlNotice), getString(R.string.LlmApiUrlHint)), getString(R.string.LlmApiUrlDefault))));
+        llmProviderConfigMap.put(LlmPresetRegistry.OPENAI, List.of(
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderOpenAIKey(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmProviderOpenAIKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true, getString(R.string.LlmApiKey))));
+        llmProviderConfigMap.put(LlmPresetRegistry.GEMINI, List.of(
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGeminiKey(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmProviderGeminiKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true, getString(R.string.LlmApiKey))));
+        llmProviderConfigMap.put(LlmPresetRegistry.GROQ, List.of(
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderGroqKey(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmProviderGroqKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true, getString(R.string.LlmApiKey))));
+        llmProviderConfigMap.put(LlmPresetRegistry.DEEPSEEK, List.of(
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmProviderDeepSeekKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true, getString(R.string.LlmApiKey))));
+        llmProviderConfigMap.put(LlmPresetRegistry.XAI, List.of(
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderXAIKey(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmProviderXAIKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true, getString(R.string.LlmApiKey))));
+        llmProviderConfigMap.put(LlmPresetRegistry.CEREBRAS, List.of(
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderCerebrasKey(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmProviderCerebrasKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true, getString(R.string.LlmApiKey))));
+        llmProviderConfigMap.put(LlmPresetRegistry.OLLAMA_CLOUD, List.of(
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderOllamaCloudKey(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmProviderOllamaCloudKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true, getString(R.string.LlmApiKey))));
+        llmProviderConfigMap.put(LlmPresetRegistry.OPENROUTER, List.of(
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderOpenRouterKey(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmProviderOpenRouterKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true, getString(R.string.LlmApiKey))));
+        llmProviderConfigMap.put(LlmPresetRegistry.VERCEL_AI_GATEWAY, List.of(
+                new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmProviderVercelAIGatewayKey(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmProviderVercelAIGatewayKey(), getString(R.string.LlmApiKeyNotice), getString(R.string.LlmApiKey)), getString(R.string.None), true, getString(R.string.LlmApiKey))));
     }
 
-    private final AbstractConfigCell llmSystemPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmSystemPrompt(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmSystemPrompt(), getString(R.string.LlmSystemPromptNotice), getString(R.string.LlmSystemPromptHint)), getString(R.string.Default)));
-    private final AbstractConfigCell llmUserPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmUserPrompt(), (view, position) -> customDialog_BottomInputString(position, NaConfig.INSTANCE.getLlmUserPrompt(), getString(R.string.LlmUserPromptNotice), ""), getString(R.string.Default)));
+    private final AbstractConfigCell llmSystemPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmSystemPrompt(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmSystemPrompt(), getString(R.string.LlmSystemPromptNotice) + "\n", getString(R.string.LlmSystemPromptHint)), getString(R.string.Default)));
+    private final AbstractConfigCell llmUserPromptRow = cellGroup.appendCell(new ConfigCellTextDetail(NaConfig.INSTANCE.getLlmUserPrompt(), (view, position) -> showConfigDialog(position, NaConfig.INSTANCE.getLlmUserPrompt(), getString(R.string.LlmUserPromptNotice) + "\n", getString(R.string.LlmUserPromptHint)), getString(R.string.Default)));
     private final AbstractConfigCell llmUseContextRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getLlmUseContext(), getString(R.string.LlmUseContextNotice)));
     private final AbstractConfigCell llmUseContextInAutoTranslateRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getLlmUseContextInAutoTranslate(), getString(R.string.LlmUseContextInAutoTranslateNotice)));
     private final AbstractConfigCell llmContextSizeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getLlmContextSize(), new String[]{
-        "1",
-        "3",
-        "5",
-        "7",
-        "10",
-}, null));
+            "1",
+            "3",
+            "5",
+            "7",
+            "10",
+    }, null));
     private final AbstractConfigCell headerTemperature = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.LlmTemperature)));
     private final AbstractConfigCell temperatureValueRow = cellGroup.appendCell(new ConfigCellCustom(getString(R.string.LlmTemperature), ConfigCellCustom.CUSTOM_ITEM_Temperature, false));
     private final AbstractConfigCell dividerAITranslatorSettings = cellGroup.appendCell(new ConfigCellDivider());
@@ -179,7 +214,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         addRowsToMap(cellGroup);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void updateRows() {
         if (listAdapter != null) {
@@ -187,39 +221,15 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         }
     }
 
-    /** @noinspection deprecation*/
-    private void customDialog_BottomInputString(int position, ConfigItem bind, String subtitle, String hint) {
-        BottomBuilder builder = new BottomBuilder(getParentActivity());
-        CharSequence enhancedSubtitle = getEnhancedSubtitleWithLink(bind, subtitle);
-        builder.addTitle(getString(bind.getKey()), enhancedSubtitle);
-        var keyField = builder.addEditText(hint);
-        if (!bind.String().trim().isEmpty()) {
-            keyField.setText(bind.String());
-            keyField.setSelection(bind.String().length());
-        }
-        builder.addCancelButton();
-        builder.addOkButton((it) -> {
-            String key = keyField.getText().toString();
-            if (key.trim().isEmpty()) key = null;
-            bind.setConfigString(key);
-            listAdapter.notifyItemChanged(position);
-            AndroidUtilities.runOnUIThread(this::checkTemperatureRows, 445);
-            return Unit.INSTANCE;
-        });
-        builder.show();
-        keyField.requestFocus();
-        AndroidUtilities.showKeyboard(keyField);
-    }
-
     private CharSequence getEnhancedSubtitleWithLink(ConfigItem bind, CharSequence originalSubtitle) {
         String providerUrl = getProviderKeyUrl(bind);
         if (providerUrl != null) {
             return AndroidUtilities.replaceSingleTag(
-                originalSubtitle + "\n**" + getString(R.string.HowToObtain) + "**",
-                -1,
-                AndroidUtilities.REPLACING_TAG_TYPE_LINKBOLD,
-                () -> Browser.openUrl(getParentActivity(), providerUrl),
-                getResourceProvider()
+                    originalSubtitle + "\n**" + getString(R.string.HowToObtain) + "**",
+                    -1,
+                    AndroidUtilities.REPLACING_TAG_TYPE_LINKBOLD,
+                    () -> Browser.openUrl(getParentActivity(), providerUrl),
+                    getResourceProvider()
             );
         }
         return originalSubtitle;
@@ -236,6 +246,14 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
             return "https://platform.deepseek.com/api_keys";
         } else if (bind == NaConfig.INSTANCE.getLlmProviderXAIKey()) {
             return "https://console.x.ai";
+        } else if (bind == NaConfig.INSTANCE.getLlmProviderCerebrasKey()) {
+            return "https://cloud.cerebras.ai";
+        } else if (bind == NaConfig.INSTANCE.getLlmProviderOllamaCloudKey()) {
+            return "https://ollama.com/settings/keys";
+        } else if (bind == NaConfig.INSTANCE.getLlmProviderOpenRouterKey()) {
+            return "https://openrouter.ai/keys";
+        } else if (bind == NaConfig.INSTANCE.getLlmProviderVercelAIGatewayKey()) {
+            return "https://vercel.com/ai-gateway";
         } else if (bind == NekoConfig.googleCloudTranslateKey) {
             return "https://console.cloud.google.com/apis/credentials";
         }
@@ -366,6 +384,8 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                         listAdapter.notifyItemChanged(position);
                         return Unit.INSTANCE;
                     });
+                } else if (position == cellGroup.rows.indexOf(llmModelRow)) {
+                    showLlmModelDialog();
                 } else if (position == cellGroup.rows.indexOf(doNotTranslateRow)) {
                     presentFragment(new RestrictedLanguagesSelectActivity());
                 } else if (position == cellGroup.rows.indexOf(articleTranslationProviderRow)) {
@@ -412,7 +432,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 }
                 checkTemperatureRows();
                 int providerRowIndex = cellGroup.rows.indexOf(llmProviderRow);
-                int startIndex = providerRowIndex + 1;
+                int startIndex = providerRowIndex + 2;
                 List<AbstractConfigCell> oldSpecificRowBlueprints = llmProviderConfigMap.getOrDefault(oldLlmProvider, List.of());
                 List<AbstractConfigCell> newSpecificRowBlueprints = llmProviderConfigMap.getOrDefault(newLlmProvider, List.of());
                 int oldRowCount = oldSpecificRowBlueprints != null ? oldSpecificRowBlueprints.size() : 0;
@@ -434,6 +454,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                         listAdapter.notifyItemRangeInserted(startIndex, newRowCount);
                     }
                 }
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(llmModelRow));
                 addRowsToMap(cellGroup);
                 oldLlmProvider = newLlmProvider;
             } else if (key.equals(NaConfig.INSTANCE.getGoogleTranslateExp().getKey())) {
@@ -511,6 +532,9 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                             textCell.setTextAndValue(getString(R.string.TransToLang), value, true);
                         } else if (position == cellGroup.rows.indexOf(doNotTranslateRow)) {
                             textCell.setTextAndValue(getString(R.string.DoNotTranslate), getRestrictedLanguages(), true, true);
+                        } else if (position == cellGroup.rows.indexOf(llmModelRow)) {
+                            int preset = NaConfig.INSTANCE.getLlmProviderPreset().Int();
+                            textCell.setTextAndValue(getString(R.string.LlmModelName), LlmConfig.getEffectiveModelName(preset), true);
                         } else if (position == cellGroup.rows.indexOf(articleTranslationProviderRow)) {
                             textCell.setTextAndValue(getString(R.string.ArticleTranslationProvider), getProviderName(NaConfig.INSTANCE.getArticleTranslationProvider().Int()), true);
                         }
@@ -603,7 +627,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onResume() {
         super.onResume();
@@ -639,12 +662,16 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
     private ConfigItem getCurrentLlmProviderApiKeyItem() {
         return switch (NaConfig.INSTANCE.getLlmProviderPreset().Int()) {
-            case 0 -> NaConfig.INSTANCE.getLlmApiKey();
-            case 1 -> NaConfig.INSTANCE.getLlmProviderOpenAIKey();
-            case 2 -> NaConfig.INSTANCE.getLlmProviderGeminiKey();
-            case 3 -> NaConfig.INSTANCE.getLlmProviderGroqKey();
-            case 4 -> NaConfig.INSTANCE.getLlmProviderDeepSeekKey();
-            case 5 -> NaConfig.INSTANCE.getLlmProviderXAIKey();
+            case LlmPresetRegistry.CUSTOM -> NaConfig.INSTANCE.getLlmApiKey();
+            case LlmPresetRegistry.OPENAI -> NaConfig.INSTANCE.getLlmProviderOpenAIKey();
+            case LlmPresetRegistry.GEMINI -> NaConfig.INSTANCE.getLlmProviderGeminiKey();
+            case LlmPresetRegistry.GROQ -> NaConfig.INSTANCE.getLlmProviderGroqKey();
+            case LlmPresetRegistry.DEEPSEEK -> NaConfig.INSTANCE.getLlmProviderDeepSeekKey();
+            case LlmPresetRegistry.XAI -> NaConfig.INSTANCE.getLlmProviderXAIKey();
+            case LlmPresetRegistry.CEREBRAS -> NaConfig.INSTANCE.getLlmProviderCerebrasKey();
+            case LlmPresetRegistry.OLLAMA_CLOUD -> NaConfig.INSTANCE.getLlmProviderOllamaCloudKey();
+            case LlmPresetRegistry.OPENROUTER -> NaConfig.INSTANCE.getLlmProviderOpenRouterKey();
+            case LlmPresetRegistry.VERCEL_AI_GATEWAY -> NaConfig.INSTANCE.getLlmProviderVercelAIGatewayKey();
             default -> null;
         };
     }
@@ -664,7 +691,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         return getString(R.string.TranslatorSettings);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private void rebuildRowsForLlmProvider(int currentLlmProvider) {
         cellGroup.rows.clear();
 
@@ -687,6 +713,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
         cellGroup.appendCell(headerAITranslatorSettings);
         cellGroup.appendCell(llmProviderRow);
+        cellGroup.appendCell(llmModelRow);
         List<AbstractConfigCell> currentLlmProviderConfigRows = llmProviderConfigMap.get(currentLlmProvider);
         if (currentLlmProviderConfigRows != null) {
             currentLlmProviderConfigRows.forEach(cellGroup::appendCell);
@@ -714,6 +741,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     }
 
     private SpannableString premiumStar;
+
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private CharSequence addPremiumStar(String text) {
         if (premiumStar == null) {
@@ -740,7 +768,8 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 }
                 doNotTranslateCellValue = TextUtils.join(", ", names);
             }
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
         if (TextUtils.isEmpty(doNotTranslateCellValue)) {
             doNotTranslateCellValue = String.format(getPluralString("Languages", langCodes.size()), langCodes.size());
         }
@@ -748,8 +777,9 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
     }
 
     private void checkTemperatureRows() {
-        String modelName = LLMTranslator.INSTANCE.getBaseModelName(NaConfig.INSTANCE.getLlmModelName().String());
-        boolean showTemperature = NaConfig.INSTANCE.getLlmProviderPreset().Int() > 1 || (NaConfig.INSTANCE.getLlmProviderPreset().Int() == 0 && !modelName.startsWith("gpt-5"));
+        int preset = NaConfig.INSTANCE.getLlmProviderPreset().Int();
+        String modelName = LlmConfig.getEffectiveModelName(preset);
+        boolean showTemperature = LlmModelUtil.supportsTemperature(modelName);
         if (listAdapter == null) {
             if (!showTemperature) {
                 cellGroup.rows.remove(headerTemperature);
@@ -803,6 +833,636 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                     listAdapter.notifyItemRemoved(idx);
                 }
             }
+        }
+    }
+
+    /** @noinspection deprecation*/
+    private void showConfigDialog(int position, ConfigItem bind, String subtitle, String hint) {
+        Context context = getParentActivity();
+        if (context == null) return;
+        var resourcesProvider = getResourceProvider();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, resourcesProvider);
+        builder.setTitle(shouldUseGenericApiKeyTitle(bind) ? getString(R.string.LlmApiKey) : getString(bind.getKey()));
+        builder.setCustomViewOffset(0);
+
+        LinearLayout ll = new LinearLayout(context);
+        ll.setOrientation(LinearLayout.VERTICAL);
+
+        boolean isPrompt = bind == NaConfig.INSTANCE.getLlmSystemPrompt() || bind == NaConfig.INSTANCE.getLlmUserPrompt();
+        EditTextBoldCursor editText = isPrompt
+                ? LlmEditTextFactory.createAndSetupMultilineEditText(context, resourcesProvider, bind.String(), hint, EditorInfo.IME_ACTION_DONE, true)
+                : LlmEditTextFactory.createAndSetupEditText(context, resourcesProvider, bind.String(), hint, EditorInfo.IME_ACTION_DONE, true);
+        ll.addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 24, 0, 24, 0));
+
+        CharSequence enhancedSubtitle = getEnhancedSubtitleWithLink(bind, subtitle);
+        if (bind == NaConfig.INSTANCE.getLlmUserPrompt()) {
+            enhancedSubtitle = makePlaceholdersClickable(enhancedSubtitle, editText);
+        }
+        builder.setMessage(enhancedSubtitle);
+
+        builder.setView(ll);
+        builder.setNegativeButton(getString(R.string.Cancel), null);
+        builder.setPositiveButton(getString(R.string.OK), null);
+
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(d -> {
+            try {
+                editText.requestFocus();
+                editText.setSelection(editText.length());
+                AndroidUtilities.showKeyboard(editText);
+            } catch (Exception ignore) {
+            }
+        });
+        showDialog(dialog);
+
+        var button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        if (button != null) {
+            button.setOnClickListener(v -> {
+                String value = editText.getText() != null ? editText.getText().toString() : "";
+                if (bind == NaConfig.INSTANCE.getLlmApiUrl()) {
+                    LlmConfig.setSavedCustomBaseUrl(value);
+                } else {
+                    if (value.trim().isEmpty()) value = null;
+                    bind.setConfigString(value);
+                }
+                if (listAdapter != null) {
+                    listAdapter.notifyItemChanged(position);
+                }
+                AndroidUtilities.runOnUIThread(this::checkTemperatureRows, 500);
+                dialog.dismiss();
+            });
+        }
+    }
+
+    private static boolean shouldUseGenericApiKeyTitle(ConfigItem bind) {
+        return bind == NaConfig.INSTANCE.getLlmProviderOpenAIKey()
+                || bind == NaConfig.INSTANCE.getLlmProviderGeminiKey()
+                || bind == NaConfig.INSTANCE.getLlmProviderGroqKey()
+                || bind == NaConfig.INSTANCE.getLlmProviderDeepSeekKey()
+                || bind == NaConfig.INSTANCE.getLlmProviderXAIKey()
+                || bind == NaConfig.INSTANCE.getLlmProviderCerebrasKey()
+                || bind == NaConfig.INSTANCE.getLlmProviderOllamaCloudKey()
+                || bind == NaConfig.INSTANCE.getLlmProviderOpenRouterKey()
+                || bind == NaConfig.INSTANCE.getLlmProviderVercelAIGatewayKey();
+    }
+
+    private static CharSequence makePlaceholdersClickable(CharSequence subtitle, EditTextBoldCursor editText) {
+        SpannableStringBuilder spannable = subtitle instanceof SpannableStringBuilder
+                ? (SpannableStringBuilder) subtitle
+                : new SpannableStringBuilder(subtitle);
+        AndroidUtilities.replaceTags(spannable);
+
+        Pattern pattern = Pattern.compile("@(?:text|toLang)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(spannable);
+        while (matcher.find()) {
+            String token = matcher.group();
+            String placeholder = token.equalsIgnoreCase("@text") ? "@text" : "@toLang";
+            spannable.setSpan(new ClickableSpan() {
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
+
+                @Override
+                public void onClick(@NonNull View widget) {
+                    insertTextAtCursor(editText, placeholder);
+                }
+            }, matcher.start(), matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return spannable;
+    }
+
+    private static void insertTextAtCursor(EditTextBoldCursor editText, String text) {
+        if (editText == null || TextUtils.isEmpty(text)) {
+            return;
+        }
+        try {
+            editText.requestFocus();
+            AndroidUtilities.showKeyboard(editText);
+            Editable editable = editText.getText();
+            if (editable == null) {
+                return;
+            }
+
+            int start = editText.getSelectionStart();
+            int end = editText.getSelectionEnd();
+            if (start < 0 || end < 0) {
+                start = end = editable.length();
+            }
+            int min = Math.min(start, end);
+            int max = Math.max(start, end);
+            editable.replace(min, max, text);
+            int newCursor = min + text.length();
+            editText.setSelection(newCursor, newCursor);
+        } catch (Exception ignore) {
+        }
+    }
+
+    private static final int MODEL_ITEM_TYPE_DEFAULT = 0;
+    private static final int MODEL_ITEM_TYPE_MODEL = 1;
+    private static final int MODEL_ITEM_TYPE_LOADING = 2;
+    private static final int MODEL_ITEM_TYPE_ERROR = 3;
+    private static final int MODEL_ITEM_TYPE_ERROR_DETAIL = 4;
+
+    private record ModelDialogItem(int type, String text, String value) {
+    }
+
+    private static String formatModelNameForList(String modelName) {
+        if (TextUtils.isEmpty(modelName)) {
+            return "";
+        }
+        String s = modelName.trim();
+        final int max = 28;
+        if (s.length() <= max) {
+            return s;
+        }
+        return s.substring(0, max) + "…";
+    }
+
+    private static void sortModelsForProvider(int preset, ArrayList<String> models) {
+        if (preset == LlmPresetRegistry.OPENROUTER) {
+            models.sort((a, b) -> {
+                boolean aFree = LlmModelUtil.isOpenRouterFreeModel(a);
+                boolean bFree = LlmModelUtil.isOpenRouterFreeModel(b);
+                if (aFree != bFree) {
+                    return aFree ? -1 : 1;
+                }
+                return a.compareToIgnoreCase(b);
+            });
+        } else {
+            models.sort(String::compareToIgnoreCase);
+        }
+    }
+
+    private static CharSequence highlightQueryInText(CharSequence text, String query, int highlightColor) {
+        if (TextUtils.isEmpty(text) || TextUtils.isEmpty(query)) {
+            return text;
+        }
+        String normalizedQuery = query.toLowerCase(Locale.ROOT).trim();
+        if (normalizedQuery.isEmpty()) {
+            return text;
+        }
+        String lowerText = text.toString().toLowerCase(Locale.ROOT);
+        String[] parts = normalizedQuery.split("\\s+");
+        SpannableStringBuilder highlighted = null;
+        for (String p : parts) {
+            if (p.isEmpty()) {
+                continue;
+            }
+            int idx = 0;
+            while (true) {
+                int found = lowerText.indexOf(p, idx);
+                if (found == -1) {
+                    break;
+                }
+                if (highlighted == null) {
+                    highlighted = new SpannableStringBuilder(text);
+                }
+                try {
+                    highlighted.setSpan(new ForegroundColorSpan(highlightColor), found, found + p.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                } catch (Exception ignore) {
+                }
+                idx = found + p.length();
+            }
+        }
+        return highlighted != null ? highlighted : text;
+    }
+
+    private void showLlmModelDialog() {
+        Context context = getParentActivity();
+        if (context == null) return;
+        var resourcesProvider = getResourceProvider();
+
+        int preset = NaConfig.INSTANCE.getLlmProviderPreset().Int();
+        String baseUrl = LlmConfig.getEffectiveBaseUrl(preset);
+        String apiKey = LlmConfig.getFirstApiKey(preset);
+        String defaultModel = LlmConfig.getDefaultModelName(preset);
+        String initialText = LlmConfig.getEffectiveModelName(preset);
+        final boolean pinDefaultModel;
+
+        if (preset == 0) {
+            String userUrl = NaConfig.INSTANCE.getLlmApiUrl().String();
+            boolean hasCustomUrl = userUrl != null && !userUrl.trim().isEmpty();
+            pinDefaultModel = !hasCustomUrl;
+        } else {
+            pinDefaultModel = true;
+        }
+
+        LinearLayout container = new LinearLayout(context);
+        container.setOrientation(LinearLayout.VERTICAL);
+
+        final int dialogSideInsetDp = 24;
+        final int listCellSideInsetDp = 20;
+        final int listSidePaddingPx = dp(Math.max(0, dialogSideInsetDp - listCellSideInsetDp));
+
+        EditTextBoldCursor editText = LlmEditTextFactory.createAndSetupEditText(
+                context,
+                resourcesProvider,
+                initialText,
+                getString(R.string.LlmModelName),
+                EditorInfo.IME_ACTION_DONE,
+                true
+        );
+        container.addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, dialogSideInsetDp, 0, dialogSideInsetDp, 0));
+
+        RecyclerListView listView = new RecyclerListView(context);
+        listView.setOverScrollMode(OVER_SCROLL_NEVER);
+        listView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        listView.setPadding(listSidePaddingPx, 0, listSidePaddingPx, dp(8));
+        container.addView(listView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f, 0, -12, 0, 0));
+
+        ArrayList<String> allModels = new ArrayList<>();
+        ArrayList<ModelDialogItem> items = new ArrayList<>();
+        String[] rawError = new String[]{null};
+        boolean[] isLoading = new boolean[]{false};
+        boolean[] userEdited = new boolean[]{false};
+        boolean[] suppressWatcher = new boolean[]{false};
+        String[] currentQuery = new String[]{""};
+        final AlertDialog[] dialogRef = new AlertDialog[]{null};
+
+        Runnable rebuildItems = () -> {
+            String q = editText.getText() != null ? editText.getText().toString().trim() : "";
+            if (!userEdited[0]) {
+                q = "";
+            }
+            q = q.toLowerCase(Locale.ROOT);
+            currentQuery[0] = q;
+            items.clear();
+            if (pinDefaultModel) {
+                items.add(new ModelDialogItem(MODEL_ITEM_TYPE_DEFAULT, defaultModel, getString(R.string.Default)));
+            }
+
+            if (isLoading[0]) {
+                items.add(new ModelDialogItem(MODEL_ITEM_TYPE_LOADING, getString(R.string.Loading), null));
+                if (listView.getAdapter() != null) {
+                    listView.getAdapter().notifyDataSetChanged();
+                }
+                return;
+            }
+
+            if (rawError[0] != null) {
+                if (!TextUtils.isEmpty(apiKey)) {
+                    items.add(new ModelDialogItem(MODEL_ITEM_TYPE_ERROR, getString(R.string.LlmModelsLoadFailed), null));
+                }
+                items.add(new ModelDialogItem(MODEL_ITEM_TYPE_ERROR_DETAIL, rawError[0], null));
+                if (listView.getAdapter() != null) {
+                    listView.getAdapter().notifyDataSetChanged();
+                }
+                return;
+            }
+            String[] parts = q.isEmpty() ? new String[0] : q.split("\\s+");
+            for (String model : allModels) {
+                if (TextUtils.isEmpty(model)) continue;
+                if (pinDefaultModel && model.equals(defaultModel)) continue;
+                String lower = model.toLowerCase(Locale.ROOT);
+                boolean ok = true;
+                for (String p : parts) {
+                    if (p.isEmpty()) continue;
+                    if (!lower.contains(p)) {
+                        ok = false;
+                        break;
+                    }
+                }
+                if (ok) {
+                    items.add(new ModelDialogItem(MODEL_ITEM_TYPE_MODEL, model, null));
+                }
+            }
+            if (listView.getAdapter() != null) {
+                listView.getAdapter().notifyDataSetChanged();
+            }
+        };
+
+        RecyclerListView.SelectionAdapter adapter = new RecyclerListView.SelectionAdapter() {
+            @Override
+            public boolean isEnabled(RecyclerView.ViewHolder holder) {
+                int position = holder.getAdapterPosition();
+                if (position < 0 || position >= items.size()) {
+                    return false;
+                }
+                int type = items.get(position).type;
+                return type == MODEL_ITEM_TYPE_MODEL
+                        || type == MODEL_ITEM_TYPE_DEFAULT
+                        || type == MODEL_ITEM_TYPE_ERROR;
+            }
+
+            @Override
+            public int getItemCount() {
+                return items.size();
+            }
+
+            @Override
+            public int getItemViewType(int position) {
+                if (position < 0 || position >= items.size()) return 0;
+                int type = items.get(position).type;
+                if (type == MODEL_ITEM_TYPE_ERROR_DETAIL) {
+                    return 2;
+                }
+                return 0;
+            }
+
+            @NonNull
+            @Override
+            public RecyclerListView.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view;
+                if (viewType == 0) {
+                    TextSettingsCell cell = new TextSettingsCell(context, listCellSideInsetDp, resourcesProvider);
+                    cell.setBackgroundColor(Theme.getColor(Theme.key_dialogBackground, resourcesProvider));
+                    view = cell;
+                } else {
+                    TextInfoPrivacyCell cell = new TextInfoPrivacyCell(context, listCellSideInsetDp, resourcesProvider);
+                    cell.setBackgroundColor(Theme.getColor(Theme.key_dialogBackground, resourcesProvider));
+                    cell.setTextColorByKey(Theme.key_dialogTextGray3);
+                    view = cell;
+                }
+                view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
+                return new RecyclerListView.Holder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                ModelDialogItem item = items.get(position);
+                boolean divider = position < items.size() - 1;
+                String query = currentQuery[0];
+                int highlightColor = Theme.getColor(Theme.key_windowBackgroundWhiteBlueText4, resourcesProvider);
+                switch (holder.itemView) {
+                    case TextSettingsCell cell -> {
+                        if (item.type == MODEL_ITEM_TYPE_DEFAULT) {
+                            CharSequence text = formatModelNameForList(item.text);
+                            text = highlightQueryInText(text, query, highlightColor);
+                            cell.setTextAndValue(text, item.value, divider);
+                            cell.setIcon(0);
+                        } else if (item.type == MODEL_ITEM_TYPE_LOADING) {
+                            cell.setText(item.text, divider);
+                            cell.setIcon(0);
+                        } else if (item.type == MODEL_ITEM_TYPE_MODEL) {
+                            CharSequence text = highlightQueryInText(item.text, query, highlightColor);
+                            cell.setText(text, divider);
+                            cell.setIcon(0);
+                        } else {
+                            cell.setText(item.text, divider);
+                            cell.setIcon(item.type == MODEL_ITEM_TYPE_ERROR ? R.drawable.msg_retry : 0);
+                        }
+                    }
+                    case TextInfoPrivacyCell cell -> cell.setText(item.text);
+                    default -> {
+                    }
+                }
+            }
+        };
+
+        listView.setAdapter(adapter);
+
+        Runnable loadModels = () -> {
+            if (isLoading[0]) return;
+            if (TextUtils.isEmpty(apiKey)) {
+                allModels.clear();
+                rawError[0] = getString(R.string.ApiKeyNotSet);
+                rebuildItems.run();
+                return;
+            }
+            isLoading[0] = true;
+            rawError[0] = null;
+            allModels.clear();
+            rebuildItems.run();
+
+            Utilities.globalQueue.postRunnable(() -> {
+                OpenAICompatClient.LlmResponse<List<String>> res = OpenAICompatClient.fetchModels(baseUrl, apiKey);
+                AndroidUtilities.runOnUIThread(() -> {
+                    AlertDialog activeDialog = dialogRef[0];
+                    if (activeDialog == null || !activeDialog.isShowing()) {
+                        return;
+                    }
+                    isLoading[0] = false;
+                    if (res.isSuccess() && res.data() != null) {
+                        allModels.addAll(res.data());
+                        sortModelsForProvider(preset, allModels);
+                    } else {
+                        rawError[0] = res.error() != null ? res.error() : getString(R.string.UnknownError);
+                    }
+                    rebuildItems.run();
+                });
+            });
+        };
+
+        listView.setOnItemClickListener((view, position, x, y) -> {
+            if (position < 0 || position >= items.size()) return;
+            ModelDialogItem item = items.get(position);
+            if (item.type == MODEL_ITEM_TYPE_MODEL || item.type == MODEL_ITEM_TYPE_DEFAULT) {
+                suppressWatcher[0] = true;
+                editText.setText(item.text);
+                editText.setSelection(editText.length());
+                suppressWatcher[0] = false;
+                userEdited[0] = false;
+                rebuildItems.run();
+            } else if (item.type == MODEL_ITEM_TYPE_ERROR) {
+                loadModels.run();
+            }
+        });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (suppressWatcher[0]) {
+                    return;
+                }
+                userEdited[0] = true;
+                rebuildItems.run();
+            }
+        });
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, resourcesProvider);
+        builder.setTitle(getString(R.string.LlmModelName));
+
+        final int screenHeightDp = (int) (AndroidUtilities.displaySize.y / AndroidUtilities.density);
+        final int viewHeightDp = Math.max(320, Math.min(600, (int) (screenHeightDp * 0.6f)));
+
+        builder.setView(container, viewHeightDp);
+        builder.setNegativeButton(getString(R.string.Cancel), null);
+        builder.setPositiveButton(getString(R.string.OK), null);
+        builder.setNeutralButton(getString(R.string.LlmTest), null);
+        AlertDialog dialog = builder.create();
+        dialogRef[0] = dialog;
+
+        final ScrollView[] contentScrollView = new ScrollView[]{null};
+        final ViewTreeObserver.OnGlobalLayoutListener[] globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener[]{null};
+        final AlertDialog[] testResultDialog = new AlertDialog[]{null};
+
+        dialog.setOnShowListener(d -> {
+            editText.requestFocus();
+            editText.setSelection(editText.length());
+            AndroidUtilities.showKeyboard(editText);
+
+            container.post(() -> {
+                ViewParent parent = container.getParent();
+                if (!(parent instanceof ViewGroup scrollContainer)) {
+                    return;
+                }
+                ViewParent scrollParent = scrollContainer.getParent();
+                if (!(scrollParent instanceof ScrollView scrollView)) {
+                    return;
+                }
+                contentScrollView[0] = scrollView;
+                globalLayoutListener[0] = () -> {
+                    if (scrollView.getHeight() <= 0) {
+                        return;
+                    }
+                    int editHeight = editText.getMeasuredHeight();
+                    if (editHeight <= 0) {
+                        return;
+                    }
+                    int maxListHeight = scrollView.getHeight() - editHeight;
+                    if (maxListHeight <= 0) {
+                        return;
+                    }
+                    int listPaddingTop = listView.getPaddingTop();
+                    int listPaddingBottom = listView.getPaddingBottom();
+                    int maxCellsArea = maxListHeight - listPaddingTop - listPaddingBottom;
+                    if (maxCellsArea <= 0) {
+                        return;
+                    }
+
+                    int cellHeight = 0;
+                    View sampleChild = listView.getChildAt(0);
+                    if (sampleChild != null) {
+                        cellHeight = sampleChild.getMeasuredHeight();
+                    }
+                    if (cellHeight <= 0) {
+                        cellHeight = dp(50) + (items.size() > 1 ? 1 : 0);
+                    }
+
+                    int rows = Math.max(1, maxCellsArea / cellHeight);
+                    int desiredListHeight = rows * cellHeight + listPaddingTop + listPaddingBottom;
+
+                    ViewGroup.LayoutParams rawListLp = listView.getLayoutParams();
+                    if (rawListLp instanceof LinearLayout.LayoutParams listLp) {
+                        if (listLp.height != desiredListHeight || listLp.weight != 0f) {
+                            listLp.height = desiredListHeight;
+                            listLp.weight = 0f;
+                            listView.setLayoutParams(listLp);
+                        }
+                    } else if (rawListLp != null && rawListLp.height != desiredListHeight) {
+                        rawListLp.height = desiredListHeight;
+                        listView.setLayoutParams(rawListLp);
+                    }
+
+                    int desiredContainerHeight = editHeight + desiredListHeight;
+                    ViewGroup.LayoutParams rawContainerLp = container.getLayoutParams();
+                    if (rawContainerLp != null && rawContainerLp.height != desiredContainerHeight) {
+                        rawContainerLp.height = desiredContainerHeight;
+                        container.setLayoutParams(rawContainerLp);
+                    }
+
+                    ViewGroup.LayoutParams containerLp = container.getLayoutParams();
+                    if (containerLp != null && containerLp.height > scrollView.getHeight()) {
+                        containerLp.height = scrollView.getHeight();
+                        container.setLayoutParams(containerLp);
+                    }
+                    if (scrollView.getScrollY() != 0) {
+                        scrollView.scrollTo(0, 0);
+                    }
+                };
+                scrollView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener[0]);
+                globalLayoutListener[0].onGlobalLayout();
+            });
+            loadModels.run();
+        });
+        showDialog(dialog, d -> {
+            dialogRef[0] = null;
+            AlertDialog rDialog = testResultDialog[0];
+            if (rDialog != null) {
+                testResultDialog[0] = null;
+                rDialog.dismiss();
+            }
+
+            ScrollView scrollView = contentScrollView[0];
+            ViewTreeObserver.OnGlobalLayoutListener listener = globalLayoutListener[0];
+            if (scrollView == null || listener == null) {
+                return;
+            }
+            try {
+                ViewTreeObserver observer = scrollView.getViewTreeObserver();
+                if (observer.isAlive()) {
+                    observer.removeOnGlobalLayoutListener(listener);
+                }
+            } catch (Exception ignore) {
+            }
+        });
+
+        var okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        if (okButton != null) {
+            okButton.setOnClickListener(v -> {
+                String value = editText.getText() != null ? editText.getText().toString().trim() : "";
+                if (value.isEmpty() || value.equals(defaultModel)) {
+                    value = "";
+                }
+                LlmConfig.setSavedModelName(preset, value);
+                int idx = cellGroup.rows.indexOf(llmModelRow);
+                if (listAdapter != null && idx >= 0) {
+                    listAdapter.notifyItemChanged(idx);
+                }
+                checkTemperatureRows();
+                dialog.dismiss();
+            });
+        }
+
+        View testButtonView = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+        if (testButtonView instanceof TextView testButton) {
+            testButton.setOnClickListener(v -> {
+                String value = editText.getText() != null ? editText.getText().toString().trim() : "";
+                String modelToTest = value.isEmpty() ? defaultModel : value;
+                testButton.setEnabled(false);
+                String originalText = testButton.getText() != null ? testButton.getText().toString() : "";
+                testButton.setText(getString(R.string.Loading));
+
+                Utilities.globalQueue.postRunnable(() -> {
+                    OpenAICompatClient.LlmResponse<String> res = OpenAICompatClient.testChatCompletions(baseUrl, apiKey, modelToTest);
+                    AndroidUtilities.runOnUIThread(() -> {
+                        testButton.setEnabled(true);
+                        testButton.setText(originalText);
+                        if (!dialog.isShowing()) {
+                            return;
+                        }
+                        AlertDialog.Builder rBuilder = new AlertDialog.Builder(context, resourcesProvider);
+                        rBuilder.setTitle(getString(R.string.LlmTest));
+                        SpannableStringBuilder message = new SpannableStringBuilder();
+                        message.append(getString(R.string.LlmModelName)).append(": ").append(modelToTest).append('\n');
+                        int httpCode = res.httpCode();
+                        message.append(getString(R.string.LlmTestResultHttpStatusCode)).append(": ").append(httpCode > 0 ? String.valueOf(httpCode) : "N/A").append('\n');
+                        message.append(getString(R.string.LlmTestResultDuration)).append(": ").append(String.valueOf(res.durationMs())).append(" ms").append("\n\n");
+                        if (res.isSuccess()) {
+                            message.append(getString(R.string.LlmTestResultResponse)).append(":\n").append(res.data() != null ? res.data() : getString(R.string.OK));
+                        } else {
+                            message.append(getString(R.string.ErrorOccurred)).append("\n").append(res.error() != null ? res.error() : getString(R.string.UnknownError));
+                        }
+                        rBuilder.setMessage(message);
+                        rBuilder.setPositiveButton(getString(R.string.OK), null);
+                        AlertDialog previousDialog = testResultDialog[0];
+                        if (previousDialog != null) {
+                            testResultDialog[0] = null;
+                            previousDialog.dismiss();
+                        }
+                        AlertDialog resultDialog = rBuilder.create();
+                        testResultDialog[0] = resultDialog;
+                        resultDialog.setCanceledOnTouchOutside(true);
+                        resultDialog.setOnDismissListener(d2 -> {
+                            if (testResultDialog[0] == resultDialog) {
+                                testResultDialog[0] = null;
+                            }
+                        });
+                        resultDialog.show();
+                    });
+                });
+            });
         }
     }
 }

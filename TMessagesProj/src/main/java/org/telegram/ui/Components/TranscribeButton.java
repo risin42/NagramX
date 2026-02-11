@@ -56,10 +56,10 @@ import java.util.Objects;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
+import tw.nekomimi.nekogram.llm.LlmConfig;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
-import xyz.nextalone.nagram.NaConfig;
 
 public class TranscribeButton {
 
@@ -895,7 +895,7 @@ public class TranscribeButton {
 
         String textToTranslate = MessageHelper.getMessagePlainText(messageObject, null);
         locale = locale != null ? locale : TranslatorKt.getCode2Locale(NekoConfig.translateToLang.String());
-        Translator.translate(locale, textToTranslate, NaConfig.INSTANCE.isLLMTranslatorAvailable() ? Translator.providerLLMTranslator : 0, new Translator.Companion.TranslateCallBack() {
+        Translator.translate(locale, textToTranslate, LlmConfig.isLLMTranslatorAvailable() ? Translator.providerLLMTranslator : 0, new Translator.Companion.TranslateCallBack() {
             @Override
             public void onSuccess(@NonNull String translatedText) {
                 if (transcribeOperationsById == null) {
