@@ -70,7 +70,7 @@ public abstract class BaseCell extends ViewGroup implements SizeNotifierFrameLay
         super(context);
         setWillNotDraw(false);
         setFocusable(true);
-        setHapticFeedbackEnabled(true);
+        setHapticFeedbackEnabled(!NekoConfig.disableVibration.Bool());
     }
 
     public static void setDrawableBounds(Drawable drawable, int x, int y) {

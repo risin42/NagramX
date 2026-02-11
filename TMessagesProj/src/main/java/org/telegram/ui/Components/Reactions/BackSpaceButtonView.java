@@ -67,7 +67,7 @@ public class BackSpaceButtonView extends FrameLayout {
                 return true;
             }
         };
-        backspaceButton.setHapticFeedbackEnabled(true);
+        backspaceButton.setHapticFeedbackEnabled(!NekoConfig.disableVibration.Bool());
         backspaceButton.setImageResource(R.drawable.smiles_tab_clear);
         backspaceButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelBackspace), PorterDuff.Mode.MULTIPLY));
         backspaceButton.setScaleType(ImageView.ScaleType.CENTER);
