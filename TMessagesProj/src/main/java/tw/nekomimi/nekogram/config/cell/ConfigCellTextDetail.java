@@ -23,12 +23,16 @@ public class ConfigCellTextDetail extends AbstractConfigCell {
     public final RecyclerListView.OnItemClickListener onItemClickListener;
 
     public ConfigCellTextDetail(ConfigItem bind, RecyclerListView.OnItemClickListener onItemClickListener, String hint) {
-        this(bind, onItemClickListener, hint, false);
+        this(bind, onItemClickListener, hint, false, null);
     }
 
     public ConfigCellTextDetail(ConfigItem bind, RecyclerListView.OnItemClickListener onItemClickListener, String hint, boolean isKey) {
+        this(bind, onItemClickListener, hint, isKey, null);
+    }
+
+    public ConfigCellTextDetail(ConfigItem bind, RecyclerListView.OnItemClickListener onItemClickListener, String hint, boolean isKey, String customTitle) {
         this.bindConfig = bind;
-        this.title = getString(bindConfig.getKey());
+        this.title = !TextUtils.isEmpty(customTitle) ? customTitle : getString(bindConfig.getKey());
         this.hint = hint == null ? "" : hint;
         this.onItemClickListener = onItemClickListener;
         this.isKey = isKey;

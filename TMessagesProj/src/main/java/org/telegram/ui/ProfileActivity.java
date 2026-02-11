@@ -350,6 +350,7 @@ import tw.nekomimi.nekogram.helpers.ProfileDateHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
 import tw.nekomimi.nekogram.helpers.remote.UpdateHelper;
+import tw.nekomimi.nekogram.llm.LlmConfig;
 import tw.nekomimi.nekogram.menu.forum.CustomForumTabsPopupWrapper;
 import tw.nekomimi.nekogram.menu.regexfilters.RegexFiltersExclusionPopupWrapper;
 import tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity;
@@ -7949,7 +7950,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 return Unit.INSTANCE;
             });
-            builder.addItem(getString(R.string.Translate), NaConfig.INSTANCE.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate, __ -> {
+            builder.addItem(getString(R.string.Translate), LlmConfig.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate, __ -> {
                 try {
                     if (!TextUtils.isEmpty(about)) {
                         DialogTransKt.startTrans(getParentActivity(), about);
@@ -7959,7 +7960,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 return Unit.INSTANCE;
             });
-            if (NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider()) {
+            if (LlmConfig.isLLMTranslatorAvailable() && !LlmConfig.llmIsDefaultProvider()) {
                 builder.addItem(getString(R.string.TranslateMessageLLM), R.drawable.magic_stick_solar, __ -> {
                     try {
                         if (!TextUtils.isEmpty(about)) {

@@ -111,6 +111,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.ChatsHelper;
+import tw.nekomimi.nekogram.llm.LlmConfig;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -1142,11 +1143,11 @@ public class PhotoPickerActivity extends BaseFragment implements NotificationCen
                             String languageText = Translator.getInputTranslateLangForChat(ChatsHelper.getChatId()).toUpperCase();
                             String text = getString(R.string.TranslateMessageLLM) + ' ' + "(" + languageText + ")";
                             itemCells[a].setTextAndIcon(text, R.drawable.magic_stick_solar);
-                            itemCells[a].setVisibility(NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider());
+                            itemCells[a].setVisibility(LlmConfig.isLLMTranslatorAvailable() && !LlmConfig.llmIsDefaultProvider());
                         } else if (num == 3) {
                             String languageText = Translator.getInputTranslateLangForChat(ChatsHelper.getChatId()).toUpperCase();
                             String text = getString(R.string.TranslateMessage) + ' ' + "(" + languageText + ")";
-                            itemCells[a].setTextAndIcon(text, NaConfig.INSTANCE.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate);
+                            itemCells[a].setTextAndIcon(text, LlmConfig.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate);
                         }
                         itemCells[a].setMinimumWidth(AndroidUtilities.dp(196));
 

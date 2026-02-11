@@ -10,9 +10,9 @@ import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.PopupSwipeBackLayout;
 
 import kotlin.Unit;
+import tw.nekomimi.nekogram.llm.LlmConfig;
 import tw.nekomimi.nekogram.parts.MessageTransKt;
 import tw.nekomimi.nekogram.translate.Translator;
-import xyz.nextalone.nagram.NaConfig;
 
 public class TranslatePopupWrapper {
 
@@ -32,7 +32,7 @@ public class TranslatePopupWrapper {
 
         for (var id : TranslateItem.ITEM_IDS) {
             if (id == TranslateItem.ID_TRANSLATE_LLM) {
-                if (NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider()) {
+                if (LlmConfig.isLLMTranslatorAvailable() && !LlmConfig.llmIsDefaultProvider()) {
                     var item = ActionBarMenuItem.addItem(false, false, windowLayout, R.drawable.magic_stick_solar, TranslateItem.ITEM_TITLES.get(id), false, resourcesProvider);
                     item.setOnClickListener(view -> delegate.onItemClick(id));
                     item.setOnLongClickListener(view -> {

@@ -70,6 +70,7 @@ import org.telegram.ui.RestrictedLanguagesSelectActivity;
 import java.util.ArrayList;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.llm.LlmConfig;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -1423,7 +1424,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                 menu.add(Menu.NONE, android.R.id.copy, 0, android.R.string.copy);
                 menu.add(Menu.NONE, R.id.menu_quote, 1, LocaleController.getString(R.string.Quote));
                 menu.add(Menu.NONE, android.R.id.selectAll, 2, android.R.string.selectAll);
-                menu.add(Menu.NONE, TRANSLATE, 3, NaConfig.INSTANCE.isLLMTranslatorAvailable() ? getString(R.string.TranslateMessageLLM) : getString(R.string.TranslateMessage));
+                menu.add(Menu.NONE, TRANSLATE, 3, LlmConfig.isLLMTranslatorAvailable() ? getString(R.string.TranslateMessageLLM) : getString(R.string.TranslateMessage));
                 menu.add(Menu.NONE, ADD_TO_FILTER, 4, getString(R.string.AddToFilter));
                 return true;
             }
@@ -1497,7 +1498,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                     Activity activity = ProxyUtil.getOwnerActivity((((View) selectedView).getContext()));
                     AlertDialog pro = AlertUtil.showProgress(activity);
                     pro.show();
-                    Translator.translate(TranslatorKt.getCode2Locale(NekoConfig.translateToLang.String()), urlFinal, NaConfig.INSTANCE.isLLMTranslatorAvailable() ? Translator.providerLLMTranslator : 0, new Translator.Companion.TranslateCallBack() {
+                    Translator.translate(TranslatorKt.getCode2Locale(NekoConfig.translateToLang.String()), urlFinal, LlmConfig.isLLMTranslatorAvailable() ? Translator.providerLLMTranslator : 0, new Translator.Companion.TranslateCallBack() {
                         @Override
                         public void onSuccess(@NotNull String translation) {
                             pro.dismiss();

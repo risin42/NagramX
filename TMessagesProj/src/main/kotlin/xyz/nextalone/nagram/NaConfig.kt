@@ -1,7 +1,6 @@
 package xyz.nextalone.nagram
 
 import android.content.SharedPreferences
-import android.os.Build
 import android.util.Base64
 import androidx.core.content.edit
 import org.telegram.messenger.AndroidUtilities
@@ -10,7 +9,7 @@ import org.telegram.messenger.BuildVars
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.config.ConfigItem
 import tw.nekomimi.nekogram.config.ConfigItemKeyLinked
-import tw.nekomimi.nekogram.translate.Translator
+import tw.nekomimi.nekogram.llm.utils.LlmUrlNormalizer
 import java.io.ByteArrayInputStream
 import java.io.ObjectInputStream
 
@@ -586,9 +585,21 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
+    val llmProviderOpenAIModel =
+        addConfig(
+            "LlmProviderOpenAIModel",
+            ConfigItem.configTypeString,
+            ""
+        )
     val llmProviderGeminiKey =
         addConfig(
             "LlmProviderGeminiKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderGeminiModel =
+        addConfig(
+            "LlmProviderGeminiModel",
             ConfigItem.configTypeString,
             ""
         )
@@ -598,15 +609,81 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
+    val llmProviderXAIModel =
+        addConfig(
+            "LlmProviderXAIModel",
+            ConfigItem.configTypeString,
+            ""
+        )
     val llmProviderGroqKey =
         addConfig(
             "LlmProviderGroqKey",
             ConfigItem.configTypeString,
             ""
         )
+    val llmProviderGroqModel =
+        addConfig(
+            "LlmProviderGroqModel",
+            ConfigItem.configTypeString,
+            ""
+        )
     val llmProviderDeepSeekKey =
         addConfig(
             "LlmProviderDeepSeekKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderDeepSeekModel =
+        addConfig(
+            "LlmProviderDeepSeekModel",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderCerebrasKey =
+        addConfig(
+            "LlmProviderCerebrasKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderCerebrasModel =
+        addConfig(
+            "LlmProviderCerebrasModel",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderOllamaCloudKey =
+        addConfig(
+            "LlmProviderOllamaCloudKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderOllamaCloudModel =
+        addConfig(
+            "LlmProviderOllamaCloudModel",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderOpenRouterKey =
+        addConfig(
+            "LlmProviderOpenRouterKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderOpenRouterModel =
+        addConfig(
+            "LlmProviderOpenRouterModel",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderVercelAIGatewayKey =
+        addConfig(
+            "LlmProviderVercelAIGatewayKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val llmProviderVercelAIGatewayModel =
+        addConfig(
+            "LlmProviderVercelAIGatewayModel",
             ConfigItem.configTypeString,
             ""
         )
@@ -1330,23 +1407,6 @@ object NaConfig {
         }, 1000)
     }
 
-    fun isLLMTranslatorAvailable(): Boolean {
-        val llmProvider = llmProviderPreset.Int()
-        val keyConfig = when (llmProvider) {
-            1 -> llmProviderOpenAIKey
-            2 -> llmProviderGeminiKey
-            3 -> llmProviderGroqKey
-            4 -> llmProviderDeepSeekKey
-            5 -> llmProviderXAIKey
-            else -> llmApiKey
-        }
-        return keyConfig.String().isNotEmpty()
-    }
-
-    fun llmIsDefaultProvider(): Boolean {
-        return NekoConfig.translationProvider.Int() == Translator.providerLLMTranslator
-    }
-
     private fun getIgnoreMutedCountLegacy(): Int {
         return when {
             getPreferences().getBoolean(
@@ -1386,6 +1446,12 @@ object NaConfig {
                 backAnimationStyle.setConfigInt(1) // SPRING
             }
             getPreferences().edit { remove("SpringAnimation") }
+        }
+
+        val currentLlmApiUrl = llmApiUrl.String()
+        val normalizedLlmApiUrl = LlmUrlNormalizer.normalizeBaseUrl(currentLlmApiUrl)
+        if (normalizedLlmApiUrl != currentLlmApiUrl) {
+            llmApiUrl.setConfigString(normalizedLlmApiUrl)
         }
     }
 

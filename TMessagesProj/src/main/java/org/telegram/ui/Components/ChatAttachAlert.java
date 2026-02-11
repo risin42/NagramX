@@ -150,6 +150,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.ChatsHelper;
+import tw.nekomimi.nekogram.llm.LlmConfig;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -3607,7 +3608,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
             if (chatActivity != null && commentTextView != null && commentTextView.getText().length() > 0) {
                 String languageText = Translator.getInputTranslateLangForChat(ChatsHelper.getChatId()).toUpperCase();
                 StringBuilder sb;
-                if (NaConfig.INSTANCE.isLLMTranslatorAvailable() && !NaConfig.INSTANCE.llmIsDefaultProvider()) {
+                if (LlmConfig.isLLMTranslatorAvailable() && !LlmConfig.llmIsDefaultProvider()) {
                     sb = new StringBuilder();
                     sb.append(getString(R.string.TranslateMessageLLM));
                     sb.append(' ').append("(").append(languageText).append(")");
@@ -3638,7 +3639,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                 sb = new StringBuilder();
                 sb.append(getString(R.string.TranslateMessage));
                 sb.append(' ').append("(").append(languageText).append(")");
-                options.add(NaConfig.INSTANCE.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate, sb,
+                options.add(LlmConfig.llmIsDefaultProvider() ? R.drawable.magic_stick_solar : R.drawable.ic_translate, sb,
                         () -> {
                             if (messageSendPreview != null) {
                                 messageSendPreview.dismiss(false);
