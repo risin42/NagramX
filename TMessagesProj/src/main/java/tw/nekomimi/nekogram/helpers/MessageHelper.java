@@ -79,6 +79,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
@@ -186,35 +187,77 @@ public class MessageHelper extends BaseController {
 
     public MessageObject getLastMessageSkippingFiltered(long dialogId) {
         SQLiteCursor cursor = null;
+        NativeByteBuffer data = null;
         try {
-            cursor = getMessagesStorage().getDatabase().queryFinalized(String.format(Locale.US, "SELECT data,send_state,mid,date FROM messages_v2 WHERE uid = %d ORDER BY date DESC LIMIT %d,%d", dialogId, 0, 20));
+            boolean ignoreBlocked = NekoConfig.ignoreBlocked.Bool();
+            long currentUserId = UserConfig.getInstance(currentAccount).clientUserId;
+            HashMap<Long, HashMap<Long, TLRPC.Message>> replyMessageCache = ignoreBlocked ? new HashMap<>() : null;
+            String query = ignoreBlocked
+                ? String.format(Locale.US, "SELECT data,send_state,mid,date,replydata FROM messages_v2 WHERE uid = %d ORDER BY date DESC LIMIT %d,%d", dialogId, 0, 20)
+                : String.format(Locale.US, "SELECT data,send_state,mid,date FROM messages_v2 WHERE uid = %d ORDER BY date DESC LIMIT %d,%d", dialogId, 0, 20);
+            cursor = getMessagesStorage().getDatabase().queryFinalized(query);
             while (cursor.next()) {
-                NativeByteBuffer data = cursor.byteBufferValue(0);
+                data = cursor.byteBufferValue(0);
                 if (data == null) {
                     continue;
                 }
                 TLRPC.Message message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
-                data.reuse();
-                MessageObject obj = new MessageObject(currentAccount, message, false, false);
-                if (NekoConfig.ignoreBlocked.Bool()) {
-                    long fromId = obj.getFromChatId();
-                    if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
-                        continue;
-                    }
-                    if (obj.replyMessageObject != null) {
-                        fromId = obj.replyMessageObject.getFromChatId();
-                        if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
-                            continue;
-                        }
-                    }
-                }
-                if (AyuFilter.isFiltered(obj, null)) {
+                if (message == null) {
+                    data.reuse();
+                    data = null;
                     continue;
                 }
                 message.send_state = cursor.intValue(1);
                 message.id = cursor.intValue(2);
                 message.date = cursor.intValue(3);
                 message.dialog_id = dialogId;
+                message.readAttachPath(data, currentUserId);
+                data.reuse();
+                data = null;
+
+                if (ignoreBlocked) {
+                    long fromId = MessageObject.getFromChatId(message);
+                    if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
+                        continue;
+                    }
+                    if (message.reply_to != null && message.reply_to.reply_to_msg_id != 0) {
+                        if (!cursor.isNull(4)) {
+                            NativeByteBuffer replyData = cursor.byteBufferValue(4);
+                            if (replyData != null) {
+                                message.replyMessage = TLRPC.Message.TLdeserialize(replyData, replyData.readInt32(false), false);
+                                if (message.replyMessage != null) {
+                                    message.replyMessage.readAttachPath(replyData, currentUserId);
+                                }
+                                replyData.reuse();
+                            }
+                        }
+                        if (message.replyMessage == null) {
+                            long replyDialogId = MessageObject.getReplyToDialogId(message);
+                            if (replyDialogId == 0) {
+                                replyDialogId = dialogId;
+                            }
+                            long replyMsgId = message.reply_to.reply_to_msg_id;
+                            HashMap<Long, TLRPC.Message> dialogCache = replyMessageCache.computeIfAbsent(replyDialogId, k -> new HashMap<>());
+                            if (dialogCache.containsKey(replyMsgId)) {
+                                message.replyMessage = dialogCache.get(replyMsgId);
+                            } else {
+                                message.replyMessage = getMessage(replyDialogId, replyMsgId);
+                                dialogCache.put(replyMsgId, message.replyMessage);
+                            }
+                        }
+                        if (message.replyMessage != null) {
+                            fromId = MessageObject.getFromChatId(message.replyMessage);
+                            if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
+                                continue;
+                            }
+                        }
+                    }
+                }
+
+                MessageObject obj = new MessageObject(currentAccount, message, false, false);
+                if (AyuFilter.isFiltered(obj, null)) {
+                    continue;
+                }
                 if (getMessagesController().getUser(obj.getSenderId()) == null) {
                     TLRPC.User user = getMessagesStorage().getUser(obj.getSenderId());
                     if (user != null) {
@@ -226,6 +269,9 @@ public class MessageHelper extends BaseController {
         } catch (SQLiteException e) {
             FileLog.e("RegexFilter, SQLiteException when reading last unfiltered message", e);
         } finally {
+            if (data != null) {
+                data.reuse();
+            }
             if (cursor != null) {
                 cursor.dispose();
             }

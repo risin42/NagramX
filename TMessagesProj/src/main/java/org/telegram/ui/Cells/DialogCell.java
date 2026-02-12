@@ -3080,6 +3080,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                             }
                             boolean blocked = false;
                             boolean replyBlocked = false;
+                            boolean needsReplyTargetCheck = false;
                             if (NekoConfig.ignoreBlocked.Bool() && ChatObject.isMegagroup(MessagesController.getInstance(currentAccount).getChat(-dialog.id))) {
                                 blocked = MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getFromChatId()) >= 0;
                                 blocked = blocked || AyuFilter.isBlockedChannel(message.getFromChatId());
@@ -3087,9 +3088,12 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                                     long fromId = message.replyMessageObject.getFromChatId();
                                     replyBlocked = MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(fromId) >= 0;
                                     replyBlocked = replyBlocked || AyuFilter.isBlockedChannel(fromId);
+                                } else if (message.getReplyMsgId() != 0) {
+                                    // reply sender is unresolved in the in-memory preview message, fallback to async DB lookup
+                                    needsReplyTargetCheck = true;
                                 }
                             }
-                            if (blocked || replyBlocked || AyuFilter.isFiltered(message, null)) {
+                            if (blocked || replyBlocked || needsReplyTargetCheck || AyuFilter.isFiltered(message, null)) {
                                 if (filteredMessageCache != null && filteredMessageCache.getDialogId() == dialog.id) {
                                     message = filteredMessageCache;
                                     groupMessages = null;
