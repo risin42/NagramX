@@ -476,6 +476,12 @@ object NaConfig {
             ConfigItem.configTypeString,
             "[]"
         )
+    val customFilteredUsersData =
+        addConfig(
+            "CustomFilteredUsersData",
+            ConfigItem.configTypeString,
+            "[]"
+        )
     val showTimeHint =
         addConfig(
             "ShowTimeHint",
