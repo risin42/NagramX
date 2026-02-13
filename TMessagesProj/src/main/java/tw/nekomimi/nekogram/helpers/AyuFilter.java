@@ -17,6 +17,7 @@ import org.telegram.tgnet.TLRPC;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -32,6 +33,7 @@ public class AyuFilter {
     private static volatile ArrayList<ChatFilterEntry> chatFilterEntries;
     private static volatile HashSet<Long> excludedDialogs;
     private static volatile HashSet<Long> blockedChannels;
+    private static volatile HashSet<Long> customFilteredUsers;
 
     public static ArrayList<FilterModel> getRegexFilters() {
         if (filterModels == null) {
@@ -380,8 +382,36 @@ public class AyuFilter {
         return blockedChannels;
     }
 
+    private static HashSet<Long> getCustomFilteredUsers() {
+        if (customFilteredUsers == null) {
+            synchronized (cacheLock) {
+                if (customFilteredUsers == null) {
+                    try {
+                        String str = NaConfig.INSTANCE.getCustomFilteredUsersData().String();
+                        Long[] arr = new Gson().fromJson(str, Long[].class);
+                        customFilteredUsers = new HashSet<>();
+                        if (arr != null) {
+                            for (Long id : arr) {
+                                if (id != null && id != 0L) {
+                                    customFilteredUsers.add(id);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        customFilteredUsers = new HashSet<>();
+                    }
+                }
+            }
+        }
+        return customFilteredUsers;
+    }
+
     public static boolean isBlockedChannel(long dialogId) {
         return NekoConfig.ignoreBlocked.Bool() && getBlockedChannels().contains(dialogId);
+    }
+
+    public static boolean isCustomFilteredPeer(long peerId) {
+        return NekoConfig.ignoreBlocked.Bool() && peerId != 0L && getCustomFilteredUsers().contains(peerId);
     }
 
     public static void blockPeer(long dialogId) {
@@ -420,6 +450,29 @@ public class AyuFilter {
         NaConfig.INSTANCE.getBlockedChannelsData().setConfigString("[]");
         synchronized (cacheLock) {
             blockedChannels = new HashSet<>();
+        }
+    }
+
+    public static ArrayList<Long> getCustomFilteredUsersList() {
+        ArrayList<Long> list = new ArrayList<>(getCustomFilteredUsers());
+        Collections.sort(list);
+        return list;
+    }
+
+    public static void setCustomFilteredUsers(ArrayList<Long> ids) {
+        HashSet<Long> set = new HashSet<>();
+        if (ids != null) {
+            for (Long id : ids) {
+                if (id != null && id != 0L) {
+                    set.add(id);
+                }
+            }
+        }
+        Long[] arr = set.toArray(new Long[0]);
+        String str = new Gson().toJson(arr);
+        NaConfig.INSTANCE.getCustomFilteredUsersData().setConfigString(str);
+        synchronized (cacheLock) {
+            customFilteredUsers = set;
         }
     }
 

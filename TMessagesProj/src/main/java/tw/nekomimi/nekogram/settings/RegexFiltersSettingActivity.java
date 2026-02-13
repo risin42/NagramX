@@ -14,9 +14,15 @@ import static org.telegram.messenger.LocaleController.getString;
 import android.annotation.SuppressLint;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.util.TypedValue;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,16 +45,21 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Components.BulletinFactory;
+import org.telegram.ui.Components.EditTextBoldCursor;
+import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.DialogsActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.ui.RegexChatFiltersListActivity;
 import tw.nekomimi.nekogram.ui.RegexFilterEditActivity;
 import tw.nekomimi.nekogram.ui.RegexFilterPopup;
+import tw.nekomimi.nekogram.ui.RegexUserFilterPopup;
 import tw.nekomimi.nekogram.ui.cells.ChatRowCell;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -70,6 +81,11 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
     private int chatFiltersStartRow;
     private int chatFiltersEndRow;
     private int addChatFilterBtnRow;
+    private int userFiltersDividerRow;
+    private int userFiltersHeaderRow;
+    private int addUserFilterBtnRow;
+    private int userFiltersStartRow;
+    private int userFiltersEndRow;
 
     public RegexFiltersSettingActivity() {
         dialogId = 0L;
@@ -102,6 +118,13 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
         chatFiltersStartRow = rowCount;
         rowCount += chatEntries.size();
         chatFiltersEndRow = rowCount;
+        userFiltersDividerRow = rowCount++;
+        userFiltersHeaderRow = rowCount++;
+        addUserFilterBtnRow = rowCount++;
+        ArrayList<Long> userIds = AyuFilter.getCustomFilteredUsersList();
+        userFiltersStartRow = rowCount;
+        rowCount += userIds.size();
+        userFiltersEndRow = rowCount;
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -153,6 +176,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                         String json = text.toString().trim();
                         ArrayList<AyuFilter.FilterModel> sharedIncoming = null;
                         ArrayList<AyuFilter.ChatFilterEntry> chatsIncoming = null;
+                        ArrayList<Long> customFilteredUsersIncoming = null;
                         if (json.startsWith("[")) {
                             AyuFilter.FilterModel[] arr = new Gson().fromJson(json, AyuFilter.FilterModel[].class);
                             if (arr != null) {
@@ -198,9 +222,19 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                                         chatsIncoming.add(e1);
                                     }
                                 }
+                                if (data.customFilteredUsers != null) {
+                                    customFilteredUsersIncoming = new ArrayList<>();
+                                    for (Long userId : data.customFilteredUsers) {
+                                        if (userId != null && userId != 0L) {
+                                            customFilteredUsersIncoming.add(userId);
+                                        }
+                                    }
+                                }
                             }
                         }
-                        if ((sharedIncoming == null || sharedIncoming.isEmpty()) && (chatsIncoming == null || chatsIncoming.isEmpty())) {
+                        if ((sharedIncoming == null || sharedIncoming.isEmpty())
+                            && (chatsIncoming == null || chatsIncoming.isEmpty())
+                            && (customFilteredUsersIncoming == null || customFilteredUsersIncoming.isEmpty())) {
                             BulletinFactory.of(RegexFiltersSettingActivity.this).createSimpleBulletin(R.raw.error, getString(R.string.RegexFiltersImportError)).show();
                             return;
                         }
@@ -263,6 +297,11 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                             }
                             AyuFilter.saveChatFilterEntries(currentChats);
                         }
+                        if (customFilteredUsersIncoming != null && !customFilteredUsersIncoming.isEmpty()) {
+                            HashSet<Long> merged = new HashSet<>(AyuFilter.getCustomFilteredUsersList());
+                            merged.addAll(customFilteredUsersIncoming);
+                            AyuFilter.setCustomFilteredUsers(new ArrayList<>(merged));
+                        }
                         updateRows();
                         if (listAdapter != null) listAdapter.notifyDataSetChanged();
                         BulletinFactory.of(RegexFiltersSettingActivity.this).createSimpleBulletin(R.raw.done, getString(R.string.RegexFiltersImportSuccess)).show();
@@ -275,6 +314,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                         TransferData data = new TransferData();
                         data.shared = AyuFilter.getRegexFilters();
                         data.chats = checkChatFilters(AyuFilter.getChatFilterEntries());
+                        data.customFilteredUsers = AyuFilter.getCustomFilteredUsersList();
                         String json = new Gson().toJson(data);
                         AndroidUtilities.addToClipboard(json);
                         BulletinFactory.of(RegexFiltersSettingActivity.this).createCopyLinkBulletin().show();
@@ -314,6 +354,15 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
             boolean enabled = !cell.isChecked();
             cell.setChecked(enabled);
             NekoConfig.ignoreBlocked.setConfigBool(enabled);
+        } else if (position == addUserFilterBtnRow) {
+            showEditCustomFilteredUserDialog(0L);
+        } else if (position >= userFiltersStartRow && position < userFiltersEndRow) {
+            int userIndex = position - userFiltersStartRow;
+            ArrayList<Long> userIds = AyuFilter.getCustomFilteredUsersList();
+            if (userIndex < 0 || userIndex >= userIds.size()) {
+                return;
+            }
+            RegexUserFilterPopup.show(this, view, x, y, userIds.get(userIndex));
         } else if (position >= filtersStartRow && position < filtersEndRow) {
             ArrayList<AyuFilter.FilterModel> filterModels = AyuFilter.getRegexFilters();
             int filterIndex = position - filtersStartRow;
@@ -344,6 +393,138 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                 presentFragment(new RegexChatFiltersListActivity(did));
             }
         }
+    }
+
+    public void showEditCustomFilteredUserDialog(long originalUserId) {
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+
+        boolean isEdit = originalUserId != 0L;
+        EditTextBoldCursor editText = new EditTextBoldCursor(context);
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        editText.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        editText.setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteHintText));
+        editText.setHandlesColor(Theme.getColor(Theme.key_chat_TextSelectionCursor));
+        editText.setBackground(null);
+        editText.setLineColors(
+            Theme.getColor(Theme.key_windowBackgroundWhiteInputField),
+            Theme.getColor(Theme.key_windowBackgroundWhiteInputFieldActivated),
+            Theme.getColor(Theme.key_text_RedRegular)
+        );
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
+        editText.setMinLines(1);
+        editText.setMaxLines(1);
+        editText.setHint(getString(R.string.RegexFiltersUserFilterHint));
+        editText.setPadding(0, 0, 0, AndroidUtilities.dp(6));
+
+        if (isEdit) {
+            editText.setText(String.valueOf(originalUserId));
+            editText.setSelection(editText.getText().length());
+        }
+
+        FrameLayout container = new FrameLayout(context);
+        container.addView(editText, LayoutHelper.createFrame(
+            LayoutHelper.MATCH_PARENT,
+            LayoutHelper.WRAP_CONTENT,
+            Gravity.TOP | Gravity.LEFT,
+            24,
+            8,
+            24,
+            0
+        ));
+
+        AlertDialog dialog = new AlertDialog.Builder(context, getResourceProvider())
+            .setTitle(getString(isEdit ? R.string.RegexFiltersEditUserFilter : R.string.RegexFiltersAddUserFilter))
+            .setView(container)
+            .setNegativeButton(getString(R.string.Cancel), null)
+            .setPositiveButton(getString(R.string.Save), null)
+            .create();
+
+        dialog.setOnShowListener(d -> dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String input = editText.getText() == null ? "" : editText.getText().toString();
+            ParsedSingleIdResult result = parseSingleCustomFilteredUser(input);
+            if (!result.valid) {
+                BulletinFactory.of(RegexFiltersSettingActivity.this)
+                    .createSimpleBulletin(R.raw.error, LocaleController.formatString(R.string.RegexFiltersUserFilterInvalid, result.invalidToken))
+                    .show();
+                return;
+            }
+
+            HashSet<Long> idSet = new HashSet<>(AyuFilter.getCustomFilteredUsersList());
+            if (isEdit) {
+                idSet.remove(originalUserId);
+            }
+            if (idSet.contains(result.userId)) {
+                BulletinFactory.of(RegexFiltersSettingActivity.this)
+                    .createSimpleBulletin(R.raw.error, getString(R.string.RegexFiltersUserFilterExists))
+                    .show();
+                return;
+            }
+
+            idSet.add(result.userId);
+            ArrayList<Long> updated = new ArrayList<>(idSet);
+            Collections.sort(updated);
+            AyuFilter.setCustomFilteredUsers(updated);
+            refreshRows();
+            BulletinFactory.of(RegexFiltersSettingActivity.this)
+                .createSimpleBulletin(R.raw.done, getString(isEdit ? R.string.RegexFiltersUserFilterUpdated : R.string.RegexFiltersUserFilterAdded))
+                .show();
+            dialog.dismiss();
+        }));
+        showDialog(dialog);
+    }
+
+    public void deleteCustomFilteredUser(long userId) {
+        ArrayList<Long> userIds = AyuFilter.getCustomFilteredUsersList();
+        if (!userIds.remove(userId)) {
+            return;
+        }
+        AyuFilter.setCustomFilteredUsers(userIds);
+        refreshRows();
+        BulletinFactory.of(this)
+            .createSimpleBulletin(R.raw.done, getString(R.string.RegexFiltersUserFilterDeleted))
+            .show();
+    }
+
+    private ParsedSingleIdResult parseSingleCustomFilteredUser(String rawInput) {
+        ParsedSingleIdResult result = new ParsedSingleIdResult();
+        String input = rawInput == null ? "" : rawInput.trim();
+        if (TextUtils.isEmpty(input)) {
+            result.invalidToken = "";
+            return result;
+        }
+        if (input.contains(",") || input.contains(" ") || input.contains("\n") || input.contains("\t")) {
+            result.invalidToken = input;
+            return result;
+        }
+        try {
+            long userId = Long.parseLong(input);
+            if (userId == 0L) {
+                result.invalidToken = input;
+                return result;
+            }
+            result.valid = true;
+            result.userId = userId;
+            return result;
+        } catch (Exception ignore) {
+            result.invalidToken = input;
+            return result;
+        }
+    }
+
+    private void refreshRows() {
+        updateRows();
+        if (listAdapter != null) {
+            listAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private static class ParsedSingleIdResult {
+        boolean valid;
+        long userId;
+        String invalidToken;
     }
 
     @NonNull
@@ -394,6 +575,13 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                 RegexFilterPopup.show(this, view, x, y, filterIndex);
                 return true;
             }
+        } else if (position >= userFiltersStartRow && position < userFiltersEndRow) {
+            int userIndex = position - userFiltersStartRow;
+            ArrayList<Long> userIds = AyuFilter.getCustomFilteredUsersList();
+            if (userIndex >= 0 && userIndex < userIds.size()) {
+                RegexUserFilterPopup.show(this, view, x, y, userIds.get(userIndex));
+                return true;
+            }
         }
         return super.onItemLongClick(view, position, x, y);
     }
@@ -411,6 +599,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
     private static class TransferData {
         public ArrayList<AyuFilter.FilterModel> shared;
         public ArrayList<AyuFilter.ChatFilterEntry> chats;
+        public ArrayList<Long> customFilteredUsers;
     }
 
     private class ListAdapter extends BaseListAdapter {
@@ -443,6 +632,13 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                         textCheckCell.setTextAndCheck(getString(R.string.RegexFiltersEnableInChats), NaConfig.INSTANCE.getRegexFiltersEnableInChats().Bool(), true);
                     } else if (position == ignoreBlockedRow) {
                         textCheckCell.setTextAndCheck(getString(R.string.IgnoreBlocked), NekoConfig.ignoreBlocked.Bool(), true);
+                    } else if (position >= userFiltersStartRow && position < userFiltersEndRow) {
+                        ArrayList<Long> userIds = AyuFilter.getCustomFilteredUsersList();
+                        int userIndex = position - userFiltersStartRow;
+                        if (userIndex >= 0 && userIndex < userIds.size()) {
+                            boolean needDivider = position + 1 < userFiltersEndRow;
+                            textCheckCell.setTextAndCheck(String.valueOf(userIds.get(userIndex)), true, needDivider);
+                        }
                     } else if (position >= filtersStartRow && position < filtersEndRow) {
                         ArrayList<AyuFilter.FilterModel> filterModels = AyuFilter.getRegexFilters();
                         int filterIndex = position - filtersStartRow;
@@ -460,6 +656,8 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                         needDivider = filtersStartRow < filtersEndRow;
                     } else if (position == addChatFilterBtnRow) {
                         needDivider = chatFiltersStartRow < chatFiltersEndRow;
+                    } else if (position == addUserFilterBtnRow) {
+                        needDivider = userFiltersStartRow < userFiltersEndRow;
                     }
                     textCell.setTextAndIcon(getString(R.string.RegexFiltersAdd), R.drawable.msg_add, needDivider);
                     break;
@@ -484,6 +682,8 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                         headerCell.setText(getString(R.string.RegexFiltersSharedHeader));
                     } else if (position == chatFiltersHeaderRow) {
                         headerCell.setText(getString(R.string.RegexFiltersChatHeader));
+                    } else if (position == userFiltersHeaderRow) {
+                        headerCell.setText(getString(R.string.RegexFiltersUserHeader));
                     }
                     break;
             }
@@ -491,11 +691,11 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
 
         @Override
         public int getItemViewType(int position) {
-            if (position == filtersOptionDividerRow || position == dividerRow) {
+            if (position == filtersOptionDividerRow || position == dividerRow || position == userFiltersDividerRow) {
                 return TYPE_SHADOW;
-            } else if (position == filtersHeaderRow || position == filtersOptionHeaderRow || position == chatFiltersHeaderRow) {
+            } else if (position == filtersHeaderRow || position == filtersOptionHeaderRow || position == chatFiltersHeaderRow || position == userFiltersHeaderRow) {
                 return TYPE_HEADER;
-            } else if (position == addFilterBtnRow || position == addChatFilterBtnRow) {
+            } else if (position == addFilterBtnRow || position == addChatFilterBtnRow || position == addUserFilterBtnRow) {
                 return TYPE_TEXT;
             } else if (position >= chatFiltersStartRow && position < chatFiltersEndRow) {
                 return TYPE_ACCOUNT;

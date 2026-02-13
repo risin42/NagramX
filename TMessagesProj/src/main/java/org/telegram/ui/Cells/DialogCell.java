@@ -3094,10 +3094,12 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                             boolean needsReplyTargetCheck = false;
                             if (NekoConfig.ignoreBlocked.Bool() && ChatObject.isMegagroup(MessagesController.getInstance(currentAccount).getChat(-dialog.id))) {
                                 blocked = MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(message.getFromChatId()) >= 0;
+                                blocked = blocked || AyuFilter.isCustomFilteredPeer(message.getFromChatId());
                                 blocked = blocked || AyuFilter.isBlockedChannel(message.getFromChatId());
                                 if (message.replyMessageObject != null) {
                                     long fromId = message.replyMessageObject.getFromChatId();
                                     replyBlocked = MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(fromId) >= 0;
+                                    replyBlocked = replyBlocked || AyuFilter.isCustomFilteredPeer(fromId);
                                     replyBlocked = replyBlocked || AyuFilter.isBlockedChannel(fromId);
                                 } else if (message.getReplyMsgId() != 0) {
                                     // reply sender is unresolved in the in-memory preview message, fallback to async DB lookup

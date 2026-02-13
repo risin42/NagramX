@@ -239,6 +239,7 @@ import me.vkryl.android.animator.FactorAnimator;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
+import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.helpers.TimeStringHelper;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
@@ -1749,9 +1750,17 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
     // NekoX
     private boolean needHideMessage() {
-        return currentMessageObject.messageOwner.hide ||
-                MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(currentMessageObject.getFromChatId()) >= 0 &&
-                        NekoConfig.ignoreBlocked.Bool() && !(getParent() != null && getParent().getClass().getName().contains("ChannelAdminLogActivity"));
+        if (currentMessageObject.messageOwner.hide) {
+            return true;
+        }
+        if (!NekoConfig.ignoreBlocked.Bool() || getParent() != null && getParent().getClass().getName().contains("ChannelAdminLogActivity")) {
+            return false;
+        }
+        long fromId = currentMessageObject.getFromChatId();
+        boolean blocked = MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(fromId) >= 0;
+        blocked = blocked || AyuFilter.isCustomFilteredPeer(fromId);
+        blocked = blocked || AyuFilter.isBlockedChannel(fromId);
+        return blocked;
     }
 
     public ChatMessageCell(Context context, int currentAccount) {
