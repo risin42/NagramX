@@ -2,8 +2,6 @@ package tw.nekomimi.nekogram.translate.source
 
 import android.os.SystemClock
 import android.util.Log
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
@@ -16,18 +14,14 @@ import org.telegram.tgnet.TLRPC
 import org.telegram.ui.Components.TranslateAlert2
 import tw.nekomimi.nekogram.translate.HTMLKeeper
 import tw.nekomimi.nekogram.translate.Translator
+import tw.nekomimi.nekogram.utils.HttpClient
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 object LingoTranslator : Translator {
 
     private const val NAX = "LingoTranslator"
 
-    private val httpClient = OkHttpClient.Builder()
-        .callTimeout(30, TimeUnit.SECONDS)
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS).build()
+    private val httpClient = HttpClient.instance
 
     override suspend fun doTranslate(
         from: String, to: String, query: String, entities: ArrayList<TLRPC.MessageEntity>
@@ -65,8 +59,7 @@ object LingoTranslator : Translator {
         }.toString()
         if (BuildVars.LOGS_ENABLED) Log.d(NAX, "doTranslate: request body: $requestJsonPayload")
 
-        val requestBody =
-            requestJsonPayload.toRequestBody("application/json; charset=UTF-8".toMediaTypeOrNull())
+        val requestBody = requestJsonPayload.toRequestBody(HttpClient.MEDIA_TYPE_JSON)
 
         val request = Request.Builder().url("https://api.interpreter.caiyunai.com/v1/translator")
             .header("X-Authorization", "token 9sdftiq37bnv410eon2l").header(

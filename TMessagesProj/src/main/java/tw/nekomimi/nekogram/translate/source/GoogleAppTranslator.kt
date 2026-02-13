@@ -1,7 +1,6 @@
 package tw.nekomimi.nekogram.translate.source
 
 import android.text.TextUtils
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONException
 import org.json.JSONObject
@@ -13,17 +12,13 @@ import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.translate.HTMLKeeper
 import tw.nekomimi.nekogram.translate.TransUtils
 import tw.nekomimi.nekogram.translate.Translator
+import tw.nekomimi.nekogram.utils.HttpClient
 import xyz.nextalone.nagram.NaConfig
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 object GoogleAppTranslator : Translator {
 
-    private val httpClient = OkHttpClient.Builder()
-        .callTimeout(30, TimeUnit.SECONDS)
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS).build()
+    private val httpClient = HttpClient.instance
 
     override suspend fun doTranslate(
         from: String, to: String, query: String, entities: ArrayList<TLRPC.MessageEntity>

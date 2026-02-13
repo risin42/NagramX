@@ -1,7 +1,5 @@
 package tw.nekomimi.nekogram.translate.source
 
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
@@ -13,18 +11,14 @@ import org.telegram.tgnet.TLRPC
 import org.telegram.ui.Components.TranslateAlert2
 import tw.nekomimi.nekogram.translate.HTMLKeeper
 import tw.nekomimi.nekogram.translate.Translator
+import tw.nekomimi.nekogram.utils.HttpClient
 import java.io.IOException
 import java.util.Date
 import java.util.UUID
-import java.util.concurrent.TimeUnit
 
 object TranSmartTranslator : Translator {
 
-    private val httpClient = OkHttpClient.Builder()
-        .callTimeout(30, TimeUnit.SECONDS)
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS).build()
+    private val httpClient = HttpClient.instance
 
     private fun getRandomBrowserVersion(): String {
         val majorVersion = (Math.random() * 17).toInt() + 100
@@ -87,8 +81,7 @@ object TranSmartTranslator : Translator {
             put("type", "plain")
         }.toString()
 
-        val requestBody =
-            requestJsonPayload.toRequestBody("application/json; charset=UTF-8".toMediaTypeOrNull())
+        val requestBody = requestJsonPayload.toRequestBody(HttpClient.MEDIA_TYPE_JSON)
 
         val request = Request.Builder().url("https://transmart.qq.com/api/imt").header(
             "User-Agent",
