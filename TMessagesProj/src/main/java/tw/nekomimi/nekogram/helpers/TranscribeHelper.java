@@ -43,7 +43,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 import okhttp3.MediaType;
@@ -51,10 +50,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import tw.nekomimi.nekogram.utils.HttpClient;
 import xyz.nextalone.nagram.NaConfig;
 
 public class TranscribeHelper {
-    private static OkHttpClient okHttpClient;
     private static final Gson gson = new Gson();
     private static final ExecutorService executorService = Executors.newCachedThreadPool();
     public static final int TRANSCRIBE_AUTO = 0;
@@ -326,14 +325,7 @@ public class TranscribeHelper {
     }
 
     private static OkHttpClient getOkHttpClient() {
-        if (okHttpClient == null) {
-            var builder = new OkHttpClient.Builder();
-            builder.connectTimeout(120, TimeUnit.SECONDS);
-            builder.readTimeout(120, TimeUnit.SECONDS);
-            builder.writeTimeout(120, TimeUnit.SECONDS);
-            okHttpClient = builder.build();
-        }
-        return okHttpClient;
+        return HttpClient.INSTANCE.getTranscribeInstance();
     }
 
     private static void extractAudio(String inputFilePath, String outputFilePath) throws IOException {
@@ -503,8 +495,7 @@ public class TranscribeHelper {
                 String jsonRequest = gson.toJson(geminiRequest);
 
                 OkHttpClient client = getOkHttpClient();
-                MediaType JSON = MediaType.get("application/json; charset=utf-8");
-                RequestBody requestBody = RequestBody.create(jsonRequest, JSON);
+                RequestBody requestBody = RequestBody.create(jsonRequest, HttpClient.MEDIA_TYPE_JSON);
                 Request request = new Request.Builder()
                         .url(String.format(GEMINI_API_ENDPOINT, finalApiKey))
                         .post(requestBody)
@@ -597,8 +588,7 @@ public class TranscribeHelper {
                 String jsonRequest = gson.toJson(openAiRequest);
 
                 OkHttpClient client = getOkHttpClient();
-                MediaType JSON = MediaType.get("application/json; charset=utf-8");
-                RequestBody requestBody = RequestBody.create(jsonRequest, JSON);
+                RequestBody requestBody = RequestBody.create(jsonRequest, HttpClient.MEDIA_TYPE_JSON);
                 Request request = new Request.Builder()
                         .url(endpointUrl)
                         .header("Authorization", "Bearer " + apiKey)
