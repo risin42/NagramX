@@ -85,8 +85,11 @@
     <string name="PreviewSendFile">Enviar archivo</string>
     <string name="UnblockDeleted">Desbloquear usuarios eliminados</string>
     <string name="UnblockDeletedWarn">¿Estás seguro de que quieres desbloquear a **todos los usuarios eliminados**?</string>
-    <string name="RegexFilters">Filtros de mensajes Regex</string>
+    <string name="RegexFilters">Filtros de mensajes</string>
     <string name="RegexFiltersHeader">Filtros</string>
+    <string name="RegexFiltersSharedHeader">Filtros compartidos</string>
+    <string name="RegexFiltersSubMenuDescription">Puedes elegir excluir los filtros compartidos para este chat.</string>
+    <string name="RegexFiltersChatHeader">Filtros de chat</string>
     <string name="RegexFiltersEnableInChats">Activar filtros en los chats privados</string>
     <string name="RegexFiltersCaseInsensitive">Expresiones que no distinguen mayúsculas de minúsculas</string>
     <string name="RegexFiltersAdd">Añadir filtro</string>

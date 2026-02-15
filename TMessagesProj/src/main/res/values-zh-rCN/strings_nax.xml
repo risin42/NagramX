@@ -50,7 +50,7 @@
     <string name="DeleteCloudBackupSuccess">云备份数据已清除</string>
     <string name="CloudConfigNoBackupToDelete">没有数据可清除</string>
     <string name="ClearRegexFilters">清除</string>
-    <string name="ClearRegexFiltersAlertMessage">您确定要清除所有已保存的过滤器吗？此操作将同时删除全局过滤器和聊天专属过滤器。</string>
+    <string name="ClearRegexFiltersAlertMessage">您确定要清除所有已保存的过滤器吗？此操作将删除通用过滤器、用户过滤器和聊天过滤器。</string>
     <string name="PreferredTranslateTargetLang">自定义首选语言列表</string>
     <string name="PreferredTranslateTargetLangExample">例如：ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">首选语言</string>
@@ -63,6 +63,13 @@
     <string name="RegexFiltersImportSuccess">过滤器已导入。</string>
     <string name="RegexFiltersImportError">无法从剪贴板导入过滤器。</string>
     <string name="RegexFiltersExportError">导出过滤器失败。</string>
+    <string name="RegexFiltersUserHeader">用户过滤器</string>
+    <string name="RegexFiltersUserFilterHint">输入用户 ID</string>
+    <string name="RegexFiltersGlobalHeader">全局过滤器</string>
+    <string name="ShadowBan">静默屏蔽</string>
+    <string name="UnshadowBan">解除静默屏蔽</string>
+    <string name="ShadowBanAdded">已添加到**用户过滤器**。</string>
+    <string name="ShadowBanRemoved">已从**用户过滤器**中移除。</string>
     <string name="botCommandConfirmTitle">确认发送</string>
     <string name="botCommandConfirmText">您确定要发送此指令吗？\n\n%s</string>
     <string name="MessageSavingSaveMedia">保存媒体</string>
@@ -204,7 +211,7 @@
     <string name="NoCaptionForward">无说明转发</string>
     <string name="PreferCommonGroupsTab">首选群组标签</string>
     <string name="PreferCommonGroupsTabNotice">在个人资料页面自动选择“群组”标签而不是“礼物”。</string>
-    <string name="SendHighQualityPhoto">发送高质量照片</string>
+    <string name="SendHighQualityPhoto">发送高质量图片</string>
     <string name="GroupedMessageMenu">分组消息菜单</string>
     <string name="GroupedMessageMenuNotice">将主要操作选项移至消息菜单的底部。</string>
     <string name="CopySticker">复制贴纸</string>
@@ -319,4 +326,5 @@
     <string name="UnifiedPushNeverReceivedNotifications">自 Nagram X 启动后，您从未收到 UnifiedPush 的通知。</string>
     <string name="UnifiedPushLastReceivedNotification">最后一次通过 UnifiedPush 接收到的通知是 %1$d 秒前。\n\n自 Nagram X 启动以来，您已收到 %2$d 条通知。</string>
     <string name="UnifiedPushCurrentEndpoint">当前的 UnifiedPush 端点是：%1$s</string>
+    <string name="PlayOnce">播放一次</string>
 </resources>

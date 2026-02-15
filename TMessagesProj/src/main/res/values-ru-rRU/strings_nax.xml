@@ -16,7 +16,7 @@
     <string name="LlmApiKey">Ключ API</string>
     <string name="LlmModelName">Модель</string>
     <string name="LlmApiUrlNotice">Базовый URL API. Если оставить поле пустым, по умолчанию будет использоваться конечная точка, совместимая с Gemini OpenAI.</string>
-    <string name="LlmApiKeyNotice">Введите один или несколько ключей API, разделенных запятыми (например: ключ1,ключ2). Несколько ключей будут использоваться поочередно.</string>
+    <string name="LlmApiKeyNotice">Введите один или несколько ключей API, разделенных запятыми (например: ключ1,ключ2). Несколько ключей будут использоваться поочерёдно.</string>
     <string name="LlmProviderPreset">Поставщик модели</string>
     <string name="LlmProviderCustom">Пользовательский</string>
     <string name="LlmProviderOpenAIKey">Ключ API OpenAI</string>
@@ -50,7 +50,7 @@
     <string name="DeleteCloudBackupSuccess">Облачные данные очищены</string>
     <string name="CloudConfigNoBackupToDelete">Нет данных для очистки</string>
     <string name="ClearRegexFilters">Очистить</string>
-    <string name="ClearRegexFiltersAlertMessage">Вы уверены, что хотите удалить все сохранённые фильтры? Это удалит как общие фильтры, так и фильтры чатов.</string>
+    <string name="ClearRegexFiltersAlertMessage">Вы уверены, что хотите удалить все сохранённые фильтры? Это удалит общие фильтры, пользовательские фильтры и фильтры чатов.</string>
     <string name="PreferredTranslateTargetLang">Пользовательский список языков</string>
     <string name="PreferredTranslateTargetLangExample">Например: ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Предпочитаемые языки</string>
@@ -63,6 +63,13 @@
     <string name="RegexFiltersImportSuccess">Фильтры импортированы.</string>
     <string name="RegexFiltersImportError">Не удалось импортировать фильтры из буфера обмена.</string>
     <string name="RegexFiltersExportError">Не удалось экспортировать фильтры.</string>
+    <string name="RegexFiltersUserHeader">Пользовательские фильтры</string>
+    <string name="RegexFiltersUserFilterHint">Введите ID пользователя</string>
+    <string name="RegexFiltersGlobalHeader">Общие фильтры</string>
+    <string name="ShadowBan">Теневой бан</string>
+    <string name="UnshadowBan">Снять теневой бан</string>
+    <string name="ShadowBanAdded">Добавлено в **пользовательские фильтры**.</string>
+    <string name="ShadowBanRemoved">Удалено из **пользовательских фильтров**.</string>
     <string name="botCommandConfirmTitle">Отправить команду</string>
     <string name="botCommandConfirmText">Вы хотите отправить эту команду?\n\n%s</string>
     <string name="MessageSavingSaveMedia">Сохранять медиа</string>
@@ -319,4 +326,5 @@
     <string name="UnifiedPushNeverReceivedNotifications">С момента запуска Nagram X вы не получали уведомлений с помощью UnifiedPush.</string>
     <string name="UnifiedPushLastReceivedNotification">Последнее уведомление, полученное с помощью UnifiedPush, было %1$d секунд назад.\n\nС момента запуска Nagram X вы получили %2$d уведомлений.</string>
     <string name="UnifiedPushCurrentEndpoint">Текущая конечная точка UnifiedPush: %1$s</string>
+    <string name="PlayOnce">Играть один раз</string>
 </resources>

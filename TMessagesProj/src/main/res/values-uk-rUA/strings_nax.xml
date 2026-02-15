@@ -15,6 +15,8 @@
     <string name="LlmApiUrl">API URL</string>
     <string name="LlmApiKey">Ключ API</string>
     <string name="LlmModelName">Модель</string>
+    <string name="LlmApiUrlNotice">Базова URL-адреса API. Якщо залишити поле порожнім, за замовчуванням використовується кінцева точка, сумісна з Gemini OpenAI.</string>
+    <string name="LlmApiKeyNotice">Введіть один або декілька API‑ключів, розділених комами (наприклад: key1,key2). Кілька ключів будуть використовуватися по черзі.</string>
     <string name="LlmProviderPreset">Провайдер моделі</string>
     <string name="LlmProviderCustom">Користувацька</string>
     <string name="LlmProviderOpenAIKey">Ключ API OpenAI</string>
@@ -48,7 +50,7 @@
     <string name="DeleteCloudBackupSuccess">Дані в хмарі очищено</string>
     <string name="CloudConfigNoBackupToDelete">Немає даних для очищення</string>
     <string name="ClearRegexFilters">Очистити</string>
-    <string name="ClearRegexFiltersAlertMessage">Ви впевнені, що хочете очистити всі збережені фільтри? Це призведе до видалення як спільних, так і специфічних для чату фільтрів.</string>
+    <string name="ClearRegexFiltersAlertMessage">Ви впевнені, що хочете очистити всі збережені фільтри? Це призведе до видалення спільних фільтрів, фільтрів користувачів та фільтрів для чату.</string>
     <string name="PreferredTranslateTargetLang">Користувацький список мов</string>
     <string name="PreferredTranslateTargetLangExample">Для прикладу, ua, pl, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Пріоритетні мови</string>
@@ -61,6 +63,12 @@
     <string name="RegexFiltersImportSuccess">Фільтри імпортовано.</string>
     <string name="RegexFiltersImportError">Не вдалося імпортувати фільтри з буфера обміну.</string>
     <string name="RegexFiltersExportError">Не вдалося експортувати фільтри.</string>
+    <string name="RegexFiltersUserHeader">Фільтри користувачів</string>
+    <string name="RegexFiltersUserFilterHint">Введіть ID користувача</string>
+    <string name="ShadowBan">Тіньовий бан</string>
+    <string name="UnshadowBan">Зняти тіньовий бан</string>
+    <string name="ShadowBanAdded">Додано до **фільтрів користувачів**.</string>
+    <string name="ShadowBanRemoved">Видалено з **фільтрів користувачів**.</string>
     <string name="botCommandConfirmTitle">Надіслати команду</string>
     <string name="botCommandConfirmText">Ви хочете відправити цю команду? \n\n%s</string>
     <string name="MessageSavingSaveMedia">Зберегти медіа</string>
@@ -317,4 +325,5 @@
     <string name="UnifiedPushNeverReceivedNotifications">З моменту запуску Nagram X сповіщень через UnifiedPush не надходило.</string>
     <string name="UnifiedPushLastReceivedNotification">Останнє сповіщення через UnifiedPush надійшло %1$d сек. тому.\n\nВи отримали %2$d сповіщень з моменту запуску Nagram X.</string>
     <string name="UnifiedPushCurrentEndpoint">Поточна кінцева точка UnifiedPush: %1$s</string>
+    <string name="RegexFiltersGlobalHeader">Глобальні фільтри</string>
 </resources>

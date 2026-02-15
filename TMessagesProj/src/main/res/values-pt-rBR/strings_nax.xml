@@ -50,7 +50,7 @@
     <string name="DeleteCloudBackupSuccess">Dados na nuvem limpos</string>
     <string name="CloudConfigNoBackupToDelete">Não há dados para limpar</string>
     <string name="ClearRegexFilters">Limpar</string>
-    <string name="ClearRegexFiltersAlertMessage">Tem certeza de que deseja limpar todos os filtros de regex salvos? Isso removerá tanto os filtros compartilhados quanto os específicos de chats.</string>
+    <string name="ClearRegexFiltersAlertMessage">Tem certeza de que deseja limpar todos os filtros salvos? Isso removerá os filtros compartilhados, filtros de usuário e filtros específicos do chat.</string>
     <string name="PreferredTranslateTargetLang">Lista de idiomas preferidos personalizados</string>
     <string name="PreferredTranslateTargetLangExample">ex: ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Idiomas preferidos</string>
@@ -63,6 +63,13 @@
     <string name="RegexFiltersImportSuccess">Filtros importados.</string>
     <string name="RegexFiltersImportError">Falha ao importar filtros da área de transferência.</string>
     <string name="RegexFiltersExportError">Falha ao exportar filtros.</string>
+    <string name="RegexFiltersUserHeader">Filtros de usuário</string>
+    <string name="RegexFiltersUserFilterHint">Inserir ID do usuário</string>
+    <string name="RegexFiltersGlobalHeader">Filtros globais</string>
+    <string name="ShadowBan">Bloqueio oculto</string>
+    <string name="UnshadowBan">Remover bloqueio oculto</string>
+    <string name="ShadowBanAdded">Adicionado aos **filtros de usuário**.</string>
+    <string name="ShadowBanRemoved">Removido dos **filtros de usuário**.</string>
     <string name="botCommandConfirmTitle">Enviar comando</string>
     <string name="botCommandConfirmText">Você quer enviar este comando?\n\n%s</string>
     <string name="MessageSavingSaveMedia">Salvar mídia</string>
@@ -297,7 +304,7 @@
     <string name="CameraInVideoMessagesAsk">Perguntar</string>
     <string name="CameraSettings">Câmera</string>
     <string name="SmoothRoundedMenu">Menus de contexto arredondados e suaves</string>
-    <string name="SyncContactToPhone">Sincronizar Contato com o Telefone</string>
+    <string name="SyncContactToPhone">Sincronizar com o celular</string>
     <string name="AddViaQRCode">Adicionar via Código QR</string>
     <string name="ContactNotes">Notas</string>
     <string name="PhoneNotOnTelegramInvite">Este número de telefone não está no Telegram. **Convidar &gt;**</string>
@@ -319,4 +326,5 @@
     <string name="UnifiedPushNeverReceivedNotifications">Você não recebeu notificações via UnifiedPush desde que o Nagram X foi iniciado.</string>
     <string name="UnifiedPushLastReceivedNotification">A última notificação recebida via UnifiedPush foi há %1$d segundos.\n\nVocê recebeu %2$d notificações desde que o Nagram X foi iniciado.</string>
     <string name="UnifiedPushCurrentEndpoint">O endpoint atual do UnifiedPush é: %1$s</string>
+    <string name="PlayOnce">Reproduzir uma vez</string>
 </resources>
