@@ -15,9 +15,8 @@
     <string name="LlmApiUrl">URL API</string>
     <string name="LlmApiKey">Chiave API</string>
     <string name="LlmModelName">Modello</string>
-    <string name="LlmApiUrlNotice">URL di base dell\'API per endpoint compatibili con OpenAI come Gemini, xAI (Grok), Groq, Mistral, DeepSeek, ecc.\n\nLasciando questo campo vuoto, verrà utilizzato come impostazione predefinita l\'endpoint Gemini compatibile con OpenAI.</string>
-    <string name="LlmApiKeyNotice">La chiave API verrà utilizzata per inviare richieste all\'URL API.\n\nInserisci più chiavi separate da virgole (ad esempio, chiave1, chiave2, chiave3).\nSe fornisci più chiavi, queste verranno utilizzate a rotazione.</string>
-    <string name="LlmModelNameNotice">Se questo campo viene lasciato vuoto, verrà utilizzato come impostazione predefinita `gemini-flash-latest`.\n\nPer ottenere risposte più rapide, prendere in considerazione modelli più piccoli come gpt-nano o gemini-flash.</string>
+    <string name="LlmApiUrlNotice">URL base dell\'API. Se lasciato vuoto, per impostazione predefinita sarà l\'endpoint compatibile con Gemini/OpenAI.</string>
+    <string name="LlmApiKeyNotice">Inserisci una o più chiavi API, separate da virgole (ad es., key1,key2). Le chiavi multiple saranno usate a rotazione.</string>
     <string name="LlmProviderPreset">Provider Modello</string>
     <string name="LlmProviderCustom">Personalizzato</string>
     <string name="LlmProviderOpenAIKey">Chiave API OpenAI</string>
@@ -51,7 +50,7 @@
     <string name="DeleteCloudBackupSuccess">Dati cloud cancellati</string>
     <string name="CloudConfigNoBackupToDelete">Nessun dato da cancellare</string>
     <string name="ClearRegexFilters">Cancella</string>
-    <string name="ClearRegexFiltersAlertMessage">Sei sicuro di voler cancellare tutti i filtri regex salvati? Questa operazione rimuoverà sia i filtri condivisi che quelli specifici della chat.</string>
+    <string name="ClearRegexFiltersAlertMessage">Sei sicuro di voler cancellare tutti i filtri salvati? Questa operazione rimuoverà i filtri condivisi, i filtri utente e i filtri specifici della chat.</string>
     <string name="PreferredTranslateTargetLang">Elenco personalizzato delle lingue preferite</string>
     <string name="PreferredTranslateTargetLangExample">ad es. ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Lingue preferite</string>
@@ -64,6 +63,12 @@
     <string name="RegexFiltersImportSuccess">Filtri importati.</string>
     <string name="RegexFiltersImportError">Impossibile importare i filtri dagli appunti.</string>
     <string name="RegexFiltersExportError">Impossibile esportare i filtri.</string>
+    <string name="RegexFiltersUserHeader">Filtri Utente</string>
+    <string name="RegexFiltersUserFilterHint">Inserisci l\'ID Utente</string>
+    <string name="ShadowBan">Shadow Ban</string>
+    <string name="UnshadowBan">Unshadow Ban</string>
+    <string name="ShadowBanAdded">Aggiunto a **filtri utente**.</string>
+    <string name="ShadowBanRemoved">Rimosso da **filtri utente**.</string>
     <string name="botCommandConfirmTitle">Invia comando</string>
     <string name="botCommandConfirmText">Vuoi inviare questo comando?\n\n%s</string>
     <string name="MessageSavingSaveMedia">Salva media</string>
@@ -324,4 +329,5 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="UnifiedPushNeverReceivedNotifications">Non hai mai ricevuto notifiche con UnifiedPush da quando è stato avviato Nagram X.</string>
     <string name="UnifiedPushLastReceivedNotification">L\'ultima notifica ricevuta con UnifiedPush è stata %1$d secondi fa.\n\nHai ricevuto %2$d notifiche da quando è stato avviato Nagram X.</string>
     <string name="UnifiedPushCurrentEndpoint">L\'endpoint UnifiedPush corrente è: %1$s</string>
+    <string name="RegexFiltersGlobalHeader">Filtri Globali</string>
 </resources>

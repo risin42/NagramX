@@ -18,14 +18,10 @@
     <string name="LlmModelName">Model</string>
     <string name="LlmApiUrlNotice">Gemini, xAI (Grok), Groq, Mistral, DeepSeek vb. gibi OpenAI uyumlu uç noktalar için API temel URL\'si.\n\nBu alanı boş bırakmak, varsayılan olarak Gemini OpenAI uyumlu uç noktasını kullanacaktır.</string>
     <string name="LlmApiKeyNotice">API Anahtarı, API URL\'sine istek göndermek için kullanılacaktır.\n\nBirden fazla anahtarı virgülle ayırarak girin (örn: anahtar1, anahtar2, anahtar3).\nBirden fazla anahtar sağlarsanız, sırayla kullanılacaktır.</string>
-    <string name="LlmModelNameNotice">Bu alanı boş bırakmak, varsayılan olarak `gemini-2.5-flash` modelini kullanacaktır.\n\nDaha hızlı yanıtlar için gpt-nano veya gemini-flash gibi daha küçük modelleri düşünebilirsiniz.</string>
     <string name="LlmProviderPreset">Model Sağlayıcısı</string>
     <string name="LlmProviderCustom">Özel</string>
     <string name="LlmProviderOpenAIKey">OpenAI API Anahtarı</string>
     <string name="LlmProviderGeminiKey">Gemini API Anahtarı</string>
-    <string name="LlmProviderGroqKey">Groq API Anahtarı</string>
-    <string name="LlmProviderDeepSeekKey">DeepSeek API Anahtarı</string>
-    <string name="LlmProviderXAIKey">xAI API Anahtarı</string>
     <string name="LlmSystemPrompt">Sistem Komutu</string>
     <string name="LlmSystemPromptHint">Siz yardımcı bir asistansınız.</string>
     <string name="LlmSystemPromptNotice">Yapay zekanın rolünü ve davranışını tanımlayın.\n\nBu komut, yapay zeka için tonu, kişiliği ve sınırlamaları belirler. Yapay zekanın ne tür bir asistan olması gerektiğini tanımlamayı düşünün.\n\nBoş bırakılabilir.</string>

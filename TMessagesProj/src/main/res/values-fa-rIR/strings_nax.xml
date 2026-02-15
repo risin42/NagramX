@@ -19,14 +19,10 @@
     <string name="LlmApiUrlNotice">آدرس پایه API برای نقاط پایانی سازگار با OpenAI مانند Gemini، Xai (Grok)، Groq، Mistral، Deepseek و غیره.
 این فیلد به طور پیش‌فرض روی نقطه پایانی سازگار با OpenAI برای Gemini تنظیم شده است.</string>
     <string name="LlmApiKeyNotice">کلید API برای ارسال درخواست به آدرس API استفاده می‌شود.\n\nمی‌توانید چندین کلید را با کاما از هم جدا کنید (مثال: key1,key2,key3).\nاگر چندین کلید وارد کنید، به صورت چرخشی استفاده خواهند شد.</string>
-    <string name="LlmModelNameNotice">اگر خالی بماند، به طور پیش‌فرض روی `gemini-2.5-flash` تنظیم می‌شود.\n\n برای پاسخ‌های سریع‌تر، مدل‌های کوچک‌تر مانند gpt-nano یا gemini-flash را در نظر بگیرید.</string>
     <string name="LlmProviderPreset">ارائه‌دهنده مدل</string>
     <string name="LlmProviderCustom">سفارشی</string>
     <string name="LlmProviderOpenAIKey">کلید OpenAI API</string>
     <string name="LlmProviderGeminiKey">کلید Gemini API</string>
-    <string name="LlmProviderGroqKey">کلید Groq API</string>
-    <string name="LlmProviderDeepSeekKey">کلید DeepSeek API</string>
-    <string name="LlmProviderXAIKey">کلید xAI API</string>
     <string name="LlmSystemPrompt">دستور سیستمی</string>
     <string name="LlmSystemPromptHint">شما یک دستیار مفید هستید.</string>
     <string name="LlmSystemPromptNotice">نقش و رفتار هوش مصنوعی را تعریف کنید.\n\nاین دستور، لحن، شخصیت و محدودیت‌های هوش مصنوعی را مشخص می‌کند. توضیح دهید که هوش مصنوعی باید چه نوع دستیاری باشد.\n\nمی‌توان این فیلد را خالی گذاشت.</string>

@@ -50,7 +50,7 @@
     <string name="DeleteCloudBackupSuccess">クラウドデータを消去しました</string>
     <string name="CloudConfigNoBackupToDelete">消去するデータがありません</string>
     <string name="ClearRegexFilters">クリア</string>
-    <string name="ClearRegexFiltersAlertMessage">保存されているィルターをすべてクリアしてもよろしいですか？これにより、共通フィルターとチャット固有のフィルターの両方が削除されます。</string>
+    <string name="ClearRegexFiltersAlertMessage">保存されているフィルターをすべてクリアしてもよろしいですか？これにより、共有フィルター、ユーザーフィルター、およびチャット固有のフィルターが削除されます。</string>
     <string name="PreferredTranslateTargetLang">カスタム優先言語リスト</string>
     <string name="PreferredTranslateTargetLangExample">例：ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">優先言語</string>
@@ -63,6 +63,13 @@
     <string name="RegexFiltersImportSuccess">フィルターがインポートされました。</string>
     <string name="RegexFiltersImportError">クリップボードからフィルターのインポートに失敗しました。</string>
     <string name="RegexFiltersExportError">フィルターのエクスポートに失敗しました。</string>
+    <string name="RegexFiltersUserHeader">ユーザーフィルター</string>
+    <string name="RegexFiltersUserFilterHint">ユーザー ID を入力</string>
+    <string name="RegexFiltersGlobalHeader">グローバルフィルター</string>
+    <string name="ShadowBan">シャドウバン</string>
+    <string name="UnshadowBan">シャドウバン解除</string>
+    <string name="ShadowBanAdded">**ユーザーフィルタ**に追加しました。</string>
+    <string name="ShadowBanRemoved">**ユーザーフィルター**から削除しました。</string>
     <string name="botCommandConfirmTitle">コマンド確認</string>
     <string name="botCommandConfirmText">このコマンドを送信しますか？\n\n%s</string>
     <string name="MessageSavingSaveMedia">メディアを保存</string>
@@ -261,13 +268,13 @@
     <string name="HowToObtain">取得方法は？</string>
     <string name="BlockChannel">ブロック</string>
     <string name="UnblockChannel">ブロックを解除</string>
-    <string name="BlockedChannels">ブロックされたチャンネル</string>
+    <string name="BlockedChannels">ブロックしたチャンネル</string>
     <string name="BlockedChannelsCount_one">ブロック数 %1$d</string>
     <string name="BlockedChannelsCount_other">ブロック数 %1$d</string>
     <string name="BlockedChannelsInfo">グループ内でブロックしたチャンネルからのメッセージを非表示にできます。 %s</string>
     <string name="ChannelBlocked">ブロックしました。</string>
     <string name="ChannelUnblocked">ブロックを解除しました。</string>
-    <string name="BlockedChannelsEmpty">ブロックされたチャンネルはまだありません</string>
+    <string name="BlockedChannelsEmpty">ブロック中のチャンネルはありません</string>
     <string name="UnblockAllChannelsWarn">**すべてのチャンネル**のブロックを解除してもよろしいですか？</string>
     <string name="BlockChannelsUnavailable">一部のチャンネルは一時的に表示できません。</string>
     <string name="FixLinkPreview">リンクプレビューを改善</string>
@@ -319,4 +326,5 @@
     <string name="UnifiedPushNeverReceivedNotifications">Nagram X の起動以降、UnifiedPush 経由で通知を受信したことはありません。</string>
     <string name="UnifiedPushLastReceivedNotification">UnifiedPush で最後に受信した通知は %1$d 秒前です。\n\nNagram X の起動以降、 %2$d 件の通知を受信しました。</string>
     <string name="UnifiedPushCurrentEndpoint">現在の UnifiedPush エンドポイントは：%1$s</string>
+    <string name="PlayOnce">ワンショット</string>
 </resources>

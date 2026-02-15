@@ -86,7 +86,7 @@
     <string name="UnblockDeleted">削除済みアカウントのブロックを解除</string>
     <string name="UnblockDeletedWarn">**すべての削除済みアカウント**のブロックを解除してもよろしいですか？</string>
     <string name="RegexFilters">メッセージフィルター</string>
-    <string name="RegexFiltersHeader">メッセージフィルター</string>
+    <string name="RegexFiltersHeader">フィルター</string>
     <string name="RegexFiltersSharedHeader">共通フィルター</string>
     <string name="RegexFiltersSubMenuDescription">このチャットで共通フィルターを除外することができます。</string>
     <string name="RegexFiltersChatHeader">チャットフィルター</string>
