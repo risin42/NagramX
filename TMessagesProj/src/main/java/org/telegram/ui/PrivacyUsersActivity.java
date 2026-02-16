@@ -12,14 +12,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -611,7 +607,11 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                     if (position == blockUserDetailRow) {
                         if (currentType == TYPE_BLOCKED) {
                             privacyCell.setFixedSize(0);
-                            privacyCell.setText(LocaleController.getString(R.string.BlockedUsersInfo));
+                            String link = LocaleController.getString(R.string.RegexFilters);
+                            String fullText = LocaleController.getString(R.string.BlockedUsersInfo) + " **" + link + " >**";
+                            privacyCell.setText(AndroidUtilities.replaceArrows(AndroidUtilities.replaceSingleTag(fullText, () -> {
+                                presentFragment(new RegexFiltersSettingActivity());
+                            }), true));
                         } else {
                             privacyCell.setFixedSize(8);
                             privacyCell.setText(null);
@@ -625,9 +625,10 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                         privacyCell.setFixedSize(0);
                         String description = LocaleController.getString(R.string.BlockedChannelsInfo);
                         String link = LocaleController.getString(R.string.RegexFilters);
-                        String fullText = String.format(description, link);
-                        SpannableStringBuilder spannableString = getRegexFiltersSettingLink(fullText, link);
-                        privacyCell.setText(spannableString);
+                        String fullText = String.format(description, " **" + link + " >**");
+                        privacyCell.setText(AndroidUtilities.replaceArrows(AndroidUtilities.replaceSingleTag(fullText, () -> {
+                            presentFragment(new RegexFiltersSettingActivity());
+                        }), true));
                         if (usersStartRow == -1) {
                             privacyCell.setBackground(Theme.getThemedDrawableByKey(mContext, R.drawable.greydivider_bottom, Theme.key_windowBackgroundGrayShadow));
                         } else {
@@ -677,20 +678,6 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                 return 0;
             }
         }
-    }
-
-    @NonNull
-    private SpannableStringBuilder getRegexFiltersSettingLink(String fullText, String link) {
-        SpannableStringBuilder spannableString = new SpannableStringBuilder(fullText);
-        int start = fullText.indexOf(link);
-        int end = start + link.length();
-        spannableString.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-                presentFragment(new RegexFiltersSettingActivity());
-            }
-        }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spannableString;
     }
 
     @Override
