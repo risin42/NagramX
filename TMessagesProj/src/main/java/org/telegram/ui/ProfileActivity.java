@@ -17572,9 +17572,4 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         }
         editText.setSelection(0, editText.getText().length());
     }
-
-    @Override
-    public boolean isSupportEdgeToEdge() {
-        return NaConfig.INSTANCE.getForceEdgeToEdge().Bool();
-    }
 }
