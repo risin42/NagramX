@@ -236,6 +236,8 @@ public class AyuGhostUtils {
             return getDialogId(obj.peer);
         } else if (object instanceof TLRPC.TL_channels_readHistory obj) {
             return getDialogId(obj.channel);
+        } else if (object instanceof TLRPC.TL_messages_getMessagesViews obj) {
+            return getDialogId(obj.peer);
         }
         return null;
     }
@@ -271,7 +273,8 @@ public class AyuGhostUtils {
                 object instanceof TLRPC.TL_messages_readEncryptedHistory ||
                 object instanceof TLRPC.TL_messages_readDiscussion ||
                 object instanceof TLRPC.TL_messages_readMessageContents ||
-                object instanceof TLRPC.TL_channels_readHistory;
+                object instanceof TLRPC.TL_channels_readHistory ||
+                object instanceof TLRPC.TL_messages_getMessagesViews obj && obj.increment;
     }
 
     private static boolean isReadStoriesRequest(TLObject object) {
