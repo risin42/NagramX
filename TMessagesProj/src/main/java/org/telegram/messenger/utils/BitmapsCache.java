@@ -277,6 +277,7 @@ public class BitmapsCache {
                             } catch (Exception e) {
 
                             }
+                            bitmap[i] = null;
                         }
                     }
                     randomAccessFile.close();
@@ -625,7 +626,7 @@ public class BitmapsCache {
             }
             lastSize = size;
             for (int i = 0; i < N; i++) {
-                if (recreateBitmaps || bitmap[i] == null) {
+                if (recreateBitmaps || bitmap[i] == null || bitmap[i].isRecycled()) {
                     if (bitmap[i] != null) {
                         Bitmap bitmapToRecycle = bitmap[i];
                         Utilities.globalQueue.postRunnable(() -> {
@@ -656,7 +657,7 @@ public class BitmapsCache {
                 bitmap[i] = null;
                 byteArrayOutputStream[i] = null;
             }
-            if (!bitmapsToRecycle.isEmpty()) {
+            if (bitmapsToRecycle != null && !bitmapsToRecycle.isEmpty()) {
                 ArrayList<Bitmap> finalBitmapsToRecycle = bitmapsToRecycle;
                 Utilities.globalQueue.postRunnable(() -> {
                     for (Bitmap bitmap : finalBitmapsToRecycle) {
