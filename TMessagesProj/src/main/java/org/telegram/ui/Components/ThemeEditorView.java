@@ -200,6 +200,9 @@ public class ThemeEditorView {
                     public boolean dispatchTouchEvent(MotionEvent event) {
                         MotionEvent e = MotionEvent.obtain(event);
                         e.setLocation(e.getRawX(), e.getRawY() - containerView.getTranslationY());
+                        if (e.getAction() == MotionEvent.ACTION_UP) {
+                            e.setAction(MotionEvent.ACTION_CANCEL);
+                        }
                         listView.dispatchTouchEvent(e);
                         e.recycle();
                         return super.dispatchTouchEvent(event);
@@ -774,7 +777,8 @@ public class ThemeEditorView {
             listView = new RecyclerListView(context) {
                 @Override
                 protected boolean allowSelectChildAtPosition(float x, float y) {
-                    return y >= scrollOffsetY + AndroidUtilities.dp(48) + (Build.VERSION.SDK_INT >= 21 ? AndroidUtilities.statusBarHeight : 0);
+                    // Pixel 9+ may report abnormally large top insets; cap it to keep the first row clickable.
+                    return y >= scrollOffsetY + AndroidUtilities.dp(48) + Math.min(AndroidUtilities.statusBarHeight, AndroidUtilities.dp(32));
                 }
             };
             listView.setSelectorDrawableColor(0x0f000000);
