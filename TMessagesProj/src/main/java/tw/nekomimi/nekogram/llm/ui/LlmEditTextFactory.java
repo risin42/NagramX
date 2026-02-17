@@ -6,6 +6,7 @@ import android.content.Context;
 import android.util.TypedValue;
 import android.view.View;
 
+import org.telegram.messenger.AndroidUtilities;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.EditTextBoldCursor;
 
@@ -74,7 +75,11 @@ public final class LlmEditTextFactory {
         editText.setText(initialText != null ? initialText : "");
         editText.setHintText(hintText);
         if (requestFocus) {
-            editText.requestFocus();
+            AndroidUtilities.runOnUIThread(() -> {
+                editText.requestFocus();
+                editText.setSelection(editText.length());
+                AndroidUtilities.showKeyboard(editText);
+            }, 250);
         }
     }
 }
