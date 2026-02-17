@@ -866,14 +866,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         builder.setPositiveButton(getString(R.string.OK), null);
 
         AlertDialog dialog = builder.create();
-        dialog.setOnShowListener(d -> {
-            try {
-                editText.requestFocus();
-                editText.setSelection(editText.length());
-                AndroidUtilities.showKeyboard(editText);
-            } catch (Exception ignore) {
-            }
-        });
         showDialog(dialog);
 
         var button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
@@ -1063,7 +1055,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
                 initialText,
                 getString(R.string.LlmModelName),
                 EditorInfo.IME_ACTION_DONE,
-                true
+                false
         );
         container.addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, dialogSideInsetDp, 0, dialogSideInsetDp, 0));
 
@@ -1298,9 +1290,10 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
         final AlertDialog[] testResultDialog = new AlertDialog[]{null};
 
         dialog.setOnShowListener(d -> {
-            editText.requestFocus();
-            editText.setSelection(editText.length());
-            AndroidUtilities.showKeyboard(editText);
+            AndroidUtilities.runOnUIThread(() -> {
+                editText.requestFocus();
+                editText.setSelection(editText.length());
+            }, 250);
 
             container.post(() -> {
                 ViewParent parent = container.getParent();
