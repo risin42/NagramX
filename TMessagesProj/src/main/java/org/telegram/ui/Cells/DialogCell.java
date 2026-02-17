@@ -158,6 +158,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     public static final int SENT_STATE_PROGRESS = 0;
     public static final int SENT_STATE_SENT = 1;
     public static final int SENT_STATE_READ = 2;
+    private static final long FILTERED_NULL_RETRY_COOLDOWN_MS = 3000;
     public boolean drawAvatar = true;
     public boolean drawMonoforumAvatar = false;
     private boolean isShareToStoryCell;
@@ -382,6 +383,8 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     private boolean loadingFilteredMessage;
     private MessageObject filteredMessageCache;
     private int lastCheckedMessageId;
+    private int lastFilteredNullMessageId;
+    private long lastFilteredNullTime;
     private CharSequence lastMessageString;
     private int dialogsType;
     private int folderId;
@@ -688,6 +691,12 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             }
             statusDrawableAnimationInProgress = false;
             lastStatusDrawableParams = -1;
+
+            loadingFilteredMessage = false;
+            filteredMessageCache = null;
+            lastCheckedMessageId = 0;
+            lastFilteredNullMessageId = 0;
+            lastFilteredNullTime = 0;
         }
         currentDialogId = dialog.id;
         lastDialogChangedTime = System.currentTimeMillis();
@@ -3070,13 +3079,15 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                         clearingDialog = MessagesController.getInstance(currentAccount).isClearingDialog(dialog.id);
                         groupMessages = MessagesController.getInstance(currentAccount).dialogMessage.get(dialog.id);
                         message = groupMessages != null && groupMessages.size() > 0 ? groupMessages.get(0) : null;
-                        // Message filter: if last message is blocked/filtered, try to pick previous unfiltered for preview
+                        // Message filter: if the last message is blocked/filtered, try to pick previous unfiltered for preview
                         if (message != null) {
                             int currentMessageId = message.getId();
                             if (currentMessageId != lastCheckedMessageId) {
                                 lastCheckedMessageId = currentMessageId;
                                 filteredMessageCache = null;
                                 loadingFilteredMessage = false;
+                                lastFilteredNullMessageId = 0;
+                                lastFilteredNullTime = 0;
                             }
                             boolean blocked = false;
                             boolean replyBlocked = false;
@@ -3093,34 +3104,56 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                                     needsReplyTargetCheck = true;
                                 }
                             }
-                            if (blocked || replyBlocked || needsReplyTargetCheck || AyuFilter.isFiltered(message, null)) {
+                            boolean hardFiltered = blocked || replyBlocked || AyuFilter.isFiltered(message, null);
+                            boolean softReplyCheckPending = needsReplyTargetCheck && !hardFiltered;
+                            boolean inNullRetryCooldown = lastFilteredNullMessageId == currentMessageId && System.currentTimeMillis() - lastFilteredNullTime < FILTERED_NULL_RETRY_COOLDOWN_MS;
+                            if (hardFiltered || softReplyCheckPending) {
                                 if (filteredMessageCache != null && filteredMessageCache.getDialogId() == dialog.id) {
                                     message = filteredMessageCache;
                                     groupMessages = null;
-                                } else if (!loadingFilteredMessage) {
+                                    lastFilteredNullMessageId = 0;
+                                    lastFilteredNullTime = 0;
+                                } else if (!loadingFilteredMessage && !inNullRetryCooldown) {
                                     loadingFilteredMessage = true;
                                     final long dialogId = dialog.id;
-                                    message = null;
-                                    groupMessages = null;
+                                    final int requestMessageId = currentMessageId;
+                                    if (hardFiltered) {
+                                        message = null;
+                                        groupMessages = null;
+                                    }
                                     MessageHelper.getInstance(currentAccount).loadLastMessageSkippingFilteredAsync(
                                         dialogId,
                                         (result) -> {
+                                            if (dialogId != currentDialogId || requestMessageId != lastCheckedMessageId) {
+                                                return;
+                                            }
                                             filteredMessageCache = result;
                                             loadingFilteredMessage = false;
+                                            if (result == null) {
+                                                lastFilteredNullMessageId = requestMessageId;
+                                                lastFilteredNullTime = System.currentTimeMillis();
+                                            } else {
+                                                lastFilteredNullMessageId = 0;
+                                                lastFilteredNullTime = 0;
+                                            }
                                             update(0);
                                         }
                                     );
-                                } else {
+                                } else if (hardFiltered) {
                                     message = null;
                                     groupMessages = null;
                                 }
                             } else {
                                 filteredMessageCache = null;
+                                lastFilteredNullMessageId = 0;
+                                lastFilteredNullTime = 0;
                             }
                         } else {
                             lastCheckedMessageId = 0;
                             loadingFilteredMessage = false;
                             filteredMessageCache = null;
+                            lastFilteredNullMessageId = 0;
+                            lastFilteredNullTime = 0;
                         }
                         // Message filter end
                         lastUnreadState = message != null && message.isUnread();
