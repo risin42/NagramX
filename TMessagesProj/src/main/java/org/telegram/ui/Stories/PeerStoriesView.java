@@ -2422,7 +2422,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                     popupMenu.dismiss();
                 }
             });
-        } else {
+        }/* else {
             Drawable lockIcon2 = ContextCompat.getDrawable(getContext(), R.drawable.msg_gallery_locked2);
             lockIcon2.setColorFilter(new PorterDuffColorFilter(ColorUtils.blendARGB(Color.WHITE, Color.BLACK, 0.5f), PorterDuff.Mode.MULTIPLY));
             CombinedDrawable combinedDrawable2 = new CombinedDrawable(
@@ -2443,7 +2443,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                 }
             });
             item2.setIcon(combinedDrawable2);
-        }
+        }*/
     }
 
     private void createQualityItem(ActionBarPopupWindow.ActionBarPopupWindowLayout popupLayout) {
