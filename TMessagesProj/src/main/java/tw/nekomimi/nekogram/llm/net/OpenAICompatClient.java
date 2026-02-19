@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -21,6 +22,11 @@ import tw.nekomimi.nekogram.utils.HttpClient;
 public final class OpenAICompatClient {
 
     private static final OkHttpClient httpClient = HttpClient.INSTANCE.getLlmInstance();
+    private static final OkHttpClient testHttpClient = httpClient.newBuilder()
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .callTimeout(20, TimeUnit.SECONDS)
+            .build();
 
     private OpenAICompatClient() {
     }
@@ -100,10 +106,14 @@ public final class OpenAICompatClient {
             return new LlmResponse<>(null, e.toString(), 0, 0);
         }
 
-        return chatCompletions(baseUrl, apiKey, requestJson.toString());
+        return chatCompletions(baseUrl, apiKey, requestJson.toString(), testHttpClient);
     }
 
     public static LlmResponse<String> chatCompletions(String baseUrl, String apiKey, String requestJson) {
+        return chatCompletions(baseUrl, apiKey, requestJson, httpClient);
+    }
+
+    private static LlmResponse<String> chatCompletions(String baseUrl, String apiKey, String requestJson, OkHttpClient client) {
         String requestBaseUrl = baseUrl != null ? baseUrl.trim() : "";
         if (requestBaseUrl.isEmpty()) {
             return new LlmResponse<>(null, "Empty base URL", 0, 0);
@@ -122,7 +132,7 @@ public final class OpenAICompatClient {
                 .post(requestBody)
                 .build();
 
-        try (Response response = httpClient.newCall(request).execute()) {
+        try (Response response = client.newCall(request).execute()) {
             String body = response.body().string();
             long duration = System.currentTimeMillis() - start;
             int code = response.code();
