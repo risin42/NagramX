@@ -1,9 +1,9 @@
-package tw.nekomimi.nekogram.utils;
+package tw.nekomimi.nekogram.utils
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
+import androidx.core.net.toUri
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.LocaleController.getString
@@ -21,21 +21,10 @@ import java.util.concurrent.atomic.AtomicReference
 object AlertUtil {
 
     @JvmStatic
-    fun copyAndAlert(text: String) {
-        AndroidUtilities.addToClipboard(text)
-        showToast(getString(R.string.TextCopied))
-    }
-
-    @JvmStatic
     fun copyAndAlert(text: String, fragment: BaseFragment? = null) {
-        AndroidUtilities.addToClipboard(text)
-        BulletinFactory.of(fragment).createCopyBulletin(getString(R.string.TextCopied)).show();
-    }
-
-    @JvmStatic
-    fun copyLinkAndAlert(text: String) {
-        AndroidUtilities.addToClipboard(text)
-        showToast(getString(R.string.LinkCopied))
+        if (AndroidUtilities.addToClipboard(text)) {
+            BulletinFactory.of(fragment).createCopyBulletin(getString(R.string.TextCopied)).show()
+        }
     }
 
     @JvmStatic
@@ -47,7 +36,7 @@ object AlertUtil {
     @JvmStatic
     fun call(number: String) {
         runCatching {
-            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:+" + number))
+            val intent = Intent(Intent.ACTION_DIAL, ("tel:+$number").toUri())
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             ApplicationLoader.applicationContext.startActivity(intent)
         }.onFailure {
@@ -109,7 +98,9 @@ object AlertUtil {
 
         builder.setNegativeButton(getString(R.string.Copy)) { _, _ ->
             AndroidUtilities.addToClipboard(text)
-            AlertUtil.showToast(getString(R.string.TextCopied))
+            if (AndroidUtilities.shouldShowClipboardToast()) {
+                showToast(getString(R.string.TextCopied))
+            }
             builder.dismissRunnable.run()
         }
         builder.setPositiveButton(getString(R.string.OK)) { _, _ ->
@@ -147,7 +138,6 @@ object AlertUtil {
     }
 
     @JvmStatic
-    @JvmOverloads
     fun showTransFailedDialog(ctx: Context, noRetry: Boolean, message: String, retryRunnable: Runnable) = AndroidUtilities.runOnUIThread {
         ctx.setTheme(R.style.Theme_TMessages)
         val reference = AtomicReference<AlertDialog>()
