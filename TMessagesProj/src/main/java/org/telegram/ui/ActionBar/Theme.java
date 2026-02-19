@@ -4662,16 +4662,6 @@ public class Theme {
         themesDict.put("Blue", themeInfo);
 
         themeInfo = new ThemeInfo();
-        themeInfo.name = "NekoX";
-        themeInfo.assetName = "indigo.attheme";
-        themeInfo.previewBackgroundColor = -657931;
-        themeInfo.previewInColor = Color.parseColor("#c0ffffff");
-        themeInfo.previewOutColor = Color.parseColor("#3f51b5");
-        themeInfo.sortIndex = 0;
-        themes.add(themeInfo);
-        themesDict.put("NekoX", themeInfo);
-
-        themeInfo = new ThemeInfo();
         themeInfo.name = "Dark Blue";
         themeInfo.assetName = "darkblue.attheme";
         themeInfo.previewBackgroundColor = 0xff5f6e82;
@@ -4873,6 +4863,10 @@ public class Theme {
             final ThemeInfo themeDarkBlue = themesDict.get("Night");
 
             String theme = preferences.getString("theme", null);
+            if ("NekoX".equals(theme)) {
+                theme = "Blue";
+                preferences.edit().putString("theme", theme).apply();
+            }
             if ("Default".equals(theme)) {
                 applyingTheme = themesDict.get("Blue");
                 applyingTheme.currentAccentId = DEFALT_THEME_ACCENT_ID;
@@ -4906,6 +4900,11 @@ public class Theme {
                 SharedPreferences.Editor editor = themeConfig.edit();
                 editor.putString("lastDarkTheme", currentNightTheme.getKey());
                 editor.commit();
+            }
+
+            String lastDayTheme = themeConfig.getString("lastDayTheme", null);
+            if ("NekoX".equals(lastDayTheme)) {
+                themeConfig.edit().putString("lastDayTheme", "Blue").apply();
             }
 
             SharedPreferences.Editor oldEditor = null;
