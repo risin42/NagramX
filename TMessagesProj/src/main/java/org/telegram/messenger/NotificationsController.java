@@ -95,9 +95,9 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
-import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.helpers.AyuFilter;
+import tw.nekomimi.nekogram.NekoXConfig;
+import tw.nekomimi.nekogram.filters.AyuFilter;
 import xyz.nextalone.nagram.NaConfig;
 
 public class NotificationsController extends BaseController {
@@ -1071,9 +1071,7 @@ public class NotificationsController extends BaseController {
                     }
                     continue;
                 }
-                if (NekoConfig.ignoreBlocked.Bool() &&
-                        (getMessagesController().blockePeers.indexOfKey(messageObject.getFromChatId()) >= 0
-                                || AyuFilter.isCustomFilteredPeer(messageObject.getFromChatId()))) {
+                if (NekoConfig.ignoreBlocked.Bool() && (getMessagesController().blockePeers.indexOfKey(messageObject.getFromChatId()) >= 0 || AyuFilter.isCustomFilteredPeer(messageObject.getFromChatId()))) {
                     continue;
                 }
                 if (AyuFilter.isBlockedChannel(messageObject.getFromChatId())) {
@@ -5193,9 +5191,7 @@ public class NotificationsController extends BaseController {
                         FileLog.d("showExtraNotifications: ["+dialogId+"] continue; topic id is not equal: topicId=" + topicId + " messageTopicId=" + messageTopicId + "; selfId=" + getUserConfig().getClientUserId());
                         continue;
                     }
-                    if (NekoConfig.ignoreBlocked.Bool() &&
-                            (getMessagesController().blockePeers.indexOfKey(messageObject.getFromChatId()) >= 0
-                                    || AyuFilter.isCustomFilteredPeer(messageObject.getFromChatId()))) {
+                    if (NekoConfig.ignoreBlocked.Bool() && (getMessagesController().blockePeers.indexOfKey(messageObject.getFromChatId()) >= 0 || AyuFilter.isCustomFilteredPeer(messageObject.getFromChatId()))) {
                         continue;
                     }
                     if (AyuFilter.isBlockedChannel(messageObject.getFromChatId())) {

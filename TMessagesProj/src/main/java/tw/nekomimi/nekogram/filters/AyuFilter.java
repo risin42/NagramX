@@ -1,4 +1,4 @@
-package tw.nekomimi.nekogram.helpers;
+package tw.nekomimi.nekogram.filters;
 
 import android.text.TextUtils;
 
@@ -13,16 +13,19 @@ import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.TLRPC;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 import xyz.nextalone.nagram.NaConfig;
 
 public class AyuFilter {
@@ -34,6 +37,7 @@ public class AyuFilter {
     private static volatile HashSet<Long> excludedDialogs;
     private static volatile HashSet<Long> blockedChannels;
     private static volatile HashSet<Long> customFilteredUsers;
+    private static volatile HashMap<Long, CustomFilteredUser> customFilteredUsersData;
 
     public static ArrayList<FilterModel> getRegexFilters() {
         if (filterModels == null) {
@@ -43,8 +47,15 @@ public class AyuFilter {
                     FilterModel[] arr = new Gson().fromJson(str, FilterModel[].class);
                     if (arr != null) {
                         filterModels = new ArrayList<>(Arrays.asList(arr));
+                        boolean migrated = false;
                         for (var filter : filterModels) {
+                            if (filter.migrateFromLegacy(0L)) {
+                                migrated = true;
+                            }
                             filter.buildPattern();
+                        }
+                        if (migrated) {
+                            NaConfig.INSTANCE.getRegexFiltersData().setConfigString(new Gson().toJson(filterModels));
                         }
                     } else {
                         filterModels = new ArrayList<>();
@@ -60,9 +71,7 @@ public class AyuFilter {
         FilterModel filterModel = new FilterModel();
         filterModel.regex = text;
         filterModel.caseInsensitive = caseInsensitive;
-        filterModel.enabledGroups = new ArrayList<>();
-        filterModel.disabledGroups = new ArrayList<>();
-        filterModel.enabledGroups.add(0L);
+        filterModel.enabled = true;
         list.add(0, filterModel);
         saveFilter(list);
     }
@@ -101,7 +110,7 @@ public class AyuFilter {
             return null;
         }
         CharSequence messageText = MessageHelper.getMessagePlainTextFull(selectedObject, selectedObjectGroup);
-        if (messageText != null && Emoji.fullyConsistsOfEmojis(messageText)) {
+        if (TextUtils.isEmpty(messageText) || Emoji.fullyConsistsOfEmojis(messageText)) {
             messageText = null;
         }
         if (selectedObject.translated || selectedObject.isRestrictedMessage) {
@@ -119,13 +128,19 @@ public class AyuFilter {
         }
     }
 
+    public static void invalidateFilteredCache() {
+        synchronized (cacheLock) {
+            filteredCache.clear();
+        }
+    }
+
     private static boolean isFilteredInternal(CharSequence text, long dialogId) {
         if (chatFilterEntries != null) {
             for (var entry : chatFilterEntries) {
                 if (entry.dialogId == dialogId) {
                     if (entry.filters != null) {
                         for (var pattern : entry.filters) {
-                            if (!pattern.isEnabled(dialogId)) {
+                            if (!pattern.enabled) {
                                 continue;
                             }
                             if (pattern.pattern != null && pattern.pattern.matcher(text).find()) {
@@ -145,10 +160,10 @@ public class AyuFilter {
 
         if (filterModels != null) {
             for (var pattern : filterModels) {
-                if (!pattern.isEnabled(dialogId)) {
+                if (!pattern.enabled) {
                     continue;
                 }
-                if (pattern.pattern.matcher(text).find()) {
+                if (pattern.pattern != null && pattern.pattern.matcher(text).find()) {
                     return true;
                 }
             }
@@ -217,11 +232,19 @@ public class AyuFilter {
                         ChatFilterEntry[] arr = new Gson().fromJson(str, ChatFilterEntry[].class);
                         if (arr != null) {
                             chatFilterEntries = new ArrayList<>(Arrays.asList(arr));
+                            boolean migrated = false;
                             for (var entry : chatFilterEntries) {
                                 if (entry.filters == null) continue;
                                 for (var f : entry.filters) {
+                                    if (f.migrateFromLegacy(entry.dialogId)) {
+                                        migrated = true;
+                                    }
                                     f.buildPattern();
                                 }
+                            }
+                            if (migrated) {
+                                var json = new Gson().toJson(chatFilterEntries);
+                                NaConfig.INSTANCE.getRegexChatFiltersData().setConfigString(json);
                             }
                         } else {
                             chatFilterEntries = new ArrayList<>();
@@ -269,9 +292,7 @@ public class AyuFilter {
         FilterModel filterModel = new FilterModel();
         filterModel.regex = text;
         filterModel.caseInsensitive = caseInsensitive;
-        filterModel.enabledGroups = new ArrayList<>();
-        filterModel.disabledGroups = new ArrayList<>();
-        filterModel.enabledGroups.add(0L);
+        filterModel.enabled = true;
         if (target.filters == null) {
             target.filters = new ArrayList<>();
         }
@@ -359,6 +380,11 @@ public class AyuFilter {
         NaConfig.INSTANCE.getRegexFiltersData().setConfigString("[]");
         NaConfig.INSTANCE.getRegexChatFiltersData().setConfigString("[]");
         NaConfig.INSTANCE.getRegexFiltersExcludedDialogs().setConfigString("[]");
+        NaConfig.INSTANCE.getCustomFilteredUsersData().setConfigString("[]");
+        synchronized (cacheLock) {
+            customFilteredUsers = new HashSet<>();
+            customFilteredUsersData = new HashMap<>();
+        }
         rebuildCache();
     }
 
@@ -382,36 +408,12 @@ public class AyuFilter {
         return blockedChannels;
     }
 
-    private static HashSet<Long> getCustomFilteredUsers() {
-        if (customFilteredUsers == null) {
-            synchronized (cacheLock) {
-                if (customFilteredUsers == null) {
-                    try {
-                        String str = NaConfig.INSTANCE.getCustomFilteredUsersData().String();
-                        Long[] arr = new Gson().fromJson(str, Long[].class);
-                        customFilteredUsers = new HashSet<>();
-                        if (arr != null) {
-                            for (Long id : arr) {
-                                if (id != null && id != 0L) {
-                                    customFilteredUsers.add(id);
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        customFilteredUsers = new HashSet<>();
-                    }
-                }
-            }
-        }
-        return customFilteredUsers;
-    }
-
     public static boolean isBlockedChannel(long dialogId) {
         return NekoConfig.ignoreBlocked.Bool() && getBlockedChannels().contains(dialogId);
     }
 
     public static boolean isCustomFilteredPeer(long peerId) {
-        return NekoConfig.ignoreBlocked.Bool() && peerId != 0L && getCustomFilteredUsers().contains(peerId);
+        return NekoConfig.ignoreBlocked.Bool() && peerId > 0L && getCustomFilteredUsers().contains(peerId);
     }
 
     public static void blockPeer(long dialogId) {
@@ -453,29 +455,6 @@ public class AyuFilter {
         }
     }
 
-    public static ArrayList<Long> getCustomFilteredUsersList() {
-        ArrayList<Long> list = new ArrayList<>(getCustomFilteredUsers());
-        Collections.sort(list);
-        return list;
-    }
-
-    public static void setCustomFilteredUsers(ArrayList<Long> ids) {
-        HashSet<Long> set = new HashSet<>();
-        if (ids != null) {
-            for (Long id : ids) {
-                if (id != null && id != 0L) {
-                    set.add(id);
-                }
-            }
-        }
-        Long[] arr = set.toArray(new Long[0]);
-        String str = new Gson().toJson(arr);
-        NaConfig.INSTANCE.getCustomFilteredUsersData().setConfigString(str);
-        synchronized (cacheLock) {
-            customFilteredUsers = set;
-        }
-    }
-
     public static ArrayList<Long> checkBlockedChannels(HashSet<Long> blockedChannels) {
         if (blockedChannels == null || blockedChannels.isEmpty()) return new ArrayList<>();
         ArrayList<Long> filtered = new ArrayList<>();
@@ -510,52 +489,205 @@ public class AyuFilter {
         }
     }
 
+    private static void ensureCustomFilteredUsersLoaded() {
+        if (customFilteredUsers != null && customFilteredUsersData != null) {
+            return;
+        }
+        synchronized (cacheLock) {
+            if (customFilteredUsers != null && customFilteredUsersData != null) {
+                return;
+            }
+            HashSet<Long> ids = new HashSet<>();
+            HashMap<Long, CustomFilteredUser> data = new HashMap<>();
+            try {
+                String str = NaConfig.INSTANCE.getCustomFilteredUsersData().String();
+                CustomFilteredUser[] arr = new Gson().fromJson(str, CustomFilteredUser[].class);
+                if (arr != null) {
+                    for (CustomFilteredUser item : arr) {
+                        if (item != null && item.id > 0L) {
+                            ids.add(item.id);
+                            data.put(item.id, item);
+                        }
+                    }
+                }
+            } catch (Exception ignore) {
+            }
+            customFilteredUsers = ids;
+            customFilteredUsersData = data;
+        }
+    }
+
+    private static HashSet<Long> getCustomFilteredUsers() {
+        ensureCustomFilteredUsersLoaded();
+        return customFilteredUsers;
+    }
+
+    private static HashMap<Long, CustomFilteredUser> getCustomFilteredUsersDataMap() {
+        ensureCustomFilteredUsersLoaded();
+        return customFilteredUsersData;
+    }
+
+    private static void saveCustomFilteredUsers(HashSet<Long> ids, HashMap<Long, CustomFilteredUser> dataMap) {
+        ArrayList<Long> sorted = new ArrayList<>(ids);
+        Collections.sort(sorted);
+        ArrayList<CustomFilteredUser> out = new ArrayList<>(sorted.size());
+        HashMap<Long, CustomFilteredUser> resultMap = new HashMap<>(sorted.size());
+        for (Long id : sorted) {
+            if (id == null || id <= 0L) {
+                continue;
+            }
+            CustomFilteredUser user = dataMap.get(id);
+            if (user == null) {
+                user = new CustomFilteredUser();
+                user.id = id;
+            }
+            out.add(user);
+            resultMap.put(user.id, user);
+        }
+        String str = new Gson().toJson(out.toArray(new CustomFilteredUser[0]));
+        NaConfig.INSTANCE.getCustomFilteredUsersData().setConfigString(str);
+        synchronized (cacheLock) {
+            customFilteredUsers = new HashSet<>(resultMap.keySet());
+            customFilteredUsersData = resultMap;
+        }
+    }
+
+    public static ArrayList<Long> getCustomFilteredUsersList() {
+        ArrayList<Long> list = new ArrayList<>(getCustomFilteredUsers());
+        Collections.sort(list);
+        return list;
+    }
+
+    public static ArrayList<CustomFilteredUser> getCustomFilteredUsersDataList() {
+        HashMap<Long, CustomFilteredUser> map = getCustomFilteredUsersDataMap();
+        ArrayList<Long> sortedIds = getCustomFilteredUsersList();
+        ArrayList<CustomFilteredUser> list = new ArrayList<>(sortedIds.size());
+        for (Long id : sortedIds) {
+            if (id == null || id <= 0L) {
+                continue;
+            }
+            CustomFilteredUser item = map.get(id);
+            if (item == null) {
+                item = new CustomFilteredUser();
+                item.id = id;
+            }
+            list.add(item);
+        }
+        return list;
+    }
+
+    public static CustomFilteredUser getCustomFilteredUser(long userId) {
+        if (userId <= 0L) {
+            return null;
+        }
+        return getCustomFilteredUsersDataMap().get(userId);
+    }
+
+    public static void setCustomFilteredUsersData(ArrayList<CustomFilteredUser> users) {
+        HashSet<Long> ids = new HashSet<>();
+        HashMap<Long, CustomFilteredUser> map = new HashMap<>();
+        if (users != null) {
+            for (CustomFilteredUser item : users) {
+                if (item != null && item.id > 0L) {
+                    ids.add(item.id);
+                    map.put(item.id, item);
+                }
+            }
+        }
+        saveCustomFilteredUsers(ids, map);
+    }
+
+    public static void setCustomFilteredUsers(ArrayList<Long> ids) {
+        HashSet<Long> set = new HashSet<>();
+        HashMap<Long, CustomFilteredUser> current = new HashMap<>(getCustomFilteredUsersDataMap());
+        HashMap<Long, CustomFilteredUser> data = new HashMap<>();
+        if (ids != null) {
+            for (Long id : ids) {
+                if (id != null && id > 0L) {
+                    set.add(id);
+                    CustomFilteredUser item = current.get(id);
+                    if (item == null) {
+                        item = new CustomFilteredUser();
+                        item.id = id;
+                    }
+                    data.put(id, item);
+                }
+            }
+        }
+        saveCustomFilteredUsers(set, data);
+    }
+
+    public static void updateCustomFilteredUserFromLocalUser(TLRPC.User user) {
+        if (user == null || user.id <= 0L || !getCustomFilteredUsers().contains(user.id)) {
+            return;
+        }
+        HashSet<Long> ids = new HashSet<>(getCustomFilteredUsers());
+        HashMap<Long, CustomFilteredUser> map = new HashMap<>(getCustomFilteredUsersDataMap());
+        CustomFilteredUser current = map.get(user.id);
+        if (current == null) {
+            current = new CustomFilteredUser();
+            current.id = user.id;
+        }
+        boolean changed = false;
+        String username = UserObject.getPublicUsername(user);
+        String displayName = UserObject.getUserName(user);
+        if (user.access_hash != 0L && current.accessHash != user.access_hash) {
+            current.accessHash = user.access_hash;
+            changed = true;
+        }
+        if (!TextUtils.equals(current.username, username)) {
+            current.username = username;
+            changed = true;
+        }
+        if (!TextUtils.equals(current.displayName, displayName)) {
+            current.displayName = displayName;
+            changed = true;
+        }
+        if (changed) {
+            map.put(user.id, current);
+            saveCustomFilteredUsers(ids, map);
+        }
+    }
+
     public static class FilterModel {
         @Expose
         public String regex;
         @Expose
         public boolean caseInsensitive;
         @Expose
-        public ArrayList<Long> enabledGroups;
-        @Expose
-        public ArrayList<Long> disabledGroups;
+        public boolean enabled = true;
         public Pattern pattern;
+
+        // Legacy fields for deserialization migration only
+        public ArrayList<Long> enabledGroups;
+        public ArrayList<Long> disabledGroups;
 
         public void buildPattern() {
             var flags = Pattern.MULTILINE;
             if (caseInsensitive) {
                 flags |= Pattern.CASE_INSENSITIVE;
             }
-            pattern = Pattern.compile(regex, flags);
-        }
-
-        public boolean defaultStatus() {
-            return enabledGroups.contains(0L);
-        }
-
-        public boolean isEnabled(Long id) {
-            boolean status = defaultStatus();
-            if (id == 0L) return status;
-            if (status) {
-                if (disabledGroups.contains(id)) {
-                    return false;
-                }
-            } else {
-                if (enabledGroups.contains(id)) {
-                    return true;
-                }
+            try {
+                pattern = Pattern.compile(regex, flags);
+            } catch (Exception e) {
+                pattern = null;
+                FileLog.e(e);
             }
-            return status;
         }
 
-        public void setEnabled(boolean enabled, Long id) {
-            enabledGroups.remove(id);
-            disabledGroups.remove(id);
-            if (enabled) {
-                enabledGroups.add(id);
-            } else {
-                disabledGroups.add(id);
+        public boolean migrateFromLegacy(long dialogId) {
+            if (enabledGroups == null && disabledGroups == null) {
+                return false;
             }
+            boolean defaultEnabled = enabledGroups != null && enabledGroups.contains(0L);
+            if (defaultEnabled) {
+                enabled = disabledGroups == null || !disabledGroups.contains(dialogId);
+            } else {
+                enabled = enabledGroups != null && enabledGroups.contains(dialogId);
+            }
+            enabledGroups = null;
+            disabledGroups = null;
+            return true;
         }
     }
 
@@ -564,5 +696,16 @@ public class AyuFilter {
         public long dialogId;
         @Expose
         public ArrayList<FilterModel> filters;
+    }
+
+    public static class CustomFilteredUser {
+        @Expose
+        public long id;
+        @Expose
+        public long accessHash;
+        @Expose
+        public String username;
+        @Expose
+        public String displayName;
     }
 }

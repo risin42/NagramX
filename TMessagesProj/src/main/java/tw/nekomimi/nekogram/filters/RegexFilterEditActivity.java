@@ -1,14 +1,6 @@
-/*
- * This is the source code of AyuGram for Android.
- *
- * We do not and cannot prevent the use of our code,
- * but be respectful and credit the original author.
- *
- * Copyright @Radolyn, 2023
- */
+package tw.nekomimi.nekogram.filters;
 
-package tw.nekomimi.nekogram.ui;
-
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.annotation.SuppressLint;
@@ -42,7 +34,6 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.utils.LocaleUtil;
 
 
@@ -163,8 +154,7 @@ public class RegexFilterEditActivity extends BaseFragment {
         });
 
         ActionBarMenu menu = actionBar.createMenu();
-        doneButton = menu.addItemWithWidth(done_button, R.drawable.ic_ab_done, AndroidUtilities.dp(56));
-        doneButton.setContentDescription(getString(R.string.Done));
+        doneButton = menu.addItemWithWidth(done_button, R.drawable.ic_ab_done, dp(56));
 
         fragmentView = new LinearLayout(context);
         LinearLayout linearLayout = (LinearLayout) fragmentView;
@@ -177,9 +167,9 @@ public class RegexFilterEditActivity extends BaseFragment {
         editField.setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteHintText));
         editField.setBackground(null);
         editField.setLineColors(Theme.getColor(Theme.key_windowBackgroundWhiteInputField), Theme.getColor(Theme.key_windowBackgroundWhiteInputFieldActivated), Theme.getColor(Theme.key_text_RedRegular));
-        editField.setPadding(0, 0, 0, AndroidUtilities.dp(6));
+        editField.setPadding(0, 0, 0, dp(6));
         editField.setCursorColor(Theme.getColor(Theme.key_chat_TextSelectionCursor));
-        editField.setCursorSize(AndroidUtilities.dp(20));
+        editField.setCursorSize(dp(20));
         editField.setCursorWidth(1.5f);
         editField.setHandlesColor(Theme.getColor(Theme.key_chat_TextSelectionCursor));
         editField.setHighlightColor(Theme.getColor(Theme.key_chat_inTextSelectionHighlight));

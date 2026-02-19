@@ -145,8 +145,8 @@ import com.radolyn.ayugram.proprietary.AyuMessageUtils;
 import com.radolyn.ayugram.ui.AyuMessageHistory;
 import com.radolyn.ayugram.ui.AyuViewDeleted;
 import com.radolyn.ayugram.ui.DummyView;
-import com.radolyn.ayugram.utils.AyuGhostUtils;
 import com.radolyn.ayugram.utils.AyuGhostPreferences;
+import com.radolyn.ayugram.utils.AyuGhostUtils;
 import com.radolyn.ayugram.utils.AyuState;
 import com.radolyn.ayugram.utils.LastSeenHelper;
 
@@ -356,7 +356,8 @@ import me.vkryl.core.reference.ReferenceList;
 
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.helpers.AyuFilter;
+import tw.nekomimi.nekogram.filters.AyuFilter;
+import tw.nekomimi.nekogram.filters.RegexFilterEditActivity;
 import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
@@ -376,7 +377,6 @@ import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.ui.BookmarksActivity;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
-import tw.nekomimi.nekogram.ui.RegexFilterEditActivity;
 import tw.nekomimi.nekogram.ui.components.GroupedIconsView;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
@@ -38608,14 +38608,22 @@ public class ChatActivity extends BaseFragment implements
                     for (int i = scanIndex; i >= 0; i--) {
                         var m = messages.get(i);
                         if (m == null) continue;
-                        var g = getGroup(m.getGroupId());
-                        var fromId = m.getFromChatId();
                         if (m.messageOwner != null && m.messageOwner.hide) {
                             continue;
                         }
-                        if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
-                            continue;
+                        if (NekoConfig.ignoreBlocked.Bool() && ChatObject.isMegagroup(currentChat)) {
+                            long fromId = m.getFromChatId();
+                            if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
+                                continue;
+                            }
+                            if (m.replyMessageObject != null) {
+                                fromId = m.replyMessageObject.getFromChatId();
+                                if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
+                                    continue;
+                                }
+                            }
                         }
+                        var g = getGroup(m.getGroupId());
                         if (AyuFilter.isFiltered(m, g)) {
                             continue;
                         }

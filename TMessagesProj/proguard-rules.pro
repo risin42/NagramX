@@ -205,11 +205,12 @@
 }
 
 # TransferData is an inner static class used only via Gson reflection; keep its fields
--keep class tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity$TransferData { *; }
+-keep class tw.nekomimi.nekogram.filters.RegexFiltersSettingActivity$TransferData { *; }
 
 # Be explicit for AyuFilter models to be safe
--keepclassmembers class tw.nekomimi.nekogram.helpers.AyuFilter$FilterModel { <fields>; }
--keepclassmembers class tw.nekomimi.nekogram.helpers.AyuFilter$ChatFilterEntry { <fields>; }
+-keepclassmembers class tw.nekomimi.nekogram.filters.AyuFilter$FilterModel { <fields>; }
+-keepclassmembers class tw.nekomimi.nekogram.filters.AyuFilter$ChatFilterEntry { <fields>; }
+-keepclassmembers class tw.nekomimi.nekogram.filters.AyuFilter$CustomFilteredUser { <fields>; }
 
 # https://github.com/osmdroid/osmdroid/issues/633
 -dontwarn org.osmdroid.tileprovider.modules.NetworkAvailabliltyCheck

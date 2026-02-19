@@ -1,5 +1,6 @@
-package tw.nekomimi.nekogram.ui;
+package tw.nekomimi.nekogram.filters;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.annotation.SuppressLint;
@@ -10,7 +11,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
@@ -21,7 +21,7 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextCheckCell;
 
-import tw.nekomimi.nekogram.helpers.AyuFilter;
+import tw.nekomimi.nekogram.filters.popup.RegexChatFilterPopup;
 import tw.nekomimi.nekogram.settings.BaseNekoSettingsActivity;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 
@@ -93,7 +93,7 @@ public class RegexChatFiltersListActivity extends BaseNekoSettingsActivity {
             int idx = position - startRow;
             var filters = AyuFilter.getChatFiltersForDialog(dialogId);
             if (idx >= 0 && idx < filters.size()) {
-                if (LocaleController.isRTL && x > AndroidUtilities.dp(76) || !LocaleController.isRTL && x < (view.getMeasuredWidth() - AndroidUtilities.dp(76))) {
+                if (LocaleController.isRTL && x > dp(76) || !LocaleController.isRTL && x < (view.getMeasuredWidth() - dp(76))) {
                     RegexChatFilterPopup.show(this, view, x, y, dialogId, idx);
                 } else {
                     TextCheckCell textCheckCell = (TextCheckCell) view;
@@ -103,7 +103,7 @@ public class RegexChatFiltersListActivity extends BaseNekoSettingsActivity {
                     for (var e : entries) {
                         if (e.dialogId == dialogId) {
                             if (e.filters != null && idx < e.filters.size()) {
-                                e.filters.get(idx).setEnabled(enabled, dialogId);
+                                e.filters.get(idx).enabled = enabled;
                                 AyuFilter.saveChatFilterEntries(entries);
                             }
                             break;
@@ -143,7 +143,7 @@ public class RegexChatFiltersListActivity extends BaseNekoSettingsActivity {
                         var filters = AyuFilter.getChatFiltersForDialog(dialogId);
                         if (idx >= 0 && idx < filters.size()) {
                             var model = filters.get(idx);
-                            textCheckCell.setTextAndCheck(model.regex, model.isEnabled(dialogId), true);
+                            textCheckCell.setTextAndCheck(model.regex, model.enabled, true);
                         }
                     }
                     break;

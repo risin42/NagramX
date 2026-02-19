@@ -25,14 +25,14 @@ import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.LayoutHelper;
 
-public class ChatRowCell extends FrameLayout {
+public class FiltersChatCell extends FrameLayout {
 
     private final TextView textView;
     private final TextView subtitleView;
     private final BackupImageView imageView;
     private boolean needDivider;
 
-    public ChatRowCell(Context context) {
+    public FiltersChatCell(Context context) {
         super(context);
 
         imageView = new BackupImageView(context);
@@ -86,6 +86,7 @@ public class ChatRowCell extends FrameLayout {
                 title = ContactsController.formatName(user.first_name, user.last_name);
                 AvatarDrawable avatar = new AvatarDrawable();
                 avatar.setInfo(user);
+                imageView.setRoundRadius(dp(20));
                 imageView.setForUserOrChat(user, avatar);
             } else {
                 imageView.setImageDrawable(null);
@@ -104,6 +105,33 @@ public class ChatRowCell extends FrameLayout {
         }
 
         textView.setText(title);
+        subtitleView.setVisibility(VISIBLE);
+        subtitleView.setText(subtitle);
+        setWillNotDraw(!needDivider);
+    }
+
+    public void setUserFilter(long userId, String title, String subtitle, boolean divider) {
+        needDivider = divider;
+        imageView.setRoundRadius(dp(20));
+
+        TLRPC.User user = MessagesController.getInstance(UserConfig.selectedAccount).getUser(userId);
+        AvatarDrawable avatar = new AvatarDrawable();
+        if (user != null) {
+            avatar.setInfo(user);
+            imageView.setForUserOrChat(user, avatar);
+            if (TextUtils.isEmpty(title)) {
+                title = ContactsController.formatName(user.first_name, user.last_name);
+            }
+        } else {
+            avatar.setAvatarType(AvatarDrawable.AVATAR_TYPE_ANONYMOUS);
+            imageView.setImageDrawable(avatar);
+        }
+
+        if (TextUtils.isEmpty(title)) {
+            title = String.valueOf(userId);
+        }
+        textView.setText(title);
+        subtitleView.setVisibility(TextUtils.isEmpty(subtitle) ? GONE : VISIBLE);
         subtitleView.setText(subtitle);
         setWillNotDraw(!needDivider);
     }

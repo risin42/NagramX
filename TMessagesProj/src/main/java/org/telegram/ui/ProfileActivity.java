@@ -343,9 +343,16 @@ import java.util.zip.ZipOutputStream;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
-import tw.nekomimi.nekogram.helpers.AyuFilter;
+import tw.nekomimi.nekogram.DatacenterActivity;
+import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.NekoXConfig;
+import tw.nekomimi.nekogram.filters.AyuFilter;
+import tw.nekomimi.nekogram.filters.RegexChatFiltersListActivity;
+import tw.nekomimi.nekogram.filters.RegexFiltersSettingActivity;
+import tw.nekomimi.nekogram.filters.ShadowBanListActivity;
 import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.helpers.LocalNameHelper;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.helpers.ProfileDateHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
@@ -353,24 +360,18 @@ import tw.nekomimi.nekogram.helpers.remote.UpdateHelper;
 import tw.nekomimi.nekogram.llm.LlmConfig;
 import tw.nekomimi.nekogram.menu.forum.CustomForumTabsPopupWrapper;
 import tw.nekomimi.nekogram.menu.ghostmode.GhostModeExclusionPopupWrapper;
-import tw.nekomimi.nekogram.menu.saveDeleted.SaveExclusionPopupWrapper;
 import tw.nekomimi.nekogram.menu.regexfilters.RegexFiltersExclusionPopupWrapper;
-import tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity;
-import tw.nekomimi.nekogram.translate.Translator;
-import tw.nekomimi.nekogram.ui.BottomBuilder;
-import tw.nekomimi.nekogram.DatacenterActivity;
-import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.NekoXConfig;
+import tw.nekomimi.nekogram.menu.saveDeleted.SaveExclusionPopupWrapper;
 import tw.nekomimi.nekogram.parts.DialogTransKt;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
-import tw.nekomimi.nekogram.ui.RegexChatFiltersListActivity;
+import tw.nekomimi.nekogram.translate.Translator;
+import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.ProxyUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
 import xyz.nextalone.nagram.NaConfig;
-import tw.nekomimi.nekogram.helpers.MessageHelper;
 
 public class ProfileActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate, SharedMediaLayout.SharedMediaPreloaderDelegate, ImageUpdater.ImageUpdaterDelegate, SharedMediaLayout.Delegate {
     private final static int PHONE_OPTION_CALL = 0,
@@ -640,6 +641,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private final static int clear_cache = 104;
     private final static int add_to_folder = 105;
     private final static int block_channel = 106;
+    private final static int shadow_ban = 107;
 
     private Rect rect = new Rect();
 
@@ -2582,6 +2584,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     onBlockContactClicked(false);
                 } else if (id == block_channel) {
                     onBlockChannelClicked();
+                } else if (id == shadow_ban) {
+                    onShadowBanClicked();
                 } else if (id == add_contact) {
                     TLRPC.User user = getMessagesController().getUser(userId);
                     Bundle args = new Bundle();
@@ -6491,6 +6495,39 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
             }
         }
+    }
+
+    private void onShadowBanClicked() {
+        if (userId == 0L) {
+            return;
+        }
+        TLRPC.User user = getMessagesController().getUser(userId);
+        if (user == null || UserObject.isUserSelf(user)) {
+            return;
+        }
+        ArrayList<Long> userIds = AyuFilter.getCustomFilteredUsersList();
+        boolean added;
+        if (userIds.contains(userId)) {
+            userIds.remove(userId);
+            added = false;
+        } else {
+            userIds.add(userId);
+            added = true;
+        }
+        AyuFilter.setCustomFilteredUsers(userIds);
+        if (added) {
+            AyuFilter.updateCustomFilteredUserFromLocalUser(user);
+        }
+        if (BulletinFactory.canShowBulletin(this)) {
+            Drawable drawable = ContextCompat.getDrawable(getParentActivity(), added ? R.drawable.msg_block2 : R.drawable.msg_block);
+            if (drawable != null) {
+                drawable = drawable.mutate();
+                drawable.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_undo_infoColor), PorterDuff.Mode.SRC_IN));
+            }
+            CharSequence text = AndroidUtilities.replaceSingleTag(getString(added ? R.string.ShadowBanAdded : R.string.ShadowBanRemoved), () -> presentFragment(new ShadowBanListActivity()));
+            BulletinFactory.of(this).createSimpleBulletin(drawable, text).show();
+        }
+        createActionBarMenu(true);
     }
 
     private void onShareClicked() {
@@ -12609,6 +12646,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                 otherItem.addSubItem(block_contact, R.drawable.msg_retry, LocaleController.getString(R.string.BotRestart));
                             }
                         } else {
+                            if (NekoConfig.ignoreBlocked.Bool()) {
+                                boolean customFiltered = AyuFilter.getCustomFilteredUsersList().contains(userId);
+                                otherItem.addSubItem(shadow_ban, customFiltered ? R.drawable.msg_block : R.drawable.msg_block2, getString(customFiltered ? R.string.UnshadowBan : R.string.ShadowBan));
+                            }
                             otherItem.addSubItem(block_contact, !userBlocked ? R.drawable.msg_block : R.drawable.msg_block, !userBlocked ? LocaleController.getString(R.string.BlockContact) : LocaleController.getString(R.string.Unblock));
                         }
                     }
@@ -12621,6 +12662,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     createMessageFilterItem();
                     if (!TextUtils.isEmpty(user.phone)) {
                         otherItem.addSubItem(share_contact, R.drawable.msg_share, LocaleController.getString(R.string.ShareContact));
+                    }
+                    if (NekoConfig.ignoreBlocked.Bool()) {
+                        boolean customFiltered = AyuFilter.getCustomFilteredUsersList().contains(userId);
+                        otherItem.addSubItem(shadow_ban, customFiltered ? R.drawable.msg_block : R.drawable.msg_block2, getString(customFiltered ? R.string.UnshadowBan : R.string.ShadowBan));
                     }
                     otherItem.addSubItem(block_contact, !userBlocked ? R.drawable.msg_block : R.drawable.msg_block, !userBlocked ? LocaleController.getString(R.string.BlockContact) : LocaleController.getString(R.string.Unblock));
                     otherItem.addSubItem(edit_contact, R.drawable.msg_edit, LocaleController.getString(R.string.EditContact));
@@ -12966,7 +13011,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             if (otherItem != null) {
                 otherItem.toggleSubMenu();
             }
-            AndroidUtilities.runOnUIThread(() -> presentFragment(new RegexFiltersSettingActivity(chatId != 0 ? -chatId : userId)), 50);
+            AndroidUtilities.runOnUIThread(() -> presentFragment(new RegexFiltersSettingActivity()), 50);
             return true;
         });
         cell.setRightIcon(R.drawable.msg_arrowright, v -> {

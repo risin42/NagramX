@@ -50,8 +50,8 @@ import org.telegram.ui.Components.RecyclerListView;
 
 import java.util.ArrayList;
 
-import tw.nekomimi.nekogram.helpers.AyuFilter;
-import tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity;
+import tw.nekomimi.nekogram.filters.AyuFilter;
+import tw.nekomimi.nekogram.filters.RegexFiltersSettingActivity;
 
 public class PrivacyUsersActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -607,7 +607,7 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                     if (position == blockUserDetailRow) {
                         if (currentType == TYPE_BLOCKED) {
                             privacyCell.setFixedSize(0);
-                            String link = LocaleController.getString(R.string.RegexFilters);
+                            String link = LocaleController.getString(R.string.ShadowBan);
                             String fullText = LocaleController.getString(R.string.BlockedUsersInfo) + " **" + link + " >**";
                             privacyCell.setText(AndroidUtilities.replaceArrows(AndroidUtilities.replaceSingleTag(fullText, () -> {
                                 presentFragment(new RegexFiltersSettingActivity());
