@@ -87,7 +87,6 @@
     <string name="ProviderMicrosoftTranslator">Traductor de Bing</string>
     <string name="DontSendGreetingSticker">No enviar Sticker de Saludos</string>
     <string name="TakeGIFasVideo">Tomar GIF como vídeo</string>
-    <string name="UseMediaStreamInVoip">Usar flujo de medios en VoIP</string>
     <string name="HideTimeForSticker">Ocultar la hora en los stickers</string>
     <string name="hideGroupSticker">Ocultar Sticker de Grupo</string>
     <string name="customGroupVoipAudioBitrate">Tasa de bits de audio VoIP del grupo</string>

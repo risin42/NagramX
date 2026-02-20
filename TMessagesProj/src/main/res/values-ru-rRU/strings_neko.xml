@@ -87,7 +87,6 @@
     <string name="ProviderMicrosoftTranslator">Bing</string>
     <string name="DontSendGreetingSticker">Не отправлять приветственный стикер</string>
     <string name="TakeGIFasVideo">Воспринимать GIF как видео</string>
-    <string name="UseMediaStreamInVoip">Использовать медиапоток в звонках</string>
     <string name="HideTimeForSticker">Скрыть время на стикерах</string>
     <string name="hideGroupSticker">Скрыть стикер группы</string>
     <string name="customGroupVoipAudioBitrate">Битрейт аудио групповых звонков</string>

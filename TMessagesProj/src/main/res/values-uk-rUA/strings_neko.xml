@@ -87,7 +87,6 @@
     <string name="ProviderMicrosoftTranslator">Bing Translator</string>
     <string name="DontSendGreetingSticker">Не надсилати привітальну наліпку</string>
     <string name="TakeGIFasVideo">Сприймати GIF як відео</string>
-    <string name="UseMediaStreamInVoip">Використовувати медіапотік у VoIP</string>
     <string name="HideTimeForSticker">Приховати час на наліпках</string>
     <string name="hideGroupSticker">Приховати наліпку групи</string>
     <string name="customGroupVoipAudioBitrate">Бітрейт аудіо VoIP для груп</string>

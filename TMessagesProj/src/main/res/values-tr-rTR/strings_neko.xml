@@ -87,7 +87,6 @@
     <string name="ProviderMicrosoftTranslator">Bing Çeviri</string>
     <string name="DontSendGreetingSticker">Karşılama Çıkartması Gönderme</string>
     <string name="TakeGIFasVideo">GIF\'i Video Olarak Çek</string>
-    <string name="UseMediaStreamInVoip">VoIP\'de Medya Akışını Kullan</string>
     <string name="HideTimeForSticker">Çıkartmalarda Zamanı Gizle</string>
     <string name="hideGroupSticker">Grup Çıkartmasını Gizle</string>
     <string name="customGroupVoipAudioBitrate">Grup VoIP Ses Bit Hızı</string>
