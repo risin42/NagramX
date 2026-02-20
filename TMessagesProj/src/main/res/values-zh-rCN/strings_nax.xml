@@ -91,7 +91,6 @@
     <string name="ChatsOnly">仅聊天</string>
     <string name="InstantViewTranslation">即时预览</string>
     <string name="SaveDeletedMessageForBot">在机器人聊天中保存</string>
-    <string name="DrawerElements">侧栏菜单</string>
     <string name="HideArchive">移除聊天列表中的\"已归档聊天\"</string>
     <string name="HideChannelSilentBroadcast">隐藏静默广播切换按钮</string>
     <string name="ConfirmAllLinks">打开内联链接前确认</string>

@@ -91,7 +91,6 @@
     <string name="ChatsOnly">チャットのみ</string>
     <string name="InstantViewTranslation">アーティクル</string>
     <string name="SaveDeletedMessageForBot">ボットチャットで保存</string>
-    <string name="DrawerElements">ドロワーメニュー</string>
     <string name="HideArchive">チャットリストで「収納したチャット」を非表示</string>
     <string name="HideChannelSilentBroadcast">「通知せずに公開」ボタンを非表示</string>
     <string name="ConfirmAllLinks">埋め込みリンクを開く前に確認</string>

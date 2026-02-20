@@ -90,7 +90,6 @@
     <string name="ChatsOnly">Лише в чатах</string>
     <string name="InstantViewTranslation">Миттєвий перегляд</string>
     <string name="SaveDeletedMessageForBot">Зберегти у чатах бота</string>
-    <string name="DrawerElements">Елементи меню</string>
     <string name="HideArchive">Видалити \"Архівні чати\" зі Списку Чату</string>
     <string name="HideChannelSilentBroadcast">Сховати беззвучний перемикач трансляції</string>
     <string name="ConfirmAllLinks">Запитувати перед відкриттям вбудованих посилань</string>

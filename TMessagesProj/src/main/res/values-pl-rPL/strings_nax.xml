@@ -82,7 +82,6 @@
     <string name="ChatsOnly">Tylko w czatach</string>
     <string name="InstantViewTranslation">Natychmiastowy widok</string>
     <string name="SaveDeletedMessageForBot">Zapisz w czatach botów</string>
-    <string name="DrawerElements">Elementy szuflady</string>
     <string name="HideArchive">Usuń „Zarchiwizowane czaty” z listy czatów</string>
     <string name="HideChannelSilentBroadcast">Ukryj przełącznik cichej transmisji</string>
     <string name="ConfirmAllLinks">Zapytaj przed otwarciem linków w kolejce</string>

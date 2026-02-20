@@ -91,7 +91,6 @@
     <string name="ChatsOnly">Только в чатах</string>
     <string name="InstantViewTranslation">Мгновенный просмотр</string>
     <string name="SaveDeletedMessageForBot">Сохранять в чатах с ботами</string>
-    <string name="DrawerElements">Элементы бокового меню</string>
     <string name="HideArchive">Удалить архивные чаты из списка чатов</string>
     <string name="HideChannelSilentBroadcast">Скрыть переключатель бесшумной трансляции</string>
     <string name="ConfirmAllLinks">Спрашивать перед открытием встроенных ссылок</string>
