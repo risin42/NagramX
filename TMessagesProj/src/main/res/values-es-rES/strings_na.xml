@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="N_Config">N-Configuración</string>
-    <string name="ForceCopy">Forzar copia</string>
     <string name="CombineMessage">Combinar mensajes</string>
     <string name="TextStyle">Estilo de texto</string>
     <string name="NoiseSuppressAndVoiceEnhance">Mejoras de voz</string>

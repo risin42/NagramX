@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="N_Config">Konfig-N</string>
-    <string name="ForceCopy">Salin Paksa</string>
     <string name="CombineMessage">Gabungkan Pesan</string>
     <string name="TextStyle">Gaya Teks</string>
     <string name="NoiseSuppressAndVoiceEnhance">Peningkatan Suara</string>

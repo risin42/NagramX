@@ -45,12 +45,6 @@ object NaConfig {
     private val configs = ArrayList<ConfigItem>()
 
     // Configs
-    val forceCopy =
-        addConfig(
-            "ForceCopy",
-            ConfigItem.configTypeBool,
-            false
-        )
     val showTextBold =
         addConfig(
             "TextBold",
