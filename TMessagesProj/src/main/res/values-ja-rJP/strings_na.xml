@@ -64,7 +64,6 @@
     <string name="ShowSmallGIF">GIF を小さく表示</string>
     <string name="DisableClickCommandToSend">ボットコマンドを送信する前に確認</string>
     <string name="DisableDialogsFloatingButton">フローティングボタンを非表示</string>
-    <string name="DisableFlagSecure">FLAG_SECURE を無効化</string>
     <string name="CenterActionBarTitleType">タイトルを中央揃えにする</string>
     <string name="ShowQuickReplyInBotCommands">ボットコマンドでクイック返信を表示</string>
     <string name="PushServiceType">通知プッシュサービス</string>

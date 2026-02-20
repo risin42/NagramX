@@ -64,7 +64,6 @@
     <string name="ShowSmallGIF">Mostrar GIF pequeno</string>
     <string name="DisableClickCommandToSend">Perguntar antes de enviar comando do bot</string>
     <string name="DisableDialogsFloatingButton">Ocultar botão flutuante</string>
-    <string name="DisableFlagSecure">Permitir capturas de tela</string>
     <string name="CenterActionBarTitleType">Usar título centralizado</string>
     <string name="ShowQuickReplyInBotCommands">Mostrar resposta rápida nos comandos do bot</string>
     <string name="PushServiceType">Tipo de serviço push</string>

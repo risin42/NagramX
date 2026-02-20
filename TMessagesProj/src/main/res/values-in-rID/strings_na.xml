@@ -64,7 +64,6 @@
     <string name="ShowSmallGIF">Tampilkan GIF Kecil</string>
     <string name="DisableClickCommandToSend">Tanyakan Sebelum Mengirim Perintah Bot</string>
     <string name="DisableDialogsFloatingButton">Sembunyikan Tombol Mengambang</string>
-    <string name="DisableFlagSecure">Nonaktifkan FLAG_SECURE</string>
     <string name="CenterActionBarTitleType">Gunakan Judul di Tengah</string>
     <string name="ShowQuickReplyInBotCommands">Tampilkan Balasan Cepat di Perintah Bot</string>
     <string name="PushServiceType">Jenis Layanan Dorong</string>

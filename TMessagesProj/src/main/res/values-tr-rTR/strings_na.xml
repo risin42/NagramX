@@ -64,7 +64,6 @@
     <string name="ShowSmallGIF">Küçük GIF Göster</string>
     <string name="DisableClickCommandToSend">Bot Komutu Göndermeden Önce Sor</string>
     <string name="DisableDialogsFloatingButton">Kayan Düğmeyi Gizle</string>
-    <string name="DisableFlagSecure">FLAG_SECURE\'ı Devre Dışı Bırak</string>
     <string name="CenterActionBarTitleType">Ortalanmış Başlık Kullan</string>
     <string name="ShowQuickReplyInBotCommands">Bot Komutlarında Hızlı Yanıt Göster</string>
     <string name="PushServiceType">Anlık Bildirim Servis Türü</string>
