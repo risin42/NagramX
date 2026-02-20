@@ -11075,12 +11075,12 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     private void updateFlagSecure() {
-        if (flagSecure == null) {
+        /*if (flagSecure == null) {
             Activity activity = AndroidUtilities.findActivity(getContext());
             Window window = activity == null ? null : activity.getWindow();
             if (window != null) {
                 flagSecure = new FlagSecureReason(window, () ->
-                    !NekoXConfig.disableFlagSecure && currentMessageObject != null && currentMessageObject.messageOwner != null && (
+                    currentMessageObject != null && currentMessageObject.messageOwner != null && (
                         currentMessageObject.type == MessageObject.TYPE_PAID_MEDIA && (groupMedia == null || !groupMedia.hidden) ||
                         currentMessageObject.messageOwner.noforwards ||
                         currentMessageObject.isVoiceOnce() ||
@@ -11094,7 +11094,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         }
         if (flagSecure != null) {
             flagSecure.invalidate();
-        }
+        }*/
     }
 
     public void checkVideoPlayback(boolean allowStart, Bitmap thumb) {

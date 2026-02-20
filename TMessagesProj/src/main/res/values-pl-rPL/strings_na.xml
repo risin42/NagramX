@@ -64,7 +64,6 @@
     <string name="ShowSmallGIF">Pokaż mały GIF</string>
     <string name="DisableClickCommandToSend">Zapytaj przed wysłaniem polecenia do bota</string>
     <string name="DisableDialogsFloatingButton">Ukryj przycisk pływający</string>
-    <string name="DisableFlagSecure">Wyłącz źródło flagi</string>
     <string name="CenterActionBarTitleType">Użyj wyśrodkowanego tytułu</string>
     <string name="ShowQuickReplyInBotCommands">Pokaż szybką odpowiedź w poleceniach bota</string>
     <string name="PushServiceType">Typ usługi push</string>

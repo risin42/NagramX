@@ -64,7 +64,6 @@
     <string name="ShowSmallGIF">Маленькі GIF</string>
     <string name="DisableClickCommandToSend">Запитувати перед відправленням команди бота</string>
     <string name="DisableDialogsFloatingButton">Приховати плаваючу кнопку</string>
-    <string name="DisableFlagSecure">Вимкнути FLAG_SECURE</string>
     <string name="CenterActionBarTitleType">Заголовок по центру</string>
     <string name="ShowQuickReplyInBotCommands">Показувати швидку відповідь у командах бота</string>
     <string name="PushServiceType">Служба Push-сповіщень</string>

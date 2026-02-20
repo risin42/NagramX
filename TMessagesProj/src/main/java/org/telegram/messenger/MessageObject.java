@@ -9208,10 +9208,8 @@ public class MessageObject {
     }
 
     public static boolean shouldEncryptPhotoOrVideo(int currentAccount, TLRPC.Message message) {
-        if (NekoXConfig.disableFlagSecure) {
-            return false;
-        }
-        if (message != null && message.media != null && (isVoiceDocument(getDocument(message)) || isRoundVideoMessage(message)) && message.media.ttl_seconds == 0x7FFFFFFF) {
+        return false;
+        /*if (message != null && message.media != null && (isVoiceDocument(getDocument(message)) || isRoundVideoMessage(message)) && message.media.ttl_seconds == 0x7FFFFFFF) {
             return true;
         }
         if (getMedia(message) instanceof TLRPC.TL_messageMediaPaidMedia) {
@@ -9224,7 +9222,7 @@ public class MessageObject {
             return (getMedia(message) instanceof TLRPC.TL_messageMediaPhoto || isVideoMessage(message)) && message.ttl > 0 && message.ttl <= 60;
         } else {
             return (getMedia(message) instanceof TLRPC.TL_messageMediaPhoto || getMedia(message) instanceof TLRPC.TL_messageMediaDocument) && getMedia(message).ttl_seconds != 0;
-        }
+        }*/
     }
 
     public boolean shouldEncryptPhotoOrVideo() {

@@ -64,7 +64,6 @@
     <string name="ShowSmallGIF">Mostra GIF Piccole</string>
     <string name="DisableClickCommandToSend">Chiedi prima di mandare comandi ai Bot</string>
     <string name="DisableDialogsFloatingButton">Nascondi Bottone Fluttuante</string>
-    <string name="DisableFlagSecure">Disabilita FLAG_SECURE</string>
     <string name="CenterActionBarTitleType">Usa Titolo Centrato</string>
     <string name="ShowQuickReplyInBotCommands">Mostra Risposta Rapida nei Comandi Bot</string>
     <string name="PushServiceType">Tipo di Servizio Push</string>

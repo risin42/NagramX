@@ -64,7 +64,6 @@
     <string name="ShowSmallGIF">نمایش گیف کوچک</string>
     <string name="DisableClickCommandToSend">اجازه گرفتن قبل از ارسال دستور به ربات</string>
     <string name="DisableDialogsFloatingButton">مخفی کردن دکمه شناور</string>
-    <string name="DisableFlagSecure">غیرفعال کردن FLAG_SECURE</string>
     <string name="CenterActionBarTitleType">نمایش عنوان به‌صورت وسط‌چین</string>
     <string name="ShowQuickReplyInBotCommands">نمایش پاسخ سریع در دستورهای ربات</string>
     <string name="PushServiceType">نوع سرویس اعلان</string>

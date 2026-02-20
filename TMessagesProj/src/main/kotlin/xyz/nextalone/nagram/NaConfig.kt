@@ -361,12 +361,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val disableFlagSecure =
-        addConfig(
-            "DisableFlagSecure",
-            ConfigItem.configTypeBool,
-            true
-        )
     val centerActionBarTitle =
         addConfig(
             "CenterActionBarTitle",
