@@ -273,7 +273,6 @@
     <string name="BlockChannelsUnavailable">Деякі канали тимчасово недоступні.</string>
     <string name="FixLinkPreview">Виправити прев’ю посилань</string>
     <string name="NoQuoteForwardShort">Без цитати</string>
-    <string name="ForceEdgeToEdge">Примусово на весь екран</string>
     <string name="ViewDeleted">Переглянути видалені</string>
     <string name="PasskeyLogin">Вхід за ключем доступу</string>
     <string name="PasskeyInfo2">Ця функція працює лише з менеджерами паролів, які дозволяють користувачу керувати налаштуваннями довіри для привілейованих програм таких як **Bitwarden** та **KeePassDX**.</string>

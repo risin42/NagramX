@@ -13953,8 +13953,4 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         }
     }
 
-    @Override
-    public boolean isSupportEdgeToEdge() {
-        return NaConfig.INSTANCE.getForceEdgeToEdge().Bool();
-    }
 }

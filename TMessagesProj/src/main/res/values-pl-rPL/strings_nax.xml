@@ -265,7 +265,6 @@
     <string name="BlockChannelsUnavailable">Niektóre kanały są tymczasowo niedostępne.</string>
     <string name="FixLinkPreview">Napraw podgląd łącza</string>
     <string name="NoQuoteForwardShort">Przekaż bez śledzenia</string>
-    <string name="ForceEdgeToEdge">Wymuś krawędź do krawędzi</string>
     <string name="ViewDeleted">Wyświetl usunięte</string>
     <string name="PasskeyLogin">Logowanie za pomocą klucza</string>
     <string name="PasskeyInfo2">Funkcja ta działa wyłącznie w menedżerach haseł umożliwiających użytkownikowi zarządzanie ustawieniami zaufania dla aplikacji z uprawnieniami, takich jak **Bitwarden** i **KeePassDX**.</string>

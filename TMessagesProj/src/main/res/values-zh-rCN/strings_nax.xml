@@ -274,7 +274,6 @@
     <string name="BlockChannelsUnavailable">某些频道暂时无法显示。</string>
     <string name="FixLinkPreview">修复链接预览</string>
     <string name="NoQuoteForwardShort">无引用</string>
-    <string name="ForceEdgeToEdge">强制无边框显示</string>
     <string name="ViewDeleted">查看已删除消息</string>
     <string name="PasskeyLogin">Passkey 登录</string>
     <string name="PasskeyInfo2">此功能仅适用于允许用户管理特权应用的信任设置的密码管理器，例如 **Bitwarden** 和 **KeePassDX**。</string>

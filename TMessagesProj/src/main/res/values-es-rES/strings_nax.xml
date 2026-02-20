@@ -271,7 +271,6 @@
     <string name="BlockChannelsUnavailable">Algunos canales no están disponibles temporalmente.</string>
     <string name="FixLinkPreview">Corregir vista previa de enlaces</string>
     <string name="NoQuoteForwardShort">Sin citar</string>
-    <string name="ForceEdgeToEdge">Forzar de extremo a extremo</string>
     <string name="ViewDeleted">Ver eliminados</string>
     <string name="PasskeyLogin">Passkey Login</string>
     <string name="PasskeyInfo2">Esta función solo funciona con administradores de contraseñas que permiten al usuario gestionar la configuración de confianza para aplicaciones privilegiadas, como **Bitwarden** y **KeePassDX**.</string>

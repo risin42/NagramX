@@ -1347,12 +1347,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    val forceEdgeToEdge =
-        addConfig(
-            "ForceEdgeToEdge",
-            ConfigItem.configTypeBool,
-            false
-        )
     val showAddToBookmark =
         addConfig(
             "ShowAddToBookmark",

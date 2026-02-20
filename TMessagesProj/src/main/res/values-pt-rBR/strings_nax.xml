@@ -274,7 +274,6 @@
     <string name="BlockChannelsUnavailable">Alguns canais estão indisponíveis temporariamente.</string>
     <string name="FixLinkPreview">Corrigir prévia de link</string>
     <string name="NoQuoteForwardShort">Sem autor</string>
-    <string name="ForceEdgeToEdge">Forçar exibição de ponta a ponta</string>
     <string name="ViewDeleted">Ver excluídos</string>
     <string name="PasskeyLogin">Chaves de acesso</string>
     <string name="PasskeyInfo2">Funciona apenas com gerenciadores de senhas que permitem gerenciar apps privilegiados, como o **Bitwarden** e o **KeePassDX**.</string>
