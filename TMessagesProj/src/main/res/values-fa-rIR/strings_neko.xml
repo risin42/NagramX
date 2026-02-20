@@ -87,7 +87,6 @@
     <string name="ProviderMicrosoftTranslator">Bing Translator</string>
     <string name="DontSendGreetingSticker">عدم ارسال استیکر خوشامدگویی</string>
     <string name="TakeGIFasVideo">نمایش گیف‌ها به صورت ویدیو</string>
-    <string name="UseMediaStreamInVoip">استفاده از Media Stream در VoIP</string>
     <string name="HideTimeForSticker">پنهان کردن زمان برای استیکرها</string>
     <string name="hideGroupSticker">پنهان کردن استیکر گروه</string>
     <string name="customGroupVoipAudioBitrate">بیت‌ریت صدای تماس گروهی</string>

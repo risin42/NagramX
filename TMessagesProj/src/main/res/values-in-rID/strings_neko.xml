@@ -87,7 +87,6 @@
     <string name="ProviderMicrosoftTranslator">Bing Penerjemah</string>
     <string name="DontSendGreetingSticker">Jangan Kirim Stiker Ucapan</string>
     <string name="TakeGIFasVideo">Ambil GIF sebagai Video</string>
-    <string name="UseMediaStreamInVoip">Gunakan Tayangan Media di VoIP</string>
     <string name="HideTimeForSticker">Sembunyikan Waktu pada Stiker</string>
     <string name="hideGroupSticker">Sembunyikan Stiker Grup</string>
     <string name="customGroupVoipAudioBitrate">Bitrate Audio VoIP Grup</string>
