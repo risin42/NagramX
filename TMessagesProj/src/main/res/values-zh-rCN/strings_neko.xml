@@ -203,8 +203,6 @@
     <string name="DisableSystemAccount">禁用系统帐户</string>
     <string name="FilterMenu">分类菜单</string>
     <string name="DisableProxyWhenVpnEnabled">启用 VPN 时禁用代理</string>
-    <string name="UseProxyItem">在侧栏而不是顶部按钮显示代理 </string>
-    <string name="HideProxyByDefault">未连接时隐藏代理按钮</string>
     <string name="SkipOpenLinkConfirm">跳过打开链接确认</string>
     <string name="DeleteAllInChatAlert">警告！这将**删除此聊天中所有用户**的**所有消息**。</string>
     <string name="UnblockAll">解除屏蔽所有账户</string>

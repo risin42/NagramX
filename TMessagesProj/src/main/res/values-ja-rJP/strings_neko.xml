@@ -201,8 +201,6 @@
     <string name="DisableSystemAccount">システムアカウントを無効化</string>
     <string name="FilterMenu">ダイアログフィルターメニュー</string>
     <string name="DisableProxyWhenVpnEnabled">VPN が有効な場合プロキシを無効化</string>
-    <string name="UseProxyItem">ドロワーメニューにプロキシを表示</string>
-    <string name="HideProxyByDefault">無効時にプロキシを非表示</string>
     <string name="SkipOpenLinkConfirm">リンクを開くときの確認をスキップする</string>
     <string name="DeleteAllInChatAlert">警告！このチャットの全てのメッセージは**削除**されます。</string>
     <string name="UnblockAll">すべてのブロックを解除</string>

@@ -204,8 +204,6 @@
     <string name="DisableSystemAccount">Disable System Account</string>
     <string name="FilterMenu">Dialogs Filter Menu</string>
     <string name="DisableProxyWhenVpnEnabled">Disable Proxy When VPN is Enabled</string>
-    <string name="UseProxyItem">Show Proxy in Drawer</string>
-    <string name="HideProxyByDefault">Hide Proxy When Inactive</string>
     <string name="SkipOpenLinkConfirm">Skip Open Link Confirmation</string>
     <string name="DeleteAllInChatAlert">Warning! This will **delete all messages** in this chat for **all** participants.</string>
     <string name="UnblockAll">Unblock All</string>

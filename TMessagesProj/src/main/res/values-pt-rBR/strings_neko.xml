@@ -203,8 +203,6 @@
     <string name="DisableSystemAccount">Desativar conta do sistema</string>
     <string name="FilterMenu">Menu de filtros de diálogos</string>
     <string name="DisableProxyWhenVpnEnabled">Desativar proxy quando a VPN estiver ativada</string>
-    <string name="UseProxyItem">Mostrar proxy no menu lateral</string>
-    <string name="HideProxyByDefault">Ocultar proxy quando inativo</string>
     <string name="SkipOpenLinkConfirm">Ignorar confirmação ao abrir links</string>
     <string name="DeleteAllInChatAlert">Aviso! Isso irá **excluir todas as mensagens** neste chat para **todos** os participantes.</string>
     <string name="UnblockAll">Desbloquear tudo</string>

@@ -203,8 +203,6 @@
     <string name="DisableSystemAccount">Nonaktifkan Akun Sistem</string>
     <string name="FilterMenu">Menu Penyaring Dialog</string>
     <string name="DisableProxyWhenVpnEnabled">Nonaktifkan Proksi Saat VPN Diaktifkan</string>
-    <string name="UseProxyItem">Tampilkan Proksi di Laci</string>
-    <string name="HideProxyByDefault">Sembunyikan Proksi Saat Tidak Aktif</string>
     <string name="SkipOpenLinkConfirm">Lewati Konfirmasi Buka Tautan</string>
     <string name="DeleteAllInChatAlert">Peringatan! Ini akan **menghapus semua pesan** di obrolan ini untuk **semua** peserta.</string>
     <string name="UnblockAll">Buka Blokir Semua</string>
