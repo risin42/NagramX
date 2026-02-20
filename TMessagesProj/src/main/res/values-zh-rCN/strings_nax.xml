@@ -192,9 +192,6 @@
     <string name="EditLocalNameOverride">正在编辑本地聊天名称覆盖。</string>
     <string name="ResetChatNameOverrides">重置聊天名称覆盖</string>
     <string name="ResetChatNameNotification">聊天名称覆盖已清除。</string>
-    <string name="TabStyle">文件夹标签样式</string>
-    <string name="TabStylePure">纯净</string>
-    <string name="TabStylePills">药丸</string>
     <string name="LeftBottomButtonAction">左侧按钮操作</string>
     <string name="TranscribeProviderOpenAI">OpenAI-Compatible API</string>
     <string name="OpenAiApiCredentialsDialog">配置 OpenAI 兼容的 API。您可以参考此 **文档**。\n</string>

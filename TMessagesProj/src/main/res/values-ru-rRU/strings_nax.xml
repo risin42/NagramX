@@ -192,9 +192,6 @@
     <string name="EditLocalNameOverride">Изменение локального названия.</string>
     <string name="ResetChatNameOverrides">Сбросить названия чатов</string>
     <string name="ResetChatNameNotification">Изменённые названия чатов очищены.</string>
-    <string name="TabStyle">Стиль вкладок</string>
-    <string name="TabStylePure">Чистые</string>
-    <string name="TabStylePills">Овальные</string>
     <string name="LeftBottomButtonAction">Действие левой кнопки</string>
     <string name="TranscribeProviderOpenAI">OpenAI-совместимый API</string>
     <string name="OpenAiApiCredentialsDialog">Настройте API, совместимый с OpenAI. Вы можете обратиться к этой **документации**.\n</string>

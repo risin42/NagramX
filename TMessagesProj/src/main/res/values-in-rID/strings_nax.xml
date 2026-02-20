@@ -191,9 +191,6 @@
     <string name="EditLocalNameOverride">Menyunting penggantian nama lokal.</string>
     <string name="ResetChatNameOverrides">Atur Ulang Penggantian Nama Obrolan</string>
     <string name="ResetChatNameNotification">Penggantian nama obrolan telah dihapus.</string>
-    <string name="TabStyle">Gaya Tab</string>
-    <string name="TabStylePure">Murni</string>
-    <string name="TabStylePills">Pil</string>
     <string name="LeftBottomButtonAction">Aksi Tombol Kiri</string>
     <string name="TranscribeProviderOpenAI">API yang kompatibel dengan OpenAI</string>
     <string name="OpenAiApiCredentialsDialog">Konfigurasikan API yang kompatibel dengan OpenAI. Anda dapat merujuk ke **dokumentasi** ini.\n</string>

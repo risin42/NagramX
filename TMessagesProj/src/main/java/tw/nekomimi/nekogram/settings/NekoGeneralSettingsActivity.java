@@ -140,11 +140,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             getString(R.string.TabTitleTypeIcon),
             getString(R.string.TabTitleTypeMix)
     }, null));
-    private final AbstractConfigCell tabStyleRow = cellGroup.appendCell(new ConfigCellSelectBox("TabStyle", NaConfig.INSTANCE.getTabStyle(), new String[]{
-            getString(R.string.Default),
-            getString(R.string.TabStylePure),
-            getString(R.string.TabStylePills)
-    }, null));
     private final AbstractConfigCell dividerFolder = cellGroup.appendCell(new ConfigCellDivider());
 
     // Dialogs

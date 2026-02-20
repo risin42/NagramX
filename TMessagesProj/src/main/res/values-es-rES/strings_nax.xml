@@ -189,9 +189,6 @@
     <string name="TranslateMessageLLM">Traducir con IA</string>
     <string name="ResetChatNameOverrides">Restablecer anulaciones de nombres de chat</string>
     <string name="ResetChatNameNotification">Se borraron las modificaciones del nombre del chat.</string>
-    <string name="TabStyle">Estilo de pestaña</string>
-    <string name="TabStylePure">Puro</string>
-    <string name="TabStylePills">Píldoras</string>
     <string name="LeftBottomButtonAction">Acción del botón izquierdo</string>
     <string name="TranscribeProviderOpenAI">API compatible con OpenAI</string>
     <string name="OpenAiApiCredentialsDialog">Configure la API compatible con OpenAI. Puede consultar esta **documentación**.\n</string>

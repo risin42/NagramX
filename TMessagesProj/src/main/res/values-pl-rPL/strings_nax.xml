@@ -183,9 +183,6 @@
     <string name="EditLocalNameOverride">Edycja nadpisania nazwy lokalnej.</string>
     <string name="ResetChatNameOverrides">Zresetuj nadpisania nazw czatu</string>
     <string name="ResetChatNameNotification">Usunięto nadpisywanie nazw czatów.</string>
-    <string name="TabStyle">Styl zakładki</string>
-    <string name="TabStylePure">Czysty</string>
-    <string name="TabStylePills">Pigułki</string>
     <string name="LeftBottomButtonAction">Działanie lewego przycisku</string>
     <string name="TranscribeProviderOpenAI">API zgodne z OpenAI</string>
     <string name="OpenAiApiCredentialsDialog">Skonfiguruj API zgodne z OpenAI. Możesz zapoznać się z tą **dokumentacją**.\n</string>

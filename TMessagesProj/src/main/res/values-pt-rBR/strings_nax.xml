@@ -192,9 +192,6 @@
     <string name="EditLocalNameOverride">Editando substituição de nome local.</string>
     <string name="ResetChatNameOverrides">Redefinir Substituições de Nomes do Chat</string>
     <string name="ResetChatNameNotification">Substituições de nomes do chat limpas.</string>
-    <string name="TabStyle">Estilo da aba</string>
-    <string name="TabStylePure">Puro</string>
-    <string name="TabStylePills">Pílula</string>
     <string name="LeftBottomButtonAction">Ação do botão esquerdo</string>
     <string name="TranscribeProviderOpenAI">API compatível com OpenAI</string>
     <string name="OpenAiApiCredentialsDialog">Configure a API compatível com a OpenAI. Consulte esta **documentação**.\n</string>

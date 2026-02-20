@@ -205,9 +205,6 @@
     <string name="EditLocalNameOverride">Editing local name override.</string>
     <string name="ResetChatNameOverrides">Reset Chat Name Overrides</string>
     <string name="ResetChatNameNotification">Chat name overrides cleared.</string>
-    <string name="TabStyle">Tab Style</string>
-    <string name="TabStylePure">Pure</string>
-    <string name="TabStylePills">Pills</string>
     <string name="LeftBottomButtonAction">Left Button Action</string>
     <string name="TranscribeProviderOpenAI">OpenAI-Compatible API</string>
     <string name="OpenAiApiCredentialsDialog">Configure OpenAI-compatible API. You can refer to this **documentation**.\n</string>

@@ -1239,12 +1239,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val tabStyle =
-        addConfig(
-            "TabStyle",
-            ConfigItem.configTypeInt,
-            0
-        )
     val shortcutsAdministrators =
         addConfig(
             "ChannelAdministrators",
