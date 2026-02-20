@@ -91,7 +91,6 @@
     <string name="InstantViewTranslation">Tampilan Instan</string>
     <string name="SaveDeletedMessageForBot">Simpan di Obrolan Bot</string>
     <string name="HideArchive">Hapus \"Obrolan Diarsipkan\" dari Daftar Obrolan</string>
-    <string name="HideChannelSilentBroadcast">Sembunyikan Tombol Beralih Siaran Senyap</string>
     <string name="ConfirmAllLinks">Tanya Sebelum Membuka Tautan Inline</string>
     <string name="ConfirmAllLinksDescription">Menyertakan tautan internal Telegram seperti tautan t.me pada tombol inline bot.</string>
     <string name="TranslatorMinimizedChannel">Bar penerjemah telah diperkecil untuk saluran ini.</string>

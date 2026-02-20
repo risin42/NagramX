@@ -11255,7 +11255,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
 
     public void updateScheduleButton(boolean animated) {
         boolean notifyVisible = false;
-        if (DialogObject.isChatDialog(dialog_id) && !NaConfig.INSTANCE.getHideChannelSilentBroadcast().Bool()) {
+        if (DialogObject.isChatDialog(dialog_id)) {
             TLRPC.Chat currentChat = accountInstance.getMessagesController().getChat(-dialog_id);
             silent = MessagesController.getNotificationsSettings(currentAccount).getBoolean("silent_" + dialog_id, false);
             canWriteToChannel = ChatObject.isChannel(currentChat) && (currentChat.creator || currentChat.admin_rights != null && currentChat.admin_rights.post_messages) && !currentChat.megagroup;

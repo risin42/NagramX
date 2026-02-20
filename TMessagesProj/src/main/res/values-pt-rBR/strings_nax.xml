@@ -92,7 +92,6 @@
     <string name="InstantViewTranslation">Visualização instantânea</string>
     <string name="SaveDeletedMessageForBot">Salvar no chat do bot</string>
     <string name="HideArchive">Remover \"Chats Arquivados\" da lista de chats</string>
-    <string name="HideChannelSilentBroadcast">Ocultar interruptor de transmissão silenciosa</string>
     <string name="ConfirmAllLinks">Perguntar antes de abrir links inline</string>
     <string name="ConfirmAllLinksDescription">Inclui links internos do Telegram (como links t.me) em botões de bots.</string>
     <string name="TranslatorMinimizedChannel">A barra de tradução foi minimizada para este canal.</string>

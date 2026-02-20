@@ -92,7 +92,6 @@
     <string name="InstantViewTranslation">アーティクル</string>
     <string name="SaveDeletedMessageForBot">ボットチャットで保存</string>
     <string name="HideArchive">チャットリストで「収納したチャット」を非表示</string>
-    <string name="HideChannelSilentBroadcast">「通知せずに公開」ボタンを非表示</string>
     <string name="ConfirmAllLinks">埋め込みリンクを開く前に確認</string>
     <string name="ConfirmAllLinksDescription">有効にすると、Telegram 内部リンクを含むすべての埋め込みリンクを開く前に、確認を求めるようになります。</string>
     <string name="TranslatorMinimizedChannel">このチャンネルでは、翻訳ツールバーが最小化されました。</string>
