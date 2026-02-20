@@ -37,6 +37,7 @@ import org.telegram.tgnet.SerializedData;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
+import org.telegram.ui.Components.AudioPlayerAlert;
 import org.telegram.ui.Components.SwipeGestureSettingsView;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.LaunchActivity;
@@ -1195,7 +1196,7 @@ public class SharedConfig {
 
     public static void setRepeatMode(int mode) {
         repeatMode = mode;
-        if (repeatMode < 0 || repeatMode > 2) {
+        if (repeatMode < 0 || repeatMode > AudioPlayerAlert.PLAY_ONCE) {
             repeatMode = 0;
         }
         SharedPreferences preferences = MessagesController.getGlobalMainSettings();

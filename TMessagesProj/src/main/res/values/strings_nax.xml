@@ -332,4 +332,5 @@
     <string name="UnifiedPushNeverReceivedNotifications">You never received notifications with UnifiedPush since Nagram X was started.</string>
     <string name="UnifiedPushLastReceivedNotification">The last received notification with UnifiedPush was %1$d seconds ago.\n\nYou received %2$d notifications since Nagram X was started.</string>
     <string name="UnifiedPushCurrentEndpoint">The current UnifiedPush endpoint is: %1$s</string>
+    <string name="PlayOnce">Play once</string>
 </resources>

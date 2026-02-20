@@ -96,6 +96,7 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Adapters.FiltersView;
 import org.telegram.ui.CastSync;
 import org.telegram.ui.ChatActivity;
+import org.telegram.ui.Components.AudioPlayerAlert;
 import org.telegram.ui.Components.EmbedBottomSheet;
 import org.telegram.ui.Components.PermissionRequest;
 import org.telegram.ui.Components.PhotoFilterView;
@@ -2923,40 +2924,14 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
             return;
         }
 
+        if (byStop && SharedConfig.repeatMode == AudioPlayerAlert.PLAY_ONCE && !forceLoopCurrentPlaylist) {
+            stopPlaybackOnTrackEnd();
+            return;
+        }
+
         boolean last = traversePlaylist(currentPlayList, SharedConfig.playOrderReversed ? +1 : -1);
         if (last && byStop && SharedConfig.repeatMode == 0 && !forceLoopCurrentPlaylist) {
-            if (audioPlayer != null || videoPlayer != null) {
-                if (audioPlayer != null) {
-                    try {
-                        audioPlayer.releasePlayer(true);
-                    } catch (Exception e) {
-                        FileLog.e(e);
-                    }
-                    audioPlayer = null;
-                    Theme.unrefAudioVisualizeDrawable(playingMessageObject);
-                } else {
-                    currentAspectRatioFrameLayout = null;
-                    currentTextureViewContainer = null;
-                    currentAspectRatioFrameLayoutReady = false;
-                    currentTextureView = null;
-                    videoPlayer.releasePlayer(true);
-                    videoPlayer = null;
-                    try {
-                        baseActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    } catch (Exception e) {
-                        FileLog.e(e);
-                    }
-                    AndroidUtilities.cancelRunOnUIThread(setLoadingRunnable);
-                    FileLoader.getInstance(playingMessageObject.currentAccount).removeLoadingVideo(playingMessageObject.getDocument(), true, false);
-                }
-                stopProgressTimer();
-                lastProgress = 0;
-                isPaused = true;
-                playingMessageObject.audioProgress = 0.0f;
-                playingMessageObject.audioProgressSec = 0;
-                NotificationCenter.getInstance(playingMessageObject.currentAccount).postNotificationName(NotificationCenter.messagePlayingProgressDidChanged, playingMessageObject.getId(), 0);
-                NotificationCenter.getInstance(playingMessageObject.currentAccount).postNotificationName(NotificationCenter.messagePlayingPlayStateChanged, playingMessageObject.getId());
-            }
+            stopPlaybackOnTrackEnd();
             return;
         }
         if (currentPlaylistNum < 0 || currentPlaylistNum >= currentPlayList.size()) {
@@ -2967,6 +2942,41 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
         }
         playMusicAgain = true;
         playMessage(currentPlayList.get(currentPlaylistNum));
+    }
+
+    private void stopPlaybackOnTrackEnd() {
+        if (audioPlayer != null || videoPlayer != null) {
+            if (audioPlayer != null) {
+                try {
+                    audioPlayer.releasePlayer(true);
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+                audioPlayer = null;
+                Theme.unrefAudioVisualizeDrawable(playingMessageObject);
+            } else {
+                currentAspectRatioFrameLayout = null;
+                currentTextureViewContainer = null;
+                currentAspectRatioFrameLayoutReady = false;
+                currentTextureView = null;
+                videoPlayer.releasePlayer(true);
+                videoPlayer = null;
+                try {
+                    baseActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                } catch (Exception e) {
+                    FileLog.e(e);
+                }
+                AndroidUtilities.cancelRunOnUIThread(setLoadingRunnable);
+                FileLoader.getInstance(playingMessageObject.currentAccount).removeLoadingVideo(playingMessageObject.getDocument(), true, false);
+            }
+            stopProgressTimer();
+            lastProgress = 0;
+            isPaused = true;
+            playingMessageObject.audioProgress = 0.0f;
+            playingMessageObject.audioProgressSec = 0;
+            NotificationCenter.getInstance(playingMessageObject.currentAccount).postNotificationName(NotificationCenter.messagePlayingProgressDidChanged, playingMessageObject.getId(), 0);
+            NotificationCenter.getInstance(playingMessageObject.currentAccount).postNotificationName(NotificationCenter.messagePlayingPlayStateChanged, playingMessageObject.getId());
+        }
     }
 
     public void playPreviousMessage() {

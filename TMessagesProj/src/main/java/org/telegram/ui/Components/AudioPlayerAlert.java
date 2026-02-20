@@ -126,6 +126,7 @@ import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import xyz.nextalone.nagram.NaConfig;
 
 public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.NotificationCenterDelegate, DownloadController.FileDownloadProgressListener {
+    public static final int PLAY_ONCE = 3;
 
     private TextView forwardButton;
     private TextView backwardButton;
@@ -167,6 +168,7 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
     private ActionBarMenuSubItem[] speedItems = new ActionBarMenuSubItem[6];
     private TextView durationTextView;
     private ActionBarMenuItem repeatButton;
+    private ActionBarMenuSubItem playOnceItem;
     private ActionBarMenuSubItem repeatSongItem;
     private ActionBarMenuSubItem repeatListItem;
     private ActionBarMenuSubItem shuffleListItem;
@@ -871,6 +873,7 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
             updateSubMenu();
             repeatButton.toggleSubMenu();
         });
+        playOnceItem = repeatButton.addSubItem(5, R.drawable.photo_timer, LocaleController.getString(R.string.PlayOnce));
         repeatSongItem = repeatButton.addSubItem(3, R.drawable.player_new_repeatone, LocaleController.getString(R.string.RepeatSong));
         repeatListItem = repeatButton.addSubItem(4, R.drawable.player_new_repeatall, LocaleController.getString(R.string.RepeatList));
         shuffleListItem = repeatButton.addSubItem(2, R.drawable.player_new_shuffle, LocaleController.getString(R.string.ShuffleList));
@@ -896,6 +899,12 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
                         SharedConfig.setRepeatMode(0);
                     } else {
                         SharedConfig.setRepeatMode(1);
+                    }
+                } else if (id == 5) {
+                    if (SharedConfig.repeatMode == PLAY_ONCE) {
+                        SharedConfig.setRepeatMode(0);
+                    } else {
+                        SharedConfig.setRepeatMode(PLAY_ONCE);
                     }
                 } else {
                     if (SharedConfig.repeatMode == 2) {
@@ -1703,6 +1712,7 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
         setMenuItemChecked(reverseOrderItem, SharedConfig.playOrderReversed);
         setMenuItemChecked(repeatListItem, SharedConfig.repeatMode == 1);
         setMenuItemChecked(repeatSongItem, SharedConfig.repeatMode == 2);
+        setMenuItemChecked(playOnceItem, SharedConfig.repeatMode == PLAY_ONCE);
     }
 
     private boolean equals(float a, float b) {
@@ -2145,6 +2155,12 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
             repeatButton.setIconColor(getThemedColor(Theme.key_player_buttonActive));
             Theme.setSelectorDrawableColor(repeatButton.getBackground(), getThemedColor(Theme.key_player_buttonActive) & 0x19ffffff, true);
             repeatButton.setContentDescription(LocaleController.getString(R.string.AccDescrRepeatOne));
+        } else if (mode == PLAY_ONCE) {
+            repeatButton.setIcon(R.drawable.photo_timer);
+            repeatButton.setTag(Theme.key_player_buttonActive);
+            repeatButton.setIconColor(getThemedColor(Theme.key_player_buttonActive));
+            Theme.setSelectorDrawableColor(repeatButton.getBackground(), getThemedColor(Theme.key_player_buttonActive) & 0x19ffffff, true);
+            repeatButton.setContentDescription(LocaleController.getString(R.string.PlayOnce));
         }
     }
 
