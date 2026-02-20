@@ -64,7 +64,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.SparseArray;
-import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.util.StateSet;
 import android.view.View;
@@ -109,7 +108,6 @@ import org.telegram.ui.Components.AudioVisualizerDrawable;
 import org.telegram.ui.Components.BackgroundGradientDrawable;
 import org.telegram.ui.Components.Bulletin;
 import org.telegram.ui.Components.BulletinFactory;
-import org.telegram.ui.Components.ChatThemeBottomSheet;
 import org.telegram.ui.Components.ChoosingStickerStatusDrawable;
 import org.telegram.ui.Components.CombinedDrawable;
 import org.telegram.ui.Components.FragmentContextViewWavesDrawable;
@@ -3217,7 +3215,6 @@ public class Theme {
     public static TextPaint profile_aboutTextPaint;
     public static Drawable profile_verifiedDrawable;
     public static Drawable profile_verifiedCheckDrawable;
-    public static Drawable profile_verifiedCatDrawable;
 
     public static Paint chat_docBackPaint;
     public static Paint chat_deleteProgressPaint;
@@ -6062,24 +6059,12 @@ public class Theme {
         private Path path = new Path();
         private float[] radii = new float[8];
         boolean invalidatePath = true;
-        private static final int INSET = dp(3);
-        private final int inset;
 
         public RippleRadMaskDrawable(float top, float bottom) {
-            this(top, bottom, false);
-        }
-
-        public RippleRadMaskDrawable(float top, float bottom, boolean applyInset) {
-            inset = applyInset ? INSET : 0;
             radii[0] = radii[1] = radii[2] = radii[3] = dp(top);
             radii[4] = radii[5] = radii[6] = radii[7] = dp(bottom);
         }
         public RippleRadMaskDrawable(float topLeft, float topRight, float bottomRight, float bottomLeft) {
-            this(topLeft, topRight, bottomRight, bottomLeft, false);
-        }
-
-        public RippleRadMaskDrawable(float topLeft, float topRight, float bottomRight, float bottomLeft, boolean applyInset) {
-            inset = applyInset ? INSET : 0;
             radii[0] = radii[1] = dp(topLeft);
             radii[2] = radii[3] = dp(topRight);
             radii[4] = radii[5] = dp(bottomRight);
@@ -6112,10 +6097,6 @@ public class Theme {
                 invalidatePath = false;
                 path.reset();
                 AndroidUtilities.rectTmp.set(getBounds());
-                if (inset != 0) {
-                    AndroidUtilities.rectTmp.top += inset;
-                    AndroidUtilities.rectTmp.bottom -= inset;
-                }
                 path.addRoundRect(AndroidUtilities.rectTmp, radii, Path.Direction.CW);
             }
             canvas.drawPath(path, maskPaint);
@@ -6188,16 +6169,6 @@ public class Theme {
     public static Drawable createRadSelectorDrawable(int color, int topLeftRad, int topRightRad, int bottomRightRad, int bottomLeftRad) {
         maskPaint.setColor(0xffffffff);
         Drawable maskDrawable = new RippleRadMaskDrawable(topLeftRad, topRightRad, bottomRightRad, bottomLeftRad);
-        ColorStateList colorStateList = new ColorStateList(
-                new int[][]{StateSet.WILD_CARD},
-                new int[]{color}
-        );
-        return new BaseCell.RippleDrawableSafe(colorStateList, null, maskDrawable);
-    }
-
-    public static Drawable createRadSelectorDrawable(int color, int topLeftRad, int topRightRad, int bottomRightRad, int bottomLeftRad, boolean applyInset) {
-        maskPaint.setColor(0xffffffff);
-        Drawable maskDrawable = new RippleRadMaskDrawable(topLeftRad, topRightRad, bottomRightRad, bottomLeftRad, applyInset);
         ColorStateList colorStateList = new ColorStateList(
                 new int[][]{StateSet.WILD_CARD},
                 new int[]{color}

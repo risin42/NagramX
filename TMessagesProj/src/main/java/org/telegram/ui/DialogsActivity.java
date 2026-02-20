@@ -3729,7 +3729,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     }
 
                     filterOptions = ItemOptions.makeOptions(DialogsActivity.this, tabView)
-                            .setScrimViewBackground(Theme.createRoundRectDrawable(dp(NaConfig.INSTANCE.getSmoothRoundedMenu().Bool() ? SharedConfig.bubbleRadius : 10), dp(NaConfig.INSTANCE.getSmoothRoundedMenu().Bool() ? SharedConfig.bubbleRadius : 10), Theme.getColor(Theme.key_actionBarDefault)))
+                            .setScrimViewBackground(Theme.createRoundRectDrawable(dp(6), 0, Theme.getColor(Theme.key_actionBarDefault)))
                             .addIf(getMessagesController().getDialogFilters().size() > 1, R.drawable.tabs_reorder, LocaleController.getString(R.string.FilterReorder), () -> {
                                 resetScroll();
                                 filterTabsView.setIsEditing(true);

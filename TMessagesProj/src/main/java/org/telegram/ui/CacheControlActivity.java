@@ -134,7 +134,6 @@ import java.util.Objects;
 
 import tw.nekomimi.nekogram.helpers.LocalNameHelper;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
-import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.BookmarksHelper;
 
 public class CacheControlActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
@@ -2122,7 +2121,7 @@ public class CacheControlActivity extends BaseFragment implements NotificationCe
                 View clearButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 if (clearButton instanceof TextView) {
                     ((TextView) clearButton).setTextColor(Theme.getColor(Theme.key_text_RedRegular));
-                    clearButton.setBackground(Theme.getRoundRectSelectorDrawable(AndroidUtilities.dp(NaConfig.INSTANCE.getSmoothRoundedMenu().Bool() ? SharedConfig.bubbleRadius : 6), Theme.multAlpha(Theme.getColor(Theme.key_text_RedRegular), .12f)));
+                    clearButton.setBackground(Theme.getRoundRectSelectorDrawable(AndroidUtilities.dp(6), Theme.multAlpha(Theme.getColor(Theme.key_text_RedRegular), .12f)));
                 }
             });
         }

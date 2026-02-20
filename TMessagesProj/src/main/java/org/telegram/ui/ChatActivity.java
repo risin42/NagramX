@@ -32901,10 +32901,6 @@ public class ChatActivity extends BaseFragment implements
                 }
             }
 
-            if (NaConfig.INSTANCE.getSmoothRoundedMenu().Bool()) {
-                popupLayout.updateRadialSelectors();
-            }
-
             ReactionsContainerLayout finalReactionsLayout1 = reactionsLayout;
             if (reactionsLayout != null) {
                 reactionsLayout.setParentLayout(scrimPopupContainerLayout);

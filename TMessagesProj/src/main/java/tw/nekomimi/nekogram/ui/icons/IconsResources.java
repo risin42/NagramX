@@ -6,8 +6,6 @@ import android.graphics.drawable.Drawable;
 
 import androidx.annotation.Nullable;
 
-import org.telegram.messenger.R;
-
 import xyz.nextalone.nagram.NaConfig;
 
 @SuppressLint("UseCompatLoadingForDrawables")
@@ -47,10 +45,6 @@ public class IconsResources extends Resources {
     }
 
     private int getConversion(int icon, int forcedIconsType) {
-        if (icon == R.drawable.popup_fixed_alert || icon == R.drawable.popup_fixed_alert2) {
-            return R.drawable.popup_fixed_alert3;
-        }
-
         if (_iconsType == -1) {
             _iconsType = NaConfig.INSTANCE.getIconReplacements().Int();
         }

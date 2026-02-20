@@ -1371,12 +1371,6 @@ object NaConfig {
             ConfigItem.configTypeInt,
             1 // 0: front; 1: rear; 2: ask
         )
-    val smoothRoundedMenu =
-        addConfig(
-            "SmoothRoundedMenu",
-            ConfigItem.configTypeBool,
-            false
-        )
     val showCopyFrame =
         addConfig(
             "MessageMenuCopyFrame",

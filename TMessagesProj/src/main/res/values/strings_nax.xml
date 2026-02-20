@@ -312,7 +312,6 @@
     <string name="CameraInVideoMessagesRear">Rear Camera</string>
     <string name="CameraInVideoMessagesAsk">Ask</string>
     <string name="CameraSettings">Camera</string>
-    <string name="SmoothRoundedMenu">Smooth Rounded Context Menus</string>
     <string name="SyncContactToPhone">Sync Contact to Phone</string>
     <string name="AddViaQRCode">Add via QR Code</string>
     <string name="ContactNotes">Notes</string>
