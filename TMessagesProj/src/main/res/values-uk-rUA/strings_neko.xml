@@ -20,8 +20,6 @@
     <string name="Repeat">Повторити</string>
     <string name="AddToSavedMessages">Зберегти</string>
     <string name="CreateMention">Згадати</string>
-    <string name="TransparentStatusBar">Прозорий рядок стану</string>
-    <string name="ChristmasHat">Різдвяна шапка у заголовку</string>
     <string name="ActionBarDecoration">Оформлення заголовку</string>
     <string name="DependsOnDate">За календарем</string>
     <string name="Christmas">Різдво</string>

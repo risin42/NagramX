@@ -20,8 +20,6 @@
     <string name="Repeat">リポスト</string>
     <string name="AddToSavedMessages">保存</string>
     <string name="CreateMention">\@メンションを作成</string>
-    <string name="TransparentStatusBar">完全に透明なステータスバーを使用</string>
-    <string name="ChristmasHat">常にサンタ帽子を表示</string>
     <string name="ActionBarDecoration">タイトルデコレーション</string>
     <string name="DependsOnDate">日付に基づく</string>
     <string name="Christmas">クリスマス</string>

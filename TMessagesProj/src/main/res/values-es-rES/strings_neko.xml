@@ -20,8 +20,6 @@
     <string name="Repeat">Volver a publicar</string>
     <string name="AddToSavedMessages">Guardar</string>
     <string name="CreateMention">Crear mención</string>
-    <string name="TransparentStatusBar">Barra de estado transparente</string>
-    <string name="ChristmasHat">Mostrar Sombrero de Santa cada día</string>
     <string name="ActionBarDecoration">Decoración de la barra de título</string>
     <string name="DependsOnDate">Depende de la fecha</string>
     <string name="Christmas">Navidad</string>

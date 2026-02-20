@@ -20,8 +20,6 @@
     <string name="Repeat">复读</string>
     <string name="AddToSavedMessages">保存消息</string>
     <string name="CreateMention">创建\@</string>
-    <string name="TransparentStatusBar">使用完全透明的状态栏</string>
-    <string name="ChristmasHat">一直显示圣诞帽</string>
     <string name="ActionBarDecoration">标题栏装饰</string>
     <string name="DependsOnDate">基于日期</string>
     <string name="Christmas">圣诞节</string>
