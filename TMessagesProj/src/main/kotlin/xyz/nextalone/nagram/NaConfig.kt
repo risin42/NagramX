@@ -867,12 +867,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val hideChannelSilentBroadcast =
-        addConfig(
-            "HideChannelSilentBroadcast",
-            ConfigItem.configTypeBool,
-            false
-        )
     val confirmAllLinks =
         addConfig(
             "ConfirmAllLinks",

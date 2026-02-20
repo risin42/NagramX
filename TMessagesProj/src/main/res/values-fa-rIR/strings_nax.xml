@@ -74,7 +74,6 @@
     <string name="InstantViewTranslation">ترجمه در نمای فوری</string>
     <string name="SaveDeletedMessageForBot">ذخیره پیام‌های حذف شده ربات‌ها</string>
     <string name="HideArchive">حذف \"گفتگوهای بایگانی شده\" از لیست گفتگوها</string>
-    <string name="HideChannelSilentBroadcast">پنهان کردن دکمه ارسال بی‌صدا در کانال</string>
     <string name="ConfirmAllLinks">تایید قبل از باز کردن لینک‌های داخلی</string>
     <string name="ConfirmAllLinksDescription">لینک‌های داخلی تلگرام مانند t.me که در دکمه‌های ربات‌ها قرار دارند.</string>
     <string name="TranslatorMinimizedChannel">نوار ترجمه برای این کانال کوچک شد.</string>

@@ -80,7 +80,6 @@
     <string name="InstantViewTranslation">Anında Görünüm</string>
     <string name="SaveDeletedMessageForBot">Bot Sohbetlerinde Kaydet</string>
     <string name="HideArchive">\"Arşivlenmiş Sohbetler\"i Sohbet Listesinden Kaldır</string>
-    <string name="HideChannelSilentBroadcast">Sessiz Yayın Anahtarını Gizle</string>
     <string name="ConfirmAllLinks">Satır İçi Bağlantıları Açmadan Önce Sor</string>
     <string name="ConfirmAllLinksDescription">Bot satır içi düğmelerindeki t.me bağlantıları gibi Telegram dahili bağlantıları dahil.</string>
     <string name="TranslatorMinimizedChannel">Çeviri çubuğu bu kanal için küçültüldü.</string>

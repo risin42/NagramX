@@ -91,7 +91,6 @@
     <string name="InstantViewTranslation">Миттєвий перегляд</string>
     <string name="SaveDeletedMessageForBot">Зберегти у чатах бота</string>
     <string name="HideArchive">Видалити \"Архівні чати\" зі Списку Чату</string>
-    <string name="HideChannelSilentBroadcast">Сховати беззвучний перемикач трансляції</string>
     <string name="ConfirmAllLinks">Запитувати перед відкриттям вбудованих посилань</string>
     <string name="ConfirmAllLinksDescription">Включаючи внутрішні посилання, такі як t.me у вбудованих ботах.</string>
     <string name="TranslatorMinimizedChannel">Для цього каналу було згорнуто панель перекладу.</string>

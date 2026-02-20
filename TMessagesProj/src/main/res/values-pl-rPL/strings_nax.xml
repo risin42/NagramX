@@ -83,7 +83,6 @@
     <string name="InstantViewTranslation">Natychmiastowy widok</string>
     <string name="SaveDeletedMessageForBot">Zapisz w czatach botów</string>
     <string name="HideArchive">Usuń „Zarchiwizowane czaty” z listy czatów</string>
-    <string name="HideChannelSilentBroadcast">Ukryj przełącznik cichej transmisji</string>
     <string name="ConfirmAllLinks">Zapytaj przed otwarciem linków w kolejce</string>
     <string name="ConfirmAllLinksDescription">Dodawanie wewnętrznych linków Telegrama, takich jak linki t.me w przyciskach botu.</string>
     <string name="TranslatorMinimizedChannel">Pasek tłumacza został zminimalizowany dla tego kanału.</string>
