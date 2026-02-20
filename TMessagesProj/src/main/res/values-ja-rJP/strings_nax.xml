@@ -274,7 +274,6 @@
     <string name="BlockChannelsUnavailable">一部のチャンネルは一時的に表示できません。</string>
     <string name="FixLinkPreview">リンクプレビューを改善</string>
     <string name="NoQuoteForwardShort">引用なし</string>
-    <string name="ForceEdgeToEdge">エッジ ツー エッジ対応</string>
     <string name="ViewDeleted">削除済みを表示</string>
     <string name="PasskeyLogin">パスキーログイン</string>
     <string name="PasskeyInfo2">この機能は、**Bitwarden** や **KeePassDX** など、特権アプリの信頼設定をユーザーが管理できるパスワードマネージャーでのみ動作します。</string>

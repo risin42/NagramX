@@ -274,7 +274,6 @@
     <string name="BlockChannelsUnavailable">Некоторые каналы временно недоступны.</string>
     <string name="FixLinkPreview">Исправить предпросмотр ссылок</string>
     <string name="NoQuoteForwardShort">Без автора</string>
-    <string name="ForceEdgeToEdge">«От края до края» принудительно</string>
     <string name="ViewDeleted">Просмотреть удалённые</string>
     <string name="PasskeyLogin">Вход по паролю</string>
     <string name="PasskeyInfo2">Эта функция работает только с менеджерами паролей, которые позволяют пользователю управлять настройками доверия для привилегированных приложений, такими как **Bitwarden** и **KeePassDX**.</string>

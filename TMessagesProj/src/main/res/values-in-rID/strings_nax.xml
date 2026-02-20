@@ -273,7 +273,6 @@
     <string name="BlockChannelsUnavailable">Beberapa saluran sementara tidak tersedia.</string>
     <string name="FixLinkPreview">Perbaiki Pratinjau Tautan</string>
     <string name="NoQuoteForwardShort">Tanpa Kutipan</string>
-    <string name="ForceEdgeToEdge">Paksa tepi-ke-tepi</string>
     <string name="ViewDeleted">Lihat yang Dihapus</string>
     <string name="PasskeyLogin">Masuk dengan Passkey</string>
     <string name="PasskeyInfo2">Fitur ini hanya berfungsi dengan pengelola kata sandi yang mengizinkan pengguna untuk mengelola pengaturan tepercaya untuk aplikasi yang memiliki akses penuh, seperti **Bitwarden** dan **KeePassDX**.</string>
