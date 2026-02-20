@@ -85,9 +85,6 @@
     <string name="AutoPauseVideoAbout">Podczas blokady ekranu/przełączenia na tło.</string>
     <string name="DisableProximityEvents">Wyłącz zdarzenia bliskości</string>
     <string name="SelectBetween">Wybierz zakres</string>
-    <string name="AvatarAsBackground">Typ tła</string>
-    <string name="BlurAvatarBackground">Rozmycie tła</string>
-    <string name="DarkenAvatarBackground">Przyciemnij tło</string>
     <string name="ProviderDeepLTranslate">Tłumacz DeepL</string>
     <string name="ProviderMicrosoftTranslator">Tłumacz Bing</string>
     <string name="DontSendGreetingSticker">Nie wysyłaj naklejki powitalnej</string>
@@ -259,7 +256,6 @@
     <string name="useCustomEmojiInvalid">To nie jest prawidłowy pakiet emoji</string>
     <string name="repeatConfirm">Zapytaj przed repostem</string>
     <string name="repeatConfirmText">Czy na pewno chcesz repostować?</string>
-    <string name="valuesLargeAvatarInDrawer">Domyślny\nAwatar\nDuży awatar\nTapeta</string>
     <string name="rememberAllBackMessages">Zapamiętaj wszystkie kliknięte odpowiedzi</string>
     <string name="DisableInstantCamera">Wyłącz natychmiastową kamerę</string>
     <string name="showSeconds">Pokaż znacznik czasu w sekundach</string>

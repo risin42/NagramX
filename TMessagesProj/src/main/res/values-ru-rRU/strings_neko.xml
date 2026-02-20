@@ -85,9 +85,6 @@
     <string name="AutoPauseVideoAbout">При блокировке экрана или сворачивании приложения.</string>
     <string name="DisableProximityEvents">Отключить датчик приближения</string>
     <string name="SelectBetween">Выберите диапазон</string>
-    <string name="AvatarAsBackground">Тип фона</string>
-    <string name="BlurAvatarBackground">Размыть фон</string>
-    <string name="DarkenAvatarBackground">Затемнить фон</string>
     <string name="ProviderDeepLTranslate">DeepL</string>
     <string name="ProviderMicrosoftTranslator">Bing</string>
     <string name="DontSendGreetingSticker">Не отправлять приветственный стикер</string>
@@ -260,7 +257,6 @@
     <string name="useCustomEmojiInvalid">Недопустимый набор эмодзи.</string>
     <string name="repeatConfirm">Спрашивать перед повтором</string>
     <string name="repeatConfirmText">Вы хотите повторить сообщение?</string>
-    <string name="valuesLargeAvatarInDrawer">По умолчанию\nАватар\nУвеличенный аватар\nОбои</string>
     <string name="rememberAllBackMessages">Запомнить все нажатые ответы</string>
     <string name="DisableInstantCamera">Отключить мгновенную камеру</string>
     <string name="showSeconds">Время с секундами</string>

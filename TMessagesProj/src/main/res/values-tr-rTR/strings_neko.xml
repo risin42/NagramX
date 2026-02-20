@@ -85,9 +85,6 @@
     <string name="AutoPauseVideoAbout">Ekran kilitlendiğinde/arka plana geçildiğinde.</string>
     <string name="DisableProximityEvents">Yakınlık Sensörünü Devre Dışı Bırak</string>
     <string name="SelectBetween">Aralık Seç</string>
-    <string name="AvatarAsBackground">Arka Plan Türü</string>
-    <string name="BlurAvatarBackground">Arka Planı Bulanıklaştır</string>
-    <string name="DarkenAvatarBackground">Arka Planı Karart</string>
     <string name="ProviderDeepLTranslate">DeepL Çeviri</string>
     <string name="ProviderMicrosoftTranslator">Bing Çeviri</string>
     <string name="DontSendGreetingSticker">Karşılama Çıkartması Gönderme</string>
@@ -259,7 +256,6 @@
     <string name="useCustomEmojiInvalid">Geçerli bir emoji paketi değil.</string>
     <string name="repeatConfirm">Yeniden Göndermeden Önce Sor</string>
     <string name="repeatConfirmText">Yeniden göndermek istediğinizden emin misiniz?</string>
-    <string name="valuesLargeAvatarInDrawer">Varsayılan\nAvatar\nBüyük Avatar\nDuvar Kağıdı</string>
     <string name="rememberAllBackMessages">Tıklanan Tüm Yanıtları Hatırla</string>
     <string name="DisableInstantCamera">Anlık Kamerayı Devre Dışı Bırak</string>
     <string name="showSeconds">Zaman Damgasını Saniye Olarak Göster</string>
