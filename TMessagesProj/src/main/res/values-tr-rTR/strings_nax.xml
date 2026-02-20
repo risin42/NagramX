@@ -79,7 +79,6 @@
     <string name="ChatsOnly">Sadece sohbetlerde</string>
     <string name="InstantViewTranslation">Anında Görünüm</string>
     <string name="SaveDeletedMessageForBot">Bot Sohbetlerinde Kaydet</string>
-    <string name="DrawerElements">Kenar Çubuğu Öğeleri</string>
     <string name="HideArchive">\"Arşivlenmiş Sohbetler\"i Sohbet Listesinden Kaldır</string>
     <string name="HideChannelSilentBroadcast">Sessiz Yayın Anahtarını Gizle</string>
     <string name="ConfirmAllLinks">Satır İçi Bağlantıları Açmadan Önce Sor</string>

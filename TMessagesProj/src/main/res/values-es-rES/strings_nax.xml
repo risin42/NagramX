@@ -89,7 +89,6 @@
     <string name="ChatsOnly">Solo en los chats</string>
     <string name="InstantViewTranslation">Vista instantánea</string>
     <string name="SaveDeletedMessageForBot">Guardar en chats de bot</string>
-    <string name="DrawerElements">Elementos del cajón</string>
     <string name="HideArchive">Eliminar \"Chats Archivados\" de la lista de chat</string>
     <string name="HideChannelSilentBroadcast">Ocultar Interruptor de Broadcast Silencioso</string>
     <string name="ConfirmAllLinks">Preguntar antes de abrir enlaces en línea</string>

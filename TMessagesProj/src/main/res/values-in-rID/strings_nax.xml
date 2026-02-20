@@ -90,7 +90,6 @@
     <string name="ChatsOnly">Hanya di obrolan</string>
     <string name="InstantViewTranslation">Tampilan Instan</string>
     <string name="SaveDeletedMessageForBot">Simpan di Obrolan Bot</string>
-    <string name="DrawerElements">Elemen Laci</string>
     <string name="HideArchive">Hapus \"Obrolan Diarsipkan\" dari Daftar Obrolan</string>
     <string name="HideChannelSilentBroadcast">Sembunyikan Tombol Beralih Siaran Senyap</string>
     <string name="ConfirmAllLinks">Tanya Sebelum Membuka Tautan Inline</string>
