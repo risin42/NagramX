@@ -85,9 +85,6 @@
     <string name="AutoPauseVideoAbout">Quando si blocca lo schermo/si passa allo sfondo.</string>
     <string name="DisableProximityEvents">Disabilita eventi di prossimità</string>
     <string name="SelectBetween">Seleziona intervallo</string>
-    <string name="AvatarAsBackground">Tipo di sfondo</string>
-    <string name="BlurAvatarBackground">Sfondo sfocato</string>
-    <string name="DarkenAvatarBackground">Sfondo scuro</string>
     <string name="ProviderDeepLTranslate">Traduttore DeepL</string>
     <string name="ProviderMicrosoftTranslator">Traduttore Bing</string>
     <string name="DontSendGreetingSticker">Non inviare adesivi di saluto</string>
@@ -259,7 +256,6 @@
     <string name="useCustomEmojiInvalid">Pacchetto emoji non valido.</string>
     <string name="repeatConfirm">Chiedere prima di ripubblicare</string>
     <string name="repeatConfirmText">Sei sicuro di voler ripubblicare?</string>
-    <string name="valuesLargeAvatarInDrawer">Predefinito\nAvatar\nAvatar grande\nSfondo</string>
     <string name="rememberAllBackMessages">Ricorda tutte le risposte cliccate</string>
     <string name="DisableInstantCamera">Disattiva Instant Camera</string>
     <string name="showSeconds">Mostra timestamp in secondi</string>

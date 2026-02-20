@@ -85,9 +85,6 @@
     <string name="AutoPauseVideoAbout">هنگام قفل شدن صفحه یا رفتن به پس‌زمینه.</string>
     <string name="DisableProximityEvents">غیرفعال کردن سنسور مجاورت</string>
     <string name="SelectBetween">انتخاب بین دو پیام</string>
-    <string name="AvatarAsBackground">نوع پس‌زمینه</string>
-    <string name="BlurAvatarBackground">تار کردن پس‌زمینه</string>
-    <string name="DarkenAvatarBackground">تیره کردن پس‌زمینه</string>
     <string name="ProviderDeepLTranslate">DeepL Translate</string>
     <string name="ProviderMicrosoftTranslator">Bing Translator</string>
     <string name="DontSendGreetingSticker">عدم ارسال استیکر خوشامدگویی</string>
@@ -259,7 +256,6 @@
     <string name="useCustomEmojiInvalid">بسته اموجی معتبر نیست.</string>
     <string name="repeatConfirm">تایید قبل از ارسال مجدد</string>
     <string name="repeatConfirmText">آیا از ارسال مجدد مطمئن هستید؟</string>
-    <string name="valuesLargeAvatarInDrawer">پیش‌فرض\nآواتار\nآواتار بزرگ\nتصویر زمینه</string>
     <string name="rememberAllBackMessages">به خاطر سپردن تمام پاسخ‌های کلیک شده</string>
     <string name="DisableInstantCamera">غیرفعال کردن دوربین فوری</string>
     <string name="showSeconds">نمایش زمان با ثانیه</string>

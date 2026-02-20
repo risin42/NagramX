@@ -85,9 +85,6 @@
     <string name="AutoPauseVideoAbout">Quando bloquear a tela ou alternar para segundo plano.</string>
     <string name="DisableProximityEvents">Desativar eventos de proximidade</string>
     <string name="SelectBetween">Selecionar intervalo</string>
-    <string name="AvatarAsBackground">Tipo de plano de fundo</string>
-    <string name="BlurAvatarBackground">Fundo desfocado</string>
-    <string name="DarkenAvatarBackground">Escurecer fundo</string>
     <string name="ProviderDeepLTranslate">DeepL Tradutor</string>
     <string name="ProviderMicrosoftTranslator">Bing Tradutor</string>
     <string name="DontSendGreetingSticker">Não enviar sticker de saudação</string>
@@ -261,7 +258,6 @@
     <string name="useCustomEmojiInvalid">Não é um pacote de emojis válido.</string>
     <string name="repeatConfirm">Perguntar antes de repostar</string>
     <string name="repeatConfirmText">Tem certeza de que deseja repostar?</string>
-    <string name="valuesLargeAvatarInDrawer">Padrão\nAvatar\nAvatar grande\nPapel de parede</string>
     <string name="rememberAllBackMessages">Lembrar todas as respostas clicadas</string>
     <string name="DisableInstantCamera">Desativar câmera instantânea</string>
     <string name="showSeconds">Mostrar data/hora em segundos</string>

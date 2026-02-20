@@ -85,9 +85,6 @@
     <string name="AutoPauseVideoAbout">When lock screen/switch to background.</string>
     <string name="DisableProximityEvents">Disable Proximity Events</string>
     <string name="SelectBetween">Select Range</string>
-    <string name="AvatarAsBackground">Background Type</string>
-    <string name="BlurAvatarBackground">Blur Background</string>
-    <string name="DarkenAvatarBackground">Darken Background</string>
     <string name="ProviderDeepLTranslate">DeepL Translate</string>
     <string name="ProviderMicrosoftTranslator">Bing Translator</string>
     <string name="DontSendGreetingSticker">Don\'t Send Greeting Sticker</string>
@@ -262,7 +259,6 @@
     <string name="useCustomEmojiInvalid">Not a valid emoji pack.</string>
     <string name="repeatConfirm">Ask Before Repost</string>
     <string name="repeatConfirmText">Are you sure you want to Repost?</string>
-    <string name="valuesLargeAvatarInDrawer">Default\nAvatar\nBig Avatar\nWallpaper</string>
     <string name="rememberAllBackMessages">Remember All Clicked Replies</string>
     <string name="DisableInstantCamera">Disable Instant Camera</string>
     <string name="showSeconds">Show Timestamp in Seconds</string>

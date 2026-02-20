@@ -85,9 +85,6 @@
     <string name="AutoPauseVideoAbout">Saat layar terkunci/beralih ke latar belakang.</string>
     <string name="DisableProximityEvents">Nonaktifkan Events Proximity</string>
     <string name="SelectBetween">Pilih Rentang</string>
-    <string name="AvatarAsBackground">Jenis Latar Belakang</string>
-    <string name="BlurAvatarBackground">Latar belakang Buram</string>
-    <string name="DarkenAvatarBackground">Latar belakang Gelap</string>
     <string name="ProviderDeepLTranslate">DeepL Terjemahan</string>
     <string name="ProviderMicrosoftTranslator">Bing Penerjemah</string>
     <string name="DontSendGreetingSticker">Jangan Kirim Stiker Ucapan</string>
@@ -261,7 +258,6 @@
     <string name="useCustomEmojiInvalid">Bukan paket emoji yang sah.</string>
     <string name="repeatConfirm">Tanya Sebelum Memposting Ulang</string>
     <string name="repeatConfirmText">Apakah Anda yakin ingin memposting ulang?</string>
-    <string name="valuesLargeAvatarInDrawer">Bawaan\nAvatar\nAvatar Besar\nWallpaper</string>
     <string name="rememberAllBackMessages">Ingat Semua Balasan yang Diklik</string>
     <string name="DisableInstantCamera">Nonaktifkan Kamera Instan</string>
     <string name="showSeconds">Tampilkan Stempel Waktu dalam Detik</string>
