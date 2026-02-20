@@ -192,9 +192,6 @@
     <string name="EditLocalNameOverride">ローカルチャット名の上書きを編集しています。</string>
     <string name="ResetChatNameOverrides">チャット名の上書きをリセット</string>
     <string name="ResetChatNameNotification">チャット名の上書きがクリアされました。</string>
-    <string name="TabStyle">タブスタイル</string>
-    <string name="TabStylePure">ピュア</string>
-    <string name="TabStylePills">カプセル</string>
     <string name="LeftBottomButtonAction">左ボタンの動作</string>
     <string name="TranscribeProviderOpenAI">OpenAI-Compatible API</string>
     <string name="OpenAiApiCredentialsDialog">OpenAI と互換性のある API を設定します。この**ドキュメント**を参照できます。\n</string>

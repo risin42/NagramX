@@ -169,9 +169,6 @@
     <string name="TranslateMessageLLM">ترجمه با هوش مصنوعی</string>
     <string name="ResetChatNameOverrides">بازنشانی نام‌های سفارشی گفتگو</string>
     <string name="ResetChatNameNotification">نام‌های سفارشی گفتگو پاک شد.</string>
-    <string name="TabStyle">سبک تب</string>
-    <string name="TabStylePure">ساده</string>
-    <string name="TabStylePills">کپسولی</string>
     <string name="LeftBottomButtonAction">عملکرد دکمه پایین سمت چپ</string>
     <string name="TranscribeProviderOpenAI">API سازگار با OpenAI</string>
     <string name="OpenAiApiCredentialsDialog">API سازگار با OpenAI را پیکربندی کنید. می‌توانید به این **مستندات** مراجعه کنید.\n</string>

@@ -47,9 +47,6 @@ import org.telegram.ui.ActionBar.Theme;
 
 import java.util.ArrayList;
 
-import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.TabStyle;
-
 public class ScrollSlidingTextTabStrip extends HorizontalScrollView {
 
     public interface ScrollSlidingTabStripDelegate {
@@ -503,7 +500,7 @@ public class ScrollSlidingTextTabStrip extends HorizontalScrollView {
             };
             tab.setGravity(Gravity.CENTER);
             tab.setTextAlignment(TEXT_ALIGNMENT_CENTER);
-            if (NaConfig.INSTANCE.getTabStyle().Int() < TabStyle.PILLS.getValue()) tab.setBackground(Theme.createSelectorDrawable(Theme.multAlpha(processColor(Theme.getColor(activeTextColorKey, resourcesProvider)), .15f), 3));
+            tab.setBackground(Theme.createSelectorDrawable(Theme.multAlpha(processColor(Theme.getColor(activeTextColorKey, resourcesProvider)), .15f), 3));
             tab.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
 //            tab.setSingleLine(true);
             tab.setMaxLines(2);
@@ -601,7 +598,7 @@ public class ScrollSlidingTextTabStrip extends HorizontalScrollView {
         for (int a = 0; a < count; a++) {
             TextView tab = (TextView) tabsContainer.getChildAt(a);
             tab.setTextColor(processColor(Theme.getColor(currentPosition == a ? activeTextColorKey : unactiveTextColorKey, resourcesProvider)));
-            if (NaConfig.INSTANCE.getTabStyle().Int() < TabStyle.PILLS.getValue()) tab.setBackground(Theme.createSelectorDrawable(Theme.multAlpha(processColor(Theme.getColor(activeTextColorKey, resourcesProvider)), .15f), 3));
+            tab.setBackground(Theme.createSelectorDrawable(Theme.multAlpha(processColor(Theme.getColor(activeTextColorKey, resourcesProvider)), .15f), 3));
         }
         selectorDrawable.setColor(processColor(Theme.getColor(tabLineColorKey, resourcesProvider)));
         invalidate();
@@ -638,7 +635,7 @@ public class ScrollSlidingTextTabStrip extends HorizontalScrollView {
         boolean result = super.drawChild(canvas, child, drawingTime);
         if (child == tabsContainer) {
             final int height = getMeasuredHeight();
-            /*float l = indicatorX + indicatorXAnimationDx;
+            float l = indicatorX + indicatorXAnimationDx;
             float r = l + indicatorWidth + indicatorWidthAnimationDx;
 
             final View current = tabsContainer.getChildAt(currentPosition);
@@ -653,38 +650,7 @@ public class ScrollSlidingTextTabStrip extends HorizontalScrollView {
                 (int) r,
                 height
             );
-            selectorDrawable.draw(canvas);*/
-            // --- Tab Style Start ---
-            int tabStyle = NaConfig.INSTANCE.getTabStyle().Int();
-            int inlinePadding = 0;
-            int topBound = height - AndroidUtilities.dp(4);
-            int bottomBound = height;
-            float rtpRad = 0;
-            int alpha = 255;
-
-            if (tabStyle >= TabStyle.PILLS.getValue()) {
-                int padding = tabStyle == TabStyle.PILLS.getValue() ? 8 : 10;
-                inlinePadding = AndroidUtilities.dp(padding);
-                topBound = height / 2 - AndroidUtilities.dp(15);
-                bottomBound = height / 2 + AndroidUtilities.dp(15);
-                alpha = 50;
-            }
-            selectorDrawable.setAlpha((int) (alpha * tabsContainer.getAlpha()));
-            float rad = AndroidUtilities.dpf2(3);
-            if (tabStyle == TabStyle.PILLS.getValue()) {
-                rad = rtpRad = AndroidUtilities.dpf2(40);
-            }
-            selectorDrawable.setCornerRadii(new float[]{rad, rad, rad, rad, rtpRad, rtpRad, rtpRad, rtpRad});
-            selectorDrawable.setBounds(
-                    (int) (indicatorX + indicatorXAnimationDx) - inlinePadding,
-                    topBound,
-                    (int) (indicatorX + indicatorXAnimationDx + indicatorWidth + indicatorWidthAnimationDx) + inlinePadding,
-                    bottomBound
-            );
-            if (tabStyle != TabStyle.PURE.getValue()) {
-                selectorDrawable.draw(canvas);
-            }
-            // --- Tab Style End ---
+            selectorDrawable.draw(canvas);
         }
         return result;
     }

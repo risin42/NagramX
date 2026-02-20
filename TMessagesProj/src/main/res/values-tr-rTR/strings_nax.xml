@@ -177,9 +177,6 @@
     <string name="EditLocalNameOverride">Yerel ad geçersiz kılma düzenleniyor.</string>
     <string name="ResetChatNameOverrides">Sohbet Adı Değişikliklerini Sıfırla</string>
     <string name="ResetChatNameNotification">Sohbet adı değişiklikleri temizlendi.</string>
-    <string name="TabStyle">Sekme Stili</string>
-    <string name="TabStylePure">Sade</string>
-    <string name="TabStylePills">Kapsül</string>
     <string name="LeftBottomButtonAction">Sol Alt Düğme Eylemi</string>
     <string name="TranscribeProviderOpenAI">OpenAI Uyumlu API</string>
     <string name="OpenAiApiCredentialsDialog">OpenAI uyumlu API\'yi yapılandırın. Bu **belgelere** başvurabilirsiniz.\n</string>

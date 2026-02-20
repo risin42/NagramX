@@ -191,9 +191,6 @@
     <string name="EditLocalNameOverride">Modifica il nome del gruppo in locale.</string>
     <string name="ResetChatNameOverrides">Reimposta i Nomi Originali dei Gruppi</string>
     <string name="ResetChatNameNotification">I nomi delle chat sono stati sostituiti.</string>
-    <string name="TabStyle">Stile cartelle</string>
-    <string name="TabStylePure">Puro</string>
-    <string name="TabStylePills">Pillole</string>
     <string name="LeftBottomButtonAction">Azione pulsante sinistro</string>
     <string name="TranscribeProviderOpenAI">API compatibile con OpenAI</string>
     <string name="OpenAiApiCredentialsDialog">Configura API compatibile con OpenAI. Puoi fare riferimento a questa **documentazione**.\n</string>
