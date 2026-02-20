@@ -258,9 +258,6 @@
     <string name="DisableInstantCamera">禁用相机即时预览</string>
     <string name="showSeconds">以秒为单位显示时间戳</string>
     <string name="Name">名称</string>
-    <string name="channelAlias">频道别名</string>
-    <string name="ChannelAliasDetails">以自定义名称标记以特定频道身份发言的用户。启用后在对应频道资料页的菜单中设置别名。</string>
-    <string name="setChannelAliasName">标记别名</string>
     <string name="StickerSettings">贴纸</string>
     <string name="ConfirmSettings">操作确认</string>
     <string name="InteractionSettings">交互</string>

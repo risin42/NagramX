@@ -256,9 +256,6 @@
     <string name="DisableInstantCamera">Приховати прев\'ю з камери на панелі «Прикріпити»</string>
     <string name="showSeconds">Показувати час у секундах</string>
     <string name="Name">Ім’я</string>
-    <string name="channelAlias">Псевдоніми каналів</string>
-    <string name="ChannelAliasDetails">Позначайте користувачів каналів користувацьким ім\'ям. Увімкніть, щоб встановити псевдонім у меню профілів каналів.</string>
-    <string name="setChannelAliasName">Встановити псевдонім</string>
     <string name="StickerSettings">Наліпки</string>
     <string name="ConfirmSettings">Підтвердження</string>
     <string name="InteractionSettings">Взаємодія</string>

@@ -256,9 +256,6 @@
     <string name="DisableInstantCamera">インスタントカメラを無効化</string>
     <string name="showSeconds">タイムスタンプを秒単位で表示</string>
     <string name="Name">名前</string>
-    <string name="channelAlias">チャンネルエイリアス</string>
-    <string name="ChannelAliasDetails">チャンネルユーザーにカスタム名でラベル付けします。有効にすると、チャンネルプロファイルメニューでエイリアスを設定できます。</string>
-    <string name="setChannelAliasName">エイリアスを設定</string>
     <string name="StickerSettings">ステッカー</string>
     <string name="ConfirmSettings">確認</string>
     <string name="InteractionSettings">インタラクション</string>

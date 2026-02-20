@@ -213,12 +213,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val customChannelLabel =
-        addConfig(
-            "CustomChannelLabel",
-            ConfigItem.configTypeString,
-            ""
-        )
     val alwaysShowDownloadIcon =
         addConfig(
             "AlwaysShowDownloadIcon",

@@ -33,7 +33,6 @@
     <string name="ZalgoFilter">Filtro Simboli \"Zalgo\"</string>
     <string name="ZalgoFilterNotice">Tutti i simboli \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" nei nickname o nei messaggi verranno rimossi.</string>
     <string name="labelChannelUser">Etichetta Canale Utenti</string>
-    <string name="CustomChannelLabel">Etichetta Canale Personalizzata</string>
     <string name="AlwaysShowDownloadIcon">Mostra sempre l\'icona di Download</string>
     <string name="HideTitle">Nascondi Titolo</string>
     <string name="IgnoreUnreadCount">Nascondi contatore Non Letti</string>

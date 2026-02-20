@@ -925,7 +925,6 @@ public class NekoSettingsActivity extends BaseFragment {
                 AyuSavePreferences.saveExclusionPrefix,
                 LocalNameHelper.chatNameOverridePrefix,
                 LocalNameHelper.userNameOverridePrefix,
-                NekoConfig.channelAliasPrefix,
                 DialogConfig.customForumTabPrefix,
                 LocalPeerColorHelper.KEY_PREFIX,
                 LocalPremiumStatusHelper.KEY_PREFIX,

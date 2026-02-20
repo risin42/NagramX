@@ -445,8 +445,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell hideChannelSilentBroadcastRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideChannelSilentBroadcast()));
     private final AbstractConfigCell disableSwipeToNextRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableSwipeToNext));
     private final AbstractConfigCell labelChannelUserRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.labelChannelUser));
-    private final AbstractConfigCell channelAliasRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.channelAlias, getString(R.string.ChannelAliasDetails)));
-    private final AbstractConfigCell customCustomChannelLabelRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomChannelLabel(), null, null, (input) -> input));
     private final AbstractConfigCell dividerChannels = cellGroup.appendCell(new ConfigCellDivider());
 
     // Confirmations
@@ -485,7 +483,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             cellGroup.rows.remove(markdownParserRow);
         }
         checkSkipOpenLinkConfirmRows();
-        checkChannelAliasRows();
         checkConfirmAVRows();
         addRowsToMap(cellGroup);
     }
@@ -641,8 +638,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                 checkSkipOpenLinkConfirmRows();
             } else if (key.equals(NekoConfig.useChatAttachMediaMenu.getKey())) {
                 checkConfirmAVRows();
-            } else if (key.equals(NekoConfig.labelChannelUser.getKey())) {
-                checkChannelAliasRows();
             } else if (key.equals(NaConfig.INSTANCE.getUseEditedIcon().getKey())) {
                 if ((boolean) newValue) {
                     if (cellGroup.rows.contains(customEditedMessageRow)) {
@@ -985,41 +980,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             int rowIndex = cellGroup.rows.indexOf(skipOpenLinkConfirmRow);
             if (rowIndex != -1) {
                 cellGroup.rows.remove(skipOpenLinkConfirmRow);
-                listAdapter.notifyItemRemoved(rowIndex);
-            }
-        }
-        addRowsToMap(cellGroup);
-    }
-
-    private void checkChannelAliasRows() {
-        boolean labelChannelUser = NekoConfig.labelChannelUser.Bool();
-        if (listAdapter == null) {
-            if (!labelChannelUser) {
-                cellGroup.rows.remove(channelAliasRow);
-                cellGroup.rows.remove(customCustomChannelLabelRow);
-            }
-            return;
-        }
-        if (labelChannelUser) {
-            final int index = cellGroup.rows.indexOf(labelChannelUserRow);
-            if (!cellGroup.rows.contains(channelAliasRow)) {
-                cellGroup.rows.add(index + 1, channelAliasRow);
-                listAdapter.notifyItemInserted(index + 1);
-            }
-            final int aliasIndex = cellGroup.rows.indexOf(channelAliasRow);
-            if (!cellGroup.rows.contains(customCustomChannelLabelRow)) {
-                cellGroup.rows.add(aliasIndex + 1, customCustomChannelLabelRow);
-                listAdapter.notifyItemInserted(aliasIndex + 1);
-            }
-        } else {
-            int rowIndex = cellGroup.rows.indexOf(customCustomChannelLabelRow);
-            if (rowIndex != -1) {
-                cellGroup.rows.remove(customCustomChannelLabelRow);
-                listAdapter.notifyItemRemoved(rowIndex);
-            }
-            rowIndex = cellGroup.rows.indexOf(channelAliasRow);
-            if (rowIndex != -1) {
-                cellGroup.rows.remove(channelAliasRow);
                 listAdapter.notifyItemRemoved(rowIndex);
             }
         }
