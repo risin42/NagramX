@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="N_Config">N-Yapılandırma</string>
-    <string name="ForceCopy">Kopyalamaya Zorla</string>
     <string name="CombineMessage">Mesajları Birleştir</string>
     <string name="TextStyle">Metin Stili</string>
     <string name="NoiseSuppressAndVoiceEnhance">Ses İyileştirmeleri</string>

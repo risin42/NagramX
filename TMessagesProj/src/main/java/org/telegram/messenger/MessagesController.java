@@ -6579,14 +6579,6 @@ public class MessagesController extends BaseController implements NotificationCe
         return isChatNoForwards(getChat(chatId));
     }
 
-    public boolean isChatNoForwardsWithOverride(long chatId) {
-        return isChatNoForwards(getChat(chatId)) && !NaConfig.INSTANCE.getForceCopy().Bool();
-    }
-
-    public boolean isChatNoForwardsWithOverride(TLRPC.Chat chat) {
-        return isChatNoForwards(chat) && !NaConfig.INSTANCE.getForceCopy().Bool();
-    }
-
     public TLRPC.User getUser(Long id) {
         if (id == 0) {
             return UserConfig.getInstance(currentAccount).getCurrentUser();

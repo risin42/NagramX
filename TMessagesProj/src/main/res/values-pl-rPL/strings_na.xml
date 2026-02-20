@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="N_Config">Konfiguracja-Nagram</string>
-    <string name="ForceCopy">Wymuś kopię</string>
     <string name="CombineMessage">Połącz wiadomości</string>
     <string name="TextStyle">Styl tekstu</string>
     <string name="NoiseSuppressAndVoiceEnhance">Ulepszenia głosu</string>

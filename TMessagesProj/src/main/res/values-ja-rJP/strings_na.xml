@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="N_Config">N-設定</string>
-    <string name="ForceCopy">強制コピー</string>
     <string name="CombineMessage">メッセージを結合</string>
     <string name="TextStyle">テキストスタイル</string>
     <string name="NoiseSuppressAndVoiceEnhance">ノイズ抑制と音声強調</string>

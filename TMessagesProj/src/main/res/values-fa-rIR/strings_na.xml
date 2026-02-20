@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="N_Config">پیکربندی N</string>
-    <string name="ForceCopy">کپی اجباری</string>
     <string name="CombineMessage">ترکیب پیام‌ها</string>
     <string name="TextStyle">حالت متن</string>
     <string name="NoiseSuppressAndVoiceEnhance">بهبود صدا</string>

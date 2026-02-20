@@ -1434,11 +1434,11 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                 menu.getItem(1).setVisible(canShowQuote());
                 MenuItem copyItem = menu.findItem(android.R.id.copy);
                 if (copyItem != null) {
-                    copyItem.setVisible(canCopyOverride());
+                    copyItem.setVisible(true || canCopy());
                 }
                 if (selectedView != null) {
                     CharSequence charSequence = getText(selectedView, false);
-                    if (!canCopyOverride()) {
+                    if (false && !canCopy()) {
                         menu.getItem(2).setVisible(false);
                     } else if (multiselect || selectionStart <= 0 && selectionEnd >= charSequence.length() - 1) {
                         menu.getItem(2).setVisible(false);
@@ -3430,10 +3430,6 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
 
     protected Theme.ResourcesProvider getResourcesProvider() {
         return resourcesProvider;
-    }
-
-    protected boolean canCopyOverride() {
-        return NaConfig.INSTANCE.getForceCopy().Bool() || canCopy();
     }
 
     protected boolean canCopy() {
