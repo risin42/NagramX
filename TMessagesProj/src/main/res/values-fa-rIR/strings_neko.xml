@@ -201,8 +201,6 @@
     <string name="DisableSystemAccount">غیرفعال کردن حساب سیستمی</string>
     <string name="FilterMenu">منوی فیلتر گفتگوها</string>
     <string name="DisableProxyWhenVpnEnabled">غیرفعال کردن پروکسی هنگام روشن بودن VPN</string>
-    <string name="UseProxyItem">نمایش پروکسی در منوی کشویی</string>
-    <string name="HideProxyByDefault">پنهان کردن پروکسی در صورت غیرفعال بودن</string>
     <string name="SkipOpenLinkConfirm">رد کردن تایید باز کردن لینک</string>
     <string name="DeleteAllInChatAlert">هشدار! این کار **تمام پیام‌ها** را در این گفتگو برای **همه** شرکت‌کنندگان حذف می‌کند.</string>
     <string name="UnblockAll">رفع انسداد همه</string>

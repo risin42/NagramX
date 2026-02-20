@@ -202,8 +202,6 @@
     <string name="DisableSystemAccount">Скрыть аккаунт в системе</string>
     <string name="FilterMenu">Меню фильтра диалогов</string>
     <string name="DisableProxyWhenVpnEnabled">Отключить прокси при включении VPN</string>
-    <string name="UseProxyItem">Показывать «Прокси» в боковом меню</string>
-    <string name="HideProxyByDefault">Скрыть «Прокси» при неиспользовании</string>
     <string name="SkipOpenLinkConfirm">Открывать ссылки без подтверждения</string>
     <string name="DeleteAllInChatAlert">Внимание! Это **удалит все сообщения** в этом чате для **всех**.</string>
     <string name="UnblockAll">Разблокировать всех</string>

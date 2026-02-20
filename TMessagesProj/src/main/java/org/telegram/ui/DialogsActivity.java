@@ -10535,12 +10535,12 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         String proxyAddress = preferences.getString("proxy_ip", "");
         boolean proxyEnabled;
         proxyEnabled = preferences.getBoolean("proxy_enabled", false);
-        if (!downloadsItemVisible && !NekoConfig.useProxyItem.Bool() && (!NekoConfig.hideProxyByDefault.Bool() || (proxyEnabled && !TextUtils.isEmpty(proxyAddress)) || getMessagesController().blockedCountry && !SharedConfig.proxyList.isEmpty())) {
+        if (!downloadsItemVisible && !searching && (proxyEnabled && !TextUtils.isEmpty(proxyAddress)) || getMessagesController().blockedCountry && !SharedConfig.proxyList.isEmpty()) {
             if (!actionBar.isSearchFieldVisible() && (doneItem == null || doneItem.getVisibility() != View.VISIBLE)) {
                 proxyItem.setVisibility(View.VISIBLE);
             }
             proxyItemVisible = true;
-            proxyDrawable.setConnected(true, currentConnectionState == ConnectionsManager.ConnectionStateConnected || currentConnectionState == ConnectionsManager.ConnectionStateUpdating, animated);
+            proxyDrawable.setConnected(proxyEnabled, currentConnectionState == ConnectionsManager.ConnectionStateConnected || currentConnectionState == ConnectionsManager.ConnectionStateUpdating, animated);
         } else {
             proxyItemVisible = false;
             proxyItem.setVisibility(View.GONE);

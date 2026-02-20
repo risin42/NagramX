@@ -201,8 +201,6 @@
     <string name="DisableSystemAccount">Sistem Hesabını Devre Dışı Bırak</string>
     <string name="FilterMenu">Sohbet Filtre Menüsü</string>
     <string name="DisableProxyWhenVpnEnabled">VPN Etkinken Proxy\'yi Devre Dışı Bırak</string>
-    <string name="UseProxyItem">Kenar Çubuğunda Proxy Göster</string>
-    <string name="HideProxyByDefault">Pasifken Proxy\'i Gizle</string>
     <string name="SkipOpenLinkConfirm">Bağlantı Açma Onayını Atla</string>
     <string name="DeleteAllInChatAlert">Uyarı! Bu işlem, bu sohbetteki **tüm mesajları bütün** katılımcılar için **silecektir**.</string>
     <string name="UnblockAll">Tüm Engelleri Kaldır</string>
