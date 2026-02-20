@@ -8,8 +8,6 @@
 
 package org.telegram.ui.ActionBar;
 
-import static org.telegram.messenger.AndroidUtilities.dp;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -18,7 +16,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -46,7 +43,6 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.AnimationNotificationsLocker;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.R;
-import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.ui.Components.LayoutHelper;
@@ -56,8 +52,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import xyz.nextalone.nagram.NaConfig;
 
 public class ActionBarPopupWindow extends PopupWindow {
 
@@ -102,8 +96,6 @@ public class ActionBarPopupWindow extends PopupWindow {
     }
 
     public static class ActionBarPopupWindowLayout extends FrameLayout {
-        private static final boolean USE_SMOOTH_CORNERS = NaConfig.INSTANCE.getSmoothRoundedMenu().Bool();
-        private final Paint smoothBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         public final static int FLAG_USE_SWIPEBACK = 1;
         public final static int FLAG_SHOWN_FROM_BOTTOM = 2;
         public final static int FLAG_DONT_USE_SCROLLVIEW = 4;
@@ -153,7 +145,7 @@ public class ActionBarPopupWindow extends PopupWindow {
         }
 
         public ActionBarPopupWindowLayout(Context context, Theme.ResourcesProvider resourcesProvider) {
-            this(context, R.drawable.popup_fixed_alert3, resourcesProvider);
+            this(context, R.drawable.popup_fixed_alert2, resourcesProvider);
         }
 
         public ActionBarPopupWindowLayout(Context context, int resId, Theme.ResourcesProvider resourcesProvider) {
@@ -171,10 +163,7 @@ public class ActionBarPopupWindow extends PopupWindow {
                 backgroundDrawable.getPadding(bgPaddings);
                 setBackgroundColor(getThemedColor(Theme.key_actionBarDefaultSubmenuBackground));
             }
-            if (USE_SMOOTH_CORNERS) {
-                smoothBackgroundPaint.setColor(getThemedColor(Theme.key_actionBarDefaultSubmenuBackground));
-                smoothBackgroundPaint.setShadowLayer(dp(4), 0, dp(1), 0x30000000);
-            }
+
 
             setWillNotDraw(false);
 
@@ -297,17 +286,8 @@ public class ActionBarPopupWindow extends PopupWindow {
         }
 
         public void setBackgroundColor(int color) {
-            if (backgroundColor != color) {
-                backgroundColor = color;
-                if (backgroundDrawable != null) {
-                    backgroundDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
-                }
-                if (USE_SMOOTH_CORNERS) {
-                    smoothBackgroundPaint.setColor(Color.WHITE);
-                    smoothBackgroundPaint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
-                    smoothBackgroundPaint.clearShadowLayer();
-                    smoothBackgroundPaint.setShadowLayer(dp(4), 0, dp(1), 0x30000000);
-                }
+            if (backgroundColor != color && backgroundDrawable != null) {
+                backgroundDrawable.setColorFilter(new PorterDuffColorFilter(backgroundColor = color, PorterDuff.Mode.MULTIPLY));
             }
         }
 
@@ -421,25 +401,6 @@ public class ActionBarPopupWindow extends PopupWindow {
             animationEnabled = value;
         }
 
-        public void prepareForShowAnimation() {
-            if (!USE_SMOOTH_CORNERS) {
-                return;
-            }
-            startAnimationPending = true;
-            boolean prevUpdateAnimation = updateAnimation;
-            updateAnimation = false;
-            setBackScaleY(0f);
-            setBackAlpha(0);
-            updateAnimation = prevUpdateAnimation;
-            int count = getItemsCount();
-            for (int a = 0; a < count; a++) {
-                View child = getItemAt(a);
-                if (child != null) {
-                    child.setAlpha(0f);
-                }
-            }
-        }
-
         @Override
         public void addView(View child) {
             linearLayout.addView(child);
@@ -520,11 +481,7 @@ public class ActionBarPopupWindow extends PopupWindow {
                         canvas.save();
                         canvas.clipRect(0, bgPaddings.top, getMeasuredWidth(), getMeasuredHeight());
                     }
-                    if (USE_SMOOTH_CORNERS) {
-                        smoothBackgroundPaint.setAlpha(applyAlpha ? backAlpha : 255);
-                    } else {
-                        backgroundDrawable.setAlpha(applyAlpha ? backAlpha : 255);
-                    }
+                    backgroundDrawable.setAlpha(applyAlpha ? backAlpha : 255);
                     if (shownFromBottom) {
                         final int height = getMeasuredHeight();
                         AndroidUtilities.rectTmp2.set(0, (int) (height * (1.0f - backScaleY)), (int) (getMeasuredWidth() * backScaleX), height);
@@ -565,24 +522,8 @@ public class ActionBarPopupWindow extends PopupWindow {
                         rect.set(AndroidUtilities.rectTmp2.right, AndroidUtilities.rectTmp2.top, AndroidUtilities.rectTmp2.right, AndroidUtilities.rectTmp2.top);
                         AndroidUtilities.lerp(rect, AndroidUtilities.rectTmp2, reactionsEnterProgress, AndroidUtilities.rectTmp2);
                     }
-                    if (USE_SMOOTH_CORNERS) {
-                        int cornerRadius = dp(SharedConfig.bubbleRadius);
-                        float left = AndroidUtilities.rectTmp2.left + bgPaddings.left;
-                        float top = AndroidUtilities.rectTmp2.top + bgPaddings.top;
-                        float right = AndroidUtilities.rectTmp2.right - bgPaddings.right;
-                        float bottom = AndroidUtilities.rectTmp2.bottom - bgPaddings.bottom;
-                        if (smoothBackgroundPaint.getAlpha() != 0 && right > left && bottom > top) {
-                            canvas.drawRoundRect(
-                                    left, top, right, bottom,
-                                    cornerRadius, cornerRadius,
-                                    smoothBackgroundPaint
-                            );
-                        }
-                        backgroundDrawable.setBounds(AndroidUtilities.rectTmp2);
-                    } else {
-                        backgroundDrawable.setBounds(AndroidUtilities.rectTmp2);
-                        backgroundDrawable.draw(canvas);
-                    }
+                    backgroundDrawable.setBounds(AndroidUtilities.rectTmp2);
+                    backgroundDrawable.draw(canvas);
                     if (clipChildren) {
                         AndroidUtilities.rectTmp2.left += bgPaddings.left;
                         AndroidUtilities.rectTmp2.top += bgPaddings.top;
@@ -683,15 +624,14 @@ public class ActionBarPopupWindow extends PopupWindow {
                 if (child.getVisibility() != View.VISIBLE) {
                     continue;
                 }
-                Object tag = null;
-                if (!USE_SMOOTH_CORNERS) {
-                    tag = child.getTag(R.id.object_tag);
-                }
+                Object tag = child.getTag(R.id.object_tag);
                 if (child instanceof ActionBarMenuSubItem) {
-                    ((ActionBarMenuSubItem) child).updateSelectorBackground(child == firstVisible || (!USE_SMOOTH_CORNERS && prevGap), child == lastVisible);
+                    ((ActionBarMenuSubItem) child).updateSelectorBackground(child == firstVisible || prevGap, child == lastVisible);
                 }
-                if (!USE_SMOOTH_CORNERS) {
-                    prevGap = tag != null;
+                if (tag != null) {
+                    prevGap = true;
+                } else {
+                    prevGap = false;
                 }
             }
         }

@@ -298,7 +298,6 @@
     <string name="CameraInVideoMessagesRear">后置摄像头</string>
     <string name="CameraInVideoMessagesAsk">询问</string>
     <string name="CameraSettings">相机</string>
-    <string name="SmoothRoundedMenu">平滑圆角上下文菜单</string>
     <string name="SyncContactToPhone">同步联系人到手机</string>
     <string name="AddViaQRCode">通过二维码添加</string>
     <string name="ContactNotes">备注</string>

@@ -22,16 +22,12 @@ import androidx.core.graphics.ColorUtils;
 
 import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.LocaleController;
-import org.telegram.messenger.SharedConfig;
 import org.telegram.ui.Components.AnimatedEmojiSpan;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.CheckBox2;
 import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RLottieImageView;
-import org.telegram.ui.Components.ScaleStateListAnimator;
-
-import xyz.nextalone.nagram.NaConfig;
 
 public class ActionBarMenuSubItem extends FrameLayout {
 
@@ -84,11 +80,10 @@ public class ActionBarMenuSubItem extends FrameLayout {
 
         updateBackground();
         setPadding(dp(18), 0, dp(18), 0);
-        ScaleStateListAnimator.apply(this, .04f, 1.2f);
 
         imageView = new RLottieImageView(context);
         imageView.setScaleType(ImageView.ScaleType.CENTER);
-        imageView.setColorFilter(new PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN));
+        imageView.setColorFilter(new PorterDuffColorFilter(iconColor, PorterDuff.Mode.MULTIPLY));
         addView(imageView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 40, Gravity.CENTER_VERTICAL | (LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT)));
 
         textView = new AnimatedEmojiSpan.TextViewEmojis(context);
@@ -410,13 +405,7 @@ public class ActionBarMenuSubItem extends FrameLayout {
     }
 
     public void updateBackground() {
-        if (NaConfig.INSTANCE.getSmoothRoundedMenu().Bool()) {
-            selectorRad = SharedConfig.bubbleRadius;
-        } else {
-            selectorRad = 10;
-        }
-        // setBackground(Theme.createRadSelectorDrawable(selectorColor, top ? selectorRad : 0, bottom ? selectorRad : 0));
-        setBackground(Theme.createRadSelectorDrawable(selectorColor, selectorRad, selectorRad, selectorRad, selectorRad, true));
+        setBackground(Theme.createRadSelectorDrawable(selectorColor, top ? selectorRad : 0, bottom ? selectorRad : 0));
     }
 
     private int getThemedColor(int key) {

@@ -297,7 +297,6 @@
     <string name="CameraInVideoMessagesRear">Задня камера</string>
     <string name="CameraInVideoMessagesAsk">Запитувати</string>
     <string name="CameraSettings">Камера</string>
-    <string name="SmoothRoundedMenu">Плавне закруглене контекстне меню</string>
     <string name="SyncContactToPhone">Синхронізувати контакт з телефоном</string>
     <string name="AddViaQRCode">Додати через QR-код</string>
     <string name="ContactNotes">Нотатки</string>

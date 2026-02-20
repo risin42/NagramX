@@ -295,7 +295,6 @@
     <string name="CameraInVideoMessagesRear">Cámara trasera</string>
     <string name="CameraInVideoMessagesAsk">Preguntar</string>
     <string name="CameraSettings">Cámara</string>
-    <string name="SmoothRoundedMenu">Menús contextuales suaves y redondeados</string>
     <string name="SyncContactToPhone">Sincronizar contacto con el teléfono</string>
     <string name="AddViaQRCode">Agregar mediante código QR</string>
     <string name="ContactNotes">Notas</string>
