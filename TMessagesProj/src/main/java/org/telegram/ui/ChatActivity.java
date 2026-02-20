@@ -342,7 +342,6 @@ import me.vkryl.core.reference.ReferenceList;
 
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
@@ -362,7 +361,6 @@ import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.ui.BookmarksActivity;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
-import tw.nekomimi.nekogram.ui.RegexFilterEditActivity;
 import tw.nekomimi.nekogram.ui.components.GroupedIconsView;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
@@ -3811,19 +3809,6 @@ public class ChatActivity extends BaseFragment implements
                         chatActivity.chatActivityEnterView.openKeyboard();
                     }
                 }
-            }
-        }
-
-        @Override
-        protected boolean canShowAddToFilter() {
-            if (chatActivity == null || !NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) return false;
-            return !(chatActivity.getDialogId() == chatActivity.getUserConfig().getClientUserId());
-        }
-
-        @Override
-        protected void onAddToFilterClick(String text) {
-            if (chatActivity != null) {
-                chatActivity.presentFragment(new RegexFilterEditActivity(chatActivity.getDialogId(), text));
             }
         }
     }
@@ -38136,53 +38121,7 @@ public class ChatActivity extends BaseFragment implements
                 } else {
                     messages = ChatActivity.this.messages;
                 }
-                // return messages.get(position - messagesStartRow).contentType;
-                // Message filter start
-                var msg = messages.get(position - messagesStartRow);
-                if (msg == null || msg.messageOwner != null && msg.messageOwner.hide) {
-                    return -1000;
-                }
-                if (NekoConfig.ignoreBlocked.Bool() && ChatObject.isMegagroup(currentChat)) {
-                    long fromId = msg.getFromChatId();
-                    if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
-                        return -1000;
-                    }
-                    if (msg.replyMessageObject != null) {
-                        fromId = msg.replyMessageObject.getFromChatId();
-                        if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
-                            return -1000;
-                        }
-                    }
-                }
-                if (AyuFilter.isFiltered(msg, getGroup(msg.getGroupId()))) {
-                    return -1000;
-                }
-                if (msg.contentType == 2) { // ChatUnreadCell
-                    int scanIndex = position - messagesStartRow - 1;
-                    boolean hasVisibleAfter = false;
-                    for (int i = scanIndex; i >= 0; i--) {
-                        var m = messages.get(i);
-                        if (m == null) continue;
-                        var g = getGroup(m.getGroupId());
-                        var fromId = m.getFromChatId();
-                        if (m.messageOwner != null && m.messageOwner.hide) {
-                            continue;
-                        }
-                        if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
-                            continue;
-                        }
-                        if (AyuFilter.isFiltered(m, g)) {
-                            continue;
-                        }
-                        hasVisibleAfter = true;
-                        break;
-                    }
-                    if (!hasVisibleAfter) {
-                        return -1000;
-                    }
-                }
-                return msg.contentType;
-                // Message filter end
+                return messages.get(position - messagesStartRow).contentType;
             } else if (position == botInfoRow) {
                 return 3;
             } else if (position == userInfoRow) {
@@ -44151,12 +44090,6 @@ public class ChatActivity extends BaseFragment implements
             for (int i = 0; i < messages.size(); i++) {
                 int msgId = messages.get(i).getId();
                 long fromId = messages.get(i).getFromChatId();
-                if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
-                    continue;
-                }
-                if (AyuFilter.isFiltered(messages.get(i), null)) {
-                    continue;
-                }
                 if (msgId > begin && msgId < end && selectedMessagesIds[0].indexOfKey(msgId) < 0) {
                     MessageObject message = messages.get(i);
                     int type = getMessageType(message);
@@ -46927,10 +46860,6 @@ public class ChatActivity extends BaseFragment implements
                                      boolean allowDelete, boolean allowEdit,
                                      boolean allowReply, boolean allowReplyPm,
                                      boolean allowForward) {
-    }
-
-    public boolean isBlockedUser(long senderId) {
-        return NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(senderId) >= 0;
     }
 
     private void updateBotforumTabsBottomMargin() {

@@ -1744,13 +1744,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     public boolean isBlurred;
     public BotForumHelper.BotDraftAnimationsPool draftAnimationsPool;
 
-    // NekoX
-    private boolean needHideMessage() {
-        return currentMessageObject.messageOwner.hide ||
-                MessagesController.getInstance(currentAccount).blockePeers.indexOfKey(currentMessageObject.getFromChatId()) >= 0 &&
-                        NekoConfig.ignoreBlocked.Bool() && !(getParent() != null && getParent().getClass().getName().contains("ChannelAdminLogActivity"));
-    }
-
     public ChatMessageCell(Context context, int currentAccount) {
         this(context, currentAccount, false, null, null);
     }
@@ -5000,7 +4993,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     public void updatePlayingMessageProgress() {
-        if (currentMessageObject == null || needHide) {
+        if (currentMessageObject == null) {
             return;
         }
         if (videoPlayerRewinder != null && videoPlayerRewinder.rewindCount != 0 && videoPlayerRewinder.rewindByBackSeek) {
@@ -5226,7 +5219,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             invalidate();
         }
 
-        if (currentMessageObject != null && currentMessageObject.textLayoutBlocks != null && !needHide) {
+        if (currentMessageObject != null && currentMessageObject.textLayoutBlocks != null) {
             int p = position - textY;
 
             int newFirst = -1, newLast = -1, newCount = 0;
@@ -5447,7 +5440,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     private void updateSecretTimeText(MessageObject messageObject) {
-        if (messageObject == null || !messageObject.needDrawBluredPreview() || needHide) {
+        if (messageObject == null || !messageObject.needDrawBluredPreview()) {
             return;
         }
         CharSequence str = messageObject.getSecretTimeString();
@@ -6222,7 +6215,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             } else if (MessagesController.getInstance(currentAccount).isChatNoForwards(messageObject.getChatId()) || (messageObject.messageOwner != null && messageObject.messageOwner.noforwards)) {
                 drawSideButton = 0;
             } else {
-                drawSideButton = !isRepliesChat && checkNeedDrawShareButton(messageObject) && !needHide ? 1 : 0;
+                drawSideButton = !isRepliesChat && checkNeedDrawShareButton(messageObject) ? 1 : 0;
                 if (isPinnedChat || drawSideButton == 1 && (messageObject.messageOwner.fwd_from != null && !messageObject.isOutOwner() && messageObject.messageOwner.fwd_from.saved_from_peer != null && messageObject.getDialogId() == UserConfig.getInstance(currentAccount).getClientUserId() || messageObject.isSaved)) {
                     drawSideButton = 2;
                 }
@@ -11041,27 +11034,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             }
             quoteHighlight = null;
         }
-        needHide = needHideMessage();
-        if (needHide) {
-            totalHeight = 0;
-            drawTime = false;
-            needNewVisiblePart = false;
-            needReplyImage = false;
-            drawCommentButton = false;
-            drawForwardedName = false;
-            drawInstantView = false;
-            drawBackground = false;
-            drawCommentNumber = false;
-            drawImageButton = false;
-            drawJoinChannelView = false;
-            drawJoinGroupView = false;
-            drawMediaCheckBox = false;
-            drawName = false;
-            drawNameLayout = false;
-            drawPhotoImage = false;
-            drawBackground = false;
-            isAvatarVisible = false;
-        }
         if (transcribeButton != null) {
             transcribeButton.setOpen(currentMessageObject.messageOwner != null && currentMessageObject.messageOwner.voiceTranscriptionOpen && currentMessageObject.messageOwner.voiceTranscriptionFinal && TranscribeButton.isVideoTranscriptionOpen(currentMessageObject), !messageIdChanged);
             transcribeButton.setLoading(TranscribeButton.isTranscribing(currentMessageObject), !messageIdChanged);
@@ -11120,8 +11092,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             flagSecure.invalidate();
         }
     }
-
-    private boolean needHide;
 
     public void checkVideoPlayback(boolean allowStart, Bitmap thumb) {
         if (currentMessageObject.isVideo()) {
@@ -12715,7 +12685,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
         setMeasuredDimension(
             isWidthAdaptive() ? getBoundsRight() - getBoundsLeft() : MeasureSpec.getSize(widthMeasureSpec),
-            needHide ? 0 : Math.max(minHeight, normHeight)
+            Math.max(minHeight, normHeight)
         );
     }
 
@@ -12777,7 +12747,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     @SuppressLint("DrawAllocation")
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        if (currentMessageObject == null || needHide) {
+        if (currentMessageObject == null) {
             return;
         }
         int currentSize = getMeasuredHeight() + (getMeasuredWidth() << 16);
@@ -25334,7 +25304,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     public int computedGroupCaptionY;
     public MessageObject.TextLayoutBlocks computedCaptionLayout;
     public int computeHeight(MessageObject object, MessageObject.GroupedMessages groupedMessages, boolean withCaption) {
-        if (needHide) return 0;
         photoImage.setIgnoreImageSet(true);
         avatarImage.setIgnoreImageSet(true);
         replyImageReceiver.setIgnoreImageSet(true);

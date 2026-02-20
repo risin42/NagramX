@@ -29,8 +29,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
-import org.telegram.SQLite.SQLiteCursor;
-import org.telegram.SQLite.SQLiteException;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BaseController;
@@ -76,14 +74,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import tw.nekomimi.nekogram.NekoConfig;
 import xyz.nextalone.nagram.NaConfig;
 
 public class MessageHelper extends BaseController {
@@ -154,113 +149,6 @@ public class MessageHelper extends BaseController {
             arrayList.add(obj);
         }
         getNotificationCenter().postNotificationName(NotificationCenter.replaceMessagesObjects, dialog_id, arrayList, false);
-    }
-
-    public interface FilteredMessageCallback {
-        void onLoaded(MessageObject result);
-    }
-
-    public void loadLastMessageSkippingFilteredAsync(long dialogId, FilteredMessageCallback callback) {
-        Utilities.globalQueue.postRunnable(() -> {
-            MessageObject result = getLastMessageSkippingFiltered(dialogId);
-            if (callback != null) {
-                AndroidUtilities.runOnUIThread(() -> callback.onLoaded(result));
-            }
-        });
-    }
-
-    public MessageObject getLastMessageSkippingFiltered(long dialogId) {
-        SQLiteCursor cursor = null;
-        NativeByteBuffer data = null;
-        try {
-            boolean ignoreBlocked = NekoConfig.ignoreBlocked.Bool();
-            long currentUserId = UserConfig.getInstance(currentAccount).clientUserId;
-            HashMap<Long, HashMap<Long, TLRPC.Message>> replyMessageCache = ignoreBlocked ? new HashMap<>() : null;
-            String query = ignoreBlocked
-                ? String.format(Locale.US, "SELECT data,send_state,mid,date,replydata FROM messages_v2 WHERE uid = %d ORDER BY date DESC LIMIT %d,%d", dialogId, 0, 20)
-                : String.format(Locale.US, "SELECT data,send_state,mid,date FROM messages_v2 WHERE uid = %d ORDER BY date DESC LIMIT %d,%d", dialogId, 0, 20);
-            cursor = getMessagesStorage().getDatabase().queryFinalized(query);
-            while (cursor.next()) {
-                data = cursor.byteBufferValue(0);
-                if (data == null) {
-                    continue;
-                }
-                TLRPC.Message message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
-                if (message == null) {
-                    data.reuse();
-                    data = null;
-                    continue;
-                }
-                message.send_state = cursor.intValue(1);
-                message.id = cursor.intValue(2);
-                message.date = cursor.intValue(3);
-                message.dialog_id = dialogId;
-                message.readAttachPath(data, currentUserId);
-                data.reuse();
-                data = null;
-
-                if (ignoreBlocked) {
-                    long fromId = MessageObject.getFromChatId(message);
-                    if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
-                        continue;
-                    }
-                    if (message.reply_to != null && message.reply_to.reply_to_msg_id != 0) {
-                        if (!cursor.isNull(4)) {
-                            NativeByteBuffer replyData = cursor.byteBufferValue(4);
-                            if (replyData != null) {
-                                message.replyMessage = TLRPC.Message.TLdeserialize(replyData, replyData.readInt32(false), false);
-                                if (message.replyMessage != null) {
-                                    message.replyMessage.readAttachPath(replyData, currentUserId);
-                                }
-                                replyData.reuse();
-                            }
-                        }
-                        if (message.replyMessage == null) {
-                            long replyDialogId = MessageObject.getReplyToDialogId(message);
-                            if (replyDialogId == 0) {
-                                replyDialogId = dialogId;
-                            }
-                            long replyMsgId = message.reply_to.reply_to_msg_id;
-                            HashMap<Long, TLRPC.Message> dialogCache = replyMessageCache.computeIfAbsent(replyDialogId, k -> new HashMap<>());
-                            if (dialogCache.containsKey(replyMsgId)) {
-                                message.replyMessage = dialogCache.get(replyMsgId);
-                            } else {
-                                message.replyMessage = getMessage(replyDialogId, replyMsgId);
-                                dialogCache.put(replyMsgId, message.replyMessage);
-                            }
-                        }
-                        if (message.replyMessage != null) {
-                            fromId = MessageObject.getFromChatId(message.replyMessage);
-                            if (isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId)) {
-                                continue;
-                            }
-                        }
-                    }
-                }
-
-                MessageObject obj = new MessageObject(currentAccount, message, false, false);
-                if (AyuFilter.isFiltered(obj, null)) {
-                    continue;
-                }
-                if (getMessagesController().getUser(obj.getSenderId()) == null) {
-                    TLRPC.User user = getMessagesStorage().getUser(obj.getSenderId());
-                    if (user != null) {
-                        getMessagesController().putUser(user, true);
-                    }
-                }
-                return obj;
-            }
-        } catch (SQLiteException e) {
-            FileLog.e("RegexFilter, SQLiteException when reading last unfiltered message", e);
-        } finally {
-            if (data != null) {
-                data.reuse();
-            }
-            if (cursor != null) {
-                cursor.dispose();
-            }
-        }
-        return null;
     }
 
     public void saveStickerToGallery(Context context, MessageObject messageObject) {
@@ -950,19 +838,6 @@ public class MessageHelper extends BaseController {
             text.append(formatTime(messageObject.messageOwner.fwd_from.date));
         }
         return text;
-    }
-
-    public boolean isBlockedUser(long senderId) {
-        return NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(senderId) >= 0;
-    }
-
-    public boolean isBlockedOrFiltered(TLRPC.Message message) {
-        if (message == null) {
-            return false;
-        }
-        long fromId = MessageObject.getFromChatId(message);
-        boolean blocked =  isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId);
-        return blocked || AyuFilter.isFiltered(new MessageObject(currentAccount, message, false, false), null);
     }
 
     public static void copyVideoFrameToClipboard(File videoFile, long positionMs, View bulletinContainer, Theme.ResourcesProvider resourcesProvider, Runnable fallbackAction) {

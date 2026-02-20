@@ -1416,7 +1416,6 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
     }
 
     private static final int TRANSLATE = 3;
-    private static final int ADD_TO_FILTER = 4;
     private ActionMode.Callback createActionCallback() {
         final ActionMode.Callback callback = new ActionMode.Callback() {
             @Override
@@ -1425,7 +1424,6 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                 menu.add(Menu.NONE, R.id.menu_quote, 1, LocaleController.getString(R.string.Quote));
                 menu.add(Menu.NONE, android.R.id.selectAll, 2, android.R.string.selectAll);
                 menu.add(Menu.NONE, TRANSLATE, 3, LlmConfig.isLLMTranslatorAvailable() ? getString(R.string.TranslateMessageLLM) : getString(R.string.TranslateMessage));
-                menu.add(Menu.NONE, ADD_TO_FILTER, 4, getString(R.string.AddToFilter));
                 return true;
             }
 
@@ -1448,10 +1446,6 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                     menu.getItem(2).setVisible(selectedView instanceof View);
                 }
                 // NekoX: Merge 8.5.0, remove due to removing LanguageDetector
-                MenuItem addToFilterItem = menu.findItem(ADD_TO_FILTER);
-                if (addToFilterItem != null) {
-                    addToFilterItem.setVisible(canShowAddToFilter());
-                }
                 return true;
             }
 
@@ -1518,9 +1512,6 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                 } else if (itemId == R.id.menu_quote) {
                     quoteText();
                     hideActions();
-                    return true;
-                } else if (itemId == ADD_TO_FILTER) {
-                    addToFilter();
                     return true;
                 } else {
                     clear();
@@ -1636,26 +1627,6 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
         if (str == null) {
             return;
         }
-    }
-
-    protected void addToFilter() {
-        if (!isInSelectionMode()) {
-            return;
-        }
-        CharSequence str = getSelectedText();
-        if (str == null) {
-            return;
-        }
-        onAddToFilterClick(str.toString());
-        hideActions();
-        clear(true);
-    }
-
-    protected boolean canShowAddToFilter() {
-        return false;
-    }
-
-    protected void onAddToFilterClick(String text) {
     }
 
     protected CharSequence getSelectedText() {

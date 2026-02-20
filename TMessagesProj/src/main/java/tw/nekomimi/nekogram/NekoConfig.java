@@ -81,7 +81,6 @@ public class NekoConfig {
     // From NekoConfig
     public static ConfigItem useIPv6 = addConfig("IPv6", configTypeBool, false);
     public static ConfigItem hidePhone = addConfig("HidePhone", configTypeBool, true);
-    public static ConfigItem ignoreBlocked = addConfig("IgnoreBlocked", configTypeBool, false);
     public static ConfigItem tabletMode = addConfig("TabletMode", configTypeInt, 0);
 
     public static ConfigItem typeface = addConfig("TypefaceUseDefault", configTypeBool, false);

@@ -73,8 +73,6 @@ import java.util.function.Consumer;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
-import tw.nekomimi.nekogram.helpers.AyuFilter;
-import tw.nekomimi.nekogram.helpers.MessageHelper;
 import xyz.nextalone.nagram.NaConfig;
 
 public class MessagesStorage extends BaseController {
@@ -12399,15 +12397,6 @@ public class MessagesStorage extends BaseController {
 
                     int mentions_count = mentionCounts.get(key, -1);
                     int unread_count = messagesCounts.get(key, -1);
-                    // ignoreBlocked start
-                    boolean isBlockedOrFiltered = MessageHelper.getInstance(currentAccount).isBlockedOrFiltered(message);
-                    if (isBlockedOrFiltered) {
-                        message.unread = false;
-                        message.media_unread = false;
-                        unread_count--;
-                        unread_count = Math.max(0, unread_count);
-                    }
-                    // ignoreBlocked end
                     if (unread_count == -1) {
                         unread_count = 0;
                     } else {

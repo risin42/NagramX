@@ -97,7 +97,6 @@ import java.util.function.Consumer;
 
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.helpers.AyuFilter;
 import xyz.nextalone.nagram.NaConfig;
 
 public class NotificationsController extends BaseController {
@@ -1069,12 +1068,6 @@ public class NotificationsController extends BaseController {
                     if (BuildVars.LOGS_ENABLED) {
                         FileLog.d("skipped message because 1");
                     }
-                    continue;
-                }
-                if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(messageObject.getFromChatId()) >= 0) {
-                    continue;
-                }
-                if (AyuFilter.isBlockedChannel(messageObject.getFromChatId())) {
                     continue;
                 }
                 if (messageObject.isStoryPush) {
@@ -5189,12 +5182,6 @@ public class NotificationsController extends BaseController {
                     final long messageTopicId = MessageObject.getTopicId(currentAccount, messageObject.messageOwner, isForum);
                     if (topicId != messageTopicId) {
                         FileLog.d("showExtraNotifications: ["+dialogId+"] continue; topic id is not equal: topicId=" + topicId + " messageTopicId=" + messageTopicId + "; selfId=" + getUserConfig().getClientUserId());
-                        continue;
-                    }
-                    if (NekoConfig.ignoreBlocked.Bool() && getMessagesController().blockePeers.indexOfKey(messageObject.getFromChatId()) >= 0) {
-                        continue;
-                    }
-                    if (AyuFilter.isBlockedChannel(messageObject.getFromChatId())) {
                         continue;
                     }
                     String message = getShortStringForMessage(messageObject, senderName, preview);

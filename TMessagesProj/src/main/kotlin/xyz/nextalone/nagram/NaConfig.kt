@@ -409,42 +409,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    val regexFiltersEnabled =
-        addConfig(
-            "RegexFilters",
-            ConfigItem.configTypeBool,
-            false
-        )
-    val regexFiltersData =
-        addConfig(
-            "RegexFiltersData",
-            ConfigItem.configTypeString,
-            "[]"
-        )
-    val regexFiltersEnableInChats =
-        addConfig(
-            "RegexFiltersEnableInChats",
-            ConfigItem.configTypeBool,
-            false
-        )
-    val regexChatFiltersData =
-        addConfig(
-            "RegexChatFiltersData",
-            ConfigItem.configTypeString,
-            "[]"
-        )
-    val regexFiltersExcludedDialogs =
-        addConfig(
-            "RegexFiltersExcludedDialogs",
-            ConfigItem.configTypeString,
-            "[]"
-        )
-    val blockedChannelsData =
-        addConfig(
-            "BlockedChannelsData",
-            ConfigItem.configTypeString,
-            "[]"
-        )
     val showTimeHint =
         addConfig(
             "ShowTimeHint",

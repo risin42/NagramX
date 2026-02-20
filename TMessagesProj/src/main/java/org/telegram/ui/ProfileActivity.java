@@ -343,7 +343,6 @@ import java.util.zip.ZipOutputStream;
 
 import kotlin.Unit;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
-import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.helpers.LocalNameHelper;
 import tw.nekomimi.nekogram.helpers.ProfileDateHelper;
@@ -352,8 +351,6 @@ import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
 import tw.nekomimi.nekogram.helpers.remote.UpdateHelper;
 import tw.nekomimi.nekogram.llm.LlmConfig;
 import tw.nekomimi.nekogram.menu.forum.CustomForumTabsPopupWrapper;
-import tw.nekomimi.nekogram.menu.regexfilters.RegexFiltersExclusionPopupWrapper;
-import tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.DatacenterActivity;
@@ -361,7 +358,6 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.parts.DialogTransKt;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
-import tw.nekomimi.nekogram.ui.RegexChatFiltersListActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
@@ -497,7 +493,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private long dialogId;
     private boolean creatingChat;
     private boolean userBlocked;
-    private boolean channelBlocked;
     private boolean reportSpam;
     private long mergeDialogId;
     private boolean expandPhoto;
@@ -2236,7 +2231,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             } else if (chatInfo == null) {
                 chatInfo = getMessagesStorage().loadChatInfo(chatId, false, null, false, false);
             }
-            channelBlocked = AyuFilter.isBlockedChannel(-chatId);
             updateExceptions();
         } else {
             return false;
@@ -2578,8 +2572,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     finishFragment();
                 } else if (id == block_contact) {
                     onBlockContactClicked(false);
-                } else if (id == block_channel) {
-                    onBlockChannelClicked();
                 } else if (id == add_contact) {
                     TLRPC.User user = getMessagesController().getUser(userId);
                     Bundle args = new Bundle();
@@ -2627,8 +2619,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     leaveChatPressed();
                 } else if (id == event_log) {
                     presentFragment(new ChannelAdminLogActivity(currentChat));
-                } else if (id == message_filter){
-                    presentFragment(new RegexChatFiltersListActivity(chatId != 0 ? -chatId : userId));
                 } else if (id == aliasChannelName) {
                     setChannelAlias();
                 } else if (id == delete_topic) {
@@ -6448,42 +6438,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             } else {
                 getMessagesController().unblockPeer(userId, () -> getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of("/start", userId, null, null, null, false, null, null, null, true, 0, 0, null, false)));
                 finishFragment();
-            }
-        }
-    }
-
-    private void onBlockChannelClicked() {
-        TLRPC.Chat chat = getMessagesController().getChat(chatId);
-        if (chat == null) {
-            return;
-        }
-        if (ChatObject.isChannelAndNotMegaGroup(chat)) {
-            if (channelBlocked) {
-                AyuFilter.unblockPeer(-chatId);
-                channelBlocked = false;
-                if (BulletinFactory.canShowBulletin(ProfileActivity.this)) {
-                    BulletinFactory.createBanChannelBulletin(ProfileActivity.this, false).show();
-                }
-                createActionBarMenu(true);
-            } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity(), resourcesProvider);
-                builder.setTitle(getString(R.string.BlockChannel));
-                builder.setMessage(AndroidUtilities.replaceTags(formatString(R.string.AreYouSureBlockContact2, chat.title)));
-                builder.setPositiveButton(LocaleController.getString(R.string.Block), (dialogInterface, i) -> {
-                    AyuFilter.blockPeer(-chatId);
-                    channelBlocked = true;
-                    if (BulletinFactory.canShowBulletin(ProfileActivity.this)) {
-                        BulletinFactory.createBanChannelBulletin(ProfileActivity.this, true).show();
-                    }
-                    createActionBarMenu(true);
-                });
-                builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
-                AlertDialog dialog = builder.create();
-                showDialog(dialog);
-                TextView button = (TextView) dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                if (button != null) {
-                    button.setTextColor(getThemedColor(Theme.key_text_RedBold));
-                }
             }
         }
     }
@@ -12552,7 +12506,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         if (currentEncryptedChat == null) {
                             createAutoDeleteItem(context);
                         }
-                        createMessageFilterItem();
                         otherItem.addSubItem(add_shortcut, R.drawable.msg_home, LocaleController.getString(R.string.AddShortcut));
                         if (isBot) {
                             otherItem.addSubItem(share, R.drawable.msg_share, LocaleController.getString(R.string.BotShare));
@@ -12588,7 +12541,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     if (currentEncryptedChat == null) {
                         createAutoDeleteItem(context);
                     }
-                    createMessageFilterItem();
                     if (!TextUtils.isEmpty(user.phone)) {
                         otherItem.addSubItem(share_contact, R.drawable.msg_share, LocaleController.getString(R.string.ShareContact));
                     }
@@ -12616,7 +12568,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             if (topicId == 0 && ChatObject.canChangeChatInfo(chat)) {
                 createAutoDeleteItem(context);
             }
-            createMessageFilterItem();
             if (chat.forum) {
                 createCustomForumTabsItem();
             }
@@ -12677,7 +12628,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     if (NekoConfig.channelAlias.Bool()){
                         otherItem.addSubItem(aliasChannelName, R.drawable.profile_admin, getString( R.string.setChannelAliasName));
                     }
-                    otherItem.addSubItem(block_channel, R.drawable.msg_block, !channelBlocked ? getString(R.string.BlockChannel) : getString(R.string.UnblockChannel));
                     if (!BuildVars.IS_BILLING_UNAVAILABLE && !getMessagesController().premiumPurchaseBlocked()) {
                         StarsController.getInstance(currentAccount).loadStarGifts();
                         otherItem.addSubItem(gift_premium, R.drawable.msg_gift_premium, LocaleController.getString(R.string.ProfileSendAGiftToChannel));
@@ -12920,29 +12870,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     public Drawable getThemedDrawable(String drawableKey) {
         Drawable drawable = resourcesProvider != null ? resourcesProvider.getDrawable(drawableKey) : null;
         return drawable != null ? drawable : super.getThemedDrawable(drawableKey);
-    }
-
-    private void createMessageFilterItem() {
-        if (!NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) {
-            return;
-        }
-        var popupLayout = otherItem.getPopupLayout();
-        var popupWrapper = new RegexFiltersExclusionPopupWrapper(ProfileActivity.this, popupLayout.getSwipeBack(), chatId != 0 ? -chatId : userId, getResourceProvider());
-        int swipeBackIndex = popupLayout.addViewToSwipeBack(popupWrapper.windowLayout);
-        ActionBarMenuSubItem cell = otherItem.addSubItem(message_filter, R.drawable.hide_title, getString(R.string.RegexFilters));
-        cell.setOnLongClickListener(v -> {
-            if (otherItem != null) {
-                otherItem.toggleSubMenu();
-            }
-            AndroidUtilities.runOnUIThread(() -> presentFragment(new RegexFiltersSettingActivity(chatId != 0 ? -chatId : userId)), 50);
-            return true;
-        });
-        cell.setRightIcon(R.drawable.msg_arrowright, v -> {
-            if (popupLayout.getSwipeBack() != null) {
-                popupLayout.getSwipeBack().openForeground(swipeBackIndex);
-            }
-        });
-        if (!ChatObject.isForum(currentChat)) otherItem.addColoredGap();
     }
 
     private void createCustomForumTabsItem() {

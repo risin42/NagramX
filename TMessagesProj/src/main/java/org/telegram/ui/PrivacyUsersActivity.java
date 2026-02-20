@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.ChatObject;
-import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
@@ -42,16 +41,12 @@ import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
 import org.telegram.ui.Components.AlertsCreator;
-import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.EmptyTextProgressView;
 import org.telegram.ui.Components.ItemOptions;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 
 import java.util.ArrayList;
-
-import tw.nekomimi.nekogram.helpers.AyuFilter;
-import tw.nekomimi.nekogram.settings.RegexFiltersSettingActivity;
 
 public class PrivacyUsersActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -63,7 +58,6 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
     private int rowCount;
     private int blockUserRow;
     private int blockUserDetailRow;
-    private int blockedChannelsDetailRow;
     private int usersHeaderRow;
     private int usersStartRow;
     private int usersEndRow;
@@ -84,7 +78,6 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
     public static final int TYPE_PRIVACY = 0;
     public static final int TYPE_BLOCKED = 1;
     public static final int TYPE_FILTER = 2;
-    public static final int TYPE_BLOCKED_CHANNELS = 3;
 
     private static final int unblockAll = 100;
     private static final int unblockDeleted =  101;
@@ -145,8 +138,6 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
             } else {
                 actionBar.setTitle(LocaleController.getString(R.string.FilterNeverShow));
             }
-        } else if (currentType == TYPE_BLOCKED_CHANNELS) {
-            actionBar.setTitle(LocaleController.getString(R.string.BlockedChannels));
         } else {
             if (isGroup) {
                 if (isAlwaysShare) {
@@ -169,35 +160,16 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                     finishFragment();
                 } else if (id == unblockAll) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-                    if (currentType == TYPE_BLOCKED_CHANNELS) {
-                        builder.setTitle(LocaleController.getString(R.string.UnblockAll));
-                        if (AyuFilter.getBlockedChannelsCount() > 0) {
-                            builder.setMessage(LocaleController.getString(R.string.UnblockAllChannelsWarn));
-                            builder.setPositiveButton(LocaleController.getString(R.string.UnblockAll), (dialog, which) -> {
-                                AyuFilter.clearBlockedChannels();
-                                if (uidArray != null) {
-                                    uidArray.clear();
-                                }
-                                updateRows();
-                                finishFragment();
-                            });
-                            builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
-                        } else {
-                            builder.setMessage(LocaleController.getString(R.string.BlockedListEmpty));
-                            builder.setPositiveButton(LocaleController.getString(R.string.OK), null);
-                        }
+                    builder.setTitle(LocaleController.getString(R.string.UnblockAll));
+                    if (getMessagesController().totalBlockedCount != 0) {
+                        builder.setMessage(LocaleController.getString(R.string.UnblockAllWarn));
+                        builder.setPositiveButton(LocaleController.getString(R.string.UnblockAll), (dialog, which) -> {
+                            new Thread(() -> getMessagesController().unblockAllUsers(false, true)).start();
+                        });
+                        builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
                     } else {
-                        builder.setTitle(LocaleController.getString(R.string.UnblockAll));
-                        if (getMessagesController().totalBlockedCount != 0) {
-                            builder.setMessage(LocaleController.getString(R.string.UnblockAllWarn));
-                            builder.setPositiveButton(LocaleController.getString(R.string.UnblockAll), (dialog, which) -> {
-                                new Thread(() -> getMessagesController().unblockAllUsers(false, true)).start();
-                            });
-                            builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
-                        } else {
-                            builder.setMessage(LocaleController.getString(R.string.BlockedListEmpty));
-                            builder.setPositiveButton(LocaleController.getString(R.string.OK),null);
-                        }
+                        builder.setMessage(LocaleController.getString(R.string.BlockedListEmpty));
+                        builder.setPositiveButton(LocaleController.getString(R.string.OK),null);
                     }
                     showDialog(builder.create());
                 } else if (id == unblockDeleted) {
@@ -227,11 +199,6 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
             otherItem.addSubItem(unblockAll, LocaleController.getString("UnblockAll", R.string.UnblockAll));
             otherItem.addSubItem(unblockDeleted, LocaleController.getString("UnblockDeleted", R.string.UnblockDeleted));
 
-        } else if (currentType == TYPE_BLOCKED_CHANNELS) {
-            ActionBarMenu menu = actionBar.createMenu();
-            ActionBarMenuItem otherItem = menu.addItem(0, R.drawable.ic_ab_other);
-            otherItem.setContentDescription(LocaleController.getString(R.string.AccDescrMoreOptions));
-            otherItem.addSubItem(unblockAll, LocaleController.getString(R.string.UnblockAll));
         }
 
         fragmentView = new FrameLayout(context);
@@ -241,8 +208,6 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
         emptyView = new EmptyTextProgressView(context);
         if (currentType == TYPE_BLOCKED) {
             emptyView.setText(LocaleController.getString(R.string.NoBlocked));
-        } else if (currentType == TYPE_BLOCKED_CHANNELS) {
-            emptyView.setText(LocaleController.getString(R.string.BlockedChannelsEmpty));
         } else {
             emptyView.setText(LocaleController.getString(R.string.NoContacts));
         }
@@ -361,17 +326,6 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
             }
         }
 
-        if (currentType == TYPE_BLOCKED_CHANNELS) {
-            if (uidArray == null || uidArray.isEmpty()) {
-                emptyView.showTextView();
-            }
-            if (AyuFilter.getBlockedChannelsCount() != uidArray.size()) {
-                AndroidUtilities.runOnUIThread(() -> {
-                    BulletinFactory.of(PrivacyUsersActivity.this).createSimpleBulletin(R.raw.chats_infotip, LocaleController.getString(R.string.BlockChannelsUnavailable)).show();
-                }, 350);
-            }
-        }
-
         updateRows();
         return fragmentView;
     }
@@ -387,15 +341,7 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
         ItemOptions.makeOptions(this, view)
             .setScrimViewBackground(new ColorDrawable(Theme.getColor(Theme.key_windowBackgroundWhite)))
             .addIf(currentType == TYPE_BLOCKED, 0, LocaleController.getString(R.string.Unblock), () -> getMessagesController().unblockPeer(uid))
-            .addIf(currentType == TYPE_BLOCKED_CHANNELS, 0, LocaleController.getString(R.string.UnblockChannel), () -> {
-                AyuFilter.unblockPeer(uid);
-                uidArray.remove(uid);
-                updateRows();
-                if (uidArray.isEmpty()) {
-                    finishFragment();
-                }
-            })
-            .addIf(currentType != TYPE_BLOCKED && currentType != TYPE_BLOCKED_CHANNELS, currentType == TYPE_PRIVACY ? R.drawable.msg_user_remove : 0, LocaleController.getString(R.string.Remove), true, () -> {
+            .addIf(currentType != TYPE_BLOCKED, currentType == TYPE_PRIVACY ? R.drawable.msg_user_remove : 0, LocaleController.getString(R.string.Remove), true, () -> {
                 uidArray.remove(uid);
                 updateRows();
                 if (delegate != null) {
@@ -413,14 +359,9 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
         rowCount = 0;
         usersHeaderRow = -1;
         blockUserDetailRow = -1;
-        blockedChannelsDetailRow = -1;
         deleteAllRow = -1;
         if (!blockedUsersActivity || getMessagesController().totalBlockedCount >= 0) {
-            if (currentType == TYPE_BLOCKED_CHANNELS) {
-                blockUserRow = -1;
-            } else {
-                blockUserRow = rowCount++;
-            }
+            blockUserRow = rowCount++;
             if (currentType == TYPE_BLOCKED) {
                 blockUserDetailRow = rowCount++;
             }
@@ -432,20 +373,15 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                 count = uidArray.size();
             }
             if (count != 0) {
-                if (currentType == TYPE_BLOCKED_CHANNELS) {
-                    blockedChannelsDetailRow = rowCount++;
-                }
-                if (currentType == TYPE_BLOCKED || currentType == TYPE_BLOCKED_CHANNELS) {
+                if (currentType == TYPE_BLOCKED) {
                     usersHeaderRow = rowCount++;
                 }
                 usersStartRow = rowCount;
                 rowCount += count;
                 usersEndRow = rowCount;
                 usersDetailRow = rowCount++;
-                if (currentType != TYPE_BLOCKED && currentType != TYPE_BLOCKED_CHANNELS) {
+                if (currentType != TYPE_BLOCKED) {
                     deleteAllRow = rowCount++;
-                } else {
-                    deleteAllRow = -1;
                 }
             } else {
                 usersHeaderRow = -1;
@@ -589,14 +525,8 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                                 subtitle = LocaleController.getString(R.string.MegaLocation);
                             } else if (!ChatObject.isPublic(chat)) {
                                 subtitle = LocaleController.getString(R.string.MegaPrivate);
-                                 if (ChatObject.isChannelAndNotMegaGroup(chat)) {
-                                    subtitle = LocaleController.getString(R.string.ChannelPrivate);
-                                 }
                             } else {
                                 subtitle = LocaleController.getString(R.string.MegaPublic);
-                                 if (ChatObject.isChannelAndNotMegaGroup(chat)) {
-                                    subtitle = LocaleController.getString(R.string.ChannelPublic);
-                                 }
                             }
                             userCell.setData(chat, null, subtitle, position != usersEndRow - 1);
                         }
@@ -607,11 +537,7 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                     if (position == blockUserDetailRow) {
                         if (currentType == TYPE_BLOCKED) {
                             privacyCell.setFixedSize(0);
-                            String link = LocaleController.getString(R.string.RegexFilters);
-                            String fullText = LocaleController.getString(R.string.BlockedUsersInfo) + " **" + link + " >**";
-                            privacyCell.setText(AndroidUtilities.replaceArrows(AndroidUtilities.replaceSingleTag(fullText, () -> {
-                                presentFragment(new RegexFiltersSettingActivity());
-                            }), true));
+                            privacyCell.setText(LocaleController.getString(R.string.BlockedUsersInfo));
                         } else {
                             privacyCell.setFixedSize(8);
                             privacyCell.setText(null);
@@ -620,19 +546,6 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                             privacyCell.setBackgroundDrawable(Theme.getThemedDrawableByKey(mContext, R.drawable.greydivider_bottom, Theme.key_windowBackgroundGrayShadow));
                         } else {
                             privacyCell.setBackgroundDrawable(Theme.getThemedDrawableByKey(mContext, R.drawable.greydivider, Theme.key_windowBackgroundGrayShadow));
-                        }
-                    } else if (position == blockedChannelsDetailRow) {
-                        privacyCell.setFixedSize(0);
-                        String description = LocaleController.getString(R.string.BlockedChannelsInfo);
-                        String link = LocaleController.getString(R.string.RegexFilters);
-                        String fullText = String.format(description, " **" + link + " >**");
-                        privacyCell.setText(AndroidUtilities.replaceArrows(AndroidUtilities.replaceSingleTag(fullText, () -> {
-                            presentFragment(new RegexFiltersSettingActivity());
-                        }), true));
-                        if (usersStartRow == -1) {
-                            privacyCell.setBackground(Theme.getThemedDrawableByKey(mContext, R.drawable.greydivider_bottom, Theme.key_windowBackgroundGrayShadow));
-                        } else {
-                            privacyCell.setBackground(Theme.getThemedDrawableByKey(mContext, R.drawable.greydivider, Theme.key_windowBackgroundGrayShadow));
                         }
                     } else if (position == usersDetailRow) {
                         privacyCell.setFixedSize(12);
@@ -654,8 +567,6 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                     if (position == usersHeaderRow) {
                         if (currentType == TYPE_BLOCKED) {
                             headerCell.setText(LocaleController.formatPluralString("BlockedUsersCount", getMessagesController().totalBlockedCount));
-                        } else if (currentType == TYPE_BLOCKED_CHANNELS) {
-                            headerCell.setText(LocaleController.formatPluralString("BlockedChannelsCount", uidArray.size()));
                         } else {
                             headerCell.setText(LocaleController.getString(R.string.PrivacyExceptions));
                         }
@@ -672,7 +583,7 @@ public class PrivacyUsersActivity extends BaseFragment implements NotificationCe
                 return 3;
             } else if (position == blockUserRow) {
                 return 2;
-            } else if (position == blockUserDetailRow || position == blockedChannelsDetailRow || position == usersDetailRow) {
+            } else if (position == blockUserDetailRow || position == usersDetailRow) {
                 return 1;
             } else {
                 return 0;

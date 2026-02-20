@@ -8693,9 +8693,6 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 loadingBlockedPeers = false;
                 getNotificationCenter().postNotificationName(NotificationCenter.blockedUsersDidLoad);
-                if (!reset && !blockedEndReached && NekoConfig.ignoreBlocked.Bool()) {
-                    getBlockedPeers(false);
-                }
             }
         }));
     }
@@ -10715,21 +10712,6 @@ public class MessagesController extends BaseController implements NotificationCe
             for (HashMap.Entry<Integer, ArrayList<PrintingUser>> threadEntry : threads.entrySet()) {
                 Integer threadId = threadEntry.getKey();
                 ArrayList<PrintingUser> arr = threadEntry.getValue();
-                // ignoreBlocked start
-                if (NekoConfig.ignoreBlocked.Bool()) {
-                    LongSparseIntArray blockePeersCopy = blockePeers.clone();
-                    ArrayList<PrintingUser> filteredArr = new ArrayList<>();
-                    for (PrintingUser pu : arr) {
-                        if (blockePeersCopy.indexOfKey(pu.userId) < 0) {
-                            filteredArr.add(pu);
-                        }
-                    }
-                    arr = filteredArr;
-                }
-                if (arr.isEmpty()) {
-                    continue;
-                }
-                // ignoreBlocked end
 
                 LongSparseArray<CharSequence> newPrintingStrings = new LongSparseArray<>();
                 LongSparseArray<Integer> newPrintingStringsTypes = new LongSparseArray<>();
