@@ -41,7 +41,6 @@
     <string name="SendAsEmoji">Отправить как эмодзи</string>
     <string name="CustomArtworkApi">API пользовательских музыкальных обложек</string>
     <string name="CustomEditedMessage">Подпись для изменённых сообщений</string>
-    <string name="IconDecoration">Оформление значков</string>
     <string name="NotificationIcon">Иконка уведомления</string>
     <string name="Official">Официальная</string>
     <string name="HalloWeen">Хэллоуин</string>

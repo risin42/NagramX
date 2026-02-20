@@ -20,8 +20,6 @@
     <string name="Repeat">Yeniden Gönder</string>
     <string name="AddToSavedMessages">Kaydet</string>
     <string name="CreateMention">Bahsetme Oluştur</string>
-    <string name="TransparentStatusBar">Şeffaf Durum Çubuğu</string>
-    <string name="ChristmasHat">Her Gün Noel Şapkası Göster</string>
     <string name="ActionBarDecoration">Başlık Çubuğu Süslemesi</string>
     <string name="DependsOnDate">Tarihe bağlı</string>
     <string name="Christmas">Yılbaşı</string>

@@ -243,12 +243,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val iconDecoration =
-        addConfig(
-            "IconDecoration",
-            ConfigItem.configTypeInt,
-            0
-        )
     val notificationIcon =
         addConfig(
             "NotificationIcon",

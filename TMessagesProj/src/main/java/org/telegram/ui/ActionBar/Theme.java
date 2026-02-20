@@ -5299,7 +5299,7 @@ public class Theme {
                 canStartHolidayAnimation = false;
             }
             if (dialogs_holidayDrawable == null) {
-                if (getEventType() == 0 || NekoConfig.newYear.Bool()) {
+                if (getEventType() == 0) {
                     dialogs_holidayDrawable = ApplicationLoader.applicationContext.getResources().getDrawable(R.drawable.newyear);
                     dialogs_holidayDrawableOffsetX = -dp(3);
                     dialogs_holidayDrawableOffsetY = -dp(-7);

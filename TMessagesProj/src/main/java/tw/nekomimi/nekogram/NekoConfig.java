@@ -91,7 +91,6 @@ public class NekoConfig {
     public static ConfigItem typeface = addConfig("TypefaceUseDefault", configTypeBool, false);
     public static ConfigItem nameOrder = addConfig("NameOrder", configTypeInt, 1);
     public static ConfigItem mapPreviewProvider = addConfig("MapPreviewProvider", configTypeInt, 0);
-    public static ConfigItem transparentStatusBar = addConfig("TransparentStatusBar", configTypeBool, true);
     public static ConfigItem forceBlurInChat = addConfig("forceBlurInChat", configTypeBool, false);
     public static ConfigItem chatBlueAlphaValue = addConfig("forceBlurInChatAlphaValue", configTypeInt, 127);
     public static ConfigItem showAddToSavedMessages = addConfig("showAddToSavedMessages", configTypeBool, true);
@@ -107,7 +106,6 @@ public class NekoConfig {
     public static ConfigItem showMessageHide = addConfig("showMessageHide", configTypeBool, false);
 
     public static ConfigItem actionBarDecoration = addConfig("ActionBarDecoration", configTypeInt, 0);
-    public static ConfigItem newYear = addConfig("ChristmasHat", configTypeBool, false);
     public static ConfigItem stickerSize = addConfig("stickerSize", configTypeFloat, 14.0f);
     public static ConfigItem unlimitedFavedStickers = addConfig("UnlimitedFavoredStickers", configTypeBool, false);
     public static ConfigItem unlimitedPinnedDialogs = addConfig("UnlimitedPinnedDialogs", configTypeBool, false);
