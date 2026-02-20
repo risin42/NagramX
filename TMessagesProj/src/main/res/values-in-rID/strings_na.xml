@@ -33,7 +33,6 @@
     <string name="ZalgoFilter">Saring Simbol \"Zalgo\"</string>
     <string name="ZalgoFilterNotice">Semua simbol \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" pada nama panggilan atau pesan akan dihapus.</string>
     <string name="labelChannelUser">Label Pengguna Saluran</string>
-    <string name="CustomChannelLabel">Label Saluran Khusus</string>
     <string name="AlwaysShowDownloadIcon">Selalu Tampilkan Ikon Unduhan</string>
     <string name="HideTitle">Sembunyikan Judul</string>
     <string name="IgnoreUnreadCount">Sembunyikan Penghitung Belum Dibaca</string>

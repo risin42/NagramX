@@ -2619,8 +2619,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     leaveChatPressed();
                 } else if (id == event_log) {
                     presentFragment(new ChannelAdminLogActivity(currentChat));
-                } else if (id == aliasChannelName) {
-                    setChannelAlias();
                 } else if (id == delete_topic) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle(LocaleController.getPluralString("DeleteTopics", 1));
@@ -12628,9 +12626,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         shareAction = !chat.creator;
                         otherItem.addSubItem(share, R.drawable.msg_shareout, getString(R.string.BotShare));
                     }
-                    if (NekoConfig.channelAlias.Bool()){
-                        otherItem.addSubItem(aliasChannelName, R.drawable.profile_admin, getString( R.string.setChannelAliasName));
-                    }
                     if (!BuildVars.IS_BILLING_UNAVAILABLE && !getMessagesController().premiumPurchaseBlocked()) {
                         StarsController.getInstance(currentAccount).loadStarGifts();
                         otherItem.addSubItem(gift_premium, R.drawable.msg_gift_premium, LocaleController.getString(R.string.ProfileSendAGiftToChannel));
@@ -17327,56 +17322,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             });
         }
         builder.show();
-    }
-
-    private void setChannelAlias() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setTitle(getString(R.string.setChannelAliasName));
-        final EditTextBoldCursor editText = new EditTextBoldCursor(getParentActivity()) {
-            @Override
-            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(dp(64), MeasureSpec.EXACTLY));
-            }
-        };
-        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        editText.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
-        editText.setHintText(getString(R.string.Name));
-        if (NekoXConfig.getChannelAlias(getCurrentChat().id) != null) {
-            editText.setText(NekoXConfig.getChannelAlias(getCurrentChat().id));
-        }
-        editText.setHeaderHintColor(getThemedColor(Theme.key_windowBackgroundWhiteBlueHeader));
-        editText.setSingleLine(true);
-        editText.setFocusable(true);
-        editText.setTransformHintToHeader(true);
-        editText.setLineColors(getThemedColor(Theme.key_windowBackgroundWhiteInputField), getThemedColor(Theme.key_windowBackgroundWhiteInputFieldActivated), getThemedColor(Theme.key_windowBackgroundWhiteRedText3));
-        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        editText.setBackground(null);
-        editText.requestFocus();
-        editText.setPadding(0, 0, 0, 0);
-        builder.setView(editText);
-        builder.setPositiveButton(getString(R.string.OK),
-                (dialogInterface, i) -> {
-                    if (editText.getText().toString().trim().isEmpty()) {
-                        NekoXConfig.emptyChannelAlias(getCurrentChat().id);
-                    } else {
-                        NekoXConfig.setChannelAlias(getCurrentChat().id, editText.getText().toString());
-                    }
-                });
-        builder.setNegativeButton(getString(R.string.Cancel), null);
-        builder.show().setOnShowListener(dialog -> {
-            editText.requestFocus();
-            AndroidUtilities.showKeyboard(editText);
-        });
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) editText.getLayoutParams();
-        if (layoutParams != null) {
-            if (layoutParams instanceof FrameLayout.LayoutParams lp) {
-                lp.gravity = Gravity.CENTER_HORIZONTAL;
-            }
-            layoutParams.rightMargin = layoutParams.leftMargin = dp(24);
-            layoutParams.height = dp(36);
-            editText.setLayoutParams(layoutParams);
-        }
-        editText.setSelection(0, editText.getText().length());
     }
 
     private void setUserAlias() {

@@ -33,7 +33,6 @@
     <string name="ZalgoFilter">\"Zalgo\" Sembollerini Filtrele</string>
     <string name="ZalgoFilterNotice">Takma adlardaki veya mesajlardaki tüm \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" sembolleri kaldırılacaktır.</string>
     <string name="labelChannelUser">Kanal Kullanıcılarını Etiketle</string>
-    <string name="CustomChannelLabel">Özel Kanal Etiketi</string>
     <string name="AlwaysShowDownloadIcon">İndirme Simgesini Her Zaman Göster</string>
     <string name="HideTitle">Başlığı Gizle</string>
     <string name="IgnoreUnreadCount">Okunmamış Sayacını Gizle</string>

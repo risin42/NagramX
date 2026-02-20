@@ -918,7 +918,6 @@ public class NekoSettingsActivity extends BaseFragment {
         String[] preservePrefixes = {
                 LocalNameHelper.chatNameOverridePrefix,
                 LocalNameHelper.userNameOverridePrefix,
-                NekoConfig.channelAliasPrefix,
                 DialogConfig.customForumTabPrefix,
                 BookmarksHelper.KEY_PREFIX
         };

@@ -106,18 +106,6 @@ public class NekoXConfig {
         return color;
     }
 
-    public static void setChannelAlias(long channelID, String name) {
-        preferences.edit().putString(NekoConfig.channelAliasPrefix + channelID, name).apply();
-    }
-
-    public static void emptyChannelAlias(long channelID) {
-        preferences.edit().remove(NekoConfig.channelAliasPrefix + channelID).apply();
-    }
-
-    public static String getChannelAlias(long channelID) {
-        return preferences.getString(NekoConfig.channelAliasPrefix + channelID, null);
-    }
-
     public static void showCustomApiBottomSheet(BaseFragment fragment) {
         final Context context = fragment.getContext();
         if (context == null) return;

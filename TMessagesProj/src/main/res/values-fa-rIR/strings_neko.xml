@@ -256,9 +256,6 @@
     <string name="DisableInstantCamera">غیرفعال کردن دوربین فوری</string>
     <string name="showSeconds">نمایش زمان با ثانیه</string>
     <string name="Name">نام</string>
-    <string name="channelAlias">نام مستعار کانال</string>
-    <string name="ChannelAliasDetails">برای کاربران کانال یک نام سفارشی تعیین کنید. برای تنظیم نام مستعار در منوی پروفایل کانال، این گزینه را فعال کنید.</string>
-    <string name="setChannelAliasName">تنظیم نام مستعار</string>
     <string name="StickerSettings">استیکرها</string>
     <string name="ConfirmSettings">تاییدها</string>
     <string name="InteractionSettings">تعاملات</string>

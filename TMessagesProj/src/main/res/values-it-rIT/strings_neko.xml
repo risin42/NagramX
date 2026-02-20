@@ -256,9 +256,6 @@
     <string name="DisableInstantCamera">Disattiva Instant Camera</string>
     <string name="showSeconds">Mostra timestamp in secondi</string>
     <string name="Name">Nome</string>
-    <string name="channelAlias">Alias Canale</string>
-    <string name="ChannelAliasDetails">Etichetta gli utenti del canale con un nome personalizzato. Abilita l\'impostazione di un alias nel menu del profilo del canale.</string>
-    <string name="setChannelAliasName">Imposta alias</string>
     <string name="StickerSettings">Stickers</string>
     <string name="ConfirmSettings">Conferme</string>
     <string name="InteractionSettings">Interazioni</string>

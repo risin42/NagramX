@@ -256,9 +256,6 @@
     <string name="DisableInstantCamera">Anlık Kamerayı Devre Dışı Bırak</string>
     <string name="showSeconds">Zaman Damgasını Saniye Olarak Göster</string>
     <string name="Name">İsim</string>
-    <string name="channelAlias">Kanal Takma Adı</string>
-    <string name="ChannelAliasDetails">Kanal kullanıcılarını özel bir adla etiketleyin. Kanal profili menüsünde takma ad ayarlamak için etkinleştirin.</string>
-    <string name="setChannelAliasName">Takma Ad Ayarla</string>
     <string name="StickerSettings">Çıkartmalar</string>
     <string name="ConfirmSettings">Onaylar</string>
     <string name="InteractionSettings">Etkileşimler</string>

@@ -257,9 +257,6 @@
     <string name="DisableInstantCamera">Отключить мгновенную камеру</string>
     <string name="showSeconds">Время с секундами</string>
     <string name="Name">Имя</string>
-    <string name="channelAlias">Псевдонимы каналов</string>
-    <string name="ChannelAliasDetails">Помечайте пользователей каналов пользовательским именем. Включите для установки псевдонима в меню профилей каналов.</string>
-    <string name="setChannelAliasName">Установить псевдоним</string>
     <string name="StickerSettings">Стикеры</string>
     <string name="ConfirmSettings">Подтверждения</string>
     <string name="InteractionSettings">Взаимодействие</string>

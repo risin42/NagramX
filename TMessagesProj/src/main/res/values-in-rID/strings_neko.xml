@@ -258,9 +258,6 @@
     <string name="DisableInstantCamera">Nonaktifkan Kamera Instan</string>
     <string name="showSeconds">Tampilkan Stempel Waktu dalam Detik</string>
     <string name="Name">Nama</string>
-    <string name="channelAlias">Alias Saluran</string>
-    <string name="ChannelAliasDetails">Beri label pengguna saluran dengan nama khusus. Aktifkan untuk mengatur alias di menu profil saluran.</string>
-    <string name="setChannelAliasName">Atur Alias</string>
     <string name="StickerSettings">Stiker</string>
     <string name="ConfirmSettings">Konfirmasi</string>
     <string name="InteractionSettings">Interaksi</string>

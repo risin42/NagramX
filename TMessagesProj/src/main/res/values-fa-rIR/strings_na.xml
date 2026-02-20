@@ -33,7 +33,6 @@
     <string name="ZalgoFilter">نمادهای \"Zalgo\" را فیلتر کنید</string>
     <string name="ZalgoFilterNotice">تمام نمادهای \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" در نام‌ها یا پیام‌ها حذف خواهند شد.</string>
     <string name="labelChannelUser">برچسب‌گذاری کاربران کانال</string>
-    <string name="CustomChannelLabel">برچسب سفارشی کانال</string>
     <string name="AlwaysShowDownloadIcon">نمایش همیشگی دکمه دانلود</string>
     <string name="HideTitle">پنهان کردن عنوان</string>
     <string name="IgnoreUnreadCount">پنهان کردن شمارنده پیام‌های خوانده نشده</string>

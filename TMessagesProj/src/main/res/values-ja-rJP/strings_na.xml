@@ -33,7 +33,6 @@
     <string name="ZalgoFilter">「Zalgo」文字をフィルタリング</string>
     <string name="ZalgoFilterNotice">ニックネームやメッセージの「Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓」文字はフィルタリングされます。</string>
     <string name="labelChannelUser">チャンネルユーザーをラベル付け</string>
-    <string name="CustomChannelLabel">カスタムチャンネルユーザーのラベル</string>
     <string name="AlwaysShowDownloadIcon">常にダウンロードアイコンを表示</string>
     <string name="HideTitle">タイトルを非表示</string>
     <string name="IgnoreUnreadCount">未読数を非表示</string>
