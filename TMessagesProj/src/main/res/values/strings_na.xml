@@ -84,7 +84,6 @@
     <string name="DisableChannelMuteButton">Hide Bottom Bar in Channels</string>
     <string name="DisablePreviewVideoSoundShortcut">Disable Unmute Videos with Volume Buttons</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Prevent volume key from enabling preview video sound.</string>
-    <string name="DisableAutoWebLogin">Disable Auto Web Login</string>
     <string name="PreviewSendPhoto">Send Photo</string>
     <string name="PreviewSendVideo">Send Video</string>
     <string name="PreviewSendFile">Send File</string>

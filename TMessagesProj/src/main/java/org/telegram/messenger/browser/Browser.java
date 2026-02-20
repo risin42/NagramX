@@ -62,8 +62,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import xyz.nextalone.nagram.NaConfig;
-
 public class Browser {
 
     private static WeakReference<CustomTabsSession> customTabsCurrentSession;
@@ -375,7 +373,7 @@ public class Browser {
                 }
             }
             String host = AndroidUtilities.getHostAuthority(uri.toString().toLowerCase());
-            if (AccountInstance.getInstance(currentAccount).getMessagesController().autologinDomains.contains(host) && !NaConfig.INSTANCE.getDisableAutoWebLogin().Bool()) {
+            if (AccountInstance.getInstance(currentAccount).getMessagesController().autologinDomains.contains(host)) {
                 final String autologin_token = URLEncoder.encode(AccountInstance.getInstance(UserConfig.selectedAccount).getMessagesController().autologinToken, "UTF-8");
                 uri = uri.buildUpon()
                     .appendQueryParameter("autologin_token", autologin_token)

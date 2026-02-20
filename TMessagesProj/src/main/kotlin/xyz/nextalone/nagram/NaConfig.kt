@@ -427,12 +427,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    val disableAutoWebLogin =
-        addConfig(
-            "DisableAutoWebLogin",
-            ConfigItem.configTypeBool,
-            false
-        )
     val regexFiltersEnabled =
         addConfig(
             "RegexFilters",

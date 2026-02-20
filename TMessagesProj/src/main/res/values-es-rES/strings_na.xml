@@ -78,7 +78,6 @@
     <string name="DisableChannelMuteButton">Ocultar la barra inferior en los canales</string>
     <string name="DisablePreviewVideoSoundShortcut">Desactivar el silencio de los vídeos con los botones de volumen</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Evita que la tecla de volumen active el sonido del vídeo de previsualización.</string>
-    <string name="DisableAutoWebLogin">Desactivar inicio de sesión web automático</string>
     <string name="PreviewSendPhoto">Enviar foto</string>
     <string name="PreviewSendVideo">Enviar vídeo</string>
     <string name="PreviewSendFile">Enviar archivo</string>

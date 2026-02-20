@@ -78,7 +78,6 @@
     <string name="DisableChannelMuteButton">پنهان کردن نوار پایین در کانال‌ها</string>
     <string name="DisablePreviewVideoSoundShortcut">صدا دار کردن ویدیوهای بی صدا شده با دکمه‌های کنترل صدا</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">جلوگیری از فعال شدن صدای پیش‌نمایش ویدیو با دکمه‌های صدا.</string>
-    <string name="DisableAutoWebLogin">غیرفعال کردن ورود خودکار به وب</string>
     <string name="PreviewSendPhoto">ارسال تصویر</string>
     <string name="PreviewSendVideo">ارسال ویدیو</string>
     <string name="PreviewSendFile">ارسال فایل</string>

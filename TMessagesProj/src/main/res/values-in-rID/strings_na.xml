@@ -79,7 +79,6 @@
     <string name="DisableChannelMuteButton">Sembunyikan Bilah Bawah di Saluran</string>
     <string name="DisablePreviewVideoSoundShortcut">Nonaktifkan Pengaktifan Suara Video Menggunakan Tombol Volume</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Cegah tombol volume mengaktifkan suara video pratinjau.</string>
-    <string name="DisableAutoWebLogin">Nonaktifkan Masuk Web Otomatis</string>
     <string name="PreviewSendPhoto">Kirim Foto</string>
     <string name="PreviewSendVideo">Kirim Video</string>
     <string name="PreviewSendFile">Kirim Berkas</string>
