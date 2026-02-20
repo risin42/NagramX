@@ -79,7 +79,6 @@
     <string name="DisableChannelMuteButton">Nascondi la Barra Inferiore nei Canali</string>
     <string name="DisablePreviewVideoSoundShortcut">Disabilita Riattiva Audio con i Bottoni Volume</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Impedisci al tasto volume di abilitare l\'audio dell\'anteprima video.</string>
-    <string name="DisableAutoWebLogin">Disabilita Auto Web Login</string>
     <string name="PreviewSendPhoto">Invia Foto</string>
     <string name="PreviewSendVideo">Invia Video</string>
     <string name="PreviewSendFile">Invia File</string>

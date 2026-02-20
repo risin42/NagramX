@@ -78,7 +78,6 @@
     <string name="DisableChannelMuteButton">Ukryj dolny pasek w kanałach</string>
     <string name="DisablePreviewVideoSoundShortcut">Wyłącz wyciszanie filmów za pomocą przycisków głośności</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Zapobiegaj włączaniu dźwięku podglądu wideo za pomocą przycisku głośności.</string>
-    <string name="DisableAutoWebLogin">Wyłącz automatyczne logowanie do sieci</string>
     <string name="PreviewSendPhoto">Wyślij zdjęcie</string>
     <string name="PreviewSendVideo">Wyślij wideo</string>
     <string name="PreviewSendFile">Wyślij plik</string>

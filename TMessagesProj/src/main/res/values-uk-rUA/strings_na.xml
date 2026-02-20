@@ -78,7 +78,6 @@
     <string name="DisableChannelMuteButton">Приховати нижню панель у каналах</string>
     <string name="DisablePreviewVideoSoundShortcut">Вимкнути вмикання звуку відео кнопками гучності</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Не вмикати звук у прев\'ю відео кнопкою гучності.</string>
-    <string name="DisableAutoWebLogin">Вимкнути автоматичний вхід під час переходу до веб-версії</string>
     <string name="PreviewSendPhoto">Надіслати фото</string>
     <string name="PreviewSendVideo">Надіслати відео</string>
     <string name="PreviewSendFile">Надіслати файл</string>

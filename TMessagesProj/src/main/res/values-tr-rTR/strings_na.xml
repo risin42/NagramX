@@ -78,7 +78,6 @@
     <string name="DisableChannelMuteButton">Kanallardaki Alt Çubuğu Gizle</string>
     <string name="DisablePreviewVideoSoundShortcut">Videoların Sesini Ses Düğmeleriyle Açmayı Devre Dışı Bırak</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Ses tuşunun önizleme videosunun sesini açmasını engelleyin.</string>
-    <string name="DisableAutoWebLogin">Otomatik Web Girişini Devre Dışı Bırak</string>
     <string name="PreviewSendPhoto">Fotoğraf Gönder</string>
     <string name="PreviewSendVideo">Video Gönder</string>
     <string name="PreviewSendFile">Dosya Gönder</string>

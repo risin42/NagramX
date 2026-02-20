@@ -78,7 +78,6 @@
     <string name="DisableChannelMuteButton">チャンネルでボトムバーを非表示</string>
     <string name="DisablePreviewVideoSoundShortcut">プレビュー音声ショートカットを無効化</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">音量ボタンによるプレビュー動画の音声オンを無効にします。</string>
-    <string name="DisableAutoWebLogin">公式 Web サイトの自動ログインを無効化</string>
     <string name="PreviewSendPhoto">画像を送信</string>
     <string name="PreviewSendVideo">動画を送信</string>
     <string name="PreviewSendFile">ファイルを送信</string>
