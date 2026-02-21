@@ -3736,7 +3736,6 @@ public class ChatActivity extends BaseFragment implements
             if (chatActivity != null && chatActivity.getDialogId() == UserObject.VERIFY) {
                 return false;
             }
-            if (selectedView != null && selectedView.getMessageObject() != null && selectedView.getMessageObject().messageOwner != null) return false;
             final boolean noforwards = (
                 chatActivity != null && chatActivity.getMessagesController().isChatNoForwards(chatActivity.getCurrentChat()) ||
                 selectedView != null && selectedView.getMessageObject() != null && selectedView.getMessageObject().messageOwner != null && selectedView.getMessageObject().messageOwner.noforwards

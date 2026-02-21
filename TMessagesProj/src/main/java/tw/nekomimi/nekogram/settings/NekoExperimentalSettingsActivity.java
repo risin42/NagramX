@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.tgnet.TLRPC;
@@ -58,7 +59,7 @@ import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 import xyz.nextalone.nagram.NaConfig;
 
 @SuppressLint("RtlHardcoded")
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity {
 
     private ListAdapter listAdapter;
@@ -109,9 +110,11 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
     // N-Config
     private final AbstractConfigCell headerNConfig = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.N_Config)));
+    private final AbstractConfigCell showAdsRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowAds()));
     private final AbstractConfigCell forceCopyRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getForceCopy()));
     private final AbstractConfigCell disableFlagSecureRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableFlagSecure()));
     private final AbstractConfigCell showRPCErrorRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowRPCError()));
+    private final AbstractConfigCell disableChatActionRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableChatAction));
     private final AbstractConfigCell disableChoosingStickerRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableChoosingSticker));
     private final AbstractConfigCell disableFilteringRow = cellGroup.appendCell(new ConfigCellCustom("SensitiveDisableFiltering", CellGroup.ITEM_TYPE_TEXT_CHECK, true));
     private final AbstractConfigCell devicePerformanceClassRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getPerformanceClass(), new String[]{
@@ -136,6 +139,13 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
     public NekoExperimentalSettingsActivity() {
         if (NaConfig.INSTANCE.getBackAnimationStyle().Int() != ActionBarLayout.BACK_ANIMATION_SPRING) {
             cellGroup.rows.remove(springAnimationCrossfadeRow);
+        }
+        if (!BuildVars.LOGS_ENABLED) {
+            cellGroup.rows.remove(unlimitedFavedStickersRow);
+            cellGroup.rows.remove(unlimitedPinnedDialogsRow);
+            cellGroup.rows.remove(forceCopyRow);
+            cellGroup.rows.remove(disableFlagSecureRow);
+            cellGroup.rows.remove(showAdsRow);
         }
         checkStoriesRows();
         addRowsToMap(cellGroup);

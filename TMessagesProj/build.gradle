@@ -9,7 +9,7 @@ plugins {
 
 def buildTimestamp = System.getenv('BUILD_TIMESTAMP') ?: '0'
 def verName = APP_VERSION_NAME
-def verCode = 1235
+def verCode = 1236
 
 def officialVer = APP_VERSION_NAME
 def officialCode = APP_VERSION_CODE
