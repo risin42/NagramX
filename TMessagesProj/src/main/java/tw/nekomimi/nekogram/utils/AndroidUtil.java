@@ -23,6 +23,7 @@ import androidx.annotation.RequiresApi;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BotWebViewVibrationEffect;
+import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.BuildVars;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessageObject;
@@ -40,6 +41,7 @@ import org.telegram.ui.LaunchActivity;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -197,6 +199,12 @@ public class AndroidUtil {
         BuildVars.LOGS_ENABLED = BuildVars.DEBUG_VERSION = !BuildVars.LOGS_ENABLED;
         SharedPreferences sharedPreferences = ApplicationLoader.applicationContext.getSharedPreferences("systemConfig", Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean("logsEnabled", BuildVars.LOGS_ENABLED).apply();
+    }
+
+    @SuppressWarnings("ConstantValue")
+    public static String getVersionText() {
+        String versionName = "release".equals(BuildConfig.BUILD_TYPE) && !BuildVars.LOGS_ENABLED ? BuildConfig.VERSION_NAME.split("-")[0] : BuildConfig.VERSION_NAME;
+        return "Nagram X v" + versionName + "(" + BuildConfig.VERSION_CODE + ") " + Build.SUPPORTED_ABIS[0].toLowerCase(Locale.ROOT) + " " + BuildConfig.BUILD_TYPE + (BuildVars.LOGS_ENABLED ? " " + BuildConfig.BUILD_TIMESTAMP : "");
     }
 
     /*<!-- Controls the navigation bar interaction mode:

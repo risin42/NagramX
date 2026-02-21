@@ -51,6 +51,8 @@ jobs:
           cat gradle.properties
       - name: Release Build
         id: release_build_step
+        env:
+          COMMIT_ID: ${{ github.event.head_commit.id }}
         run: |
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
           export BUILD_TIMESTAMP=$(date +%s)
