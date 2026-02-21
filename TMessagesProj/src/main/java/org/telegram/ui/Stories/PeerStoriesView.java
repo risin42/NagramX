@@ -218,6 +218,7 @@ import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
 import xyz.nextalone.nagram.NaConfig;
 
@@ -2057,6 +2058,14 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                             ActionBarMenuItem.addItem(popupLayout, R.drawable.msg_link2, getString(R.string.CopyLink), false, resourcesProvider).setOnClickListener(v -> {
                                 AndroidUtilities.addToClipboard(currentStory.createLink());
                                 onLinkCopied();
+                                if (popupMenu != null) {
+                                    popupMenu.dismiss();
+                                }
+                            });
+                        }
+                        if (NaConfig.INSTANCE.getMediaViewerMenuItemCopyPhoto().Bool() && !currentStory.isLive && !currentStory.isVideo()) {
+                            ActionBarMenuItem.addItem(popupLayout, R.drawable.msg_copy_photo, getString(R.string.CopyPhoto), false, resourcesProvider).setOnClickListener(v -> {
+                                copyPhotoToClipboard();
                                 if (popupMenu != null) {
                                     popupMenu.dismiss();
                                 }
@@ -8376,5 +8385,20 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
     public StoriesController getStoriesController() {
         return MessagesController.getInstance(currentAccount)
                 .getStoriesController();
+    }
+
+    private void copyPhotoToClipboard() {
+        if (currentStory.storyItem == null && currentStory.uploadingStory == null) {
+            return;
+        }
+        if (currentStory.storyItem instanceof TL_stories.TL_storyItemSkipped || currentStory.isLive || currentStory.isVideo()) {
+            return;
+        }
+        File file = currentStory.getPath();
+        if (file != null && file.exists()) {
+            MessageHelper.addFileToClipboard(file, () -> BulletinFactory.of(storyContainer, resourcesProvider).createCopyBulletin(getString(R.string.PhotoCopied)).show());
+        } else {
+            showDownloadAlert();
+        }
     }
 }
