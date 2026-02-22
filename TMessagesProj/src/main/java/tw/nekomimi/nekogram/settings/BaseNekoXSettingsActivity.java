@@ -1,5 +1,6 @@
 package tw.nekomimi.nekogram.settings;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.content.Context;
@@ -8,8 +9,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -23,12 +22,10 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Components.BlurredRecyclerView;
-import org.telegram.ui.Components.Bulletin;
 import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.UndoView;
-import org.telegram.ui.Components.inset.WindowInsetsStateHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,18 +51,6 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
     protected HashMap<String, Integer> rowMap = new HashMap<>(20);
     protected HashMap<Integer, String> rowMapReverse = new HashMap<>(20);
     protected HashMap<Integer, ConfigItem> rowConfigMapReverse = new HashMap<>(20);
-    private final WindowInsetsStateHolder windowInsetsStateHolder = new WindowInsetsStateHolder(this::checkInsets);
-
-    private void checkInsets() {
-        int navigationBarInset = windowInsetsStateHolder.getCurrentNavigationBarInset();
-        if (listView != null) {
-            listView.setPadding(0, 0, 0, navigationBarInset);
-        }
-        if (tooltip != null && tooltip.getLayoutParams() instanceof FrameLayout.LayoutParams params) {
-            params.bottomMargin = AndroidUtilities.dp(8) + navigationBarInset;
-            tooltip.setLayoutParams(params);
-        }
-    }
 
     public static AlertDialog showConfigMenuAlert(Context context, String titleKey, ArrayList<ConfigCellTextCheck> configItems) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -158,15 +143,10 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
 
         fragmentView = new FrameLayout(context);
         fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
-        ViewCompat.setOnApplyWindowInsetsListener(fragmentView, (v, insets) -> {
-            windowInsetsStateHolder.setInsets(insets);
-            return WindowInsetsCompat.CONSUMED;
-        });
         FrameLayout frameLayout = (FrameLayout) fragmentView;
 
         listView = createListView(context);
         listView.setVerticalScrollBarEnabled(false);
-        listView.setClipToPadding(false);
         listView.setLayoutManager(layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
         DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
@@ -181,29 +161,23 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         tooltip = new UndoView(context);
         frameLayout.addView(tooltip, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 0, 8, 8));
 
+        listView.setSections(true);
+        actionBar.setAdaptiveBackground(listView);
         return fragmentView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Bulletin.addDelegate(this, new Bulletin.Delegate() {
-            @Override
-            public int getBottomOffset(int tag) {
-                return windowInsetsStateHolder.getCurrentNavigationBarInset();
-            }
-        });
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Bulletin.removeDelegate(this);
     }
 
     @Override
     public boolean isSupportEdgeToEdge() {
         return true;
+    }
+
+    @Override
+    public void onInsets(int left, int top, int right, int bottom) {
+        listView.setPadding(0, 0, 0, bottom);
+        listView.setClipToPadding(false);
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) tooltip.getLayoutParams();
+        layoutParams.setMargins(dp(8), 0, dp(8), dp(8) + bottom);
+        tooltip.setLayoutParams(layoutParams);
     }
 
     protected void updateRows() {
@@ -354,7 +328,7 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         if (position > -1 && listView != null && layoutManager != null) {
             int finalPosition = position;
             listView.highlightRow(() -> {
-                layoutManager.scrollToPositionWithOffset(finalPosition, AndroidUtilities.dp(60));
+                layoutManager.scrollToPositionWithOffset(finalPosition, dp(60));
                 return finalPosition;
             });
         } else if (unknown != null) {

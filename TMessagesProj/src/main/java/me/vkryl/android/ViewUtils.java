@@ -27,6 +27,8 @@ import android.view.ViewTreeObserver;
 
 import java.lang.reflect.Method;
 
+import tw.nekomimi.nekogram.NekoConfig;
+
 public final class ViewUtils {
   public static void onClick (View v) {
     if (v != null) {
@@ -79,7 +81,7 @@ public final class ViewUtils {
       }
       int feedbackConstant = isForce ? HapticFeedbackConstants.LONG_PRESS : HapticFeedbackConstants.KEYBOARD_TAP;
       int flags = ignoreSetting ? HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING : 0;
-      view.performHapticFeedback(feedbackConstant, flags);
+      if (!NekoConfig.disableVibration.Bool()) view.performHapticFeedback(feedbackConstant, flags);
     }
   }
 

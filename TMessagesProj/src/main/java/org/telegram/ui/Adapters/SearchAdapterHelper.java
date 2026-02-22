@@ -304,10 +304,6 @@ public class SearchAdapterHelper {
             hasChanged = false;
         }
 
-        if (hasChanged) {
-            delegate.onDataSetChanged(searchId);
-        }
-
         final AtomicInteger gotResponses = new AtomicInteger(0);
         final ArrayList<Pair<TLObject, TLRPC.TL_error>> responses = new ArrayList<>();
         for (int i = 0; i < requests.size(); ++i) {
@@ -343,6 +339,10 @@ public class SearchAdapterHelper {
                 }
             })));
             pendingRequestIds.add(reqId.get());
+        }
+
+        if (hasChanged) {
+            delegate.onDataSetChanged(searchId);
         }
     }
 

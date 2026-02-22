@@ -17,6 +17,7 @@
 package org.telegram.ui.ActionBar;
 
 import static org.telegram.messenger.AndroidUtilities.allGlobalViews;
+import static org.telegram.messenger.AndroidUtilities.dp;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -361,10 +362,10 @@ public final class FloatingToolbar {
             mContext = context;
             mContentContainer = createContentContainer(context);
             mPopupWindow = createPopupWindow(mContentContainer);
-            mMarginHorizontal = AndroidUtilities.dp(16);
-            mMarginVertical = AndroidUtilities.dp(8);
-            mLineHeight = AndroidUtilities.dp(48);
-            mIconTextSpacing = AndroidUtilities.dp(8);
+            mMarginHorizontal = dp(16);
+            mMarginVertical = dp(8);
+            mLineHeight = dp(48);
+            mIconTextSpacing = dp(8);
 
             mLogAccelerateInterpolator = new LogAccelerateInterpolator();
             mFastOutSlowInInterpolator = AnimationUtils.loadInterpolator(mContext, android.R.interpolator.fast_out_slow_in);
@@ -390,8 +391,8 @@ public final class FloatingToolbar {
                     return super.dispatchTouchEvent(event);
                 }
             };
-            mOverflowButtonIcon.setLayoutParams(new ViewGroup.LayoutParams(AndroidUtilities.dp(56), AndroidUtilities.dp(48)));
-            mOverflowButtonIcon.setPaddingRelative(AndroidUtilities.dp(16), AndroidUtilities.dp(12), AndroidUtilities.dp(16), AndroidUtilities.dp(12));
+            mOverflowButtonIcon.setLayoutParams(new ViewGroup.LayoutParams(dp(56), dp(48)));
+            mOverflowButtonIcon.setPaddingRelative(dp(16), dp(12), dp(16), dp(12));
             mOverflowButtonIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             mOverflowButtonIcon.setImageDrawable(mOverflow);
             mOverflowButtonText = new TextView(mContext);
@@ -900,9 +901,9 @@ public final class FloatingToolbar {
         private int getAdjustedToolbarWidth(int suggestedWidth) {
             int width = suggestedWidth;
             refreshViewPort();
-            int maximumWidth = mViewPortOnScreen.width() - 2 * AndroidUtilities.dp(16);
+            int maximumWidth = mViewPortOnScreen.width() - 2 * dp(16);
             if (width <= 0) {
-                width = AndroidUtilities.dp(400);
+                width = dp(400);
             }
             return Math.min(width, maximumWidth);
         }
@@ -1229,7 +1230,7 @@ public final class FloatingToolbar {
                 setOutlineProvider(new ViewOutlineProvider() {
                     @Override
                     public void getOutline(View view, Outline outline) {
-                        outline.setRoundRect(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight() + AndroidUtilities.dp(6), AndroidUtilities.dp(6));
+                    outline.setRoundRect(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight() + dp(6), dp(6));
                     }
                 });
                 setClipToOutline(true);
@@ -1279,7 +1280,7 @@ public final class FloatingToolbar {
             public OverflowPanelViewHelper(Context context, int iconTextSpacing) {
                 mContext = context;
                 mIconTextSpacing = iconTextSpacing;
-                mSidePadding = AndroidUtilities.dp(18);
+                mSidePadding = dp(18);
                 mCalculator = createMenuButton(null);
             }
 
@@ -1311,9 +1312,9 @@ public final class FloatingToolbar {
         LinearLayout menuItemButton = new LinearLayout(context);
         menuItemButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         menuItemButton.setOrientation(LinearLayout.HORIZONTAL);
-        menuItemButton.setMinimumWidth(AndroidUtilities.dp(48));
-        menuItemButton.setMinimumHeight(AndroidUtilities.dp(48));
-        menuItemButton.setPaddingRelative(AndroidUtilities.dp(16), 0, AndroidUtilities.dp(16), 0);
+        menuItemButton.setMinimumWidth(dp(48));
+        menuItemButton.setMinimumHeight(dp(48));
+        menuItemButton.setPaddingRelative(dp(16), 0, dp(16), 0);
 
         TextView textView = new TextView(context);
         textView.setGravity(Gravity.CENTER);
@@ -1337,13 +1338,13 @@ public final class FloatingToolbar {
             color = getThemedColor(Theme.key_windowBackgroundWhiteBlackText);
         }
         if (first || last) {
-            menuItemButton.setBackground(Theme.createRadSelectorDrawable(selectorColor, first ? 6 : 0, last ? 6 : 0, last ? 6 : 0, first ? 6 : 0));
+            menuItemButton.setBackground(Theme.createRadSelectorDrawable(selectorColor, first ? 12 : 0, last ? 12 : 0, last ? 12 : 0, first ? 12 : 0));
         } else {
             menuItemButton.setBackground(Theme.getSelectorDrawable(selectorColor, false));
         }
 
-        textView.setPaddingRelative(AndroidUtilities.dp(11), 0, 0, 0);
-        menuItemButton.addView(textView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, AndroidUtilities.dp(48)));
+        textView.setPaddingRelative(dp(11), 0, 0, 0);
+        menuItemButton.addView(textView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(48)));
 
         menuItemButton.addView(new Space(context), new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1, 1));
 
@@ -1385,14 +1386,14 @@ public final class FloatingToolbar {
     private ViewGroup createContentContainer(Context context) {
         RelativeLayout contentContainer = new RelativeLayout(context);
         ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.bottomMargin = layoutParams.leftMargin = layoutParams.topMargin = layoutParams.rightMargin = AndroidUtilities.dp(20);
+        layoutParams.bottomMargin = layoutParams.leftMargin = layoutParams.topMargin = layoutParams.rightMargin = dp(20);
         contentContainer.setLayoutParams(layoutParams);
-        contentContainer.setElevation(AndroidUtilities.dp(2));
+        contentContainer.setElevation(dp(1));
         contentContainer.setFocusable(true);
         contentContainer.setFocusableInTouchMode(true);
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        int r = AndroidUtilities.dp(6);
+        int r = dp(12);
         shape.setCornerRadii(new float[] { r, r, r, r, r, r, r, r });
         if (currentStyle == STYLE_DIALOG) {
             shape.setColor(getThemedColor(Theme.key_dialogBackground));
@@ -1401,7 +1402,7 @@ public final class FloatingToolbar {
         } else if (currentStyle == STYLE_THEME) {
             shape.setColor(getThemedColor(Theme.key_windowBackgroundWhite));
         }
-        contentContainer.setBackgroundDrawable(shape);
+        contentContainer.setBackground(shape);
         contentContainer.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         contentContainer.setClipToOutline(true);
         return contentContainer;

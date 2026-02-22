@@ -32,8 +32,11 @@ import android.view.accessibility.AccessibilityManager;
 import android.widget.FrameLayout;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
 
 import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.AndroidUtilities;
@@ -55,6 +58,7 @@ import org.telegram.messenger.SendMessagesHelper;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.ui.ArticleViewer;
+import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.Stories.StoryViewer;
@@ -71,7 +75,7 @@ import xyz.nextalone.nagram.NaConfig;
 
 public abstract class BaseFragment {
 
-    protected boolean isFinished;
+    public boolean isFinished;
     protected boolean finishing;
     public Dialog visibleDialog;
     protected int currentAccount = UserConfig.selectedAccount;
@@ -120,6 +124,10 @@ public abstract class BaseFragment {
         public void setOnDismissListener(Runnable onDismiss);
 
         default void setLastVisible(boolean lastVisible) {};
+
+        default public BulletinFactory getBulletinFactory() {
+            return null;
+        }
     }
 
     public static interface AttachedSheetWindow {}
@@ -702,10 +710,6 @@ public abstract class BaseFragment {
 
     }
 
-    public void onSlideProgressFront(boolean isOpen, float progress) {
-
-    }
-
     public void onTransitionAnimationProgress(boolean isOpen, float progress) {
 
     }
@@ -950,7 +954,7 @@ public abstract class BaseFragment {
 
     }
 
-    protected Animator getCustomSlideTransition(boolean topFragment, boolean backAnimation, float distanceToMove) {
+    public Animator getCustomSlideTransition(boolean topFragment, boolean backAnimation, float distanceToMove) {
         return null;
     }
 
@@ -959,10 +963,6 @@ public abstract class BaseFragment {
     }
 
     public void prepareFragmentToSlide(boolean topFragment, boolean beginSlide) {
-
-    }
-
-    public void setProgressToDrawerOpened(float v) {
 
     }
 
@@ -1104,7 +1104,6 @@ public abstract class BaseFragment {
 
     public int getNavigationBarColor() {
         int color = Theme.getColor(Theme.key_windowBackgroundGray, getResourceProvider());
-        color = AndroidUtil.getNavBarColor(color, getResourceProvider());
         if (sheetsStack != null) {
             for (int i = 0; i < sheetsStack.size(); ++i) {
                 AttachedSheet sheet = sheetsStack.get(i);
@@ -1121,7 +1120,6 @@ public abstract class BaseFragment {
             return;
         }
 
-        color = AndroidUtil.getNavBarColor(color, getResourceProvider());
         Activity activity = getParentActivity();
         if (activity instanceof LaunchActivity) {
             LaunchActivity launchActivity = (LaunchActivity) activity;
@@ -1186,10 +1184,6 @@ public abstract class BaseFragment {
             color = Theme.getColor(key, null, true);
         }
         return ColorUtils.calculateLuminance(color) > 0.7f;
-    }
-
-    public void drawOverlay(Canvas canvas, View parent) {
-
     }
 
     public void setPreviewOpenedProgress(float progress) {
@@ -1329,6 +1323,19 @@ public abstract class BaseFragment {
         return storyViewer;
     }
 
+
+    public void setTitleOverlayTextIfActionBarAttached(String title, int titleId, Runnable action) {
+        if (actionBar != null && actionBar.shouldAddToContainer()) {
+            setTitleOverlayText(title, titleId, action);
+        }
+    }
+
+    public void setTitleOverlayText(String title, int titleId, Runnable action) {
+        if (actionBar != null) {
+            actionBar.setTitleOverlayText(title, titleId, action);
+        }
+    }
+
     public void removeSheet(BaseFragment.AttachedSheet sheet) {
         if (sheetsStack == null) return;
         sheetsStack.remove(sheet);
@@ -1401,5 +1408,24 @@ public abstract class BaseFragment {
     public boolean isSupportEdgeToEdge() {
         // warn: overridden method must return a constant
         return false;
+    }
+
+    public boolean drawEdgeNavigationBar() {
+        return isSupportEdgeToEdge();
+    }
+
+    public WindowInsetsCompat onInsetsInternal(@NonNull View view, @NonNull WindowInsetsCompat windowInsets) {
+        final Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.statusBars());
+        onInsets(insets.left, insets.top, insets.right, bottomInset = insets.bottom);
+        return WindowInsetsCompat.CONSUMED;
+    }
+
+    private int bottomInset;
+    public int getBottomInset() {
+        return bottomInset;
+    }
+
+    public void onInsets(int left, int top, int right, int bottom) {
+
     }
 }

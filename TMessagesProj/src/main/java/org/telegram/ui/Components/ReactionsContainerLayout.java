@@ -1097,7 +1097,7 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
                 visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.fromTL(result.reaction));
             }
         } else if (reactionsChat != null) {
-            if (NaConfig.INSTANCE.getPremiumItemStarInReactions().Bool() && reactionsChat != null && reactionsChat.paid_reactions_available) {
+            if (NaConfig.INSTANCE.getPremiumItemStarInReactions().Bool() && reactionsChat.paid_reactions_available) {
                 hasStar = true;
                 visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.asStar());
             }
@@ -1159,6 +1159,9 @@ public class ReactionsContainerLayout extends FrameLayout implements Notificatio
         } else {
             allReactionsAvailable = true;
             fillRecentReactionsList(visibleReactions);
+        }
+        if (!NaConfig.INSTANCE.getPremiumItemStarInReactions().Bool() && visibleReactions.isEmpty() && reactionsChat != null && reactionsChat.paid_reactions_available) {
+            visibleReactions.add(ReactionsLayoutInBubble.VisibleReaction.asStar());
         }
         filterReactions(visibleReactions);
         showExpandableReactions = !hitLimit && (!allReactionsAvailable && visibleReactions.size() > 16 || allReactionsAvailable && !UserConfig.getInstance(currentAccount).isPremium() && MessagesController.getInstance(currentAccount).premiumFeaturesBlocked());

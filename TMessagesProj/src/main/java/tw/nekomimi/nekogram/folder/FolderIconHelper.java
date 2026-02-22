@@ -1,12 +1,13 @@
 package tw.nekomimi.nekogram.folder;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
 import androidx.core.util.Pair;
 
-import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
+import org.telegram.ui.Components.FilterTabsView;
 
 import java.util.LinkedHashMap;
 
@@ -74,6 +75,12 @@ public class FolderIconHelper {
             if (flags == 0) {
                 newName = getString(R.string.FilterContacts);
                 newEmoticon = "\uD83D\uDC64";
+            } else if ((flags & MessagesController.DIALOG_FILTER_FLAG_NON_CONTACTS) != 0) {
+                flags &= ~MessagesController.DIALOG_FILTER_FLAG_NON_CONTACTS;
+                if (flags == 0) {
+                    newName = getString(R.string.FilterContacts);
+                    newEmoticon = "\uD83D\uDC64";
+                }
             }
         } else if ((flags & MessagesController.DIALOG_FILTER_FLAG_NON_CONTACTS) != 0) {
             flags &= ~MessagesController.DIALOG_FILTER_FLAG_NON_CONTACTS;
@@ -104,14 +111,22 @@ public class FolderIconHelper {
     }
 
     public static int getIconWidth() {
-        return AndroidUtilities.dp(28);
+        return dp(28);
     }
 
     public static int getPadding() {
         if (NekoConfig.tabsTitleType.Int() == NekoXConfig.TITLE_TYPE_MIX) {
-            return AndroidUtilities.dp(6);
+            return dp(3);
         }
         return 0;
+    }
+
+    public static float getTabInternalPadding() {
+        float padding = FilterTabsView.TAB_INTERNAL_PADDING;
+        if (NekoConfig.tabsTitleType.Int() != NekoXConfig.TITLE_TYPE_ICON) {
+            return padding;
+        }
+        return padding/2;
     }
 
     public static int getTotalIconWidth() {
@@ -122,11 +137,11 @@ public class FolderIconHelper {
         return result;
     }
 
-    public static int getPaddingTab() {
+    public static float getTabPadding() {
         if (NekoConfig.tabsTitleType.Int() != NekoXConfig.TITLE_TYPE_ICON) {
-            return AndroidUtilities.dp(32);
+            return FilterTabsView.TAB_PADDING_WIDTH;
         }
-        return AndroidUtilities.dp(16);
+        return 16;
     }
 
     public static int getTabIcon(String emoji) {

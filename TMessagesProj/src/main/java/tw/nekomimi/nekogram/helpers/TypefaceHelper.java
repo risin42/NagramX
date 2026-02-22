@@ -25,6 +25,7 @@ public class TypefaceHelper {
     }};
 
     private static Boolean mediumWeightSupported = null;
+    private static Boolean italicSupported = null;
 
     static {
         var lang = LocaleController.getInstance().getCurrentLocale().getLanguage();
@@ -54,7 +55,7 @@ public class TypefaceHelper {
             case AndroidUtilities.TYPEFACE_RCONDENSED_BOLD ->
                     Typeface.create("sans-serif-condensed", Typeface.BOLD);
             case AndroidUtilities.TYPEFACE_RITALIC ->
-                    Typeface.create("sans-serif", Typeface.ITALIC);
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? Typeface.create(Typeface.SANS_SERIF, 400, true) : Typeface.create("sans-serif", Typeface.ITALIC);
             case AndroidUtilities.TYPEFACE_ROBOTO_MONO ->
                     Typeface.MONOSPACE;
             default -> createTypefaceFromAsset(assetPath);
@@ -62,18 +63,17 @@ public class TypefaceHelper {
     }
 
     public static Typeface createTypefaceFromAsset(String assetPath) {
-        if (Build.VERSION.SDK_INT >= 26) {
-            Typeface.Builder builder = new Typeface.Builder(ApplicationLoader.applicationContext.getAssets(), assetPath);
-            if (assetPath.contains("medium")) {
-                builder.setWeight(700);
-            }
-            if (assetPath.contains("italic")) {
-                builder.setItalic(true);
-            }
-            return builder.build();
-        } else {
-            return Typeface.createFromAsset(ApplicationLoader.applicationContext.getAssets(), assetPath);
+        Typeface.Builder builder = new Typeface.Builder(ApplicationLoader.applicationContext.getAssets(), assetPath);
+        if (assetPath.contains("rextrabold")) {
+            builder.setWeight(800);
         }
+        if (assetPath.contains("medium") || assetPath.contains("rbold")) {
+            builder.setWeight(700);
+        }
+        if (assetPath.contains("italic")) {
+            builder.setItalic(true);
+        }
+        return builder.build();
     }
 
     public static boolean isMediumWeightSupported() {
@@ -82,6 +82,14 @@ public class TypefaceHelper {
             FileLog.d("mediumWeightSupported = " + mediumWeightSupported);
         }
         return mediumWeightSupported;
+    }
+
+    public static boolean isItalicSupported() {
+        if (italicSupported == null) {
+            italicSupported = testTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+            FileLog.d("italicSupported = " + italicSupported);
+        }
+        return italicSupported;
     }
 
     private static boolean testTypeface(Typeface typeface) {
