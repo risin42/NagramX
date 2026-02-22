@@ -16,6 +16,7 @@ import java.util.Map;
 
 import tw.nekomimi.nekogram.settings.BaseNekoSettingsActivity;
 import tw.nekomimi.nekogram.settings.BaseNekoXSettingsActivity;
+import tw.nekomimi.nekogram.settings.NekoAboutActivity;
 import tw.nekomimi.nekogram.settings.NekoChatSettingsActivity;
 import tw.nekomimi.nekogram.settings.NekoEmojiSettingsActivity;
 import tw.nekomimi.nekogram.settings.NekoExperimentalSettingsActivity;
@@ -46,7 +47,7 @@ public class SettingsHelper {
         } else {
             switch (segments.get(1)) {
                 case "about":
-                    fragment = new NekoSettingsActivity().startOnAbout();
+                    fragment = new NekoAboutActivity();
                     break;
                 case "chat":
                 case "chats":

@@ -126,7 +126,7 @@ public class CloudSettingsHelper {
         syncedDate.setOutAnimation(context, R.anim.alpha_out);
         syncedDate.setText(formatSyncedDate(), false);
 
-        ButtonWithCounterView restoreButton = new ButtonWithCounterView(context, false, resourcesProvider);
+        ButtonWithCounterView restoreButton = new ButtonWithCounterView(context, false, resourcesProvider).setRound();
         restoreButton.setText(getString(R.string.CloudConfigRestore), false);
         restoreButton.setEnabled(false);
         restoreButton.setClickable(false);
@@ -148,7 +148,7 @@ public class CloudSettingsHelper {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-        ButtonWithCounterView buttonTextView = new ButtonWithCounterView(context, true, resourcesProvider);
+        ButtonWithCounterView buttonTextView = new ButtonWithCounterView(context, true, resourcesProvider).setRound();
         buttonTextView.setText(getString(R.string.CloudConfigSync), false);
         linearLayout.addView(buttonTextView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 16, 0, 16, 0));
         buttonTextView.setOnClickListener(view -> {
@@ -190,7 +190,7 @@ public class CloudSettingsHelper {
             });
         });
 
-        ButtonWithCounterView deleteButton = new ButtonWithCounterView(context, false, resourcesProvider);
+        ButtonWithCounterView deleteButton = new ButtonWithCounterView(context, false, resourcesProvider).setRound();
         deleteButton.setText(getString(R.string.DeleteCloudBackup), false);
         deleteButton.setTextColor(Theme.getColor(Theme.key_dialogTextRed));
         linearLayout.addView(deleteButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, 16, 8, 16, 0));
@@ -431,7 +431,7 @@ public class CloudSettingsHelper {
 
             ScaleStateListAnimator.apply(this, .02f, 1.2f);
 
-            setForeground(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(6), Color.TRANSPARENT, ColorUtils.setAlphaComponent(Theme.getColor(Theme.key_featuredStickers_addButton, resourcesProvider), 120)));
+            setForeground(Theme.createRadSelectorDrawable(Theme.multAlpha(Theme.getColor(Theme.key_featuredStickers_addButton, resourcesProvider), .10f), 16, 16));
 
             LinearLayout linearLayout = new LinearLayout(context);
             linearLayout.setOrientation(LinearLayout.VERTICAL);

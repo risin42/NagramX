@@ -27,7 +27,6 @@ import androidx.annotation.Nullable;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;
-import org.telegram.ui.Components.blur3.DownscaleScrollableNoiseSuppressor;
 
 import tw.nekomimi.nekogram.NekoConfig;
 

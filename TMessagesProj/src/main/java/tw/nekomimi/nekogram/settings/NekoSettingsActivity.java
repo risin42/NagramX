@@ -11,8 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.net.Uri;
@@ -45,28 +43,21 @@ import org.json.JSONObject;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
-import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SendMessagesHelper;
-import org.telegram.messenger.browser.Browser;
 import org.telegram.ui.ActionBar.ActionBar;
+import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.AlertDialog;
-import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.BasePermissionsActivity;
 import org.telegram.ui.Cells.CheckBoxCell;
 import org.telegram.ui.Cells.SettingsSearchCell;
-import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCell;
-import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.EditTextBoldCursor;
-import org.telegram.ui.Components.FilledTabsView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
-import org.telegram.ui.Components.ViewPagerFixed;
 import org.telegram.ui.DocumentSelectActivity;
 import org.telegram.ui.LaunchActivity;
-import org.telegram.ui.PeerColorActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -81,7 +72,6 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import kotlin.text.StringsKt;
-import tw.nekomimi.nekogram.DatacenterActivity;
 import tw.nekomimi.nekogram.DialogConfig;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
@@ -90,7 +80,6 @@ import tw.nekomimi.nekogram.helpers.LocalNameHelper;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
 import tw.nekomimi.nekogram.helpers.SettingsHelper;
 import tw.nekomimi.nekogram.helpers.SettingsSearchResult;
-import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 import tw.nekomimi.nekogram.utils.AlertUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
 import tw.nekomimi.nekogram.utils.GsonUtil;
@@ -100,153 +89,73 @@ import xyz.nextalone.nagram.helper.BookmarksHelper;
 import xyz.nextalone.nagram.helper.LocalPeerColorHelper;
 import xyz.nextalone.nagram.helper.LocalPremiumStatusHelper;
 
-public class NekoSettingsActivity extends BaseFragment {
-    public static final int PAGE_TYPE = 0;
-    public static final int PAGE_ABOUT = 1;
+public class NekoSettingsActivity extends BaseNekoSettingsActivity {
 
-    private Page typePage;
-    private Page abountPage;
+    private static final int MENU_SEARCH = 1;
+    private static final int MENU_SYNC = 2;
 
-    private ViewPagerFixed viewPager;
+    private int generalRow;
+    private int translatorRow;
+    private int chatRow;
+    private int passcodeRow;
+    private int experimentRow;
+    private int categoriesEndRow;
 
-    private ImageView backButton;
-    private ImageView syncButton;
-    private ImageView searchButton;
+    private int importSettingsRow;
+    private int exportSettingsRow;
+    private int resetSettingsRow;
+    private int appRestartRow;
+    private int nSettingsEndRow;
 
-    private FrameLayout actionBarContainer;
-    private FilledTabsView tabsView;
 
-    private boolean startAtAbout;
+    private int aboutRow;
 
-    public NekoSettingsActivity startOnAbout() {
-        this.startAtAbout = true;
-        return this;
+    @Override
+    protected void updateRows() {
+        super.updateRows();
+
+        generalRow = addRow();
+        translatorRow = addRow();
+        chatRow = addRow();
+        if (!PasscodeHelper.isSettingsHidden()) {
+            passcodeRow = addRow();
+        } else {
+            passcodeRow = -1;
+        }
+        experimentRow = addRow();
+        categoriesEndRow = addRow();
+
+        importSettingsRow = addRow();
+        exportSettingsRow = addRow();
+        resetSettingsRow = addRow();
+        appRestartRow = addRow();
+        nSettingsEndRow = addRow();
+
+        aboutRow = addRow();
     }
 
     @Override
     public View createView(Context context) {
-        typePage = new Page(context, PAGE_TYPE);
-        abountPage = new Page(context, PAGE_ABOUT);
+        View view = super.createView(context);
 
-        actionBar.setCastShadows(false);
-        actionBar.setVisibility(View.GONE);
-        actionBar.setAllowOverlayTitle(false);
+        ActionBarMenu menu = actionBar.createMenu();
+        menu.addItem(MENU_SEARCH, R.drawable.ic_ab_search);
+        menu.addItem(MENU_SYNC, R.drawable.cloud_sync);
 
-        FrameLayout frameLayout = getFrameLayout(context);
-
-        PeerColorActivity.ColoredActionBar colorBar = new PeerColorActivity.ColoredActionBar(context, resourceProvider) {
+        actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
-            protected void onUpdateColor() {
-                updateActionBarButtonsColor();
-                if (tabsView != null) {
-                    tabsView.setBackgroundColor(getTabsViewBackgroundColor());
+            public void onItemClick(int id) {
+                if (id == -1) {
+                    finishFragment();
+                } else if (id == MENU_SEARCH) {
+                    showSettingsSearchDialog();
+                } else if (id == MENU_SYNC) {
+                    CloudSettingsHelper.getInstance().showDialog(NekoSettingsActivity.this);
                 }
             }
-
-            private int lastBtnColor = 0;
-
-            public void updateActionBarButtonsColor() {
-                final int btnColor = getActionBarButtonColor();
-                if (lastBtnColor != btnColor) {
-                    if (backButton != null) {
-                        lastBtnColor = btnColor;
-                        backButton.setColorFilter(new PorterDuffColorFilter(btnColor, PorterDuff.Mode.SRC_IN));
-                    }
-                    if (syncButton != null) {
-                        lastBtnColor = btnColor;
-                        syncButton.setColorFilter(new PorterDuffColorFilter(btnColor, PorterDuff.Mode.SRC_IN));
-                    }
-                    if (searchButton != null) {
-                        lastBtnColor = btnColor;
-                        searchButton.setColorFilter(new PorterDuffColorFilter(btnColor, PorterDuff.Mode.SRC_IN));
-                    }
-                }
-            }
-        };
-        frameLayout.addView(colorBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.FILL_HORIZONTAL));
-
-        viewPager = new ViewPagerFixed(context) {
-            @Override
-            public void onTabAnimationUpdate(boolean manual) {
-                tabsView.setSelected(viewPager.getPositionAnimated());
-            }
-        };
-        viewPager.setAdapter(new ViewPagerFixed.Adapter() {
-            @Override
-            public int getItemCount() {
-                return 2;
-            }
-
-            @Override
-            public View createView(int viewType) {
-                if (viewType == PAGE_TYPE) return typePage;
-                if (viewType == PAGE_ABOUT) return abountPage;
-                return null;
-            }
-
-            @Override
-            public int getItemViewType(int position) {
-                return position;
-            }
-
-            @Override
-            public void bindView(View view, int position, int viewType) {
-
-            }
         });
-        frameLayout.addView(viewPager, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.FILL));
 
-        actionBarContainer = new FrameLayout(context);
-        frameLayout.addView(actionBarContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.FILL_HORIZONTAL));
-
-        tabsView = new FilledTabsView(context);
-        tabsView.setTabs(getString(R.string.Categories), getString(R.string.About));
-        tabsView.onTabSelected(tab -> {
-            if (viewPager != null) {
-                viewPager.scrollToPosition(tab);
-            }
-        });
-        actionBarContainer.addView(tabsView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 40, Gravity.CENTER));
-
-        if (startAtAbout) {
-            viewPager.setPosition(1);
-            if (tabsView != null) {
-                tabsView.setSelected(1);
-            }
-        }
-
-        backButton = new ImageView(context);
-        backButton.setScaleType(ImageView.ScaleType.CENTER);
-        backButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarWhiteSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
-        backButton.setImageResource(R.drawable.ic_ab_back);
-        backButton.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN));
-        backButton.setOnClickListener(v -> {
-            if (onBackPressed(true)) {
-                finishFragment();
-            }
-        });
-        actionBarContainer.addView(backButton, LayoutHelper.createFrame(54, 54, Gravity.LEFT | Gravity.CENTER_VERTICAL));
-
-        syncButton = new ImageView(context);
-        syncButton.setScaleType(ImageView.ScaleType.CENTER);
-        syncButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_listSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
-        syncButton.setImageResource(R.drawable.cloud_sync);
-        syncButton.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN));
-        syncButton.setOnClickListener(v -> CloudSettingsHelper.getInstance().showDialog(NekoSettingsActivity.this));
-        actionBarContainer.addView(syncButton, LayoutHelper.createFrame(54, 54, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
-
-        searchButton = new ImageView(context);
-        searchButton.setScaleType(ImageView.ScaleType.CENTER);
-        searchButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_listSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
-        searchButton.setImageResource(R.drawable.ic_ab_search);
-        searchButton.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN));
-        searchButton.setOnClickListener(v -> showSettingsSearchDialog());
-        actionBarContainer.addView(searchButton, LayoutHelper.createFrame(54, 54, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 42, 0));
-
-        FrameLayout contentView;
-        fragmentView = contentView = frameLayout;
-
-        return contentView;
+        return view;
     }
 
     /**
@@ -323,9 +232,9 @@ public class NekoSettingsActivity extends BaseFragment {
                 }
             });
 
-            RecyclerListView listView = new RecyclerListView(parent);
-            listView.setOverScrollMode(OVER_SCROLL_NEVER);
-            listView.setLayoutManager(new LinearLayoutManager(parent, LinearLayoutManager.VERTICAL, false));
+            RecyclerListView searchListView = new RecyclerListView(parent);
+            searchListView.setOverScrollMode(OVER_SCROLL_NEVER);
+            searchListView.setLayoutManager(new LinearLayoutManager(parent, LinearLayoutManager.VERTICAL, false));
 
             var adapter = new RecyclerListView.SelectionAdapter() {
                 @Override
@@ -377,8 +286,8 @@ public class NekoSettingsActivity extends BaseFragment {
                 }
             };
 
-            listView.setAdapter(adapter);
-            listView.setOnItemClickListener((v, position) -> {
+            searchListView.setAdapter(adapter);
+            searchListView.setOnItemClickListener((v, position) -> {
                 if (position < 0 || position >= filtered.size()) return;
                 SettingsSearchResult r = filtered.get(position);
                 try {
@@ -388,7 +297,7 @@ public class NekoSettingsActivity extends BaseFragment {
                 dialog.dismiss();
             });
 
-            containerLayout.addView(listView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            containerLayout.addView(searchListView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
             searchField.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -439,273 +348,112 @@ public class NekoSettingsActivity extends BaseFragment {
         }
     }
 
-    private @NonNull FrameLayout getFrameLayout(Context context) {
-        FrameLayout frameLayout = new FrameLayout(context) {
-            @Override
-            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                if (actionBarContainer != null) {
-                    actionBarContainer.getLayoutParams().height = ActionBar.getCurrentActionBarHeight();
-                    ((MarginLayoutParams) actionBarContainer.getLayoutParams()).topMargin = AndroidUtilities.statusBarHeight;
-                }
-                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            }
-        };
-        frameLayout.setFitsSystemWindows(true);
-        return frameLayout;
+    @Override
+    protected String getActionBarTitle() {
+        return getString(R.string.NekoSettings);
     }
 
-    private class Page extends FrameLayout {
-
-        private static final int VIEW_TYPE_HEADER = 1;
-        private static final int VIEW_TYPE_BOTTOM = 2;
-        private static final int VIEW_TYPE_TEXT = 3;
-        private static final int VIEW_TYPE_TEXT_LINK = 4;
-
-        private final RecyclerListView listView;
-        private final int type;
-
-        private int rowCount;
-        private int generalRow = -1;
-        private int translatorRow = -1;
-        private int chatRow = -1;
-        private int passcodeRow = -1;
-        private int experimentRow = -1;
-        private int categories2Row = -1;
-
-        private int nSettingsHeaderRow = -1;
-        private int importSettingsRow = -1;
-        private int exportSettingsRow = -1;
-        private int resetSettingsRow = -1;
-        private int otherRow = -1;
-        private int appRestartRow = -1;
-
-        private int xChannelRow = -1;
-        private int channelRow = -1;
-        private int channelTipsRow = -1;
-        private int sourceCodeRow = -1;
-        private int translationRow = -1;
-        private int datacenterStatusRow = -1;
-        private int actionBarHeight;
-
-        @SuppressLint("ApplySharedPref")
-        public Page(Context context, int type) {
-            super(context);
-            this.type = type;
-
-            listView = new RecyclerListView(context);
-            listView.setVerticalScrollBarEnabled(false);
-            listView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-            addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
-            listView.setAdapter(new RecyclerListView.SelectionAdapter() {
-                @Override
-                public int getItemCount() {
-                    return rowCount;
-                }
-
-                @NonNull
-                @Override
-                public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view = null;
-                    switch (viewType) {
-                        case VIEW_TYPE_HEADER:
-                            view = new HeaderCell(getContext());
-                            view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
-                            break;
-                        case VIEW_TYPE_BOTTOM:
-                            view = new ShadowSectionCell(getContext());
-                            break;
-                        case VIEW_TYPE_TEXT:
-                            view = new TextCell(getContext());
-                            view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
-                            break;
-                        case VIEW_TYPE_TEXT_LINK:
-                            view = new TextSettingsCell(getContext());
-                            view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
-                            break;
-                    }
-                    // noinspection ConstantConditions
-                    view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
-                    return new RecyclerListView.Holder(view);
-                }
-
-                @Override
-                public boolean isEnabled(RecyclerView.ViewHolder holder) {
-                    int type = holder.getItemViewType();
-                    return type == VIEW_TYPE_TEXT || type == VIEW_TYPE_TEXT_LINK;
-                }
-
-                @Override
-                public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-                    switch (holder.getItemViewType()) {
-                        case VIEW_TYPE_HEADER: {
-                            HeaderCell headerCell = (HeaderCell) holder.itemView;
-                            if (position == nSettingsHeaderRow) {
-                                headerCell.setText(getString(R.string.NekoSettings));
-                            } else if (position == otherRow) {
-                                headerCell.setText(getString(R.string.Other));
-                            }
-                            break;
-                        }
-                        case VIEW_TYPE_BOTTOM: {
-                            if (position == categories2Row) {
-                                holder.itemView.setBackground(Theme.getThemedDrawable(getContext(), R.drawable.greydivider, Theme.key_windowBackgroundGrayShadow));
-                            }
-                            break;
-                        }
-                        case VIEW_TYPE_TEXT: {
-                            TextCell textCell = (TextCell) holder.itemView;
-                            if (position == chatRow) {
-                                textCell.setTextAndIcon(getString(R.string.Chat), R.drawable.msg_discussion, true);
-                            } else if (position == generalRow) {
-                                textCell.setTextAndIcon(getString(R.string.General), R.drawable.msg_theme, true);
-                            } else if (position == translatorRow) {
-                                textCell.setTextAndIcon(getString(R.string.TranslatorSettings), R.drawable.ic_translate, true);
-                            } else if (position == passcodeRow) {
-                                textCell.setTextAndIcon(getString(R.string.PasscodeNeko), R.drawable.msg_permissions, true);
-                            } else if (position == experimentRow) {
-                                textCell.setTextAndIcon(getString(R.string.Experimental), R.drawable.msg_fave, true);
-                            } else if (position == importSettingsRow) {
-                                textCell.setTextAndIcon(getString(R.string.ImportSettings), R.drawable.msg_photo_settings_solar, true);
-                            } else if (position == exportSettingsRow) {
-                                textCell.setTextAndIcon(getString(R.string.BackupSettings), R.drawable.msg_instant_link_solar, true);
-                            } else if (position == resetSettingsRow) {
-                                textCell.setTextAndIcon(getString(R.string.ResetSettings), R.drawable.msg_reset_solar, true);
-                            } else if (position == appRestartRow) {
-                                textCell.setTextAndIcon(getString(R.string.RestartApp), R.drawable.msg_retry_solar, true);
-                            }
-                            break;
-                        }
-                        case VIEW_TYPE_TEXT_LINK: {
-                            TextSettingsCell textCell = (TextSettingsCell) holder.itemView;
-                            if (position == xChannelRow) {
-                                textCell.setTextAndValue(getString(R.string.XChannel), "@NagramX", true);
-                            } else if (position == channelRow) {
-                                textCell.setTextAndValue(getString(R.string.OfficialChannel), "@nagram_channel", true);
-                            } else if (position == channelTipsRow) {
-                                textCell.setTextAndValue(getString(R.string.TipsChannel), "@" + "NagramTips", true);
-                            } else if (position == sourceCodeRow) {
-                                textCell.setTextAndValue(getString(R.string.SourceCode), "Github", true);
-                            } else if (position == translationRow) {
-                                textCell.setTextAndValue(getString(R.string.TransSite), "Crowdin", true);
-                            } else if (position == datacenterStatusRow) {
-                                textCell.setText(getString(R.string.DatacenterStatus), true);
-                            }
-                            break;
-                        }
-                    }
-                }
-
-                @Override
-                public int getItemViewType(int position) {
-                    if (position == categories2Row) {
-                        return VIEW_TYPE_BOTTOM;
-                    } else if (position == nSettingsHeaderRow || position == otherRow) {
-                        return VIEW_TYPE_HEADER;
-                    } else if (position == chatRow || position == generalRow || position == passcodeRow || position == experimentRow || position == translatorRow ||
-                            position == importSettingsRow || position == exportSettingsRow || position == resetSettingsRow || position == appRestartRow) {
-                        return VIEW_TYPE_TEXT;
-                    }
-                    return VIEW_TYPE_TEXT_LINK;
-                }
-            });
-            listView.setOnItemClickListener((view, position, x, y) -> {
-                if (position == chatRow) {
-                    presentFragment(new NekoChatSettingsActivity());
-                } else if (position == generalRow) {
-                    presentFragment(new NekoGeneralSettingsActivity());
-                } else if (position == passcodeRow) {
-                    presentFragment(new NekoPasscodeSettingsActivity());
-                } else if (position == experimentRow) {
-                    presentFragment(new NekoExperimentalSettingsActivity());
-                } else if (position == translatorRow) {
-                    presentFragment(new NekoTranslatorSettingsActivity());
-                } else if (position == xChannelRow) {
-                    MessagesController.getInstance(currentAccount).openByUserName("NagramX", NekoSettingsActivity.this, 1);
-                } else if (position == channelRow) {
-                    MessagesController.getInstance(currentAccount).openByUserName("nagram_channel", NekoSettingsActivity.this, 1);
-                } else if (position == channelTipsRow) {
-                    MessagesController.getInstance(currentAccount).openByUserName("NagramTips", NekoSettingsActivity.this, 1);
-                } else if (position == translationRow) {
-                    Browser.openUrl(getParentActivity(), "https://crowdin.com/project/NagramX");
-                } else if (position == sourceCodeRow) {
-                    Browser.openUrl(getParentActivity(), "https://github.com/risin42/NagramX");
-                } else if (position == datacenterStatusRow) {
-                    presentFragment(new DatacenterActivity(0));
-                } else if (position == importSettingsRow) {
-                    if (Build.VERSION.SDK_INT >= 33) {
-                        openFilePicker();
-                    } else {
-                        DocumentSelectActivity activity = getDocumentSelectActivity(getParentActivity());
-                        if (activity != null) {
-                            presentFragment(activity);
-                        }
-                    }
-                } else if (position == resetSettingsRow) {
-                    AlertUtil.showConfirm(getParentActivity(),
-                            getString(R.string.ResetSettingsAlert),
-                            R.drawable.msg_reset,
-                            getString(R.string.Reset),
-                            true,
-                            () -> {
-                                ApplicationLoader.applicationContext.getSharedPreferences("nekocloud", Activity.MODE_PRIVATE).edit().clear().commit();
-                                ApplicationLoader.applicationContext.getSharedPreferences("nekox_config", Activity.MODE_PRIVATE).edit().clear().commit();
-                                NekoConfig.getPreferences().edit().clear().commit();
-                                AppRestartHelper.triggerRebirth(context, new Intent(context, LaunchActivity.class));
-                            });
-                } else if (position == exportSettingsRow) {
-                    backupSettings();
-                } else if (position == appRestartRow) {
-                    AppRestartHelper.triggerRebirth(context, new Intent(context, LaunchActivity.class));
-                }
-            });
-
-            updateRows();
-
-            setWillNotDraw(false);
-        }
-
-        private void updateRows() {
-            rowCount = 0;
-            if (type == PAGE_TYPE) {
-                generalRow = rowCount++;
-                translatorRow = rowCount++;
-                chatRow = rowCount++;
-                if (!PasscodeHelper.isSettingsHidden()) {
-                    passcodeRow = rowCount++;
-                } else {
-                    passcodeRow = -1;
-                }
-                experimentRow = rowCount++;
-                categories2Row = rowCount++;
-                nSettingsHeaderRow = rowCount++;
-                importSettingsRow = rowCount++;
-                exportSettingsRow = rowCount++;
-                resetSettingsRow = rowCount++;
-                otherRow = rowCount++;
-                appRestartRow = rowCount++;
+    @SuppressLint("ApplySharedPref")
+    @Override
+    protected void onItemClick(View view, int position, float x, float y) {
+        if (position == chatRow) {
+            presentFragment(new NekoChatSettingsActivity());
+        } else if (position == generalRow) {
+            presentFragment(new NekoGeneralSettingsActivity());
+        } else if (position == passcodeRow) {
+            presentFragment(new NekoPasscodeSettingsActivity());
+        } else if (position == experimentRow) {
+            presentFragment(new NekoExperimentalSettingsActivity());
+        } else if (position == translatorRow) {
+            presentFragment(new NekoTranslatorSettingsActivity());
+        } else if (position == aboutRow) {
+            presentFragment(new NekoAboutActivity());
+        } else if (position == importSettingsRow) {
+            if (Build.VERSION.SDK_INT >= 33) {
+                openFilePicker();
             } else {
-                xChannelRow = rowCount++;
-                channelRow = rowCount++;
-                channelTipsRow = rowCount++;
-                sourceCodeRow = rowCount++;
-                translationRow = rowCount++;
-                datacenterStatusRow = rowCount++;
+                DocumentSelectActivity activity = getDocumentSelectActivity(getParentActivity());
+                if (activity != null) {
+                    presentFragment(activity);
+                }
+            }
+        } else if (position == resetSettingsRow) {
+            AlertUtil.showConfirm(getParentActivity(),
+                    getString(R.string.ResetSettingsAlert),
+                    R.drawable.msg_reset,
+                    getString(R.string.Reset),
+                    true,
+                    () -> {
+                        ApplicationLoader.applicationContext.getSharedPreferences("nekocloud", Activity.MODE_PRIVATE).edit().clear().commit();
+                        ApplicationLoader.applicationContext.getSharedPreferences("nekox_config", Activity.MODE_PRIVATE).edit().clear().commit();
+                        NekoConfig.getPreferences().edit().clear().commit();
+                        AppRestartHelper.triggerRebirth(getParentActivity(), new Intent(getParentActivity(), LaunchActivity.class));
+                    });
+        } else if (position == exportSettingsRow) {
+            backupSettings();
+        } else if (position == appRestartRow) {
+            AppRestartHelper.triggerRebirth(getParentActivity(), new Intent(getParentActivity(), LaunchActivity.class));
+        }
+    }
+
+    @Override
+    protected BaseListAdapter createAdapter(Context context) {
+        return new ListAdapter(context);
+    }
+
+    private class ListAdapter extends BaseListAdapter {
+
+        public ListAdapter(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, boolean partial) {
+            int viewType = holder.getItemViewType();
+            switch (viewType) {
+                case TYPE_SHADOW: {
+                    holder.itemView.setBackground(Theme.getThemedDrawable(mContext, R.drawable.greydivider, Theme.key_windowBackgroundGrayShadow));
+                    break;
+                }
+                case TYPE_TEXT: {
+                    TextCell textCell = (TextCell) holder.itemView;
+                    if (position == chatRow) {
+                        textCell.setTextAndIcon(getString(R.string.Chat), R.drawable.msg_discussion, true);
+                    } else if (position == generalRow) {
+                        textCell.setTextAndIcon(getString(R.string.General), R.drawable.msg_theme, true);
+                    } else if (position == translatorRow) {
+                        textCell.setTextAndIcon(getString(R.string.TranslatorSettings), R.drawable.ic_translate, true);
+                    } else if (position == passcodeRow) {
+                        textCell.setTextAndIcon(getString(R.string.PasscodeNeko), R.drawable.msg_permissions, true);
+                    } else if (position == experimentRow) {
+                        textCell.setTextAndIcon(getString(R.string.Experimental), R.drawable.msg_fave, true);
+                    } else if (position == importSettingsRow) {
+                        textCell.setTextAndIcon(getString(R.string.ImportSettings), R.drawable.msg_photo_settings_solar, true);
+                    } else if (position == exportSettingsRow) {
+                        textCell.setTextAndIcon(getString(R.string.BackupSettings), R.drawable.msg_instant_link_solar, true);
+                    } else if (position == resetSettingsRow) {
+                        textCell.setTextAndIcon(getString(R.string.ResetSettings), R.drawable.msg_reset_solar, true);
+                    } else if (position == appRestartRow) {
+                        textCell.setTextAndIcon(getString(R.string.RestartApp), R.drawable.msg_retry_solar, true);
+                    } else if (position == aboutRow) {
+                        textCell.setTextAndIcon(getString(R.string.About), R.drawable.msg_info, true);
+                    }
+                    break;
+                }
+
             }
         }
 
         @Override
-        protected void dispatchDraw(@NonNull Canvas canvas) {
-            super.dispatchDraw(canvas);
-            if (getParentLayout() != null) {
-                getParentLayout().drawHeaderShadow(canvas, actionBarHeight);
+        public int getItemViewType(int position) {
+            if (position == categoriesEndRow || position == nSettingsEndRow) {
+                return TYPE_SHADOW;
+            } else if (position == chatRow || position == generalRow || position == passcodeRow || position == experimentRow || position == translatorRow ||
+                    position == importSettingsRow || position == exportSettingsRow || position == resetSettingsRow || position == appRestartRow ||
+                    position == aboutRow) {
+                return TYPE_TEXT;
             }
-        }
-
-        @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            actionBarHeight = ActionBar.getCurrentActionBarHeight() + AndroidUtilities.statusBarHeight;
-            ((MarginLayoutParams) listView.getLayoutParams()).topMargin = actionBarHeight;
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return TYPE_SHADOW;
         }
     }
 
@@ -1024,10 +772,5 @@ public class NekoSettingsActivity extends BaseFragment {
             }
             super.onActivityResultFragment(requestCode, resultCode, data);
         }
-    }
-
-    @Override
-    public boolean isActionBarCrossfadeEnabled() {
-        return false;
     }
 }

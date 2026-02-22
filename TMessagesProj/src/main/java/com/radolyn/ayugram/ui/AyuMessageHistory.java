@@ -94,6 +94,11 @@ public class AyuMessageHistory extends NekoDelegateFragment {
         updateHistory();
     }
 
+    @Override
+    protected RecyclerListView getMessageListView() {
+        return listView;
+    }
+
     private void checkInsets() {
         if (listView != null) {
             listView.setPadding(0, 0, 0, windowInsetsStateHolder.getCurrentNavigationBarInset() + dp(8));

@@ -432,7 +432,7 @@ public class PinnedReactionsActivity extends BaseFragment {
             contentLayout.addView(switchLayout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             switchLayout.addView(headerCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
 
-            editText = new CustomReactionEditText(context, getResourceProvider(), 150) {
+            editText = new CustomReactionEditText(context, getResourceProvider(), 150, true) {
                 @Override
                 protected void onLineCountChanged(int oldLineCount, int newLineCount) {
                     if (newLineCount > oldLineCount) {

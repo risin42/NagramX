@@ -363,6 +363,20 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
         return true;
     }
 
+    @Nullable
+    protected RecyclerListView getMessageListView() {
+        return null;
+    }
+
+    @Override
+    public void onInsets(int left, int top, int right, int bottom) {
+        RecyclerListView lv = getMessageListView();
+        if (lv != null) {
+            lv.setPadding(0, 0, 0, bottom);
+            lv.setClipToPadding(false);
+        }
+    }
+
     protected TranslateController getTranslateController() {
         return getMessagesController().getTranslateController();
     }

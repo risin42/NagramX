@@ -126,6 +126,11 @@ public class AyuViewDeleted extends NekoDelegateFragment {
         this.isEncrypted = DialogObject.isEncryptedDialog(dialogId);
     }
 
+    @Override
+    protected RecyclerListView getMessageListView() {
+        return listView;
+    }
+
     private void checkInsets() {
         if (listView != null) {
             listView.setPadding(0, 0, 0, windowInsetsStateHolder.getCurrentNavigationBarInset() + dp(8));

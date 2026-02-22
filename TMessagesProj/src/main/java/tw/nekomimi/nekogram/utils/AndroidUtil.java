@@ -52,22 +52,6 @@ import xyz.nextalone.nagram.NaConfig;
 
 public class AndroidUtil {
 
-    public static int getNavBarColor(int color, boolean animated) {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R || animated) {
-            return color;
-        }
-        BaseFragment fragment = LaunchActivity.getLastFragment();
-        Theme.ResourcesProvider resourcesProvider = fragment != null ? fragment.getResourceProvider() : null;
-        return Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider);
-    }
-
-    public static int getNavBarColor(int color, Theme.ResourcesProvider resourcesProvider) {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
-            return color;
-        }
-        return Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider);
-    }
-
     public static long getDirectorySize(File file) {
         if (file == null || !file.exists()) {
             return 0;

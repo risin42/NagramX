@@ -41,6 +41,10 @@ public class CustomReactionEditText extends EditTextCaption {
     }
 
     public CustomReactionEditText(Context context, Theme.ResourcesProvider resourcesProvider, int maxLength) {
+        this(context, resourcesProvider, maxLength, false);
+    }
+
+    public CustomReactionEditText(Context context, Theme.ResourcesProvider resourcesProvider, int maxLength, boolean needBackground) {
         super(context, resourcesProvider);
         this.resourcesProvider = resourcesProvider;
         this.gestureDetector = new GestureDetectorCompat(getContext(), new GestureDetector.SimpleOnGestureListener() {
@@ -49,7 +53,11 @@ public class CustomReactionEditText extends EditTextCaption {
                 return true;
             }
         });
-        setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        if (needBackground) {
+            setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        } else {
+            setBackground(null);
+        }
         setIncludeFontPadding(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setShowSoftInputOnFocus(false);

@@ -17,6 +17,8 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
 
+import tw.nekomimi.nekogram.helpers.TypefaceHelper;
+
 public class TextStyleSpan extends MetricAffectingSpan {
 
     private int textSize;
@@ -70,6 +72,14 @@ public class TextStyleSpan extends MetricAffectingSpan {
                 p.setFlags(p.getFlags() &~ Paint.STRIKE_THRU_TEXT_FLAG);
             }
 
+            if ((flags & FLAG_STYLE_BOLD) != 0 && !TypefaceHelper.isMediumWeightSupported()) {
+                p.setStrokeWidth(0.65f);
+                p.setStyle(Paint.Style.FILL_AND_STROKE);
+            }
+            if ((flags & FLAG_STYLE_ITALIC) != 0 && !TypefaceHelper.isItalicSupported()) {
+                p.setTextSkewX(-0.25f);
+            }
+
             if ((flags & FLAG_STYLE_SPOILER_REVEALED) != 0) {
                 p.bgColor = Theme.getColor(Theme.key_chats_archivePullDownBackground);
             }
@@ -78,12 +88,12 @@ public class TextStyleSpan extends MetricAffectingSpan {
         public Typeface getTypeface() {
             if ((flags & FLAG_STYLE_MONO) != 0 || (flags & FLAG_STYLE_CODE) != 0) {
                 return Typeface.MONOSPACE;
-            } else if ((flags & FLAG_STYLE_BOLD) != 0 && (flags & FLAG_STYLE_ITALIC) != 0) {
-                return AndroidUtilities.getTypeface("fonts/rmediumitalic.ttf");
-            } else if ((flags & FLAG_STYLE_BOLD) != 0) {
+            } else if ((flags & FLAG_STYLE_BOLD) != 0 && (flags & FLAG_STYLE_ITALIC) != 0 && TypefaceHelper.isMediumWeightSupported() && TypefaceHelper.isItalicSupported()) {
+                return AndroidUtilities.getTypeface(AndroidUtilities.TYPEFACE_ROBOTO_MEDIUM_ITALIC);
+            } else if ((flags & FLAG_STYLE_BOLD) != 0 && TypefaceHelper.isMediumWeightSupported()) {
                 return AndroidUtilities.bold();
-            } else if ((flags & FLAG_STYLE_ITALIC) != 0) {
-                return AndroidUtilities.getTypeface("fonts/ritalic.ttf");
+            } else if ((flags & FLAG_STYLE_ITALIC) != 0 && TypefaceHelper.isItalicSupported()) {
+                return AndroidUtilities.getTypeface(AndroidUtilities.TYPEFACE_RITALIC);
             } else {
                 return null;
             }
@@ -159,11 +169,11 @@ public class TextStyleSpan extends MetricAffectingSpan {
     }
 
     public boolean isItalic() {
-        return style.getTypeface() == AndroidUtilities.getTypeface("fonts/ritalic.ttf");
+        return style.getTypeface() == AndroidUtilities.getTypeface(AndroidUtilities.TYPEFACE_RITALIC);
     }
 
     public boolean isBoldItalic() {
-        return style.getTypeface() == AndroidUtilities.getTypeface("fonts/rmediumitalic.ttf");
+        return style.getTypeface() == AndroidUtilities.getTypeface(AndroidUtilities.TYPEFACE_ROBOTO_MEDIUM_ITALIC);
     }
 
     @Override
