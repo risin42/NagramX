@@ -309,7 +309,6 @@
     <string name="CopyVideoFrame">Salin Bingkai</string>
     <string name="SetLocalName">Atur Nama Lokal</string>
     <string name="DeleteChatForBothSides">Gunakan \"Hapus juga untuk\" secara Default</string>
-    <string name="AutoPingProxy">Ping Proksi Otomatis</string>
     <string name="BackAnimationStyle">Animasi Navigasi</string>
     <string name="BackAnimationClassic">Klasik</string>
     <string name="BackAnimationSpring">Musim Semi</string>

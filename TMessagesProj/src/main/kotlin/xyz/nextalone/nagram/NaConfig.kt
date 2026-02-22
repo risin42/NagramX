@@ -1209,12 +1209,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
-    val autoPingProxy =
-        addConfig(
-            "AutoPingProxy",
-            ConfigItem.configTypeBool,
-            true
-        )
     val backAnimationStyle =
         addConfig(
             "BackAnimationStyle",

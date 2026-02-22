@@ -310,7 +310,6 @@
     <string name="CopyVideoFrame">Copiar quadro</string>
     <string name="SetLocalName">Definir nome local</string>
     <string name="DeleteChatForBothSides">Usar \"Apagar também para\" por padrão</string>
-    <string name="AutoPingProxy">Ping automático do proxy</string>
     <string name="BackAnimationStyle">Animação de navegação</string>
     <string name="BackAnimationClassic">Clássica</string>
     <string name="BackAnimationSpring">Mola</string>

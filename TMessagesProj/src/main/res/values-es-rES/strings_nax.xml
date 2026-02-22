@@ -307,7 +307,6 @@
     <string name="CopyVideoFrame">Copiar fotograma</string>
     <string name="SetLocalName">Establecer nombre local</string>
     <string name="DeleteChatForBothSides">Utilizar «Eliminar también para» de forma predeterminada</string>
-    <string name="AutoPingProxy">Auto ping proxy</string>
     <string name="BackAnimationStyle">Animación de navegación</string>
     <string name="BackAnimationClassic">Clásico</string>
     <string name="BackAnimationSpring">Primavera</string>

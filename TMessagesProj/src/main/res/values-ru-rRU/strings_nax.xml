@@ -310,7 +310,6 @@
     <string name="CopyVideoFrame">Копировать кадр</string>
     <string name="SetLocalName">Установить локальное имя</string>
     <string name="DeleteChatForBothSides">Использовать «Также удалить для» по умолчанию</string>
-    <string name="AutoPingProxy">Автоматический пинг прокси</string>
     <string name="BackAnimationStyle">Анимация навигации</string>
     <string name="BackAnimationClassic">Классическая</string>
     <string name="BackAnimationSpring">Spring</string>

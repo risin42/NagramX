@@ -310,7 +310,6 @@
     <string name="CopyVideoFrame">复制帧</string>
     <string name="SetLocalName">设置备注</string>
     <string name="DeleteChatForBothSides">默认使用“同时为对方删除”</string>
-    <string name="AutoPingProxy">自动检测 Ping</string>
     <string name="BackAnimationStyle">导航动画</string>
     <string name="BackAnimationClassic">经典</string>
     <string name="BackAnimationSpring">Spring</string>

@@ -309,7 +309,6 @@
     <string name="CopyVideoFrame">Kopiuj ramkę</string>
     <string name="SetLocalName">Ustaw nazwę lokalną</string>
     <string name="DeleteChatForBothSides">Domyślnie użyj opcji „Usuń także dla”</string>
-    <string name="AutoPingProxy">Automatyczne pingowanie serwera proxy</string>
     <string name="BackAnimationStyle">Animacja nawigacji</string>
     <string name="BackAnimationClassic">Klasyczny</string>
     <string name="BackAnimationSpring">Wiosna</string>
