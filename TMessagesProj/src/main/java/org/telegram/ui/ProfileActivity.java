@@ -744,7 +744,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private int balanceDividerRow;
     private int blockedUsersRow;
     private int membersSectionRow;
-    private int musicRow;
+    private boolean hasMusic;
 
     private int sharedMediaRow;
 
@@ -2305,7 +2305,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         Bulletin.addDelegate(this, new Bulletin.Delegate() {
             @Override
             public int getTopOffset(int tag) {
-                return AndroidUtilities.statusBarHeight;
+                return AndroidUtilities.statusBarHeight + ActionBar.getCurrentActionBarHeight();
             }
 
             @Override
@@ -6194,7 +6194,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private int getActionsExtraHeight(boolean withMusic) {
         if (userId != 0 && imageUpdater != null && !myProfile)
             return 0;
-        return dp(74 + (withMusic && musicRow >= 0 ? 25 : 0));
+        return dp(74 + (withMusic && hasMusic ? 25 : 0));
     }
 
     private int getHeaderExtraHeight() {
@@ -8117,19 +8117,18 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             return;
         }
 
-        int position = Math.max(0, musicRow);
         int newOffset = 0;
         View child = null;
         for (int i = 0; i < listView.getChildCount(); i++) {
-            if (listView.getChildAdapterPosition(listView.getChildAt(i)) == position) {
+            if (listView.getChildAdapterPosition(listView.getChildAt(i)) == 0) {
                 child = listView.getChildAt(i);
                 break;
             }
         }
         RecyclerListView.Holder holder = child == null ? null : (RecyclerListView.Holder) listView.findContainingViewHolder(child);
-        int top = child == null ? 0 : (position == musicRow ? child.getBottom() : child.getTop());
+        int top = child == null ? 0 : child.getTop();
         int adapterPosition = holder != null ? holder.getAdapterPosition() : RecyclerView.NO_POSITION;
-        if (top >= 0 && adapterPosition == position) {
+        if (top >= 0 && adapterPosition == 0) {
             newOffset = top;
         }
         boolean mediaHeaderVisible;
@@ -8465,7 +8464,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         }
     }
 
-    private boolean firstLayout2 = true;
     private void needLayout(boolean animated) {
         final int newTop = (actionBar.getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0) + ActionBar.getCurrentActionBarHeight();
         final float diff = calculateHeaderExtraDiff();
@@ -8492,7 +8490,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             return;
         }
 
-        final int headerExtraHeight = getHeaderExtraHeight();// - dp(musicRow >= 0 ? 25 : 0);
+        final int headerExtraHeight = getHeaderExtraHeight();// - dp(hasMusic ? 25 : 0);
 
         if (avatarContainer != null) {
             if (actionsView != null) {
@@ -8789,7 +8787,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 avatarContainer.requestLayout();
 
                 updateCollectibleHint();
-            } else if (extraHeight <= headerExtraHeight || firstLayout2) {
+            } else if (h <= headerExtraHeight) {
                 if (openAnimationInProgress) {
                     avatarScale = lerp(42, 96, diff) / 100f;
                     pullUpProgress = 0.0f;
@@ -8884,10 +8882,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 mediaCounterTextView.setTranslationY(onlineY);
                 updateCollectibleHint();
-
-                if (viewportWidth > 0) {
-                    firstLayout2 = false;
-                }
             }
 
             if (!textMeasured && (expandAnimator == null || !expandAnimator.isRunning())) {
@@ -10601,7 +10595,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         botTonBalanceRow = -1;
         channelBalanceRow = -1;
         balanceDividerRow = -1;
-        musicRow = -1;
+        hasMusic = false;
 
         unblockRow = -1;
         joinRow = -1;
@@ -10648,11 +10642,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         if (userId != 0) {
             TLRPC.User user = getMessagesController().getUser(userId);
             if (userInfo != null && userInfo.saved_music != null && (imageUpdater == null || myProfile)) {
-                musicRow = rowCount++;
+                hasMusic = true;
             }
 
             if (emptyRow < 0 && emptyRow2 < 0) {
-                if (musicRow >= 0 || peerColor != null || actionsView == null) {
+                if (hasMusic || peerColor != null || actionsView == null) {
                     emptyRow2 = rowCount++;
                 } else {
                     emptyRow = rowCount++;
@@ -10883,7 +10877,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             }
         } else if (isTopic) {
             if (emptyRow < 0 && emptyRow2 < 0) {
-                if (musicRow >= 0 || peerColor != null || actionsView == null) {
+                if (hasMusic || peerColor != null || actionsView == null) {
                     emptyRow2 = rowCount++;
                 } else {
                     emptyRow = rowCount++;
@@ -10916,7 +10910,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
             if (chatInfo != null && (!TextUtils.isEmpty(chatInfo.about) || chatInfo.location instanceof TLRPC.TL_channelLocation) || ChatObject.isPublic(currentChat)) {
                 if (emptyRow < 0 && emptyRow2 < 0) {
-                    if (musicRow >= 0 || peerColor != null || actionsView == null) {
+                    if (hasMusic || peerColor != null || actionsView == null) {
                         emptyRow2 = rowCount++;
                     } else {
                         emptyRow = rowCount++;
@@ -10942,7 +10936,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
             }
             if (emptyRow < 0 && emptyRow2 < 0) {
-                if (musicRow >= 0 || peerColor != null || actionsView == null) {
+                if (hasMusic || peerColor != null || actionsView == null) {
                     emptyRow2 = rowCount++;
                 } else {
                     emptyRow = rowCount++;
@@ -11115,8 +11109,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         if (actionsView != null) {
             actionsView.set(ProfileActionsView.KEY_JOIN, hasJoinRow);
         }
-        if (musicView != null && userInfo != null) {
-            musicView.setMusicDocument(userInfo.saved_music);
+        if (musicView != null) {
+            if (userInfo != null) {
+                musicView.setMusicDocument(userInfo.saved_music);
+            }
+            musicView.setVisibility(hasMusic ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -11273,7 +11270,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             actionsView.updatePosition(listView.getMeasuredWidth(), dp(74));
         } else {
             actionsView.clipHeight = -1;
-            float bottom = extraHeight + newTop - dp(musicRow >= 0 ? 25 : 0);
+            float bottom = extraHeight + newTop - dp(hasMusic ? 25 : 0);
             float height = Math.min(dp(74), bottom - newTop);
             actionsView.updatePosition(bottom - height, height);
         }
@@ -11300,7 +11297,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 //            float vh = avatarContainer.getHeight() * avatarContainer.getScaleY();
 //            musicView.clipHeight = avatarContainer.getY() + vh;
             musicView.setAlpha(avatarAnimationProgress);
-            musicView.updatePosition(listView.getMeasuredWidth(), getActionsExtraHeight());
+            musicView.updatePosition(listView.getMeasuredWidth() + dp(74), getActionsExtraHeight() - dp(74));
         } else {
 //            musicView.clipHeight = -1;
             float bottom = extraHeight + newTop + dp(74);
@@ -13434,17 +13431,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     view = frameLayout;
                     view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
-                case VIEW_TYPE_MUSIC:
-                    view = new View(getContext()) {
-                        @Override
-                        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                            super.onMeasure(
-                                MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
-                                MeasureSpec.makeMeasureSpec(dp(0), MeasureSpec.EXACTLY)
-                            );
-                        }
-                    };
-                    break;
             }
             if (viewType != VIEW_TYPE_SHARED_MEDIA) {
                 view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
@@ -14336,7 +14322,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         position == clearLogsRow || position == switchBackendRow || position == setAvatarRow ||
                         position == addToGroupButtonRow || position == premiumRow || position == premiumGiftingRow ||
                         position == businessRow || position == liteModeRow || position == birthdayRow || position == channelRow ||
-                        position == starsRow || position == tonRow || position == musicRow || position == idDcRow || position == nekoRow;
+                        position == starsRow || position == tonRow || position == idDcRow || position == nekoRow;
             }
             if (holder.itemView instanceof UserCell) {
                 UserCell userCell = (UserCell) holder.itemView;
@@ -14433,8 +14419,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 return VIEW_TYPE_COLORFUL_TEXT;
             } else if (position == infoHeaderRowEmpty || position == infoEndRowEmpty) {
                 return VIEW_TYPE_HEADER_EMPTY;
-            } else if (position == musicRow) {
-                return VIEW_TYPE_MUSIC;
             }
             return 4;
         }
@@ -15831,7 +15815,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             put(++pointer, botPermissionBiometry, sparseIntArray);
             put(++pointer, botPermissionsDivider, sparseIntArray);
             put(++pointer, channelDividerRow, sparseIntArray);
-            put(++pointer, musicRow, sparseIntArray);
         }
 
         private void put(int id, int position, SparseIntArray sparseIntArray) {

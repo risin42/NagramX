@@ -514,6 +514,11 @@ public class ContactAddActivity extends BaseFragment implements NotificationCent
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.FILL));
         actionBar.setAdaptiveBackground(listView);
 
+        if (addContact && needAddException) {
+            checkShare = true;
+        }
+        listView.adapter.update(false);
+
         return fragmentView = frameLayout;
     }
 
