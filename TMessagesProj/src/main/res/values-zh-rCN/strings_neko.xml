@@ -77,7 +77,6 @@
     <string name="SourceCode">源代码</string>
     <string name="ResetStickerSize">重置贴纸大小</string>
     <string name="RestartAppToTakeEffect">重启应用以生效。</string>
-    <string name="DisableAppBarShadow">隐藏顶部面板分隔线</string>
     <string name="MediaPreview">聊天列表中的媒体预览</string>
     <string name="AutoPauseVideo">自动暂停视频</string>
     <string name="AutoPauseVideoAbout">当锁定屏幕/切换到后台时。</string>

@@ -77,7 +77,6 @@
     <string name="SourceCode">Código Fuente</string>
     <string name="ResetStickerSize">Restablecer tamaño del sticker</string>
     <string name="RestartAppToTakeEffect">Reinicie la aplicación para aplicar los cambios.</string>
-    <string name="DisableAppBarShadow">Ocultar el divisor del panel superior</string>
     <string name="MediaPreview">Vista previa de medios en la lista de chat</string>
     <string name="AutoPauseVideo">Auto pausa de vídeo</string>
     <string name="AutoPauseVideoAbout">Cuando se bloquea la pantalla/cambia al fondo.</string>

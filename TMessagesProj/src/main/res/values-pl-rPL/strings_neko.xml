@@ -77,7 +77,6 @@
     <string name="SourceCode">Kod źródłowy</string>
     <string name="ResetStickerSize">Zresetuj rozmiar naklejki</string>
     <string name="RestartAppToTakeEffect">Zresetuj aplikację, aby zastosować zmiany.</string>
-    <string name="DisableAppBarShadow">Ukryj górny panel rozdzielający</string>
     <string name="MediaPreview">Podgląd multimediów na liście czatów</string>
     <string name="AutoPauseVideo">Automatyczne wstrzymywanie wideo</string>
     <string name="AutoPauseVideoAbout">Podczas blokady ekranu/przełączenia na tło.</string>

@@ -137,7 +137,7 @@ public class ActionBar extends FrameLayout implements Theme.Colorable {
     private Runnable lastRunnable;
     private boolean titleOverlayShown;
     private Runnable titleActionRunnable;
-    private boolean castShadows = !NekoConfig.disableAppBarShadow.Bool();
+    private boolean castShadows = true;
     private boolean titleScrollNonFitText;
     private int shadowAlpha = 0xFF;
 
@@ -1762,7 +1762,6 @@ public class ActionBar extends FrameLayout implements Theme.Colorable {
     }
 
     public void setCastShadows(boolean value) {
-        if (NekoConfig.disableAppBarShadow.Bool()) return;
         if (castShadows != value && getParent() instanceof View) {
             ((View) getParent()).invalidate();
             invalidate();

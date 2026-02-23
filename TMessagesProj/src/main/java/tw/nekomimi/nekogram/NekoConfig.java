@@ -138,7 +138,6 @@ public class NekoConfig {
     public static ConfigItem dnsType = addConfig("DnsType", configTypeInt, DNS_TYPE_DEFAULT);
     public static ConfigItem customDoH = addConfig("CustomDoH", configTypeString, "");
 
-    public static ConfigItem disableAppBarShadow = addConfig("DisableAppBarShadow", configTypeBool, false);
     public static ConfigItem mediaPreview = addConfig("MediaPreview", configTypeBool, true);
 
     public static ConfigItem disableVibration = addConfig("DisableVibration", configTypeBool, false);

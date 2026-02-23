@@ -121,8 +121,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import xyz.nextalone.nagram.NaConfig;
 
 public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.NotificationCenterDelegate, DownloadController.FileDownloadProgressListener {
@@ -2017,7 +2015,7 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
             actionBarAnimation.setDuration(180);
             actionBarAnimation.playTogether(
                     ObjectAnimator.ofFloat(actionBar, View.ALPHA, show ? 1.0f : 0.0f),
-                    ObjectAnimator.ofFloat(actionBarShadow, View.ALPHA, show && !NekoConfig.disableAppBarShadow.Bool() ? 1.0f : 0.0f));
+                    ObjectAnimator.ofFloat(actionBarShadow, View.ALPHA, show ? 1.0f : 0.0f));
             actionBarAnimation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {

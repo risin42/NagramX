@@ -77,7 +77,6 @@
     <string name="SourceCode">Source Code</string>
     <string name="ResetStickerSize">Reset sticker size</string>
     <string name="RestartAppToTakeEffect">Restart app to apply changes.</string>
-    <string name="DisableAppBarShadow">Hide Top Panel Divider</string>
     <string name="MediaPreview">Media Preview in Chat List</string>
     <string name="AutoPauseVideo">Auto Pause Video</string>
     <string name="AutoPauseVideoAbout">When lock screen/switch to background.</string>

@@ -77,7 +77,6 @@
     <string name="SourceCode">Kaynak Kodu</string>
     <string name="ResetStickerSize">Çıkartma boyutunu sıfırla</string>
     <string name="RestartAppToTakeEffect">Değişiklikleri uygulamak için uygulamayı yeniden başlatın.</string>
-    <string name="DisableAppBarShadow">Başlık Çubuğu Gölgesini Devre Dışı Bırak</string>
     <string name="MediaPreview">Sohbet Listesinde Medya Önizlemesi</string>
     <string name="AutoPauseVideo">Videoyu Otomatik Duraklat</string>
     <string name="AutoPauseVideoAbout">Ekran kilitlendiğinde/arka plana geçildiğinde.</string>

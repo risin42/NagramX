@@ -77,7 +77,6 @@
     <string name="SourceCode">کد منبع</string>
     <string name="ResetStickerSize">بازنشانی اندازه استیکر</string>
     <string name="RestartAppToTakeEffect">برای اعمال تغییرات، برنامه را مجدداً راه‌اندازی کنید.</string>
-    <string name="DisableAppBarShadow">غیرفعال کردن سایه نوار بالایی</string>
     <string name="MediaPreview">پیش‌نمایش رسانه در لیست گفتگوها</string>
     <string name="AutoPauseVideo">توقف خودکار ویدیو</string>
     <string name="AutoPauseVideoAbout">هنگام قفل شدن صفحه یا رفتن به پس‌زمینه.</string>

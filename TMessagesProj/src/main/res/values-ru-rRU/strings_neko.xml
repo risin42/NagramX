@@ -77,7 +77,6 @@
     <string name="SourceCode">Исходный код</string>
     <string name="ResetStickerSize">Размер стикеров по умолчанию</string>
     <string name="RestartAppToTakeEffect">Перезапустите приложение.</string>
-    <string name="DisableAppBarShadow">Скрыть разделитель верхней панели</string>
     <string name="MediaPreview">Предпросмотр медиа в списке чатов</string>
     <string name="AutoPauseVideo">Останавливать видео</string>
     <string name="AutoPauseVideoAbout">При блокировке экрана или сворачивании приложения.</string>

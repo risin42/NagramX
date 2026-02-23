@@ -77,7 +77,6 @@
     <string name="SourceCode">ソースコード</string>
     <string name="ResetStickerSize">ステッカーサイズをリセット</string>
     <string name="RestartAppToTakeEffect">変更適用にはアプリを再起動。</string>
-    <string name="DisableAppBarShadow">トップパネルの区切り線を非表示</string>
     <string name="MediaPreview">チャットリストのメディアプレビュー</string>
     <string name="AutoPauseVideo">ビデオの自動一時停止</string>
     <string name="AutoPauseVideoAbout">画面ロック時/バックグラウンドに移動時。</string>
