@@ -1,17 +1,28 @@
 package tw.nekomimi.nekogram.helpers;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.LeadingMarginSpan;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
+import org.telegram.messenger.UserConfig;
+import org.telegram.tgnet.TLRPC;
+import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.Components.TypefaceSpan;
 
 import java.util.List;
+
+import xyz.nextalone.nagram.NaConfig;
 
 public class TypefaceHelper {
 
@@ -109,4 +120,31 @@ public class TypefaceHelper {
         AndroidUtilities.recycleBitmaps(List.of(bitmap1, bitmap2));
         return supported;
     }
+
+    public static Typeface createTypeface(int weight, boolean italic) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return Typeface.create(null, weight, italic);
+        }
+        var family = switch (weight) {
+            case 800 -> "sans-serif-black";
+            case 500 -> "sans-serif-medium";
+            default -> "sans-serif";
+        };
+        return Typeface.create(family, italic ? Typeface.ITALIC : Typeface.NORMAL);
+    }
+
+    public static SpannableStringBuilder getTitleText(int currentAccount) {
+        String title = NaConfig.INSTANCE.getCustomTitle().String();
+        if (NaConfig.INSTANCE.getCustomTitleUserName().Bool()) {
+            TLRPC.User self = UserConfig.getInstance(currentAccount).getCurrentUser();
+            if (self != null && self.first_name != null) {
+                title = self.first_name;
+            }
+        }
+        var builder = new SpannableStringBuilder(title);
+        builder.setSpan(new LeadingMarginSpan.Standard(dp(2), 0), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new TypefaceSpan(TypefaceHelper.createTypeface(600, false), 0, Theme.key_telegram_color_dialogsLogo, null), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return builder;
+    }
+
 }
