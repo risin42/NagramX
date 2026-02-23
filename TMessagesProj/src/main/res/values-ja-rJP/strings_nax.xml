@@ -133,7 +133,7 @@
     <string name="DisableGhostMode">ゴーストモードを無効化</string>
     <string name="GhostModeEnabled">ゴーストモードが有効です</string>
     <string name="GhostModeDisabled">ゴーストモードが無効です</string>
-    <string name="GhostModeInDrawer">ドロワーに表示</string>
+    <string name="GhostModeInDrawer">メインタブショートカット</string>
     <string name="GhostModeStatusIndicator">ゴーストモード標識</string>
     <string name="DontSendReadMessagePackets">メッセージの既読を送信しない</string>
     <string name="DontReadStoriesPackets">ストーリーの既読を送信しない</string>

@@ -133,7 +133,7 @@
     <string name="DisableGhostMode">禁用幽灵模式</string>
     <string name="GhostModeEnabled">幽灵模式已启用</string>
     <string name="GhostModeDisabled">幽灵模式已禁用</string>
-    <string name="GhostModeInDrawer">在侧栏中显示</string>
+    <string name="GhostModeInDrawer">主标签快捷方式</string>
     <string name="GhostModeStatusIndicator">幽灵模式指示器</string>
     <string name="DontSendReadMessagePackets">不显示消息已读</string>
     <string name="DontReadStoriesPackets">不显示动态已读</string>

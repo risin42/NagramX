@@ -15,6 +15,8 @@
     <string name="LlmApiUrl">Adres URL interfejsu API</string>
     <string name="LlmApiKey">Klucz API</string>
     <string name="LlmModelName">Model</string>
+    <string name="LlmApiUrlNotice">Podstawowy adres URL API. Jeśli pole pozostanie puste, domyślnie będzie to punkt końcowy zgodny z Gemini OpenAI.</string>
+    <string name="LlmApiKeyNotice">Wprowadź jeden lub więcej kluczy API, rozdzielając je przecinkami (np. klucz1, klucz2). Rotacja będzie obejmować wiele kluczy.</string>
     <string name="LlmProviderPreset">Dostawca modelu</string>
     <string name="LlmProviderCustom">Personalizacja</string>
     <string name="LlmProviderOpenAIKey">Klucz API OpenAI</string>
@@ -48,7 +50,7 @@
     <string name="DeleteCloudBackupSuccess">Dane w chmurze zostały usunięte</string>
     <string name="CloudConfigNoBackupToDelete">Brak danych do wyczyszczenia</string>
     <string name="ClearRegexFilters">Wyczyść</string>
-    <string name="ClearRegexFiltersAlertMessage">Czy na pewno chcesz wyczyścić wszystkie zapisane filtry wyrażeń regularnych? Spowoduje to usunięcie zarówno filtrów współdzielonych, jak i filtrów dotyczących czatów.</string>
+    <string name="ClearRegexFiltersAlertMessage">Czy na pewno chcesz wyczyścić wszystkie zapisane filtry? Spowoduje to usunięcie filtrów współdzielonych, filtrów użytkowników i filtrów specyficznych dla czatu.</string>
     <string name="PreferredTranslateTargetLang">Niestandardowa lista preferowanych języków</string>
     <string name="PreferredTranslateTargetLangExample">np. ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Preferowane języki</string>
@@ -61,6 +63,13 @@
     <string name="RegexFiltersImportSuccess">Filtry zaimportowane.</string>
     <string name="RegexFiltersImportError">Nie udało się zaimportować filtrów ze schowka.</string>
     <string name="RegexFiltersExportError">Nie udało się wyeksportować filtrów.</string>
+    <string name="RegexFiltersUserHeader">Filtry użytkownika</string>
+    <string name="RegexFiltersUserFilterHint">Wprowadź identyfikator użytkownika</string>
+    <string name="RegexFiltersGlobalHeader">Filtry globalne</string>
+    <string name="ShadowBan">Zakaz cieni</string>
+    <string name="UnshadowBan">Zakaz usuwania cienia</string>
+    <string name="ShadowBanAdded">Dodano do **filtrów użytkownika**.</string>
+    <string name="ShadowBanRemoved">Usunięto z **filtrów użytkownika**.</string>
     <string name="botCommandConfirmTitle">Wyślij polecenie</string>
     <string name="botCommandConfirmText">Czy chcesz wysłać to polecenie?\n\n%s</string>
     <string name="MessageSavingSaveMedia">Zapisz multimedia</string>
@@ -124,7 +133,6 @@
     <string name="DisableGhostMode">Wyłącz tryb ducha</string>
     <string name="GhostModeEnabled">Włączono tryb ducha</string>
     <string name="GhostModeDisabled">Wyłączono tryb ducha</string>
-    <string name="GhostModeInDrawer">Pokaż w szufladzie</string>
     <string name="GhostModeStatusIndicator">Wskaźnik trybu ducha</string>
     <string name="DontSendReadMessagePackets">Nie czytaj wiadomości</string>
     <string name="DontReadStoriesPackets">Nie czytaj storek</string>
@@ -310,4 +318,5 @@
     <string name="UnifiedPushNeverReceivedNotifications">Od momentu uruchomienia Nagram X nie otrzymałeś żadnych powiadomień za pomocą UnifiedPush.</string>
     <string name="UnifiedPushLastReceivedNotification">Ostatnie powiadomienie otrzymane za pomocą UnifiedPush zostało otrzymane %1$d sekund temu.\n\nOtrzymałeś %2$d powiadomień od momentu uruchomienia Nagram X.</string>
     <string name="UnifiedPushCurrentEndpoint">Aktualny punkt końcowy UnifiedPush to: %1$s</string>
+    <string name="PlayOnce">Zagraj raz</string>
 </resources>
