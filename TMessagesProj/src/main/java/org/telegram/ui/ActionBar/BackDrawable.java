@@ -149,7 +149,7 @@ public class BackDrawable extends Drawable {
 
     @Override
     public void setColorFilter(ColorFilter cf) {
-//        paint.setColorFilter(cf);
+        paint.setColorFilter(cf);
     }
 
     @Override
@@ -165,9 +165,5 @@ public class BackDrawable extends Drawable {
     @Override
     public int getIntrinsicHeight() {
         return AndroidUtilities.dp(24);
-    }
-
-    public int getColor() {
-        return color;
     }
 }
