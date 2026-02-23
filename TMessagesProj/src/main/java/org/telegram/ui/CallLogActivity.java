@@ -719,6 +719,7 @@ public class CallLogActivity extends BaseFragment implements NotificationCenter.
 		getNotificationCenter().removeObserver(this, NotificationCenter.activeGroupCallsUpdated);
 		getNotificationCenter().removeObserver(this, NotificationCenter.chatInfoDidLoad);
 		getNotificationCenter().removeObserver(this, NotificationCenter.groupCallUpdated);
+		Bulletin.removeDelegate(this);
 	}
 
 	@SuppressLint("UseCompatLoadingForDrawables")
