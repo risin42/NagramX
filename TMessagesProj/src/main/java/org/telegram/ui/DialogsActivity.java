@@ -3354,6 +3354,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     viewPages[0].listView.setEmptyView(folderId == 0 ? viewPages[0].progressView : null);
                     showSearch(false, false, true);
                 }
+                updateFilterTabs(false, true);
                 updateProxyButton(false, false);
                 NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.needCheckSystemBarColors, true);
                 fragmentSearchField.setCloseButtonVisible(false);
@@ -5427,6 +5428,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             fragmentSearchField.editText.setSelection(searchString.length());
         } else if (initialSearchString != null) {
             showSearch(true, false, false, true);
+            fragmentSearchFieldWatcher.toggleSearch(true);
             fragmentSearchField.editText.setText(initialSearchString);
             fragmentSearchField.editText.setSelection(initialSearchString.length());
             initialSearchString = null;
