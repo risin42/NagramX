@@ -1476,7 +1476,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 !SharedConfig.forceForumTabs ? getString(R.string.DebugMenuForceForumTabs) : getString(R.string.DebugMenuDoNotForceForumTabs),
                 getString(R.string.DebugMenuMakeMemoryDump),
                 BuildVars.DEBUG_PRIVATE_VERSION ? (SharedConfig.fastWallpaperDisabled ? "enable wallpaper shader" : "disable wallpaper shader") : null,
-                (SharedConfig.frameMetricsEnabled ? "hide frame metrics" : "show frame metrics"),
+                getString(SharedConfig.frameMetricsEnabled ? R.string.DebugMenuHideFrameMetrics : R.string.DebugMenuShowFrameMetrics),
                 BuildVars.DEBUG_PRIVATE_VERSION ? (SharedConfig.shadowsInSections ? "disable shadows in settings" : "enable shadows in settings") : null
         };
 
