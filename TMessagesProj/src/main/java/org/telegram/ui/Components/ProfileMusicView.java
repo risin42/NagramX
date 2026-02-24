@@ -38,6 +38,8 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ProfileActivity;
 
+import xyz.nextalone.nagram.NaConfig;
+
 public class ProfileMusicView extends View {
 
     private final Theme.ResourcesProvider resourcesProvider;
@@ -103,7 +105,12 @@ public class ProfileMusicView extends View {
         }
 
         if (peerColor == null) {
-            backgroundColor = Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider);
+            if (NaConfig.INSTANCE.getDisableAvatarBlur().Bool()
+                    && AndroidUtilities.computePerceivedBrightness(Theme.getColor(Theme.key_actionBarDefault, resourcesProvider)) > .8f) {
+                backgroundColor = Theme.multAlpha(Theme.getColor(Theme.key_windowBackgroundWhiteBlueText, resourcesProvider), .15f * 2);
+            } else {
+                backgroundColor = Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider);
+            }
             withShadows = true;
         } else {
             backgroundColor = Theme.adaptHSV(ColorUtils.blendARGB(color1, color2, .15f), +.04f, -.09f);
