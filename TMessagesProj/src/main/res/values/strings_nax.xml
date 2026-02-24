@@ -191,6 +191,8 @@
     <string name="DebugMenuDoNotForceForumTabs">Do Not Force Forum Tabs</string>
     <string name="DebugMenuCleanAppUpdate">Clean App Update</string>
     <string name="DebugMenuMakeMemoryDump">Make Memory Dump</string>
+    <string name="DebugMenuShowFrameMetrics">Show Frame Metrics</string>
+    <string name="DebugMenuHideFrameMetrics">Hide Frame Metrics</string>
     <string name="TranslateMessageLLM">Translate with AI</string>
     <string name="EditLocalNameOverride">Editing local name override.</string>
     <string name="ResetChatNameOverrides">Reset Chat Name Overrides</string>
