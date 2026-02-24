@@ -10132,7 +10132,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
         boolean proxyEnabled = preferences.getBoolean("proxy_enabled", false);
         final boolean connected = currentConnectionState == ConnectionsManager.ConnectionStateConnected || currentConnectionState == ConnectionsManager.ConnectionStateUpdating;
-        proxyMenuSubItem.setSubtext(getString(connected ? R.string.MenuProxyConnected : R.string.MenuProxyConnecting));
+        if (proxyEnabled) {
+            proxyMenuSubItem.setSubtext(getString(connected ? R.string.MenuProxyConnected : R.string.MenuProxyConnecting));
+        } else {
+            proxyMenuSubItem.setSubtext(null);
+        }
         proxyDrawable.setConnected(proxyEnabled, connected, animated);
     }
 
@@ -13397,8 +13401,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
                 final String proxyAddress = preferences.getString("proxy_ip", "");
                 final boolean proxyEnabled = preferences.getBoolean("proxy_enabled", false);
-                final boolean proxyVisible = proxyEnabled && !TextUtils.isEmpty(proxyAddress)
-                        || getMessagesController().blockedCountry && !SharedConfig.proxyList.isEmpty();
+                final boolean proxyVisible = !SharedConfig.proxyList.isEmpty();
 
                 if (proxyVisible) {
                     io.addGap();
