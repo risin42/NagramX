@@ -23,7 +23,7 @@
     <string name="LlmModelNameDefault" translatable="false">gemini-flash-latest</string>
     <string name="LlmProviderOpenAIModel" translatable="false">gpt-5-nano</string>
     <string name="LlmProviderGeminiModel" translatable="false">gemini-flash-lite-latest</string>
-    <string name="LlmProviderGroqModel" translatable="false">meta-llama/llama-4-maverick-17b-128e-instruct</string>
+    <string name="LlmProviderGroqModel" translatable="false">openai/gpt-oss-120b</string>
     <string name="LlmProviderDeepSeekModel" translatable="false">deepseek-chat</string>
     <string name="LlmProviderXAIModel" translatable="false">grok-4-1-fast-non-reasoning</string>
     <string name="LlmProviderCerebrasModel" translatable="false">gpt-oss-120b</string>
