@@ -4748,7 +4748,7 @@ public class ChatActivityEnterView extends FrameLayout implements
         if (parentFragment == null || slowModeTimer > 0 || delegate == null) {
             return;
         }
-        ActionBarPopupWindow.ActionBarPopupWindowLayout menuPopupLayout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(parentActivity);
+        ActionBarPopupWindow.ActionBarPopupWindowLayout menuPopupLayout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(parentActivity, R.drawable.popup_fixed_alert4, resourcesProvider);
 
         menuPopupLayout.setAnimationEnabled(false);
         menuPopupLayout.setOnTouchListener(new OnTouchListener() {
@@ -4950,7 +4950,7 @@ public class ChatActivityEnterView extends FrameLayout implements
             }
         }
 
-        menuPopupLayout.setupRadialSelectors(Theme.getColor(Theme.key_dialogButtonSelector));
+        menuPopupLayout.updateRadialSelectors();
 
         menuPopupWindow = new ActionBarPopupWindow(menuPopupLayout, LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT);
         menuPopupWindow.setAnimationEnabled(false);
@@ -15461,7 +15461,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
 
         final boolean[] cameraSelected = {false};
 
-        ActionBarPopupWindow.ActionBarPopupWindowLayout popupLayout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(parentActivity);
+        ActionBarPopupWindow.ActionBarPopupWindowLayout popupLayout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(parentActivity, R.drawable.popup_fixed_alert4, resourcesProvider);
         popupLayout.setAnimationEnabled(false);
 
         // front camera option
@@ -15488,7 +15488,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
         });
         rearItem.setMinimumWidth(dp(196));
         popupLayout.addView(rearItem, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 0, 48, 0, 0));
-        popupLayout.setupRadialSelectors(Theme.getColor(Theme.key_dialogButtonSelector));
+        popupLayout.updateRadialSelectors();
 
         cameraSelectionPopup = new ActionBarPopupWindow(popupLayout, LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT);
         cameraSelectionPopup.setAnimationEnabled(false);
