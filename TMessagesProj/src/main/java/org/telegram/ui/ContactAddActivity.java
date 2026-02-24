@@ -543,6 +543,7 @@ public class ContactAddActivity extends BaseFragment implements NotificationCent
         }
 
         if (addContact && needAddException) {
+            checkShare = false;
             items.add(UItem.asCheck(2, getString(R.string.AddContactShareNumber)).setChecked(checkShare));
             items.add(UItem.asShadow(formatString(R.string.AddContactShareNumberInfo, UserObject.getFirstName(user))));
         }
