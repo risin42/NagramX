@@ -65,6 +65,7 @@
     <string name="RegexFiltersExportError">Не вдалося експортувати фільтри.</string>
     <string name="RegexFiltersUserHeader">Фільтри користувачів</string>
     <string name="RegexFiltersUserFilterHint">Введіть ID користувача</string>
+    <string name="RegexFiltersGlobalHeader">Глобальні фільтри</string>
     <string name="ShadowBan">Тіньовий бан</string>
     <string name="UnshadowBan">Зняти тіньовий бан</string>
     <string name="ShadowBanAdded">Додано до **фільтрів користувачів**.</string>
@@ -132,7 +133,6 @@
     <string name="DisableGhostMode">Вимкнути привида</string>
     <string name="GhostModeEnabled">Режим \"привид\" увімкнено</string>
     <string name="GhostModeDisabled">Режим \"привид\" вимкнено</string>
-    <string name="GhostModeInDrawer">Показувати у бічному меню</string>
     <string name="GhostModeStatusIndicator">Індикатор режиму «привид»</string>
     <string name="DontSendReadMessagePackets">Не читати повідомлення</string>
     <string name="DontReadStoriesPackets">Не читати історії</string>
@@ -317,5 +317,4 @@
     <string name="UnifiedPushNeverReceivedNotifications">З моменту запуску Nagram X сповіщень через UnifiedPush не надходило.</string>
     <string name="UnifiedPushLastReceivedNotification">Останнє сповіщення через UnifiedPush надійшло %1$d сек. тому.\n\nВи отримали %2$d сповіщень з моменту запуску Nagram X.</string>
     <string name="UnifiedPushCurrentEndpoint">Поточна кінцева точка UnifiedPush: %1$s</string>
-    <string name="RegexFiltersGlobalHeader">Глобальні фільтри</string>
 </resources>

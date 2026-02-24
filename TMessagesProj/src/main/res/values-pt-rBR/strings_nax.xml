@@ -34,7 +34,7 @@
     <string name="LlmUseContextInAutoTranslateNotice">Pode aumentar o uso de tokens e a latência.</string>
     <string name="LlmTemperature">Temperatura</string>
     <string name="LlmModelsLoadFailed">Falha ao carregar a lista de modelos.</string>
-    <string name="LlmTest">Testar</string>
+    <string name="LlmTest">Teste</string>
     <string name="LlmTestResultHttpStatusCode">Código HTTP</string>
     <string name="LlmTestResultDuration">Duração</string>
     <string name="LlmTestResultResponse">Resposta</string>
@@ -133,7 +133,6 @@
     <string name="DisableGhostMode">Desativar fantasma</string>
     <string name="GhostModeEnabled">Modo fantasma ativado</string>
     <string name="GhostModeDisabled">Modo fantasma desativado</string>
-    <string name="GhostModeInDrawer">Mostrar no menu lateral</string>
     <string name="GhostModeStatusIndicator">Indicador do modo fantasma</string>
     <string name="DontSendReadMessagePackets">Não ler mensagens</string>
     <string name="DontReadStoriesPackets">Não visualizar stories</string>
