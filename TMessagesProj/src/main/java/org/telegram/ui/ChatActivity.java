@@ -28436,9 +28436,6 @@ public class ChatActivity extends BaseFragment implements
 
                     if (topPanelLayout != null && pinnedMessageView != null) {
                         topPanelLayout.setViewVisible(pinnedMessageView, true, animated);
-                        if (contentView != null) {
-                            contentView.invalidateBlurredViews();
-                        }
                     }
                 }
                 for (int a = 0; a < pinnedNextAnimation.length; a++) {

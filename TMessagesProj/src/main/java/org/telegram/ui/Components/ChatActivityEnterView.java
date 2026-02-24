@@ -8541,12 +8541,12 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                             if (sideButtons != null && (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)) {
                                 sideButtons.showButton(ChatActivitySideControlsButtonsLayout.BUTTON_ATTACH, false, true);
                             }
-                        if (attachButton != null && (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)) {
-                            animators.add(ObjectAnimator.ofFloat(attachButton, View.ALPHA, attachButtonAlpha = 0.0f));
-                            animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_X, 0.5f));
-                            animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_Y, 0.5f));
-                        }
-                        if (scheduledButton != null) {
+                            if (attachButton != null && (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)) {
+                                animators.add(ObjectAnimator.ofFloat(attachButton, View.ALPHA, attachButtonAlpha = 0.0f));
+                                animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_X, 0.5f));
+                                animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_Y, 0.5f));
+                            }
+                            if (scheduledButton != null) {
                                 scheduledButton.setScaleY(1.0f);
                                 if (hasScheduled) {
                                     scheduledButton.setVisibility(VISIBLE);
@@ -8592,47 +8592,47 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                         runningAnimationType = 5;
                         runningAnimation = new AnimatorSet();
 
-                    ArrayList<Animator> animators = new ArrayList<>();
-                    if (NekoConfig.useChatAttachMediaMenu.Bool() && !isStories && botButton != null && botButton.getVisibility() == VISIBLE) {
-                        animators.add(ObjectAnimator.ofFloat(botButton, View.SCALE_X, 0.1f));
-                        animators.add(ObjectAnimator.ofFloat(botButton, View.SCALE_Y, 0.1f));
-                        animators.add(ObjectAnimator.ofFloat(botButton, View.ALPHA, 0.0f));
-                    }
-                    if (audioVideoButtonContainer.getVisibility() == VISIBLE) {
-                        animators.add(ObjectAnimator.ofFloat(audioVideoSendButton, View.SCALE_X, 0.1f));
-                        animators.add(ObjectAnimator.ofFloat(audioVideoSendButton, View.SCALE_Y, 0.1f));
-                        animators.add(ObjectAnimator.ofFloat(audioVideoSendButton, View.ALPHA, 0.0f));
-                    }
-                    if (expandStickersButton != null && expandStickersButton.getVisibility() == VISIBLE) {
-                        animators.add(ObjectAnimator.ofFloat(expandStickersButton, View.SCALE_X, 0.1f));
-                        animators.add(ObjectAnimator.ofFloat(expandStickersButton, View.SCALE_Y, 0.1f));
-                        animators.add(ObjectAnimator.ofFloat(expandStickersButton, View.ALPHA, 0.0f));
-                    }
-                    if (getSendButtonInternal().getVisibility() == VISIBLE) {
-                        animators.add(animateSendButton(false));
-                    }
-                    if (cancelBotButton.getVisibility() == VISIBLE) {
-                        animators.add(ObjectAnimator.ofFloat(cancelBotButton, View.SCALE_X, 0.1f));
-                        animators.add(ObjectAnimator.ofFloat(cancelBotButton, View.SCALE_Y, 0.1f));
-                        animators.add(ObjectAnimator.ofFloat(cancelBotButton, View.ALPHA, 0.0f));
-                    }
-                    animators.add(ObjectAnimator.ofFloat(slowModeButton, View.SCALE_X, 1.0f));
-                    animators.add(ObjectAnimator.ofFloat(slowModeButton, View.SCALE_Y, 1.0f));
-                    animators.add(ObjectAnimator.ofFloat(slowModeButton, View.ALPHA, 1.0f));
-                    setSlowModeButtonVisible(true);
-                    runningAnimation.playTogether(animators);
-                    runningAnimation.setDuration(220);
-                    runningAnimation.setInterpolator(CubicBezierInterpolator.EASE_OUT_QUINT);
-                    runningAnimation.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            if (animation.equals(runningAnimation)) {
-                                getSendButtonInternal().setVisibility(GONE);
-                                cancelBotButton.setVisibility(GONE);
-                                audioVideoButtonContainer.setVisibility(GONE);
-                                if (expandStickersButton != null) {
-                                    expandStickersButton.setVisibility(GONE);
-                                }
+                        ArrayList<Animator> animators = new ArrayList<>();
+                        if (NekoConfig.useChatAttachMediaMenu.Bool() && !isStories && botButton != null && botButton.getVisibility() == VISIBLE) {
+                            animators.add(ObjectAnimator.ofFloat(botButton, View.SCALE_X, 0.1f));
+                            animators.add(ObjectAnimator.ofFloat(botButton, View.SCALE_Y, 0.1f));
+                            animators.add(ObjectAnimator.ofFloat(botButton, View.ALPHA, 0.0f));
+                        }
+                        if (audioVideoButtonContainer.getVisibility() == VISIBLE) {
+                            animators.add(ObjectAnimator.ofFloat(audioVideoSendButton, View.SCALE_X, 0.1f));
+                            animators.add(ObjectAnimator.ofFloat(audioVideoSendButton, View.SCALE_Y, 0.1f));
+                            animators.add(ObjectAnimator.ofFloat(audioVideoSendButton, View.ALPHA, 0.0f));
+                        }
+                        if (expandStickersButton != null && expandStickersButton.getVisibility() == VISIBLE) {
+                            animators.add(ObjectAnimator.ofFloat(expandStickersButton, View.SCALE_X, 0.1f));
+                            animators.add(ObjectAnimator.ofFloat(expandStickersButton, View.SCALE_Y, 0.1f));
+                            animators.add(ObjectAnimator.ofFloat(expandStickersButton, View.ALPHA, 0.0f));
+                        }
+                        if (getSendButtonInternal().getVisibility() == VISIBLE) {
+                            animators.add(animateSendButton(false));
+                        }
+                        if (cancelBotButton.getVisibility() == VISIBLE) {
+                            animators.add(ObjectAnimator.ofFloat(cancelBotButton, View.SCALE_X, 0.1f));
+                            animators.add(ObjectAnimator.ofFloat(cancelBotButton, View.SCALE_Y, 0.1f));
+                            animators.add(ObjectAnimator.ofFloat(cancelBotButton, View.ALPHA, 0.0f));
+                        }
+                        animators.add(ObjectAnimator.ofFloat(slowModeButton, View.SCALE_X, 1.0f));
+                        animators.add(ObjectAnimator.ofFloat(slowModeButton, View.SCALE_Y, 1.0f));
+                        animators.add(ObjectAnimator.ofFloat(slowModeButton, View.ALPHA, 1.0f));
+                        setSlowModeButtonVisible(true);
+                        runningAnimation.playTogether(animators);
+                        runningAnimation.setDuration(220);
+                        runningAnimation.setInterpolator(CubicBezierInterpolator.EASE_OUT_QUINT);
+                        runningAnimation.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                if (animation.equals(runningAnimation)) {
+                                    getSendButtonInternal().setVisibility(GONE);
+                                    cancelBotButton.setVisibility(GONE);
+                                    audioVideoButtonContainer.setVisibility(GONE);
+                                    if (expandStickersButton != null) {
+                                        expandStickersButton.setVisibility(GONE);
+                                    }
                                     runningAnimation = null;
                                     runningAnimationType = 0;
                                 }
@@ -8751,22 +8751,23 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                             ArrayList<Animator> animators = new ArrayList<>();
                             animators.add(ObjectAnimator.ofFloat(attachLayout, ATTACH_LAYOUT_ALPHA, 0.0f));
                             animators.add(ObjectAnimator.ofFloat(attachLayout, View.SCALE_X, 0.5f));
-                        if (attachButtonAnimator != null) {
-                            attachButtonAnimator.cancel();
-                            attachButtonAnimator = null;
-                        }
-                        if (sideButtons != null && (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)) {
-                            sideButtons.showButton(ChatActivitySideControlsButtonsLayout.BUTTON_ATTACH, captionNearAttach, true);
-                            if (attachButton != null) {
-                                animators.add(ObjectAnimator.ofFloat(attachButton, View.ALPHA, attachButtonAlpha = captionNearAttach ? 0.0f : 1.0f));
-                                animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_X, captionNearAttach ? 0.5f : 1.0f));
-                                animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_Y, captionNearAttach ? 0.5f : 1.0f));
+                            if (attachButtonAnimator != null) {
+                                attachButtonAnimator.cancel();
+                                attachButtonAnimator = null;
                             }
-                        } else if (attachButton != null && (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)) {
-                            animators.add(ObjectAnimator.ofFloat(attachButton, View.ALPHA, attachButtonAlpha = 0.0f));
-                            animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_X, 0.5f));
-                            animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_Y, 0.5f));
-                        }boolean hasScheduled = delegate != null && delegate.hasScheduledMessages();
+                            if (sideButtons != null && (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)) {
+                                sideButtons.showButton(ChatActivitySideControlsButtonsLayout.BUTTON_ATTACH, captionNearAttach, true);
+                                if (attachButton != null) {
+                                    animators.add(ObjectAnimator.ofFloat(attachButton, View.ALPHA, attachButtonAlpha = captionNearAttach ? 0.0f : 1.0f));
+                                    animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_X, captionNearAttach ? 0.5f : 1.0f));
+                                    animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_Y, captionNearAttach ? 0.5f : 1.0f));
+                                }
+                            } else if (attachButton != null && (!NekoConfig.useChatAttachMediaMenu.Bool() || isStories)) {
+                                animators.add(ObjectAnimator.ofFloat(attachButton, View.ALPHA, attachButtonAlpha = 0.0f));
+                                animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_X, 0.5f));
+                                animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_Y, 0.5f));
+                            }
+                            boolean hasScheduled = delegate != null && delegate.hasScheduledMessages();
                             scheduleButtonHidden = true;
                             if (scheduledButton != null) {
                                 scheduledButton.setScaleY(1.0f);
