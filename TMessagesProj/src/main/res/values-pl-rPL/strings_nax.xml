@@ -133,6 +133,7 @@
     <string name="DisableGhostMode">Wyłącz tryb ducha</string>
     <string name="GhostModeEnabled">Włączono tryb ducha</string>
     <string name="GhostModeDisabled">Wyłączono tryb ducha</string>
+    <string name="GhostModeInDrawer">Skrót do karty głównej</string>
     <string name="GhostModeStatusIndicator">Wskaźnik trybu ducha</string>
     <string name="DontSendReadMessagePackets">Nie czytaj wiadomości</string>
     <string name="DontReadStoriesPackets">Nie czytaj storek</string>

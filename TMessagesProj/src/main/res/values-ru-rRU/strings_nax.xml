@@ -133,7 +133,7 @@
     <string name="DisableGhostMode">Отключить «Призрака»</string>
     <string name="GhostModeEnabled">Режим «Призрака» включён</string>
     <string name="GhostModeDisabled">Режим «Призрака» выключен</string>
-    <string name="GhostModeInDrawer">Показывать в боковом меню</string>
+    <string name="GhostModeInDrawer">Ярлык на главной вкладке</string>
     <string name="GhostModeStatusIndicator">Индикатор режима «Призрака»</string>
     <string name="DontSendReadMessagePackets">Не читать сообщения</string>
     <string name="DontReadStoriesPackets">Не читать истории</string>
@@ -186,6 +186,8 @@
     <string name="DebugMenuDoNotForceForumTabs">Не использовать вкладки форумов принудительно</string>
     <string name="DebugMenuCleanAppUpdate">Очистить обновления приложения</string>
     <string name="DebugMenuMakeMemoryDump">Создать дамп памяти</string>
+    <string name="DebugMenuShowFrameMetrics">Показать метрики кадров</string>
+    <string name="DebugMenuHideFrameMetrics">Скрыть метрики кадров</string>
     <string name="TranslateMessageLLM">Перевести с помощью ИИ</string>
     <string name="EditLocalNameOverride">Изменение локального названия.</string>
     <string name="ResetChatNameOverrides">Сбросить названия чатов</string>

@@ -48,7 +48,7 @@
     <string name="ShowFullAbout">Завжди розгортати опис чату</string>
     <string name="TypeMessageHintUseGroupName">Назва групи як текст підказки у полі введення</string>
     <string name="HideBotButtonInInputField">Приховати кнопку бота в полі вводу</string>
-    <string name="ShowSendAsUnderMessageHint">Показувати відправника під підказкою Повідомлення у полі введення</string>
+    <string name="ShowSendAsUnderMessageHint">Показувати відправника у полі введення</string>
     <string name="CheckAllForum">Додати форум</string>
     <string name="DecorationNone">Не обрано</string>
     <string name="ChatDecoration">Оформлення чатів</string>
