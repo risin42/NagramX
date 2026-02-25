@@ -1191,12 +1191,6 @@ object NaConfig {
             ConfigItem.configTypeInt,
             1 // 0: off; 1: release; 2: beta
         )
-    val userAvatarsInMessagePreview =
-        addConfig(
-            "UserAvatarsInMessagePreview",
-            ConfigItem.configTypeBool,
-            false
-        )
     val disableAvatarTapToSwitch =
         addConfig(
             "DisableAvatarTapToSwitch",

@@ -216,7 +216,6 @@
     <string name="AutoCheckUpdateBeta">Beta</string>
     <string name="AutoInsertGIFCaption">Legendar GIFs automaticamente</string>
     <string name="AutoInsertGIFCaptionNotice">Usar automaticamente o texto do campo de entrada como legenda do GIF.</string>
-    <string name="UserAvatarsInMessagePreview">Avatares de usuários na prévia de mensagem</string>
     <string name="YourVersionIsLatestNax">Sua versão está atualizada.</string>
     <string name="PremiumElements">Elementos Premium</string>
     <string name="PremiumItemBoosts">Contador de impulsos</string>

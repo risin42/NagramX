@@ -65,7 +65,6 @@ import org.telegram.messenger.ChatThemeController;
 import org.telegram.messenger.CodeHighlighting;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.DialogObject;
-import org.telegram.messenger.ChatThemeController;
 import org.telegram.messenger.DownloadController;
 import org.telegram.messenger.Emoji;
 import org.telegram.messenger.FileLoader;
@@ -458,10 +457,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     private BounceInterpolator interpolator = new BounceInterpolator();
     protected PullForegroundDrawable archivedChatsDrawable;
 
-    // ShowUserAvatarsInChatList
-    public ImageReceiver avatarGroupSenderImage = new ImageReceiver(this);
-    private AvatarDrawable avatarGroupSenderDrawable = new AvatarDrawable();
-
     private TLRPC.User user;
     private TLRPC.Chat chat;
     private TLRPC.EncryptedChat encryptedChat;
@@ -653,7 +648,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         Theme.createDialogsResources(context);
         drawMonoforumAvatar = false;
         avatarImage.setRoundRadius(dp(28));
-        avatarGroupSenderImage.setRoundRadius(dp(28));
         for (int i = 0; i < thumbImage.length; ++i) {
             thumbImage[i] = new ImageReceiver(this);
             thumbImage[i].ignoreNotifications = true;
@@ -674,7 +668,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         emojiStatus = new AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable(emojiStatusView, dp(22));
         botVerification = new AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable(this, dp(17));
         avatarImage.setAllowLoadingOnAttachedOnly(true);
-        avatarGroupSenderImage.setAllowLoadingOnAttachedOnly(true);
     }
 
     @Override
@@ -867,9 +860,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         attachedToWindow = false;
         reorderIconProgress = getIsPinned() && drawReorder ? 1.0f : 0.0f;
         avatarImage.onDetachedFromWindow();
-        if (avatarGroupSenderImage != null) {
-            avatarGroupSenderImage.onDetachedFromWindow();
-        }
         for (int i = 0; i < thumbImage.length; ++i) {
             thumbImage[i].onDetachedFromWindow();
         }
@@ -901,9 +891,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         avatarImage.onAttachedToWindow();
-        if (avatarGroupSenderImage != null) {
-            avatarGroupSenderImage.onAttachedToWindow();
-        }
         for (int i = 0; i < thumbImage.length; ++i) {
             thumbImage[i].onAttachedToWindow();
         }
@@ -1480,7 +1467,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                 buttonString = message != null ? getMessageStringFormatted(messageFormatType, restrictionReason, messageNameString, true) : "";
                 if (applyName && buttonString.length() >= 0 && messageNameString != null) {
                     SpannableStringBuilder spannableStringBuilder = SpannableStringBuilder.valueOf(buttonString);
-                    spannableStringBuilder.setSpan(new ForegroundColorSpanThemable(Theme.key_chats_name, resourcesProvider), 0, Math.min(spannableStringBuilder.length(), fixNameStringLength(messageNameString.length() + 1)), 0);
+                    spannableStringBuilder.setSpan(new ForegroundColorSpanThemable(Theme.key_chats_name, resourcesProvider), 0, Math.min(spannableStringBuilder.length(), messageNameString.length() + 1), 0);
                     buttonString = spannableStringBuilder;
                 }
                 currentMessagePaint = Theme.dialogs_messagePaint[paintIndex];
@@ -1552,7 +1539,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
                         SpannableStringBuilder stringBuilder = formatInternal(messageFormatType, AndroidUtilities.replaceNewLines(messSpan), messageNameString);
                         if (!useForceThreeLines && !SharedConfig.useThreeLinesLayout || hasTags()) {
-                            stringBuilder.setSpan(new ForegroundColorSpanThemable(Theme.key_chats_draft, resourcesProvider), 0, fixNameStringLength(messageNameString.length() + 1), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            stringBuilder.setSpan(new ForegroundColorSpanThemable(Theme.key_chats_draft, resourcesProvider), 0, messageNameString.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                         messageString = Emoji.replaceEmoji(stringBuilder, Theme.dialogs_messagePaint[paintIndex].getFontMetricsInt(), false);
                     }
@@ -1707,7 +1694,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                                 int thumbInsertIndex = 0;
                                 if (!useFromUserAsAvatar && (!useForceThreeLines && !SharedConfig.useThreeLinesLayout || currentDialogFolderId != 0 && stringBuilder.length() > 0)) {
                                     try {
-                                        stringBuilder.setSpan(new ForegroundColorSpanThemable(Theme.key_chats_nameMessage, resourcesProvider), 0, thumbInsertIndex = fixNameStringLength(messageNameString.length() + 1), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                        stringBuilder.setSpan(new ForegroundColorSpanThemable(Theme.key_chats_nameMessage, resourcesProvider), 0, thumbInsertIndex = messageNameString.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                                         offsetName = thumbInsertIndex;
                                     } catch (Exception e) {
                                         FileLog.e(e);
@@ -2293,7 +2280,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                     nameStringFinal = s;
                 }
             }
-            nameLayout = new StaticLayout(nameStringFinal, Theme.dialogs_namePaint[paintIndex], Math.max(ellipsizeWidth, nameWidth), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
             if (twoLinesForName) {
                 nameLayout = StaticLayoutEx.createStaticLayout(nameStringFinal, Theme.dialogs_namePaint[paintIndex], ellipsizeWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false, TextUtils.TruncateAt.END, ellipsizeWidth, 2);
             } else {
@@ -2301,10 +2287,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             }
             nameLayoutTranslateX = nameLayoutEllipsizeByGradient && nameLayout.isRtlCharAt(0) ? -dp(36) : 0;
             nameLayoutEllipsizeLeft = nameLayout.isRtlCharAt(0);
-            if (NaConfig.INSTANCE.getUserAvatarsInMessagePreview().Bool() && !LocaleController.isRTL) {
-                nameLayoutTranslateX = 0;
-                nameLayoutEllipsizeLeft = false;
-            }
         } catch (Exception e) {
             FileLog.e(e);
         }
@@ -2487,18 +2469,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             drawCount = false;
             drawMention = false;
         }
-
-        // --- ShowUserAvatarsInChatList ---
-        if (handleCurrentPreviewData() != null && !useForceThreeLines) {
-            int showUserIconsW = dp(18) + dp(4); // 4 => padding
-            messageNameLeft += showUserIconsW;
-            if (!SharedConfig.useThreeLinesLayout || hasTags()) {
-                messageLeft += showUserIconsW;
-                messageWidth -= showUserIconsW;
-            }
-        }
-        messageWidth = Math.max(dp(12), messageWidth);
-        // --- ShowUserAvatarsInChatList ---
 
         if (checkMessage) {
             if (messageString == null) {
@@ -2818,11 +2788,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         switch (messageFormatType) {
             case 1:
                 //"%2$s: \u2068%1$s\u2069"
-                if (NaConfig.INSTANCE.getUserAvatarsInMessagePreview().Bool() && !LocaleController.isRTL) {
-                    spannableStringBuilder.append("\u2066").append(s2).append(": ").append(s1).append("\u2069");
-                } else {
-                    spannableStringBuilder.append(s2).append(": \u2068").append(s1).append("\u2069");
-                }
+                spannableStringBuilder.append(s2).append(": \u2068").append(s1).append("\u2069");
                 break;
             case 2:
                 //"\u2068%1$s\u2069"
@@ -3457,15 +3423,10 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                 Theme.dialogs_archiveAvatarDrawable.setCallback(this);
                 avatarDrawable.setAvatarType(AvatarDrawable.AVATAR_TYPE_ARCHIVED);
                 avatarImage.setImage(null, null, avatarDrawable, null, user, 0);
-                avatarGroupSenderImage.clearImage();
-                avatarGroupSenderImage.clearDecorators();
             } else {
-                avatarGroupSenderImage.clearImage();
-                avatarGroupSenderImage.clearDecorators();
                 if (useFromUserAsAvatar && message != null) {
                     avatarDrawable.setInfo(currentAccount, message.getFromPeerObject());
                     avatarImage.setForUserOrChat(message.getFromPeerObject(), avatarDrawable);
-                    tryToUpdateCurrentPreview();
                 } else if (user != null) {
                     avatarDrawable.setInfo(currentAccount, user);
                     if (UserObject.isReplyUser(user)) {
@@ -3491,7 +3452,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                     } else {
                         avatarDrawable.setInfo(currentAccount, chat);
                         avatarImage.setForUserOrChat(chat, avatarDrawable);
-                        tryToUpdateCurrentPreview();
                     }
                 }
             }
@@ -3619,68 +3579,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         updatePremiumBlocked(animated);
         return requestLayout;
     }
-
-    // --- ShowUserAvatarsInChatList ---
-    private void tryToUpdateCurrentPreview() {
-        Object currentPreviewData = handleCurrentPreviewData();
-        if (currentPreviewData != null) {
-            TLObject finalData = null;
-            if (currentPreviewData instanceof Long && (Long) currentPreviewData < 0) {
-                finalData = MessagesController.getInstance(currentAccount).getChat(-((Long) currentPreviewData));
-            } else if (currentPreviewData instanceof Long) {
-                finalData = MessagesController.getInstance(currentAccount).getUser((Long) currentPreviewData);
-            }
-
-            if (finalData != null) {
-                avatarGroupSenderDrawable.setInfo(currentAccount, finalData);
-                avatarGroupSenderImage.setForUserOrChat(finalData, avatarGroupSenderDrawable);
-            }
-        }
-    }
-
-    private Object handleCurrentPreviewData() {
-        if (message == null || UserObject.isReplyUser(user) || !NaConfig.INSTANCE.getUserAvatarsInMessagePreview().Bool()) {
-            return null;
-        }
-
-        boolean customC = drawAvatar;
-        customC &= chat != null;
-        //customC &= user != null;
-
-        if (customC) {
-            customC = !ChatObject.isChannelOrGiga(chat);
-            customC &= !ChatObject.isForum(chat);
-            customC &= !ChatObject.isMonoForum(chat);
-            customC &= !UserObject.isAnonymous(user);
-            customC &= !message.isOut();
-            customC &= draftMessage == null;
-            customC &= !draftVoice;
-            customC &= !(message.messageOwner instanceof TLRPC.TL_messageService);
-            customC &= currentDialogFolderId != 1; // archived chats
-        }
-
-        // If you are a person from another alternative client who is reading these
-        // comments, perhaps you are better off copying the condition as it is without
-        // going into depth if you don't want to go crazy. We've already gone crazy.
-
-        if (customC) {
-            return message.getSenderId();
-        } else if (message.isForwarded() && ((ChatObject.isChannelOrGiga(chat) && !ChatObject.isMonoForum(chat)) || (chat == null && user != null))) {
-            // show forwarded channel image just in channels/gigagroups or private chats
-            boolean canTryToShowForwarded = drawAvatar;
-            canTryToShowForwarded &= !message.isOut();
-            canTryToShowForwarded &= !message.isSaved;
-            canTryToShowForwarded &= draftMessage == null;
-            canTryToShowForwarded &= message.messageOwner.fwd_from.from_id instanceof TLRPC.TL_peerChannel;
-
-            if (canTryToShowForwarded) {
-                return -message.messageOwner.fwd_from.from_id.channel_id;
-            }
-        }
-
-        return null;
-    }
-    // --- ShowUserAvatarsInChatList ---
 
     private int getTopicId() {
         return forumTopic == null ? 0 : forumTopic.id;
@@ -4533,53 +4431,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                 canvas.restore();
             }
 
-            // --- ShowUserAvatarsInChatList ---
-            Layout layoutToCheck = SharedConfig.useThreeLinesLayout ? messageNameLayout : messageLayout;
-            boolean hasNameLine = layoutToCheck != null && layoutToCheck.getLineCount() > 0;
-            boolean isTextRtl = layoutToCheck != null && layoutToCheck.getParagraphDirection(0) == Layout.DIR_RIGHT_TO_LEFT;
-            if (handleCurrentPreviewData() != null && avatarGroupSenderImage.hasImageSet() && !useForceThreeLines && (!LocaleController.isRTL || !isTextRtl) && (!SharedConfig.useThreeLinesLayout || hasNameLine)) {
-                int cTop;
-                int cLeft;
-                int showUserIconsW = dp(18) + dp(4); // 4 => padding
-                if (SharedConfig.useThreeLinesLayout) {
-                    cTop = messageNameTop;
-                    cLeft = isTextRtl ? messageLeft : messageNameLeft - showUserIconsW;
-                } else {
-                    cTop = messageTop;
-                    if (hasTags() || isForumCell()) {
-                        cTop -= dp(isForumCell() ? 10 : 11);
-                    }
-                    cLeft = messageLeft - showUserIconsW;
-                }
-
-                StoriesUtilities.AvatarStoryParams params = new StoriesUtilities.AvatarStoryParams(false);
-                params.drawSegments = false;
-                params.animate = false;
-                params.isDrawingMiniUserProfile = true;
-                params.originalAvatarRect = new RectF(cLeft, cTop, cLeft + dp(18), cTop + dp(18));
-
-                boolean animateAvatar = updateHelper.typingProgres > 0 && (!SharedConfig.useThreeLinesLayout || hasTags());
-
-                if (animateAvatar) {
-                    float alpha = (1f - updateHelper.typingProgres);
-                    canvas.saveLayerAlpha(0, 0, getWidth(), getHeight(), (int) (255 * alpha), Canvas.ALL_SAVE_FLAG);
-                    float top;
-                    if (updateHelper.typingOutToTop) {
-                        top = -dp(14) * updateHelper.typingProgres;
-                    } else {
-                        top = dp(14) * updateHelper.typingProgres;
-                    }
-                    canvas.translate(0, top);
-                }
-
-                StoriesUtilities.drawAvatarWithStory(currentDialogId, canvas, avatarGroupSenderImage, params);
-
-                if (animateAvatar) {
-                    canvas.restore();
-                }
-            }
-            // --- ShowUserAvatarsInChatList ---
-
             if (thumbsCount > 0 && updateHelper.typingProgres != 1f) {
                 float alpha = 1f;
                 if (updateHelper.typingProgres > 0) {
@@ -4701,10 +4552,6 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             if (drawAvatarOverlays(canvas)) {
                 needInvalidate = true;
             }
-        }
-
-        if (avatarGroupSenderImage.hasBitmapImage() && avatarGroupSenderImage.getVisible()) {
-            needInvalidate = true;
         }
 
         if (rightFragmentOpenedProgress > 0 && currentDialogFolderId == 0) {
@@ -5818,8 +5665,8 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             return getString(R.string.FromYou);
         } else if (!isSavedDialog && message != null && message.messageOwner != null && message.messageOwner.from_id instanceof TLRPC.TL_peerUser && (user = MessagesController.getInstance(currentAccount).getUser(message.messageOwner.from_id.user_id)) != null) {
             return AndroidUtilities.escape(UserObject.getFirstName(user).replace("\n", ""));
-//        } else if (message != null && message.messageOwner != null && message.messageOwner.fwd_from != null && message.messageOwner.fwd_from.from_name != null) {
-//            return AndroidUtilities.escape(message.messageOwner.fwd_from.from_name);
+        } else if (message != null && message.messageOwner != null && message.messageOwner.fwd_from != null && message.messageOwner.fwd_from.from_name != null) {
+            return AndroidUtilities.escape(message.messageOwner.fwd_from.from_name);
         } else if (fromUser != null) {
             if (useForceThreeLines || SharedConfig.useThreeLinesLayout) {
                 if (UserObject.isDeleted(fromUser)) {
@@ -5976,7 +5823,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             stringBuilder = formatInternal(messageFormatType, message, messageNameString);
             if (!isForumCell()) {
                 try {
-                    stringBuilder.setSpan(new ForegroundColorSpanThemable(colorKey, resourcesProvider), hasNameInMessage ? fixNameStringLength(messageNameString.length() + 2) : 0, stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    stringBuilder.setSpan(new ForegroundColorSpanThemable(colorKey, resourcesProvider), hasNameInMessage ? messageNameString.length() + 2 : 0, stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } catch (Exception e) {
                     FileLog.e(e);
                 }
@@ -6451,12 +6298,5 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     @Override
     protected boolean allowCaching() {
         return rightFragmentOpenedProgress <= 0;
-    }
-
-    private int fixNameStringLength(int length) {
-        if (NaConfig.INSTANCE.getUserAvatarsInMessagePreview().Bool() && !LocaleController.isRTL) {
-            return length + 1; // \u2066
-        }
-        return length;
     }
 }
