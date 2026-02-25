@@ -64,8 +64,13 @@ object ProxyUtil {
         return false
     }
 
+    private var networkCallbackRegistered = false
+
     @JvmStatic
     fun registerNetworkCallback() {
+        if (networkCallbackRegistered) return
+        networkCallbackRegistered = true
+
         val connectivityManager = ApplicationLoader.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkCallback: ConnectivityManager.NetworkCallback =
             object : ConnectivityManager.NetworkCallback() {
