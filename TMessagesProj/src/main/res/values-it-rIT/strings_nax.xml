@@ -216,7 +216,6 @@
     <string name="AutoCheckUpdateBeta">Beta</string>
     <string name="AutoInsertGIFCaption">Didascalie automatiche GIF</string>
     <string name="AutoInsertGIFCaptionNotice">Utilizza automaticamente il testo nel campo d\'input corrente come didascalia della GIF.</string>
-    <string name="UserAvatarsInMessagePreview">Avatar utente nell\'anteprima del messaggio</string>
     <string name="YourVersionIsLatestNax">La tua versione è aggiornata.</string>
     <string name="PremiumElements">Elementi Premium</string>
     <string name="PremiumItemBoosts">Contatore potenziamenti</string>
