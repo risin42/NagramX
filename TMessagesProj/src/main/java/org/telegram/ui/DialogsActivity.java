@@ -13352,6 +13352,17 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 Bundle args = new Bundle();
                 presentFragment(new GroupCreateActivity(args));
             });
+            io.add(R.drawable.outline_channel_24, getString(R.string.NewChannel), () -> {
+                SharedPreferences channelPrefs = MessagesController.getGlobalMainSettings();
+                if (!BuildVars.DEBUG_VERSION && channelPrefs.getBoolean("channel_intro", false)) {
+                    Bundle args = new Bundle();
+                    args.putInt("step", 0);
+                    presentFragment(new ChannelCreateActivity(args));
+                } else {
+                    presentFragment(new ActionIntroActivity(ActionIntroActivity.ACTION_TYPE_CHANNEL_CREATE));
+                    channelPrefs.edit().putBoolean("channel_intro", true).apply();
+                }
+            });
             io.add(R.drawable.outline_saved_24, getString(R.string.SavedMessages), () -> {
                 Bundle args = new Bundle();
                 args.putLong("user_id", UserConfig.getInstance(currentAccount).getClientUserId());
