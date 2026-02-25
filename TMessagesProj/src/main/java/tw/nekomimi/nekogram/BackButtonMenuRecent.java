@@ -65,7 +65,7 @@ public class BackButtonMenuRecent {
             return;
         }
 
-        ActionBarPopupWindow.ActionBarPopupWindowLayout layout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(context) {
+        ActionBarPopupWindow.ActionBarPopupWindowLayout layout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(context, R.drawable.popup_fixed_alert4, fragment.getResourceProvider()) {
             final Path path = new Path();
 
             @Override
@@ -73,7 +73,7 @@ public class BackButtonMenuRecent {
                 canvas.save();
                 path.rewind();
                 AndroidUtilities.rectTmp.set(child.getLeft(), child.getTop(), child.getRight(), child.getBottom());
-                path.addRoundRect(AndroidUtilities.rectTmp, dp(6), dp(6), Path.Direction.CW);
+                path.addRoundRect(AndroidUtilities.rectTmp, dp(12), dp(12), Path.Direction.CW);
                 canvas.clipPath(path);
                 boolean draw = super.drawChild(canvas, child, drawingTime);
                 canvas.restore();
@@ -81,7 +81,7 @@ public class BackButtonMenuRecent {
             }
         };
         Rect backgroundPaddings = new Rect();
-        Drawable shadowDrawable = fragment.getParentActivity().getResources().getDrawable(R.drawable.popup_fixed_alert2).mutate();
+        Drawable shadowDrawable = fragment.getParentActivity().getResources().getDrawable(R.drawable.popup_fixed_alert4).mutate();
         shadowDrawable.getPadding(backgroundPaddings);
         layout.setBackgroundColor(Theme.getColor(Theme.key_actionBarDefaultSubmenuBackground));
 
@@ -117,7 +117,7 @@ public class BackButtonMenuRecent {
         headerView.addView(clearImageView, LayoutHelper.createFrame(24, 24, Gravity.RIGHT | Gravity.CENTER_VERTICAL));
 
         headerView.setPadding(dp(9), dp(8), dp(8), dp(8));
-        layout.addView(headerView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 4, 4, 4, 4));
+        layout.addView(headerView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 0, 0, 0));
 
         for (Long dialogId : dialogs) {
             final TLRPC.Chat chat;

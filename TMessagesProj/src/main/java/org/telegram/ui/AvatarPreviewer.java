@@ -426,7 +426,7 @@ public class AvatarPreviewer {
             }
             container.addView(avatarView, LayoutHelper.createFrame(0, 0, Gravity.CENTER_HORIZONTAL));
 
-            menu = new ActionBarPopupWindow.ActionBarPopupWindowLayout(context, R.drawable.popup_fixed_alert, resourcesProvider, 0);
+            menu = new ActionBarPopupWindow.ActionBarPopupWindowLayout(context, R.drawable.popup_fixed_alert4, resourcesProvider, 0);
             container.addView(menu, LayoutHelper.createFrameRelatively(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.START));
         }
 

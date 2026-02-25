@@ -17,7 +17,7 @@ final class RegexPopupUtils {
     }
 
     static ActionBarPopupWindow.ActionBarPopupWindowLayout createLayout(BaseFragment fragment) {
-        return new ActionBarPopupWindow.ActionBarPopupWindowLayout(fragment.getContext());
+        return new ActionBarPopupWindow.ActionBarPopupWindowLayout(fragment.getContext(), R.drawable.popup_fixed_alert4, fragment.getResourceProvider(), 0);
     }
 
     static ActionBarPopupWindow createPopupWindow(ActionBarPopupWindow.ActionBarPopupWindowLayout layout) {

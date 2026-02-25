@@ -814,7 +814,7 @@ public class ActionBarMenuItem extends FrameLayout {
                 ((ViewGroup) topView.getParent()).removeView(topView);
             }
             if (topView instanceof ActionBarMenuSubItem || topView instanceof LinearLayout) {
-                Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.popup_fixed_alert2).mutate();
+                Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.popup_fixed_alert4).mutate();
                 drawable.setColorFilter(new PorterDuffColorFilter(popupLayout.getBackgroundColor(), PorterDuff.Mode.MULTIPLY));
                 frameLayout.setBackground(drawable);
             }
