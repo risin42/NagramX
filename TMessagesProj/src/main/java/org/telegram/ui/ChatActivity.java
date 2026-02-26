@@ -1430,7 +1430,7 @@ public class ChatActivity extends BaseFragment implements
                     headerItem.setVisibility(View.GONE);
                 }
                 if (otherIcon != null) {
-                    otherIcon.setIconVisible(true);
+                    otherIcon.setIconVisible(!isTitleCentered());
                 }
             } else {
                 if (attachItem != null) {
@@ -2339,7 +2339,7 @@ public class ChatActivity extends BaseFragment implements
                                     attachItem.setVisibility(View.VISIBLE);
                                 }
                                 if (otherIcon != null) {
-                                    otherIcon.setIconVisible(true);
+                                    otherIcon.setIconVisible(!isTitleCentered());
                                 }
                             } else {
                                 if (headerItem != null) {
@@ -2448,7 +2448,7 @@ public class ChatActivity extends BaseFragment implements
                     attachItem.setVisibility(View.VISIBLE);
                 }
                 if (otherIcon != null) {
-                    otherIcon.setIconVisible(true);
+                    otherIcon.setIconVisible(!isTitleCentered());
                 }
             }
         }
@@ -38791,7 +38791,7 @@ public class ChatActivity extends BaseFragment implements
                     attachItem.setVisibility(View.VISIBLE);
                 }
                 if (otherIcon != null) {
-                    otherIcon.setIconVisible(true);
+                    otherIcon.setIconVisible(!isTitleCentered());
                 }
                 if (searchIconItem != null && showSearchAsIcon) {
                     searchIconItem.setVisibility(View.GONE);
