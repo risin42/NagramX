@@ -89,7 +89,7 @@
     <string name="TranslatorSettings">Tradutor</string>
     <string name="SettingsOnly">Apenas nas configurações</string>
     <string name="ChatsOnly">Apenas no chat</string>
-    <string name="InstantViewTranslation">Visualização instantânea</string>
+    <string name="InstantViewTranslation">Leitura rápida</string>
     <string name="SaveDeletedMessageForBot">Salvar no chat do bot</string>
     <string name="HideArchive">Remover \"Chats Arquivados\" da lista de chats</string>
     <string name="ConfirmAllLinks">Perguntar antes de abrir links inline</string>
@@ -133,6 +133,7 @@
     <string name="DisableGhostMode">Desativar fantasma</string>
     <string name="GhostModeEnabled">Modo fantasma ativado</string>
     <string name="GhostModeDisabled">Modo fantasma desativado</string>
+    <string name="GhostModeInDrawer">Atalho na aba principal</string>
     <string name="GhostModeStatusIndicator">Indicador do modo fantasma</string>
     <string name="DontSendReadMessagePackets">Não ler mensagens</string>
     <string name="DontReadStoriesPackets">Não visualizar stories</string>
@@ -185,6 +186,8 @@
     <string name="DebugMenuDoNotForceForumTabs">Não forçar abas do fórum</string>
     <string name="DebugMenuCleanAppUpdate">Limpar atualizações do aplicativo</string>
     <string name="DebugMenuMakeMemoryDump">Fazer despejo de memória</string>
+    <string name="DebugMenuShowFrameMetrics">Mostrar métricas de quadros</string>
+    <string name="DebugMenuHideFrameMetrics">Ocultar métricas de quadros</string>
     <string name="TranslateMessageLLM">Traduzir com IA</string>
     <string name="EditLocalNameOverride">Editando substituição de nome local.</string>
     <string name="ResetChatNameOverrides">Redefinir Substituições de Nomes do Chat</string>
@@ -273,7 +276,7 @@
     <string name="FixLinkPreview">Corrigir prévia de link</string>
     <string name="NoQuoteForwardShort">Sem autor</string>
     <string name="ViewDeleted">Ver excluídos</string>
-    <string name="PasskeyLogin">Chaves de acesso</string>
+    <string name="PasskeyLogin">Chave de acesso</string>
     <string name="PasskeyInfo2">Funciona apenas com gerenciadores de senhas que permitem gerenciar apps privilegiados, como o **Bitwarden** e o **KeePassDX**.</string>
     <string name="PasskeyUnsupportedTitle">Gerenciador de senhas não suportado</string>
     <string name="PasskeyUnsupportedMessage">Tente outros gerenciadores de senhas, como o **Bitwarden** ou o **KeePassDX**.</string>
@@ -307,7 +310,7 @@
     <string name="SaveLocalLastSeen">Salvar data do visto por último</string>
     <string name="CopyVideoFrame">Copiar quadro</string>
     <string name="SetLocalName">Definir nome local</string>
-    <string name="DeleteChatForBothSides">Usar \"Apagar também para\" por padrão</string>
+    <string name="DeleteChatForBothSides">Marcar \"Apagar também para\" por padrão</string>
     <string name="BackAnimationStyle">Animação de navegação</string>
     <string name="BackAnimationClassic">Clássica</string>
     <string name="BackAnimationSpring">Mola</string>
@@ -317,4 +320,5 @@
     <string name="UnifiedPushLastReceivedNotification">A última notificação recebida via UnifiedPush foi há %1$d segundos.\n\nVocê recebeu %2$d notificações desde que o Nagram X foi iniciado.</string>
     <string name="UnifiedPushCurrentEndpoint">O endpoint atual do UnifiedPush é: %1$s</string>
     <string name="PlayOnce">Reproduzir uma vez</string>
+    <string name="StorageSettings">Armazenamento</string>
 </resources>

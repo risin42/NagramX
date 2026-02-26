@@ -186,6 +186,8 @@
     <string name="DebugMenuDoNotForceForumTabs">Nie wymuszaj zakładek forum</string>
     <string name="DebugMenuCleanAppUpdate">Wyczyść aktualizacje aplikacji</string>
     <string name="DebugMenuMakeMemoryDump">Zrób zrzut pamięci</string>
+    <string name="DebugMenuShowFrameMetrics">Pokaż metryki klatek</string>
+    <string name="DebugMenuHideFrameMetrics">Ukryj metryki klatek</string>
     <string name="TranslateMessageLLM">Tłumacz z AI</string>
     <string name="EditLocalNameOverride">Edycja nadpisania nazwy lokalnej.</string>
     <string name="ResetChatNameOverrides">Zresetuj nadpisania nazw czatu</string>

@@ -59,7 +59,7 @@
     <string name="UserRestrictionsSendGifs">Enviar GIFs</string>
     <string name="CheckAllAdministrated">Adicionar administrados</string>
     <string name="RearVideoMessages">Câmera traseira em mensagens de vídeo</string>
-    <string name="HideAllTab">Ocultar a aba \"Todos os Chats\"</string>
+    <string name="HideAllTab">Ocultar aba \"Todos os Chats\"</string>
     <string name="HideAllTabAbout">Pressione longamente o título na lista de chats para exibir todos os chats.</string>
     <string name="TabTitleType">Mostrar nas abas</string>
     <string name="TabTitleTypeText">Títulos</string>
@@ -134,12 +134,12 @@
     <string name="RestrictionReason">Motivo da restrição</string>
     <string name="InvalidCustomEmojiTypeface">Arquivo de fonte inválido.</string>
     <string name="DownloadEmojiSet">Download %s</string>
-    <string name="EmojiSets">Pacotes de emojis</string>
+    <string name="EmojiSets">Pacotes de emoji</string>
     <string name="MyEmojiSets">Meu pacote de emoji</string>
     <string name="InstalledEmojiSet">Instalado</string>
     <string name="InstallingEmojiSet">Instalando…</string>
     <string name="UpdateEmojiSet">Atualizar %s</string>
-    <string name="EmojiSetHint">Isso afeta a aparência dos emojis apenas para você. Outras pessoas os veem com base nas preferências delas.</string>
+    <string name="EmojiSetHint">Isso afeta a aparência dos emojis apenas para você. Outros os verão com base nas preferências deles.</string>
     <string name="CustomEmojiSetHint">Importar e escolher pacotes de emojis do seu armazenamento interno.</string>
     <string name="AddEmojiSet">Adicionar pacote de emoji</string>
     <string name="EmojiSetRemoved">Pacote de emojis removido.</string>

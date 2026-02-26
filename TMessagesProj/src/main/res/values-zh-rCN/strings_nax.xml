@@ -320,4 +320,8 @@
     <string name="UnifiedPushLastReceivedNotification">最后一次通过 UnifiedPush 接收到的通知是 %1$d 秒前。\n\n自 Nagram X 启动以来，您已收到 %2$d 条通知。</string>
     <string name="UnifiedPushCurrentEndpoint">当前的 UnifiedPush 端点是：%1$s</string>
     <string name="PlayOnce">播放一次</string>
+    <string name="StorageSettings">存储</string>
+    <string name="MainTabsSettingsHeader">主标签页</string>
+    <string name="MainTabsHideTitles">隐藏标题</string>
+    <string name="MainTabsHideContacts">隐藏联系人标签</string>
 </resources>

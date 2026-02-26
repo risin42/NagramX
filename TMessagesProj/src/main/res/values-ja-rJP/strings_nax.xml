@@ -320,4 +320,8 @@
     <string name="UnifiedPushLastReceivedNotification">UnifiedPush で最後に受信した通知は %1$d 秒前です。\n\nNagram X の起動以降、 %2$d 件の通知を受信しました。</string>
     <string name="UnifiedPushCurrentEndpoint">現在の UnifiedPush エンドポイントは：%1$s</string>
     <string name="PlayOnce">ワンショット</string>
+    <string name="StorageSettings">ストレージ</string>
+    <string name="MainTabsSettingsHeader">メインタブ</string>
+    <string name="MainTabsHideTitles">タイトルを非表示</string>
+    <string name="MainTabsHideContacts">連絡先タブを非表示</string>
 </resources>
