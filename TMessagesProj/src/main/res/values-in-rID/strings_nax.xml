@@ -65,6 +65,7 @@
     <string name="RegexFiltersExportError">Gagal mengekspor penyaring.</string>
     <string name="RegexFiltersUserHeader">Penyaring Pengguna</string>
     <string name="RegexFiltersUserFilterHint">Masukkan ID Pengguna</string>
+    <string name="RegexFiltersGlobalHeader">Penyaring Global</string>
     <string name="ShadowBan">Penangguhan Diam-diam</string>
     <string name="UnshadowBan">Batalkan Penangguhan Diam-diam</string>
     <string name="ShadowBanAdded">Ditambahkan ke **penyaring pengguna**.</string>
@@ -132,7 +133,7 @@
     <string name="DisableGhostMode">Nonaktifkan Hantu</string>
     <string name="GhostModeEnabled">Mode hantu diaktifkan</string>
     <string name="GhostModeDisabled">Mode hantu dinonaktifkan</string>
-    <string name="GhostModeInDrawer">Tampilkan di Laci</string>
+    <string name="GhostModeInDrawer">Pintasan Tab Utama</string>
     <string name="GhostModeStatusIndicator">Indikator Mode Hantu</string>
     <string name="DontSendReadMessagePackets">Jangan Baca Pesan</string>
     <string name="DontReadStoriesPackets">Jangan Baca Cerita</string>
@@ -185,6 +186,8 @@
     <string name="DebugMenuDoNotForceForumTabs">Jangan Paksa Tab Forum</string>
     <string name="DebugMenuCleanAppUpdate">Bersihkan Pembaruan Aplikasi</string>
     <string name="DebugMenuMakeMemoryDump">Buat Dump Memori</string>
+    <string name="DebugMenuShowFrameMetrics">Tampilkan Metrik Frame</string>
+    <string name="DebugMenuHideFrameMetrics">Sembunyikan Metrik Frame</string>
     <string name="TranslateMessageLLM">Terjemahkan dengan AI</string>
     <string name="EditLocalNameOverride">Menyunting penggantian nama lokal.</string>
     <string name="ResetChatNameOverrides">Atur Ulang Penggantian Nama Obrolan</string>
@@ -316,5 +319,6 @@
     <string name="UnifiedPushNeverReceivedNotifications">Anda tidak pernah menerima pemberitahuan dengan UnifiedPush sejak Nagram X dimulai.</string>
     <string name="UnifiedPushLastReceivedNotification">Pemberitahuan terakhir yang diterima dengan UnifiedPush adalah %1$d detik yang lalu.\n\nAnda menerima %2$d pemberitahuan sejak Nagram X dimulai.</string>
     <string name="UnifiedPushCurrentEndpoint">Titik akhir UnifiedPush saat ini adalah: %1$s</string>
-    <string name="RegexFiltersGlobalHeader">Penyaring Global</string>
+    <string name="PlayOnce">Putar sekali</string>
+    <string name="StorageSettings">Penyimpanan</string>
 </resources>
