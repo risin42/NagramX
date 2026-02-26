@@ -3749,11 +3749,11 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
     private MenuDrawable menuDrawable;
 
     private void invalidateActionBars() {
-        BaseFragment foregroundFragment = getLastFragmentIncludeMainTabs();
+        BaseFragment foregroundFragment = getLastFragment();
         if (foregroundFragment != null && foregroundFragment.getActionBar() != null) {
             foregroundFragment.getActionBar().invalidate();
         }
-        BaseFragment backgroundFragment = getBackgroundFragmentIncludeMainTabs();
+        BaseFragment backgroundFragment = getBackgroundFragment();
         if (backgroundFragment != null && backgroundFragment.getActionBar() != null) {
             backgroundFragment.getActionBar().invalidate();
         }
@@ -3764,8 +3764,8 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
             return false;
         }
         boolean crossfadeNoFragments = SharedConfig.animationsEnabled() && !isInPreviewMode() && (isSwipeInProgress() || isTransitionAnimationInProgress()) && currentAnimation == null;
-        BaseFragment foregroundFragment = getLastFragmentIncludeMainTabs();
-        BaseFragment backgroundFragment = getBackgroundFragmentIncludeMainTabs();
+        BaseFragment foregroundFragment = getLastFragment();
+        BaseFragment backgroundFragment = getBackgroundFragment();
         return crossfadeNoFragments &&
                 foregroundFragment != null && foregroundFragment.isActionBarCrossfadeEnabled() &&
                 backgroundFragment != null && backgroundFragment.isActionBarCrossfadeEnabled();
@@ -3780,8 +3780,8 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
                 return;
             }
 
-            BaseFragment foregroundFragment = getLastFragmentIncludeMainTabs();
-            BaseFragment backgroundFragment = getBackgroundFragmentIncludeMainTabs();
+            BaseFragment foregroundFragment = getLastFragment();
+            BaseFragment backgroundFragment = getBackgroundFragment();
 
             if (foregroundFragment == null || backgroundFragment == null) {
                 return;
@@ -3799,12 +3799,10 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
             Float backDrawableForcedProgress = null;
             BackButtonState bgBackButtonState = backgroundFragment.getBackButtonState();
             BackButtonState fgBackButtonState = foregroundFragment.getBackButtonState();
-            Drawable bgBackButtonDrawable = bgActionBar.getBackButton() != null && bgActionBar.getBackButton().getVisibility() == View.VISIBLE ? bgActionBar.getBackButton().getDrawable() : null;
-            Drawable fgBackButtonDrawable = fgActionBar.getBackButton() != null && fgActionBar.getBackButton().getVisibility() == View.VISIBLE ? fgActionBar.getBackButton().getDrawable() : null;
-            boolean bgCanDrawMenu = bgBackButtonState == BackButtonState.MENU && bgBackButtonDrawable instanceof MenuDrawable;
-            boolean fgCanDrawMenu = fgBackButtonState == BackButtonState.MENU && fgBackButtonDrawable instanceof MenuDrawable;
-            boolean bgCanDrawBack = bgBackButtonState == BackButtonState.BACK && (bgBackButtonDrawable instanceof BackDrawable || bgBackButtonDrawable instanceof MenuDrawable);
-            boolean fgCanDrawBack = fgBackButtonState == BackButtonState.BACK && (fgBackButtonDrawable instanceof BackDrawable || fgBackButtonDrawable instanceof MenuDrawable);
+            boolean bgCanDrawMenu = bgBackButtonState == BackButtonState.MENU;
+            boolean fgCanDrawMenu = fgBackButtonState == BackButtonState.MENU;
+            boolean bgCanDrawBack = bgBackButtonState == BackButtonState.BACK;
+            boolean fgCanDrawBack = fgBackButtonState == BackButtonState.BACK ;
 
             if (!AndroidUtilities.isTablet()) {
                 if (bgCanDrawMenu && fgCanDrawBack) {
@@ -3863,8 +3861,8 @@ public class ActionBarLayout extends FrameLayout implements INavigationLayout, F
     private int getTop(int widthOffset, float width) {
         int top = 0;
         if (isActionBarInCrossfade()) {
-            BaseFragment backgroundFragment = getBackgroundFragmentIncludeMainTabs();
-            BaseFragment foregroundFragment = getLastFragmentIncludeMainTabs();
+            BaseFragment backgroundFragment = getBackgroundFragment();
+            BaseFragment foregroundFragment = getLastFragment();
             ActionBar bgActionBar = backgroundFragment != null ? backgroundFragment.getActionBar() : null;
             ActionBar fgActionBar = foregroundFragment != null ? foregroundFragment.getActionBar() : null;
             if (bgActionBar != null && fgActionBar != null) {
