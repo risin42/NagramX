@@ -984,13 +984,43 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                 }
             });
             shareAlert.show();
-        } else if (which == MENU_ARCHIVE || which == MENU_DELETE) {
+        } else if (which == MENU_EXPORT || which == MENU_ARCHIVE || which == MENU_DELETE) {
             ArrayList<TLRPC.StickerSet> stickerSetList = new ArrayList<>(selectedSets.size());
             for (int i = 0, size = sets.size(); i < size; i++) {
                 final TLRPC.TL_messages_stickerSet stickerSet = sets.get(i);
                 if (selectedSets.contains(stickerSet.set.id)) {
                     stickerSetList.add(stickerSet.set);
                 }
+            }
+
+            if (which == MENU_EXPORT) {
+                AlertDialog pro = new AlertDialog(getParentActivity(), 3);
+                pro.setCanCancel(false);
+                pro.show();
+
+                Utilities.globalQueue.postRunnable(() -> {
+                    JsonObject exportObj = StickersUtil.exportStickers(stickerSetList);
+                    File cacheFile = new File(AndroidUtilities.getCacheDir(), new Date().toLocaleString() + ".nekox-stickers.json");
+
+                    StringWriter stringWriter = new StringWriter();
+                    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+                    jsonWriter.setLenient(true);
+                    jsonWriter.setIndent("    ");
+
+                    try {
+                        Streams.write(exportObj, jsonWriter);
+                    } catch (IOException ignored) {
+                    }
+
+                    FileUtil.writeUtf8String(stringWriter.toString(), cacheFile);
+
+                    AndroidUtilities.runOnUIThread(() -> {
+                        pro.dismiss();
+                        ShareUtil.shareFile(getParentActivity(), cacheFile);
+                    });
+                });
+                clearSelected();
+                return;
             }
 
             final int count = stickerSetList.size();
