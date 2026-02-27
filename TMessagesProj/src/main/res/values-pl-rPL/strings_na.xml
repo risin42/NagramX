@@ -19,7 +19,6 @@
     <string name="ShowMessageID">Pokaż identyfikator wiadomości</string>
     <string name="ShowRPCError">Pokaż błędy RPC</string>
     <string name="ShowPremiumStickersAnimation">Pokaż animację naklejek premium</string>
-    <string name="AlwaysSaveChatOffset">Zawsze zapisuj przesunięcie czatu</string>
     <string name="AppIconColorful">Kolorowy</string>
     <string name="AppIconDarkGreen">Ciemna zieleń</string>
     <string name="AppIconNeon">Neonowy</string>

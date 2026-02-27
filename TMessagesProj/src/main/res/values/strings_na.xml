@@ -19,7 +19,6 @@
     <string name="ShowMessageID">Show Message ID</string>
     <string name="ShowRPCError">Toast RPC Errors</string>
     <string name="ShowPremiumStickersAnimation">Show Premium Stickers Animation</string>
-    <string name="AlwaysSaveChatOffset">Always Save Chat Offset</string>
     <string name="AppIconGoogle" translatable="false">Google</string>
     <string name="AppIconColorful">Colorful</string>
     <string name="AppIconDarkGreen">Dark Green</string>

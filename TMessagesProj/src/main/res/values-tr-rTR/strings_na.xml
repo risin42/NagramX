@@ -19,7 +19,6 @@
     <string name="ShowMessageID">Mesaj ID\'sini Göster</string>
     <string name="ShowRPCError">RPC Hatalarını Bildir</string>
     <string name="ShowPremiumStickersAnimation">Premium Çıkartma Animasyonunu Göster</string>
-    <string name="AlwaysSaveChatOffset">Sohbet Konumunu Her Zaman Kaydet</string>
     <string name="AppIconColorful">Renkli</string>
     <string name="AppIconDarkGreen">Koyu Yeşil</string>
     <string name="AppIconNeon">Neon</string>

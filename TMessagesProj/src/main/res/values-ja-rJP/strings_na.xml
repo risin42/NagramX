@@ -19,7 +19,6 @@
     <string name="ShowMessageID">メッセージ ID を表示</string>
     <string name="ShowRPCError">RPC エラーを表示</string>
     <string name="ShowPremiumStickersAnimation">プレミアムステッカーアニメーションを表示</string>
-    <string name="AlwaysSaveChatOffset">常にチャットオフセットを保存</string>
     <string name="AppIconColorful">カラフル</string>
     <string name="AppIconDarkGreen">ダークグリーン</string>
     <string name="AppIconNeon">ネオン</string>

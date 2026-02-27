@@ -19,7 +19,6 @@
     <string name="ShowMessageID">Mostrar ID da mensagem</string>
     <string name="ShowRPCError">Erros de RPC em toast</string>
     <string name="ShowPremiumStickersAnimation">Mostrar animação de stickers premium</string>
-    <string name="AlwaysSaveChatOffset">Sempre salvar o deslocamento do chat</string>
     <string name="AppIconColorful">Colorido</string>
     <string name="AppIconDarkGreen">Verde escuro</string>
     <string name="AppIconNeon">Neon</string>

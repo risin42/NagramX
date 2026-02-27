@@ -19,7 +19,6 @@
     <string name="ShowMessageID">显示消息 ID</string>
     <string name="ShowRPCError">显示 RPC 错误</string>
     <string name="ShowPremiumStickersAnimation">显示 Premium 贴纸动画</string>
-    <string name="AlwaysSaveChatOffset">总是保存聊天记录的偏移量</string>
     <string name="AppIconColorful">缤纷</string>
     <string name="AppIconDarkGreen">深翠</string>
     <string name="AppIconNeon">霓虹</string>
