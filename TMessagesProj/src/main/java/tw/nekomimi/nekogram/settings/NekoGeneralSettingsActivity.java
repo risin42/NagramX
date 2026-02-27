@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.text.TextPaint;
@@ -54,6 +55,7 @@ import org.telegram.ui.Components.SeekBarView;
 import org.telegram.ui.Components.UndoView;
 import org.telegram.ui.LaunchActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -215,9 +217,13 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell customTitleRow = cellGroup.appendCell(new ConfigCellTextInput(null, NaConfig.INSTANCE.getCustomTitle(),
             getString(R.string.CustomTitleHint), null,
             (input) -> input.isEmpty() ? (String) NaConfig.INSTANCE.getCustomTitle().defaultValue : input));
-    private final AbstractConfigCell customSavePathRow = cellGroup.appendCell(new ConfigCellTextInput(null, NekoConfig.customSavePath,
-            getString(R.string.customSavePathHint), null,
-            (input) -> input.matches("^[A-za-z0-9.]{1,255}$") || input.isEmpty() ? input : (String) NekoConfig.customSavePath.defaultValue));
+    private final AbstractConfigCell customSavePathRow = cellGroup.appendCell(new ConfigCellTextDetail(
+            NekoConfig.customSavePath,
+            getString(R.string.customSavePath),
+            getString(R.string.customSavePathHint),
+            this::sanitizeCustomSavePath,
+            this::shouldShowCustomSavePathInputError,
+            this::formatCustomSavePathDetail));
     private final AbstractConfigCell folderNameAsTitleRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getFolderNameAsTitle()));
     private final AbstractConfigCell customTitleUserNameRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getCustomTitleUserName()));
     private final AbstractConfigCell disableNumberRoundingRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableNumberRounding, "4.8K -> 4777"));
@@ -312,13 +318,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             } else if (a instanceof ConfigCellTextInput2) {
                 ((ConfigCellTextInput2) a).onClick();
             } else if (a instanceof ConfigCellTextDetail) {
-                RecyclerListView.OnItemClickListener o = ((ConfigCellTextDetail) a).onItemClickListener;
-                if (o != null) {
-                    try {
-                        o.onItemClick(view, position);
-                    } catch (Exception ignored) {
-                    }
-                }
+                ((ConfigCellTextDetail) a).onClick(view, position);
             } else if (a instanceof ConfigCellCustom) { // Custom OnClick
                 if (position == cellGroup.rows.indexOf(nameOrderRow)) {
                     LocaleController.getInstance().recreateFormatters();
@@ -879,4 +879,44 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
         }
     }
 
+    private String formatCustomSavePathDetail(String rawValue) {
+        String folderName = rawValue == null ? "" : rawValue.trim();
+        if (NaConfig.INSTANCE.getSaveToChatSubfolder().Bool()) {
+            folderName = TextUtils.isEmpty(folderName) ? "<chat_name>" : folderName + File.separator + "<chat_name>";
+        }
+        return buildCustomSaveAbsolutePath(Environment.DIRECTORY_DOWNLOADS, folderName);
+    }
+
+    private String buildCustomSaveAbsolutePath(String directory, String folderName) {
+        File root = Environment.getExternalStoragePublicDirectory(directory);
+        if (TextUtils.isEmpty(folderName)) {
+            return root.getAbsolutePath();
+        }
+        return new File(root, folderName).getAbsolutePath();
+    }
+
+    private boolean shouldShowCustomSavePathInputError(String input, String output) {
+        if (TextUtils.isEmpty(input)) {
+            return false;
+        }
+        String normalized = input.trim();
+        if (normalized.isEmpty()) {
+            return false;
+        }
+        return !normalized.equals(output);
+    }
+
+    private String sanitizeCustomSavePath(String input) {
+        if (TextUtils.isEmpty(input)) {
+            return "";
+        }
+        String normalized = input.trim();
+        if (normalized.isEmpty()) {
+            return "";
+        }
+        if (normalized.matches("^(?!\\.{1,2}$)[A-Za-z0-9._ -]{1,255}$")) {
+            return normalized;
+        }
+        return (String) NekoConfig.customSavePath.defaultValue;
+    }
 }
