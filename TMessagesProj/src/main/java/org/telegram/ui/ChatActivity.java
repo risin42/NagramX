@@ -439,6 +439,7 @@ public class ChatActivity extends BaseFragment implements
     private final static int nkbtn_transcriptionRetry = 2038;
     private final static int nkbtn_bookmark = 2039;
     private final static int nkbtn_bookmarks_manager = 2040;
+    private final static int nkbtn_report = 2041;
 
     public int shareAlertDebugMode = DEBUG_SHARE_ALERT_MODE_NORMAL;
     public boolean shareAlertDebugTopicsSlowMotion;
@@ -10629,6 +10630,7 @@ public class ChatActivity extends BaseFragment implements
             actionModeOtherItem.addSubItem(nkbtn_repeatascopy, R.drawable.msg_repeat, LocaleController.getString(R.string.RepeatAsCopy));
         }
         actionModeOtherItem.addSubItem(nkbtn_hide, R.drawable.msg_disable, LocaleController.getString(R.string.Hide));
+        actionModeOtherItem.addSubItem(nkbtn_report, R.drawable.msg_report, LocaleController.getString(R.string.ReportChat));
         actionModeOtherItem.addSubItem(nkbtn_detail,R.drawable.msg_info,LocaleController.getString(R.string.MessageDetails));
 
         actionMode.setItemVisibility(nkactionbarbtn_reply, ChatObject.canSendMessages(currentChat) && (selectedMessagesIds[0].size() + selectedMessagesIds[1].size() == 1) && NaConfig.INSTANCE.getActionBarButtonReply().Bool() ? View.VISIBLE : View.GONE);
@@ -19536,17 +19538,27 @@ public class ChatActivity extends BaseFragment implements
                 ActionBarMenuSubItem forwardNoQuoteItem = null;
                 ActionBarMenuSubItem repeatItem = null;
                 ActionBarMenuSubItem RepeatAsCopyItem = null;
+                ActionBarMenuSubItem reportItem = null;
                 if (actionModeOtherItem != null) {
                     saveMessageItem = actionModeOtherItem.getSubItem(nkbtn_savemessage);
                     forwardNoQuoteItem = actionModeOtherItem.getSubItem(nkbtn_forward_noquote);
                     repeatItem = actionModeOtherItem.getSubItem(nkbtn_repeat);
                     RepeatAsCopyItem = actionModeOtherItem.getSubItem(nkbtn_repeatascopy);
+                    reportItem = actionModeOtherItem.getSubItem(nkbtn_report);
                 }
 
                 boolean noforwards = getMessagesController().isChatNoForwards(currentChat) || hasSelectedNoforwardsMessage();
                 boolean canForward = chatMode != MODE_SCHEDULED && cantForwardMessagesCount == 0 && !noforwards;
                 boolean showForward = NaConfig.INSTANCE.getActionBarButtonForward().Bool();
-
+                boolean canSendMessage = ChatObject.canSendMessages(currentChat);
+                boolean canReport = false;
+                if (selectedCount == 1 && !hasSelectedAyuDeletedMessage && chatMode != MODE_SCHEDULED && (currentChat != null || currentUser != null && currentUser.bot)) {
+                    for (var msg : getSelectedMessages1()) {
+                        if (msg != null && msg.contentType == 0 && msg.getId() > 0 && !msg.isOut()) {
+                            canReport = true;
+                        }
+                    }
+                }
                 if (forwardNoQuoteItem != null) {
                     forwardNoQuoteItem.setVisibility(canForward && NaConfig.INSTANCE.getShowNoQuoteForward().Bool());
                 }
@@ -19554,10 +19566,13 @@ public class ChatActivity extends BaseFragment implements
                     saveMessageItem.setVisibility(canForward);
                 }
                 if (repeatItem != null) {
-                    repeatItem.setVisibility(canForward);
+                    repeatItem.setVisibility(canForward && canSendMessage);
                 }
                 if (RepeatAsCopyItem != null) {
-                    RepeatAsCopyItem.setVisibility(canForward);
+                    RepeatAsCopyItem.setVisibility(canForward && canSendMessage);
+                }
+                if (reportItem != null) {
+                    reportItem.setVisibility(canReport);
                 }
 
                 if (prevCantForwardCount == 0 && cantForwardMessagesCount != 0 || prevCantForwardCount != 0 && cantForwardMessagesCount == 0) {
@@ -43663,7 +43678,7 @@ public class ChatActivity extends BaseFragment implements
             }
         } else if (id == nkbtn_savemessage) {
             ArrayList<MessageObject> messages = getSelectedMessages();
-            forwardMessages(messages, false, false, true,0, UserConfig.getInstance(currentAccount).getClientUserId(), 0);
+            forwardMessages(messages, false, false, true, 0, UserConfig.getInstance(currentAccount).getClientUserId(), 0);
             undoView.showWithAction(getUserConfig().getClientUserId(), UndoView.ACTION_FWD_MESSAGES, messages.size());
         } else if (id == nkbtn_hide) {
             ArrayList<MessageObject> messages = getSelectedMessages();
@@ -43782,7 +43797,7 @@ public class ChatActivity extends BaseFragment implements
             }
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT,builder.toString());
+            intent.putExtra(Intent.EXTRA_TEXT, builder.toString());
             try {
                 getParentActivity().startActivity(intent);
             } catch (Exception e) {
@@ -43799,6 +43814,12 @@ public class ChatActivity extends BaseFragment implements
             presentFragment(new ChannelAdminLogActivity(currentChat));
         } else if (id == shortcuts_statistics) {
             presentFragment(StatisticActivity.create(currentChat, false));
+        } else if (id == nkbtn_report) {
+            getSelectedMessages1().stream().findFirst().ifPresent(obj -> {
+                selectedObject = obj;
+                processSelectedOption(OPTION_REPORT_CHAT);
+                clearSelectionMode();
+            });
         }
     }
 
