@@ -19,7 +19,6 @@
     <string name="ShowMessageID">Показывать ID сообщения</string>
     <string name="ShowRPCError">Показывать ошибки RPC</string>
     <string name="ShowPremiumStickersAnimation">Показывать анимацию Premium-стикеров</string>
-    <string name="AlwaysSaveChatOffset">Всегда сохранять смещение чатов</string>
     <string name="AppIconColorful">Красочная</string>
     <string name="AppIconDarkGreen">Тёмно-зелёная</string>
     <string name="AppIconNeon">Неон</string>
