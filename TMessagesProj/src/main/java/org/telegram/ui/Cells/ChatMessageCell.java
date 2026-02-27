@@ -18011,7 +18011,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 StaticLayout staticLayout = new StaticLayout(adminString, Theme.chat_adminPaint, dp(300), Layout.Alignment.ALIGN_NORMAL, 0f, 0f, false);
                 adminWidth = (int) staticLayout.getLineWidth(0);
                 nameWidth -= adminWidth;
-            } else if (NekoConfig.labelChannelUser.Bool() && isMegagroup && currentChat != null && currentMessageObject.isSenderChannel()) {
+            } else if (isMegagroup && currentChat != null && currentMessageObject.isSenderChannel()) {
                 SpannableStringBuilder channelLabelStringBuilder = TimeStringHelper.getChannelLabelSpan();
                 adminString = new SpannableStringBuilder();
                 adminString.append(channelLabelStringBuilder);

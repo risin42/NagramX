@@ -30,7 +30,6 @@
     <string name="ToTheMessage">前往消息</string>
     <string name="ZalgoFilter">过滤 \"Zalgo\" 符号</string>
     <string name="ZalgoFilterNotice">昵称和消息中的 \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" 符号将被过滤。</string>
-    <string name="labelChannelUser">标记频道身份发言用户</string>
     <string name="AlwaysShowDownloadIcon">始终显示下载图标</string>
     <string name="HideTitle">隐藏标题和头像</string>
     <string name="IgnoreUnreadCount">忽略未读计数</string>

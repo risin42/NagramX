@@ -30,7 +30,6 @@
     <string name="ToTheMessage">Перейти до</string>
     <string name="ZalgoFilter">Фільтр символів «Zalgo»</string>
     <string name="ZalgoFilterNotice">Всі \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" символи в нікнеймах або повідомленнях буде видалено.</string>
-    <string name="labelChannelUser">Мітка користувачів каналу</string>
     <string name="AlwaysShowDownloadIcon">Завжди показувати значок завантаження</string>
     <string name="HideTitle">Сховати заголовок</string>
     <string name="IgnoreUnreadCount">Приховати кількість непрочитаних тек</string>

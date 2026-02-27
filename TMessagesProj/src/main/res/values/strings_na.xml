@@ -31,7 +31,6 @@
     <string name="ToTheMessage">Go To</string>
     <string name="ZalgoFilter">Filter \"Zalgo\" Symbols</string>
     <string name="ZalgoFilterNotice">All \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" symbols in nicknames or messages will be removed.</string>
-    <string name="labelChannelUser">Label Channel Users</string>
     <string name="AlwaysShowDownloadIcon">Always Show Download Icon</string>
     <string name="HideTitle">Hide Title</string>
     <string name="IgnoreUnreadCount">Hide Unread Counter</string>
