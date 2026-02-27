@@ -18,10 +18,12 @@ import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.LayoutHelper;
 
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.ConfigItem;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 
 public class ConfigCellTextInput extends AbstractConfigCell {
     private final ConfigItem bindConfig;
@@ -31,6 +33,7 @@ public class ConfigCellTextInput extends AbstractConfigCell {
     public TextSettingsCell cell;
     private final Runnable onClickCustom;
     private final Function<String, String> inputChecker;
+    private final BiPredicate<String, String> invalidInputChecker;
 
     public ConfigCellTextInput(String customTitle, ConfigItem bind, String hint, Runnable customOnClick) {
         this(customTitle, bind, hint, customOnClick, null);
@@ -38,6 +41,11 @@ public class ConfigCellTextInput extends AbstractConfigCell {
 
     // default: customTitle=null customOnClick=null
     public ConfigCellTextInput(String customTitle, ConfigItem bind, String hint, Runnable customOnClick, Function<String, String> inputChecker) {
+        this(customTitle, bind, hint, customOnClick, inputChecker, null);
+    }
+
+    // default: customTitle=null customOnClick=null
+    public ConfigCellTextInput(String customTitle, ConfigItem bind, String hint, Runnable customOnClick, Function<String, String> inputChecker, BiPredicate<String, String> invalidInputChecker) {
         this.bindConfig = bind;
         this.hint = Objects.requireNonNullElse(hint, "");
         if (customTitle == null) {
@@ -47,6 +55,7 @@ public class ConfigCellTextInput extends AbstractConfigCell {
         }
         this.onClickCustom = customOnClick;
         this.inputChecker = inputChecker;
+        this.invalidInputChecker = invalidInputChecker;
     }
 
     public int getType() {
@@ -114,21 +123,28 @@ public class ConfigCellTextInput extends AbstractConfigCell {
         editText.requestFocus();
         linearLayout.addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, dp(8), 0, dp(10), 0));
 
-        builder.setPositiveButton(getString(R.string.OK), (d, v) -> {
-            String newV = editText.getText().toString();
-            if (this.inputChecker != null)
-                newV = this.inputChecker.apply(newV);
+        builder.setPositiveButton(getString(R.string.OK), null);
+        builder.setView(linearLayout);
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String rawInput = editText.getText().toString();
+            String newV = rawInput;
+            if (inputChecker != null) {
+                newV = inputChecker.apply(newV);
+            }
+            if (invalidInputChecker != null && invalidInputChecker.test(rawInput, newV)) {
+                AndroidUtil.showInputError(editText);
+                return;
+            }
             bindConfig.setConfigString(newV);
 
             // refresh
             cellGroup.listAdapter.notifyItemChanged(cellGroup.rows.indexOf(this));
-            builder.getDismissRunnable().run();
+            dialog.dismiss();
             cellGroup.thisFragment.getParentLayout().rebuildAllFragmentViews(false, false);
 
             cellGroup.runCallback(bindConfig.getKey(), newV);
-        });
-        builder.setView(linearLayout);
-        cellGroup.thisFragment.showDialog(builder.create());
+        }));
+        cellGroup.thisFragment.showDialog(dialog);
     }
 }
-
