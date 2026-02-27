@@ -10595,8 +10595,8 @@ public class MessageObject {
                         String performer = attribute.performer;
                         String title = attribute.title;
                         if (!TextUtils.isEmpty(performer)) {
-                            for (String excludeWord : excludeWords) {
-                                performer = performer.replace(excludeWord, " ");
+                            for (int a = 0; a < excludeWords.length; a++) {
+                                performer = performer.replace(excludeWords[a], " ");
                             }
                         }
                         if (TextUtils.isEmpty(performer) && TextUtils.isEmpty(title)) {

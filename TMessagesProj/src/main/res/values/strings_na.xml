@@ -37,7 +37,6 @@
     <string name="IgnoreUnreadCount">Hide Unread Counter</string>
     <string name="SendWithoutMarkdown">Send without markdown</string>
     <string name="SendAsEmoji">Send as emoji</string>
-    <string name="CustomArtworkApi">Custom Artwork API</string>
     <string name="CustomEditedMessage">Custom Edited Mark</string>
     <string name="NotificationIcon">Notification Icon</string>
     <string name="Official">Official</string>

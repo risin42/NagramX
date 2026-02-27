@@ -36,7 +36,6 @@
     <string name="IgnoreUnreadCount">未読数を非表示</string>
     <string name="SendWithoutMarkdown">Markdown なしで送信</string>
     <string name="SendAsEmoji">絵文字として送信</string>
-    <string name="CustomArtworkApi">カスタムアートワーク API</string>
     <string name="CustomEditedMessage">編集ありメッセージのマーク</string>
     <string name="NotificationIcon">通知アイコンスタイル</string>
     <string name="Official">公式</string>

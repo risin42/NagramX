@@ -36,7 +36,6 @@
     <string name="IgnoreUnreadCount">Okunmamış Sayacını Gizle</string>
     <string name="SendWithoutMarkdown">Biçimlendirmesiz gönder</string>
     <string name="SendAsEmoji">Emoji olarak gönder</string>
-    <string name="CustomArtworkApi">Özel Sanat Eseri API\'si</string>
     <string name="CustomEditedMessage">Özel Düzenlendi İşareti</string>
     <string name="NotificationIcon">Bildirim Simgesi</string>
     <string name="Official">Resmi</string>
