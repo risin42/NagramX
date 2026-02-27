@@ -36,7 +36,6 @@
     <string name="IgnoreUnreadCount">Ukryj licznik nieprzeczytanych</string>
     <string name="SendWithoutMarkdown">Wyślij bez przeceny</string>
     <string name="SendAsEmoji">Wyślij jako emoji</string>
-    <string name="CustomArtworkApi">Niestandardowe API grafiki</string>
     <string name="CustomEditedMessage">Niestandardowy edytowany znak</string>
     <string name="NotificationIcon">Ikona powiadomienia</string>
     <string name="Official">Oficjalny</string>

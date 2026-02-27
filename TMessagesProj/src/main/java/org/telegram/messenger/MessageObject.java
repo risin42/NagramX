@@ -10599,20 +10599,15 @@ public class MessageObject {
                         String performer = attribute.performer;
                         String title = attribute.title;
                         if (!TextUtils.isEmpty(performer)) {
-                            for (String excludeWord : excludeWords) {
-                                performer = performer.replace(excludeWord, " ");
+                            for (int a = 0; a < excludeWords.length; a++) {
+                                performer = performer.replace(excludeWords[a], " ");
                             }
                         }
                         if (TextUtils.isEmpty(performer) && TextUtils.isEmpty(title)) {
                             return null;
                         }
                         try {
-                            String query = TextUtils.isEmpty(performer) ? title : performer + " - " + title;
-                            String custom_api = NaConfig.INSTANCE.getCustomArtworkApi().String();
-                            if (!Objects.equals(custom_api, "")) {
-                                return custom_api + URLEncoder.encode(query, "UTF-8");
-                            }
-                            return "athumb://itunes.apple.com/search?term=" + URLEncoder.encode(query, "UTF-8") + "&entity=song&limit=4" + (small ? "&s=1" : "");
+                            return "athumb://itunes.apple.com/search?term=" + URLEncoder.encode(performer + " - " + title, "UTF-8") + "&entity=song&limit=4" + (small ? "&s=1" : "");
                         } catch (Exception ignore) {
 
                         }
