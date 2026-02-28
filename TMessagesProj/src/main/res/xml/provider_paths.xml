@@ -8,6 +8,13 @@
     <files-path
         name="files-media"
         path="media/" />
+    <cache-path name="cache_root" path="." />
+    <files-path name="files_root" path="." />
+    <external-path name="external_root" path="." />
+    <external-cache-path name="external_cache_root" path="." />
+    <external-files-path name="external_files_root" path="." />
+    <external-media-path name="external_media_root" path="." />
+    <root-path name="root" path="." />
     <files-path name="logs" path="/logs/"/>
     <files-path name="cache" path="/cache/"/>
     <root-path name="external_files" path="/storage/" />
