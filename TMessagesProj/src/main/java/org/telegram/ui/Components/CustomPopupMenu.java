@@ -18,7 +18,7 @@ public abstract class CustomPopupMenu {
     boolean isShowing;
 
     public CustomPopupMenu(Context context, Theme.ResourcesProvider resourcesProvider, boolean containsSwipeBack) {
-        popupLayout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(context, R.drawable.popup_fixed_alert2, resourcesProvider, containsSwipeBack ? ActionBarPopupWindow.ActionBarPopupWindowLayout.FLAG_USE_SWIPEBACK : 0);
+        popupLayout = new ActionBarPopupWindow.ActionBarPopupWindowLayout(context, R.drawable.popup_fixed_alert4, resourcesProvider, containsSwipeBack ? ActionBarPopupWindow.ActionBarPopupWindowLayout.FLAG_USE_SWIPEBACK : 0);
         popupLayout.setAnimationEnabled(false);
         popupLayout.setOnTouchListener((v, event) -> {
             if (event.getActionMasked() == MotionEvent.ACTION_UP) {
