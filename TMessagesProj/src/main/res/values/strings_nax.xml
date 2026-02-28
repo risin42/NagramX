@@ -335,4 +335,7 @@
     <string name="UnifiedPushCurrentEndpoint">The current UnifiedPush endpoint is: %1$s</string>
     <string name="PlayOnce">Play once</string>
     <string name="StorageSettings">Storage</string>
+    <string name="MainTabsSettingsHeader">Main Tabs</string>
+    <string name="MainTabsHideTitles">Hide Titles</string>
+    <string name="MainTabsHideContacts">Hide Contacts Tab</string>
 </resources>
