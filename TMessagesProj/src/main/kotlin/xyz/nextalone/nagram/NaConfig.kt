@@ -1209,6 +1209,18 @@ object NaConfig {
             ConfigItem.configTypeInt,
             0 // 0: Classic, 1: Spring, 2: Predictive Back
         )
+    val mainTabsHideTitles =
+        addConfig(
+            "MainTabsHideTitles",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val mainTabsHideContacts =
+        addConfig(
+            "MainTabsHideContacts",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {
