@@ -9185,7 +9185,7 @@ public class MessagesController extends BaseController implements NotificationCe
                         getNotificationCenter().postNotificationName(AyuConstants.MESSAGES_DELETED_NOTIFICATION, dialogIdFinal, messagesCopy);
                     });
                 });
-            } else if (messages != null && !messages.isEmpty() && taskId != 0) { // process TTL messages
+            } else if (messages != null && !messages.isEmpty() && (taskId != 0 || cacheOnly)) { // process TTL messages
                 final ArrayList<Integer> messagesCopy = new ArrayList<>(messages);
                 final long dialogIdFinal = dialogId;
                 getMessagesStorage().getStorageQueue().postRunnable(() -> {
@@ -9194,7 +9194,8 @@ public class MessagesController extends BaseController implements NotificationCe
                         if (AyuState.isDeletePermitted(dialogIdFinal, msgId)) {
                             continue;
                         }
-                        var msg = MessageHelper.getInstance(currentAccount).getMessage(dialogIdFinal, msgId);
+                        MessageObject obj = dialogMessagesByIds.get(msgId);
+                        TLRPC.Message msg = obj != null ? obj.messageOwner : MessageHelper.getInstance(currentAccount).getMessage(dialogIdFinal, msgId);
                         if (msg != null) {
                             if (msg.ttl > 0 || msg.ttl_period > 0) {
                                 invalidate.add(msgId);
