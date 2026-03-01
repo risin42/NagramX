@@ -49,7 +49,6 @@
     <string name="TranslateApiUnsupported">選択した翻訳プロバイダは、あなたの言語をサポートしていません。</string>
     <string name="ProviderLingocloud">彩雲小訳</string>
     <string name="UndoTranslate">翻訳を元に戻す</string>
-    <string name="DisablePhotoViewerSideAction">サイドタップによる写真切り替えを無効化</string>
     <string name="BotToken">トークン</string>
     <string name="UnlimitedPinnedDialogs">無制限のピン留め</string>
     <string name="UnlimitedPinnedDialogsAbout">同期をオフにして無制限のチャットをピン留めします。</string>

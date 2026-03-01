@@ -49,7 +49,6 @@
     <string name="TranslateApiUnsupported">Выбранный сервис не поддерживает ваш язык.</string>
     <string name="ProviderLingocloud">Lingocloud</string>
     <string name="UndoTranslate">Скрыть перевод</string>
-    <string name="DisablePhotoViewerSideAction">Не листать медиафайлы по нажатию</string>
     <string name="BotToken">Токен</string>
     <string name="UnlimitedPinnedDialogs">Неограниченные закреплённые диалоги</string>
     <string name="UnlimitedPinnedDialogsAbout">Их синхронизация будет отключена.</string>

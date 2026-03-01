@@ -49,7 +49,6 @@
     <string name="TranslateApiUnsupported">Seçtiğiniz çeviri sağlayıcısı dilinizi desteklemiyor.</string>
     <string name="ProviderLingocloud">LingoCloud Çeviri</string>
     <string name="UndoTranslate">Çeviriyi Gizle</string>
-    <string name="DisablePhotoViewerSideAction">Fotoğrafları Değiştirmek için Kenara Dokunmayı Devre Dışı Bırak</string>
     <string name="BotToken">Token</string>
     <string name="UnlimitedPinnedDialogs">Sınırsız Sabitlenmiş Sohbet</string>
     <string name="UnlimitedPinnedDialogsAbout">Senkronizasyonu kapatarak sınırsız sayıda sohbeti sabitleyin.</string>

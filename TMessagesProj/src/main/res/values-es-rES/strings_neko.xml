@@ -49,7 +49,6 @@
     <string name="TranslateApiUnsupported">El proveedor escogido no soporta tu idioma.</string>
     <string name="ProviderLingocloud">Traducción de LingoCloud</string>
     <string name="UndoTranslate">Ocultar traducción</string>
-    <string name="DisablePhotoViewerSideAction">Desactivar toque lateral para cambiar fotos</string>
     <string name="BotToken">Token</string>
     <string name="UnlimitedPinnedDialogs">Chats anclados ilimitados</string>
     <string name="UnlimitedPinnedDialogsAbout">Ancla chats de forma ilimitada, pero se desactiva su sincronización.</string>
