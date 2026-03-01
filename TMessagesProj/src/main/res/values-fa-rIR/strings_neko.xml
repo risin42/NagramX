@@ -49,7 +49,6 @@
     <string name="TranslateApiUnsupported">ارائه‌دهنده ترجمه انتخابی از زبان شما پشتیبانی نمی‌کند.</string>
     <string name="ProviderLingocloud">LingoCloud Translate</string>
     <string name="UndoTranslate">لغو ترجمه</string>
-    <string name="DisablePhotoViewerSideAction">غیرفعال کردن تعویض عکس با ضربه در کنار تصویر</string>
     <string name="BotToken">توکن ربات</string>
     <string name="UnlimitedPinnedDialogs">سنجاق کردن نامحدود گفتگوها</string>
     <string name="UnlimitedPinnedDialogsAbout">با غیرفعال کردن همگام‌سازی، گفتگوها را به صورت نامحدود سنجاق کنید.</string>

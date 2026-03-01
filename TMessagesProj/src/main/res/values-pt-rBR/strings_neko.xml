@@ -49,7 +49,6 @@
     <string name="TranslateApiUnsupported">O provedor de tradução que você selecionou não suporta seu idioma.</string>
     <string name="ProviderLingocloud">LingoCloud Tradutor</string>
     <string name="UndoTranslate">Ocultar tradução</string>
-    <string name="DisablePhotoViewerSideAction">Desativar toque lateral para trocar fotos</string>
     <string name="BotToken">Token</string>
     <string name="UnlimitedPinnedDialogs">Diálogos fixados ilimitados</string>
     <string name="UnlimitedPinnedDialogsAbout">Fixar diálogos ilimitados ao desativar a sincronização deles.</string>

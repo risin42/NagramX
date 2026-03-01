@@ -49,7 +49,6 @@
     <string name="TranslateApiUnsupported">Penyedia terjemahan yang Anda pilih tidak mendukung bahasa Anda.</string>
     <string name="ProviderLingocloud">LingoCloud Terjemahan</string>
     <string name="UndoTranslate">Sembunyikan Terjemahan</string>
-    <string name="DisablePhotoViewerSideAction">Nonaktifkan Ketuk Samping untuk Mengganti Foto</string>
     <string name="BotToken">Token</string>
     <string name="UnlimitedPinnedDialogs">Dialog Tersemat Tak Terbatas</string>
     <string name="UnlimitedPinnedDialogsAbout">Sematkan dialog tak terbatas dengan mematikan sinkronisasinya.</string>

@@ -49,7 +49,6 @@
     <string name="TranslateApiUnsupported">您所选择的翻译源不支持您的语言。</string>
     <string name="ProviderLingocloud">彩云小译</string>
     <string name="UndoTranslate">撤销翻译</string>
-    <string name="DisablePhotoViewerSideAction">禁用点按切换图片</string>
     <string name="BotToken">令牌</string>
     <string name="UnlimitedPinnedDialogs">无限的置顶聊天</string>
     <string name="UnlimitedPinnedDialogsAbout">关闭同步以无限置顶聊天。</string>
