@@ -230,7 +230,6 @@
     <string name="PremiumItemVideoAvatar">Avatares animados</string>
     <string name="PremiumItemCustomWallpaper">Papéis de parede personalizados</string>
     <string name="TranslationTargetApp">Seguir aplicativo</string>
-    <string name="DisableAvatarTapToSwitch">Desativar alternância de avatares ao tocar</string>
     <string name="SwitchStyle">Estilo de interruptor</string>
     <string name="SliderStyle">Estilo de controle deslizante</string>
     <string name="StyleModern">Moderno</string>

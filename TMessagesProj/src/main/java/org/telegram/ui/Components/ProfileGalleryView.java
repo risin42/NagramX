@@ -43,9 +43,6 @@ import org.telegram.ui.ProfileActivity;
 
 import java.util.ArrayList;
 
-import tw.nekomimi.nekogram.NekoConfig;
-import xyz.nextalone.nagram.NaConfig;
-
 public class ProfileGalleryView extends CircularViewPager implements NotificationCenter.NotificationCenterDelegate {
 
     private final PointF downPoint = new PointF();
@@ -133,8 +130,6 @@ public class ProfileGalleryView extends CircularViewPager implements Notificatio
         void onDown(boolean left);
 
         void onRelease();
-
-        default void onClick() {};
 
         void onPhotosLoaded();
 
@@ -494,29 +489,24 @@ public class ProfileGalleryView extends CircularViewPager implements Notificatio
             isDownReleased = false;
         } else if (action == MotionEvent.ACTION_UP) {
             if (!isDownReleased) {
-                if (NaConfig.INSTANCE.getDisableAvatarTapToSwitch().Bool() && callback != null) {
-                    callback.onClick();
-                    callback.onRelease();
-                } else {
-                    int itemsCount = getRealCount();
-                    int currentItem = getCurrentItem();
-                    if (itemsCount > 1) {
-                        if (ev.getX() > getWidth() / 3f) {
-                            final int extraCount = adapter.getExtraCount();
-                            if (++currentItem >= itemsCount + extraCount) {
-                                currentItem = extraCount;
-                            }
-                        } else {
-                            final int extraCount = adapter.getExtraCount();
-                            if (--currentItem < extraCount) {
-                                currentItem = itemsCount + extraCount - 1;
-                            }
+                int itemsCount = getRealCount();
+                int currentItem = getCurrentItem();
+                if (itemsCount > 1) {
+                    if (ev.getX() > getWidth() / 3f) {
+                        final int extraCount = adapter.getExtraCount();
+                        if (++currentItem >= itemsCount + extraCount) {
+                            currentItem = extraCount;
                         }
-                        if (callback != null) {
+                    } else {
+                        final int extraCount = adapter.getExtraCount();
+                        if (--currentItem < extraCount) {
+                            currentItem = itemsCount + extraCount - 1;
+                        }
+                    }
+                    if (callback != null) {
                         callback.onRelease();
                     }
-                        setCurrentItem(currentItem, false);
-                    }
+                    setCurrentItem(currentItem, false);
                 }
             }
         } else if (action == MotionEvent.ACTION_MOVE) {

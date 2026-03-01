@@ -225,7 +225,6 @@
     <string name="PremiumItemVideoAvatar">Avatares animados</string>
     <string name="PremiumItemCustomWallpaper">Fondos de pantalla personalizados</string>
     <string name="TranslationTargetApp">Seguir aplicación</string>
-    <string name="DisableAvatarTapToSwitch">Desactivar el cambio de avatares al tocar</string>
     <string name="SwitchStyle">Cambiar estilo</string>
     <string name="SliderStyle">Estilo del control deslizante</string>
     <string name="StyleModern">Moderno</string>
