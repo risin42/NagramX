@@ -205,7 +205,6 @@
     <string name="PremiumItemVideoAvatar">آواتارهای متحرک</string>
     <string name="PremiumItemCustomWallpaper">تصاویر پس‌زمینه سفارشی</string>
     <string name="TranslationTargetApp">پیروی از زبان برنامه</string>
-    <string name="DisableAvatarTapToSwitch">غیرفعال کردن تغییر آواتار با ضربه</string>
     <string name="SwitchStyle">سبک دکمه سوییچ</string>
     <string name="SliderStyle">سبک اسلایدر</string>
     <string name="StyleModern">مدرن</string>

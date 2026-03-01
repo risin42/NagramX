@@ -230,7 +230,6 @@
     <string name="PremiumItemVideoAvatar">Avatar Animati</string>
     <string name="PremiumItemCustomWallpaper">Sfondi personalizzati</string>
     <string name="TranslationTargetApp">Segui l\'app</string>
-    <string name="DisableAvatarTapToSwitch">Disattiva il cambio degli avatar tramite tocco</string>
     <string name="SwitchStyle">Cambia Stile</string>
     <string name="SliderStyle">Stile cursore</string>
     <string name="StyleModern">Moderno</string>
