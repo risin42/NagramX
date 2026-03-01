@@ -3141,7 +3141,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                     AndroidUtil.toggleLogs();
                     // ApplicationLoader.applicationContext.getSharedPreferences("systemConfig", Context.MODE_PRIVATE).edit().putBoolean("logsEnabled", BuildVars.LOGS_ENABLED = false).commit();
                 }
-
+                NotificationCenter.getInstance(intentAccount[0]).postNotificationName(NotificationCenter.updateInterfaces, 0);
                 if (bulletinText != null) {
                     BaseFragment fragment = actionBarLayout.getLastFragment();
                     if (fragment != null) {

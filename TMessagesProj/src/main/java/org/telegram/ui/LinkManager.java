@@ -180,8 +180,13 @@ public class LinkManager {
         if ("oauth".equalsIgnoreCase(first))
             return handleOAuth(uri, uri.getQueryParameter("token"));
 
-        if ("settings".equalsIgnoreCase(first))
+        if ("settings".equalsIgnoreCase(first)) {
+            final String url = uri.toString();
+            if (url.contains("?enablelogs") || url.contains("?sendlogs") || url.contains("?disablelogs")) {
+                return false;
+            }
             return handleSettings(segments.subList(1, segments.size()));
+        }
 
         if ("chats".equalsIgnoreCase(first)) {
             if ("search".equalsIgnoreCase(second)) {

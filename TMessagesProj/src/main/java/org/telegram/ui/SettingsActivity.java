@@ -538,6 +538,9 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             }
         } else if (id == NotificationCenter.updateInterfaces) {
             setInfo();
+            if (listView != null) {
+                listView.adapter.update(false);
+            }
         } else if (id == NotificationCenter.newSuggestionsAvailable) {
             if (listView != null) {
                 listView.adapter.update(true);
@@ -1365,7 +1368,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
 
     private void showVersionMenu() {
         String message = versionView.getText().toString();
-        BottomBuilder builder = new BottomBuilder(getParentActivity());
+        BottomBuilder builder = new BottomBuilder(getParentActivity(), false);
         builder.addTitle(message);
 
         builder.addItem(getString(R.string.Copy), R.drawable.msg_copy_solar, (it) -> {
