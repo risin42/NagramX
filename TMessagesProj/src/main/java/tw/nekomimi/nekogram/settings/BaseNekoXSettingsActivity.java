@@ -3,14 +3,18 @@ package tw.nekomimi.nekogram.settings;
 import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.NotificationCenter;
@@ -19,12 +23,20 @@ import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.ActionBar.ThemeDescription;
+import org.telegram.ui.Cells.EmptyCell;
+import org.telegram.ui.Cells.NotificationsCheckCell;
+import org.telegram.ui.Cells.ShadowSectionCell;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextCheckCell;
+import org.telegram.ui.Cells.TextDetailSettingsCell;
+import org.telegram.ui.Cells.TextInfoPrivacyCell;
+import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.BlurredRecyclerView;
 import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
+import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.UndoView;
 
 import java.util.ArrayList;
@@ -42,7 +54,10 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck2;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheckIcon;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
+import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput2;
 import tw.nekomimi.nekogram.config.cell.WithKey;
+import tw.nekomimi.nekogram.config.cell.WithOnClick;
+import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 
 public class BaseNekoXSettingsActivity extends BaseFragment {
     protected BlurredRecyclerView listView;
@@ -52,75 +67,15 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
     protected HashMap<Integer, String> rowMapReverse = new HashMap<>(20);
     protected HashMap<Integer, ConfigItem> rowConfigMapReverse = new HashMap<>(20);
 
-    public static AlertDialog showConfigMenuAlert(Context context, String titleKey, ArrayList<ConfigCellTextCheck> configItems) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(getString(titleKey));
-
-        LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-        LinearLayout linearLayoutInviteContainer = new LinearLayout(context);
-        linearLayoutInviteContainer.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(linearLayoutInviteContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-
-        int count = configItems.size();
-        for (int a = 0; a < count; a++) {
-            ConfigCellTextCheck configItem = configItems.get(a);
-            TextCheckCell textCell = new TextCheckCell(context);
-            textCell.setTextAndCheck(configItem.getTitle(), configItem.getBindConfig().Bool(), false);
-            textCell.setTag(a);
-            textCell.setBackground(Theme.getSelectorDrawable(false));
-            linearLayoutInviteContainer.addView(textCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            int finalA = a;
-            textCell.setOnClickListener(v2 -> {
-                Integer tag = (Integer) v2.getTag();
-                if (tag == finalA) {
-                    textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
-                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
-                }
-            });
-        }
-        builder.setPositiveButton(getString(R.string.OK), null);
-        builder.setView(linearLayout);
-        return builder.create();
-    }
-
-    public static AlertDialog showConfigMenuWithIconAlert(BaseFragment bf, int titleKeyRes, ArrayList<ConfigCellTextCheckIcon> configItems) {
-        Context context = bf.getContext();
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(getString(titleKeyRes));
-
-        LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-        LinearLayout linearLayoutInviteContainer = new LinearLayout(context);
-        linearLayoutInviteContainer.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(linearLayoutInviteContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-
-        int count = configItems.size();
-        for (int a = 0; a < count; a++) {
-            ConfigCellTextCheckIcon configItem = configItems.get(a);
-            TextCell textCell = new TextCell(context, 23, false, true, bf.getResourceProvider());
-            textCell.setTextAndCheckAndIcon(configItem.getTitle(), configItem.getBindConfig().Bool(), configItem.getResId(), configItem.getDivider());
-            textCell.setTag(a);
-            textCell.setBackground(Theme.getSelectorDrawable(false));
-            linearLayoutInviteContainer.addView(textCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
-            int finalA = a;
-            textCell.setOnClickListener(v2 -> {
-                Integer tag = (Integer) v2.getTag();
-                if (tag == finalA) {
-                    textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
-                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
-                }
-            });
-        }
-        builder.setPositiveButton(getString(R.string.OK), null);
-        builder.setView(linearLayout);
-        return builder.create();
-    }
-
     protected BlurredRecyclerView createListView(Context context) {
         return new BlurredRecyclerView(context);
+    }
+
+    @Override
+    public boolean onFragmentCreate() {
+        super.onFragmentCreate();
+        updateRows();
+        return true;
     }
 
     @Override
@@ -137,6 +92,8 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
             public void onItemClick(int id) {
                 if (id == -1) {
                     finishFragment();
+                } else {
+                    onActionBarItemClick(id);
                 }
             }
         });
@@ -166,6 +123,18 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         return fragmentView;
     }
 
+    protected void onActionBarItemClick(int id) {
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getListAdapter() != null) {
+            getListAdapter().notifyDataSetChanged();
+        }
+    }
+
     @Override
     public boolean isSupportEdgeToEdge() {
         return true;
@@ -180,7 +149,11 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         tooltip.setLayoutParams(layoutParams);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     protected void updateRows() {
+        if (getListAdapter() != null) {
+            getListAdapter().notifyDataSetChanged();
+        }
     }
 
     public int getBaseGuid() {
@@ -193,6 +166,18 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
 
     public String getTitle() {
         return "";
+    }
+
+    protected String getSettingsPrefix() {
+        return null;
+    }
+
+    protected RecyclerListView.SelectionAdapter getListAdapter() {
+        return null;
+    }
+
+    protected CellGroup getCellGroup() {
+        return null;
     }
 
     protected void addRowsToMap(CellGroup cellGroup) {
@@ -285,6 +270,81 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         }).create());
     }
 
+    protected void handleCellClick(View view, int position, float x, float y) {
+        CellGroup cellGroup = getCellGroup();
+        if (cellGroup == null || position < 0 || position >= cellGroup.rows.size()) {
+            return;
+        }
+        AbstractConfigCell a = cellGroup.rows.get(position);
+        if (a == null) {
+            return;
+        }
+        if (a instanceof ConfigCellTextCheck) {
+            ((ConfigCellTextCheck) a).onClick((TextCheckCell) view);
+        } else if (a instanceof ConfigCellSelectBox) {
+            ((ConfigCellSelectBox) a).onClick(view);
+        } else if (a instanceof WithOnClick) {
+            ((WithOnClick) a).onClick();
+        } else if (a instanceof ConfigCellTextInput) {
+            ((ConfigCellTextInput) a).onClick();
+        } else if (a instanceof ConfigCellTextInput2) {
+            ((ConfigCellTextInput2) a).onClick();
+        } else if (a instanceof ConfigCellTextDetail) {
+            ((ConfigCellTextDetail) a).onClick(view, position);
+        } else if (a instanceof ConfigCellCustom) {
+            onCustomCellClick(view, position, x, y);
+        } else if (a instanceof ConfigCellTextCheckIcon) {
+            ((ConfigCellTextCheckIcon) a).onClick();
+        } else if (a instanceof ConfigCellTextCheck2) {
+            ((ConfigCellTextCheck2) a).onClick();
+        } else if (a instanceof ConfigCellCheckBox) {
+            onCheckBoxCellClick(view, position);
+        }
+    }
+
+    protected void onCustomCellClick(View view, int position, float x, float y) {
+    }
+
+    protected void onCheckBoxCellClick(View view, int position) {
+    }
+
+    protected boolean onItemLongClick(View view, int position, float x, float y) {
+        return false;
+    }
+
+    protected void setupDefaultListeners(Context context) {
+        final CellGroup cellGroup = getCellGroup();
+        final RecyclerListView.SelectionAdapter listAdapter = getListAdapter();
+        if (cellGroup != null && listAdapter != null) {
+            cellGroup.setListAdapter(listView, listAdapter);
+        }
+        listView.setOnItemClickListener(this::handleCellClick);
+
+        listView.setOnItemLongClickListener((view, position, x, y) -> {
+            if (onItemLongClick(view, position, x, y)) {
+                return true;
+            }
+            if (cellGroup != null) {
+                if (position < 0 || position >= cellGroup.rows.size()) {
+                    return false;
+                }
+                if (cellGroup.rows.get(position) instanceof ConfigCellCheckBox) {
+                    return true;
+                }
+            }
+            String prefix = getSettingsPrefix();
+            if (prefix == null || listAdapter == null) {
+                return false;
+            }
+            var holder = listView.findViewHolderForAdapterPosition(position);
+            if (holder != null && listAdapter.isEnabled(holder)) {
+                createLongClickDialog(context, this, prefix, position);
+                return true;
+            }
+            return false;
+        });
+    }
+
     public void importToRow(String key, String value, Runnable unknown) {
         int position = -1;
         try {
@@ -340,5 +400,222 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         return rowMapReverse;
     }
 
+    @Override
+    public ArrayList<ThemeDescription> getThemeDescriptions() {
+        ArrayList<ThemeDescription> themeDescriptions = new ArrayList<>();
+        themeDescriptions.add(new ThemeDescription(listView, ThemeDescription.FLAG_CELLBACKGROUNDCOLOR, new Class[]{EmptyCell.class, TextSettingsCell.class, TextCheckCell.class, HeaderCell.class, TextDetailSettingsCell.class, NotificationsCheckCell.class}, null, null, null, Theme.key_windowBackgroundWhite));
+        themeDescriptions.add(new ThemeDescription(fragmentView, ThemeDescription.FLAG_BACKGROUND, null, null, null, null, Theme.key_windowBackgroundGray));
 
+        themeDescriptions.add(new ThemeDescription(actionBar, ThemeDescription.FLAG_BACKGROUND, null, null, null, null, Theme.key_avatar_backgroundActionBarBlue));
+        themeDescriptions.add(new ThemeDescription(listView, ThemeDescription.FLAG_LISTGLOWCOLOR, null, null, null, null, Theme.key_avatar_backgroundActionBarBlue));
+        themeDescriptions.add(new ThemeDescription(actionBar, ThemeDescription.FLAG_AB_ITEMSCOLOR, null, null, null, null, Theme.key_avatar_actionBarIconBlue));
+        themeDescriptions.add(new ThemeDescription(actionBar, ThemeDescription.FLAG_AB_TITLECOLOR, null, null, null, null, Theme.key_actionBarDefaultTitle));
+        themeDescriptions.add(new ThemeDescription(actionBar, ThemeDescription.FLAG_AB_SELECTORCOLOR, null, null, null, null, Theme.key_avatar_actionBarSelectorBlue));
+        themeDescriptions.add(new ThemeDescription(actionBar, ThemeDescription.FLAG_AB_SUBMENUBACKGROUND, null, null, null, null, Theme.key_actionBarDefaultSubmenuBackground));
+        themeDescriptions.add(new ThemeDescription(actionBar, ThemeDescription.FLAG_AB_SUBMENUITEM, null, null, null, null, Theme.key_actionBarDefaultSubmenuItem));
+
+        themeDescriptions.add(new ThemeDescription(listView, ThemeDescription.FLAG_SELECTOR, null, null, null, null, Theme.key_listSelector));
+
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{View.class}, Theme.dividerPaint, null, null, Theme.key_divider));
+
+        themeDescriptions.add(new ThemeDescription(listView, ThemeDescription.FLAG_BACKGROUNDFILTER, new Class[]{ShadowSectionCell.class}, null, null, null, Theme.key_windowBackgroundGrayShadow));
+
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{TextSettingsCell.class}, new String[]{"textView"}, null, null, null, Theme.key_windowBackgroundWhiteBlackText));
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{TextSettingsCell.class}, new String[]{"valueTextView"}, null, null, null, Theme.key_windowBackgroundWhiteValueText));
+
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{NotificationsCheckCell.class}, new String[]{"textView"}, null, null, null, Theme.key_windowBackgroundWhiteBlackText));
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{NotificationsCheckCell.class}, new String[]{"valueTextView"}, null, null, null, Theme.key_windowBackgroundWhiteGrayText2));
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{NotificationsCheckCell.class}, new String[]{"checkBox"}, null, null, null, Theme.key_switchTrack));
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{NotificationsCheckCell.class}, new String[]{"checkBox"}, null, null, null, Theme.key_switchTrackChecked));
+
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{TextCheckCell.class}, new String[]{"textView"}, null, null, null, Theme.key_windowBackgroundWhiteBlackText));
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{TextCheckCell.class}, new String[]{"valueTextView"}, null, null, null, Theme.key_windowBackgroundWhiteGrayText2));
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{TextCheckCell.class}, new String[]{"checkBox"}, null, null, null, Theme.key_switchTrack));
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{TextCheckCell.class}, new String[]{"checkBox"}, null, null, null, Theme.key_switchTrackChecked));
+
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{HeaderCell.class}, new String[]{"textView"}, null, null, null, Theme.key_windowBackgroundWhiteBlueHeader));
+
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{TextDetailSettingsCell.class}, new String[]{"textView"}, null, null, null, Theme.key_windowBackgroundWhiteBlackText));
+        themeDescriptions.add(new ThemeDescription(listView, 0, new Class[]{TextDetailSettingsCell.class}, new String[]{"valueTextView"}, null, null, null, Theme.key_windowBackgroundWhiteGrayText2));
+
+        return themeDescriptions;
+    }
+
+    protected class BaseListAdapter extends RecyclerListView.SelectionAdapter {
+
+        protected final Context mContext;
+
+        public BaseListAdapter(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        public int getItemCount() {
+            CellGroup cellGroup = getCellGroup();
+            return cellGroup != null ? cellGroup.rows.size() : 0;
+        }
+
+        @Override
+        public boolean isEnabled(RecyclerView.ViewHolder holder) {
+            CellGroup cellGroup = getCellGroup();
+            if (cellGroup == null) {
+                return false;
+            }
+            int position = holder.getAdapterPosition();
+            if (position == RecyclerView.NO_POSITION || position < 0 || position >= cellGroup.rows.size()) {
+                return false;
+            }
+            AbstractConfigCell a = cellGroup.rows.get(position);
+            return a != null && a.isEnabled();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            CellGroup cellGroup = getCellGroup();
+            if (cellGroup == null || position < 0 || position >= cellGroup.rows.size()) {
+                return CellGroup.ITEM_TYPE_TEXT_DETAIL;
+            }
+            AbstractConfigCell a = cellGroup.rows.get(position);
+            return a != null ? a.getType() : CellGroup.ITEM_TYPE_TEXT_DETAIL;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            CellGroup cellGroup = getCellGroup();
+            if (cellGroup == null || position < 0 || position >= cellGroup.rows.size()) {
+                return;
+            }
+            AbstractConfigCell a = cellGroup.rows.get(position);
+            if (a != null) {
+                if (a instanceof ConfigCellCustom) {
+                    onBindCustomViewHolder(holder, position);
+                } else {
+                    a.onBindViewHolder(holder);
+                    onBindDefaultViewHolder(holder, position);
+                }
+            }
+        }
+
+        protected void onBindCustomViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        }
+
+        protected void onBindDefaultViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        }
+
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = onCreateCustomViewHolder(parent, viewType);
+            if (view == null) {
+                view = createDefaultViewByType(viewType);
+            }
+            // noinspection ConstantConditions
+            view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
+            return new RecyclerListView.Holder(view);
+        }
+
+        protected View onCreateCustomViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return null;
+        }
+
+        protected View createDefaultViewByType(int viewType) {
+            View view = null;
+            switch (viewType) {
+                case CellGroup.ITEM_TYPE_DIVIDER:
+                    view = new ShadowSectionCell(mContext);
+                    break;
+                case CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL:
+                    view = new TextSettingsCell(mContext);
+                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+                    break;
+                case CellGroup.ITEM_TYPE_TEXT_CHECK:
+                    view = new TextCheckCell(mContext);
+                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+                    break;
+                case CellGroup.ITEM_TYPE_HEADER:
+                    view = new HeaderCell(mContext);
+                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+                    break;
+                case CellGroup.ITEM_TYPE_TEXT_DETAIL:
+                    view = new TextDetailSettingsCell(mContext);
+                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+                    break;
+                case CellGroup.ITEM_TYPE_TEXT:
+                    view = new TextInfoPrivacyCell(mContext);
+                    break;
+                case CellGroup.ITEM_TYPE_TEXT_CHECK_ICON:
+                    view = new TextCell(mContext);
+                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
+                    break;
+            }
+            return view;
+        }
+    }
+
+    public static AlertDialog showConfigMenuAlert(Context context, String titleKey, ArrayList<ConfigCellTextCheck> configItems) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(getString(titleKey));
+
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout linearLayoutInviteContainer = new LinearLayout(context);
+        linearLayoutInviteContainer.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(linearLayoutInviteContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+        int count = configItems.size();
+        for (int a = 0; a < count; a++) {
+            ConfigCellTextCheck configItem = configItems.get(a);
+            TextCheckCell textCell = new TextCheckCell(context);
+            textCell.setTextAndCheck(configItem.getTitle(), configItem.getBindConfig().Bool(), false);
+            textCell.setTag(a);
+            textCell.setBackground(Theme.getSelectorDrawable(false));
+            linearLayoutInviteContainer.addView(textCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            int finalA = a;
+            textCell.setOnClickListener(v2 -> {
+                Integer tag = (Integer) v2.getTag();
+                if (tag == finalA) {
+                    textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
+                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+                }
+            });
+        }
+        builder.setPositiveButton(getString(R.string.OK), null);
+        builder.setView(linearLayout);
+        return builder.create();
+    }
+
+    public static AlertDialog showConfigMenuWithIconAlert(BaseFragment bf, int titleKeyRes, ArrayList<ConfigCellTextCheckIcon> configItems) {
+        Context context = bf.getContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(getString(titleKeyRes));
+
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout linearLayoutInviteContainer = new LinearLayout(context);
+        linearLayoutInviteContainer.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(linearLayoutInviteContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+
+        int count = configItems.size();
+        for (int a = 0; a < count; a++) {
+            ConfigCellTextCheckIcon configItem = configItems.get(a);
+            TextCell textCell = new TextCell(context, 23, false, true, bf.getResourceProvider());
+            textCell.setTextAndCheckAndIcon(configItem.getTitle(), configItem.getBindConfig().Bool(), configItem.getResId(), configItem.getDivider());
+            textCell.setTag(a);
+            textCell.setBackground(Theme.getSelectorDrawable(false));
+            linearLayoutInviteContainer.addView(textCell, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            int finalA = a;
+            textCell.setOnClickListener(v2 -> {
+                Integer tag = (Integer) v2.getTag();
+                if (tag == finalA) {
+                    textCell.setChecked(configItem.getBindConfig().toggleConfigBool());
+                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+                }
+            });
+        }
+        builder.setPositiveButton(getString(R.string.OK), null);
+        builder.setView(linearLayout);
+        return builder.create();
+    }
 }
