@@ -376,7 +376,7 @@ import tw.nekomimi.nekogram.menu.translate.TranslatePopupWrapper;
 import tw.nekomimi.nekogram.parts.DialogTransKt;
 import tw.nekomimi.nekogram.parts.MessageTransKt;
 import tw.nekomimi.nekogram.parts.PollTransUpdatesKt;
-import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
+import tw.nekomimi.nekogram.helpers.SettingsBackupHelper;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.ui.BookmarksActivity;
@@ -33819,7 +33819,7 @@ public class ChatActivity extends BaseFragment implements
                         );
                     } else if (locFile.getName().toLowerCase().endsWith(".nekox-settings.json") || fileName.endsWith(".nekox-settings.json")) {
                         File finalLocFile = locFile;
-                        NekoSettingsActivity.importSettings(getParentActivity(), finalLocFile);
+                        SettingsBackupHelper.importSettings(getParentActivity(), finalLocFile);
                     } else if (getMessageType(selectedObject) == MESSAGE_TYPE_FONT) {
                         AlertDialog progressDialog = new AlertDialog(getParentActivity(), 3);
                         File finalLocFile = locFile;
@@ -41432,7 +41432,7 @@ public class ChatActivity extends BaseFragment implements
                             });
                 } else if (message.getDocumentName().toLowerCase().endsWith(".nekox-settings.json")) {
                     File finalLocFile = locFile;
-                    NekoSettingsActivity.importSettings(getParentActivity(), finalLocFile);
+                    SettingsBackupHelper.importSettings(getParentActivity(), finalLocFile);
                 } else {
                     boolean handled = false;
                     if (message.canPreviewDocument()) {
