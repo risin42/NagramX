@@ -7859,7 +7859,18 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     TLRPC.TL_dialogFolder dialogFolder = (TLRPC.TL_dialogFolder) dialog;
                     Bundle args = new Bundle();
                     args.putInt("folderId", dialogFolder.folder.id);
-                    presentFragment(new DialogsActivity(args));
+                    if (onlySelect) {
+                        args.putBoolean("onlySelect", true);
+                        if (arguments != null) {
+                            args.putBoolean("allowGlobalSearch", arguments.getBoolean("allowGlobalSearch", true));
+                            args.putBoolean("checkCanWrite", arguments.getBoolean("checkCanWrite", true));
+                        }
+                    }
+                    DialogsActivity dialogsActivity = new DialogsActivity(args);
+                    if (onlySelect) {
+                        dialogsActivity.setDelegate(delegate);
+                    }
+                    presentFragment(dialogsActivity, onlySelect);
                     return;
                 }
                 dialogId = dialog.id;
