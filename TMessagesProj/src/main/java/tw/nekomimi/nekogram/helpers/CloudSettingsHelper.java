@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -17,8 +16,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.core.graphics.ColorUtils;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
@@ -48,7 +45,6 @@ import java.util.Date;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
 import tw.nekomimi.nekogram.utils.GsonUtil;
 
 public class CloudSettingsHelper {
@@ -237,7 +233,7 @@ public class CloudSettingsHelper {
 
     private void syncToCloud(Utilities.Callback2<Boolean, String> callback) {
         try {
-            String settingsJson = NekoSettingsActivity.backupSettingsJson(true, 0);
+            String settingsJson = SettingsBackupHelper.backupSettingsJson(true, 0);
             String payload = gzipBase64Encode(settingsJson);
             int numChunks = (int) Math.ceil((double) payload.length() / MAX_CHUNK_CHARS);
             syncChunk(payload, 0, numChunks, MAX_CHUNK_CHARS, callback);
@@ -311,7 +307,7 @@ public class CloudSettingsHelper {
                     } else {
                         json = payload;
                     }
-                    NekoSettingsActivity.importSettings(GsonUtil.toJsonObject(json));
+                    SettingsBackupHelper.importSettings(GsonUtil.toJsonObject(json));
                     localSyncedDate = System.currentTimeMillis();
                     preferences.edit().putLong("updated_at", localSyncedDate).apply();
                     callback.run(true, null);
