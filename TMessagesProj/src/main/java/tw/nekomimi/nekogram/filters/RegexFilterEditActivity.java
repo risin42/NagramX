@@ -46,7 +46,9 @@ public class RegexFilterEditActivity extends BaseFragment {
     private final long targetDialogId;
     private final int chatFilterIdx;
     private final String prefillText;
+    private final boolean canSelectSharedTarget;
     private boolean caseInsensitive;
+    private boolean addToSharedFilters;
 
     private EditTextBoldCursor editField;
     private View doneButton;
@@ -54,6 +56,7 @@ public class RegexFilterEditActivity extends BaseFragment {
     private TextView errorTextView;
 
     private TextCheckCell caseInsensitiveButtonView;
+    private TextCheckCell addToSharedFiltersButtonView;
 
     public RegexFilterEditActivity() {
         filterIdx = -1;
@@ -62,6 +65,8 @@ public class RegexFilterEditActivity extends BaseFragment {
         targetDialogId = 0L;
         chatFilterIdx = -1;
         prefillText = null;
+        canSelectSharedTarget = false;
+        addToSharedFilters = false;
     }
 
     public RegexFilterEditActivity(long dialogId) {
@@ -71,6 +76,8 @@ public class RegexFilterEditActivity extends BaseFragment {
         targetDialogId = dialogId;
         chatFilterIdx = -1;
         prefillText = null;
+        canSelectSharedTarget = false;
+        addToSharedFilters = false;
     }
 
     public RegexFilterEditActivity(long dialogId, String prefillText) {
@@ -80,6 +87,8 @@ public class RegexFilterEditActivity extends BaseFragment {
         targetDialogId = dialogId;
         chatFilterIdx = -1;
         this.prefillText = prefillText;
+        canSelectSharedTarget = true; // text selection
+        addToSharedFilters = false;
     }
 
     public RegexFilterEditActivity(long dialogId, int chatFilterIdx) {
@@ -89,6 +98,8 @@ public class RegexFilterEditActivity extends BaseFragment {
         this.filterModel = AyuFilter.getChatFiltersForDialog(dialogId).size() > chatFilterIdx && chatFilterIdx >= 0 ? AyuFilter.getChatFiltersForDialog(dialogId).get(chatFilterIdx) : null;
         this.caseInsensitive = this.filterModel == null || this.filterModel.caseInsensitive;
         this.prefillText = null;
+        this.canSelectSharedTarget = false;
+        this.addToSharedFilters = false;
     }
 
     public RegexFilterEditActivity(int filterIdx) {
@@ -98,6 +109,8 @@ public class RegexFilterEditActivity extends BaseFragment {
         this.targetDialogId = 0L;
         this.chatFilterIdx = -1;
         this.prefillText = null;
+        this.canSelectSharedTarget = false;
+        this.addToSharedFilters = false;
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -142,7 +155,11 @@ public class RegexFilterEditActivity extends BaseFragment {
                     } else {
                         // creating a new filter (shared or chat-scoped)
                         if (targetDialogId != 0L) {
-                            AyuFilter.addChatFilter(targetDialogId, text, caseInsensitive);
+                            if (canSelectSharedTarget && addToSharedFilters) {
+                                AyuFilter.addFilter(text, caseInsensitive);
+                            } else {
+                                AyuFilter.addChatFilter(targetDialogId, text, caseInsensitive);
+                            }
                         } else {
                             AyuFilter.addFilter(text, caseInsensitive);
                         }
@@ -219,6 +236,19 @@ public class RegexFilterEditActivity extends BaseFragment {
         errorTextView.setGravity(LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT);
         errorTextView.setText("");
         linearLayout.addView(errorTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 24, 10, 24, 0));
+
+        if (!isEdit && targetDialogId != 0L && canSelectSharedTarget) {
+            addToSharedFiltersButtonView = new TextCheckCell(context);
+            addToSharedFiltersButtonView.setFocusable(true);
+            addToSharedFiltersButtonView.setTextAndCheck(getString(R.string.RegexFiltersTextSelectionAddtoShared), addToSharedFilters, true);
+            addToSharedFiltersButtonView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
+            addToSharedFiltersButtonView.setOnClickListener((v) -> {
+                boolean checked = !addToSharedFiltersButtonView.isChecked();
+                addToSharedFiltersButtonView.setChecked(checked);
+                addToSharedFilters = checked;
+            });
+            linearLayout.addView(addToSharedFiltersButtonView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 24, 10, 24, 0));
+        }
 
         caseInsensitiveButtonView = new TextCheckCell(context);
         caseInsensitiveButtonView.setFocusable(true);

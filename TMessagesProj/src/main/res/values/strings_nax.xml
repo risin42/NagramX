@@ -79,6 +79,7 @@
     <string name="RegexFiltersUserHeader">User Filters</string>
     <string name="RegexFiltersUserFilterHint">Enter User ID</string>
     <string name="RegexFiltersGlobalHeader">Global Filters</string>
+    <string name="RegexFiltersTextSelectionAddtoShared">Add to shared filters</string>
     <string name="ShadowBan">Shadow Ban</string>
     <string name="UnshadowBan">Unshadow Ban</string>
     <string name="ShadowBanAdded">Added to **user filters**.</string>
