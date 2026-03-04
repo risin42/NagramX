@@ -90,18 +90,30 @@ public class AyuGhostUtils {
         long dialogId = message.getDialogId();
         TLRPC.EncryptedChat encryptedChat = getMessagesController().getEncryptedChat(DialogObject.getEncryptedChatId(dialogId));
         TLRPC.InputPeer inputPeer = getMessagesController().getInputPeer(message.messageOwner.peer_id);
+        boolean readMessageContents = message.isVoice() || message.isRoundVideo();
         TLObject req;
         if (inputPeer instanceof TLRPC.TL_inputPeerChannel) {
-            TLRPC.TL_channels_readHistory request = new TLRPC.TL_channels_readHistory();
-            request.channel = MessagesController.getInputChannel(inputPeer);
-            request.max_id = messageId;
-            req = request;
+            if (readMessageContents) {
+                TLRPC.TL_channels_readMessageContents request = new TLRPC.TL_channels_readMessageContents();
+                request.channel = MessagesController.getInputChannel(inputPeer);
+                request.id.add(messageId);
+                req = request;
+            } else {
+                TLRPC.TL_channels_readHistory request = new TLRPC.TL_channels_readHistory();
+                request.channel = MessagesController.getInputChannel(inputPeer);
+                request.max_id = messageId;
+                req = request;
+            }
         } else if (encryptedChat != null) {
             TLRPC.TL_messages_readEncryptedHistory request = new TLRPC.TL_messages_readEncryptedHistory();
             request.peer = new TLRPC.TL_inputEncryptedChat();
             request.peer.chat_id = encryptedChat.id;
             request.peer.access_hash = encryptedChat.access_hash;
             request.max_date = message.messageOwner.date != 0 ? message.messageOwner.date : getConnectionsManager().getCurrentTime();
+            req = request;
+        } else if (readMessageContents) {
+            TLRPC.TL_messages_readMessageContents request = new TLRPC.TL_messages_readMessageContents();
+            request.id.add(messageId);
             req = request;
         } else {
             TLRPC.TL_messages_readHistory request = new TLRPC.TL_messages_readHistory();
@@ -236,6 +248,8 @@ public class AyuGhostUtils {
             return getDialogId(obj.peer);
         } else if (object instanceof TLRPC.TL_channels_readHistory obj) {
             return getDialogId(obj.channel);
+        } else if (object instanceof TLRPC.TL_channels_readMessageContents obj) {
+            return getDialogId(obj.channel);
         } else if (object instanceof TLRPC.TL_messages_getMessagesViews obj) {
             return getDialogId(obj.peer);
         }
@@ -273,6 +287,7 @@ public class AyuGhostUtils {
                 object instanceof TLRPC.TL_messages_readEncryptedHistory ||
                 object instanceof TLRPC.TL_messages_readDiscussion ||
                 object instanceof TLRPC.TL_messages_readMessageContents ||
+                object instanceof TLRPC.TL_channels_readMessageContents ||
                 object instanceof TLRPC.TL_channels_readHistory ||
                 object instanceof TLRPC.TL_messages_getMessagesViews obj && obj.increment;
     }
