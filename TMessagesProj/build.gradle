@@ -8,7 +8,8 @@ plugins {
 }
 
 def buildTimestamp = System.getenv('BUILD_TIMESTAMP') ?: '0'
-def verName = APP_VERSION_NAME
+def commitId = System.getenv('COMMIT_ID')
+def verName = "${APP_VERSION_NAME}${commitId?.take(7) ? "-${commitId.take(7)}" : ''}"
 def verCode = 1236
 
 def officialVer = APP_VERSION_NAME
