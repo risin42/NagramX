@@ -85,9 +85,11 @@ import tw.nekomimi.nekogram.llm.net.OpenAICompatClient;
 import tw.nekomimi.nekogram.llm.preset.LlmPresetRegistry;
 import tw.nekomimi.nekogram.llm.ui.LlmEditTextFactory;
 import tw.nekomimi.nekogram.llm.utils.LlmModelUtil;
+import tw.nekomimi.nekogram.llm.utils.LlmUrlNormalizer;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
 import tw.nekomimi.nekogram.ui.PopupBuilder;
+import tw.nekomimi.nekogram.utils.AndroidUtil;
 import xyz.nextalone.nagram.NaConfig;
 
 @SuppressLint("NotifyDataSetChanged")
@@ -788,6 +790,10 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
             button.setOnClickListener(v -> {
                 String value = editText.getText() != null ? editText.getText().toString() : "";
                 if (bind == NaConfig.INSTANCE.getLlmApiUrl()) {
+                    if (!LlmUrlNormalizer.isValidBaseUrl(value)) {
+                        AndroidUtil.showInputError(editText);
+                        return;
+                    }
                     LlmConfig.setSavedCustomBaseUrl(value);
                 } else {
                     if (value.trim().isEmpty()) value = null;
