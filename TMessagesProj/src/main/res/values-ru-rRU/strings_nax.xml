@@ -66,6 +66,7 @@
     <string name="RegexFiltersUserHeader">Пользовательские фильтры</string>
     <string name="RegexFiltersUserFilterHint">Введите ID пользователя</string>
     <string name="RegexFiltersGlobalHeader">Общие фильтры</string>
+    <string name="RegexFiltersTextSelectionAddtoShared">Добавить в общие фильтры</string>
     <string name="ShadowBan">Теневой бан</string>
     <string name="UnshadowBan">Снять теневой бан</string>
     <string name="ShadowBanAdded">Добавлено в **пользовательские фильтры**.</string>
@@ -133,7 +134,7 @@
     <string name="DisableGhostMode">Отключить «Призрака»</string>
     <string name="GhostModeEnabled">Режим «Призрака» включён</string>
     <string name="GhostModeDisabled">Режим «Призрака» выключен</string>
-    <string name="GhostModeInDrawer">Ярлык на главной вкладке</string>
+    <string name="GhostModeInDrawer">Ярлык на вкладке «Настройки»</string>
     <string name="GhostModeStatusIndicator">Индикатор режима «Призрака»</string>
     <string name="DontSendReadMessagePackets">Не читать сообщения</string>
     <string name="DontReadStoriesPackets">Не читать истории</string>
@@ -319,4 +320,8 @@
     <string name="UnifiedPushLastReceivedNotification">Последнее уведомление, полученное с помощью UnifiedPush, было %1$d секунд назад.\n\nС момента запуска Nagram X вы получили %2$d уведомлений.</string>
     <string name="UnifiedPushCurrentEndpoint">Текущая конечная точка UnifiedPush: %1$s</string>
     <string name="PlayOnce">Играть один раз</string>
+    <string name="StorageSettings">Хранилище</string>
+    <string name="MainTabsSettingsHeader">Основные вкладки</string>
+    <string name="MainTabsHideTitles">Скрыть заголовки</string>
+    <string name="MainTabsHideContacts">Скрыть вкладку «Контакты»</string>
 </resources>

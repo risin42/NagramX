@@ -66,6 +66,7 @@
     <string name="RegexFiltersUserHeader">ユーザーフィルター</string>
     <string name="RegexFiltersUserFilterHint">ユーザー ID を入力</string>
     <string name="RegexFiltersGlobalHeader">グローバルフィルター</string>
+    <string name="RegexFiltersTextSelectionAddtoShared">共通フィルターに追加</string>
     <string name="ShadowBan">シャドウバン</string>
     <string name="UnshadowBan">シャドウバン解除</string>
     <string name="ShadowBanAdded">**ユーザーフィルタ**に追加しました。</string>
@@ -129,8 +130,8 @@
     <string name="MapPreviewProviderYandexNax">Yandex</string>
     <string name="GhostMode">ゴーストモード</string>
     <string name="GhostEssentialsHeader">ゴースト設定</string>
-    <string name="EnableGhostMode">ゴーストモードを有効化</string>
-    <string name="DisableGhostMode">ゴーストモードを無効化</string>
+    <string name="EnableGhostMode">ゴースト ON</string>
+    <string name="DisableGhostMode">ゴースト OFF</string>
     <string name="GhostModeEnabled">ゴーストモードが有効です</string>
     <string name="GhostModeDisabled">ゴーストモードが無効です</string>
     <string name="GhostModeInDrawer">メインタブショートカット</string>

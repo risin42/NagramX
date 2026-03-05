@@ -66,6 +66,7 @@
     <string name="RegexFiltersUserHeader">Penyaring Pengguna</string>
     <string name="RegexFiltersUserFilterHint">Masukkan ID Pengguna</string>
     <string name="RegexFiltersGlobalHeader">Penyaring Global</string>
+    <string name="RegexFiltersTextSelectionAddtoShared">Tambahkan ke penyaring bersama</string>
     <string name="ShadowBan">Penangguhan Diam-diam</string>
     <string name="UnshadowBan">Batalkan Penangguhan Diam-diam</string>
     <string name="ShadowBanAdded">Ditambahkan ke **penyaring pengguna**.</string>
@@ -320,4 +321,7 @@
     <string name="UnifiedPushCurrentEndpoint">Titik akhir UnifiedPush saat ini adalah: %1$s</string>
     <string name="PlayOnce">Putar sekali</string>
     <string name="StorageSettings">Penyimpanan</string>
+    <string name="MainTabsSettingsHeader">Tab Utama</string>
+    <string name="MainTabsHideTitles">Sembunyikan Judul</string>
+    <string name="MainTabsHideContacts">Sembunyikan Tab Kontak</string>
 </resources>
