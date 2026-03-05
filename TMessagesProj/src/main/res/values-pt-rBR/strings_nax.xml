@@ -66,6 +66,7 @@
     <string name="RegexFiltersUserHeader">Filtros de usuário</string>
     <string name="RegexFiltersUserFilterHint">Inserir ID do usuário</string>
     <string name="RegexFiltersGlobalHeader">Filtros globais</string>
+    <string name="RegexFiltersTextSelectionAddtoShared">Adicionar aos filtros compartilhados</string>
     <string name="ShadowBan">Bloqueio oculto</string>
     <string name="UnshadowBan">Remover bloqueio oculto</string>
     <string name="ShadowBanAdded">Adicionado aos **filtros de usuário**.</string>
@@ -108,7 +109,7 @@
     <string name="SpringAnimation">Animação de mola</string>
     <string name="SpringAnimationCrossfade">Barra de ação animada</string>
     <string name="Other">Outros</string>
-    <string name="RestartApp">Reiniciar aplicativo</string>
+    <string name="RestartApp">Reiniciar app</string>
     <string name="ResetSettings">Redefinir configurações</string>
     <string name="ResetSettingsAlert">Tem certeza de que deseja redefinir todas as N-Configurações?</string>
     <string name="DontAutoPlayNextVoice">Não reproduzir a próxima mensagem de voz automaticamente</string>
@@ -206,7 +207,7 @@
     <string name="CreateCode">Criar Código</string>
     <string name="CreateCodeLanguage">Linguagem</string>
     <string name="NoCaptionForward">Encaminhar sem legenda</string>
-    <string name="PreferCommonGroupsTab">Preferir a aba Grupos</string>
+    <string name="PreferCommonGroupsTab">Preferir aba Grupos</string>
     <string name="PreferCommonGroupsTabNotice">Seleciona automaticamente a aba \"Grupos\" em vez de \"Presentes\" sempre que possível.</string>
     <string name="SendHighQualityPhoto">Enviar foto em alta qualidade</string>
     <string name="GroupedMessageMenu">Menu de mensagens agrupado</string>
@@ -320,4 +321,7 @@
     <string name="UnifiedPushCurrentEndpoint">O endpoint atual do UnifiedPush é: %1$s</string>
     <string name="PlayOnce">Reproduzir uma vez</string>
     <string name="StorageSettings">Armazenamento</string>
+    <string name="MainTabsSettingsHeader">Abas principais</string>
+    <string name="MainTabsHideTitles">Ocultar títulos</string>
+    <string name="MainTabsHideContacts">Ocultar aba Contatos</string>
 </resources>

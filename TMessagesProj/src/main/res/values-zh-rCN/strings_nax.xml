@@ -66,6 +66,7 @@
     <string name="RegexFiltersUserHeader">用户过滤器</string>
     <string name="RegexFiltersUserFilterHint">输入用户 ID</string>
     <string name="RegexFiltersGlobalHeader">全局过滤器</string>
+    <string name="RegexFiltersTextSelectionAddtoShared">添加到通用过滤器</string>
     <string name="ShadowBan">静默屏蔽</string>
     <string name="UnshadowBan">解除静默屏蔽</string>
     <string name="ShadowBanAdded">已添加到**用户过滤器**。</string>
@@ -322,5 +323,5 @@
     <string name="StorageSettings">存储</string>
     <string name="MainTabsSettingsHeader">主标签页</string>
     <string name="MainTabsHideTitles">隐藏标题</string>
-    <string name="MainTabsHideContacts">隐藏联系人标签</string>
+    <string name="MainTabsHideContacts">隐藏联系人标签页</string>
 </resources>

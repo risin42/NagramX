@@ -66,6 +66,7 @@
     <string name="RegexFiltersUserHeader">Filtri Utente</string>
     <string name="RegexFiltersUserFilterHint">Inserisci l\'ID Utente</string>
     <string name="RegexFiltersGlobalHeader">Filtri Globali</string>
+    <string name="RegexFiltersTextSelectionAddtoShared">Aggiungi ai filtri condivisi</string>
     <string name="ShadowBan">Shadow Ban</string>
     <string name="UnshadowBan">Unshadow Ban</string>
     <string name="ShadowBanAdded">Aggiunto a **filtri utente**.</string>
@@ -324,4 +325,7 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="UnifiedPushCurrentEndpoint">L\'endpoint UnifiedPush corrente è: %1$s</string>
     <string name="PlayOnce">Esegui una volta</string>
     <string name="StorageSettings">Archiviazione</string>
+    <string name="MainTabsSettingsHeader">Tab Principali</string>
+    <string name="MainTabsHideTitles">Nascondi titoli</string>
+    <string name="MainTabsHideContacts">Nascondi scheda Contatti</string>
 </resources>
