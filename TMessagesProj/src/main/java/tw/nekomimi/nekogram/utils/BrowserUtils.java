@@ -18,10 +18,6 @@ import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.LaunchActivity;
 
 public class BrowserUtils {
-    public static void openBrowserHome(OnHomePageOpened callback) {
-        openBrowserHome(callback, false);
-    }
-
     public static void openBrowserHome(OnHomePageOpened callback, boolean forceInAppBrowser) {
         final String url = getDefaultBrowserHome();
         if (SharedConfig.inappBrowser) {
@@ -50,10 +46,6 @@ public class BrowserUtils {
         alertBuilder.setPositiveButton(getString(R.string.Enable), (__, ___) -> SharedConfig.toggleInappBrowser());
         alertBuilder.setNegativeButton(getString(R.string.Cancel), null);
         alertBuilder.show();
-    }
-
-    public static void openBrowserHome() {
-        openBrowserHome(null);
     }
 
     public static String getDefaultBrowserHome() {

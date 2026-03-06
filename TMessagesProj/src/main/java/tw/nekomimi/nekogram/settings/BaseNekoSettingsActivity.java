@@ -419,7 +419,7 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
                     checkBoxCell.getCheckBoxRound().setColor(Theme.key_switch2TrackChecked, Theme.key_radioBackground, Theme.key_checkboxCheck);
                     checkBoxCell.setEnabled(true);
                     view = checkBoxCell;
-                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
             }
             // noinspection ConstantConditions

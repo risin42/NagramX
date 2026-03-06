@@ -1,17 +1,12 @@
 package tw.nekomimi.nekogram.utils
 
-import android.os.Build
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.URLSpan
 import android.view.View
-import kotlinx.coroutines.runBlocking
 import org.telegram.messenger.ApplicationLoader
-import org.telegram.messenger.LocaleController
 import org.telegram.ui.Components.URLSpanNoUnderline
-import tw.nekomimi.nekogram.utils.FileUtil.delete
-import tw.nekomimi.nekogram.utils.FileUtil.initDir
 import java.io.File
 
 
@@ -39,12 +34,8 @@ object LocaleUtil {
     }
 
     fun htmlToString(text: String?): CharSequence {
-        val htmlParsed: Spannable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        val htmlParsed: Spannable =
             SpannableString(Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY))
-        } else {
-            @Suppress("DEPRECATION")
-            SpannableString(Html.fromHtml(text))
-        }
 
         return formatWithURLs(htmlParsed)
     }

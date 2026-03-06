@@ -74,7 +74,6 @@ public class NekoConfig {
     public static final ArrayList<DatacenterInfo> datacenterInfos = new ArrayList<>(5);
 
     // Configs
-    public static ConfigItem configMigrated = addConfig("ConfigMigrated", configTypeBool, false);
     public static ConfigItem unreadBadgeOnBackButton = addConfig("unreadBadgeOnBackButton", configTypeBool, false);
     public static ConfigItem useCustomEmoji = addConfig("useCustomEmoji", configTypeBool, false);
     public static ConfigItem repeatConfirm = addConfig("repeatConfirm", configTypeBool, true);
@@ -204,7 +203,6 @@ public class NekoConfig {
 
     public static void init() {
         loadConfig(false);
-        checkMigration();
     }
 
     public static ConfigItem addConfig(String k, int t, Object d) {
@@ -293,22 +291,6 @@ public class NekoConfig {
 
     public static boolean fixDriftingForGoogleMaps() {
         return !useOSMDroidMap.Bool() && mapDriftingFixForGoogleMaps.Bool();
-    }
-
-    public static void checkMigration() {
-        if (ApplicationLoader.applicationContext == null) {
-            return;
-        }
-        if (!configMigrated.Bool()) {
-            configMigrated.setConfigBool(true);
-
-            if (getPreferences().contains("DisableChatAction")) {
-                sendUploadProgress.setConfigBool(!getPreferences().getBoolean("DisableChatAction", true));
-            }
-            if (getPreferences().contains("DisableSendReadStories")) {
-                sendReadStoriesPackets.setConfigBool(!getPreferences().getBoolean("DisableSendReadStories", true));
-            }
-        }
     }
 
     // --- Ghost Mode ---

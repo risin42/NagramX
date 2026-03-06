@@ -4,15 +4,10 @@ import static org.telegram.messenger.LocaleController.getString;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.R;
-import org.telegram.ui.ActionBar.AlertDialog;
-import org.telegram.ui.ActionBar.Theme;
-import org.telegram.ui.Cells.RadioColorCell;
+import org.telegram.messenger.FileLog;
 import org.telegram.ui.Cells.TextSettingsCell;
 
 import kotlin.Unit;
@@ -22,12 +17,11 @@ import tw.nekomimi.nekogram.ui.PopupBuilder;
 
 // TextSettingsCell, select from a list
 // Can be used without select list（custom）
-public class ConfigCellSelectBox extends AbstractConfigCell {
+public class ConfigCellSelectBox extends AbstractConfigCell implements WithBindConfig, WithKey {
     private final ConfigItem bindConfig;
     private final String[] selectList; // split by \n
     private final String title;
     private final Runnable onClickCustom;
-    private Context ctxCustom;
     private final String key;
 
     // default: customTitle=null customOnClick=null
@@ -38,14 +32,10 @@ public class ConfigCellSelectBox extends AbstractConfigCell {
             key1 = bindConfig.getKey();
         }
         this.key = key1;
-        if (selectList_s == null) {
-            this.selectList = null;
-        } else if (selectList_s instanceof String) {
-            this.selectList = ((String) selectList_s).split("\n");
-        } else if (selectList_s instanceof String[]) {
-            this.selectList = (String[]) selectList_s;
-        } else {
-            this.selectList = null;
+        switch (selectList_s) {
+            case String s -> this.selectList = s.split("\n");
+            case String[] strings -> this.selectList = strings;
+            case null, default -> this.selectList = null;
         }
         title = getString(this.key);
         this.onClickCustom = customOnClick;
@@ -76,56 +66,17 @@ public class ConfigCellSelectBox extends AbstractConfigCell {
         cell.setTextAndValue(title, valueText, false, cellGroup.needSetDivider(this), true);
     }
 
-    public void onClickWithDialog(Context ctx) {
-        ctxCustom = ctx;
-        Context context = ctxCustom != null ? ctxCustom : cellGroup.thisFragment.getParentActivity();
-        if (context == null)
-            return;
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context); //TODO Replace with pop-up menu
-        builder.setTitle(getString(bindConfig.getKey()));
-        final LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        builder.setView(linearLayout);
-
-        for (int i = 0; i < selectList.length; i++) {
-            RadioColorCell cell = new RadioColorCell(context);
-            cell.setPadding(AndroidUtilities.dp(4), 0, AndroidUtilities.dp(4), 0);
-            cell.setTag(i);
-            cell.setCheckColor(Theme.getColor(Theme.key_radioBackground), Theme.getColor(Theme.key_dialogRadioBackgroundChecked));
-            cell.setTextAndValue(selectList[i], bindConfig.Int() == i);
-            linearLayout.addView(cell);
-            cell.setOnClickListener(v -> {
-                Integer which = (Integer) v.getTag();
-                bindConfig.setConfigInt(which);
-
-                if (cellGroup.listAdapter != null)
-                    cellGroup.listAdapter.notifyItemChanged(cellGroup.rows.indexOf(this));
-                builder.getDismissRunnable().run();
-                if (cellGroup.thisFragment != null)
-                    cellGroup.thisFragment.getParentLayout().rebuildAllFragmentViews(false, false);
-
-                cellGroup.runCallback(bindConfig.getKey(), which);
-            });
-        }
-        builder.setNegativeButton(getString(R.string.Cancel), null);
-        if (ctxCustom == null) {
-            cellGroup.thisFragment.showDialog(builder.create());
-        } else {
-            builder.show();
-        }
-    }
-
     public void onClick(View view) {
         if (onClickCustom != null) {
             try {
                 onClickCustom.run();
             } catch (Exception e) {
+                FileLog.e(e);
             }
             return;
         }
 
-        Context context = ctxCustom != null ? ctxCustom : cellGroup.thisFragment.getParentActivity();
+        Context context = cellGroup.thisFragment.getParentActivity();
         if (context == null) {
             return;
         }

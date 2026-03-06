@@ -1,7 +1,5 @@
 package tw.nekomimi.nekogram.helpers;
 
-import android.util.SparseArray;
-
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.BaseController;
 import org.telegram.messenger.UserConfig;

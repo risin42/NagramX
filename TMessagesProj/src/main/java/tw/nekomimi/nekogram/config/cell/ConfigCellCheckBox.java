@@ -9,7 +9,7 @@ import org.telegram.ui.Cells.CheckBoxCell;
 import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.ConfigItem;
 
-public class ConfigCellCheckBox extends AbstractConfigCell {
+public class ConfigCellCheckBox extends AbstractConfigCell implements WithBindConfig, WithKey {
     private final ConfigItem bindConfig;
     private final String key;
     private final String title;

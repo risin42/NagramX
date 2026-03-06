@@ -9,7 +9,7 @@ import org.telegram.ui.Cells.TextCell;
 import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.ConfigItem;
 
-public class ConfigCellTextCheckIcon extends AbstractConfigCell {
+public class ConfigCellTextCheckIcon extends AbstractConfigCell implements WithBindConfig, WithKey {
     private final ConfigItem bindConfig;
     private final String key;
     private final String title;
@@ -125,4 +125,3 @@ public class ConfigCellTextCheckIcon extends AbstractConfigCell {
         }
     }
 }
-
