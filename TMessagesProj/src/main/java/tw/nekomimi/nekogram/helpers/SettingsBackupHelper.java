@@ -13,8 +13,6 @@ import android.widget.LinearLayout;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.radolyn.ayugram.messages.AyuSavePreferences;
-import com.radolyn.ayugram.utils.AyuGhostPreferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,8 +43,6 @@ import tw.nekomimi.nekogram.utils.GsonUtil;
 import tw.nekomimi.nekogram.utils.ShareUtil;
 import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.BookmarksHelper;
-import xyz.nextalone.nagram.helper.LocalPeerColorHelper;
-import xyz.nextalone.nagram.helper.LocalPremiumStatusHelper;
 
 public final class SettingsBackupHelper {
     public static String backupSettingsJson(boolean isCloud, int indentSpaces) throws JSONException {
@@ -191,14 +187,9 @@ public final class SettingsBackupHelper {
         } catch (Throwable ignore) {
         }
         String[] preservePrefixes = {
-                AyuGhostPreferences.ghostReadExclusionPrefix,
-                AyuGhostPreferences.ghostTypingExclusionPrefix,
-                AyuSavePreferences.saveExclusionPrefix,
                 LocalNameHelper.chatNameOverridePrefix,
                 LocalNameHelper.userNameOverridePrefix,
                 DialogConfig.customForumTabPrefix,
-                LocalPeerColorHelper.KEY_PREFIX,
-                LocalPremiumStatusHelper.KEY_PREFIX,
                 BookmarksHelper.KEY_PREFIX
         };
 

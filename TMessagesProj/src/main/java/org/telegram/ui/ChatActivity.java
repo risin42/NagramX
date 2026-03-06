@@ -19552,7 +19552,7 @@ public class ChatActivity extends BaseFragment implements
                 boolean showForward = NaConfig.INSTANCE.getActionBarButtonForward().Bool();
                 boolean canSendMessage = ChatObject.canSendMessages(currentChat);
                 boolean canReport = false;
-                if (selectedCount == 1 && !hasSelectedAyuDeletedMessage && chatMode != MODE_SCHEDULED && (currentChat != null || currentUser != null && currentUser.bot)) {
+                if (selectedCount == 1 && chatMode != MODE_SCHEDULED && (currentChat != null || currentUser != null && currentUser.bot)) {
                     for (var msg : getSelectedMessages1()) {
                         if (msg != null && msg.contentType == 0 && msg.getId() > 0 && !msg.isOut()) {
                             canReport = true;

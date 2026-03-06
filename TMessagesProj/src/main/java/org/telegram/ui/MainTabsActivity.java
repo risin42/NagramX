@@ -74,7 +74,6 @@ import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.AppRestartHelper;
 import tw.nekomimi.nekogram.helpers.MainTabsHelper;
 import tw.nekomimi.nekogram.helpers.PasscodeHelper;
-import tw.nekomimi.nekogram.settings.GhostModeActivity;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
 import tw.nekomimi.nekogram.ui.BookmarkManagerActivity;
 import tw.nekomimi.nekogram.utils.BrowserUtils;
@@ -949,20 +948,6 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         }
         if (index == INDEX_SETTINGS) {
             ItemOptions o = ItemOptions.makeOptions(this, button);
-            if (NekoConfig.showGhostInDrawer.Bool()) {
-                final String msg = NekoConfig.isGhostModeActive()
-                    ? getString(R.string.DisableGhostMode)
-                    : getString(R.string.EnableGhostMode);
-                o.add(R.drawable.ayu_ghost, msg, () -> presentFragment(new GhostModeActivity()), () -> {
-                    final String toggleMsg = NekoConfig.isGhostModeActive()
-                        ? getString(R.string.GhostModeDisabled)
-                        : getString(R.string.GhostModeEnabled);
-                    NekoConfig.toggleGhostMode();
-                    BulletinFactory.of(contentView, resourceProvider).createSuccessBulletin(toggleMsg).show();
-                    NotificationCenter.getInstance(UserConfig.selectedAccount).postNotificationName(NotificationCenter.mainUserInfoChanged);
-                });
-                o.addGap();
-            }
             o.add(R.drawable.msg_settings, getString(R.string.NekoSettings), () -> presentFragment(new NekoSettingsActivity()));
             o.add(R.drawable.web_browser, getString(R.string.InappBrowser), () -> presentFragment(new WebBrowserSettings(null)), () -> BrowserUtils.openBrowserHome(null, true));
             o.addGap();
