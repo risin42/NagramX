@@ -15,14 +15,13 @@ import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkRequest
-import android.os.Build
 import android.os.Environment
 import android.util.Base64
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.graphics.createBitmap
 import androidx.core.view.setPadding
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.BinaryBitmap
@@ -50,20 +49,6 @@ import java.io.File
 
 object ProxyUtil {
 
-    @JvmStatic
-    fun isVPNEnabled(): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return false
-        }
-        runCatching {
-            val connectivityManager = ApplicationLoader.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val network = connectivityManager.activeNetwork
-            val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
-            return networkCapabilities!!.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
-        }
-        return false
-    }
-
     private var networkCallbackRegistered = false
 
     @JvmStatic
@@ -89,23 +74,17 @@ object ProxyUtil {
                     }
                     if ((SharedConfig.isProxyEnabled() && vpn) || (!SharedConfig.isProxyEnabled() && !vpn)) {
                         SharedConfig.setProxyEnable(!vpn)
-                        AndroidUtilities.runOnUIThread(Runnable {
+                        AndroidUtilities.runOnUIThread {
                             NotificationCenter.getGlobalInstance()
                                 .postNotificationName(NotificationCenter.proxySettingsChanged)
-                        })
+                        }
                     }
                 }
             }
 
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                connectivityManager.registerDefaultNetworkCallback(networkCallback)
-            } else {
-                val request: NetworkRequest = NetworkRequest.Builder()
-                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
-                connectivityManager.registerNetworkCallback(request, networkCallback)
-            }
-        } catch (ignored: Exception) {}
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        } catch (_: Exception) {}
     }
 
     @JvmStatic
@@ -165,7 +144,7 @@ object ProxyUtil {
 
                             if (i == 0) {
 
-                                if (Build.VERSION.SDK_INT >= 23 && ctx.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                if (ctx.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                                     getOwnerActivity(ctx).requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 4)
 
@@ -183,7 +162,7 @@ object ProxyUtil {
 
                                     saveTo.outputStream().use {
 
-                                        loadBitmapFromView(root).compress(Bitmap.CompressFormat.JPEG, 100, it);
+                                        loadBitmapFromView(root).compress(Bitmap.CompressFormat.JPEG, 100, it)
 
                                     }
 
@@ -223,7 +202,7 @@ object ProxyUtil {
     }
 
     private fun loadBitmapFromView(v: View): Bitmap {
-        val b = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
+        val b = createBitmap(v.width, v.height)
         val c = Canvas(b)
         v.layout(v.left, v.top, v.right, v.bottom)
         v.draw(c)
@@ -237,8 +216,8 @@ object ProxyUtil {
             hints[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.M
             QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, size, size, hints, null, null, icon)
         } catch (e: WriterException) {
-            FileLog.e(e);
-            Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+            FileLog.e(e)
+            createBitmap(size, size)
         }
     }
 
@@ -257,7 +236,7 @@ object ProxyUtil {
                 qrReader.decode(BinaryBitmap(GlobalHistogramBinarizer(source)), mapOf(
                         DecodeHintType.TRY_HARDER to true
                 ))
-            } catch (e: NotFoundException) {
+            } catch (_: NotFoundException) {
                 qrReader.decode(BinaryBitmap(GlobalHistogramBinarizer(source.invert())), mapOf(
                         DecodeHintType.TRY_HARDER to true
                 ))
@@ -265,7 +244,7 @@ object ProxyUtil {
 
             showLinkAlert(ctx, result.text)
 
-        } catch (e: Throwable) {
+        } catch (_: Throwable) {
 
             showToast(getString(R.string.NoQrFound))
 
@@ -322,7 +301,7 @@ object ProxyUtil {
 
         var error = false
 
-        text?.trim()?.split('\n')?.map { it.split(" ") }?.forEach {
+        text?.trim()?.split('\n')?.map { it.split(" ") }?.forEach { it ->
 
             it.forEach { line ->
 
@@ -347,7 +326,7 @@ object ProxyUtil {
 
         runCatching {
 
-            if (proxies.isNullOrEmpty() && !error) {
+            if (proxies.isEmpty() && !error) {
 
                 String(Base64.decode(text, Base64.NO_PADDING)).trim().split('\n').map { it.split(" ") }.forEach { str ->
 
@@ -376,7 +355,7 @@ object ProxyUtil {
 
         }
 
-        if (proxies.isNullOrEmpty()) {
+        if (proxies.isEmpty()) {
 
             if (!error) showToast(getString(R.string.BrokenLink))
 
@@ -409,7 +388,7 @@ object ProxyUtil {
             addr = addr.drop(1)
             addr = addr.dropLast(addr.count() - addr.lastIndexOf("]"))
         }
-        val regV6 = Regex("^((?:[0-9A-Fa-f]{1,4}))?((?::[0-9A-Fa-f]{1,4}))*::((?:[0-9A-Fa-f]{1,4}))?((?::[0-9A-Fa-f]{1,4}))*|((?:[0-9A-Fa-f]{1,4}))((?::[0-9A-Fa-f]{1,4})){7}$")
+        val regV6 = Regex("^([0-9A-Fa-f]{1,4})?(:[0-9A-Fa-f]{1,4})*::([0-9A-Fa-f]{1,4})?(:[0-9A-Fa-f]{1,4})*|([0-9A-Fa-f]{1,4})(:[0-9A-Fa-f]{1,4}){7}$")
         return regV6.matches(addr)
     }
 }

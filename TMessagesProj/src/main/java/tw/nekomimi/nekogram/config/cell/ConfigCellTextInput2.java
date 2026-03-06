@@ -23,7 +23,7 @@ import java.util.function.Function;
 import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.ConfigItem;
 
-public class ConfigCellTextInput2 extends AbstractConfigCell {
+public class ConfigCellTextInput2 extends AbstractConfigCell implements WithBindConfig, WithKey {
     private final ConfigItem bindConfig;
     private final String hint;
     private final String title;
@@ -125,4 +125,3 @@ public class ConfigCellTextInput2 extends AbstractConfigCell {
         cellGroup.thisFragment.showDialog(builder.create());
     }
 }
-

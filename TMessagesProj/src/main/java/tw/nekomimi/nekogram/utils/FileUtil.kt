@@ -1,11 +1,6 @@
 package tw.nekomimi.nekogram.utils
 
-import android.os.Build
-import okhttp3.internal.closeQuietly
-import org.telegram.messenger.ApplicationLoader
-import org.telegram.messenger.FileLog
 import java.io.File
-import java.util.zip.ZipFile
 
 object FileUtil {
 

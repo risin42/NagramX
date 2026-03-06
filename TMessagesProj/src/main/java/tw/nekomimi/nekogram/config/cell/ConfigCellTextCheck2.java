@@ -12,7 +12,7 @@ import java.util.Locale;
 
 import tw.nekomimi.nekogram.config.CellGroup;
 
-public class ConfigCellTextCheck2 extends AbstractConfigCell {
+public class ConfigCellTextCheck2 extends AbstractConfigCell implements WithKey {
 
     private final String key;
     private final String title;
@@ -83,15 +83,6 @@ public class ConfigCellTextCheck2 extends AbstractConfigCell {
         }
         return count;
     }
-
-    /*public boolean isFullChecked() {
-        for (ConfigCellCheckBox item : checkBox) {
-            if (item != null && !item.getBindConfig().Bool()) {
-                return false;
-            }
-        }
-        return true;
-    }*/
 
     public boolean toggleFullChecked() {
         boolean newValue = getSelectedCount() == 0;

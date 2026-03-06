@@ -25,7 +25,7 @@ import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.ConfigItem;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
 
-public class ConfigCellTextInput extends AbstractConfigCell {
+public class ConfigCellTextInput extends AbstractConfigCell implements WithBindConfig, WithKey {
     private final ConfigItem bindConfig;
     private final String hint;
     private final String title;

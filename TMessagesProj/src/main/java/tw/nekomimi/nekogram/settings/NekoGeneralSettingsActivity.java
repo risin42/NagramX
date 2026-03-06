@@ -430,13 +430,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     }
 
     @Override
-    protected void onCustomCellClick(View view, int position, float x, float y) {
-        if (position == cellGroup.rows.indexOf(nameOrderRow)) {
-            LocaleController.getInstance().recreateFormatters();
-        }
-    }
-
-    @Override
     protected boolean onItemLongClick(View view, int position, float x, float y) {
         AbstractConfigCell a = cellGroup.rows.get(position);
         if (a == pushServiceTypeUnifiedGatewayRow) {

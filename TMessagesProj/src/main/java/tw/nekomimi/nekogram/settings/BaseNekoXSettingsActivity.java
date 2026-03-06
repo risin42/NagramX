@@ -55,6 +55,7 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheckIcon;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextDetail;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput2;
+import tw.nekomimi.nekogram.config.cell.WithBindConfig;
 import tw.nekomimi.nekogram.config.cell.WithKey;
 import tw.nekomimi.nekogram.config.cell.WithOnClick;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
@@ -99,7 +100,7 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         });
 
         fragmentView = new FrameLayout(context);
-        fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        fragmentView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundGray));
         FrameLayout frameLayout = (FrameLayout) fragmentView;
 
         listView = createListView(context);
@@ -210,39 +211,15 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
     }
 
     protected ConfigItem getBindConfig(AbstractConfigCell row) {
-        if (row instanceof ConfigCellTextCheck) {
-            return ((ConfigCellTextCheck) row).getBindConfig();
-        } else if (row instanceof ConfigCellSelectBox) {
-            return ((ConfigCellSelectBox) row).getBindConfig();
-        } else if (row instanceof ConfigCellTextDetail) {
-            return ((ConfigCellTextDetail) row).getBindConfig();
-        } else if (row instanceof ConfigCellTextInput) {
-            return ((ConfigCellTextInput) row).getBindConfig();
-        } else if (row instanceof ConfigCellTextCheckIcon) {
-            return ((ConfigCellTextCheckIcon) row).getBindConfig();
+        if (row instanceof WithBindConfig withBindConfig) {
+            return withBindConfig.getBindConfig();
         }
         return null;
     }
 
     protected String getRowKey(AbstractConfigCell row) {
-        if (row instanceof WithKey) {
-            return ((WithKey) row).getKey();
-        } else if (row instanceof ConfigCellTextCheck) {
-            return ((ConfigCellTextCheck) row).getKey();
-        } else if (row instanceof ConfigCellSelectBox) {
-            return ((ConfigCellSelectBox) row).getKey();
-        } else if (row instanceof ConfigCellTextDetail) {
-            return ((ConfigCellTextDetail) row).getKey();
-        } else if (row instanceof ConfigCellTextInput) {
-            return ((ConfigCellTextInput) row).getKey();
-        } else if (row instanceof ConfigCellCustom) {
-            return ((ConfigCellCustom) row).getKey();
-        } else if (row instanceof ConfigCellTextCheckIcon) {
-            return ((ConfigCellTextCheckIcon) row).getKey();
-        } else if (row instanceof ConfigCellTextCheck2) {
-            return ((ConfigCellTextCheck2) row).getKey();
-        } else if (row instanceof ConfigCellCheckBox) {
-            return ((ConfigCellCheckBox) row).getKey();
+        if (row instanceof WithKey withKey) {
+            return withKey.getKey();
         }
         return null;
     }
@@ -275,30 +252,19 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         if (cellGroup == null || position < 0 || position >= cellGroup.rows.size()) {
             return;
         }
-        AbstractConfigCell a = cellGroup.rows.get(position);
-        if (a == null) {
-            return;
-        }
-        if (a instanceof ConfigCellTextCheck) {
-            ((ConfigCellTextCheck) a).onClick((TextCheckCell) view);
-        } else if (a instanceof ConfigCellSelectBox) {
-            ((ConfigCellSelectBox) a).onClick(view);
-        } else if (a instanceof WithOnClick) {
-            ((WithOnClick) a).onClick();
-        } else if (a instanceof ConfigCellTextInput) {
-            ((ConfigCellTextInput) a).onClick();
-        } else if (a instanceof ConfigCellTextInput2) {
-            ((ConfigCellTextInput2) a).onClick();
-        } else if (a instanceof ConfigCellTextDetail) {
-            ((ConfigCellTextDetail) a).onClick(view, position);
-        } else if (a instanceof ConfigCellCustom) {
-            onCustomCellClick(view, position, x, y);
-        } else if (a instanceof ConfigCellTextCheckIcon) {
-            ((ConfigCellTextCheckIcon) a).onClick();
-        } else if (a instanceof ConfigCellTextCheck2) {
-            ((ConfigCellTextCheck2) a).onClick();
-        } else if (a instanceof ConfigCellCheckBox) {
-            onCheckBoxCellClick(view, position);
+        AbstractConfigCell cell = cellGroup.rows.get(position);
+        switch (cell) {
+            case ConfigCellTextCheck c -> c.onClick((TextCheckCell) view);
+            case ConfigCellTextCheck2 c -> c.onClick();
+            case ConfigCellTextCheckIcon c -> c.onClick();
+            case ConfigCellSelectBox c -> c.onClick(view);
+            case ConfigCellTextInput c -> c.onClick();
+            case ConfigCellTextInput2 c -> c.onClick();
+            case ConfigCellTextDetail c -> c.onClick(view, position);
+            case ConfigCellCheckBox ignored -> onCheckBoxCellClick(view, position);
+            case ConfigCellCustom ignored -> onCustomCellClick(view, position, x, y);
+            case WithOnClick withOnClick -> withOnClick.onClick();
+            case null, default -> {}
         }
     }
 
@@ -462,7 +428,7 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
                 return false;
             }
             int position = holder.getAdapterPosition();
-            if (position == RecyclerView.NO_POSITION || position < 0 || position >= cellGroup.rows.size()) {
+            if (position < 0 || position >= cellGroup.rows.size()) {
                 return false;
             }
             AbstractConfigCell a = cellGroup.rows.get(position);
@@ -526,19 +492,19 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
                     break;
                 case CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL:
                     view = new TextSettingsCell(mContext);
-                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
                 case CellGroup.ITEM_TYPE_TEXT_CHECK:
                     view = new TextCheckCell(mContext);
-                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
                 case CellGroup.ITEM_TYPE_HEADER:
                     view = new HeaderCell(mContext);
-                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
                 case CellGroup.ITEM_TYPE_TEXT_DETAIL:
                     view = new TextDetailSettingsCell(mContext);
-                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
                 case CellGroup.ITEM_TYPE_TEXT:
                     view = new TextInfoPrivacyCell(mContext);

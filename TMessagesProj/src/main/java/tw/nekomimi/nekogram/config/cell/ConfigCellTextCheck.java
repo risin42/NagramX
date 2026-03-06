@@ -9,7 +9,7 @@ import org.telegram.ui.Cells.TextCheckCell;
 import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.ConfigItem;
 
-public class ConfigCellTextCheck extends AbstractConfigCell {
+public class ConfigCellTextCheck extends AbstractConfigCell implements WithBindConfig, WithKey {
     private final ConfigItem bindConfig;
     private final CharSequence title;
     private final String subtitle;
@@ -57,18 +57,6 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
         }
     }
 
-    public void setEnabledAndUpdateState(boolean enabled) {
-        this.enabled = enabled;
-        if (this.cell != null) {
-            this.cell.setEnabled(this.enabled);
-            if (subtitle == null) {
-                cell.setTextAndCheck(title, bindConfig.Bool(), cellGroup.needSetDivider(this), true);
-            } else {
-                cell.setTextAndValueAndCheck(title.toString(), subtitle, bindConfig.Bool(), true, cellGroup.needSetDivider(this), true);
-            }
-        }
-    }
-
     public void onBindViewHolder(RecyclerView.ViewHolder holder) {
         TextCheckCell cell = (TextCheckCell) holder.itemView;
         this.cell = cell;
@@ -89,4 +77,3 @@ public class ConfigCellTextCheck extends AbstractConfigCell {
         cellGroup.runCallback(bindConfig.getKey(), newV);
     }
 }
-

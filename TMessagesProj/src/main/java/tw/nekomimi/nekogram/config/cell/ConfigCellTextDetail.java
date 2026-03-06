@@ -29,7 +29,7 @@ import tw.nekomimi.nekogram.config.CellGroup;
 import tw.nekomimi.nekogram.config.ConfigItem;
 import tw.nekomimi.nekogram.utils.AndroidUtil;
 
-public class ConfigCellTextDetail extends AbstractConfigCell {
+public class ConfigCellTextDetail extends AbstractConfigCell implements WithBindConfig, WithKey {
     private final ConfigItem bindConfig;
     private final String title;
     private final String hint;

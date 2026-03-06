@@ -1,10 +1,6 @@
 package tw.nekomimi.nekogram.config;
 
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.recyclerview.widget.RecyclerView;
-
+import org.telegram.messenger.FileLog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Components.RecyclerListView;
 
@@ -51,13 +47,6 @@ public class CellGroup {
         return cell;
     }
 
-    public AbstractConfigCell appendCell(AbstractConfigCell cell, boolean display) {
-        cell.bindCellGroup(this);
-        if (display) // For censored features, don't show it forever.
-            this.rows.add(cell);
-        return cell;
-    }
-
     public interface CallBackSettingsChanged {
         void run(String key, Object newValue);
     }
@@ -67,27 +56,8 @@ public class CellGroup {
         try {
             callBackSettingsChanged.run(key, newValue);
         } catch (Exception e) {
-
+            FileLog.e(e);
         }
-    }
-
-    public interface OnBindViewHolder {
-        void onBindViewHolder(RecyclerView.ViewHolder holder);
-    }
-
-    //Utils
-    public static void hideItemFromRecyclerView(View cell, boolean hide) {
-        if (cell == null) return;
-        if (cell != null) return; //TODO hideItemFromRecyclerView
-        ViewGroup.LayoutParams params = cell.getLayoutParams();
-        if (hide) {
-            cell.setVisibility(View.GONE);
-            params.height = 0;
-        } else {
-            cell.setVisibility(View.VISIBLE);
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        }
-        cell.setLayoutParams(params);
     }
 
     public boolean needSetDivider(AbstractConfigCell cell) {
