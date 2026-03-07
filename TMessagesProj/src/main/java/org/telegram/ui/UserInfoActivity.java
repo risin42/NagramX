@@ -63,6 +63,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 
+import tw.nekomimi.nekogram.helpers.PasscodeHelper;
+
 public class UserInfoActivity extends UniversalFragment implements NotificationCenter.NotificationCenterDelegate {
 
     private EditTextCell firstNameEdit;
@@ -179,6 +181,7 @@ public class UserInfoActivity extends UniversalFragment implements NotificationC
     private void updateAccounts() {
         accountNumbers.clear();
         for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
+            if (PasscodeHelper.isAccountHidden(a)) continue;
             if (UserConfig.getInstance(a).isClientActivated() && currentAccount != a) {
                 accountNumbers.add(a);
             }
