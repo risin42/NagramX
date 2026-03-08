@@ -118,7 +118,6 @@
     <string name="ChatMenu">Menu czatu</string>
     <string name="MediaViewerMenu">Menu przeglądarki multimediów</string>
     <string name="MenuAndButtons">Menu i przyciski</string>
-    <string name="ColoredAdminTitle">Kolorowy tytuł administratora</string>
     <string name="SettingsNax">Ustawienia</string>
     <string name="AccountSettingsNax">Ustawienia konta</string>
     <string name="HideReactions">Ukryj reakcje</string>

@@ -17987,9 +17987,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     adminLabel = getString(R.string.ChatAdmin);
                 }
                 adminString = new SpannableStringBuilder(adminLabel);
-                if (NaConfig.INSTANCE.getColoredAdminTitle().Bool()) {
-                    adminString.replace(0, adminString.length(), TimeStringHelper.getColoredAdminString(Theme.chat_namePaint, adminString));
-                }
             }
 
             int boosts = currentMessageObject.messageOwner.from_boosts_applied;

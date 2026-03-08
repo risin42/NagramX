@@ -4,11 +4,7 @@ import static org.telegram.messenger.LocaleController.getString;
 
 import android.graphics.drawable.Drawable;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.style.CharacterStyle;
-import android.text.style.UpdateAppearance;
 
 import androidx.core.content.ContextCompat;
 
@@ -230,31 +226,6 @@ public class TimeStringHelper {
             channelLabelSpan.setSpan(new ColoredImageSpan(channelLabelDrawable, true), 0, 1, 0);
         }
         return channelLabelSpan;
-    }
-
-    public static CharSequence getColoredAdminString(TextPaint namePaint, SpannableStringBuilder sb) {
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(sb);
-        spannableStringBuilder.setSpan(new AdminTitleColorSpan(namePaint), 0, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spannableStringBuilder;
-    }
-
-    private static class AdminTitleColorSpan extends CharacterStyle implements UpdateAppearance {
-
-        private final TextPaint namePaint;
-
-        private AdminTitleColorSpan(TextPaint namePaint) {
-            this.namePaint = namePaint;
-        }
-
-        @Override
-        public void updateDrawState(TextPaint tp) {
-            if (namePaint == null) {
-                return;
-            }
-            int alpha = tp.getAlpha();
-            tp.setColor(namePaint.getColor());
-            tp.setAlpha(alpha);
-        }
     }
 
 }
