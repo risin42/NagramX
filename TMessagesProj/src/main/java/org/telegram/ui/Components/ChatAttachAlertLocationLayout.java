@@ -705,7 +705,8 @@ public class ChatAttachAlertLocationLayout extends ChatAttachAlert.AttachAlertLa
                 updateClipView();
             }
         };
-        iBlur3Capture = new ViewGroupPartRenderer(listView, alert.getContainerView(), listView::drawChild);
+        iBlur3Capture = listView;
+        iBlur3CaptureView = listView;
         occupyNavigationBar = true;
         listView.setClipToPadding(false);
         listView.setAdapter(adapter = new LocationActivityAdapter(context, locationType, dialogId, true, resourcesProvider, parentAlert.isStoryLocationPicker, false, parentAlert.isBizLocationPicker));

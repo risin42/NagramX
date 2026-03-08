@@ -517,6 +517,7 @@ public class ChatActivity extends BaseFragment implements
     private ActionBarMenuItem headerItem;
     private ActionBarMenu.LazyItem editTextItem;
     protected ActionBarMenuItem searchItem;
+    protected ActionBarMenuItem topicCreateItem;
     private ActionBarMenuItem.Item translateItem;
     private ActionBarMenuItem searchIconItem;
     private ActionBarMenuItem viewInChatItem;
@@ -1728,6 +1729,8 @@ public class ChatActivity extends BaseFragment implements
     private final static int open_direct = 70;
     private final static int remove_fee = 71;
     private final static int charge_fee = 72;
+
+    private final static int chat_menu_topic_create = 73;
 
     private final static int id_chat_compose_panel = 1000;
     private final static int to_the_beginning = 200;
@@ -4450,6 +4453,8 @@ public class ChatActivity extends BaseFragment implements
                     if (button != null) {
                         button.setTextColor(getThemedColor(Theme.key_text_RedBold));
                     }
+                } else if (id == chat_menu_topic_create) {
+                    presentFragment(TopicCreateFragment.create(-dialog_id, 0).setOpenInChatActivity(ChatActivity.this));
                 } else {
                     nkbtn_onclick_actionbar(id);
                 }
@@ -4632,6 +4637,10 @@ public class ChatActivity extends BaseFragment implements
         }
         if (chatMode == MODE_QUICK_REPLIES && !QuickRepliesController.isSpecial(quickReplyShortcut)) {
             menu.addItem(edit_quick_reply, R.drawable.group_edit).setContentDescription(LocaleController.getString(R.string.Edit));
+        }
+
+        if (UserObject.isBotForumWithEditableTopics(currentUser)) {
+            topicCreateItem = menu.addItem(chat_menu_topic_create, R.drawable.menu_topic_add_30);
         }
 
         if (currentEncryptedChat == null && (chatMode == 0 || chatMode == MODE_SAVED || chatMode == MODE_SUGGESTIONS) && !isReport()) {
@@ -6779,10 +6788,7 @@ public class ChatActivity extends BaseFragment implements
                 return super.createAccessibilityNodeInfo();
             }
         };
-        chatListView.addEdgeEffectListener(() -> {
-            invalidateMergedVisibleBlurredPositionsAndSources(BLUR_INVALIDATE_FLAG_SCROLL);
-            chatListView.postOnAnimation(this::invalidateClipRectForBackgroundAndChatList);
-        });
+        chatListView.addEdgeEffectListener(() -> invalidateMergedVisibleBlurredPositionsAndSources(BLUR_INVALIDATE_FLAG_SCROLL | BLUR_INVALIDATE_FLAG_CLIP));
         if (currentEncryptedChat != null) {
             chatListView.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         }
@@ -12405,7 +12411,7 @@ public class ChatActivity extends BaseFragment implements
             pinnedViewH = Math.max(pinnedViewH, hashtagSearchTabs.getCurrentHeight());
         }
         float oldPadding = chatListViewPaddingTop;
-        chatListViewPaddingTop = dp(4) + contentPaddingTop + (paddingTopHeight = topPanelViewH + pinnedViewH) + (topicsTabs != null ? dp(48 + 7) * (1.0f - topicsTabs.sidemenuT) : 0);
+        chatListViewPaddingTop = dp(4) + contentPaddingTop + (paddingTopHeight = topPanelViewH + pinnedViewH) + (topicsTabs != null ? dp(TopicsTabsView.TOP_TABS_HEIGHT + 7) * (1.0f - topicsTabs.sidemenuT) : 0);
         chatListViewPaddingTop += blurredViewTopOffset;
         chatListViewPaddingVisibleOffset = 0;
         chatListViewPaddingTop += contentPanTranslation;
@@ -12552,7 +12558,7 @@ public class ChatActivity extends BaseFragment implements
             hashtagHistoryView.setTranslationY(getHashtagTabsHeight() + contentPanTranslation);
         }
         if (topPanelLayout != null) {
-            topPanelLayout.setTranslationY(contentPanTranslation + (topicsTabs != null ? (dp(48 + 7) * (1f - topicsTabs.sidemenuT)) : 0));
+            topPanelLayout.setTranslationY(contentPanTranslation + (topicsTabs != null ? (dp(TopicsTabsView.TOP_TABS_HEIGHT + 7) * (1f - topicsTabs.sidemenuT)) : 0));
         }
     }
 
@@ -18640,7 +18646,7 @@ public class ChatActivity extends BaseFragment implements
                     showSearchAsIcon = false;
                 }
                 showSearchAsIcon = showSearchAsIcon && !isTitleCentered();
-                if (showSearchAsIcon || showAudioCallAsIcon) {
+                if (showSearchAsIcon || showAudioCallAsIcon || UserObject.isBotForumWithEditableTopics(currentUser)) {
                     if (avatarContainer != null && avatarContainer.getLayoutParams() != null) {
                         ((ViewGroup.MarginLayoutParams) avatarContainer.getLayoutParams()).rightMargin = isTitleCentered() ? 0 : AndroidUtilities.dp(chatMode == MODE_SAVED ? 40 : 96);
                     }
@@ -22100,7 +22106,7 @@ public class ChatActivity extends BaseFragment implements
                     }
                 }
             }
-            if (messages.isEmpty() && currentEncryptedChat == null && currentUser != null && currentUser.bot && botUser == null) {
+            if (messages.isEmpty() && currentEncryptedChat == null && currentUser != null && currentUser.bot && botUser == null && !UserObject.isBotForum(currentUser)) {
                 botUser = "";
                 updateBottomOverlay();
             }
@@ -34846,7 +34852,7 @@ public class ChatActivity extends BaseFragment implements
                 args.putBoolean("historyPreloaded", false);
                 addToPulledDialogsMyself();
                 ChatActivity chatActivity = new ChatActivity(args);
-                if (topicKey.topicId != 0) {
+                if (topicKey.topicId != 0 || topicsFragment != null) {
                     ForumUtilities.applyTopic(chatActivity, topicKey);
                     if (fragment != null) {
                         fragment.removeSelfFromStack();
@@ -42265,6 +42271,9 @@ public class ChatActivity extends BaseFragment implements
             if (parentLayout != null && parentLayout.getDrawerLayoutContainer() != null) {
                 parentLayout.getDrawerLayoutContainer().setBehindKeyboardColor(getThemedColor(Theme.key_windowBackgroundWhite));
             }
+            if (topPanelLayout != null) {
+                topPanelLayout.updateColors();
+            }
             if (suggestEmojiPanel != null) {
                 suggestEmojiPanel.updateColors();
             }
@@ -47167,7 +47176,7 @@ public class ChatActivity extends BaseFragment implements
             fadeAlphaInv *= (1f - topPanelLayout.getMetadata().getTotalVisibility());
         }
         if (topicsTabs != null) {
-            fadeHeight += dp(48 + 7) * (1f - topicsTabs.sidemenuT);
+            fadeHeight += dp(TopicsTabsView.TOP_TABS_HEIGHT + 7) * (1f - topicsTabs.sidemenuT);
             fadeAlphaInv *= topicsTabs.sidemenuT;
         }
 
@@ -47453,6 +47462,7 @@ public class ChatActivity extends BaseFragment implements
 
     private static final int BLUR_INVALIDATE_FLAG_SCROLL = 1;
     private static final int BLUR_INVALIDATE_FLAG_POSITIONS = 1 << 1;
+    private static final int BLUR_INVALIDATE_FLAG_CLIP = 1 << 2;
 
     private void invalidateMergedVisibleBlurredPositionsAndSourcesPositions() {
         invalidateMergedVisibleBlurredPositionsAndSources(BLUR_INVALIDATE_FLAG_POSITIONS);
@@ -47473,6 +47483,10 @@ public class ChatActivity extends BaseFragment implements
     private void invalidateMergedVisibleBlurredPositionsAndSourcesImpl(int flags) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || scrollableViewNoiseSuppressor == null) {
             return;
+        }
+
+        if (BitwiseUtils.hasFlag(flags, BLUR_INVALIDATE_FLAG_CLIP)) {
+            invalidateClipRectForBackgroundAndChatList();
         }
 
         if (BitwiseUtils.hasFlag(flags, BLUR_INVALIDATE_FLAG_POSITIONS)) {
