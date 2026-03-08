@@ -12465,7 +12465,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
 
                     @Override
                     public void onOpen() {
-
+                        PhotoViewer.getInstance().openKeyboard();
                     }
 
                     @Override

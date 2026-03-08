@@ -99,6 +99,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val showTextCreateDate =
+        addConfig(
+            "TextCreateDate",
+            ConfigItem.configTypeBool,
+            true
+        )
     val showTextRegular =
         addConfig(
             "TextRegular",
