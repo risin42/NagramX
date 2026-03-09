@@ -8763,16 +8763,9 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
 
     @UiThread
     public static void prepareSendingBotContextResult(BaseFragment fragment, AccountInstance accountInstance, TLRPC.BotInlineResult result, HashMap<String, String> params, long dialogId, MessageObject replyToMsg, MessageObject replyToTopMsg, TL_stories.StoryItem storyItem, ChatActivity.ReplyQuote quote, boolean notify, int scheduleDate, int scheduleRepeatPeriod, String quick_reply_shortcut, int quick_reply_shortcut_id, long stars, long monoForumPeerId) {
-        prepareSendingBotContextResult(fragment, accountInstance, result, params, dialogId, replyToMsg, replyToTopMsg, storyItem, quote, notify, scheduleDate, scheduleRepeatPeriod, quick_reply_shortcut, quick_reply_shortcut_id, stars, monoForumPeerId, null, null);
-    }
-
-    @UiThread
-    public static void prepareSendingBotContextResult(BaseFragment fragment, AccountInstance accountInstance, TLRPC.BotInlineResult result, HashMap<String, String> params, long dialogId, MessageObject replyToMsg, MessageObject replyToTopMsg, TL_stories.StoryItem storyItem, ChatActivity.ReplyQuote quote, boolean notify, int scheduleDate, int scheduleRepeatPeriod, String quick_reply_shortcut, int quick_reply_shortcut_id, long stars, long monoForumPeerId, String overrideMessage, ArrayList<TLRPC.MessageEntity> overrideEntities) {
         if (result == null) {
             return;
         }
-        final String inlineMessage = overrideMessage != null ? overrideMessage : result.send_message.message;
-        final ArrayList<TLRPC.MessageEntity> inlineEntities = overrideMessage != null ? (overrideEntities != null ? overrideEntities : new ArrayList<>()) : result.send_message.entities;
         if (result.send_message instanceof TLRPC.TL_botInlineMessageMediaAuto) {
             new Thread(() -> {
                 boolean isEncrypted = DialogObject.isEncryptedDialog(dialogId);
@@ -9058,9 +9051,9 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                         if (precahcedThumb[0] != null && precachedKey[0] != null) {
                             ImageLoader.getInstance().putImageToCache(new BitmapDrawable(precahcedThumb[0]), precachedKey[0], false);
                         }
-                        params2 = SendMessageParams.of(finalDocument, null, finalPathFinal, dialogId, replyToMsg, replyToTopMsg, inlineMessage, inlineEntities, result.send_message.reply_markup, params, notify, scheduleDate, scheduleRepeatPeriod, 0, result, null, false);
+                        params2 = SendMessageParams.of(finalDocument, null, finalPathFinal, dialogId, replyToMsg, replyToTopMsg, result.send_message.message, result.send_message.entities, result.send_message.reply_markup, params, notify, scheduleDate, scheduleRepeatPeriod, 0, result, null, false);
                     } else if (finalPhoto != null) {
-                        params2 = SendMessageParams.of(finalPhoto, result.content != null ? result.content.url : null, dialogId, replyToMsg, replyToTopMsg, inlineMessage, inlineEntities, result.send_message.reply_markup, params, notify, scheduleDate, scheduleRepeatPeriod, 0, result, false);
+                        params2 = SendMessageParams.of(finalPhoto, result.content != null ? result.content.url : null, dialogId, replyToMsg, replyToTopMsg, result.send_message.message, result.send_message.entities, result.send_message.reply_markup, params, notify, scheduleDate, scheduleRepeatPeriod, 0, result, false);
                     } else if (finalGame != null) {
                         params2 = SendMessageParams.of(finalGame, dialogId, replyToMsg, replyToTopMsg, result.send_message.reply_markup, params, notify, scheduleDate, scheduleRepeatPeriod);
                     }
@@ -9077,17 +9070,17 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
             }).run();
         } else if (result.send_message instanceof TLRPC.TL_botInlineMessageText) {
             TLRPC.WebPage webPage = null;
-            if (DialogObject.isEncryptedDialog(dialogId) && inlineEntities != null && inlineMessage != null) {
-                for (int a = 0; a < inlineEntities.size(); a++) {
-                    TLRPC.MessageEntity entity = inlineEntities.get(a);
+            if (DialogObject.isEncryptedDialog(dialogId)) {
+                for (int a = 0; a < result.send_message.entities.size(); a++) {
+                    TLRPC.MessageEntity entity = result.send_message.entities.get(a);
                     if (entity instanceof TLRPC.TL_messageEntityUrl) {
                         webPage = new TLRPC.TL_webPagePending();
-                        webPage.url = inlineMessage.substring(entity.offset, entity.offset + entity.length);
+                        webPage.url = result.send_message.message.substring(entity.offset, entity.offset + entity.length);
                         break;
                     }
                 }
             }
-            final SendMessagesHelper.SendMessageParams params2 = SendMessagesHelper.SendMessageParams.of(inlineMessage, dialogId, replyToMsg, replyToTopMsg, webPage, !result.send_message.no_webpage, inlineEntities, result.send_message.reply_markup, params, notify, scheduleDate, scheduleRepeatPeriod, null, false);
+            final SendMessagesHelper.SendMessageParams params2 = SendMessagesHelper.SendMessageParams.of(result.send_message.message, dialogId, replyToMsg, replyToTopMsg, webPage, !result.send_message.no_webpage, result.send_message.entities, result.send_message.reply_markup, params, notify, scheduleDate, scheduleRepeatPeriod, null, false);
             params2.quick_reply_shortcut = quick_reply_shortcut;
             params2.quick_reply_shortcut_id = quick_reply_shortcut_id;
             params2.replyQuote = quote;
@@ -9178,7 +9171,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
             TLRPC.TL_botInlineMessageMediaWebPage request = (TLRPC.TL_botInlineMessageMediaWebPage) result.send_message;
             TLRPC.WebPage webPage = new TLRPC.TL_webPagePending();
             webPage.url = request.url;
-            final SendMessagesHelper.SendMessageParams params2 = SendMessagesHelper.SendMessageParams.of(inlineMessage, dialogId, replyToMsg, replyToTopMsg, webPage, !result.send_message.no_webpage, inlineEntities, result.send_message.reply_markup, params, notify, scheduleDate, scheduleRepeatPeriod, null, false);
+            final SendMessagesHelper.SendMessageParams params2 = SendMessagesHelper.SendMessageParams.of(result.send_message.message, dialogId, replyToMsg, replyToTopMsg, webPage, !result.send_message.no_webpage, result.send_message.entities, result.send_message.reply_markup, params, notify, scheduleDate, scheduleRepeatPeriod, null, false);
             params2.quick_reply_shortcut = quick_reply_shortcut;
             params2.quick_reply_shortcut_id = quick_reply_shortcut_id;
             params2.replyQuote = quote;

@@ -12295,37 +12295,17 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                                     }
                                 }
 
-                                String botCaption = null;
-                                ArrayList<TLRPC.MessageEntity> botCaptionEntities = null;
-                                if (NaConfig.INSTANCE.getAutoInsertGIFCaption().Bool()) {
-                                    CharSequence[] cs = new CharSequence[]{AndroidUtilities.getTrimmedString(messageEditText.getText())};
-                                    botCaptionEntities = MediaDataController.getInstance(currentAccount).getEntities(cs, supportsSendingNewEntities());
-                                    botCaption = cs[0].toString();
-                                    if (botCaption.startsWith("@gif")) {
-                                        botCaption = null;
-                                        botCaptionEntities = null;
-                                    }
-                                }
-
                                 TLRPC.User bot = (TLRPC.User) parent;
 
                                 HashMap<String, String> params = new HashMap<>();
                                 params.put("id", result.id);
                                 params.put("query_id", "" + result.query_id);
                                 params.put("force_gif", "1");
-                                boolean hasBotCaption = botCaption != null && !botCaption.isEmpty();
 
                                 if (storyItem == null) {
-                                    SendMessagesHelper.prepareSendingBotContextResult(parentFragment, accountInstance, result, params, dialog_id, replyingMessageObject, getThreadMessage(), null, replyingQuote, notify, scheduleDate, 0, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), hasBotCaption ? botCaption : null, hasBotCaption ? botCaptionEntities : null);
+                                    SendMessagesHelper.prepareSendingBotContextResult(parentFragment, accountInstance, result, params, dialog_id, replyingMessageObject, getThreadMessage(), null, replyingQuote, notify, scheduleDate, 0, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId());
                                 } else {
-                                    if (hasBotCaption) {
-                                        SendMessagesHelper.getInstance(currentAccount).sendSticker(result.document, query, dialog_id, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams(), botCaption, botCaptionEntities);
-                                    } else {
-                                        SendMessagesHelper.getInstance(currentAccount).sendSticker(result.document, query, dialog_id, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams());
-                                    }
-                                }
-                                if (hasBotCaption) {
-                                    messageEditText.setText("");
+                                    SendMessagesHelper.getInstance(currentAccount).sendSticker(result.document, query, dialog_id, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams());
                                 }
                                 if (searchingType != 0) {
                                     setSearchingTypeInternal(0, true);
