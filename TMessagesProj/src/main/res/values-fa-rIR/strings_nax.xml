@@ -191,8 +191,6 @@
     <string name="AutoCheckUpdateSwitch">کانال به‌روزرسانی</string>
     <string name="AutoCheckUpdateRelease">نسخه نهایی</string>
     <string name="AutoCheckUpdateBeta">نسخه بتا</string>
-    <string name="AutoInsertGIFCaption">زیرنویس خودکار برای گیف‌ها</string>
-    <string name="AutoInsertGIFCaptionNotice">به طور خودکار از متن موجود در فیلد ورودی به عنوان زیرنویس گیف استفاده می‌کند.</string>
     <string name="YourVersionIsLatestNax">نسخه شما به‌روز است.</string>
     <string name="PremiumElements">عناصر پریمیوم</string>
     <string name="PremiumItemBoosts">شمارنده بوست</string>

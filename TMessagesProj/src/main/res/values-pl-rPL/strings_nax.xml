@@ -217,8 +217,6 @@
     <string name="AutoCheckUpdateSwitch">Aktualizuj kanał</string>
     <string name="AutoCheckUpdateRelease">Upublikowane</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
-    <string name="AutoInsertGIFCaption">GIF-y z automatycznymi podpisami</string>
-    <string name="AutoInsertGIFCaptionNotice">Automatycznie używa tekstu z bieżącego pola wprowadzania jako podpisu pliku GIF.</string>
     <string name="YourVersionIsLatestNax">Twoja wersja jest aktualna.</string>
     <string name="PremiumElements">Elementy premium</string>
     <string name="PremiumItemBoosts">Licznik wzmocnienia</string>

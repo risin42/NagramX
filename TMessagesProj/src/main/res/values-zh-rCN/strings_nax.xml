@@ -217,8 +217,6 @@
     <string name="AutoCheckUpdateSwitch">更新通道</string>
     <string name="AutoCheckUpdateRelease">稳定版</string>
     <string name="AutoCheckUpdateBeta">测试版</string>
-    <string name="AutoInsertGIFCaption">发送 GIF 时自动插入草稿</string>
-    <string name="AutoInsertGIFCaptionNotice">自动将当前输入框中的内容作为 GIF 的附带文字发送。</string>
     <string name="YourVersionIsLatestNax">已是最新版本。</string>
     <string name="PremiumElements">Premium 元素</string>
     <string name="PremiumItemBoosts">助推者标识</string>

@@ -189,12 +189,6 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
-    val autoInsertGIFCaption =
-        addConfig(
-            "AutoInsertGIFCaption",
-            ConfigItem.configTypeBool,
-            true
-        )
     val zalgoFilter =
         addConfig(
             "ZalgoFilter",

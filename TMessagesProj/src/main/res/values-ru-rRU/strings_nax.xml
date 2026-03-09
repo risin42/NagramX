@@ -217,8 +217,6 @@
     <string name="AutoCheckUpdateSwitch">Канал обновлений</string>
     <string name="AutoCheckUpdateRelease">Релиз</string>
     <string name="AutoCheckUpdateBeta">Бета</string>
-    <string name="AutoInsertGIFCaption">Автоматическая подпись к GIF</string>
-    <string name="AutoInsertGIFCaptionNotice">Автоматически использует текст в текущем поле ввода в качестве подписи к GIF.</string>
     <string name="YourVersionIsLatestNax">Ваша версия актуальна.</string>
     <string name="PremiumElements">Premium-элементы</string>
     <string name="PremiumItemBoosts">Счётчик голосов</string>

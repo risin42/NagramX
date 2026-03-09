@@ -217,8 +217,6 @@
     <string name="AutoCheckUpdateSwitch">更新チャネル</string>
     <string name="AutoCheckUpdateRelease">リリース</string>
     <string name="AutoCheckUpdateBeta">ベータ</string>
-    <string name="AutoInsertGIFCaption">GIF 自動キャプション</string>
-    <string name="AutoInsertGIFCaptionNotice">メッセージ入力欄のテキストを、GIF のキャプションとして自動で送信します。</string>
     <string name="YourVersionIsLatestNax">お使いのバージョンは最新です。</string>
     <string name="PremiumElements">プレミアム要素</string>
     <string name="PremiumItemBoosts">後押し者標示</string>

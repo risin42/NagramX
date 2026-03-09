@@ -217,8 +217,6 @@
     <string name="AutoCheckUpdateSwitch">Saluran Pembaruan</string>
     <string name="AutoCheckUpdateRelease">Rilis</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
-    <string name="AutoInsertGIFCaption">Teks Otomatis GIF</string>
-    <string name="AutoInsertGIFCaptionNotice">Secara otomatis menggunakan teks di bidang input saat ini sebagai teks GIF.</string>
     <string name="YourVersionIsLatestNax">Versi Anda sudah terbaru.</string>
     <string name="PremiumElements">Elemen Premium</string>
     <string name="PremiumItemBoosts">Penghitung Peningkatan</string>

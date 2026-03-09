@@ -12270,17 +12270,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                             TL_stories.StoryItem storyItem = delegate != null ? delegate.getReplyToStory() : null;
                             if (gif instanceof TLRPC.Document) {
                                 TLRPC.Document document = (TLRPC.Document) gif;
-                                if (NaConfig.INSTANCE.getAutoInsertGIFCaption().Bool()) {
-                                    ArrayList<TLRPC.MessageEntity> entities = MediaDataController.getInstance(currentAccount).getEntities(new CharSequence[]{AndroidUtilities.getTrimmedString(messageEditText.getText())}, supportsSendingNewEntities());
-                                    String caption = messageEditText.getText().toString();
-                                    if (caption.startsWith("@gif")) {
-                                        caption = "";
-                                    }
-                                    SendMessagesHelper.getInstance(currentAccount).sendSticker(document, query, dialog_id, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams(), caption, entities);
-                                    messageEditText.setText("");
-                                } else {
-                                    SendMessagesHelper.getInstance(currentAccount).sendSticker(document, query, dialog_id, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams());
-                                }
+                                SendMessagesHelper.getInstance(currentAccount).sendSticker(document, query, dialog_id, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams());
                                 MediaDataController.getInstance(currentAccount).addRecentGif(document, (int) (System.currentTimeMillis() / 1000), true);
                                 if (DialogObject.isEncryptedDialog(dialog_id)) {
                                     accountInstance.getMessagesController().saveGif(parent, document);

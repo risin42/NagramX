@@ -199,8 +199,6 @@
     <string name="AutoCheckUpdateSwitch">Güncelleme Kanalı</string>
     <string name="AutoCheckUpdateRelease">Sürüm</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
-    <string name="AutoInsertGIFCaption">GIF\'lere Otomatik Başlık Ekle</string>
-    <string name="AutoInsertGIFCaptionNotice">Mevcut giriş alanındaki metni otomatik olarak GIF\'in başlığı olarak kullanır.</string>
     <string name="YourVersionIsLatestNax">Sürümünüz güncel.</string>
     <string name="PremiumElements">Premium Öğeler</string>
     <string name="PremiumItemBoosts">Takviye Sayacı</string>

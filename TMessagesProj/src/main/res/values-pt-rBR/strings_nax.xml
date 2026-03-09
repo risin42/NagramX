@@ -217,8 +217,6 @@
     <string name="AutoCheckUpdateSwitch">Canal de atualização</string>
     <string name="AutoCheckUpdateRelease">Estável</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
-    <string name="AutoInsertGIFCaption">Legendar GIFs automaticamente</string>
-    <string name="AutoInsertGIFCaptionNotice">Usar automaticamente o texto do campo de entrada como legenda do GIF.</string>
     <string name="YourVersionIsLatestNax">Sua versão está atualizada.</string>
     <string name="PremiumElements">Elementos Premium</string>
     <string name="PremiumItemBoosts">Contador de impulsos</string>

@@ -230,8 +230,6 @@
     <string name="AutoCheckUpdateSwitch">Update Channel</string>
     <string name="AutoCheckUpdateRelease">Release</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
-    <string name="AutoInsertGIFCaption">Auto-Caption GIFs</string>
-    <string name="AutoInsertGIFCaptionNotice">Automatically uses the text in the current input field as the GIF\'s caption.</string>
     <string name="YourVersionIsLatestNax">Your version is up to date.</string>
     <string name="PremiumElements">Premium Elements</string>
     <string name="PremiumItemBoosts">Boost Counter</string>
