@@ -2276,6 +2276,9 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
                                 if (emptyView != null) {
                                     emptyView.setVisibility(GONE);
                                 }
+                                if (hasSections()) {
+                                    invalidate();
+                                }
                             }
                         }).start();
                     }
@@ -2293,6 +2296,11 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
             }
             hiddenByEmptyView = true;
         }
+    }
+
+    @Override
+    public ViewPropertyAnimator animate() {
+        return super.animate();
     }
 
     protected void emptyViewUpdated(boolean shown, boolean animated) {
@@ -3275,6 +3283,19 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
     public boolean applyPaddingToSections = false;
 
     public static final int TAG_NOT_SECTION = -33024;
+
+    public void disableSections() {
+        setSelectorDrawableColor(getThemedColor(Theme.key_listSelector));
+        this.isViewTypeSection = null;
+        this.sectionRadius = 0;
+        this.sectionRadiusTop = null;
+        this.sectionRadiusBottom = null;
+        this.drawSectionBackground = null;
+        if (sectionsItemDecoration != null) {
+            removeItemDecoration(sectionsItemDecoration);
+            sectionsItemDecoration = null;
+        }
+    }
 
     public void setSections() {
         setSections(dp(12), dp(16), false);

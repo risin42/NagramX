@@ -115,7 +115,6 @@ import org.telegram.ui.Cells.PhotoAttachCameraCell;
 import org.telegram.ui.Cells.PhotoAttachPermissionCell;
 import org.telegram.ui.Cells.PhotoAttachPhotoCell;
 import org.telegram.ui.ChatActivity;
-import org.telegram.ui.Components.blur3.ViewGroupPartRenderer;
 import org.telegram.ui.Components.blur3.capture.IBlur3Capture;
 import org.telegram.ui.Components.blur3.capture.IBlur3Hash;
 import org.telegram.ui.LaunchActivity;
@@ -1065,7 +1064,7 @@ public class ChatAttachAlertPhotoLayout extends ChatAttachAlert.AttachAlertLayou
                         PhotoViewer.getInstance().closePhotoAfterSelectWithAnimation = parentAlert.avatarWithBulletin != null;
                     }
                     if (parentAlert.isStickerMode) {
-                        PhotoViewer.getInstance().enableStickerMode(null, false, parentAlert.customStickerHandler);
+                        PhotoViewer.getInstance().enableStickerMode(null, null, false, parentAlert.customStickerHandler);
                     }
                     if (captionForAllMedia()) {
                         PhotoViewer.getInstance().setCaption(parentAlert.getCommentView().getText());
@@ -2283,7 +2282,7 @@ public class ChatAttachAlertPhotoLayout extends ChatAttachAlert.AttachAlertLayou
         }, chatActivity);
         PhotoViewer.getInstance().setAvatarFor(parentAlert.getAvatarFor());
         if (parentAlert.isStickerMode) {
-            PhotoViewer.getInstance().enableStickerMode(null, false, parentAlert.customStickerHandler);
+            PhotoViewer.getInstance().enableStickerMode(null, null, false, parentAlert.customStickerHandler);
             PhotoViewer.getInstance().prepareSegmentImage();
         }
     }

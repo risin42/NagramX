@@ -2381,8 +2381,13 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
                         blockCell.setTextAndValueAndIcon(getString("ChannelBlacklist", R.string.ChannelBlacklist), String.format("%d", Math.max(info.banned_count, info.kicked_count)), R.drawable.msg_user_remove, logCell != null && logCell.getVisibility() == View.VISIBLE);
                     } else {
                         int count = 0;
+                        int totalCount = forum ? 15 : 14;
+                        totalCount += 3;
                         if (currentChat.default_banned_rights != null) {
                             if (!currentChat.default_banned_rights.send_plain) {
+                                count++;
+                            }
+                            if (!currentChat.default_banned_rights.edit_rank) {
                                 count++;
                             }
                             count += ChatUsersActivity.getSendMediaSelectedCount(currentChat.default_banned_rights);
@@ -2399,9 +2404,9 @@ public class ChatEditActivity extends BaseFragment implements ImageUpdater.Image
                                 count++;
                             }
                         } else {
-                            count = forum ? 17 : 16;
+                            count = totalCount;
                         }
-                        blockCell.setTextAndValueAndIcon(getString(R.string.ChannelPermissions), String.format("%d/%d", count, forum ? 17 : 16), animated, R.drawable.msg_permissions, true);
+                        blockCell.setTextAndValueAndIcon(getString(R.string.ChannelPermissions), String.format("%d/%d", count, totalCount), animated, R.drawable.msg_permissions, true);
                     }
                     if (memberRequestsCell != null) {
                         memberRequestsCell.setTextAndValueAndIcon(getString("MemberRequests", R.string.MemberRequests), String.format("%d", info.requests_pending), R.drawable.msg_requests, logCell != null && logCell.getVisibility() == View.VISIBLE);

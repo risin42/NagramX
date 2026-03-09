@@ -19,7 +19,6 @@ import android.text.style.ClickableSpan;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
-import android.view.ViewGroup;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1324,7 +1323,11 @@ public final class BulletinFactory {
     }
 
     public static Bulletin createForwardedBulletin(Context context, BaseFragment fragment, FrameLayout containerLayout, int dialogsCount, long did, int messagesCount, int backgroundColor, int textColor, int duration, Runnable undoAction, Runnable delayedAction) {
-        final Bulletin.LottieLayout layout = UserConfig.getInstance(UserConfig.selectedAccount).isPremium() && fragment != null && dialogsCount <= 1 && did == UserConfig.getInstance(UserConfig.selectedAccount).clientUserId ?
+        return createForwardedBulletin(context, fragment, containerLayout, dialogsCount, did, messagesCount, backgroundColor, textColor, duration, false, undoAction, delayedAction);
+    }
+
+    public static Bulletin createForwardedBulletin(Context context, BaseFragment fragment, FrameLayout containerLayout, int dialogsCount, long did, int messagesCount, int backgroundColor, int textColor, int duration, boolean isSavedReminders, Runnable undoAction, Runnable delayedAction) {
+        final Bulletin.LottieLayout layout = UserConfig.getInstance(UserConfig.selectedAccount).isPremium() && fragment != null && dialogsCount <= 1 && did == UserConfig.getInstance(UserConfig.selectedAccount).clientUserId && !isSavedReminders ?
             new Bulletin.LottieLayoutWithReactions(fragment, messagesCount) :
             new Bulletin.LottieLayout(context, fragment != null ? fragment.getResourceProvider() : null, backgroundColor, textColor);
         final CharSequence text;
@@ -1341,7 +1344,7 @@ public final class BulletinFactory {
         if (dialogsCount <= 1) {
             if (did == UserConfig.getInstance(UserConfig.selectedAccount).clientUserId) {
                 if (messagesCount <= 1) {
-                    text = AndroidUtilities.replaceSingleTag(LocaleController.getString(R.string.FwdMessageToSavedMessages), -1, AndroidUtilities.REPLACING_TAG_TYPE_LINKBOLD, SavedMessagesController::openSavedMessages);
+                    text = AndroidUtilities.replaceSingleTag(LocaleController.getString(R.string.FwdMessageToSavedMessages), -1, AndroidUtilities.REPLACING_TAG_TYPE_LINKBOLD, isSavedReminders ? SavedMessagesController::openSavedMessagesReminders : SavedMessagesController::openSavedMessages);
                 } else {
                     text = AndroidUtilities.replaceSingleTag(LocaleController.getString(R.string.FwdMessagesToSavedMessages), -1, AndroidUtilities.REPLACING_TAG_TYPE_LINKBOLD, SavedMessagesController::openSavedMessages);
                 }
@@ -1478,6 +1481,26 @@ public final class BulletinFactory {
         }
         layout.textView.setText(AndroidUtilities.replaceTags(text));
         return Bulletin.make(fragment, layout, Bulletin.DURATION_SHORT);
+    }
+
+    @CheckResult
+    public static Bulletin createDissableSharingBulletin(BaseFragment fragment, String pendingUsername, boolean sharingDisabled) {
+        final Bulletin.LottieLayout layout = new Bulletin.LottieLayout(fragment.getParentActivity(), fragment.getResourceProvider());
+        final String text;
+        if (pendingUsername != null) {
+            text = LocaleController.formatString(sharingDisabled ?
+                R.string.DisableSharingToastDisabledPending :
+                R.string.DisableSharingToastEnabledPending, pendingUsername);
+        } else {
+            text = LocaleController.getString(sharingDisabled ?
+                R.string.DisableSharingToastDisabled :
+                R.string.DisableSharingToastEnabled);
+        }
+
+        layout.textView.setText(AndroidUtilities.replaceTags(text));
+        layout.setAnimation(sharingDisabled || pendingUsername != null ? R.raw.e_hand_2 : R.raw.contact_check);
+
+        return Bulletin.make(fragment, layout, Bulletin.DURATION_PROLONG);
     }
 
     @CheckResult
