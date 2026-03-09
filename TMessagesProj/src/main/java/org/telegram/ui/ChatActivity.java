@@ -11314,10 +11314,10 @@ public class ChatActivity extends BaseFragment implements
             item.addSubItem(text_underline, stringBuilder);
         }
         item.addSubItem(text_link, LocaleController.getString(R.string.CreateLink));
+        item.addSubItem(text_mention, LocaleController.getString(R.string.CreateMention)); // NekoX
         if (currentEncryptedChat == null) {
             item.addSubItem(text_date, LocaleController.getString(R.string.FormattedDate));
         }
-        item.addSubItem(text_mention, LocaleController.getString(R.string.CreateMention)); // NekoX
         item.addSubItem(text_regular, LocaleController.getString(R.string.Regular));
 
         filledEditTextItemMenu = true;

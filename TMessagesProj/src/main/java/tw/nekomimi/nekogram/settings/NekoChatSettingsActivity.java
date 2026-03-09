@@ -404,7 +404,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         });
         builder.setNegativeButton(getString(R.string.Cancel), null);
         builder.setNeutralButton(getString(R.string.Reset), (d, which) -> {
-            String def = "translate,bold,italic,mono,code,strike,underline,quote,spoiler,link,mention,regular";
+            String def = "translate,bold,italic,mono,code,strike,underline,quote,spoiler,link,mention,date,regular";
             NaConfig.INSTANCE.getTextStyleOrder().setConfigString(def);
             ordered.clear();
             String[] keys = def.split(",");

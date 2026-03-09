@@ -121,7 +121,7 @@ object NaConfig {
         addConfig(
             "TextStyleOrder",
             ConfigItem.configTypeString,
-            "translate,bold,italic,mono,code,strike,underline,quote,spoiler,link,mention,regular"
+            "translate,bold,italic,mono,code,strike,underline,quote,spoiler,link,mention,date,regular"
         )
     val combineMessage =
         addConfig(
