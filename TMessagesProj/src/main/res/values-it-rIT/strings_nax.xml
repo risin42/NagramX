@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="XChannel">Canale Nagram X</string>
-    <string name="EnableSaveDeletedMessages">Salva i Messaggi Eliminati</string>
+    <string name="EnableSaveDeletedMessages">Salva i messaggi eliminati</string>
     <string name="DeletedMessage">eliminato</string>
     <string name="EnableSaveEditsHistory">Salva cronologia modifiche</string>
     <string name="EditsHistoryMenuText">Cronologia delle modifiche</string>
     <string name="DeleteKeepLocally">Conserva localmente</string>
-    <string name="ClearMessageDatabase">Cancella database dei messaggi</string>
-    <string name="ClearMessageDatabaseNotification">Database dei messaggi cancellato.</string>
+    <string name="ClearMessageDatabase">Cancella database messaggi</string>
+    <string name="ClearMessageDatabaseNotification">Database messaggi svuotato.</string>
     <string name="CustomDeletedMark">Contrassegno di eliminazione personalizzato</string>
     <string name="HidePremiumSection">Nascondi \"Premium\" nelle Impostazioni</string>
     <string name="HideHelpSection">Nascondi \"Aiuto\" nelle Impostazioni</string>
@@ -301,8 +301,6 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="CameraInVideoMessagesRear">Camera posteriore</string>
     <string name="CameraInVideoMessagesAsk">Chiedi</string>
     <string name="CameraSettings">Camera</string>
-    <string name="SyncContactToPhone">Sincronizza contatto sul telefono</string>
-    <string name="AddViaQRCode">Aggiungi tramite QR Code</string>
     <string name="ContactNotes">Note</string>
     <string name="PhoneNotOnTelegramInvite">Questo numero di telefono non è su Telegram. **Invita &gt;**</string>
     <string name="PhoneAlreadyInContacts">Questo numero di telefono è già nei tuoi contatti. **Visualizza &gt;**</string>

@@ -66,6 +66,7 @@
     <string name="RegexFiltersUserHeader">Filtry użytkownika</string>
     <string name="RegexFiltersUserFilterHint">Wprowadź identyfikator użytkownika</string>
     <string name="RegexFiltersGlobalHeader">Filtry globalne</string>
+    <string name="RegexFiltersTextSelectionAddtoShared">Dodaj do udostępnionych filtrów</string>
     <string name="ShadowBan">Zakaz cieni</string>
     <string name="UnshadowBan">Zakaz usuwania cienia</string>
     <string name="ShadowBanAdded">Dodano do **filtrów użytkownika**.</string>
@@ -296,8 +297,6 @@
     <string name="CameraInVideoMessagesRear">Kamera tylnia</string>
     <string name="CameraInVideoMessagesAsk">Zapytaj</string>
     <string name="CameraSettings">Kamera</string>
-    <string name="SyncContactToPhone">Synchronizuj kontakt z telefonem</string>
-    <string name="AddViaQRCode">Dodaj za pomocą kodu QR</string>
     <string name="ContactNotes">Notatki</string>
     <string name="PhoneNotOnTelegramInvite">Tego numeru telefonu nie ma na Telegramie. **Zaproś &gt;**</string>
     <string name="PhoneAlreadyInContacts">Ten numer telefonu jest już w Twoich kontaktach. **Wyświetl &gt;**</string>

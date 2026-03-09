@@ -293,8 +293,6 @@
     <string name="CameraInVideoMessagesRear">Задня камера</string>
     <string name="CameraInVideoMessagesAsk">Запитувати</string>
     <string name="CameraSettings">Камера</string>
-    <string name="SyncContactToPhone">Синхронізувати контакт з телефоном</string>
-    <string name="AddViaQRCode">Додати через QR-код</string>
     <string name="ContactNotes">Нотатки</string>
     <string name="PhoneNotOnTelegramInvite">Цього номера телефону немає в Telegram. **Запросити &gt;**</string>
     <string name="PhoneAlreadyInContacts">Цей номер телефону вже є у ваших контактах. **Переглянути &gt;**</string>

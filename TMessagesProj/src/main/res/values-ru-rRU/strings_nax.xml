@@ -297,8 +297,6 @@
     <string name="CameraInVideoMessagesRear">Основная</string>
     <string name="CameraInVideoMessagesAsk">Спрашивать</string>
     <string name="CameraSettings">Камера</string>
-    <string name="SyncContactToPhone">Синхронизировать контакт с телефоном</string>
-    <string name="AddViaQRCode">Добавить по QR-коду</string>
     <string name="ContactNotes">Заметки</string>
     <string name="PhoneNotOnTelegramInvite">Этого номера телефона нет в Telegram. **Пригласить &gt;**</string>
     <string name="PhoneAlreadyInContacts">Этот номер телефона уже есть в ваших контактах. **Просмотреть &gt;**</string>

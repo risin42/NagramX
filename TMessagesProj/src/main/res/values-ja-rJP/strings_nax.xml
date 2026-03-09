@@ -297,8 +297,6 @@
     <string name="CameraInVideoMessagesRear">リアカメラ</string>
     <string name="CameraInVideoMessagesAsk">尋ねる</string>
     <string name="CameraSettings">カメラ</string>
-    <string name="SyncContactToPhone">連絡先をデバイスに同期</string>
-    <string name="AddViaQRCode">QRコードで追加</string>
     <string name="ContactNotes">メモ</string>
     <string name="PhoneNotOnTelegramInvite">この電話番号はTelegramに登録されていません。 **招待 &gt;**</string>
     <string name="PhoneAlreadyInContacts">この電話番号は既に連絡先に登録されています。**表示 &gt;**</string>

@@ -297,8 +297,6 @@
     <string name="CameraInVideoMessagesRear">Câmera traseira</string>
     <string name="CameraInVideoMessagesAsk">Perguntar</string>
     <string name="CameraSettings">Câmera</string>
-    <string name="SyncContactToPhone">Sincronizar com o celular</string>
-    <string name="AddViaQRCode">Adicionar via Código QR</string>
     <string name="ContactNotes">Notas</string>
     <string name="PhoneNotOnTelegramInvite">Este número de telefone não está no Telegram. **Convidar &gt;**</string>
     <string name="PhoneAlreadyInContacts">Este número de telefone já está nos seus contatos. **Ver &gt;**</string>
