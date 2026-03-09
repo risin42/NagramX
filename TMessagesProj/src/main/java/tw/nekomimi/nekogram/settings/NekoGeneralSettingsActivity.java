@@ -39,7 +39,7 @@ import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.INavigationLayout;
 import org.telegram.ui.ActionBar.SimpleTextView;
 import org.telegram.ui.ActionBar.Theme;
-import org.telegram.ui.Components.BulletinFactory;
+import org.telegram.ui.Components.ItemOptions;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.SeekBarView;
@@ -47,7 +47,6 @@ import org.telegram.ui.Components.UndoView;
 import org.telegram.ui.LaunchActivity;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Locale;
 
 import tw.nekomimi.nekogram.NekoConfig;
@@ -304,7 +303,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
 
         listView.setAdapter(listAdapter);
 
-        setupDefaultListeners(context);
+        setupDefaultListeners();
 
         // Cells: Set OnSettingChanged Callbacks
         cellGroup.callBackSettingsChanged = (key, newValue) -> {
@@ -433,29 +432,10 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     protected boolean onItemLongClick(View view, int position, float x, float y) {
         AbstractConfigCell a = cellGroup.rows.get(position);
         if (a == pushServiceTypeUnifiedGatewayRow) {
-            if (getParentActivity() == null) {
-                return false;
-            }
-            String key = getRowKey(position);
-            String value = getRowValue(position);
-            ArrayList<CharSequence> itemsArray = new ArrayList<>();
-            itemsArray.add(getString(R.string.Statistics));
-            itemsArray.add(getString(R.string.CopyLink));
-            if (!TextUtils.isEmpty(value)) {
-                itemsArray.add(getString(R.string.BackupSettings));
-            }
-            CharSequence[] items = itemsArray.toArray(new CharSequence[0]);
-            showDialog(new AlertDialog.Builder(getParentActivity()).setItems(items, (dialogInterface, i) -> {
-                if (i == 0) {
-                    showUnifiedPushStatistics();
-                } else if (i == 1) {
-                    AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s", getMessagesController().linkPrefix, "general", key));
-                    BulletinFactory.of(NekoGeneralSettingsActivity.this).createCopyLinkBulletin().show();
-                } else if (i == 2 && !TextUtils.isEmpty(value)) {
-                    AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s&v=%s", getMessagesController().linkPrefix, "general", key, value));
-                    BulletinFactory.of(NekoGeneralSettingsActivity.this).createCopyLinkBulletin().show();
-                }
-            }).create());
+            ItemOptions options = makeLongClickOptions(view);
+            options.add(R.drawable.msg_stats, getString(R.string.Statistics), this::showUnifiedPushStatistics);
+            addDefaultLongClickOptions(options, "general", position);
+            showLongClickOptions(view, options);
             return true;
         }
         return false;
@@ -489,7 +469,6 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             if (viewType == ConfigCellCustom.CUSTOM_ITEM_CharBlurAlpha) {
                 view = chatBlurAlphaSeekbar = new ChatBlurAlphaSeekBar(mContext);
                 chatBlurAlphaSeekbar.setEnabled(NekoConfig.forceBlurInChat.Bool());
-                view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
             }
             return view;
         }

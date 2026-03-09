@@ -319,7 +319,7 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
 
         listView.setAdapter(listAdapter);
 
-        setupDefaultListeners(context);
+        setupDefaultListeners();
 
         // Cells: Set OnSettingChanged Callbacks
         cellGroup.callBackSettingsChanged = (key, newValue) -> {
@@ -487,7 +487,6 @@ public class NekoTranslatorSettingsActivity extends BaseNekoXSettingsActivity {
             View view = null;
             if (viewType == ConfigCellCustom.CUSTOM_ITEM_Temperature) {
                 view = new TemperatureSeekBar(mContext);
-                view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
             }
             return view;
         }
