@@ -569,7 +569,7 @@ public class ChatUsersActivity extends BaseFragment implements NotificationCente
             }
         } else if (type == TYPE_USERS) {
             if (ChatObject.isChannel(currentChat)) {
-                if (!ChatObject.isChannelAndNotMegaGroup(currentChat) && !needOpenSearch) {
+                if (!ChatObject.isChannelAndNotMegaGroup(currentChat) && !needOpenSearch && ChatObject.canUserDoAdminAction(currentChat, ChatObject.ACTION_BLOCK_USERS)) {
                     hideMembersRow = rowCount++;
                     hideMembersInfoRow = rowCount++;
                 }
@@ -2156,6 +2156,7 @@ public class ChatUsersActivity extends BaseFragment implements NotificationCente
 
     private boolean checkDiscard(boolean invoked) {
         if (transfer) return true;
+        if (!ChatObject.hasAdminRights(currentChat)) return true;
         String newBannedRights = ChatObject.getBannedRightsString(defaultBannedRights);
         if (!newBannedRights.equals(initialBannedRights) || initialSlowmode != selectedSlowmode || hasNotRestrictBoostersChanges() || signatures != initialSignatures || (signatures && profiles) != initialProfiles) {
             if (invoked) {
