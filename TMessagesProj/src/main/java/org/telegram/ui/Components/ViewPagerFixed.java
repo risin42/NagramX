@@ -1949,10 +1949,18 @@ public class ViewPagerFixed extends FrameLayout {
             return positionToId.get(0, 0);
         }
 
+        private int getTabsListPaddingLeft() {
+            return listView != null ? listView.getPaddingLeft() : dp(7);
+        }
+
+        private int getTabsListPaddingRight() {
+            return listView != null ? listView.getPaddingRight() : dp(7);
+        }
+
         private void updateTabsWidths() {
             positionToX.clear();
             positionToWidth.clear();
-            int xOffset = dp(7);
+            int xOffset = getTabsListPaddingLeft();
             for (int a = 0, N = tabs.size(); a < N; a++) {
                 int tabWidth = tabs.get(a).getWidth(false, textPaint);
                 positionToWidth.put(a, tabWidth);
@@ -2065,7 +2073,7 @@ public class ViewPagerFixed extends FrameLayout {
         @Override
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             if (!tabs.isEmpty()) {
-                int width = MeasureSpec.getSize(widthMeasureSpec) - dp(7) - dp(7);
+                int width = MeasureSpec.getSize(widthMeasureSpec) - getTabsListPaddingLeft() - getTabsListPaddingRight();
                 int prevWidth = additionalTabWidth;
                 if (tabs.size() == 1 || selectorType == 9 || selectorType == 10) {
                     additionalTabWidth = 0;
