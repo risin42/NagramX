@@ -319,12 +319,12 @@ public class MessageHelper extends BaseController {
                     TLRPC.Message message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
                     if (message != null) {
                         message.readAttachPath(data, UserConfig.getInstance(currentAccount).clientUserId);
+                        if (messages == null) {
+                            messages = new ArrayList<>();
+                        }
+                        messages.add(message);
                     }
                     data.reuse();
-                    if (messages == null) {
-                        messages = new ArrayList<>();
-                    }
-                    messages.add(message);
                 }
             }
             cursor.dispose();
