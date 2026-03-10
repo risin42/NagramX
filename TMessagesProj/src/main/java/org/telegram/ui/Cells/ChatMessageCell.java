@@ -21309,11 +21309,13 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
                 canvas.save();
                 final float lineWidth = adminLayout.getLineWidth(0);
-                float ax = end - dp(11) - lineWidth - (adminLayoutIsAdmin ? dp(6) : 0) - bookmarkShift;
-                float ax2 = end - dp(11);
+                final float adminLayoutWidth = lineWidth + (adminLayoutIsAdmin ? dp(6) : 0);
+                final float adminRight = end - dp(11) - bookmarkShift;
+                float ax = adminRight - adminLayoutWidth;
+                float ax2 = adminRight;
                 float ay = nameY + dp(0.5f);
                 ax = lerp(ax, nx, avatarAlpha);
-                ax2 = lerp(ax2, nx + lineWidth + (adminLayoutIsAdmin ? dp(6) : 0), avatarAlpha);
+                ax2 = lerp(ax2, nx + adminLayoutWidth, avatarAlpha);
                 ay += dp(14) * avatarAlpha;
                 if (currentNameBotVerificationId != 0) {
                     ax -= dp(20) * avatarAlpha;
