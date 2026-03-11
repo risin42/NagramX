@@ -319,4 +319,6 @@
     <string name="MainTabsSettingsHeader">Tab Utama</string>
     <string name="MainTabsHideTitles">Sembunyikan Judul</string>
     <string name="MainTabsHideContacts">Sembunyikan Tab Kontak</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">Tampilkan Pratinjau Pesan</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">Menampilkan isi pemberitahuan meskipun kunci sandi aktif.</string>
 </resources>

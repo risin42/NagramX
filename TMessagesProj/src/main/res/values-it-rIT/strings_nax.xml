@@ -8,7 +8,7 @@
     <string name="DeleteKeepLocally">Conserva localmente</string>
     <string name="ClearMessageDatabase">Cancella database messaggi</string>
     <string name="ClearMessageDatabaseNotification">Database messaggi svuotato.</string>
-    <string name="CustomDeletedMark">Contrassegno di eliminazione personalizzato</string>
+    <string name="CustomDeletedMark">Icona Eliminato Personalizzata</string>
     <string name="HidePremiumSection">Nascondi \"Premium\" nelle Impostazioni</string>
     <string name="HideHelpSection">Nascondi \"Aiuto\" nelle Impostazioni</string>
     <string name="ProviderLLMTranslator">Traduttore AI</string>
@@ -24,7 +24,7 @@
     <string name="LlmSystemPrompt">Prompt di sistema</string>
     <string name="LlmSystemPromptHint">Sei un traduttore professionista.</string>
     <string name="LlmSystemPromptNotice">Definisci il ruolo e il comportamento dell\'IA.\n\nQuesto prompt imposta il tono, la personalità e i limiti dell\'IA. Considera descrivere che tipo di assistente dovrebbe essere l\'IA.</string>
-    <string name="LlmUserPrompt">Richiesta utente</string>
+    <string name="LlmUserPrompt">Prompt Utente</string>
     <string name="LlmUserPromptHint">Traduci @text in @toLang.</string>
     <string name="LlmUserPromptNotice">Utilizza @text come placeholder per il messaggio originale e @toLang per la lingua di destinazione (facoltativo).\n\nLasciando questo campo vuoto verrà utilizzato il prompt predefinito.</string>
     <string name="LlmUseContext">Usa contesto</string>
@@ -323,4 +323,6 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="MainTabsSettingsHeader">Tab Principali</string>
     <string name="MainTabsHideTitles">Nascondi titoli</string>
     <string name="MainTabsHideContacts">Nascondi scheda Contatti</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">Mostra anteprime messaggi</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">Mostra il contenuto delle notifiche anche quando il blocco con codice è attivo.</string>
 </resources>
