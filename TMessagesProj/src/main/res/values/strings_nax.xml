@@ -333,4 +333,6 @@
     <string name="MainTabsSettingsHeader">Main Tabs</string>
     <string name="MainTabsHideTitles">Hide Titles</string>
     <string name="MainTabsHideContacts">Hide Contacts Tab</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">Show Message Previews</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">Shows notification content even when passcode lock is active.</string>
 </resources>

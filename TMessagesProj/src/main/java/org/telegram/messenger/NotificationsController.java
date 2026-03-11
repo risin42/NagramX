@@ -1784,8 +1784,13 @@ public class NotificationsController extends BaseController {
         NotificationBadge.applyCount(count);
     }
 
+    private boolean shouldHideNotificationContentForPasscode() {
+        return (AndroidUtilities.needShowPasscode() || SharedConfig.isWaitingForPasscodeEnter) &&
+                !NaConfig.INSTANCE.getShowNotificationPreviewWhenLocked().Bool();
+    }
+
     private String getShortStringForMessage(MessageObject messageObject, String[] userName, boolean[] preview) {
-        if (AndroidUtilities.needShowPasscode() || SharedConfig.isWaitingForPasscodeEnter) {
+        if (shouldHideNotificationContentForPasscode()) {
             return LocaleController.getString(R.string.NotificationHiddenMessage);
         }
         long dialogId = messageObject.messageOwner.dialog_id;
@@ -2470,7 +2475,7 @@ public class NotificationsController extends BaseController {
     }
 
     private String getStringForMessage(MessageObject messageObject, boolean shortMessage, boolean[] text, boolean[] preview) {
-        if (AndroidUtilities.needShowPasscode() || SharedConfig.isWaitingForPasscodeEnter) {
+        if (shouldHideNotificationContentForPasscode()) {
             return LocaleController.getString(R.string.YouHaveNewMessage);
         }
         if (messageObject.isStoryPush || messageObject.isStoryMentionPush) {
@@ -4208,10 +4213,10 @@ public class NotificationsController extends BaseController {
             } else {
                 chatName = UserObject.getUserName(user);
             }
-            boolean passcode = AndroidUtilities.needShowPasscode() || SharedConfig.isWaitingForPasscodeEnter;
+            boolean hideNotificationContent = shouldHideNotificationContentForPasscode();
             final boolean allowSummary = !"samsung".equalsIgnoreCase(Build.MANUFACTURER);
-            if (DialogObject.isEncryptedDialog(dialog_id) || allowSummary && pushDialogs.size() > 1 || passcode) {
-                if (passcode) {
+            if (DialogObject.isEncryptedDialog(dialog_id) || allowSummary && pushDialogs.size() > 1 || hideNotificationContent) {
+                if (hideNotificationContent) {
                     if (chatId != 0) {
                         name = LocaleController.getString(R.string.NotificationHiddenChatName);
                     } else {
@@ -4522,7 +4527,7 @@ public class NotificationsController extends BaseController {
                         intent.putExtra("userId", userId);
                     }
                 }
-                if (AndroidUtilities.needShowPasscode() || SharedConfig.isWaitingForPasscodeEnter) {
+                if (hideNotificationContent) {
                     photoPath = null;
                 } else {
                     if (pushDialogs.size() == 1 && Build.VERSION.SDK_INT < 28) {
@@ -4874,8 +4879,9 @@ public class NotificationsController extends BaseController {
 
         long selfUserId = getUserConfig().getClientUserId();
         boolean waitingForPasscode = AndroidUtilities.needShowPasscode() || SharedConfig.isWaitingForPasscodeEnter;
+        boolean hideNotificationContent = waitingForPasscode && !NaConfig.INSTANCE.getShowNotificationPreviewWhenLocked().Bool();
         boolean passcode = SharedConfig.passcodeHash.length() > 0;
-        FileLog.d("showExtraNotifications: passcode="+passcode+" waitingForPasscode=" + waitingForPasscode + " selfUserId=" + selfUserId + " useSummaryNotification=" + useSummaryNotification);
+        FileLog.d("showExtraNotifications: passcode="+passcode+" waitingForPasscode=" + waitingForPasscode + " hideNotificationContent=" + hideNotificationContent + " selfUserId=" + selfUserId + " useSummaryNotification=" + useSummaryNotification);
 
         int maxCount = 7;
         LongSparseArray<Person> personCache = new LongSparseArray<>();
@@ -5057,13 +5063,16 @@ public class NotificationsController extends BaseController {
             }
 
             if (waitingForPasscode) {
+                canReply = false;
+            }
+
+            if (hideNotificationContent) {
                 if (DialogObject.isChatDialog(dialogId)) {
                     name = LocaleController.getString(R.string.NotificationHiddenChatName);
                 } else {
                     name = LocaleController.getString(R.string.NotificationHiddenName);
                 }
                 photoPath = null;
-                canReply = false;
             }
 
             if (photoPath != null) {
@@ -5268,7 +5277,7 @@ public class NotificationsController extends BaseController {
                     Person person = personCache.get(uid + ((long) topicId << 16));
                     CharSequence personName = "";
                     if (senderName[0] == null) {
-                        if (waitingForPasscode) {
+                        if (hideNotificationContent) {
                             if (DialogObject.isChatDialog(dialogId)) {
                                 if (isChannel) {
                                     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {

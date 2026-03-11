@@ -1353,6 +1353,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val showNotificationPreviewWhenLocked =
+        addConfig(
+            "ShowNotificationPreviewWhenLocked",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     val preferredTranslateTargetLangList = ArrayList<String>()
     fun updatePreferredTranslateTargetLangList() {
