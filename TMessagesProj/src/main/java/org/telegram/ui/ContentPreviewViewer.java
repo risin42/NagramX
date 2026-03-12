@@ -630,11 +630,18 @@ public class ContentPreviewViewer {
                         } else if (actions.get(which) == 5) {
                             delegate.remove(importingSticker);
                         } else if (actions.get(which) == nkbtn_stickerdl) {
-                            MessageHelper.getInstance(currentAccount).saveStickerToGallery(parentActivity, currentDocument);
-                            BulletinFactory.createSaveToGalleryBulletin(containerView, false, resourcesProvider).show();
+                            MessageHelper.getInstance(currentAccount).saveStickerToGallery(parentActivity, currentDocument, uri -> {
+                                var fragment = LaunchActivity.getSafeLastFragment();
+                                if (BulletinFactory.canShowBulletin(fragment) && fragment instanceof ChatActivity chatActivity) {
+                                    BulletinFactory.of(chatActivity).createSimpleBulletin(R.raw.ic_save_to_gallery, getString(R.string.StickerSavedHint)).show(true);
+                                }
+                            });
                         } else if (actions.get(which) == nkbtn_sticker_copy) {
                             MessageHelper.getInstance(currentAccount).addStickerToClipboard(currentDocument, () -> {
-                                BulletinFactory.global().createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                                var fragment = LaunchActivity.getSafeLastFragment();
+                                if (BulletinFactory.canShowBulletin(fragment) && fragment instanceof ChatActivity chatActivity) {
+                                    BulletinFactory.of(chatActivity).createCopyBulletin(getString(R.string.StickerCopied)).show(true);
+                                }
                             });
                         } else if (actions.get(which) == 7) {
                             delegate.editSticker(currentDocument);

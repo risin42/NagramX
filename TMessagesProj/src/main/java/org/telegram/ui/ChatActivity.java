@@ -34593,18 +34593,22 @@ public class ChatActivity extends BaseFragment implements
                 preserveDim = true;
                 break;
             }
-            case OPTION_COPY_PHOTO:{
+            case OPTION_COPY_PHOTO: {
+                boolean isSticker = selectedObject.isAnyKindOfSticker();
                 MessageHelper.addMessageToClipboard(selectedObject, () -> {
                     if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
-                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                        BulletinFactory.of(this).createCopyBulletin(isSticker
+                                ? getString(R.string.StickerCopied)
+                                : getString(R.string.PhotoCopied)
+                        ).show();
                     }
                 });
                 break;
             }
-            case OPTION_COPY_PHOTO_AS_STICKER:{
+            case OPTION_COPY_PHOTO_AS_STICKER: {
                 MessageHelper.addMessageToClipboardAsSticker(selectedObject, () -> {
                     if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
-                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                        BulletinFactory.of(this).createCopyBulletin(getString(R.string.StickerCopied)).show();
                     }
                 });
                 break;
@@ -44727,15 +44731,18 @@ public class ChatActivity extends BaseFragment implements
                 break;
             }
             case nkbtn_stickerdl: {
-                if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT <= 28 || BuildVars.NO_SCOPED_STORAGE) && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if ((Build.VERSION.SDK_INT <= 28 || BuildVars.NO_SCOPED_STORAGE) && getParentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     getParentActivity().requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4);
                     selectedObject = null;
                     selectedObjectGroup = null;
                     selectedObjectToEditCaption = null;
                     return;
                 }
-                getMessageHelper().saveStickerToGallery(getParentActivity(), selectedObject);
-                BulletinFactory.createSaveToGalleryBulletin(this, selectedObject.isVideo(), themeDelegate).show();
+                getMessageHelper().saveStickerToGallery(getParentActivity(), selectedObject, uri -> {
+                    if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
+                        BulletinFactory.of(ChatActivity.this).createSimpleBulletin(R.raw.ic_save_to_gallery, getString(R.string.StickerSavedHint)).show();
+                    }
+                });
                 break;
             }
             case nkbtn_translate_llm:
@@ -46830,7 +46837,7 @@ public class ChatActivity extends BaseFragment implements
                         options.add(OPTION_ADD_TO_STICKERS_OR_MASKS);
                         icons.add(R.drawable.msg_sticker);
                     } else {
-                        if (!selectedObject.isAnimatedSticker() && !selectedObject.isVideoSticker()) {
+                        if (!selectedObject.isAnimatedSticker()) {
                             items.add(LocaleController.getString(R.string.SaveToGallery));
                             options.add(nkbtn_stickerdl);
                             icons.add(R.drawable.msg_gallery);

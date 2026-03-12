@@ -113,6 +113,10 @@ public class MessageHelper extends BaseController {
     }
 
     public static String getPathToMessage(MessageObject messageObject) {
+        return getPathToMessage(messageObject, UserConfig.selectedAccount);
+    }
+
+    private static String getPathToMessage(MessageObject messageObject, int accountId) {
         String path = messageObject.messageOwner.attachPath;
         if (!TextUtils.isEmpty(path)) {
             File f = new File(path);
@@ -121,7 +125,7 @@ public class MessageHelper extends BaseController {
             }
         }
         if (TextUtils.isEmpty(path)) {
-            path = FileLoader.getInstance(UserConfig.selectedAccount).getPathToMessage(messageObject.messageOwner).toString();
+            path = FileLoader.getInstance(accountId).getPathToMessage(messageObject.messageOwner).toString();
             File f = new File(path);
             if (!f.exists() || f.getAbsolutePath().endsWith("/cache")) {
                 path = null;
@@ -141,11 +145,11 @@ public class MessageHelper extends BaseController {
             }
         }
         if (TextUtils.isEmpty(path)) {
-            File f = FileLoader.getInstance(UserConfig.selectedAccount).getPathToAttach(messageObject.getDocument(), true);
+            File f = FileLoader.getInstance(accountId).getPathToAttach(messageObject.getDocument(), true);
             if (f.exists() && !f.getAbsolutePath().endsWith("/cache")) {
                 path = f.getAbsolutePath();
             } else {
-                f = FileLoader.getInstance(UserConfig.selectedAccount).getPathToAttach(messageObject.getDocument());
+                f = FileLoader.getInstance(accountId).getPathToAttach(messageObject.getDocument());
                 if (f.exists()) {
                     path = f.getAbsolutePath();
                 }
@@ -339,62 +343,51 @@ public class MessageHelper extends BaseController {
         return messages;
     }
 
-    public void saveStickerToGallery(Context context, MessageObject messageObject) {
+    public void saveStickerToGallery(Context context, MessageObject messageObject, Utilities.Callback<Uri> callback) {
         if (messageObject.isAnimatedSticker()) return;
         // Animated Sticker is not supported.
 
-        String path = messageObject.messageOwner.attachPath;
+        String path = getPathToMessage(messageObject, currentAccount);
         if (!TextUtils.isEmpty(path)) {
-            File temp = new File(path);
-            if (!temp.exists()) {
-                path = null;
-            }
-        }
-        if (TextUtils.isEmpty(path)) {
-            path = FileLoader.getInstance(currentAccount).getPathToMessage(messageObject.messageOwner).toString();
-            File temp = new File(path);
-            if (!temp.exists()) {
-                path = null;
-            }
-        }
-        if (TextUtils.isEmpty(path)) {
-            path = FileLoader.getInstance(currentAccount).getPathToAttach(messageObject.getDocument(), true).toString();
-        }
-        if (!TextUtils.isEmpty(path)) {
-            if (messageObject.isVideoSticker()) {
-                MediaController.saveFile(path, context, 1, null, null);
-            } else {
-                try {
-                    Bitmap image = BitmapFactory.decodeFile(path);
-                    FileOutputStream stream = new FileOutputStream(path + ".png");
-                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    stream.close();
-                    MediaController.saveFile(path + ".png", context, 0, null, null);
-                } catch (Exception e) {
-                    FileLog.e(e);
-                }
-            }
+            saveStickerToGallery(context, path, messageObject.isVideoSticker(), null, callback);
         }
     }
 
-    public void saveStickerToGallery(Context context, TLRPC.Document document) {
+    public void saveStickerToGallery(Context context, TLRPC.Document document, Utilities.Callback<Uri> callback) {
         String path = FileLoader.getInstance(currentAccount).getPathToAttach(document, true).toString();
-
         if (!TextUtils.isEmpty(path)) {
-            if (MessageObject.isVideoSticker(document)) {
-                MediaController.saveFile(path, context, 1, null, document.mime_type);
-            } else {
-                try {
-                    Bitmap image = BitmapFactory.decodeFile(path);
-                    FileOutputStream stream = new FileOutputStream(path + ".png");
-                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    stream.close();
-                    MediaController.saveFile(path + ".png", context, 0, null, null);
-                } catch (Exception e) {
-                    FileLog.e(e);
-                }
-            }
+            saveStickerToGallery(context, path, MessageObject.isVideoSticker(document), document.mime_type, callback);
         }
+    }
+
+    private static void saveStickerToGallery(Context context, String path, boolean videoSticker, String mimeType, Utilities.Callback<Uri> callback) {
+        if (context == null || TextUtils.isEmpty(path)) {
+            return;
+        }
+        File f = new File(path);
+        if (!f.exists()) {
+            return;
+        }
+        Utilities.globalQueue.postRunnable(() -> {
+            try {
+                if (videoSticker) {
+                    MediaController.saveFile(path, context, 1, null, mimeType, callback);
+                } else {
+                    Bitmap image = BitmapFactory.decodeFile(path);
+                    if (image != null) {
+                        File file = new File(path.endsWith(".webp") ? path.replace(".webp", ".png") : path + ".png");
+                        try (FileOutputStream stream = new FileOutputStream(file)) {
+                            image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        } finally {
+                            image.recycle();
+                        }
+                        MediaController.saveFile(file.toString(), context, 0, null, null, callback);
+                    }
+                }
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
+        });
     }
 
     public void addStickerToClipboard(TLRPC.Document document, Runnable callback) {
@@ -900,13 +893,15 @@ public class MessageHelper extends BaseController {
                 Bitmap image = BitmapFactory.decodeFile(path);
                 if (image != null) {
                     File file2 = path.endsWith(".jpg") ? new File(path.replace(".jpg", ".webp")) : new File(path + ".webp");
-                    FileOutputStream stream = new FileOutputStream(file2);
-                    if (Build.VERSION.SDK_INT >= 30) {
-                        image.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 100, stream);
-                    } else {
-                        image.compress(Bitmap.CompressFormat.WEBP, 100, stream);
+                    try (FileOutputStream stream = new FileOutputStream(file2)) {
+                        if (Build.VERSION.SDK_INT >= 30) {
+                            image.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 100, stream);
+                        } else {
+                            image.compress(Bitmap.CompressFormat.WEBP, 100, stream);
+                        }
+                    } finally {
+                        image.recycle();
                     }
-                    stream.close();
                     addFileToClipboard(file2, callback);
                 }
             }
