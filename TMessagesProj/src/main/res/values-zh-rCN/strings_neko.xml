@@ -113,7 +113,7 @@
     <string name="mapDriftingFixForGoogleMaps">修复 Google 地图在中国的漂移问题</string>
     <string name="useOSMDroidMap">使用 OSMDroid 地图</string>
     <string name="UnknownNekoSettingsOption">找不到这个 N-设置 选项。</string>
-    <string name="PasscodeNeeded">您必须先启用锁定码</string>
+    <string name="PasscodeNeeded">您必须先启用密码锁</string>
     <string name="PasscodeNeko">锁定码</string>
     <string name="PasscodeShowInSettings">在 N-设置 中显示</string>
     <string name="PasscodeShowInSettingsAbout">隐藏后，您**只能**通过该链接打开此页面：</string>
@@ -241,7 +241,7 @@
     <string name="AutoLockImmediately">立即</string>
     <string name="BackupSettings">备份设置</string>
     <string name="ImportSettings">导入设置</string>
-    <string name="ImportSettingsAlert">确定要覆盖设置吗？从未知来源导入设置可能导致PIN被覆盖从而导致应用被锁定。</string>
+    <string name="ImportSettingsAlert">确定要覆盖设置吗？从未知来源导入设置可能导致锁定码被覆盖从而导致应用被锁定。</string>
     <string name="nekoXPaymentRemovedToast">支付功能已被移除。</string>
     <string name="unreadBadgeOnBackButton">聊天窗口返回按钮上显示未读数</string>
     <string name="DeleteDownloadedFileConfirm">从本地缓存中删除此文件？</string>

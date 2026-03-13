@@ -321,4 +321,6 @@
     <string name="MainTabsHideContacts">Sembunyikan Tab Kontak</string>
     <string name="PasscodeShowMessagePreviewWhenLocked">Tampilkan Pratinjau Pesan</string>
     <string name="PasscodeShowMessagePreviewWhenLockedAbout">Menampilkan isi pemberitahuan meskipun kunci sandi aktif.</string>
+    <string name="StickerSavedHint">Stiker disimpan ke galeri.</string>
+    <string name="StickerCopied">Stiker disalin ke papan klip.</string>
 </resources>

@@ -321,4 +321,6 @@
     <string name="MainTabsHideContacts">連絡先タブを非表示</string>
     <string name="PasscodeShowMessagePreviewWhenLocked">メッセージプレビューを表示</string>
     <string name="PasscodeShowMessagePreviewWhenLockedAbout">パスコードロックが有効な場合でも通知内容を表示します。</string>
+    <string name="StickerSavedHint">ステッカーを保存しました。</string>
+    <string name="StickerCopied">ステッカーをコピーしました。</string>
 </resources>

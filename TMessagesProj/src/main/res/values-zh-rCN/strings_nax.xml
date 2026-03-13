@@ -319,4 +319,8 @@
     <string name="MainTabsSettingsHeader">主标签页</string>
     <string name="MainTabsHideTitles">隐藏标题</string>
     <string name="MainTabsHideContacts">隐藏联系人标签页</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">显示消息预览</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">在密码锁启用时不再隐藏通知内容。</string>
+    <string name="StickerSavedHint">贴纸已保存到相册。</string>
+    <string name="StickerCopied">贴纸已复制到剪贴板。</string>
 </resources>

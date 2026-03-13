@@ -113,7 +113,7 @@
     <string name="mapDriftingFixForGoogleMaps">Corrigir desvio do Google Maps na China</string>
     <string name="useOSMDroidMap">Usar mapa OSMDroid</string>
     <string name="UnknownNekoSettingsOption">Não existe esta opção nas N-Configurações.</string>
-    <string name="PasscodeNeeded">​Você precisa ativar a Senha de Bloqueio primeiro</string>
+    <string name="PasscodeNeeded">​Você precisa ativar a senha de bloqueio primeiro</string>
     <string name="PasscodeNeko">Senha de acesso</string>
     <string name="PasscodeShowInSettings">Mostrar nas N-Configurações</string>
     <string name="PasscodeShowInSettingsAbout">Após ocultar, você poderá abrir esta página **APENAS** por este link:</string>

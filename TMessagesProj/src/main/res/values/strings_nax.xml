@@ -335,6 +335,6 @@
     <string name="MainTabsHideContacts">Hide Contacts Tab</string>
     <string name="PasscodeShowMessagePreviewWhenLocked">Show Message Previews</string>
     <string name="PasscodeShowMessagePreviewWhenLockedAbout">Shows notification content even when passcode lock is active.</string>
-    <string name="StickerSavedHint">Sticker saved to gallery</string>
-    <string name="StickerCopied">Sticker copied to clipboard</string>
+    <string name="StickerSavedHint">Sticker saved to gallery.</string>
+    <string name="StickerCopied">Sticker copied to clipboard.</string>
 </resources>

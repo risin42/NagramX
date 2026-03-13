@@ -66,6 +66,7 @@
     <string name="RegexFiltersUserHeader">Фільтри користувачів</string>
     <string name="RegexFiltersUserFilterHint">Введіть ID користувача</string>
     <string name="RegexFiltersGlobalHeader">Глобальні фільтри</string>
+    <string name="RegexFiltersTextSelectionAddtoShared">Додати до спільних фільтрів</string>
     <string name="ShadowBan">Тіньовий бан</string>
     <string name="UnshadowBan">Зняти тіньовий бан</string>
     <string name="ShadowBanAdded">Додано до **фільтрів користувачів**.</string>
@@ -184,6 +185,8 @@
     <string name="DebugMenuDoNotForceForumTabs">Не примусово вкладки у форумах</string>
     <string name="DebugMenuCleanAppUpdate">Очистити оновлення програми</string>
     <string name="DebugMenuMakeMemoryDump">Зробити дамп пам\'яті</string>
+    <string name="DebugMenuShowFrameMetrics">Показувати статистику кадрів</string>
+    <string name="DebugMenuHideFrameMetrics">Приховати статистику кадрів</string>
     <string name="TranslateMessageLLM">Перекладач AI</string>
     <string name="EditLocalNameOverride">Редагування локального імені.</string>
     <string name="ResetChatNameOverrides">Скинути змінені назви чатів</string>
@@ -310,4 +313,13 @@
     <string name="UnifiedPushNeverReceivedNotifications">З моменту запуску Nagram X сповіщень через UnifiedPush не надходило.</string>
     <string name="UnifiedPushLastReceivedNotification">Останнє сповіщення через UnifiedPush надійшло %1$d сек. тому.\n\nВи отримали %2$d сповіщень з моменту запуску Nagram X.</string>
     <string name="UnifiedPushCurrentEndpoint">Поточна кінцева точка UnifiedPush: %1$s</string>
+    <string name="PlayOnce">Відтворити один раз</string>
+    <string name="StorageSettings">Сховище</string>
+    <string name="MainTabsSettingsHeader">Основні вкладки</string>
+    <string name="MainTabsHideTitles">Приховати заголовки</string>
+    <string name="MainTabsHideContacts">Приховати вкладку «Контакти»</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">Показувати попередній перегляд повідомлень</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">Показувати вміст сповіщень навіть під час блокування паролем.</string>
+    <string name="StickerSavedHint">Стікер збережено в галереї.</string>
+    <string name="StickerCopied">Стікер скопійовано в буфер обміну.</string>
 </resources>

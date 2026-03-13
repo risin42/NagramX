@@ -72,7 +72,7 @@
     <string name="ShadowBanAdded">已新增到**使用者過濾器**。</string>
     <string name="ShadowBanRemoved">已從**使用者過濾器**中移除。</string>
     <string name="botCommandConfirmTitle">確認傳送</string>
-    <string name="botCommandConfirmText">您確定要傳送此指令嗎？\n\n%s</string>
+    <string name="botCommandConfirmText">您確定要發送此指令嗎？\n\n%s</string>
     <string name="MessageSavingSaveMedia">儲存媒體</string>
     <string name="MessageSavingSaveMediaHint">點擊以查看更多選項。</string>
     <string name="MessageSavingSaveMediaInPrivateChats">私聊</string>
@@ -118,7 +118,7 @@
     <string name="ColoredBackgroundNotice">回覆，引用，連結預覽的背景色和 Emoji。</string>
     <string name="ChatMenu">聊天選單</string>
     <string name="MediaViewerMenu">媒體檢視器選單</string>
-    <string name="MenuAndButtons">選單和按鈕</string>
+    <string name="MenuAndButtons">菜單和按鈕</string>
     <string name="SettingsNax">設定</string>
     <string name="AccountSettingsNax">帳號設定</string>
     <string name="HideReactions">隱藏表情回應</string>
@@ -185,7 +185,7 @@
     <string name="DebugMenuForceForumTabs">強制使話題群組採用“標籤”佈局</string>
     <string name="DebugMenuDoNotForceForumTabs">取消強制使話題群組採用“標籤”佈局</string>
     <string name="DebugMenuCleanAppUpdate">清除應用更新</string>
-    <string name="DebugMenuMakeMemoryDump">記憶體轉儲</string>
+    <string name="DebugMenuMakeMemoryDump">記憶體傾印</string>
     <string name="DebugMenuShowFrameMetrics">顯示影格指標</string>
     <string name="DebugMenuHideFrameMetrics">隱藏影格指標</string>
     <string name="TranslateMessageLLM">AI 翻譯</string>
@@ -254,7 +254,7 @@
     <string name="PinnedReactions_Limit">最多可以選擇 %d 個表情回應。</string>
     <string name="PinnedReactions_Type">不支援此 Emoji。</string>
     <string name="PinnedReactions_Apply">更新置頂的表情回應</string>
-    <string name="HideStoriesFromHeader">在標題欄中隱藏動態</string>
+    <string name="HideStoriesFromHeader">在標題列中隱藏動態</string>
     <string name="DisableAvatarBlur">停用頭像模糊</string>
     <string name="ExportSettingsIncludeApiKeys">包含 API 金鑰</string>
     <string name="DisableInAppBrowserGestures">停用手勢</string>
@@ -319,4 +319,6 @@
     <string name="MainTabsSettingsHeader">主標籤頁</string>
     <string name="MainTabsHideTitles">隱藏標題</string>
     <string name="MainTabsHideContacts">隱藏聯絡人標籤頁</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">顯示訊息預覽</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">在密碼鎖定狀態下仍顯示通知內容。</string>
 </resources>

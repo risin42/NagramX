@@ -325,4 +325,6 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="MainTabsHideContacts">Nascondi scheda Contatti</string>
     <string name="PasscodeShowMessagePreviewWhenLocked">Mostra anteprime messaggi</string>
     <string name="PasscodeShowMessagePreviewWhenLockedAbout">Mostra il contenuto delle notifiche anche quando il blocco con codice è attivo.</string>
+    <string name="StickerSavedHint">Sticker salvato nella galleria.</string>
+    <string name="StickerCopied">Sticker copiato negli appunti.</string>
 </resources>
