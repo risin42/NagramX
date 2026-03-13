@@ -32,8 +32,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.DialogObject;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LiteMode;
 import org.telegram.messenger.MessagesController;
+import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserObject;
@@ -68,6 +70,7 @@ import org.telegram.ui.SearchTabsAndFiltersLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
@@ -404,8 +407,23 @@ public class BookmarkManagerActivity extends BaseFragment {
         final int requestId = ++loadRequestId;
         Utilities.globalQueue.postRunnable(() -> {
             Map<Long, Integer> counts = BookmarksHelper.getBookmarkedDialogsCounts(accountId);
-            ArrayList<BookmarkChatItem> items = new ArrayList<>(counts.size());
             MessagesController messagesController = MessagesController.getInstance(accountId);
+            if (counts.isEmpty()) {
+                AndroidUtilities.runOnUIThread(() -> {
+                    if (requestId != loadRequestId) {
+                        return;
+                    }
+                    allItems.clear();
+                    updateTabs();
+                    updateCurrentPage();
+                });
+                return;
+            }
+
+            ArrayList<Long> baseUsersToLoad = new ArrayList<>();
+            ArrayList<Long> chatsToLoad = new ArrayList<>();
+            HashSet<Long> seenUserIds = new HashSet<>();
+            HashSet<Long> seenChatIds = new HashSet<>();
 
             for (Map.Entry<Long, Integer> entry : counts.entrySet()) {
                 long dialogId = entry.getKey() == null ? 0L : entry.getKey();
@@ -413,51 +431,96 @@ public class BookmarkManagerActivity extends BaseFragment {
                 if (dialogId == 0 || count <= 0) {
                     continue;
                 }
-
-                TLObject peer = resolvePeer(messagesController, dialogId);
-                String title = resolveTitle(peer);
-                String username = resolveUsername(peer);
-                int category = resolveCategory(peer);
-                long sortDate = 0;
-                TLRPC.Dialog dialog = messagesController.dialogs_dict.get(dialogId);
-                if (dialog != null) {
-                    sortDate = dialog.last_message_date;
-                }
-                CharSequence subtitle = buildSubtitle(username, category);
-                items.add(new BookmarkChatItem(dialogId, peer, title, username, subtitle, count, sortDate, category));
+                collectPeersToLoad(messagesController, dialogId, baseUsersToLoad, chatsToLoad, seenUserIds, seenChatIds);
             }
 
-            items.sort(Comparator.comparingLong((BookmarkChatItem i) -> i.sortDate).reversed().thenComparing(i -> i.title == null ? "" : i.title.toLowerCase(Locale.ROOT)));
-
-            AndroidUtilities.runOnUIThread(() -> {
-                if (requestId != loadRequestId) {
-                    return;
+            MessagesStorage messagesStorage = MessagesStorage.getInstance(accountId);
+            messagesStorage.getStorageQueue().postRunnable(() -> {
+                ArrayList<Long> usersToLoad = new ArrayList<>(baseUsersToLoad);
+                ArrayList<TLRPC.User> loadedUsers = new ArrayList<>(usersToLoad.size());
+                ArrayList<TLRPC.Chat> loadedChats = new ArrayList<>(chatsToLoad.size());
+                try {
+                    if (!usersToLoad.isEmpty()) {
+                        messagesStorage.getUsersInternal(usersToLoad, loadedUsers);
+                    }
+                    if (!chatsToLoad.isEmpty()) {
+                        messagesStorage.getChatsInternal(TextUtils.join(",", chatsToLoad), loadedChats);
+                    }
+                } catch (Exception e) {
+                    FileLog.e(e);
                 }
-                allItems.clear();
-                allItems.addAll(items);
-                updateTabs();
-                updateCurrentPage();
+
+                AndroidUtilities.runOnUIThread(() -> {
+                    if (requestId != loadRequestId) {
+                        return;
+                    }
+                    messagesController.putUsers(loadedUsers, true);
+                    messagesController.putChats(loadedChats, true);
+                    ArrayList<BookmarkChatItem> items = new ArrayList<>(counts.size());
+                    for (Map.Entry<Long, Integer> entry : counts.entrySet()) {
+                        long dialogId = entry.getKey() == null ? 0L : entry.getKey();
+                        int count = entry.getValue() == null ? 0 : entry.getValue();
+                        if (dialogId == 0 || count <= 0) {
+                            continue;
+                        }
+
+                        TLObject peer = resolvePeer(messagesController, dialogId);
+                        String title = resolveTitle(peer);
+                        String username = resolveUsername(peer);
+                        int category = resolveCategory(peer);
+                        long sortDate = 0;
+                        TLRPC.Dialog dialog = messagesController.dialogs_dict.get(dialogId);
+                        if (dialog != null) {
+                            sortDate = dialog.last_message_date;
+                        }
+                        CharSequence subtitle = buildSubtitle(username, category);
+                        items.add(new BookmarkChatItem(dialogId, peer, title, username, subtitle, count, sortDate, category));
+                    }
+
+                    items.sort(Comparator.comparingLong((BookmarkChatItem i) -> i.sortDate).reversed().thenComparing(i -> i.title == null ? "" : i.title.toLowerCase(Locale.ROOT)));
+                    allItems.clear();
+                    allItems.addAll(items);
+                    updateTabs();
+                    updateCurrentPage();
+                });
             });
         });
     }
 
+    private void collectPeersToLoad(MessagesController messagesController, long dialogId, ArrayList<Long> usersToLoad, ArrayList<Long> chatsToLoad, HashSet<Long> seenUserIds, HashSet<Long> seenChatIds) {
+        if (DialogObject.isUserDialog(dialogId)) {
+            TLRPC.User user = messagesController.getUser(dialogId);
+            if (shouldLoadUserFromStorage(user) && seenUserIds.add(dialogId)) {
+                usersToLoad.add(dialogId);
+            }
+            return;
+        }
+        if (DialogObject.isChatDialog(dialogId)) {
+            long chatId = -dialogId;
+            TLRPC.Chat chat = messagesController.getChat(chatId);
+            if (shouldLoadChatFromStorage(chat) && seenChatIds.add(chatId)) {
+                chatsToLoad.add(chatId);
+            }
+        }
+    }
+
     private TLObject resolvePeer(MessagesController messagesController, long dialogId) {
-        TLObject peer = messagesController.getUserOrChat(dialogId);
-        if (peer != null) {
-            return peer;
+        if (DialogObject.isUserDialog(dialogId)) {
+            return messagesController.getUser(dialogId);
         }
-        if (!DialogObject.isEncryptedDialog(dialogId)) {
-            return null;
+        if (DialogObject.isChatDialog(dialogId)) {
+            long chatId = -dialogId;
+            return messagesController.getChat(chatId);
         }
-        int encryptedId = DialogObject.getEncryptedChatId(dialogId);
-        TLRPC.EncryptedChat encryptedChat = messagesController.getEncryptedChat(encryptedId);
-        if (encryptedChat == null) {
-            encryptedChat = messagesController.getEncryptedChatDB(encryptedId, false);
-        }
-        if (encryptedChat == null) {
-            return null;
-        }
-        return messagesController.getUser(encryptedChat.user_id);
+        return null;
+    }
+
+    private boolean shouldLoadUserFromStorage(TLRPC.User user) {
+        return user == null || user.min;
+    }
+
+    private boolean shouldLoadChatFromStorage(TLRPC.Chat chat) {
+        return chat == null || chat.min || TextUtils.isEmpty(chat.title);
     }
 
     @NonNull
