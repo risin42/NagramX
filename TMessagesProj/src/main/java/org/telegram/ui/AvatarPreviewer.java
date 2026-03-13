@@ -61,6 +61,8 @@ import tw.nekomimi.nekogram.NekoConfig;
 
 public class AvatarPreviewer {
 
+    private static final int PREVIEW_CORNER_RADIUS_DP = 12;
+
     @SuppressLint("StaticFieldLeak")
     private static AvatarPreviewer INSTANCE;
 
@@ -628,12 +630,12 @@ public class AvatarPreviewer {
             super(context);
             setWillNotDraw(false);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setOutlineProvider(new RoundRectOutlineProvider(6));
+                setOutlineProvider(new RoundRectOutlineProvider(PREVIEW_CORNER_RADIUS_DP));
             }
 
             backupImageView = new BackupImageView(context);
             backupImageView.setAspectFit(true);
-            backupImageView.setRoundRadius(dp(6));
+            backupImageView.setRoundRadius(dp(PREVIEW_CORNER_RADIUS_DP));
             addView(backupImageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
             radialProgress = new RadialProgress2(this, resourcesProvider);
