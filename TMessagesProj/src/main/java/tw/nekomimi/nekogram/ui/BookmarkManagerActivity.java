@@ -237,6 +237,7 @@ public class BookmarkManagerActivity extends BaseFragment {
         tabsContainer.setPadding(0, dp(7), 0, dp(7));
 
         tabsView = new ViewPagerFixed.TabsView(context, false, ViewPagerFixed.SELECTOR_TYPE_BUBBLE_STYLE, resourceProvider);
+        tabsView.setIndicatorAnimation(320, CubicBezierInterpolator.EASE_OUT_QUINT);
         tabsView.tabMarginDp = (int) (FilterTabsView.TAB_PADDING_WIDTH / 2f);
         int tabsListPadding = Math.max(0, dp(23.5f - FilterTabsView.TAB_PADDING_WIDTH / 2f));
         tabsView.listView.setPadding(tabsListPadding, 0, tabsListPadding, 0);

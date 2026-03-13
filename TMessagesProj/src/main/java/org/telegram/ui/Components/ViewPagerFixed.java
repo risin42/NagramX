@@ -1546,6 +1546,8 @@ public class ViewPagerFixed extends FrameLayout {
         private boolean isInHiddenMode;
         private float hideProgress;
 
+        private long indicatorAnimationDuration = 250;
+        private Interpolator indicatorAnimationInterpolator = CubicBezierInterpolator.DEFAULT;
         private CubicBezierInterpolator interpolator = CubicBezierInterpolator.EASE_OUT_QUINT;
 
         private SparseIntArray positionToId = new SparseIntArray(5);
@@ -1745,6 +1747,11 @@ public class ViewPagerFixed extends FrameLayout {
             delegate = filterTabsViewDelegate;
         }
 
+        public void setIndicatorAnimation(long duration, Interpolator interpolator) {
+            indicatorAnimationDuration = Math.max(1, duration);
+            indicatorAnimationInterpolator = interpolator != null ? interpolator : CubicBezierInterpolator.DEFAULT;
+        }
+
         private Utilities.Callback2Return<Integer, Integer, Boolean> preTabClick;
         public void setPreTabClick(Utilities.Callback2Return<Integer, Integer, Boolean> listener) {
             preTabClick = listener;
@@ -1802,8 +1809,8 @@ public class ViewPagerFixed extends FrameLayout {
                     delegate.onPageScrolled(progress);
                 }
             });
-            tabsAnimator.setDuration(250);
-            tabsAnimator.setInterpolator(CubicBezierInterpolator.DEFAULT);
+            tabsAnimator.setDuration(indicatorAnimationDuration);
+            tabsAnimator.setInterpolator(indicatorAnimationInterpolator);
             tabsAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
