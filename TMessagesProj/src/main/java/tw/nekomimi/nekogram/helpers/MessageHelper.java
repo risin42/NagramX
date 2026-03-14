@@ -870,6 +870,14 @@ public class MessageHelper extends BaseController {
         return canSave || downloading;
     }
 
+    public boolean shouldKeepLocalMessageOnRestrictedEdit(TLRPC.Message oldMessage, TLRPC.Message newMessage) {
+        if (oldMessage == null || newMessage == null) {
+            return false;
+        }
+        return (oldMessage.restriction_reason == null || oldMessage.restriction_reason.isEmpty()) &&
+                newMessage.restriction_reason != null && !newMessage.restriction_reason.isEmpty();
+    }
+
     // Merged from xyz.nextalone.nagram.helper.MessageHelper.kt
 
     private static final SpannableStringBuilder[] spannedStrings = new SpannableStringBuilder[5];

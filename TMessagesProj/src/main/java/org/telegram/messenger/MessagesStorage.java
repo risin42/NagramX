@@ -15343,20 +15343,24 @@ public class MessagesStorage extends BaseController {
                                     if (oldMessage.out && !message.out) {
                                         message.out = oldMessage.out;
                                     }
-                                    // --- AyuGram hook
-                                    if (message.from_id != null && (!oldMessage.message.equals(message.message) || !sameMedia)) {
-                                        if (NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool()) {
-                                            var prefs = new AyuSavePreferences(oldMessage, currentAccount);
-                                            prefs.setDialogId(dialogId);
-                                            AyuMessagesController.getInstance().onMessageEdited(prefs, message);
+                                    if (MessageHelper.getInstance(currentAccount).shouldKeepLocalMessageOnRestrictedEdit(oldMessage, message)) {
+                                        message = oldMessage;
+                                    } else {
+                                        // --- AyuGram hook
+                                        if (message.from_id != null && (!oldMessage.message.equals(message.message) || !sameMedia)) {
+                                            if (NaConfig.INSTANCE.getEnableSaveEditsHistory().Bool()) {
+                                                var prefs = new AyuSavePreferences(oldMessage, currentAccount);
+                                                prefs.setDialogId(dialogId);
+                                                AyuMessagesController.getInstance().onMessageEdited(prefs, message);
+                                            }
+                                            if (NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) {
+                                                AyuFilter.onMessageEdited(message.id, dialogId);
+                                            }
                                         }
-                                        if (NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) {
-                                            AyuFilter.onMessageEdited(message.id, dialogId);
+                                        // --- AyuGram hook
+                                        if (!sameMedia) {
+                                            addFilesToDelete(oldMessage, filesToDelete, idsToDelete, namesToDelete, false);
                                         }
-                                    }
-                                    // --- AyuGram hook
-                                    if (!sameMedia) {
-                                        addFilesToDelete(oldMessage, filesToDelete, idsToDelete, namesToDelete, false);
                                     }
                                     NativeByteBuffer customParams = cursor.byteBufferValue(6);
                                     MessageCustomParamsHelper.readLocalParams(message, customParams);
