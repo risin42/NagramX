@@ -116,6 +116,7 @@ import org.telegram.ui.Components.ShareAlert;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;
 import org.telegram.ui.Components.TextHelper;
 import org.telegram.ui.Components.UItem;
+import org.telegram.ui.Components.UndoView;
 import org.telegram.ui.Components.UniversalAdapter;
 import org.telegram.ui.Components.UniversalRecyclerView;
 import org.telegram.ui.Components.blur3.DownscaleScrollableNoiseSuppressor;
@@ -163,6 +164,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     private SizeNotifierFrameLayout contentView;
     private UniversalRecyclerView listView;
     private View actionBarBackground;
+    private UndoView undoView;
 
     private ActionBarMenuItem searchItem, otherItem;
     private String query;
@@ -1821,6 +1823,10 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 SharedConfig.toggleDebugVideoQualities();
             } else if (which == 34) {
                 SharedConfig.toggleUseSystemBoldFont();
+                UndoView undoView = getUndoView();
+                if (undoView != null) {
+                    undoView.showWithAction(0, UndoView.ACTION_NEED_RESTART, null, null);
+                }
             } else if (which == 35) {
                 MessagesController.getInstance(currentAccount).loadAppConfig(true);
             } else if (which == 36) {
@@ -2152,5 +2158,16 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
     @Override
     public boolean canParentTabsSlide(MotionEvent ev, boolean forward) {
         return isSwipeBackEnabled(ev);
+    }
+
+    private UndoView getUndoView() {
+        if (undoView != null || contentView == null) {
+            return undoView;
+        }
+        undoView = new UndoView(getContext(), this, false, resourceProvider);
+        FrameLayout.LayoutParams layoutParams = LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 0, 8, 8);
+        layoutParams.bottomMargin += navigationBarHeight + additionNavigationBarHeight;
+        contentView.addView(undoView, layoutParams);
+        return undoView;
     }
 }
