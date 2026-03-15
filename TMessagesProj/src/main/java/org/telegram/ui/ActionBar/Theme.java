@@ -2523,6 +2523,14 @@ public class Theme {
             return "Monet Light".equals(name);
         }
 
+        public boolean isMonetAmoled() {
+            return "Monet AMOLED".equals(name);
+        }
+
+        public boolean isMonetDark() {
+            return "Monet Dark".equals(name) || "Monet AMOLED".equals(name);
+        }
+
         public boolean isDay() {
             return "Day".equals(name);
         }
@@ -4823,7 +4831,7 @@ public class Theme {
 
             themeInfo = new ThemeInfo();
             themeInfo.name = "Monet AMOLED";
-            themeInfo.assetName = "monet_dark.attheme";
+            themeInfo.assetName = "monet_amoled.attheme";
             themeInfo.previewBackgroundColor = MonetHelper.getColor("n1_1000");
             themeInfo.previewInColor = MonetHelper.getColor("n2_800");
             themeInfo.previewOutColor = MonetHelper.getColor("a1_100");
@@ -6478,7 +6486,7 @@ public class Theme {
                 }
                 String[] wallpaperLink = new String[1];
                 if (themeInfo.assetName != null) {
-                    currentColorsNoAccent = getThemeFileValues(null, themeInfo.assetName, null, "Monet AMOLED".equals(themeInfo.name));
+                    currentColorsNoAccent = getThemeFileValues(null, themeInfo.assetName, null);
                 } else {
                     currentColorsNoAccent = getThemeFileValues(new File(themeInfo.pathToFile), null, wallpaperLink);
                 }
@@ -8244,10 +8252,6 @@ public class Theme {
     }
 
     public static SparseIntArray getThemeFileValues(File file, String assetName, String[] wallpaperLink) {
-        return getThemeFileValues(file, assetName, wallpaperLink, false);
-    }
-
-    public static SparseIntArray getThemeFileValues(File file, String assetName, String[] wallpaperLink, boolean monetAmoled) {
         FileInputStream stream = null;
         SparseIntArray stringMap = new SparseIntArray();
         try {
@@ -8288,7 +8292,7 @@ public class Theme {
                                         value = Utilities.parseInt(param);
                                     }
                                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && (param.startsWith("a") || param.startsWith("n") || param.startsWith("monet"))) {
-                                    value = MonetHelper.getColor(param, monetAmoled);
+                                    value = MonetHelper.getColor(param);
                                 } else {
                                     value = Utilities.parseInt(param);
                                 }

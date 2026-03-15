@@ -89,10 +89,6 @@ public class MonetHelper {
     private static int lastMonetColor = 0;
 
     public static int getColor(String color) {
-        return getColor(color, false);
-    }
-
-    public static int getColor(String color, boolean amoled) {
         try {
             String rawColor = color == null ? "" : color.trim();
             String baseColor = rawColor;
@@ -109,7 +105,7 @@ public class MonetHelper {
             }
 
             //noinspection ConstantConditions
-            int id = ids.getOrDefault(amoled && "n1_900".equals(baseColor) ? "n1_1000" : baseColor, 0);
+            int id = ids.getOrDefault(baseColor, 0);
             int resolvedColor = ApplicationLoader.applicationContext.getColor(id);
             if (lightnessValue != null) {
                 resolvedColor = changeBrightness(resolvedColor, Integer.parseInt(lightnessValue) / 100f);
