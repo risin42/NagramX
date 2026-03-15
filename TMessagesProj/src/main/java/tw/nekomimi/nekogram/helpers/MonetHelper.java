@@ -1,5 +1,6 @@
 package tw.nekomimi.nekogram.helpers;
 
+import android.graphics.Color;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -93,13 +94,53 @@ public class MonetHelper {
 
     public static int getColor(String color, boolean amoled) {
         try {
+            String rawColor = color == null ? "" : color.trim();
+            String baseColor = rawColor;
+            String lightnessValue = null;
+
+            int lastUnderscore = rawColor.lastIndexOf('_');
+            if (lastUnderscore > 0 && lastUnderscore < rawColor.length() - 1) {
+                String suffix = rawColor.substring(lastUnderscore + 1);
+                String candidateBase = rawColor.substring(0, lastUnderscore);
+                if (isDigitsOnly(suffix) && ids.containsKey(candidateBase)) {
+                    baseColor = candidateBase;
+                    lightnessValue = suffix;
+                }
+            }
+
             //noinspection ConstantConditions
-            int id = ids.getOrDefault(amoled && "n1_900".equals(color) ? "n1_1000" : color, 0);
-            return ApplicationLoader.applicationContext.getColor(id);
+            int id = ids.getOrDefault(amoled && "n1_900".equals(baseColor) ? "n1_1000" : baseColor, 0);
+            int resolvedColor = ApplicationLoader.applicationContext.getColor(id);
+            if (lightnessValue != null) {
+                resolvedColor = changeBrightness(resolvedColor, Integer.parseInt(lightnessValue) / 100f);
+            }
+            return resolvedColor;
         } catch (Exception e) {
             FileLog.e("Error loading color " + color, e);
             return 0;
         }
+    }
+
+    private static int changeBrightness(int color, float amount) {
+        return Color.argb(
+                Color.alpha(color),
+                clampToByte(Math.round(Color.red(color) * amount)),
+                clampToByte(Math.round(Color.green(color) * amount)),
+                clampToByte(Math.round(Color.blue(color) * amount))
+        );
+    }
+
+    private static int clampToByte(int value) {
+        return Math.max(0, Math.min(value, 255));
+    }
+
+    private static boolean isDigitsOnly(String value) {
+        for (int i = 0; i < value.length(); i++) {
+            if (!Character.isDigit(value.charAt(i))) {
+                return false;
+            }
+        }
+        return !value.isEmpty();
     }
 
     /**
