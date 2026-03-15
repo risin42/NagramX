@@ -601,7 +601,7 @@ object NaConfig {
         addConfig(
             "HidePremiumSection",
             ConfigItem.configTypeBool,
-            true
+            false
         )
     val hideHelpSection =
         addConfig(
@@ -1345,13 +1345,13 @@ object NaConfig {
         addConfig(
             "MainTabsHideTitles",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val mainTabsHideContacts =
         addConfig(
             "MainTabsHideContacts",
             ConfigItem.configTypeBool,
-            false
+            true
         )
     val showNotificationPreviewWhenLocked =
         addConfig(
