@@ -929,8 +929,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                     int height = MeasureSpec.getSize(heightMeasureSpec);
                     setMeasuredDimension(width, height);
 
-                    if (!AndroidUtilities.isInMultiwindow && (!AndroidUtilities.isSmallTablet() || getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)) {
-                        tabletFullSize = false;
+                    if (!tabletFullSize) {
                         int leftWidth = width / 100 * 35;
                         if (leftWidth < dp(320)) {
                             leftWidth = dp(320);
@@ -939,7 +938,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                         shadowTabletSide.measure(MeasureSpec.makeMeasureSpec(dp(1), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
                         rightActionBarLayout.getView().measure(MeasureSpec.makeMeasureSpec(width - leftWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
                     } else {
-                        tabletFullSize = true;
                         actionBarLayout.getView().measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
                     }
                     backgroundTablet.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
@@ -957,7 +955,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                     int width = r - l;
                     int height = b - t;
 
-                    if (!AndroidUtilities.isInMultiwindow && (!AndroidUtilities.isSmallTablet() || getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)) {
+                    if (!tabletFullSize) {
                         int leftWidth = width / 100 * 35;
                         if (leftWidth < dp(320)) {
                             leftWidth = dp(320);
@@ -1355,7 +1353,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 }
             }
             rightActionBarLayout.getView().setVisibility(rightActionBarLayout.getFragmentStack().isEmpty() ? View.GONE : View.VISIBLE);
-            backgroundTablet.setVisibility(rightActionBarLayout.getFragmentStack().isEmpty() ? View.VISIBLE : View.GONE);
+            backgroundTablet.setVisibility(View.VISIBLE);
             shadowTabletSide.setVisibility(!actionBarLayout.getFragmentStack().isEmpty() ? View.VISIBLE : View.GONE);
         } else {
             tabletFullSize = true;
@@ -1379,7 +1377,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             }
             shadowTabletSide.setVisibility(View.GONE);
             rightActionBarLayout.getView().setVisibility(View.GONE);
-            backgroundTablet.setVisibility(!actionBarLayout.getFragmentStack().isEmpty() ? View.GONE : View.VISIBLE);
+            backgroundTablet.setVisibility(View.VISIBLE);
         }
     }
 
@@ -8566,6 +8564,10 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                         layersActionBarLayout.closeLastFragment(true);
                     }
                     return false;
+                } else if (tabletFullSize && layout == actionBarLayout) {
+                    return true;
+                } else if (!tabletFullSize && layout == rightActionBarLayout) {
+                    return true;
                 }
             } else if (layout != layersActionBarLayout) {
                 layersActionBarLayout.getView().setVisibility(View.VISIBLE);
@@ -8703,8 +8705,8 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         if (rightActionBarLayout != null && rightActionBarLayout.getBottomSheetTabs() != null) {
             return rightActionBarLayout.getBottomSheetTabs();
         }
-        if (actionBarLayout != null && actionBarLayout.getBottomSheetTabs() != null) {
-            return actionBarLayout.getBottomSheetTabs();
+        if (getActionBarLayout() != null && getActionBarLayout().getBottomSheetTabs() != null) {
+            return getActionBarLayout().getBottomSheetTabs();
         }
         return null;
     }
