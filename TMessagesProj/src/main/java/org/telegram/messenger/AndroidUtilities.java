@@ -2968,7 +2968,7 @@ public class AndroidUtilities {
     }
 
     public static void resetWasTabletFlag() {
-        wasTablet = null;
+        wasTablet = isTabletForce();
     }
 
     public static Boolean getWasTablet() {
@@ -2992,22 +2992,13 @@ public class AndroidUtilities {
     }
 
     public static int getMinTabletSide() {
-        if (!isSmallTablet()) {
-            int smallSide = Math.min(displaySize.x, displaySize.y);
-            int leftSide = smallSide * 35 / 100;
-            if (leftSide < dp(320)) {
-                leftSide = dp(320);
-            }
-            return smallSide - leftSide;
-        } else {
-            int smallSide = Math.min(displaySize.x, displaySize.y);
-            int maxSide = Math.max(displaySize.x, displaySize.y);
-            int leftSide = maxSide * 35 / 100;
-            if (leftSide < dp(320)) {
-                leftSide = dp(320);
-            }
-            return Math.min(smallSide, maxSide - leftSide);
+        if (NekoConfig.tabletMode.Int() == NekoConfig.TABLET_AUTO) {
+            return Math.min(displaySize.x, displaySize.y);
         }
+        if (ApplicationLoader.applicationContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            return Math.min(displaySize.x, displaySize.y);
+        }
+        return Math.max(displaySize.x, displaySize.y);
     }
 
     public static int getPhotoSize() {
