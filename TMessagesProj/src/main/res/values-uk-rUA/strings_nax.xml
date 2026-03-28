@@ -134,6 +134,7 @@
     <string name="GhostModeEnabled">Режим \"привид\" увімкнено</string>
     <string name="GhostModeDisabled">Режим \"привид\" вимкнено</string>
     <string name="GhostModeStatusIndicator">Індикатор режиму «привид»</string>
+    <string name="GhostModeSoundOverride">Режим «привид» активний — звук завжди вимкнено</string>
     <string name="DontSendReadMessagePackets">Не читати повідомлення</string>
     <string name="DontReadStoriesPackets">Не читати історії</string>
     <string name="DontSendOnlinePackets">Не надсилати онлайн-статус</string>

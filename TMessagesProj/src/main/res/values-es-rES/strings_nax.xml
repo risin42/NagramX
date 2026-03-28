@@ -135,6 +135,7 @@
     <string name="GhostModeDisabled">Modo fantasma desactivado</string>
     <string name="GhostModeInDrawer">Acceso directo a la pestaña principal</string>
     <string name="GhostModeStatusIndicator">Indicador del Modo Fantasma</string>
+    <string name="GhostModeSoundOverride">Modo Fantasma activo — el sonido está siempre desactivado</string>
     <string name="DontSendReadMessagePackets">No leer mensajes</string>
     <string name="DontReadStoriesPackets">No leer historias</string>
     <string name="DontSendOnlinePackets">No enviar en línea</string>

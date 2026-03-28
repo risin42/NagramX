@@ -135,6 +135,7 @@
     <string name="GhostModeDisabled">Wyłączono tryb ducha</string>
     <string name="GhostModeInDrawer">Skrót do karty głównej</string>
     <string name="GhostModeStatusIndicator">Wskaźnik trybu ducha</string>
+    <string name="GhostModeSoundOverride">Tryb ducha aktywny — dźwięk jest zawsze wyłączony</string>
     <string name="DontSendReadMessagePackets">Nie czytaj wiadomości</string>
     <string name="DontReadStoriesPackets">Nie czytaj storek</string>
     <string name="DontSendOnlinePackets">Nie wysyłaj online</string>

@@ -114,6 +114,7 @@
     <string name="DisableGhostMode">غیرفعال کردن حالت روح</string>
     <string name="GhostModeEnabled">حالت روح فعال شد</string>
     <string name="GhostModeDisabled">حالت روح غیرفعال شد</string>
+    <string name="GhostModeSoundOverride">حالت روح فعال است — صدا همیشه خاموش است</string>
     <string name="GhostModeInDrawer">نمایش در منوی کشویی</string>
     <string name="DontSendReadMessagePackets">پیام‌ها خوانده نشود</string>
     <string name="DontReadStoriesPackets">استوری‌ها خوانده نشود</string>

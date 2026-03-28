@@ -135,6 +135,7 @@
     <string name="GhostModeDisabled">ゴーストモードが無効です</string>
     <string name="GhostModeInDrawer">ショートカット</string>
     <string name="GhostModeStatusIndicator">ゴーストモード標識</string>
+    <string name="GhostModeSoundOverride">ゴーストモードが有効です — 音声は常にオフです</string>
     <string name="DontSendReadMessagePackets">メッセージの既読を送信しない</string>
     <string name="DontReadStoriesPackets">ストーリーの既読を送信しない</string>
     <string name="DontSendOnlinePackets">オンライン状態を送信しない</string>

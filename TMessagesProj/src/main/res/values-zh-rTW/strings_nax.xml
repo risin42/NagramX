@@ -135,6 +135,7 @@
     <string name="GhostModeDisabled">幽靈模式已停用</string>
     <string name="GhostModeInDrawer">主頁快捷方式</string>
     <string name="GhostModeStatusIndicator">幽靈模式指示器</string>
+    <string name="GhostModeSoundOverride">幽靈模式已啟用 — 聲音始終關閉</string>
     <string name="DontSendReadMessagePackets">不顯示訊息已讀</string>
     <string name="DontReadStoriesPackets">不顯示動態已讀</string>
     <string name="DontSendOnlinePackets">不傳送線上狀態</string>

@@ -897,6 +897,24 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val forwardHideSenderName =
+        addConfig(
+            "ForwardHideSenderName",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val forwardHideCaption =
+        addConfig(
+            "ForwardHideCaption",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val forwardNotify =
+        addConfig(
+            "ForwardNotify",
+            ConfigItem.configTypeBool,
+            true
+        )
     val dontAutoPlayNextVoice =
         addConfig(
             "DontAutoPlayNextVoice",

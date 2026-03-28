@@ -135,6 +135,7 @@
     <string name="GhostModeDisabled">Modalità Ghost disattivata</string>
     <string name="GhostModeInDrawer">Scorciatoia scheda principale</string>
     <string name="GhostModeStatusIndicator">Indicatore Modalità Fantasma</string>
+    <string name="GhostModeSoundOverride">Modalità Ghost attiva — il suono è sempre disattivato</string>
     <string name="DontSendReadMessagePackets">Non Leggere Messaggi</string>
     <string name="DontReadStoriesPackets">Non Leggere Storie</string>
     <string name="DontSendOnlinePackets">Non Inviare stato Online</string>

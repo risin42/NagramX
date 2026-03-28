@@ -135,6 +135,7 @@
     <string name="GhostModeDisabled">Modo fantasma desativado</string>
     <string name="GhostModeInDrawer">Atalho na aba principal</string>
     <string name="GhostModeStatusIndicator">Indicador do modo fantasma</string>
+    <string name="GhostModeSoundOverride">Modo fantasma ativo — o som está sempre desativado</string>
     <string name="DontSendReadMessagePackets">Não ler mensagens</string>
     <string name="DontReadStoriesPackets">Não visualizar stories</string>
     <string name="DontSendOnlinePackets">Ocultar status online</string>

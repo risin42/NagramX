@@ -148,6 +148,7 @@
     <string name="GhostModeDisabled">Ghost mode turned off</string>
     <string name="GhostModeInDrawer">Shortcut</string>
     <string name="GhostModeStatusIndicator">Ghost Mode Indicator</string>
+    <string name="GhostModeSoundOverride">Ghost Mode is active — sound is always off</string>
     <string name="DontSendReadMessagePackets">Don\'t Read Messages</string>
     <string name="DontReadStoriesPackets">Don\'t Read Stories</string>
     <string name="DontSendOnlinePackets">Don\'t Send Online</string>

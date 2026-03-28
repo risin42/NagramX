@@ -1337,6 +1337,20 @@ public class FilterTabsView extends FrameLayout {
         scrollToTab(tabs.get(tabs.size() - 1), tabs.size() - 1);
     }
 
+    public void selectPrevTab() {
+        if (tabs.isEmpty() || currentPosition <= 0) {
+            return;
+        }
+        scrollToTab(tabs.get(currentPosition - 1), currentPosition - 1);
+    }
+
+    public void selectNextTab() {
+        if (tabs.isEmpty() || currentPosition >= tabs.size() - 1) {
+            return;
+        }
+        scrollToTab(tabs.get(currentPosition + 1), currentPosition + 1);
+    }
+
     public void setAnimationIdicatorProgress(float value) {
         animatingIndicatorProgress = value;
         listView.invalidateViews();

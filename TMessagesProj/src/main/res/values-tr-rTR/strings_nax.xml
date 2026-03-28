@@ -135,6 +135,7 @@
     <string name="GhostModeDisabled">Hayalet modu kapatıldı</string>
     <string name="GhostModeInDrawer">Ana Sekme Kısayolu</string>
     <string name="GhostModeStatusIndicator">Hayalet Modu Göstergesi</string>
+    <string name="GhostModeSoundOverride">Hayalet Modu aktif — ses her zaman kapalı</string>
     <string name="DontSendReadMessagePackets">Mesajları Okundu İşaretleme</string>
     <string name="DontReadStoriesPackets">Hikayeleri Okundu İşaretleme</string>
     <string name="DontSendOnlinePackets">Çevrimiçi Bilgisini Gönderme</string>

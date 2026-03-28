@@ -135,6 +135,7 @@
     <string name="GhostModeDisabled">Mode hantu dinonaktifkan</string>
     <string name="GhostModeInDrawer">Pintasan Tab Utama</string>
     <string name="GhostModeStatusIndicator">Indikator Mode Hantu</string>
+    <string name="GhostModeSoundOverride">Mode Hantu aktif — suara selalu mati</string>
     <string name="DontSendReadMessagePackets">Jangan Baca Pesan</string>
     <string name="DontReadStoriesPackets">Jangan Baca Cerita</string>
     <string name="DontSendOnlinePackets">Jangan Kirim Online</string>
