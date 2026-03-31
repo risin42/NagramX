@@ -1,5 +1,6 @@
 package tw.nekomimi.nekogram.utils
 
+import okhttp3.ConnectionPool
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -10,12 +11,21 @@ object HttpClient {
     @JvmField
     val MEDIA_TYPE_JSON: MediaType = "application/json; charset=utf-8".toMediaType()
 
+    // Shared connection pool for all OkHttp instances to maximize connection reuse
+    private val connectionPool = ConnectionPool(
+        maxIdleConnections = 10,
+        keepAliveDuration = 5,
+        timeUnit = TimeUnit.MINUTES
+    )
+
     val instance: OkHttpClient by lazy {
         OkHttpClient.Builder()
+            .connectionPool(connectionPool)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .callTimeout(30, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
             .build()
     }
 

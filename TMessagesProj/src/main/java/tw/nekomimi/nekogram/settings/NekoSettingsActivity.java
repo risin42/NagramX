@@ -359,9 +359,10 @@ public class NekoSettingsActivity extends BaseNekoSettingsActivity {
                     getString(R.string.Reset),
                     true,
                     () -> {
-                        ApplicationLoader.applicationContext.getSharedPreferences("nekocloud", Activity.MODE_PRIVATE).edit().clear().commit();
-                        ApplicationLoader.applicationContext.getSharedPreferences("nekox_config", Activity.MODE_PRIVATE).edit().clear().commit();
-                        NekoConfig.getPreferences().edit().clear().commit();
+                        // Use apply() instead of commit() to avoid blocking UI thread
+                        ApplicationLoader.applicationContext.getSharedPreferences("nekocloud", Activity.MODE_PRIVATE).edit().clear().apply();
+                        ApplicationLoader.applicationContext.getSharedPreferences("nekox_config", Activity.MODE_PRIVATE).edit().clear().apply();
+                        NekoConfig.getPreferences().edit().clear().apply();
                         AppRestartHelper.triggerRebirth(getParentActivity(), new Intent(getParentActivity(), LaunchActivity.class));
                     });
         } else if (position == exportSettingsRow) {

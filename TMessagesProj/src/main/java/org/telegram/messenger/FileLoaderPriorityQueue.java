@@ -87,7 +87,6 @@ public class FileLoaderPriorityQueue {
     }
 
     private void checkLoadingOperationInternal() {
-        int activeCount = 0;
         int lastPriority = 0;
         boolean pauseAllNextOperations = false;
         int max = type == TYPE_LARGE ? MessagesController.getInstance(currentAccount).largeQueueMaxActiveOperations : MessagesController.getInstance(currentAccount).smallQueueMaxActiveOperations;
@@ -101,9 +100,6 @@ public class FileLoaderPriorityQueue {
                         pauseAllNextOperations = true;
                     }
                 }
-                if (lastPriority > PRIORITY_VALUE_LOW && operation.getPriority() == PRIORITY_VALUE_LOW) {
-                    pauseAllNextOperations = true;
-                }
             }
             if (operation.preFinished) {
                 //operation will not use connections
@@ -116,7 +112,6 @@ public class FileLoaderPriorityQueue {
 //                if (BuildVars.DEBUG_PRIVATE_VERSION)
 //                    FileLog.d("{"+name+"}.checkLoadingOperationInternal: #" + i + " " +operation.getFileName()+" priority="+operation.getPriority()+" isStory="+operation.isStory+" preFinished="+ operation.preFinished+" pauseAllNextOperations=" + pauseAllNextOperations + " max=" + max + " => start");
                 tmpListOperations.add(operation);
-                activeCount++;
             } else {
 //                if (BuildVars.DEBUG_PRIVATE_VERSION)
 //                    FileLog.d("{"+name+"}.checkLoadingOperationInternal: #" + i + " " +operation.getFileName()+" priority="+operation.getPriority()+" isStory="+operation.isStory+" preFinished="+ operation.preFinished+" pauseAllNextOperations=" + pauseAllNextOperations + " max=" + max + " => pause");

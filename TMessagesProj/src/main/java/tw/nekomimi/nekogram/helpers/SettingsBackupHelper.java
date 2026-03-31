@@ -253,7 +253,8 @@ public final class SettingsBackupHelper {
                     editor.putString(key, value.getAsString());
                 }
             }
-            editor.commit();
+            // Use apply() instead of commit() to avoid blocking the thread
+            editor.apply();
         }
     }
 

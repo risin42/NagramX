@@ -765,9 +765,9 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                 if (position == cellGroup.rows.indexOf(maxRecentStickerCountRow)) {
                     textCell.setTextAndValue(getString(R.string.maxRecentStickerCount), String.valueOf(NekoConfig.maxRecentStickerCount.Int()), true);
                 } else if (position == cellGroup.rows.indexOf(doubleTapActionRow)) {
-                    textCell.setTextAndValue(getString(R.string.DoubleTapIncoming), DoubleTap.doubleTapActionMap.get(NaConfig.INSTANCE.getDoubleTapAction().Int()), true);
+                    textCell.setTextAndValue(getString(R.string.DoubleTapIncoming), DoubleTap.getDoubleTapActionMap().get(NaConfig.INSTANCE.getDoubleTapAction().Int()), true);
                 } else if (position == cellGroup.rows.indexOf(doubleTapActionOutRow)) {
-                    textCell.setTextAndValue(getString(R.string.DoubleTapOutgoing), DoubleTap.doubleTapActionMap.get(NaConfig.INSTANCE.getDoubleTapActionOut().Int()), true);
+                    textCell.setTextAndValue(getString(R.string.DoubleTapOutgoing), DoubleTap.getDoubleTapActionMap().get(NaConfig.INSTANCE.getDoubleTapActionOut().Int()), true);
                 } else if (position == cellGroup.rows.indexOf(transcribeProviderCfCredentialsRow)) {
                     textCell.setTextAndValue(getString(R.string.CloudflareCredentials), "", true);
                 } else if (position == cellGroup.rows.indexOf(transcribeProviderGeminiApiKeyRow)) {

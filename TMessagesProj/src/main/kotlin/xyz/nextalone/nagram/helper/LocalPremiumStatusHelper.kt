@@ -14,13 +14,15 @@ data class LocalEmojiStatusData(
 object LocalPremiumStatusHelper {
     const val KEY_PREFIX = "useLocalEmojiStatusData_"
 
+    // Use shared Gson instance to avoid repeated object creation
+    private val gson = Gson()
     private val dataMap = mutableMapOf<Long, LocalEmojiStatusData?>()
     private val loadedUsers = mutableSetOf<Long>()
 
     @JvmStatic
     fun getDocumentId(user: TLRPC.User?): Long? {
         if (!NekoConfig.localPremium.Bool()) return null
-        if (user == null || !isLocalUser(user.id)) return null
+        if (user == null || !UserHelper.isLocalUser(user.id)) return null
 
         val data = getDataForUser(user.id) ?: return null
         val until = data.until ?: 0
@@ -36,17 +38,6 @@ object LocalPremiumStatusHelper {
         return dataMap[userId]
     }
 
-    private fun isLocalUser(userId: Long): Boolean {
-        for (i in 0 until UserConfig.MAX_ACCOUNT_COUNT) {
-            if (UserConfig.getInstance(i).isClientActivated &&
-                UserConfig.getInstance(i).getClientUserId() == userId
-            ) {
-                return true
-            }
-        }
-        return false
-    }
-
     private fun getCurrentUserId(): Long {
         return UserConfig.getInstance(UserConfig.selectedAccount).getClientUserId()
     }
@@ -57,7 +48,6 @@ object LocalPremiumStatusHelper {
         loadedUsers.add(userId)
 
         try {
-            val gson = Gson()
             val userKey = KEY_PREFIX + userId
 
             var jsonStr = NaConfig.getPreferences().getString(userKey, null)
@@ -111,6 +101,6 @@ object LocalPremiumStatusHelper {
 
         val localData = LocalEmojiStatusData(documentId, until)
         dataMap[userId] = localData
-        NaConfig.getPreferences().edit { putString(userKey, Gson().toJson(localData)) }
+        NaConfig.getPreferences().edit { putString(userKey, gson.toJson(localData)) }
     }
 }

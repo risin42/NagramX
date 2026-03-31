@@ -4,76 +4,34 @@ import org.telegram.messenger.LocaleController.getString
 import org.telegram.messenger.R
 
 object DoubleTap {
-    @JvmField
-    var doubleTapActionMap: MutableMap<Int, String> =
-        HashMap()
-    const val DOUBLE_TAP_ACTION_NONE =
-        0
-    const val DOUBLE_TAP_ACTION_SEND_REACTIONS =
-        1
-    const val DOUBLE_TAP_ACTION_SHOW_REACTIONS =
-        2
-    const val DOUBLE_TAP_ACTION_TRANSLATE =
-        3
-    const val DOUBLE_TAP_ACTION_REPLY =
-        4
-    const val DOUBLE_TAP_ACTION_SAVE =
-        5
-    const val DOUBLE_TAP_ACTION_REPEAT =
-        6
-    const val DOUBLE_TAP_ACTION_REPEAT_AS_COPY =
-        7
-    const val DOUBLE_TAP_ACTION_EDIT =
-        8
-    const val DOUBLE_TAP_ACTION_TRANSLATE_LLM =
-        9
-    const val DOUBLE_TAP_ACTION_DELETE =
-        10
+    const val DOUBLE_TAP_ACTION_NONE = 0
+    const val DOUBLE_TAP_ACTION_SEND_REACTIONS = 1
+    const val DOUBLE_TAP_ACTION_SHOW_REACTIONS = 2
+    const val DOUBLE_TAP_ACTION_TRANSLATE = 3
+    const val DOUBLE_TAP_ACTION_REPLY = 4
+    const val DOUBLE_TAP_ACTION_SAVE = 5
+    const val DOUBLE_TAP_ACTION_REPEAT = 6
+    const val DOUBLE_TAP_ACTION_REPEAT_AS_COPY = 7
+    const val DOUBLE_TAP_ACTION_EDIT = 8
+    const val DOUBLE_TAP_ACTION_TRANSLATE_LLM = 9
+    const val DOUBLE_TAP_ACTION_DELETE = 10
 
-    init {
-        doubleTapActionMap[DOUBLE_TAP_ACTION_NONE] =
-            getString(
-                R.string.Disable
-            )
-        doubleTapActionMap[DOUBLE_TAP_ACTION_SEND_REACTIONS] =
-            getString(
-                R.string.SendReactions
-            )
-        doubleTapActionMap[DOUBLE_TAP_ACTION_SHOW_REACTIONS] =
-            getString(
-                R.string.ShowReactions
-            )
-        doubleTapActionMap[DOUBLE_TAP_ACTION_TRANSLATE] =
-            getString(
-                R.string.TranslateMessage
-            )
-        doubleTapActionMap[DOUBLE_TAP_ACTION_REPLY] =
-            getString(
-                R.string.Reply
-            )
-        doubleTapActionMap[DOUBLE_TAP_ACTION_SAVE] =
-            getString(
-                R.string.AddToSavedMessages
-            )
-        doubleTapActionMap[DOUBLE_TAP_ACTION_REPEAT] =
-            getString(
-                R.string.Repeat
-            )
-        doubleTapActionMap[DOUBLE_TAP_ACTION_REPEAT_AS_COPY] =
-            getString(
-                R.string.RepeatAsCopy
-            )
-        doubleTapActionMap[DOUBLE_TAP_ACTION_EDIT] =
-            getString(
-                R.string.Edit
-            )
-        doubleTapActionMap[DOUBLE_TAP_ACTION_TRANSLATE_LLM] =
-            getString(
-                R.string.TranslateMessageLLM
-            )
-        doubleTapActionMap[DOUBLE_TAP_ACTION_DELETE] =
-            getString(
-                R.string.Delete
-            )
+    // Use lazy initialization to defer getString calls until first access
+    // This improves startup performance and allows language changes to take effect
+    @JvmStatic
+    val doubleTapActionMap: Map<Int, String> by lazy {
+        mapOf(
+            DOUBLE_TAP_ACTION_NONE to getString(R.string.Disable),
+            DOUBLE_TAP_ACTION_SEND_REACTIONS to getString(R.string.SendReactions),
+            DOUBLE_TAP_ACTION_SHOW_REACTIONS to getString(R.string.ShowReactions),
+            DOUBLE_TAP_ACTION_TRANSLATE to getString(R.string.TranslateMessage),
+            DOUBLE_TAP_ACTION_REPLY to getString(R.string.Reply),
+            DOUBLE_TAP_ACTION_SAVE to getString(R.string.AddToSavedMessages),
+            DOUBLE_TAP_ACTION_REPEAT to getString(R.string.Repeat),
+            DOUBLE_TAP_ACTION_REPEAT_AS_COPY to getString(R.string.RepeatAsCopy),
+            DOUBLE_TAP_ACTION_EDIT to getString(R.string.Edit),
+            DOUBLE_TAP_ACTION_TRANSLATE_LLM to getString(R.string.TranslateMessageLLM),
+            DOUBLE_TAP_ACTION_DELETE to getString(R.string.Delete)
+        )
     }
 }

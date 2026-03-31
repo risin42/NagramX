@@ -2,7 +2,6 @@ package xyz.nextalone.nagram.helper
 
 import androidx.core.content.edit
 import com.google.gson.Gson
-import org.telegram.messenger.UserConfig
 import org.telegram.tgnet.TLRPC
 import tw.nekomimi.nekogram.NekoConfig
 import xyz.nextalone.nagram.NaConfig
@@ -14,13 +13,15 @@ data class LocalQuoteColorData(
 object LocalPeerColorHelper {
     const val KEY_PREFIX = "useLocalQuoteColorData_"
 
+    // Use shared Gson instance to avoid repeated object creation
+    private val gson = Gson()
     private val dataMap = mutableMapOf<Long, LocalQuoteColorData?>()
     private val loadedUsers = mutableSetOf<Long>()
 
     @JvmStatic
     fun getColorId(user: TLRPC.User): Int? {
         if (!NekoConfig.localPremium.Bool()) return null
-        if (!isLocalUser(user.id)) return null
+        if (!UserHelper.isLocalUser(user.id)) return null
         val data = getDataForUser(user.id) ?: return null
         return data.colorId
     }
@@ -28,7 +29,7 @@ object LocalPeerColorHelper {
     @JvmStatic
     fun getEmojiId(user: TLRPC.User?): Long? {
         if (!NekoConfig.localPremium.Bool()) return null
-        if (user == null || !isLocalUser(user.id)) return null
+        if (user == null || !UserHelper.isLocalUser(user.id)) return null
         val data = getDataForUser(user.id) ?: return null
         return data.emojiId
     }
@@ -36,7 +37,7 @@ object LocalPeerColorHelper {
     @JvmStatic
     fun getProfileColorId(user: TLRPC.User): Int? {
         if (!NekoConfig.localPremium.Bool()) return null
-        if (!isLocalUser(user.id)) return null
+        if (!UserHelper.isLocalUser(user.id)) return null
         val data = getDataForUser(user.id) ?: return null
         return data.profileColorId
     }
@@ -44,7 +45,7 @@ object LocalPeerColorHelper {
     @JvmStatic
     fun getProfileEmojiId(user: TLRPC.User?): Long? {
         if (!NekoConfig.localPremium.Bool()) return null
-        if (user == null || !isLocalUser(user.id)) return null
+        if (user == null || !UserHelper.isLocalUser(user.id)) return null
         val data = getDataForUser(user.id) ?: return null
         return data.profileEmojiId
     }
@@ -55,28 +56,12 @@ object LocalPeerColorHelper {
         return dataMap[userId]
     }
 
-    private fun isLocalUser(userId: Long): Boolean {
-        for (i in 0 until UserConfig.MAX_ACCOUNT_COUNT) {
-            if (UserConfig.getInstance(i).isClientActivated &&
-                UserConfig.getInstance(i).getClientUserId() == userId
-            ) {
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun getCurrentUserId(): Long {
-        return UserConfig.getInstance(UserConfig.selectedAccount).getClientUserId()
-    }
-
     @JvmStatic
     fun initForUser(userId: Long, force: Boolean = false) {
         if (!force && loadedUsers.contains(userId)) return
         loadedUsers.add(userId)
 
         try {
-            val gson = Gson()
             val userKey = KEY_PREFIX + userId
 
             var jsonStr = NaConfig.getPreferences().getString(userKey, null)
@@ -103,13 +88,13 @@ object LocalPeerColorHelper {
     fun apply(colorId: Int, emojiId: Long, profileColorId: Int, profileEmojiId: Long) {
         if (!NekoConfig.localPremium.Bool()) return
 
-        val userId = getCurrentUserId()
+        val userId = UserHelper.getCurrentUserId()
         if (userId == 0L) return
 
         val localData = LocalQuoteColorData(colorId, emojiId, profileColorId, profileEmojiId)
         dataMap[userId] = localData
 
         val userKey = KEY_PREFIX + userId
-        NaConfig.getPreferences().edit { putString(userKey, Gson().toJson(localData)) }
+        NaConfig.getPreferences().edit { putString(userKey, gson.toJson(localData)) }
     }
 }

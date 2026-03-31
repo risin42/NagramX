@@ -6075,7 +6075,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
     private void fileAttach(boolean checkUI, final MessageObject messageObject) {
         if (photoImage != null) {
-            photoImage.setFileLoadingPriority(FileLoader.PRIORITY_NORMAL);
+            photoImage.setFileLoadingPriority(FileLoader.PRIORITY_NORMAL_UP);
         }
         if (checkUI && messageObject != null && (isRoundVideo || messageObject.isVideo())) {
             checkVideoPlayback(true, null);
@@ -6088,13 +6088,13 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 TLRPC.PhotoSize photo = document == null ? FileLoader.getClosestPhotoSizeWithSize(messageObject.photoThumbs, AndroidUtilities.getPhotoSize()) : null;
                 if (canDownload == 2 || canDownload == 1 && messageObject.isVideo()) {
                     if (canDownload != 2 && document != null && !messageObject.shouldEncryptPhotoOrVideo() && messageObject.canStreamVideo()) {
-                        FileLoader.getInstance(currentAccount).loadFile(document, messageObject, FileLoader.PRIORITY_NORMAL, 0);
+                        FileLoader.getInstance(currentAccount).loadFile(document, messageObject, FileLoader.PRIORITY_NORMAL_UP, 0);
                     }
                 } else if (canDownload != 0) {
                     if (document != null) {
-                        FileLoader.getInstance(currentAccount).loadFile(document, messageObject, FileLoader.PRIORITY_NORMAL, (MessageObject.isVideoDocument(document) || messageObject.isVoiceOnce() || messageObject.isRoundOnce()) && messageObject.shouldEncryptPhotoOrVideo() ? 2 : 0);
+                        FileLoader.getInstance(currentAccount).loadFile(document, messageObject, FileLoader.PRIORITY_NORMAL_UP, (MessageObject.isVideoDocument(document) || messageObject.isVoiceOnce() || messageObject.isRoundOnce()) && messageObject.shouldEncryptPhotoOrVideo() ? 2 : 0);
                     } else if (photo != null) {
-                        FileLoader.getInstance(currentAccount).loadFile(ImageLocation.getForObject(photo, messageObject.photoThumbsObject), messageObject, null, FileLoader.PRIORITY_NORMAL, messageObject.shouldEncryptPhotoOrVideo() ? 2 : 0);
+                        FileLoader.getInstance(currentAccount).loadFile(ImageLocation.getForObject(photo, messageObject.photoThumbsObject), messageObject, null, FileLoader.PRIORITY_NORMAL_UP, messageObject.shouldEncryptPhotoOrVideo() ? 2 : 0);
                     }
                 }
                 if (checkUI) {
@@ -6103,10 +6103,10 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             }
             if (messageObject.hasVideoQualities()) {
                 if (messageObject.highestQuality != null && !messageObject.highestQuality.isManifestCached()) {
-                    FileLoader.getInstance(currentAccount).loadFile(messageObject.highestQuality.manifestDocument, messageObject, FileLoader.PRIORITY_NORMAL, 0);
+                    FileLoader.getInstance(currentAccount).loadFile(messageObject.highestQuality.manifestDocument, messageObject, FileLoader.PRIORITY_NORMAL_UP, 0);
                 }
                 if (messageObject.thumbQuality != null && !messageObject.thumbQuality.isManifestCached()) {
-                    FileLoader.getInstance(currentAccount).loadFile(messageObject.thumbQuality.manifestDocument, messageObject, FileLoader.PRIORITY_NORMAL, 0);
+                    FileLoader.getInstance(currentAccount).loadFile(messageObject.thumbQuality.manifestDocument, messageObject, FileLoader.PRIORITY_NORMAL_UP, 0);
                 }
             }
         }
