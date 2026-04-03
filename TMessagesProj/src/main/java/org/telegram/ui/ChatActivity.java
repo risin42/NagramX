@@ -25944,7 +25944,7 @@ public class ChatActivity extends BaseFragment implements
         if (!arr.isEmpty()) {
             if ((chatMode == MODE_SCHEDULED || chatMode == MODE_QUICK_REPLIES)) {
                 replaceMessageObjects(arr, 0, true);
-            } else if (UserObject.isBotForum(currentUser)) {
+            } else if (currentUser != null && currentUser.bot) {
                 replaceMessageObjects(arr, 0, false);
             }
         }
@@ -26991,7 +26991,7 @@ public class ChatActivity extends BaseFragment implements
                 pinnedMessageObjects.put(messageObject.getId(), messageObject);
             }
             MessageObject old = messagesDict[loadIndex].get(messageObject.getId());
-            if (messageObject.getId() > 0 && old == null && UserObject.isBotForum(currentUser)) {
+            if (messageObject.getId() > 0 && old == null && currentUser != null && currentUser.bot) {
                 old = BotForumHelper.getInstance(currentAccount).onBotForumDraftCheckNewMessages(currentUser.id, (int) getTopicId(), messageObject.getId(), messageObject.messageText.toString());
                 if (old != null) {
                     if (!messages.contains(old)) {
