@@ -146,6 +146,22 @@ static void generate_public_key(unsigned char *key) {
     BN_clear_free(mod);
 }
 
+[[nodiscard]] int PaddingExtensionLength(uint32_t currentSize) {
+    constexpr uint32_t kTlsRecordHeaderSize = 5;
+
+    if (currentSize <= kTlsRecordHeaderSize) {
+        return 0;
+    }
+
+    const auto messageLength = currentSize - kTlsRecordHeaderSize;
+    if (messageLength <= 0xFF || messageLength >= 0x200) {
+        return 0;
+    }
+
+    const auto paddingLength = 0x200 - messageLength;
+    return paddingLength >= 5 ? static_cast<int>(paddingLength - 4) : 1;
+}
+
 class TlsHello {
 public:
 
@@ -311,12 +327,12 @@ public:
                         },
                         { Op::string("\x44\xcd\x00\x05\x00\x03\x02\x68\x32", 9) },
                         {
-                            Op::string("\xfe\x02", 2),
+                            Op::string("\xfe\x0d", 2),
                             Op::begin_scope(),
                             Op::string("\x00\x00\x01\x00\x01", 5),
                             Op::random(1),
                             Op::string("\x00\x20", 2),
-                            Op::random(20),
+                            Op::random(32),
                             Op::begin_scope(),
                             Op::E(),
                             Op::end_scope(),
@@ -414,11 +430,11 @@ private:
                 break;
             }
             case Type::P: {
-                auto length = offset;
-                if (length <= 513) {
+                auto length = PaddingExtensionLength(offset);
+                if (length > 0) {
                     writeOp(Op::string("\x00\x15", 2), data, offset);
                     writeOp(Op::begin_scope(), data, offset);
-                    writeOp(Op::zero(513 - length), data, offset);
+                    writeOp(Op::zero(length), data, offset);
                     writeOp(Op::end_scope(), data, offset);
                 }
                 break;
