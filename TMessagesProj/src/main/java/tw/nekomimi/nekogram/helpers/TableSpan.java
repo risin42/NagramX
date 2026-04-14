@@ -56,10 +56,8 @@ public class TableSpan extends ReplacementSpan {
         mMeasured = false;
     }
 
-
     private int[] rowHeights;
     private StaticLayout[][] layouts;
-
     private TextPaint mTextPaint;
 
     private void measureIfNeeded(Paint paint) {
@@ -69,20 +67,52 @@ public class TableSpan extends ReplacementSpan {
 
         int colCount = rows[0].length;
         columnWidths = new int[colCount];
-        int maxTableWidth = AndroidUtilities.displaySize.x - dp(100);
-        int availableSpace = maxTableWidth - dp(CELL_PADDING) * 2 * colCount - dp(BORDER_WIDTH) * (colCount + 1);
+        int minColumnPx = dp(MIN_COLUMN_WIDTH);
+        
+        mTextPaint = new TextPaint(paint);
 
-        int avgWidth = availableSpace / colCount;
-        for (int i = 0; i < colCount; i++) {
-            columnWidths[i] = avgWidth;
+        // 1. Calculate natural column widths based on longest string
+        for (int r = 0; r < rows.length; r++) {
+            String[] row = rows[r];
+            mTextPaint.setFakeBoldText(r == 0);
+            for (int c = 0; c < colCount; c++) {
+                String cell = c < row.length ? row[c] : "";
+                int w = (int) Math.ceil(mTextPaint.measureText(cell));
+                if (w > columnWidths[c]) {
+                    columnWidths[c] = w;
+                }
+            }
         }
 
-        mTableWidth = maxTableWidth;
+        // 2. Adjust for min width and sum up natural total
+        int totalContentWidth = 0;
+        for (int c = 0; c < colCount; c++) {
+            columnWidths[c] = Math.max(minColumnPx, columnWidths[c]);
+            totalContentWidth += columnWidths[c];
+        }
+
+        int maxTableWidth = AndroidUtilities.displaySize.x - dp(100);
+        int decorationsWidth = dp(CELL_PADDING) * 2 * colCount + dp(BORDER_WIDTH) * (colCount + 1);
+        int availableSpace = Math.max(1, maxTableWidth - decorationsWidth);
+
+        // 3. If total content exceeds available space, shrink proportionally
+        if (totalContentWidth > availableSpace) {
+            float ratio = (float) availableSpace / totalContentWidth;
+            for (int c = 0; c < colCount; c++) {
+                columnWidths[c] = (int) (columnWidths[c] * ratio);
+                columnWidths[c] = Math.max(minColumnPx / 2, columnWidths[c]);
+            }
+        }
+
+        // 4. Calculate actual table width
+        mTableWidth = decorationsWidth;
+        for (int w : columnWidths) {
+            mTableWidth += w;
+        }
+
         mTableHeight = dp(BORDER_WIDTH) * (rows.length + 1);
         rowHeights = new int[rows.length];
         layouts = new StaticLayout[rows.length][colCount];
-
-        mTextPaint = new TextPaint(paint);
 
         for (int r = 0; r < rows.length; r++) {
             String[] row = rows[r];
@@ -102,6 +132,7 @@ public class TableSpan extends ReplacementSpan {
 
         mMeasured = true;
     }
+
     private int dp(float dp) {
         return (int) (dp * android.content.res.Resources.getSystem().getDisplayMetrics().density);
     }
@@ -135,7 +166,6 @@ public class TableSpan extends ReplacementSpan {
         drawTableContent(canvas, x, top, paint);
         updateCopyButtonRect(x, top, bottom);
     }
-
 
     protected void drawTableContent(Canvas canvas, float x, int top, Paint paint) {
         int rowCount = rows.length;
@@ -219,20 +249,6 @@ public class TableSpan extends ReplacementSpan {
             }
             cellTop += rowHeights[r] + borderWidth;
         }
-    }
-    private String fitText(Paint paint, String text, int maxWidth) {
-        if (text == null || text.isEmpty() || maxWidth <= 0) {
-            return "";
-        }
-        if (paint.measureText(text) <= maxWidth) {
-            return text;
-        }
-        String ellipsis = "...";
-        int count = paint.breakText(text, true, Math.max(0, maxWidth - paint.measureText(ellipsis)), null);
-        if (count <= 0) {
-            return ellipsis;
-        }
-        return text.substring(0, count) + ellipsis;
     }
 
     // Will be implemented in Step 4

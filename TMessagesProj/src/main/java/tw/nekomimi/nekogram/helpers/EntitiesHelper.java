@@ -22,7 +22,7 @@ import xyz.nextalone.nagram.NaConfig;
 public class EntitiesHelper {
     // Table pattern: matches GFM table with header row, separator row, and data rows
     private static final Pattern TABLE_BLOCK_PATTERN = Pattern.compile(
-            "^(\\|.+\\|[ \\t]*\\n)(\\|[-| :]+\\|[ \\t]*\\n)((?:\\|.+\\|[ \\t]*\\n?)+)",
+            "^([ \\t]*\\|?.*\\|.*\\|?[ \\t]*\\n)([ \\t]*\\|?[-| :]+\\|?[ \\t]*\\n)((?:[ \\t]*\\|?.*\\|.*\\|?[ \\t]*\\n?)+)",
             Pattern.MULTILINE
     );
 
@@ -152,7 +152,8 @@ public class EntitiesHelper {
             }
 
             // Replace entire table block with zero-width space
-            builder.replace(start, end, "\u200B");
+            boolean hasTrailingNewline = originalMarkdown.endsWith("\n");
+            builder.replace(start, end, hasTrailingNewline ? "\u200B\n" : "\u200B");
             TableSpan span = new TableSpan(parsed, originalMarkdown);
             builder.setSpan(span, start, start + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
