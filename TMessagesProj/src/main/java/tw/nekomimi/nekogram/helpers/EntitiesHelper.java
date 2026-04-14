@@ -127,7 +127,29 @@ public class EntitiesHelper {
         var positions = new ArrayList<int[]>();
         var m = TABLE_BLOCK_PATTERN.matcher(text);
         while (m.find()) {
-            positions.add(new int[]{m.start(), m.end()});
+            boolean skip = false;
+            if (text instanceof Spanned) {
+                Spanned spanned = (Spanned) text;
+                int s = m.start();
+                int e = m.end();
+                CodeHighlighting.Span[] codeSpans = spanned.getSpans(s, e, CodeHighlighting.Span.class);
+                if (codeSpans != null && codeSpans.length > 0) skip = true;
+                
+                if (!skip) {
+                    TextStyleSpan[] styleSpans = spanned.getSpans(s, e, TextStyleSpan.class);
+                    if (styleSpans != null) {
+                        for (TextStyleSpan span : styleSpans) {
+                            if (span.isMono()) {
+                                skip = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (!skip) {
+                positions.add(new int[]{m.start(), m.end()});
+            }
         }
         
         if (positions.isEmpty()) {
@@ -166,16 +188,15 @@ public class EntitiesHelper {
             
             // Skip the markdown separator row which usually appears at index 1
             // e.g. |---|---| or |:---:|----:|
-            if (i == 1 && line.matches("\\|?[-| :]+\\|?")) {
+            if (i == 1 && line.matches("^[ \\t]*\\|?([ \\t]*:?-+:?[ \\t]*\\|[ \\t]*)*([ \\t]*:?-+:?[ \\t]*)\\|?[ \\t]*$")) {
                 continue;
             }
 
-            if (line.startsWith("|")) line = line.substring(1);
-            if (line.endsWith("|")) line = line.substring(0, line.length() - 1);
-            String[] cells = line.split("\\|");
-            // Trim each cell
+            line = line.replaceFirst("^\\|", "").replaceFirst("(?<!\\\\)\\|$", "");
+            String[] cells = line.split("(?<!\\\\)\\|");
+            // Trim and unescape each cell
             for (int j = 0; j < cells.length; j++) {
-                cells[j] = cells[j].trim();
+                cells[j] = cells[j].replace("\\|", "|").trim();
             }
             validRows.add(cells);
         }
