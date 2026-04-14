@@ -44,8 +44,6 @@ public class EntitiesHelper {
     }
 
     public static void parseMarkdown(CharSequence[] message, boolean allowStrike) {
-        android.util.Log.d("TableSpan", "parseMarkdown called, MARKDOWN_PARSER_NEKO = " + NekoConfig.MARKDOWN_PARSER_NEKO + ", current = " + NaConfig.INSTANCE.getMarkdownParser().Int());
-        
         var spannable = message[0] instanceof Spannable ? (Spannable) message[0] : Spannable.Factory.getInstance().newSpannable(message[0]);
         for (int i = 0; i < PATTERNS.length; i++) {
             if (!allowStrike && i == 6) {
@@ -134,14 +132,12 @@ public class EntitiesHelper {
         var m = TABLE_BLOCK_PATTERN.matcher(text);
         while (m.find()) {
             positions.add(new int[]{m.start(), m.end()});
-            android.util.Log.d("TableSpan", "Found table at " + m.start() + "-" + m.end() + ": " + m.group(0).replace("\n", "\\n").substring(0, Math.min(50, m.group(0).length())));
         }
         
         if (positions.isEmpty()) {
             return text;
         }
         
-        android.util.Log.d("TableSpan", "Total tables found: " + positions.size());
         SpannableStringBuilder builder = text instanceof SpannableStringBuilder
             ? (SpannableStringBuilder) text
             : new SpannableStringBuilder(text);
@@ -150,19 +146,15 @@ public class EntitiesHelper {
             int start = positions.get(i)[0];
             int end = positions.get(i)[1];
             String originalMarkdown = builder.subSequence(start, end).toString();
-            android.util.Log.d("TableSpan", "Replacing table at " + start + "-" + end + " with placeholder, content: " + originalMarkdown.replace("\n", "\\n"));
             String[][] parsed = parseTableRows(originalMarkdown);
             if (parsed == null) {
-                android.util.Log.d("TableSpan", "parseTableRows returned null for: " + originalMarkdown.replace("\n", "\\n"));
                 continue;
             }
-            android.util.Log.d("TableSpan", "Parsed " + parsed.length + " rows, " + (parsed.length > 0 ? parsed[0].length : 0) + " columns");
 
             // Replace entire table block with zero-width space
             builder.replace(start, end, "\u200B");
             TableSpan span = new TableSpan(parsed, originalMarkdown);
             builder.setSpan(span, start, start + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            android.util.Log.d("TableSpan", "Span set at " + start + "-" + (start + 1) + ", spans on builder: " + builder.getSpans(0, builder.length(), TableSpan.class).length);
         }
         return builder;
     }

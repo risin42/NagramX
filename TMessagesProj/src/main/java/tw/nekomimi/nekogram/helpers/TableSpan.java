@@ -109,9 +109,7 @@ public class TableSpan extends ReplacementSpan {
     @Override
     public int getSize(@NonNull Paint paint, CharSequence text,
                        int start, int end, Paint.FontMetricsInt fm) {
-        android.util.Log.d("TableSpan", "getSize called: start=" + start + " end=" + end + " text.length=" + text.length());
         measureIfNeeded(paint);
-        android.util.Log.d("TableSpan", "getSize returning: width=" + mTableWidth + " height=" + mTableHeight);
         if (fm != null) {
             fm.ascent = -mTableHeight;
             fm.top = -mTableHeight;
@@ -125,19 +123,15 @@ public class TableSpan extends ReplacementSpan {
     public void draw(@NonNull Canvas canvas, CharSequence text,
                      int start, int end, float x,
                      int top, int y, int bottom, @NonNull Paint paint) {
-        android.util.Log.d("TableSpan", "draw called: x=" + x + " top=" + top + " y=" + y + " bottom=" + bottom + " mTableWidth=" + mTableWidth + " mTableHeight=" + mTableHeight + " text.length=" + text.length());
         // Only draw on first line (with placeholder char, this is always called once)
         if (mFirstTop == UNSET) {
             mFirstTop = top;
-            android.util.Log.d("TableSpan", "First top set to: " + top);
         }
         if (top != mFirstTop) {
-            android.util.Log.d("TableSpan", "Skipping draw - top=" + top + " mFirstTop=" + mFirstTop);
             return;
         }
 
         measureIfNeeded(paint);
-        android.util.Log.d("TableSpan", "Drawing table at x=" + x + " top=" + top + " width=" + mTableWidth + " height=" + mTableHeight);
         drawTableContent(canvas, x, top, paint);
         updateCopyButtonRect(x, top, bottom);
     }
