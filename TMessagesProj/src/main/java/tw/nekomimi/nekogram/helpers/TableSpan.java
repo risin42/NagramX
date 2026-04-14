@@ -59,9 +59,17 @@ public class TableSpan extends ReplacementSpan {
     private int[] rowHeights;
     private StaticLayout[][] layouts;
     private TextPaint mTextPaint;
+    private Paint borderPaint;
+    private Paint bgPaint;
+    private Paint headerPaint;
 
     private void measureIfNeeded(Paint paint) {
         if (mMeasured) {
+            return;
+        }
+
+        if (rows == null || rows.length == 0 || rows[0] == null || rows[0].length == 0) {
+            mMeasured = true;
             return;
         }
 
@@ -168,6 +176,9 @@ public class TableSpan extends ReplacementSpan {
     }
 
     protected void drawTableContent(Canvas canvas, float x, int top, Paint paint) {
+        if (rows == null || rows.length == 0 || rows[0] == null || rows[0].length == 0) {
+            return;
+        }
         int rowCount = rows.length;
         int colCount = rows[0].length;
         int borderWidth = dp(BORDER_WIDTH);
@@ -185,17 +196,23 @@ public class TableSpan extends ReplacementSpan {
         int headerColor = Color.argb((int)(baseAlpha * 0.15f), red, green, blue);
         int borderColor = Color.argb((int)(baseAlpha * 0.3f), red, green, blue);
 
-        Paint borderPaint = new Paint(paint);
-        borderPaint.setStyle(Paint.Style.STROKE);
+        if (borderPaint == null) {
+            borderPaint = new Paint(paint);
+            borderPaint.setStyle(Paint.Style.STROKE);
+        }
         borderPaint.setStrokeWidth(borderWidth);
         borderPaint.setColor(borderColor);
 
-        Paint bgPaint = new Paint(paint);
-        bgPaint.setStyle(Paint.Style.FILL);
+        if (bgPaint == null) {
+            bgPaint = new Paint(paint);
+            bgPaint.setStyle(Paint.Style.FILL);
+        }
         bgPaint.setColor(backgroundColor);
 
-        Paint headerPaint = new Paint(paint);
-        headerPaint.setStyle(Paint.Style.FILL);
+        if (headerPaint == null) {
+            headerPaint = new Paint(paint);
+            headerPaint.setStyle(Paint.Style.FILL);
+        }
         headerPaint.setColor(headerColor);
 
         canvas.drawRect(x, top, x + mTableWidth, top + mTableHeight, bgPaint);
@@ -251,7 +268,7 @@ public class TableSpan extends ReplacementSpan {
         }
     }
 
-    // Will be implemented in Step 4
+    // TODO: Implement copy button hit-rect
     protected void updateCopyButtonRect(float x, int top, int bottom) {
         copyButtonRect = null;
     }

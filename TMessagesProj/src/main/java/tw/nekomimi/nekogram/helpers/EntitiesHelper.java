@@ -4,7 +4,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.Editable;
 
 import org.telegram.messenger.CodeHighlighting;
 import org.telegram.messenger.LinkifyPort;
@@ -16,8 +15,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import tw.nekomimi.nekogram.NekoConfig;
-import xyz.nextalone.nagram.NaConfig;
 
 public class EntitiesHelper {
     // Table pattern: matches GFM table with header row, separator row, and data rows
@@ -138,9 +135,7 @@ public class EntitiesHelper {
             return text;
         }
         
-        SpannableStringBuilder builder = text instanceof SpannableStringBuilder
-            ? (SpannableStringBuilder) text
-            : new SpannableStringBuilder(text);
+        SpannableStringBuilder builder = new SpannableStringBuilder(text);
 
         for (int i = positions.size() - 1; i >= 0; i--) {
             int start = positions.get(i)[0];
