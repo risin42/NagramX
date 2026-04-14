@@ -4,6 +4,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.Editable;
 
 import org.telegram.messenger.CodeHighlighting;
 import org.telegram.messenger.LinkifyPort;
@@ -12,9 +13,19 @@ import org.telegram.ui.Components.TextStyleSpan;
 import org.telegram.ui.Components.URLSpanReplacement;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import tw.nekomimi.nekogram.NekoConfig;
+import xyz.nextalone.nagram.NaConfig;
+
 public class EntitiesHelper {
+    // Table pattern: matches GFM table with header row, separator row, and data rows
+    private static final Pattern TABLE_BLOCK_PATTERN = Pattern.compile(
+            "^(\\|.+\\|[ \\t]*\\n)(\\|[-| :]+\\|[ \\t]*\\n)((?:\\|.+\\|[ \\t]*\\n?)+)",
+            Pattern.MULTILINE
+    );
+
     private static final Pattern[] PATTERNS = new Pattern[]{
             Pattern.compile("^`{3}(.*?)[\\n\\r](.*?[\\n\\r]?)`{3}", Pattern.MULTILINE | Pattern.DOTALL), // pre
             Pattern.compile("^`{3}[\\n\\r]?(.*?)[\\n\\r]?`{3}", Pattern.MULTILINE | Pattern.DOTALL), // pre
@@ -33,6 +44,8 @@ public class EntitiesHelper {
     }
 
     public static void parseMarkdown(CharSequence[] message, boolean allowStrike) {
+        android.util.Log.d("TableSpan", "parseMarkdown called, MARKDOWN_PARSER_NEKO = " + NekoConfig.MARKDOWN_PARSER_NEKO + ", current = " + NaConfig.INSTANCE.getMarkdownParser().Int());
+        
         var spannable = message[0] instanceof Spannable ? (Spannable) message[0] : Spannable.Factory.getInstance().newSpannable(message[0]);
         for (int i = 0; i < PATTERNS.length; i++) {
             if (!allowStrike && i == 6) {
@@ -106,7 +119,85 @@ public class EntitiesHelper {
                 spannable = (Spannable) TextUtils.replace(spannable, new String[]{sources.get(j)}, new CharSequence[]{destinations.get(j)});
             }
         }
+
+        // Table parsing - independent from PATTERNS[] (which doesn't support multi-line)
+        spannable = (Spannable) parseTables(spannable);
+
         message[0] = spannable;
+    }
+
+    // Parse GFM tables and replace with TableSpan using placeholder char
+    public static CharSequence parseTables(CharSequence text) {
+        if (text == null) return text;
+        // Collect positions manually first
+        var positions = new ArrayList<int[]>();
+        var m = TABLE_BLOCK_PATTERN.matcher(text);
+        while (m.find()) {
+            positions.add(new int[]{m.start(), m.end()});
+            android.util.Log.d("TableSpan", "Found table at " + m.start() + "-" + m.end() + ": " + m.group(0).replace("\n", "\\n").substring(0, Math.min(50, m.group(0).length())));
+        }
+        
+        if (positions.isEmpty()) {
+            return text;
+        }
+        
+        android.util.Log.d("TableSpan", "Total tables found: " + positions.size());
+        SpannableStringBuilder builder = text instanceof SpannableStringBuilder
+            ? (SpannableStringBuilder) text
+            : new SpannableStringBuilder(text);
+
+        for (int i = positions.size() - 1; i >= 0; i--) {
+            int start = positions.get(i)[0];
+            int end = positions.get(i)[1];
+            String originalMarkdown = builder.subSequence(start, end).toString();
+            android.util.Log.d("TableSpan", "Replacing table at " + start + "-" + end + " with placeholder, content: " + originalMarkdown.replace("\n", "\\n"));
+            String[][] parsed = parseTableRows(originalMarkdown);
+            if (parsed == null) {
+                android.util.Log.d("TableSpan", "parseTableRows returned null for: " + originalMarkdown.replace("\n", "\\n"));
+                continue;
+            }
+            android.util.Log.d("TableSpan", "Parsed " + parsed.length + " rows, " + (parsed.length > 0 ? parsed[0].length : 0) + " columns");
+
+            // Replace entire table block with zero-width space
+            builder.replace(start, end, "\u200B");
+            TableSpan span = new TableSpan(parsed, originalMarkdown);
+            builder.setSpan(span, start, start + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            android.util.Log.d("TableSpan", "Span set at " + start + "-" + (start + 1) + ", spans on builder: " + builder.getSpans(0, builder.length(), TableSpan.class).length);
+        }
+        return builder;
+    }
+
+    // Parse table markdown into 2D String array
+    static String[][] parseTableRows(String tableBlock) {
+        var lines = tableBlock.split("\\n");
+        if (lines.length < 2) return null;
+
+        var validRows = new java.util.ArrayList<String[]>();
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i].trim();
+            if (line.isEmpty()) continue;
+            
+            // Skip the markdown separator row which usually appears at index 1
+            // e.g. |---|---| or |:---:|----:|
+            if (i == 1 && line.matches("\\|?[-| :]+\\|?")) {
+                continue;
+            }
+
+            if (line.startsWith("|")) line = line.substring(1);
+            if (line.endsWith("|")) line = line.substring(0, line.length() - 1);
+            String[] cells = line.split("\\|");
+            // Trim each cell
+            for (int j = 0; j < cells.length; j++) {
+                cells[j] = cells[j].trim();
+            }
+            validRows.add(cells);
+        }
+        
+        String[][] result = new String[validRows.size()][];
+        for(int i = 0; i < validRows.size(); i++) {
+            result[i] = validRows.get(i);
+        }
+        return result;
     }
 
 }

@@ -120,6 +120,7 @@ import java.util.regex.Pattern;
 import me.vkryl.core.BitwiseUtils;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.EntitiesHelper;
 import xyz.nextalone.nagram.NaConfig;
 import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.syntaxhighlight.SyntaxHighlight;
@@ -8270,6 +8271,10 @@ public class MessageObject {
         hasSingleQuote = false;
         hasSingleCode = false;
         messageText = FormattedDateSpan.applyFormatedDateEntities(messageText);
+
+        if (NaConfig.INSTANCE.getMarkdownParser().Int() == tw.nekomimi.nekogram.NekoConfig.MARKDOWN_PARSER_NEKO) {
+            messageText = tw.nekomimi.nekogram.helpers.EntitiesHelper.parseTables(messageText);
+        }
 
         if (messageText instanceof Spanned) {
             Spanned spanned = (Spanned) messageText;
