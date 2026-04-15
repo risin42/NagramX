@@ -25,6 +25,8 @@ public class TableSpan extends ReplacementSpan {
     private int mTableWidth = 0;
     private int mTableHeight = 0;
     private boolean mMeasured = false;
+    private int mMeasuredDisplayWidth = -1;
+    private float mMeasuredTextSize = -1f;
 
     public TableSpan(String[][] rows) {
         this.rows = rows;
@@ -38,9 +40,15 @@ public class TableSpan extends ReplacementSpan {
     private Paint headerPaint;
 
     private void measureIfNeeded(Paint paint) {
-        if (mMeasured) {
+        int displayWidth = AndroidUtilities.displaySize.x;
+        float textSize = paint.getTextSize();
+        if (mMeasured && mMeasuredDisplayWidth == displayWidth && mMeasuredTextSize == textSize) {
             return;
         }
+        mMeasuredDisplayWidth = displayWidth;
+        mMeasuredTextSize = textSize;
+        mTableWidth = 0;
+        mTableHeight = 0;
 
         if (rows == null || rows.length == 0 || rows[0] == null || rows[0].length == 0) {
             mMeasured = true;
@@ -73,24 +81,35 @@ public class TableSpan extends ReplacementSpan {
             totalContentWidth += columnWidths[c];
         }
 
-        int maxTableWidth = AndroidUtilities.displaySize.x - dp(100);
+        int maxTableWidth = Math.max(1, mMeasuredDisplayWidth - dp(100));
         int decorationsWidth = dp(CELL_PADDING) * 2 * colCount + dp(BORDER_WIDTH) * (colCount + 1);
         int availableSpace = Math.max(1, maxTableWidth - decorationsWidth);
+        int minShrinkPx = Math.max(1, minColumnPx / 2);
 
         // 3. If total content exceeds available space, shrink proportionally
         if (totalContentWidth > availableSpace) {
             float ratio = (float) availableSpace / totalContentWidth;
             for (int c = 0; c < colCount; c++) {
                 columnWidths[c] = (int) (columnWidths[c] * ratio);
-                columnWidths[c] = Math.max(minColumnPx / 2, columnWidths[c]);
+                columnWidths[c] = Math.max(minShrinkPx, columnWidths[c]);
+            }
+        }
+
+        int adjustedContentWidth = 0;
+        for (int c = 0; c < colCount; c++) {
+            adjustedContentWidth += columnWidths[c];
+        }
+        if (adjustedContentWidth > availableSpace) {
+            float ratio = (float) availableSpace / adjustedContentWidth;
+            adjustedContentWidth = 0;
+            for (int c = 0; c < colCount; c++) {
+                columnWidths[c] = Math.max(1, (int) (columnWidths[c] * ratio));
+                adjustedContentWidth += columnWidths[c];
             }
         }
 
         // 4. Calculate actual table width
-        mTableWidth = decorationsWidth;
-        for (int w : columnWidths) {
-            mTableWidth += w;
-        }
+        mTableWidth = Math.min(maxTableWidth, decorationsWidth + adjustedContentWidth);
 
         mTableHeight = dp(BORDER_WIDTH) * (rows.length + 1);
         rowHeights = new int[rows.length];
