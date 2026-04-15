@@ -40,6 +40,10 @@ public class EntitiesHelper {
     }
 
     public static void parseMarkdown(CharSequence[] message, boolean allowStrike) {
+        parseMarkdown(message, allowStrike, true);
+    }
+
+    public static void parseMarkdown(CharSequence[] message, boolean allowStrike, boolean parseTables) {
         var spannable = message[0] instanceof Spannable ? (Spannable) message[0] : Spannable.Factory.getInstance().newSpannable(message[0]);
         for (int i = 0; i < PATTERNS.length; i++) {
             if (!allowStrike && i == 6) {
@@ -114,8 +118,10 @@ public class EntitiesHelper {
             }
         }
 
-        // Table parsing - independent from PATTERNS[] (which doesn't support multi-line)
-        spannable = (Spannable) parseTables(spannable);
+        if (parseTables) {
+            // Table parsing - independent from PATTERNS[] (which doesn't support multi-line)
+            spannable = (Spannable) parseTables(spannable);
+        }
 
         message[0] = spannable;
     }

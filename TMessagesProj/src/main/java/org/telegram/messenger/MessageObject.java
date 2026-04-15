@@ -191,6 +191,7 @@ public class MessageObject {
     public String emojiAnimatedStickerColor;
     public CharSequence messageText;
     public CharSequence messageTextShort;
+    public CharSequence messageDisplayText;
     public CharSequence messageTextForReply;
     public CharSequence linkDescription;
     public CharSequence caption;
@@ -8272,8 +8273,12 @@ public class MessageObject {
         hasSingleCode = false;
         messageText = FormattedDateSpan.applyFormatedDateEntities(messageText);
 
+        // Create messageDisplayText with TableSpan applied for rendering
+        // Keep messageText unchanged for copy/edit/share
         if (NaConfig.INSTANCE.getMarkdownParser().Int() == tw.nekomimi.nekogram.NekoConfig.MARKDOWN_PARSER_NEKO) {
-            messageText = tw.nekomimi.nekogram.helpers.EntitiesHelper.parseTables(messageText);
+            messageDisplayText = tw.nekomimi.nekogram.helpers.EntitiesHelper.parseTables(messageText);
+        } else {
+            messageDisplayText = messageText;
         }
 
         if (messageText instanceof Spanned) {
@@ -8307,7 +8312,7 @@ public class MessageObject {
             paint = Theme.chat_msgTextPaint;
         }
 
-        CharSequence text = messageText;
+        CharSequence text = messageDisplayText;
         try {
             textLayoutOriginalWidth = maxWidth;
             textLayout = makeStaticLayout(text, paint, maxWidth, 1f, totalAnimatedEmojiCount >= 4 ? -1 : 0, emojiOnlyCount > 0);

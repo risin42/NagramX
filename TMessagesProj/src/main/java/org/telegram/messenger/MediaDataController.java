@@ -7259,7 +7259,8 @@ public class MediaDataController extends BaseController {
         }
 
         if (NaConfig.INSTANCE.getMarkdownParser().Int() == NekoConfig.MARKDOWN_PARSER_NEKO)  {
-            EntitiesHelper.parseMarkdown(message, allowStrike);
+            // Keep outgoing/edit text intact. Table rendering is handled on display path.
+            EntitiesHelper.parseMarkdown(message, allowStrike, false);
         }
 
         if (message[0] instanceof Spanned) {
