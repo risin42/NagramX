@@ -17,7 +17,6 @@ public class TableSpan extends ReplacementSpan {
     private static final int BORDER_WIDTH = 1; // dp
     private static final int MAX_COLUMN_WIDTH = 64; // dp
     private static final int MIN_COLUMN_WIDTH = 40; // dp
-    private static final int UNSET = Integer.MIN_VALUE;
 
     private final String[][] rows;
     private int[] columnWidths;
@@ -26,9 +25,6 @@ public class TableSpan extends ReplacementSpan {
     private int mTableWidth = 0;
     private int mTableHeight = 0;
     private boolean mMeasured = false;
-
-    // Draw guard
-    private int mFirstTop = UNSET;
 
     public TableSpan(String[][] rows) {
         this.rows = rows;
@@ -140,14 +136,6 @@ public class TableSpan extends ReplacementSpan {
     public void draw(@NonNull Canvas canvas, CharSequence text,
                      int start, int end, float x,
                      int top, int y, int bottom, @NonNull Paint paint) {
-        // Only draw on first line (with placeholder char, this is always called once)
-        if (mFirstTop == UNSET) {
-            mFirstTop = top;
-        }
-        if (top != mFirstTop) {
-            return;
-        }
-
         measureIfNeeded(paint);
         drawTableContent(canvas, x, top, paint);
     }

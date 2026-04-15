@@ -17053,8 +17053,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     public AnimatedEmojiSpan[] getAnimatedEmojiSpans() {
-        CharSequence displayText = currentMessageObject != null ? currentMessageObject.getMessageDisplayText() : null;
-        AnimatedEmojiSpan[] messageTextSpans = displayText instanceof Spanned ? ((Spanned) displayText).getSpans(0, displayText.length(), AnimatedEmojiSpan.class) : null;
+        CharSequence rawText = currentMessageObject != null ? currentMessageObject.messageText : null;
+        AnimatedEmojiSpan[] messageTextSpans = rawText instanceof Spanned ? ((Spanned) rawText).getSpans(0, rawText.length(), AnimatedEmojiSpan.class) : null;
         AnimatedEmojiSpan[] captionTextSpans = currentMessageObject != null && currentMessageObject.caption instanceof Spanned ? ((Spanned) currentMessageObject.caption).getSpans(0, currentMessageObject.caption.length(), AnimatedEmojiSpan.class) : null;
         if ((messageTextSpans == null || messageTextSpans.length == 0) && (captionTextSpans == null || captionTextSpans.length == 0)) {
             return null;
