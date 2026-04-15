@@ -139,15 +139,28 @@ public class EntitiesHelper {
                 int s = m.start();
                 int e = m.end();
                 CodeHighlighting.Span[] codeSpans = spanned.getSpans(s, e, CodeHighlighting.Span.class);
-                if (codeSpans != null && codeSpans.length > 0) skip = true;
+                if (codeSpans != null) {
+                    for (CodeHighlighting.Span codeSpan : codeSpans) {
+                        int spanStart = spanned.getSpanStart(codeSpan);
+                        int spanEnd = spanned.getSpanEnd(codeSpan);
+                        if (spanStart < s || spanEnd > e) {
+                            skip = true;
+                            break;
+                        }
+                    }
+                }
                 
                 if (!skip) {
                     TextStyleSpan[] styleSpans = spanned.getSpans(s, e, TextStyleSpan.class);
                     if (styleSpans != null) {
                         for (TextStyleSpan span : styleSpans) {
                             if (span.isMono()) {
-                                skip = true;
-                                break;
+                                int spanStart = spanned.getSpanStart(span);
+                                int spanEnd = spanned.getSpanEnd(span);
+                                if (spanStart < s || spanEnd > e) {
+                                    skip = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -176,7 +189,7 @@ public class EntitiesHelper {
             // Replace entire table block with zero-width space
             boolean hasTrailingNewline = originalMarkdown.endsWith("\n");
             builder.replace(start, end, hasTrailingNewline ? "\u200B\n" : "\u200B");
-            TableSpan span = new TableSpan(parsed, originalMarkdown);
+            TableSpan span = new TableSpan(parsed);
             builder.setSpan(span, start, start + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return builder;

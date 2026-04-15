@@ -2110,7 +2110,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         return linkPath;
     }
 
-    private int[] getRealSpanStartAndEnd(Spannable buffer, CharacterStyle link) {
+    private int[] getRealSpanStartAndEnd(Spanned buffer, CharacterStyle link) {
         int start = 0;
         int end = 0;
         boolean ok = false;
@@ -2353,7 +2353,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     private boolean checkTextBlockMotionEvent(MotionEvent event) {
-        if (!(currentMessageObject.type == MessageObject.TYPE_TEXT || currentMessageObject.type == MessageObject.TYPE_EMOJIS || currentMessageObject.type == MessageObject.TYPE_STORY_MENTION) || currentMessageObject.textLayoutBlocks == null || currentMessageObject.textLayoutBlocks.isEmpty() || !(currentMessageObject.messageDisplayText instanceof Spannable)) {
+        CharSequence displayText = currentMessageObject.getMessageDisplayText();
+        if (!(currentMessageObject.type == MessageObject.TYPE_TEXT || currentMessageObject.type == MessageObject.TYPE_EMOJIS || currentMessageObject.type == MessageObject.TYPE_STORY_MENTION) || currentMessageObject.textLayoutBlocks == null || currentMessageObject.textLayoutBlocks.isEmpty() || !(displayText instanceof Spanned)) {
             return false;
         }
         if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_UP && (pressedLinkType == 1 || pressedCopyCode != null)) {
@@ -2394,7 +2395,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
                     final float left = block.textLayout.getLineLeft(line);
                     if (left <= x && left + block.textLayout.getLineWidth(line) >= x) {
-                        Spannable buffer = (Spannable) currentMessageObject.messageDisplayText;
+                        Spanned buffer = (Spanned) displayText;
                         CharacterStyle[] link = buffer.getSpans(off, off, ClickableSpan.class);
                         boolean isMono = false;
                         if (link == null || link.length == 0) {
@@ -3059,7 +3060,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
                             final float left = descriptionLayout.getLineLeft(line);
                             if (left <= checkX && left + descriptionLayout.getLineWidth(line) >= checkX) {
-                                Spannable buffer = (Spannable) (currentMessageObject.isSponsored() ? currentMessageObject.messageDisplayText : currentMessageObject.linkDescription);
+                                Spannable buffer = (Spannable) (currentMessageObject.isSponsored() ? currentMessageObject.messageText : currentMessageObject.linkDescription);
                                 ClickableSpan[] link = buffer.getSpans(off, off, ClickableSpan.class);
                                 boolean ignore = false;
                                 if (link.length == 0 || link[0] instanceof URLSpanBotCommand && !URLSpanBotCommand.enabled) {
@@ -13079,8 +13080,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 }
             }
         }
-        if (messageObject.messageDisplayText instanceof Spanned && messageObject.textLayoutBlocks != null) {
-            Spanned spanned = (Spanned) messageObject.messageDisplayText;
+        CharSequence displayText = messageObject.getMessageDisplayText();
+        if (displayText instanceof Spanned && messageObject.textLayoutBlocks != null) {
+            Spanned spanned = (Spanned) displayText;
             int start = -1, end = -1;
             CharacterStyle[] spans = spanned.getSpans(0, spanned.length(), CharacterStyle.class);
             if (spans != null && spans.length > 0) {
@@ -17051,7 +17053,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     public AnimatedEmojiSpan[] getAnimatedEmojiSpans() {
-        AnimatedEmojiSpan[] messageTextSpans = currentMessageObject != null && currentMessageObject.messageDisplayText instanceof Spanned ? ((Spanned) currentMessageObject.messageDisplayText).getSpans(0, currentMessageObject.messageDisplayText.length(), AnimatedEmojiSpan.class) : null;
+        CharSequence displayText = currentMessageObject != null ? currentMessageObject.getMessageDisplayText() : null;
+        AnimatedEmojiSpan[] messageTextSpans = displayText instanceof Spanned ? ((Spanned) displayText).getSpans(0, displayText.length(), AnimatedEmojiSpan.class) : null;
         AnimatedEmojiSpan[] captionTextSpans = currentMessageObject != null && currentMessageObject.caption instanceof Spanned ? ((Spanned) currentMessageObject.caption).getSpans(0, currentMessageObject.caption.length(), AnimatedEmojiSpan.class) : null;
         if ((messageTextSpans == null || messageTextSpans.length == 0) && (captionTextSpans == null || captionTextSpans.length == 0)) {
             return null;
@@ -27130,8 +27133,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     if (isChat && currentUser != null && !currentMessageObject.isOut()) {
                         info.addChild(ChatMessageCell.this, PROFILE);
                     }
-                    if (currentMessageObject.messageDisplayText instanceof Spannable) {
-                        Spannable buffer = (Spannable) currentMessageObject.messageDisplayText;
+                    CharSequence displayText = currentMessageObject.getMessageDisplayText();
+                    if (displayText instanceof Spanned) {
+                        Spanned buffer = (Spanned) displayText;
                         CharacterStyle[] links = buffer.getSpans(0, buffer.length(), ClickableSpan.class);
                         i = 0;
                         for (CharacterStyle link : links) {
@@ -27258,10 +27262,11 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     info.addAction(AccessibilityNodeInfo.ACTION_CLICK);
                     info.addAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
                 } else if (virtualViewId >= LINK_IDS_START) {
-                    if (!(currentMessageObject.messageDisplayText instanceof Spannable)) {
+                    CharSequence displayText = currentMessageObject.getMessageDisplayText();
+                    if (!(displayText instanceof Spanned)) {
                         return null;
                     }
-                    Spannable buffer = (Spannable) currentMessageObject.messageDisplayText;
+                    Spanned buffer = (Spanned) displayText;
                     ClickableSpan link = getLinkById(virtualViewId, false);
                     if (link == null) {
                         return null;
@@ -27668,10 +27673,11 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 return links[id];
             } else {
                 id -= LINK_IDS_START;
-                if (!(currentMessageObject.messageDisplayText instanceof Spannable) || id < 0) {
+                CharSequence displayText = currentMessageObject.getMessageDisplayText();
+                if (!(displayText instanceof Spanned) || id < 0) {
                     return null;
                 }
-                Spannable buffer = (Spannable) currentMessageObject.messageDisplayText;
+                Spanned buffer = (Spanned) displayText;
                 ClickableSpan[] links = buffer.getSpans(0, buffer.length(), ClickableSpan.class);
                 if (links.length <= id) {
                     return null;

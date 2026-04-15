@@ -3,7 +3,6 @@ package tw.nekomimi.nekogram.helpers;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import org.telegram.messenger.AndroidUtilities;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -11,7 +10,6 @@ import android.text.TextPaint;
 import android.text.style.ReplacementSpan;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class TableSpan extends ReplacementSpan {
 
@@ -22,7 +20,6 @@ public class TableSpan extends ReplacementSpan {
     private static final int UNSET = Integer.MIN_VALUE;
 
     private final String[][] rows;
-    private final String originalMarkdown;
     private int[] columnWidths;
 
     // Lazy-measured dimensions
@@ -33,27 +30,8 @@ public class TableSpan extends ReplacementSpan {
     // Draw guard
     private int mFirstTop = UNSET;
 
-    // Copy button rect for external hit-test
-    @Nullable
-    private RectF copyButtonRect;
-
-    public TableSpan(String[][] rows, String originalMarkdown) {
+    public TableSpan(String[][] rows) {
         this.rows = rows;
-        this.originalMarkdown = originalMarkdown;
-    }
-
-    @Nullable
-    public RectF getCopyButtonRect() {
-        return copyButtonRect;
-    }
-
-    public String getOriginalText() {
-        return originalMarkdown;
-    }
-
-    public void resetDrawState() {
-        mFirstTop = UNSET;
-        mMeasured = false;
     }
 
     private int[] rowHeights;
@@ -172,7 +150,6 @@ public class TableSpan extends ReplacementSpan {
 
         measureIfNeeded(paint);
         drawTableContent(canvas, x, top, paint);
-        updateCopyButtonRect(x, top, bottom);
     }
 
     protected void drawTableContent(Canvas canvas, float x, int top, Paint paint) {
@@ -268,8 +245,4 @@ public class TableSpan extends ReplacementSpan {
         }
     }
 
-    // TODO: Implement copy button hit-rect
-    protected void updateCopyButtonRect(float x, int top, int bottom) {
-        copyButtonRect = null;
-    }
 }
