@@ -1,0 +1,76 @@
+name: Build ARMv7
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Decode local.properties
+        run: echo "${{ secrets.LOCAL_PROPERTIES }}" | base64 -d > local.properties
+
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_B64 }}" | base64 -d > TMessagesProj/release.keystore
+
+      - name: Inject armeabi-v7a product flavor
+        run: |
+          python3 - << 'EOF'
+          with open('TMessagesProj/build.gradle', 'r') as f:
+              content = f.read()
+
+          flavor = '''
+              armeabi_v7a {
+                  ndk {
+                      abiFilters "armeabi-v7a"
+                  }
+                  ext {
+                      abiVersionCode = 3
+                  }
+              }
+          '''
+
+          if 'armeabi_v7a' in content:
+              print("Flavor already exists, skipping patch")
+          else:
+              content = content.replace('productFlavors {', 'productFlavors {' + flavor, 1)
+              with open('TMessagesProj/build.gradle', 'w') as f:
+                  f.write(content)
+              print("Patched successfully")
+          EOF
+
+      - name: Build
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleArmeabi_v7aRelease \
+            -Dorg.gradle.jvmargs="-Xmx4g" \
+            --stacktrace
+
+      - name: Find APK
+        id: apk
+        run: |
+          APK=$(find . -name "*.apk" | grep -i "armeabi_v7a" | grep -i "release" | head -1)
+          echo "Found: $APK"
+          echo "path=$APK" >> $GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NagramX-armeabi-v7a
+          path: ${{ steps.apk.outputs.path }}
+          retention-days: 7
