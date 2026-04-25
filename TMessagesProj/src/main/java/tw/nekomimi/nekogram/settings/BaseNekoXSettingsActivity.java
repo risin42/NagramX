@@ -5,6 +5,7 @@ import static org.telegram.messenger.LocaleController.getString;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.BlurredRecyclerView;
 import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.CubicBezierInterpolator;
+import org.telegram.ui.Components.ItemOptions;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.UndoView;
@@ -224,27 +226,36 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         return null;
     }
 
-    protected void createLongClickDialog(Context context, BaseFragment fragment, String prefix, int position) {
+    protected ItemOptions makeLongClickOptions(View view) {
+        ItemOptions options = ItemOptions.makeOptions(this, view);
+        Drawable background = null;
+        if (listView != null) {
+            background = listView.getClipBackground(view);
+        }
+        return options.setScrimViewBackground(background);
+    }
+
+    protected void addDefaultLongClickOptions(ItemOptions options, String prefix, int position) {
         String key = getRowKey(position);
         String value = getRowValue(position);
-        ArrayList<CharSequence> itemsArray = new ArrayList<>();
-        itemsArray.add(getString(R.string.CopyLink));
-        if (value != null) {
-            itemsArray.add(getString(R.string.BackupSettings));
-        }
-        CharSequence[] items = itemsArray.toArray(new CharSequence[0]);
-        showDialog(new AlertDialog.Builder(context).setItems(items, (dialogInterface, i) -> {
-            switch (i) {
-                case 0:
-                    AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s", getMessagesController().linkPrefix, prefix, key));
-                    BulletinFactory.of(fragment).createCopyLinkBulletin().show();
-                    break;
-                case 1:
-                    AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s&v=%s", getMessagesController().linkPrefix, prefix, key, value));
-                    BulletinFactory.of(fragment).createCopyLinkBulletin().show();
-                    break;
-            }
-        }).create());
+        options.add(R.drawable.msg_link2, getString(R.string.CopyLink), () -> {
+            AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s", getMessagesController().linkPrefix, prefix, key));
+            BulletinFactory.of(this).createCopyLinkBulletin().show();
+        });
+        options.addIf(value != null && !value.isEmpty(), R.drawable.msg_copy, getString(R.string.BackupSettings), () -> {
+            AndroidUtilities.addToClipboard(String.format(Locale.getDefault(), "https://%s/nasettings/%s?r=%s&v=%s", getMessagesController().linkPrefix, prefix, key, value));
+            BulletinFactory.of(this).createCopyLinkBulletin().show();
+        });
+    }
+
+    protected void showDefaultLongClickOptions(View view, String prefix, int position) {
+        ItemOptions options = makeLongClickOptions(view);
+        addDefaultLongClickOptions(options, prefix, position);
+        showLongClickOptions(view, options);
+    }
+
+    protected void showLongClickOptions(View view, ItemOptions options) {
+        options.show();
     }
 
     protected void handleCellClick(View view, int position, float x, float y) {
@@ -278,7 +289,7 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
         return false;
     }
 
-    protected void setupDefaultListeners(Context context) {
+    protected void setupDefaultListeners() {
         final CellGroup cellGroup = getCellGroup();
         final RecyclerListView.SelectionAdapter listAdapter = getListAdapter();
         if (cellGroup != null && listAdapter != null) {
@@ -304,7 +315,7 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
             }
             var holder = listView.findViewHolderForAdapterPosition(position);
             if (holder != null && listAdapter.isEnabled(holder)) {
-                createLongClickDialog(context, this, prefix, position);
+                showDefaultLongClickOptions(view, prefix, position);
                 return true;
             }
             return false;
@@ -492,26 +503,21 @@ public class BaseNekoXSettingsActivity extends BaseFragment {
                     break;
                 case CellGroup.ITEM_TYPE_TEXT_SETTINGS_CELL:
                     view = new TextSettingsCell(mContext);
-                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
                 case CellGroup.ITEM_TYPE_TEXT_CHECK:
                     view = new TextCheckCell(mContext);
-                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
                 case CellGroup.ITEM_TYPE_HEADER:
                     view = new HeaderCell(mContext);
-                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
                 case CellGroup.ITEM_TYPE_TEXT_DETAIL:
                     view = new TextDetailSettingsCell(mContext);
-                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
                 case CellGroup.ITEM_TYPE_TEXT:
                     view = new TextInfoPrivacyCell(mContext);
                     break;
                 case CellGroup.ITEM_TYPE_TEXT_CHECK_ICON:
                     view = new TextCell(mContext);
-                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
             }
             return view;

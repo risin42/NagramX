@@ -65,6 +65,8 @@ public class TypefaceHelper {
                     isMediumWeightSupported() ? Typeface.create("sans-serif-medium", Typeface.ITALIC) : Typeface.create("sans-serif", Typeface.BOLD_ITALIC);
             case AndroidUtilities.TYPEFACE_RCONDENSED_BOLD ->
                     Typeface.create("sans-serif-condensed", Typeface.BOLD);
+            case AndroidUtilities.TYPEFACE_ROBOTO_EXTRA_BOLD ->
+                    createTypeface(800, false);
             case AndroidUtilities.TYPEFACE_RITALIC ->
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? Typeface.create(Typeface.SANS_SERIF, 400, true) : Typeface.create("sans-serif", Typeface.ITALIC);
             case AndroidUtilities.TYPEFACE_ROBOTO_MONO ->

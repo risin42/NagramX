@@ -36,6 +36,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.TypedValue;
 import android.view.Display;
@@ -74,6 +75,7 @@ import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ActionBar.ThemeColors;
 import org.telegram.ui.ActionBar.ThemeDescription;
+import org.telegram.ui.Components.AlertsCreator;
 import org.telegram.ui.Components.BottomPagesView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RLottieDrawable;
@@ -90,6 +92,8 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 import javax.microedition.khronos.opengles.GL10;
+
+import tw.nekomimi.nekogram.helpers.LocaleHelper;
 
 public class IntroActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
     private final static int ICON_WIDTH_DP = 200, ICON_HEIGHT_DP = 150;
@@ -123,6 +127,7 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
     private int startDragX;
 
     private LocaleController.LocaleInfo localeInfo;
+    private TLRPC.TL_langPackLanguage suggestedLanguagePack;
 
     private boolean destroyed;
 
@@ -399,27 +404,17 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
             if (startPressed || localeInfo == null) {
                 return;
             }
-            startPressed = true;
-
-            AlertDialog loaderDialog = new AlertDialog(v.getContext(), AlertDialog.ALERT_TYPE_SPINNER);
-            loaderDialog.setCanCancel(false);
-            loaderDialog.showDelayed(1000);
-
-            NotificationCenter.getGlobalInstance().addObserver(new NotificationCenter.NotificationCenterDelegate() {
-                @Override
-                public void didReceivedNotification(int id, int account, Object... args) {
-                    if (id == NotificationCenter.reloadInterface) {
-                        loaderDialog.dismiss();
-
-                        NotificationCenter.getGlobalInstance().removeObserver(this, id);
-                        AndroidUtilities.runOnUIThread(()->{
-                            presentFragment(new LoginActivity().setIntroView(frameContainerView, startMessagingButton), true);
-                            destroyed = true;
-                        }, 100);
+            if (suggestedLanguagePack != null && localeInfo.isUnofficial() && getParentActivity() instanceof LaunchActivity) {
+                showDialog(AlertsCreator.createLanguageAlert((LaunchActivity) getParentActivity(), suggestedLanguagePack, () -> AndroidUtilities.runOnUIThread(() -> {
+                    if (!destroyed) {
+                        startPressed = true;
+                        presentFragment(new LoginActivity().setIntroView(frameContainerView, startMessagingButton), true);
+                        destroyed = true;
                     }
-                }
-            }, NotificationCenter.reloadInterface);
-            LocaleController.getInstance().applyLanguage(localeInfo, true, false, currentAccount);
+                }, 100)).create());
+            } else {
+                applySuggestedLanguageAndOpenLogin(v.getContext());
+            }
         });
 
         frameContainerView.addView(themeFrameLayout, LayoutHelper.createFrame(64, 64, Gravity.TOP | Gravity.RIGHT, 0, themeMargin, themeMargin, 0));
@@ -487,6 +482,7 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
     }
 
     private void checkContinueText() {
+        suggestedLanguagePack = null;
         LocaleController.LocaleInfo englishInfo = null;
         LocaleController.LocaleInfo systemInfo = null;
         LocaleController.LocaleInfo currentLocaleInfo = LocaleController.getInstance().getCurrentLocaleInfo();
@@ -512,37 +508,89 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
                 break;
             }
         }
-        if (englishInfo == null || systemInfo == null || englishInfo == systemInfo) {
+        if (englishInfo == null) {
             return;
         }
-        TLRPC.TL_langpack_getStrings req = new TLRPC.TL_langpack_getStrings();
-        if (systemInfo != currentLocaleInfo) {
-            req.lang_code = systemInfo.getLangCode();
-            localeInfo = systemInfo;
-        } else {
-            req.lang_code = englishInfo.getLangCode();
-            localeInfo = englishInfo;
+        if (systemInfo != null && englishInfo != systemInfo) {
+            requestContinueText(systemInfo != currentLocaleInfo ? systemInfo : englishInfo, systemLang.toLowerCase());
+            return;
         }
+        requestBetaContinueText(systemLang, englishInfo, currentLocaleInfo);
+    }
+
+    private void requestContinueText(LocaleController.LocaleInfo targetLocaleInfo, String showedLanguage) {
+        TLRPC.TL_langpack_getStrings req = new TLRPC.TL_langpack_getStrings();
+        req.lang_code = targetLocaleInfo.getLangCode();
         req.keys.add("ContinueOnThisLanguage");
-        String finalSystemLang = systemLang;
         ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> {
-            if (response instanceof Vector) {
-                Vector vector = (Vector) response;
-                if (vector.objects.isEmpty()) {
-                    return;
-                }
-                final TLRPC.LangPackString string = (TLRPC.LangPackString) vector.objects.get(0);
-                if (string instanceof TLRPC.TL_langPackString) {
-                    AndroidUtilities.runOnUIThread(() -> {
-                        if (!destroyed) {
-                            switchLanguageTextView.setText(string.value);
-                            SharedPreferences preferences = MessagesController.getGlobalMainSettings();
-                            preferences.edit().putString("language_showed2", finalSystemLang.toLowerCase()).apply();
-                        }
-                    });
-                }
+            if (!(response instanceof Vector vector)) {
+                return;
+            }
+            if (vector.objects.isEmpty()) {
+                return;
+            }
+            final TLRPC.LangPackString string = (TLRPC.LangPackString) vector.objects.get(0);
+            if (string instanceof TLRPC.TL_langPackString) {
+                AndroidUtilities.runOnUIThread(() -> {
+                    if (!destroyed) {
+                        localeInfo = targetLocaleInfo;
+                        switchLanguageTextView.setText(string.value);
+                        SharedPreferences preferences = MessagesController.getGlobalMainSettings();
+                        preferences.edit().putString("language_showed2", showedLanguage).apply();
+                    }
+                });
             }
         }, ConnectionsManager.RequestFlagWithoutLogin);
+    }
+
+    private void requestBetaContinueText(String systemLang, LocaleController.LocaleInfo englishInfo, LocaleController.LocaleInfo currentLocaleInfo) {
+        String betaLangCode = LocaleHelper.getSuggestedBetaLanguageCode(systemLang);
+        if (betaLangCode == null) {
+            return;
+        }
+        if (currentLocaleInfo != null && TextUtils.equals(currentLocaleInfo.shortName, betaLangCode)) {
+            requestContinueText(englishInfo, systemLang.toLowerCase());
+            return;
+        }
+
+        TLRPC.TL_langpack_getLanguage req = new TLRPC.TL_langpack_getLanguage();
+        req.lang_pack = "android";
+        req.lang_code = betaLangCode.replace('_', '-');
+        ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> {
+            if (!(response instanceof TLRPC.TL_langPackLanguage language)) {
+                return;
+            }
+            LocaleController.LocaleInfo info = LocaleHelper.localeInfoFromLanguage(language);
+            if (info == null) {
+                return;
+            }
+            suggestedLanguagePack = language;
+            requestContinueText(info, systemLang.toLowerCase());
+        }, ConnectionsManager.RequestFlagWithoutLogin);
+    }
+
+    private void applySuggestedLanguageAndOpenLogin(Context context) {
+        startPressed = true;
+
+        AlertDialog loaderDialog = new AlertDialog(context, AlertDialog.ALERT_TYPE_SPINNER);
+        loaderDialog.setCanCancel(false);
+        loaderDialog.showDelayed(1000);
+
+        NotificationCenter.getGlobalInstance().addObserver(new NotificationCenter.NotificationCenterDelegate() {
+            @Override
+            public void didReceivedNotification(int id, int account, Object... args) {
+                if (id == NotificationCenter.reloadInterface) {
+                    loaderDialog.dismiss();
+
+                    NotificationCenter.getGlobalInstance().removeObserver(this, id);
+                    AndroidUtilities.runOnUIThread(() -> {
+                        presentFragment(new LoginActivity().setIntroView(frameContainerView, startMessagingButton), true);
+                        destroyed = true;
+                    }, 100);
+                }
+            }
+        }, NotificationCenter.reloadInterface);
+        LocaleController.getInstance().applyLanguage(localeInfo, true, false, currentAccount);
     }
 
     @Override

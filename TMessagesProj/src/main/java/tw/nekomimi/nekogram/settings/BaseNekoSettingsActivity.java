@@ -158,16 +158,10 @@ public abstract class BaseNekoSettingsActivity extends BaseFragment {
 
     @Override
     public ActionBar createActionBar(Context context) {
-        ActionBar actionBar;
-        if (!hasWhiteActionBar()) {
-            actionBar = super.createActionBar(context);
-        } else {
-            actionBar = new ActionBar(context);
+        ActionBar actionBar = super.createActionBar(context);
+        if (hasWhiteActionBar()) {
             actionBar.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
             actionBar.setItemsColor(getThemedColor(Theme.key_windowBackgroundWhiteBlackText), false);
-            actionBar.setItemsBackgroundColor(getThemedColor(Theme.key_actionBarActionModeDefaultSelector), true);
-            actionBar.setItemsBackgroundColor(getThemedColor(Theme.key_actionBarWhiteSelector), false);
-            actionBar.setItemsColor(getThemedColor(Theme.key_actionBarActionModeDefaultIcon), true);
             actionBar.setTitleColor(getThemedColor(Theme.key_windowBackgroundWhiteBlackText));
             actionBar.setCastShadows(false);
         }

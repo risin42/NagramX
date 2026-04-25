@@ -1,8 +1,14 @@
 package tw.nekomimi.nekogram.helpers;
 
+import static org.telegram.ui.Components.Switch.SWITCH_STYLE_MD3;
+
+import android.graphics.Color;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.graphics.ColorUtils;
+
+import com.google.android.material.color.utilities.Blend;
 
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
@@ -12,8 +18,11 @@ import org.telegram.ui.ActionBar.Theme;
 
 import java.util.HashMap;
 
+import xyz.nextalone.nagram.NaConfig;
+
 @RequiresApi(api = Build.VERSION_CODES.S)
 public class MonetHelper {
+    private static final float DARK_NAME_SOFTEN_RATIO = 0.22f;
     private static final HashMap<String, Integer> ids = new HashMap<>() {{
         put("a1_0", android.R.color.system_accent1_0);
         put("a1_10", android.R.color.system_accent1_10);
@@ -80,26 +89,125 @@ public class MonetHelper {
         put("n2_800", android.R.color.system_neutral2_800);
         put("n2_900", android.R.color.system_neutral2_900);
         put("n2_1000", android.R.color.system_neutral2_1000);
-        put("monetRedDark", R.color.monetRedDark);
         put("monetRedLight", R.color.monetRedLight);
+        put("monetRedDark", R.color.monetRedDark);
         put("monetRedCall", R.color.monetRedCall);
         put("monetGreenCall", R.color.monetGreenCall);
+    }};
+    private static final HashMap<String, Integer> avatarBaseColors = new HashMap<>() {{
+        put("monetAvatarRed", 0xffFF845E);
+        put("monetAvatarOrange", 0xffFEBB5B);
+        put("monetAvatarViolet", 0xffB694F9);
+        put("monetAvatarGreen", 0xff9AD164);
+        put("monetAvatarCyan", 0xff5BCBE3);
+        put("monetAvatarBlue", 0xff5CAFFA);
+        put("monetAvatarPink", 0xffFF8AAC);
+        put("monetAvatarNameRed", 0xffCC5049);
+        put("monetAvatarNameOrange", 0xffD67722);
+        put("monetAvatarNameViolet", 0xff955CDB);
+        put("monetAvatarNameGreen", 0xff40A920);
+        put("monetAvatarNameCyan", 0xff309EBA);
+        put("monetAvatarNameBlue", 0xff368AD1);
+        put("monetAvatarNamePink", 0xffC7508B);
+        put("monetAvatarNameDarkRed", 0xffCC5049);
+        put("monetAvatarNameDarkOrange", 0xffD67722);
+        put("monetAvatarNameDarkViolet", 0xff955CDB);
+        put("monetAvatarNameDarkGreen", 0xff40A920);
+        put("monetAvatarNameDarkCyan", 0xff309EBA);
+        put("monetAvatarNameDarkBlue", 0xff368AD1);
+        put("monetAvatarNameDarkPink", 0xffC7508B);
     }};
     private static int lastMonetColor = 0;
 
     public static int getColor(String color) {
-        return getColor(color, false);
-    }
-
-    public static int getColor(String color, boolean amoled) {
         try {
-            //noinspection ConstantConditions
-            int id = ids.getOrDefault(amoled && "n1_900".equals(color) ? "n1_1000" : color, 0);
-            return ApplicationLoader.applicationContext.getColor(id);
+            String rawColor = color == null ? "" : color.trim();
+            String baseColor = rawColor;
+            String darkenPercentValue = null;
+
+            int lastUnderscore = rawColor.lastIndexOf('_');
+            if (lastUnderscore > 0 && lastUnderscore < rawColor.length() - 1) {
+                String suffix = rawColor.substring(lastUnderscore + 1);
+                String candidateBase = rawColor.substring(0, lastUnderscore);
+                if (isDigitsOnly(suffix) && canResolveColor(candidateBase)) {
+                    baseColor = candidateBase;
+                    darkenPercentValue = suffix;
+                }
+            }
+
+            int resolvedColor = resolveColor(baseColor);
+            if (darkenPercentValue != null) {
+                resolvedColor = darkenByPercent(resolvedColor, Integer.parseInt(darkenPercentValue));
+            }
+            return resolvedColor;
         } catch (Exception e) {
             FileLog.e("Error loading color " + color, e);
             return 0;
         }
+    }
+
+    private static boolean canResolveColor(String color) {
+        return ids.containsKey(color) || avatarBaseColors.containsKey(color);
+    }
+
+    private static int resolveColor(String color) {
+        Integer id = ids.get(color);
+        if (id != null) {
+            return ApplicationLoader.applicationContext.getColor(id);
+        }
+
+        Integer avatarBaseColor = avatarBaseColors.get(color);
+        if (avatarBaseColor != null) {
+            int harmonizedColor = getHarmonizedAvatarColor(avatarBaseColor);
+            if (color.startsWith("monetAvatarNameDark")) {
+                return softenColorForDarkText(harmonizedColor);
+            }
+            return harmonizedColor;
+        }
+
+        throw new IllegalArgumentException("Unknown Monet color token: " + color);
+    }
+
+    private static int getHarmonizedAvatarColor(int baseColor) {
+        int accentColor = resolveColor("a1_600");
+        return Blend.harmonize(baseColor, accentColor);
+    }
+
+    public static int harmonizeColor(int baseColor) {
+        return getHarmonizedAvatarColor(baseColor);
+    }
+
+    private static int softenColorForDarkText(int color) {
+        int neutralTextColor = resolveColor("n1_50");
+        return ColorUtils.blendARGB(color, neutralTextColor, DARK_NAME_SOFTEN_RATIO);
+    }
+
+    private static int darkenByPercent(int color, int percent) {
+        int normalizedPercent = Math.max(1, Math.min(percent, 100));
+        if (normalizedPercent == 100) {
+            return color;
+        }
+
+        float[] hsl = new float[3];
+        ColorUtils.colorToHSL(color, hsl);
+        hsl[2] = Math.max(0f, Math.min(1f, hsl[2] * normalizedPercent / 100f));
+
+        return ColorUtils.setAlphaComponent(ColorUtils.HSLToColor(hsl), Color.alpha(color));
+    }
+
+    private static boolean isDigitsOnly(String value) {
+        for (int i = 0; i < value.length(); i++) {
+            if (!Character.isDigit(value.charAt(i))) {
+                return false;
+            }
+        }
+        return !value.isEmpty();
+    }
+
+    public static boolean useMonetMd3Colors() {
+        return NaConfig.INSTANCE.getSwitchStyle().Int() == SWITCH_STYLE_MD3
+            && Theme.getActiveTheme() != null
+            && Theme.getActiveTheme().isMonet();
     }
 
     /**

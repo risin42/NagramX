@@ -81,7 +81,7 @@ public class UpdateLayoutWrapper extends ViewGroup {
         final int navigationHeight = getPaddingBottom();
         final float alpha = AndroidUtilities.getNavigationBarThirdButtonsFactor(0.1f, 0.75f, navigationHeight);
 
-        final int backgroundColor = Theme.getColor(Theme.key_featuredStickers_addButton);
+        final int backgroundColor = Theme.getColor(Theme.getActiveTheme().isMonetNight() ? Theme.key_featuredStickers_unread : Theme.key_featuredStickers_addButton);
         final int navigationColor = ColorUtils.compositeColors(Theme.multAlpha(Theme.getColor(Theme.key_windowBackgroundWhite), alpha), backgroundColor);
 
 

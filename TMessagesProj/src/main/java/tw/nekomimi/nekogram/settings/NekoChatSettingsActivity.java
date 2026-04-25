@@ -60,6 +60,7 @@ import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheck2;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextCheckIcon;
 import tw.nekomimi.nekogram.config.cell.ConfigCellTextInput;
+import tw.nekomimi.nekogram.helpers.ChatsHelper;
 import tw.nekomimi.nekogram.helpers.TranscribeHelper;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
 import tw.nekomimi.nekogram.ui.PopupBuilder;
@@ -127,10 +128,19 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell disableZalgoSymbolsRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getZalgoFilter(), getString(R.string.ZalgoFilterNotice)));
     private final AbstractConfigCell showOnlineStatusRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowOnlineStatus(), getString(R.string.ShowOnlineStatusNotice)));
     private final AbstractConfigCell leftButtonActionRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getLeftBottomButton(), new String[]{
-            getString(R.string.NoQuoteForward),
             getString(R.string.Reply),
             getString(R.string.AddToSavedMessages),
             getString(R.string.DirectShare),
+            getString(R.string.SelectBetween),
+            getString(R.string.NoCaptionForward),
+            getString(R.string.NoQuoteForward),
+    }, new int[]{
+            ChatsHelper.LEFT_BUTTON_REPLY,
+            ChatsHelper.LEFT_BUTTON_SAVE_MESSAGE,
+            ChatsHelper.LEFT_BUTTON_DIRECT_SHARE,
+            ChatsHelper.LEFT_BUTTON_SELECT_BETWEEN,
+            ChatsHelper.LEFT_BUTTON_NOCAPTION,
+            ChatsHelper.LEFT_BUTTON_NOQUOTE,
     }, null));
     private final AbstractConfigCell markdownParserRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getMarkdownParser(), new String[]{
             getString(R.string.Official),
@@ -158,12 +168,10 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell headerMedia = cellGroup.appendCell(new ConfigCellHeader(getString(R.string.MediaSettings)));
     private final AbstractConfigCell showSmallGifRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowSmallGIF()));
     private final AbstractConfigCell takeGIFasVideoRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.takeGIFasVideo));
-    private final AbstractConfigCell autoInsertGIFCaptionRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getAutoInsertGIFCaption(), getString(R.string.AutoInsertGIFCaptionNotice)));
     private final AbstractConfigCell autoPauseVideoRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.autoPauseVideo, getString(R.string.AutoPauseVideoAbout)));
     private final AbstractConfigCell disablePreviewVideoSoundShortcutRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisablePreviewVideoSoundShortcut(), getString(R.string.DisablePreviewVideoSoundShortcutNotice)));
     private final AbstractConfigCell dontAutoPlayNextVoiceRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDontAutoPlayNextVoice()));
     private final AbstractConfigCell showSpoilersDirectlyRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.showSpoilersDirectly));
-    private final AbstractConfigCell sendHighQualityPhotoRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getSendHighQualityPhoto()));
     private final AbstractConfigCell dividerMedia = cellGroup.appendCell(new ConfigCellDivider());
 
     // Stickers
@@ -298,6 +306,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         items.add(new Item("spoiler", getString(R.string.Spoiler), new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextSpoiler(), null, getString(R.string.Spoiler))));
         items.add(new Item("link", getString(R.string.CreateLink), new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextCreateLink(), null, getString(R.string.CreateLink))));
         items.add(new Item("mention", getString(R.string.CreateMention), new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextCreateMention(), null, getString(R.string.CreateMention))));
+        items.add(new Item("date", getString(R.string.FormattedDate), new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextCreateDate(), null, getString(R.string.FormattedDate))));
         items.add(new Item("regular", getString(R.string.Regular), new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTextRegular(), null, getString(R.string.Regular))));
 
         // recover saved order
@@ -404,7 +413,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
         });
         builder.setNegativeButton(getString(R.string.Cancel), null);
         builder.setNeutralButton(getString(R.string.Reset), (d, which) -> {
-            String def = "translate,bold,italic,mono,code,strike,underline,quote,spoiler,link,mention,regular";
+            String def = "translate,bold,italic,mono,code,strike,underline,quote,spoiler,link,mention,date,regular";
             NaConfig.INSTANCE.getTextStyleOrder().setConfigString(def);
             ordered.clear();
             String[] keys = def.split(",");
@@ -508,7 +517,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
 
         listView.setAdapter(listAdapter);
 
-        setupDefaultListeners(context);
+        setupDefaultListeners();
 
         // Cells: Set OnSettingChanged Callbacks
         cellGroup.callBackSettingsChanged = (key, newValue) -> {
@@ -785,15 +794,12 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             switch (viewType) {
                 case ConfigCellCustom.CUSTOM_ITEM_StickerSize:
                     view = stickerSizeCell = new StickerSizeCell(mContext);
-                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
                     break;
                 case ConfigCellCustom.CUSTOM_ITEM_EmojiSet:
                     view = new EmojiSetCell(mContext, false);
-                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
                     break;
                 case CellGroup.ITEM_TYPE_CHECK2:
                     view = new TextCheckCell2(mContext);
-                    view.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
                     break;
                 case CellGroup.ITEM_TYPE_CHECK_BOX:
                     CheckBoxCell checkBoxCell = new CheckBoxCell(mContext, CheckBoxCell.TYPE_CHECK_BOX_ROUND, 21, getResourceProvider());
@@ -801,7 +807,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                     checkBoxCell.getCheckBoxRound().setColor(Theme.key_switch2TrackChecked, Theme.key_radioBackground, Theme.key_checkboxCheck);
                     checkBoxCell.setEnabled(true);
                     view = checkBoxCell;
-                    view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
                     break;
             }
             return view;

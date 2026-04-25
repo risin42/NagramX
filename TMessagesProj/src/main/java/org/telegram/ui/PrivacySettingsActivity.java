@@ -77,7 +77,6 @@ import org.telegram.ui.bots.BotBiometrySettings;
 import java.util.ArrayList;
 
 import tw.nekomimi.nekogram.NekoConfig;
-import tw.nekomimi.nekogram.filters.AyuFilter;
 
 public class PrivacySettingsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
 
@@ -93,8 +92,6 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
     private int privacySectionRow;
     @Keep
     private int blockedRow;
-    @Keep
-    private int blockedChannelsRow;
     @Keep
     private int phoneNumberRow;
     @Keep
@@ -323,8 +320,6 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
                 }
             } else if (position == blockedRow) {
                 presentFragment(new PrivacyUsersActivity());
-            } else if (position == blockedChannelsRow) {
-                presentFragment(new PrivacyUsersActivity(PrivacyUsersActivity.TYPE_BLOCKED_CHANNELS, AyuFilter.getBlockedChannelsList(), false, false));
             } else if (position == sessionsRow) {
                 devicesActivityPreload.resetFragment();
                 presentFragment(devicesActivityPreload);
@@ -510,11 +505,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
                     return;
                 }
                 if (currentPasskeys == null) return;
-                // if (currentPasskeys != null && currentPasskeys.size() > 0) {
                 presentFragment(new PasskeysActivity(currentPasskeys));
-                // } else {
-                //     PasskeysActivity.showLearnSheet(context, currentAccount, resourceProvider, true);
-                // }
             } else if (position == passcodeRow) {
                 presentFragment(PasscodeActivity.determineOpenFragment());
             } else if (position == secretWebpageRow) {
@@ -743,7 +734,6 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
             emailLoginRow = -1;
         }
         blockedRow = rowCount++;
-        blockedChannelsRow = rowCount++;
         if (currentPassword != null) {
             boolean hasEmail = currentPassword.login_email_pattern != null;
             if (SharedConfig.hasEmailLogin != hasEmail) {
@@ -1042,7 +1032,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
         @Override
         public boolean isEnabled(RecyclerView.ViewHolder holder) {
             int position = holder.getAdapterPosition();
-            return position == passcodeRow || position == passwordRow || position == passkeysRow || position == blockedRow || position == blockedChannelsRow || position == sessionsRow || position == secretWebpageRow || position == webSessionsRow ||
+            return position == passcodeRow || position == passwordRow || position == passkeysRow || position == blockedRow || position == sessionsRow || position == secretWebpageRow || position == webSessionsRow ||
                     position == groupsRow && !getContactsController().getLoadingPrivacyInfo(ContactsController.PRIVACY_RULES_TYPE_INVITE) ||
                     position == lastSeenRow && !getContactsController().getLoadingPrivacyInfo(ContactsController.PRIVACY_RULES_TYPE_LASTSEEN) ||
                     position == callsRow && !getContactsController().getLoadingPrivacyInfo(ContactsController.PRIVACY_RULES_TYPE_CALLS) ||
@@ -1403,14 +1393,6 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
                             value = "";
                         }
                         textCell2.setTextAndValueAndIcon(getString("BlockedUsers", R.string.BlockedUsers), value, true, R.drawable.msg2_block2, true);
-                    } else if (position == blockedChannelsRow) {
-                        int count = AyuFilter.getBlockedChannelsCount();
-                        if (count == 0) {
-                            value = getString(R.string.BlockedEmpty);
-                        } else {
-                            value = String.format(LocaleController.getInstance().getCurrentLocale(), "%d", count);
-                        }
-                        textCell2.setTextAndValueAndIcon(getString(R.string.BlockedChannels), value, true, R.drawable.msg2_block2, true);
                     }
                     textCell2.setDrawLoading(showLoading, loadingLen, animated);
                     break;
@@ -1431,7 +1413,7 @@ public class PrivacySettingsActivity extends BaseFragment implements Notificatio
                 return 3;
             } else if (position == botsAndWebsitesShadowRow) {
                 return 4;
-            } else if (position == autoDeleteMesages || position == sessionsRow || position == emailLoginRow || position == passwordRow || position == passkeysRow || position == passcodeRow || position == blockedRow || position == blockedChannelsRow) {
+            } else if (position == autoDeleteMesages || position == sessionsRow || position == emailLoginRow || position == passwordRow || position == passkeysRow || position == passcodeRow || position == blockedRow) {
                 return 5;
             }
             return 0;

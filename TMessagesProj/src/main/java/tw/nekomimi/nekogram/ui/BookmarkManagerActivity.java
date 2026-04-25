@@ -9,9 +9,12 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -29,8 +32,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.DialogObject;
+import org.telegram.messenger.FileLog;
+import org.telegram.messenger.LiteMode;
 import org.telegram.messenger.MessagesController;
+import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.R;
+import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserObject;
 import org.telegram.messenger.Utilities;
 import org.telegram.tgnet.TLObject;
@@ -44,13 +51,26 @@ import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.CubicBezierInterpolator;
+import org.telegram.ui.Components.FilterTabsView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
-import org.telegram.ui.Components.ScrollSlidingTextTabStrip;
+import org.telegram.ui.Components.SizeNotifierFrameLayout;
+import org.telegram.ui.Components.ViewPagerFixed;
+import org.telegram.ui.Components.blur3.BlurredBackgroundDrawableViewFactory;
+import org.telegram.ui.Components.blur3.DownscaleScrollableNoiseSuppressor;
+import org.telegram.ui.Components.blur3.ViewGroupPartRenderer;
+import org.telegram.ui.Components.blur3.capture.IBlur3Capture;
+import org.telegram.ui.Components.blur3.drawable.BlurredBackgroundDrawable;
+import org.telegram.ui.Components.blur3.drawable.color.impl.BlurredBackgroundProviderImpl;
+import org.telegram.ui.Components.blur3.source.BlurredBackgroundSourceColor;
+import org.telegram.ui.Components.blur3.source.BlurredBackgroundSourceRenderNode;
+import org.telegram.ui.Components.chat.ViewPositionWatcher;
+import org.telegram.ui.SearchTabsAndFiltersLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
@@ -69,15 +89,19 @@ public class BookmarkManagerActivity extends BaseFragment {
     private static final int TAB_GROUPS = 2;
     private static final int TAB_USERS = 3;
     private static final int TAB_BOTS = 4;
+    private static final int ACTION_BAR_BLUR_ALPHA = 178;
+    private static final int TABS_CONTAINER_HEIGHT_DP = 50;
     private final ArrayList<BookmarkChatItem> allItems = new ArrayList<>();
     private final CubicBezierInterpolator interpolator = CubicBezierInterpolator.EASE_OUT_QUINT;
     private TextView emptyView;
     private ActionBarMenuItem searchItem;
-    private ScrollSlidingTextTabStrip tabsView;
+    private SearchTabsAndFiltersLayout tabsContainer;
+    private ViewPagerFixed.TabsView tabsView;
+    private BlurredBackgroundDrawable tabsContainerBackground;
     private int selectedTabId = TAB_ALL;
     private String searchQuery = "";
     private int loadRequestId;
-    private FrameLayout contentLayout;
+    private ContentLayout contentLayout;
     private ViewPage[] viewPages;
     private boolean swipeBackEnabled = true;
     private AnimatorSet tabsAnimation;
@@ -92,14 +116,72 @@ public class BookmarkManagerActivity extends BaseFragment {
     private int startedTrackingX;
     private int startedTrackingY;
     private VelocityTracker velocityTracker;
+    private final BlurredBackgroundSourceColor tabsBackgroundSourceColor;
+    private final BlurredBackgroundSourceRenderNode tabsBackgroundSourceFrosted;
+    private final BlurredBackgroundSourceRenderNode tabsBackgroundSourceGlass;
+    private final BlurredBackgroundDrawableViewFactory tabsBackgroundDrawableFactory;
+    private ViewPositionWatcher tabsViewPositionWatcher;
+
+    private final DownscaleScrollableNoiseSuppressor scrollableViewNoiseSuppressor;
+    private IBlur3Capture blur3Capture;
+    private boolean blur3Invalidated;
+    private final ArrayList<RectF> blur3Positions = new ArrayList<>();
+    private final RectF blur3PositionActionBar = new RectF();
+    private final RectF blur3PositionTabs = new RectF();
+
+    private int getTopContentOffset() {
+        if (actionBar == null) {
+            return 0;
+        }
+        return ActionBar.getCurrentActionBarHeight() + (actionBar.getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0);
+    }
+
+    private void updateBlur3Capture() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || scrollableViewNoiseSuppressor == null || viewPages == null) {
+            blur3Capture = null;
+            return;
+        }
+        blur3Capture = viewPages[0].blur3Capture;
+    }
+
+    public BookmarkManagerActivity() {
+        super();
+
+        tabsBackgroundSourceColor = new BlurredBackgroundSourceColor();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            scrollableViewNoiseSuppressor = new DownscaleScrollableNoiseSuppressor();
+            tabsBackgroundSourceFrosted = new BlurredBackgroundSourceRenderNode(tabsBackgroundSourceColor);
+            tabsBackgroundSourceFrosted.setScrollableNoiseSuppressor(scrollableViewNoiseSuppressor, DownscaleScrollableNoiseSuppressor.DRAW_FROSTED_GLASS);
+            tabsBackgroundSourceFrosted.setUnderSource(tabsBackgroundSourceColor);
+
+            if (LiteMode.isEnabled(LiteMode.FLAG_LIQUID_GLASS)) {
+                tabsBackgroundSourceGlass = new BlurredBackgroundSourceRenderNode(tabsBackgroundSourceColor);
+                tabsBackgroundSourceGlass.setScrollableNoiseSuppressor(scrollableViewNoiseSuppressor, DownscaleScrollableNoiseSuppressor.DRAW_GLASS);
+                tabsBackgroundSourceGlass.setUnderSource(tabsBackgroundSourceColor);
+                tabsBackgroundDrawableFactory = new BlurredBackgroundDrawableViewFactory(tabsBackgroundSourceGlass);
+            } else {
+                tabsBackgroundSourceGlass = null;
+                tabsBackgroundDrawableFactory = new BlurredBackgroundDrawableViewFactory(tabsBackgroundSourceFrosted);
+            }
+            tabsBackgroundDrawableFactory.setLiquidGlassEffectAllowed(LiteMode.isEnabled(LiteMode.FLAG_LIQUID_GLASS));
+        } else {
+            scrollableViewNoiseSuppressor = null;
+            tabsBackgroundSourceFrosted = null;
+            tabsBackgroundSourceGlass = null;
+            tabsBackgroundDrawableFactory = new BlurredBackgroundDrawableViewFactory(tabsBackgroundSourceColor);
+        }
+        blur3Positions.add(blur3PositionActionBar);
+        blur3Positions.add(blur3PositionTabs);
+    }
 
     @Override
     public View createView(Context context) {
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
+        actionBar.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
         actionBar.setTitle(getString(R.string.BookmarksManager));
         actionBar.setAllowOverlayTitle(false);
-        actionBar.setExtraHeight(dp(44));
         actionBar.setClipContent(true);
+        actionBar.setCastShadows(false);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -114,7 +196,7 @@ public class BookmarkManagerActivity extends BaseFragment {
         });
 
         ActionBarMenu menu = actionBar.createMenu();
-        searchItem = menu.addItem(SEARCH_BUTTON, R.drawable.ic_ab_search).setIsSearchField(true);
+        searchItem = menu.addItem(SEARCH_BUTTON, R.drawable.outline_header_search).setIsSearchField(true);
         searchItem.setSearchFieldHint(getString(R.string.Search));
         searchItem.setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
             @Override
@@ -152,10 +234,16 @@ public class BookmarkManagerActivity extends BaseFragment {
         clearAllItem.setSelectorColor(Theme.multAlpha(Theme.getColor(Theme.key_text_RedRegular), .12f));
         optionsItem.setOnClickListener(v -> optionsItem.toggleSubMenu());
 
-        tabsView = new ScrollSlidingTextTabStrip(context);
-        tabsView.setUseSameWidth(true);
-        actionBar.addView(tabsView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 44, Gravity.LEFT | Gravity.BOTTOM));
-        tabsView.setDelegate(new ScrollSlidingTextTabStrip.ScrollSlidingTabStripDelegate() {
+        tabsContainer = new SearchTabsAndFiltersLayout(context);
+        tabsContainer.setPadding(0, dp(7), 0, dp(7));
+
+        tabsView = new ViewPagerFixed.TabsView(context, false, ViewPagerFixed.SELECTOR_TYPE_BUBBLE_STYLE, resourceProvider);
+        tabsView.setIndicatorAnimation(320, CubicBezierInterpolator.EASE_OUT_QUINT);
+        tabsView.tabMarginDp = (int) (FilterTabsView.TAB_PADDING_WIDTH / 2f);
+        int tabsListPadding = Math.max(0, dp(23.5f - FilterTabsView.TAB_PADDING_WIDTH / 2f));
+        tabsView.listView.setPadding(tabsListPadding, 0, tabsListPadding, 0);
+        tabsContainer.addView(tabsView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.FILL));
+        tabsView.setDelegate(new ViewPagerFixed.TabsView.TabsViewDelegate() {
             @Override
             public void onPageSelected(int page, boolean forward) {
                 if (viewPages == null || viewPages[0].tabId == page) {
@@ -174,6 +262,7 @@ public class BookmarkManagerActivity extends BaseFragment {
                 updateSwipeBackEnabled();
                 updateEmptyView();
                 invalidateGestureExclusion();
+                invalidateGlass();
             }
 
             @Override
@@ -199,7 +288,9 @@ public class BookmarkManagerActivity extends BaseFragment {
                     updateSwipeBackEnabled();
                     updateEmptyView();
                     invalidateGestureExclusion();
+                    updateBlur3Capture();
                 }
+                invalidateGlass();
             }
         });
         updateTabs();
@@ -207,7 +298,11 @@ public class BookmarkManagerActivity extends BaseFragment {
         ViewConfiguration configuration = ViewConfiguration.get(context);
         maximumVelocity = configuration.getScaledMaximumFlingVelocity();
         contentLayout = new ContentLayout(context);
+        contentLayout.setTag(0xFF112233, new Object());
         contentLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
+        tabsViewPositionWatcher = new ViewPositionWatcher(contentLayout);
+        tabsBackgroundDrawableFactory.setSourceRootView(tabsViewPositionWatcher, contentLayout);
+        actionBar.setDrawBlurBackground(contentLayout);
         fragmentView = contentLayout;
 
         viewPages = new ViewPage[2];
@@ -220,6 +315,7 @@ public class BookmarkManagerActivity extends BaseFragment {
                         float scrollProgress = Math.abs(viewPages[0].getTranslationX()) / (float) viewPages[0].getMeasuredWidth();
                         tabsView.selectTabWithId(viewPages[1].tabId, scrollProgress);
                     }
+                    invalidateGlass();
                 }
             };
             if (a == 1) {
@@ -234,8 +330,14 @@ public class BookmarkManagerActivity extends BaseFragment {
         emptyView.setTextSize(15);
         emptyView.setGravity(Gravity.CENTER);
         emptyView.setPadding(dp(24), dp(24), dp(24), dp(24));
-        contentLayout.addView(emptyView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+        final int topContentOffset = getTopContentOffset();
+        final int tabsHeight = dp(TABS_CONTAINER_HEIGHT_DP);
+        contentLayout.addView(emptyView, LayoutHelper.createFrameMarginPx(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP, 0, topContentOffset + tabsHeight, 0, 0));
+        contentLayout.addView(tabsContainer, LayoutHelper.createFrameMarginPx(LayoutHelper.MATCH_PARENT, TABS_CONTAINER_HEIGHT_DP, Gravity.TOP, dp(4), topContentOffset, dp(4), 0));
+        updateTabsStyle();
         setPageTab(viewPages[0], selectedTabId, false);
+        updateBlur3Capture();
+        invalidateGlass();
         updateSwipeBackEnabled();
         updateEmptyView();
         invalidateGestureExclusion();
@@ -266,7 +368,17 @@ public class BookmarkManagerActivity extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        updateTabsStyle();
         reloadData();
+    }
+
+    @Override
+    public void onFragmentDestroy() {
+        super.onFragmentDestroy();
+        if (tabsViewPositionWatcher != null) {
+            tabsViewPositionWatcher.shutdown();
+            tabsViewPositionWatcher = null;
+        }
     }
 
     private void onClearAllBookmarksClicked() {
@@ -297,8 +409,23 @@ public class BookmarkManagerActivity extends BaseFragment {
         final int requestId = ++loadRequestId;
         Utilities.globalQueue.postRunnable(() -> {
             Map<Long, Integer> counts = BookmarksHelper.getBookmarkedDialogsCounts(accountId);
-            ArrayList<BookmarkChatItem> items = new ArrayList<>(counts.size());
             MessagesController messagesController = MessagesController.getInstance(accountId);
+            if (counts.isEmpty()) {
+                AndroidUtilities.runOnUIThread(() -> {
+                    if (requestId != loadRequestId) {
+                        return;
+                    }
+                    allItems.clear();
+                    updateTabs();
+                    updateCurrentPage();
+                });
+                return;
+            }
+
+            ArrayList<Long> baseUsersToLoad = new ArrayList<>();
+            ArrayList<Long> chatsToLoad = new ArrayList<>();
+            HashSet<Long> seenUserIds = new HashSet<>();
+            HashSet<Long> seenChatIds = new HashSet<>();
 
             for (Map.Entry<Long, Integer> entry : counts.entrySet()) {
                 long dialogId = entry.getKey() == null ? 0L : entry.getKey();
@@ -306,51 +433,96 @@ public class BookmarkManagerActivity extends BaseFragment {
                 if (dialogId == 0 || count <= 0) {
                     continue;
                 }
-
-                TLObject peer = resolvePeer(messagesController, dialogId);
-                String title = resolveTitle(peer);
-                String username = resolveUsername(peer);
-                int category = resolveCategory(peer);
-                long sortDate = 0;
-                TLRPC.Dialog dialog = messagesController.dialogs_dict.get(dialogId);
-                if (dialog != null) {
-                    sortDate = dialog.last_message_date;
-                }
-                CharSequence subtitle = buildSubtitle(username, category);
-                items.add(new BookmarkChatItem(dialogId, peer, title, username, subtitle, count, sortDate, category));
+                collectPeersToLoad(messagesController, dialogId, baseUsersToLoad, chatsToLoad, seenUserIds, seenChatIds);
             }
 
-            items.sort(Comparator.comparingLong((BookmarkChatItem i) -> i.sortDate).reversed().thenComparing(i -> i.title == null ? "" : i.title.toLowerCase(Locale.ROOT)));
-
-            AndroidUtilities.runOnUIThread(() -> {
-                if (requestId != loadRequestId) {
-                    return;
+            MessagesStorage messagesStorage = MessagesStorage.getInstance(accountId);
+            messagesStorage.getStorageQueue().postRunnable(() -> {
+                ArrayList<Long> usersToLoad = new ArrayList<>(baseUsersToLoad);
+                ArrayList<TLRPC.User> loadedUsers = new ArrayList<>(usersToLoad.size());
+                ArrayList<TLRPC.Chat> loadedChats = new ArrayList<>(chatsToLoad.size());
+                try {
+                    if (!usersToLoad.isEmpty()) {
+                        messagesStorage.getUsersInternal(usersToLoad, loadedUsers);
+                    }
+                    if (!chatsToLoad.isEmpty()) {
+                        messagesStorage.getChatsInternal(TextUtils.join(",", chatsToLoad), loadedChats);
+                    }
+                } catch (Exception e) {
+                    FileLog.e(e);
                 }
-                allItems.clear();
-                allItems.addAll(items);
-                updateTabs();
-                updateCurrentPage();
+
+                AndroidUtilities.runOnUIThread(() -> {
+                    if (requestId != loadRequestId) {
+                        return;
+                    }
+                    messagesController.putUsers(loadedUsers, true);
+                    messagesController.putChats(loadedChats, true);
+                    ArrayList<BookmarkChatItem> items = new ArrayList<>(counts.size());
+                    for (Map.Entry<Long, Integer> entry : counts.entrySet()) {
+                        long dialogId = entry.getKey() == null ? 0L : entry.getKey();
+                        int count = entry.getValue() == null ? 0 : entry.getValue();
+                        if (dialogId == 0 || count <= 0) {
+                            continue;
+                        }
+
+                        TLObject peer = resolvePeer(messagesController, dialogId);
+                        String title = resolveTitle(peer);
+                        String username = resolveUsername(peer);
+                        int category = resolveCategory(peer);
+                        long sortDate = 0;
+                        TLRPC.Dialog dialog = messagesController.dialogs_dict.get(dialogId);
+                        if (dialog != null) {
+                            sortDate = dialog.last_message_date;
+                        }
+                        CharSequence subtitle = buildSubtitle(username, category);
+                        items.add(new BookmarkChatItem(dialogId, peer, title, username, subtitle, count, sortDate, category));
+                    }
+
+                    items.sort(Comparator.comparingLong((BookmarkChatItem i) -> i.sortDate).reversed().thenComparing(i -> i.title == null ? "" : i.title.toLowerCase(Locale.ROOT)));
+                    allItems.clear();
+                    allItems.addAll(items);
+                    updateTabs();
+                    updateCurrentPage();
+                });
             });
         });
     }
 
+    private void collectPeersToLoad(MessagesController messagesController, long dialogId, ArrayList<Long> usersToLoad, ArrayList<Long> chatsToLoad, HashSet<Long> seenUserIds, HashSet<Long> seenChatIds) {
+        if (DialogObject.isUserDialog(dialogId)) {
+            TLRPC.User user = messagesController.getUser(dialogId);
+            if (shouldLoadUserFromStorage(user) && seenUserIds.add(dialogId)) {
+                usersToLoad.add(dialogId);
+            }
+            return;
+        }
+        if (DialogObject.isChatDialog(dialogId)) {
+            long chatId = -dialogId;
+            TLRPC.Chat chat = messagesController.getChat(chatId);
+            if (shouldLoadChatFromStorage(chat) && seenChatIds.add(chatId)) {
+                chatsToLoad.add(chatId);
+            }
+        }
+    }
+
     private TLObject resolvePeer(MessagesController messagesController, long dialogId) {
-        TLObject peer = messagesController.getUserOrChat(dialogId);
-        if (peer != null) {
-            return peer;
+        if (DialogObject.isUserDialog(dialogId)) {
+            return messagesController.getUser(dialogId);
         }
-        if (!DialogObject.isEncryptedDialog(dialogId)) {
-            return null;
+        if (DialogObject.isChatDialog(dialogId)) {
+            long chatId = -dialogId;
+            return messagesController.getChat(chatId);
         }
-        int encryptedId = DialogObject.getEncryptedChatId(dialogId);
-        TLRPC.EncryptedChat encryptedChat = messagesController.getEncryptedChat(encryptedId);
-        if (encryptedChat == null) {
-            encryptedChat = messagesController.getEncryptedChatDB(encryptedId, false);
-        }
-        if (encryptedChat == null) {
-            return null;
-        }
-        return messagesController.getUser(encryptedChat.user_id);
+        return null;
+    }
+
+    private boolean shouldLoadUserFromStorage(TLRPC.User user) {
+        return user == null || user.min;
+    }
+
+    private boolean shouldLoadChatFromStorage(TLRPC.Chat chat) {
+        return chat == null || chat.min || TextUtils.isEmpty(chat.title);
     }
 
     @NonNull
@@ -428,15 +600,47 @@ public class BookmarkManagerActivity extends BaseFragment {
         }
 
         int current = selectedTabId;
-        SparseArray<View> tabsViewsCache = tabsView.removeTabs();
-
-        tabsView.addTextTab(TAB_ALL, getString(R.string.FilterAllChatsShort) + " (" + all + ")", tabsViewsCache);
-        tabsView.addTextTab(TAB_CHANNELS, getString(R.string.FilterChannels) + " (" + channels + ")", tabsViewsCache);
-        tabsView.addTextTab(TAB_GROUPS, getString(R.string.FilterGroups) + " (" + groups + ")", tabsViewsCache);
-        tabsView.addTextTab(TAB_USERS, getString(R.string.BookmarksFilterUsers) + " (" + users + ")", tabsViewsCache);
-        tabsView.addTextTab(TAB_BOTS, getString(R.string.FilterBots) + " (" + bots + ")", tabsViewsCache);
+        tabsView.removeTabs();
+        tabsView.addTab(TAB_ALL, getString(R.string.FilterAllChatsShort) + " (" + all + ")");
+        tabsView.addTab(TAB_CHANNELS, getString(R.string.FilterChannels) + " (" + channels + ")");
+        tabsView.addTab(TAB_GROUPS, getString(R.string.FilterGroups) + " (" + groups + ")");
+        tabsView.addTab(TAB_USERS, getString(R.string.BookmarksFilterUsers) + " (" + users + ")");
+        tabsView.addTab(TAB_BOTS, getString(R.string.FilterBots) + " (" + bots + ")");
         tabsView.finishAddingTabs();
-        tabsView.setInitialTabId(current);
+        tabsView.selectTabWithId(current, 1.0f);
+    }
+
+    private void updateTabsStyle() {
+        if (actionBar != null) {
+            actionBar.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite, resourceProvider));
+        }
+        if (contentLayout != null) {
+            contentLayout.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite, resourceProvider));
+        }
+        tabsBackgroundSourceColor.setColor(Theme.getColor(Theme.key_windowBackgroundWhite, resourceProvider));
+        if (tabsView == null) {
+            return;
+        }
+        tabsView.setColors(
+                Theme.key_profile_tabSelectedLine,
+                Theme.key_profile_tabSelectedText,
+                Theme.key_profile_tabText,
+                Theme.key_profile_tabSelector,
+                Theme.key_actionBarDefault
+        );
+        tabsView.updateColors();
+        tabsView.setBackground(null);
+        if (tabsContainer != null) {
+            if (tabsContainerBackground == null) {
+                tabsContainerBackground = tabsBackgroundDrawableFactory.create(tabsContainer, BlurredBackgroundProviderImpl.topPanel(resourceProvider));
+                tabsContainerBackground.setRadius(dp(18));
+                tabsContainerBackground.setPadding(dp(6.666f));
+                tabsContainer.setBlurredBackground(tabsContainerBackground);
+            } else {
+                tabsContainer.updateColors();
+            }
+        }
+        invalidateGlass();
     }
 
     private void updateCurrentPage() {
@@ -450,6 +654,7 @@ public class BookmarkManagerActivity extends BaseFragment {
         updateSwipeBackEnabled();
         updateEmptyView();
         invalidateGestureExclusion();
+        invalidateGlass();
     }
 
     private void scrollToTab() {
@@ -467,21 +672,7 @@ public class BookmarkManagerActivity extends BaseFragment {
             return;
         }
 
-        ViewGroup tabsContainer = tabsView.getTabsContainer();
-        ArrayList<Integer> ids = tabsView.getTabIds();
-        int position = ids.indexOf(BookmarkManagerActivity.TAB_ALL);
-        View tabView = tabsContainer != null && position >= 0 ? tabsContainer.getChildAt(position) : null;
-
-        if (tabView != null) {
-            tabsView.scrollTo(BookmarkManagerActivity.TAB_ALL, position, tabView);
-        } else {
-            selectedTabId = BookmarkManagerActivity.TAB_ALL;
-            setPageTab(viewPages[0], BookmarkManagerActivity.TAB_ALL, true);
-            tabsView.selectTabWithId(BookmarkManagerActivity.TAB_ALL, 1.0f, true);
-            updateSwipeBackEnabled();
-            updateEmptyView();
-            invalidateGestureExclusion();
-        }
+        tabsView.scrollToTab(BookmarkManagerActivity.TAB_ALL, BookmarkManagerActivity.TAB_ALL);
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -628,8 +819,7 @@ public class BookmarkManagerActivity extends BaseFragment {
                 return;
             }
             BookmarkChatItem item = items.get(position);
-            boolean divider = position != items.size() - 1;
-            cell.setData(item.peer, item.title, item.subtitle, item.bookmarkCount, divider);
+            cell.setData(item.peer, item.title, item.subtitle, item.bookmarkCount, false);
         }
 
         @Override
@@ -641,6 +831,7 @@ public class BookmarkManagerActivity extends BaseFragment {
     private class ViewPage extends FrameLayout {
         public final RecyclerListView listView;
         public final ListAdapter adapter;
+        public final IBlur3Capture blur3Capture;
         public final ArrayList<BookmarkChatItem> items = new ArrayList<>();
         public int tabId = TAB_ALL;
 
@@ -652,6 +843,24 @@ public class BookmarkManagerActivity extends BaseFragment {
             listView.setVerticalScrollBarEnabled(true);
             listView.setSelectorType(2);
             listView.setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING);
+            listView.setClipToPadding(false);
+            listView.setPadding(0, dp(TABS_CONTAINER_HEIGHT_DP) + getTopContentOffset(), 0, 0);
+            listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && scrollableViewNoiseSuppressor != null) {
+                        scrollableViewNoiseSuppressor.onScrolled(dx, dy);
+                    }
+                    invalidateGlass();
+                }
+            });
+            listView.addEdgeEffectListener(BookmarkManagerActivity.this::invalidateGlass);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && scrollableViewNoiseSuppressor != null && contentLayout != null) {
+                blur3Capture = new ViewGroupPartRenderer(listView, contentLayout, listView::drawChild);
+            } else {
+                blur3Capture = null;
+            }
 
             adapter = new ListAdapter(context, items);
             listView.setAdapter(adapter);
@@ -667,9 +876,92 @@ public class BookmarkManagerActivity extends BaseFragment {
         }
     }
 
-    private class ContentLayout extends FrameLayout {
+    private void invalidateGlass() {
+        if (contentLayout != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && scrollableViewNoiseSuppressor != null) {
+                blur3Invalidated = true;
+                contentLayout.invalidate();
+                actionBar.invalidate();
+            } else {
+                contentLayout.invalidateBlur();
+            }
+            if (tabsContainer != null) {
+                tabsContainer.invalidate();
+            }
+        }
+    }
+
+    private boolean blur3_InvalidateBlur() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || scrollableViewNoiseSuppressor == null || blur3Capture == null || contentLayout == null || actionBar == null) {
+            return false;
+        }
+        if (!SharedConfig.chatBlurEnabled() || !BlurredBackgroundProviderImpl.checkBlurEnabled(currentAccount, resourceProvider)) {
+            return true;
+        }
+
+        final int width = contentLayout.getMeasuredWidth();
+        final int height = contentLayout.getMeasuredHeight();
+        final int actionBarHeight = actionBar.getMeasuredHeight();
+        if (width <= 0 || height <= 0 || actionBarHeight <= 0) {
+            return false;
+        }
+
+        final int additional = dp(48);
+        final int topContentOffset = getTopContentOffset();
+        final int tabsHeight = dp(TABS_CONTAINER_HEIGHT_DP);
+
+        blur3PositionActionBar.set(0, -additional, width, actionBarHeight + additional);
+        blur3PositionTabs.set(0, topContentOffset, width, topContentOffset + tabsHeight);
+        if (!LiteMode.isEnabled(LiteMode.FLAG_LIQUID_GLASS)) {
+            blur3PositionTabs.bottom += dp(48);
+        }
+
+        scrollableViewNoiseSuppressor.setupRenderNodes(blur3Positions, 2);
+        final boolean hasChanges = scrollableViewNoiseSuppressor.invalidateResultRenderNodes(blur3Capture, width, height);
+        if (hasChanges) {
+            if (tabsBackgroundSourceFrosted != null) {
+                tabsBackgroundSourceFrosted.invalidateDisplayListForDrawables();
+            }
+            if (tabsBackgroundSourceGlass != null) {
+                tabsBackgroundSourceGlass.invalidateDisplayListForDrawables();
+            }
+        }
+        return true;
+    }
+
+    private class ContentLayout extends SizeNotifierFrameLayout {
         public ContentLayout(Context context) {
             super(context);
+        }
+
+        @Override
+        protected void dispatchDraw(@NonNull Canvas canvas) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && scrollableViewNoiseSuppressor != null && blur3Invalidated) {
+                if (blur3_InvalidateBlur()) {
+                    blur3Invalidated = false;
+                }
+            }
+            super.dispatchDraw(canvas);
+        }
+
+        @Override
+        public void drawBlurRect(Canvas canvas, float y, Rect rectTmp, Paint blurScrimPaint, boolean top) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || !SharedConfig.chatBlurEnabled() || tabsBackgroundSourceFrosted == null || !BlurredBackgroundProviderImpl.checkBlurEnabled(currentAccount, resourceProvider)) {
+                canvas.drawRect(rectTmp, blurScrimPaint);
+                return;
+            }
+
+            final boolean isThemeLight = resourceProvider != null ? !resourceProvider.isDark() : !Theme.isCurrentThemeDark();
+            final int blurAlpha = isThemeLight ? 216 : ACTION_BAR_BLUR_ALPHA;
+            canvas.save();
+            canvas.translate(0, -y);
+            tabsBackgroundSourceFrosted.draw(canvas, rectTmp.left, rectTmp.top + y, rectTmp.right, rectTmp.bottom + y);
+            canvas.restore();
+
+            final int oldScrimAlpha = blurScrimPaint.getAlpha();
+            blurScrimPaint.setAlpha(blurAlpha);
+            canvas.drawRect(rectTmp, blurScrimPaint);
+            blurScrimPaint.setAlpha(oldScrimAlpha);
         }
 
         @Override
@@ -706,7 +998,7 @@ public class BookmarkManagerActivity extends BaseFragment {
                         viewPages[1] = page;
                         animatingForward = false;
                         additionalOffset = viewPages[0].getTranslationX();
-                        tabsView.selectTabWithId(viewPages[0].tabId, 1.0f, true);
+                        tabsView.selectTabWithId(viewPages[0].tabId, 1.0f);
                         tabsView.selectTabWithId(viewPages[1].tabId, additionalOffset / viewPages[0].getMeasuredWidth());
                     }
                 } else {
@@ -716,12 +1008,14 @@ public class BookmarkManagerActivity extends BaseFragment {
                         viewPages[1] = page;
                         animatingForward = true;
                         additionalOffset = viewPages[0].getTranslationX();
-                        tabsView.selectTabWithId(viewPages[0].tabId, 1.0f, true);
+                        tabsView.selectTabWithId(viewPages[0].tabId, 1.0f);
                         tabsView.selectTabWithId(viewPages[1].tabId, -additionalOffset / viewPages[0].getMeasuredWidth());
                     } else {
                         additionalOffset = viewPages[0].getTranslationX();
                     }
                 }
+                updateBlur3Capture();
+                invalidateGlass();
                 if (tabsAnimation != null) {
                     tabsAnimation.removeAllListeners();
                     tabsAnimation.cancel();
@@ -831,15 +1125,17 @@ public class BookmarkManagerActivity extends BaseFragment {
                             tabsAnimation = null;
                             if (backAnimation) {
                                 viewPages[1].setVisibility(View.GONE);
-                                tabsView.selectTabWithId(viewPages[0].tabId, 1.0f, true);
+                                tabsView.selectTabWithId(viewPages[0].tabId, 1.0f);
                             } else {
                                 ViewPage tempPage = viewPages[0];
                                 viewPages[0] = viewPages[1];
                                 viewPages[1] = tempPage;
                                 viewPages[1].setVisibility(View.GONE);
                                 selectedTabId = viewPages[0].tabId;
-                                tabsView.selectTabWithId(selectedTabId, 1.0f, true);
+                                tabsView.selectTabWithId(selectedTabId, 1.0f);
                             }
+                            updateBlur3Capture();
+                            invalidateGlass();
                             tabsAnimationInProgress = false;
                             maybeStartTracking = false;
                             startedTracking = false;
@@ -880,5 +1176,10 @@ public class BookmarkManagerActivity extends BaseFragment {
             }
             setSystemGestureExclusionRects(Collections.emptyList());
         }
+    }
+
+    @Override
+    public int getNavigationBarColor() {
+        return getThemedColor(Theme.key_windowBackgroundWhite);
     }
 }

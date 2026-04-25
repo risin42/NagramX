@@ -27,8 +27,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.StateSet;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -41,10 +39,14 @@ import org.telegram.messenger.Utilities;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.BaseCell;
 
+import me.vkryl.android.animator.BoolAnimator;
+
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.MonetHelper;
 import xyz.nextalone.nagram.NaConfig;
 
 public class Switch extends View {
+    private final BoolAnimator animatorIconVisibility = new BoolAnimator(this, CubicBezierInterpolator.EASE_OUT_QUINT, 380L, true);
 
     public static final int SWITCH_STYLE_DEFAULT = 0;
     public static final int SWITCH_STYLE_MODERN = 1;
@@ -70,9 +72,11 @@ public class Switch extends View {
     private int trackCheckedColorKey = Theme.key_switch2TrackChecked;
     private int thumbColorKey = Theme.key_windowBackgroundWhite;
     private int thumbCheckedColorKey = Theme.key_windowBackgroundWhite;
+    private int separateTrackColorKey = -1;
 
     private Drawable iconDrawable;
     private int lastIconColor;
+    private int lastCheckColor = Integer.MIN_VALUE;
 
     private boolean drawRipple;
     private RippleDrawable rippleDrawable;
@@ -256,6 +260,14 @@ public class Switch extends View {
         thumbCheckedColorKey = thumbChecked;
     }
 
+    public void setSeparateTrackColorKey(int separateTrackColorKey) {
+        if (this.separateTrackColorKey == separateTrackColorKey) {
+            return;
+        }
+        this.separateTrackColorKey = separateTrackColorKey;
+        invalidate();
+    }
+
     private void animateToCheckedState(boolean newCheckedState) {
         checkAnimator = ObjectAnimator.ofFloat(this, "progress", newCheckedState ? 1 : 0);
         checkAnimator.setDuration(200);
@@ -327,6 +339,10 @@ public class Switch extends View {
             iconDrawable = null;
         }
         invalidate();
+    }
+
+    public void setIconVisible(boolean visible, boolean animated) {
+        animatorIconVisibility.setValue(visible, animated);
     }
 
     public void setDrawIconType(int iconType, boolean animated) {
@@ -427,6 +443,15 @@ public class Switch extends View {
         int alpha;
         int color;
 
+        int trackCheckedFillKey = trackCheckedColorKey;
+        int thumbCheckedKey = thumbCheckedColorKey;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && MonetHelper.useMonetMd3Colors()) {
+            trackCheckedFillKey = Theme.key_dialogRoundCheckBox;
+            thumbCheckedKey = Theme.getActiveTheme().isMonetNight()
+                    ? Theme.key_statisticChartRipple // a1_800
+                    : Theme.key_chat_outInstant; // a1_10
+        }
+
         for (int a = 0; a < 2; a++) {
             if (a == 1 && overrideColorProgress == 0) {
                 continue;
@@ -449,10 +474,10 @@ public class Switch extends View {
 
             int originalColor1;
             color1 = originalColor1 = processColor(Theme.getColor(trackColorKey, resourcesProvider));
-            color2 = processColor(Theme.getColor(trackCheckedColorKey, resourcesProvider));
+            color2 = processColor(Theme.getColor(trackCheckedFillKey, resourcesProvider));
 
             if (isUsingSeparateView) {
-                color1 = Color.TRANSPARENT;
+                color1 = separateTrackColorKey >= 0 ? processColor(Theme.getColor(separateTrackColorKey, resourcesProvider)) : Color.TRANSPARENT;
             }
 
             if (a == 0 && iconDrawable != null && lastIconColor != (isChecked ? color2 : color1)) {
@@ -532,7 +557,7 @@ public class Switch extends View {
             }
 
             color1 = Theme.getColor(isUsingSeparateView ? trackColorKey : thumbColorKey, resourcesProvider);
-            color2 = processColor(Theme.getColor(thumbCheckedColorKey, resourcesProvider));
+            color2 = processColor(Theme.getColor(thumbCheckedKey, resourcesProvider));
             r1 = Color.red(color1);
             r2 = Color.red(color2);
             g1 = Color.green(color1);
@@ -556,14 +581,30 @@ public class Switch extends View {
 
             if (a == 0 && NaConfig.INSTANCE.getSwitchStyle().Int() == SWITCH_STYLE_DEFAULT || NaConfig.INSTANCE.getSwitchStyle().Int() == SWITCH_STYLE_MD3) {
                 if (NaConfig.INSTANCE.getSwitchStyle().Int() == SWITCH_STYLE_MD3) {
+                    int checkColor = Theme.getColor(trackCheckedFillKey, resourcesProvider);
+                    if (lastCheckColor != checkColor) {
+                        checkDrawable.setColorFilter(new PorterDuffColorFilter(checkColor, PorterDuff.Mode.MULTIPLY));
+                        lastCheckColor = checkColor;
+                    }
                     int iconWidth = checkDrawable.getIntrinsicWidth() / 2;
                     int iconHeight = checkDrawable.getIntrinsicHeight() / 2;
                     checkDrawable.setBounds(tx - iconWidth / 2, ty - iconHeight / 2, tx + iconWidth / 2, ty + iconHeight / 2);
                     checkDrawable.setAlpha((int) (255 * progress));
                     checkDrawable.draw(canvasToDraw);
                 } else if (iconDrawable != null) {
-                    iconDrawable.setBounds(tx - iconDrawable.getIntrinsicWidth() / 2, ty - iconDrawable.getIntrinsicHeight() / 2, tx + iconDrawable.getIntrinsicWidth() / 2, ty + iconDrawable.getIntrinsicHeight() / 2);
-                    iconDrawable.draw(canvasToDraw);
+                    final float factor = animatorIconVisibility.getFloatValue();
+                    if (factor > 0) {
+                        final boolean needScale = factor < 1;
+                        if (needScale) {
+                            canvas.save();
+                            canvas.scale(factor, factor, tx, ty);
+                        }
+                        iconDrawable.setBounds(tx - iconDrawable.getIntrinsicWidth() / 2, ty - iconDrawable.getIntrinsicHeight() / 2, tx + iconDrawable.getIntrinsicWidth() / 2, ty + iconDrawable.getIntrinsicHeight() / 2);
+                        iconDrawable.draw(canvasToDraw);
+                        if (needScale) {
+                            canvas.restore();
+                        }
+                    }
                 } else if (drawIconType == 1) {
                     tx -= AndroidUtilities.dp(10.8f) - AndroidUtilities.dp(1.3f) * progress;
                     ty -= AndroidUtilities.dp(8.5f) - AndroidUtilities.dp(0.5f) * progress;

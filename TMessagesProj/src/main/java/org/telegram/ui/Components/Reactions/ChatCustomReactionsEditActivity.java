@@ -95,6 +95,7 @@ public class ChatCustomReactionsEditActivity extends BaseFragment implements Not
     private final HashMap<Long, AnimatedEmojiSpan> initialSelectedEmojis = new LinkedHashMap<>();
     private final List<TLRPC.TL_availableReaction> allAvailableReactions = new ArrayList<>();
     private boolean initialPaid;
+    private int initialSelectedType = -1;
 
     private final int maxReactionsCount = getMessagesController().boostsChannelLevelMax;
     private boolean emojiKeyboardVisible = false;
@@ -459,6 +460,7 @@ public class ChatCustomReactionsEditActivity extends BaseFragment implements Not
         }
         initialSelectedEmojis.putAll(selectedEmojisMap);
         initialPaid = paid;
+        initialSelectedType = selectedType;
 
         fragmentView = rootLayout;
         return rootLayout;
@@ -695,12 +697,17 @@ public class ChatCustomReactionsEditActivity extends BaseFragment implements Not
                 closeKeyboard();
                 actionButtonContainer.animate().setListener(null).cancel();
                 switchLayout.animate().setListener(null).cancel();
-                actionButtonContainer.animate().alpha(0f).setDuration(350).setInterpolator(CubicBezierInterpolator.DEFAULT).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        actionButtonContainer.setVisibility(View.INVISIBLE);
-                    }
-                }).start();
+                if (initialSelectedType == -1 || selectType == initialSelectedType) {
+                    actionButtonContainer.animate().alpha(0f).setDuration(350).setInterpolator(CubicBezierInterpolator.DEFAULT).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            actionButtonContainer.setVisibility(View.INVISIBLE);
+                        }
+                    }).start();
+                } else {
+                    actionButtonContainer.setVisibility(View.VISIBLE);
+                    actionButtonContainer.setAlpha(1f);
+                }
                 switchLayout.animate().alpha(0f).setDuration(350).setInterpolator(CubicBezierInterpolator.DEFAULT).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -710,7 +717,12 @@ public class ChatCustomReactionsEditActivity extends BaseFragment implements Not
                 }).start();
             } else {
                 switchLayout.setVisibility(View.INVISIBLE);
-                actionButtonContainer.setVisibility(View.INVISIBLE);
+                if (initialSelectedType == -1 || selectType == initialSelectedType) {
+                    actionButtonContainer.setVisibility(View.INVISIBLE);
+                } else {
+                    actionButtonContainer.setVisibility(View.VISIBLE);
+                    actionButtonContainer.setAlpha(1f);
+                }
             }
         }
     }
@@ -759,7 +771,7 @@ public class ChatCustomReactionsEditActivity extends BaseFragment implements Not
     }
 
     private boolean checkChangesBeforeExit(boolean invoked) {
-        boolean hasChanges = !selectedEmojisMap.keySet().equals(initialSelectedEmojis.keySet());
+        boolean hasChanges = selectedType != initialSelectedType || !selectedEmojisMap.keySet().equals(initialSelectedEmojis.keySet());
         if (boostsStatus != null && boostsStatus.level < selectedCustomReactions) {
             hasChanges = false;
         }

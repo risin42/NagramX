@@ -107,7 +107,7 @@ public class ProfileMusicView extends View {
         if (peerColor == null) {
             if (NaConfig.INSTANCE.getDisableAvatarBlur().Bool()
                     && AndroidUtilities.computePerceivedBrightness(Theme.getColor(Theme.key_actionBarDefault, resourcesProvider)) > .8f) {
-                backgroundColor = Theme.multAlpha(Theme.getColor(Theme.key_windowBackgroundWhiteBlueText, resourcesProvider), .15f * 2);
+                backgroundColor = Theme.multAlpha(Theme.getColor(Theme.getActiveTheme().isMonet() ? Theme.key_chat_botKeyboardButtonBackground : Theme.key_windowBackgroundWhiteBlueText, resourcesProvider), .15f * 3);
             } else {
                 backgroundColor = Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider);
             }
@@ -197,6 +197,8 @@ public class ProfileMusicView extends View {
     public void setText(CharSequence author, CharSequence title) {
         this.author = new Text(author, 11, AndroidUtilities.bold());
         this.title = new Text(title, 11);
+
+        setContentDescription(getString(R.string.AccDescrProfileMusic) + " " + author + " — " + title);
     }
 
     private ProfileActivity.AvatarImageView avatarView;

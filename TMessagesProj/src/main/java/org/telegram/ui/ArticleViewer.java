@@ -194,6 +194,7 @@ import org.telegram.ui.Components.TextPaintSpan;
 import org.telegram.ui.Components.TextPaintUrlSpan;
 import org.telegram.ui.Components.TextPaintWebpageUrlSpan;
 import org.telegram.ui.Components.TranslateAlert2;
+import org.telegram.ui.Components.TranslateAlert3;
 import org.telegram.ui.Components.TypefaceSpan;
 import org.telegram.ui.Components.VideoPlayer;
 import org.telegram.ui.Components.WebPlayerView;
@@ -4649,6 +4650,11 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
         if (MessagesController.getInstance(currentAccount).getTranslateController().isContextTranslateEnabled()) {
             textSelectionHelper.setOnTranslate((text, fromLang, toLang, onAlertDismiss) -> {
                 TranslateAlert2.showAlert(parentActivity, parentFragment, currentAccount, fromLang, toLang, text, null, false, null, onAlertDismiss);
+//                final TranslateAlert3 alert =
+//                    new TranslateAlert3(parentActivity, parentFragment != null ? parentFragment.getResourceProvider() : getResourcesProvider())
+//                        .setText(fromLang, text);
+//                alert.setOnDismissListener(onAlertDismiss);
+//                alert.show();
             });
         }
         textSelectionHelper.layoutManager = pages[0].layoutManager;
@@ -13161,12 +13167,12 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
                 }
 
                 @Override
-                public void onSetupMainButton(boolean isVisible, boolean isActive, String text, int color, int textColor, boolean isProgressVisible, boolean hasShineEffect) {
+                public void onSetupMainButton(boolean isVisible, boolean isActive, String text, long emojiId, int color, int textColor, boolean isProgressVisible, boolean hasShineEffect) {
 
                 }
 
                 @Override
-                public void onSetupSecondaryButton(boolean isVisible, boolean isActive, String text, int color, int textColor, boolean isProgressVisible, boolean hasShineEffect, String position) {
+                public void onSetupSecondaryButton(boolean isVisible, boolean isActive, String text, long emojiId, int color, int textColor, boolean isProgressVisible, boolean hasShineEffect, String position) {
 
                 }
 
@@ -14007,9 +14013,12 @@ public class ArticleViewer implements NotificationCenter.NotificationCenterDeleg
                 actionBar.showAddress(false, true);
                 return true;
             }
-            if (isFirstArticle() && pages[0].hasBackButton()) {
-                pages[0].back();
-                return true;
+            if (pages != null && pages.length > 0 && pages[0] != null && pages[0].isWeb()) {
+                BotWebViewContainer.MyWebView webView = pages[0].getWebView();
+                if (webView != null && webView.canGoBack()) {
+                    webView.goBack();
+                    return true;
+                }
             }
             if (pagesStack.size() > 1) {
                 goBack();

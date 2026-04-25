@@ -13,6 +13,7 @@ import static tw.nekomimi.nekogram.helpers.MessageHelper.containsMarkdown;
 import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.AndroidUtilities.dpf2;
 import static org.telegram.messenger.AndroidUtilities.lerp;
+import static org.telegram.messenger.LocaleController.formatString;
 import static org.telegram.messenger.LocaleController.getString;
 import static org.telegram.ui.LaunchActivity.getLastFragment;
 
@@ -67,6 +68,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.ParagraphStyle;
 import android.text.style.SuggestionSpan;
@@ -136,7 +138,9 @@ import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.Emoji;
+import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.ImageReceiver;
 import org.telegram.messenger.LiteMode;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MediaController;
@@ -159,6 +163,7 @@ import org.telegram.messenger.browser.Browser;
 import org.telegram.messenger.camera.CameraController;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.SerializedData;
+import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.tl.TL_account;
 import org.telegram.tgnet.tl.TL_bots;
@@ -266,6 +271,7 @@ public class ChatActivityEnterView extends FrameLayout implements
     private boolean sendButtonEnabled = true;
     private TLRPC.UserFull userInfo;
     public HintView2 birthdayHint;
+    public HintView2 aiHint;
     private HintView2 sendSuggestHintView;
 
     public boolean voiceOnce;
@@ -645,6 +651,8 @@ public class ChatActivityEnterView extends FrameLayout implements
     private LinearLayout attachLayout;
     private ViewPropertyAnimator attachButtonAnimator;
     private ImageView attachButton;
+    private AiButtonDrawable aiButtonIcon;
+    private ImageView aiButton;
     private float attachButtonAlpha = 1.0f;
     private ImageView suggestButton;
     @Nullable
@@ -2832,6 +2840,52 @@ public class ChatActivityEnterView extends FrameLayout implements
             attachButton.setContentDescription(getString(R.string.AccDescrAttachButton));
             updateFieldRight(1);
         }
+
+        aiButton = new ImageView(context);
+        aiButton.setImageDrawable(aiButtonIcon = new AiButtonDrawable(context));
+        aiButton.setScaleType(ImageView.ScaleType.CENTER);
+        aiButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_glass_defaultIcon), PorterDuff.Mode.MULTIPLY));
+        aiButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_listSelector), Theme.RIPPLE_MASK_CIRCLE_20DP, dp(16)));
+        textFieldContainer.addView(aiButton, LayoutHelper.createFrame(DEFAULT_HEIGHT, DEFAULT_HEIGHT, Gravity.TOP | Gravity.RIGHT, 0, 1, 0, 0));
+        aiButton.setContentDescription(getString(R.string.AIEditor));
+        ScaleStateListAnimator.apply(aiButton);
+        aiButton.setOnClickListener(v -> {
+            if (messageEditText == null) return;
+            MessagesController.getGlobalMainSettings().edit().putInt("aihintshown", 3).apply();
+            final long dialogId = parentFragment != null ? parentFragment.getDialogId() : dialog_id;
+            new AIEditorAlert(getContext(), resourcesProvider)
+                .setText(messageEditText.getText())
+                .setOnUse(text -> {
+                    messageEditText.setText(text);
+                    messageEditText.setSelection(text.length(), text.length());
+                })
+                .setOnSend(dialogId, editingMessageObject != null, (text, scheduleDate, scheduleRepeatPeriod, notify) -> {
+                    messageEditText.setText(text);
+                    if (editingMessageObject != null) {
+                        doneEditingMessage();
+                    } else {
+                        if (isInScheduleMode() && scheduleDate == 0) {
+                            AlertsCreator.createScheduleDatePickerDialog(parentActivity, dialogId, new AlertsCreator.ScheduleDatePickerDelegate() {
+                                @Override
+                                public void didSelectDate(boolean notify, int scheduleDate, int scheduleRepeatPeriod) {
+                                    final boolean shownDialog = sendMessageInternal(notify, scheduleDate, scheduleRepeatPeriod, 0, true);
+                                    if (messageSendPreview != null) {
+                                        messageSendPreview.dismiss(!shownDialog);
+                                        messageSendPreview = null;
+                                    }
+                                }
+                            }, resourcesProvider);
+                        } else {
+                            sendMessageInternal(notify, scheduleDate, scheduleRepeatPeriod, 0, true);
+                        }
+                    }
+                })
+                .show();
+        });
+        aiButton.setVisibility(View.GONE);
+        aiButton.setAlpha(0.0f);
+        aiButton.setScaleX(0.6f);
+        aiButton.setScaleY(0.6f);
 
         if (audioToSend != null) {
             createRecordAudioPanel();
@@ -5836,6 +5890,7 @@ public class ChatActivityEnterView extends FrameLayout implements
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             if (isInitLineCount) {
                 lineCount = getLineCount();
+                showAiButton(MessagesController.getInstance(currentAccount).aiEditorAvailable() && lineCount > 2 && !TextUtils.isEmpty(getText().toString().trim()));
             }
             isInitLineCount = false;
         }
@@ -5935,6 +5990,10 @@ public class ChatActivityEnterView extends FrameLayout implements
                     }
                     info.thumbPath = photoEntry.thumbPath;
                     info.isVideo = photoEntry.isVideo;
+                    info.isLivePhoto = photoEntry.isLivePhoto;
+                    info.discardLivePhoto = photoEntry.discardLivePhoto;
+                    info.livePhotoVideoOffset = photoEntry.livePhotoVideoOffset;
+                    info.livePhotoTimestampUs = photoEntry.livePhotoTimestampUs;
                     info.caption = photoEntry.caption != null ? photoEntry.caption.toString() : null;
                     info.entities = photoEntry.entities;
                     info.masks = photoEntry.stickers;
@@ -6086,12 +6145,19 @@ public class ChatActivityEnterView extends FrameLayout implements
                     setWindowView(parentActivity.getWindow().getDecorView());
                 }
             }
+
+            @Override
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+                if (lineCount != messageEditText.getLineCount()) {
+                    showAiButton(MessagesController.getInstance(currentAccount).aiEditorAvailable() && messageEditText.getLineCount() > 2 && messageEditText.getText() != null && !TextUtils.isEmpty(messageEditText.getText().toString().trim()));
+                }
+            }
         };
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             messageEditText.setFallbackLineSpacing(false);
         }
-
-if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             messageEditText.setLocalePreferredLineHeightForMinimumUsed(false);
         }
         messageEditText.setDelegate(new EditTextCaption.EditTextCaptionDelegate() {
@@ -6241,6 +6307,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                         onLineCountChanged(lineCount, messageEditText.getLineCount());
                     }
                     lineCount = messageEditText.getLineCount();
+                    showAiButton(MessagesController.getInstance(currentAccount).aiEditorAvailable() && lineCount > 2 && charSequence != null && !TextUtils.isEmpty(charSequence.toString().trim()));
                 } else {
                     heightShouldBeChanged = false;
                 }
@@ -6347,11 +6414,13 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                 if (editingCaption && !captionLimitBulletinShown && !MessagesController.getInstance(currentAccount).premiumFeaturesBlocked() && !UserConfig.getInstance(currentAccount).isPremium() && codePointCount > MessagesController.getInstance(currentAccount).captionLengthLimitDefault && codePointCount < MessagesController.getInstance(currentAccount).captionLengthLimitPremium) {
                     captionLimitBulletinShown = true;
                     if (heightShouldBeChanged) {
-                        AndroidUtilities.runOnUIThread(()->showCaptionLimitBulletin(), 300);
+                        AndroidUtilities.runOnUIThread(() -> showCaptionLimitBulletin(), 300);
                     } else {
                         showCaptionLimitBulletin();
                     }
                 }
+
+                showAiButton(MessagesController.getInstance(currentAccount).aiEditorAvailable() && lineCount > 2 && editable != null && !TextUtils.isEmpty(editable.toString().trim()));
             }
         });
         messageEditText.addTextChangedListener(new EditTextSuggestionsFix());
@@ -6368,6 +6437,56 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             parentFragment.applyDraftMaybe(false);
         }
         updateFieldRight(lastAttachVisible);
+    }
+
+    private boolean shownAiButton;
+    private void showAiButton(boolean show_) {
+        final boolean show = show_ && parentFragment != null && !parentFragment.isSecretChat();
+
+        if (shownAiButton == show) return;
+        shownAiButton = show;
+        aiButton.setVisibility(View.VISIBLE);
+        aiButton.animate()
+            .alpha(show ? 1.0f : 0.0f)
+            .scaleX(show ? 1.0f : 0.6f)
+            .scaleY(show ? 1.0f : 0.6f)
+            .setInterpolator(CubicBezierInterpolator.EASE_OUT_QUINT)
+            .setDuration(420)
+            .withEndAction(() -> {
+                if (!show) {
+                    aiButton.setVisibility(View.GONE);
+                }
+            })
+            .start();
+        if (show) {
+            aiButton.postDelayed(aiButtonIcon::animate, 220);
+
+            if (aiHint != null) {
+                aiHint.hide();
+                aiHint = null;
+            }
+
+            if (
+                MessagesController.getGlobalMainSettings().getInt("aihintshown", 0) < 3
+            ) {
+                final HintView2 thisHint = aiHint = new HintView2(getContext(), HintView2.DIRECTION_BOTTOM);
+                aiHint.setMultilineText(true);
+                aiHint.setText(getString(R.string.AIEditorHint));
+                aiHint.setJointPx(1f, -aiButton.getWidth() / 2f + dp(4));
+                addView(aiHint, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 200, Gravity.TOP, 0, -200 + 4, 0, 0));
+                aiHint.setOnHiddenListener(() -> removeView(thisHint));
+                aiHint.setDuration(4000L);
+                aiHint.show();
+                MessagesController.getGlobalMainSettings().edit().putInt("aihintshown",
+                    MessagesController.getGlobalMainSettings().getInt("aihintshown", 0) + 1
+                ).apply();
+            }
+        } else {
+            if (aiHint != null) {
+                aiHint.hide();
+                aiHint = null;
+            }
+        }
     }
 
     public void addTextChangedListener(TextWatcher textWatcher) {
@@ -7810,8 +7929,6 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             return sendMessageInternal(!NaConfig.INSTANCE.getSilentMessageByDefault().Bool(), 0, 0, 0, true);
         }
     }
-
-    private boolean premiumEmojiBulletin = true;
 
     protected boolean sendMessageInternal(boolean notify, int scheduleDate, int scheduleRepeatPeriod, long payStars, boolean allowConfirm) {
         return sendMessageInternal(notify, scheduleDate, scheduleRepeatPeriod, payStars, allowConfirm, new SendMessageInternalParams());
@@ -10407,8 +10524,11 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
         if (recordingAudioVideo) {
             getParent().requestDisallowInterceptTouchEvent(true);
         }
-        if (ev.getAction() == MotionEvent.ACTION_DOWN && AndroidUtilities.findChildViewUnder(this, ev.getX(), ev.getY()) != birthdayHint) {
-            hideHints();
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            final View child = AndroidUtilities.findChildViewUnder(this, ev.getX(), ev.getY());
+            if (child != birthdayHint && child != aiHint) {
+                hideHints();
+            }
         }
         return super.onInterceptTouchEvent(ev);
     }
@@ -10848,6 +10968,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
     public static CharSequence applyMessageEntities(ArrayList<TLRPC.MessageEntity> entities, CharSequence text, Paint.FontMetricsInt fontMetricsInt) {
         CharSequence result;
         MediaDataController.sortEntities(entities);
+        text = FormattedDateSpan.restoreFormatedDateEntities(text);
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(text);
         Object[] spansToRemove = stringBuilder.getSpans(0, stringBuilder.length(), Object.class);
         if (spansToRemove != null && spansToRemove.length > 0) {
@@ -10896,6 +11017,16 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                         MediaDataController.addStyleToText(new TextStyleSpan(run), entity.offset, entity.offset + entity.length, stringBuilder, true);
                     } else if (entity instanceof TLRPC.TL_messageEntityTextUrl) {
                         stringBuilder.setSpan(new URLSpanReplacement(entity.url), entity.offset, entity.offset + entity.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } else if (entity instanceof TLRPC.TL_messageEntityFormattedDate) {
+                        TLRPC.TL_messageEntityFormattedDate entityFormattedDate = (TLRPC.TL_messageEntityFormattedDate) entity;
+                        TextStyleSpan.TextStyleRun run = new TextStyleSpan.TextStyleRun();
+                        run.flags |= TextStyleSpan.FLAG_STYLE_URL;
+                        run.start = entity.offset;
+                        run.end = entity.offset + entity.length;
+                        run.urlEntity = entity;
+                        stringBuilder.setSpan(new FormattedDateSpan(
+                            stringBuilder.subSequence(entity.offset, entity.offset + entity.length).toString(), run, entityFormattedDate
+                        ), entity.offset, entity.offset + entity.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     } else if (entity instanceof TLRPC.TL_messageEntitySpoiler) {
                         TextStyleSpan.TextStyleRun run = new TextStyleSpan.TextStyleRun();
                         run.flags |= TextStyleSpan.FLAG_STYLE_SPOILER;
@@ -11037,7 +11168,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
     }
 
     private void updateAudioVideoSendButtonColor() {
-        if (audioVideoSendButton == null) {
+        if (audioVideoSendButton == null || audioVideoButtonContainer == null) {
             return;
         }
         boolean isMenuState = audioVideoSendButton.getCurrentState() == ChatActivityEnterViewAnimatedIconView.State.MENU;
@@ -11045,6 +11176,9 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                 ? getThemedColor(Theme.key_glass_defaultIcon)
                 : Color.WHITE;
         audioVideoSendButton.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+        audioVideoButtonContainer.setBackground(isMenuState
+                ? Theme.createSelectorDrawable(getThemedColor(Theme.key_listSelector))
+                : null);
     }
 
     private void updateRecordedDeleteIconColors() {
@@ -11332,6 +11466,9 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
         if (birthdayHint != null) {
             birthdayHint.hide();
         }
+//        if (aiHint != null) {
+//            aiHint.hide();
+//        }
     }
 
     public void updateScheduleButton(boolean animated) {
@@ -11737,6 +11874,10 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
     }
 
     public void setButtons(MessageObject messageObject, boolean openKeyboard) {
+        setButtons(messageObject, true, openKeyboard);
+    }
+
+    public void setButtons(MessageObject messageObject, boolean openBotKeyboard, boolean openKeyboard) {
         if (replyingMessageObject != null && replyingMessageObject == botButtonsMessageObject && replyingMessageObject != messageObject) {
             botMessageObject = messageObject;
             return;
@@ -11796,6 +11937,9 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                 )) {
                     showPopup = false;
                 }
+            }
+            if (!openBotKeyboard) {
+                showPopup = false;
             }
             botKeyboardView.setButtons(botReplyMarkup);
             if (showPopup && (messageEditText == null || messageEditText.length() == 0) && !isPopupShowing()) {
@@ -12009,12 +12153,60 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
         } else if (button instanceof TLRPC.TL_keyboardButtonRequestPeer) {
             TLRPC.TL_keyboardButtonRequestPeer btn = (TLRPC.TL_keyboardButtonRequestPeer) button;
             if (btn.peer_type != null && messageObject != null && messageObject.messageOwner != null) {
+                if (btn.peer_type instanceof TLRPC.TL_requestPeerTypeCreateBot) {
+                    TLRPC.User bot;
+                    if (getParentFragment() != null) {
+                        bot = getParentFragment().getCurrentUser();
+                    } else {
+                        bot = MessagesController.getInstance(currentAccount).getUser(dialog_id);
+                    }
+                    if (bot == null) {
+                        return false;
+                    }
+                    CreateBotAlert.show(getContext(), currentAccount, bot, (TLRPC.TL_requestPeerTypeCreateBot) btn.peer_type, false, newBot -> {
+                        if (newBot != null) {
+                            final TLRPC.TL_messages_sendBotRequestedPeer req = new TLRPC.TL_messages_sendBotRequestedPeer();
+                            req.peer = MessagesController.getInstance(currentAccount).getInputPeer(messageObject.messageOwner.peer_id);
+                            req.flags |= TLObject.FLAG_0;
+                            req.msg_id = messageObject.getId();
+                            req.button_id = btn.button_id;
+                            req.requested_peers.add(MessagesController.getInputPeer(newBot));
+                            ConnectionsManager.getInstance(currentAccount).sendRequest(req, null);
+
+                            final long managerId = bot.id;
+                            final Bundle args = new Bundle();
+                            args.putLong("user_id", newBot.id);
+                            final ChatActivity chatActivity = new ChatActivity(args) {
+                                private boolean shownToast;
+                                @Override
+                                public void onBecomeFullyVisible() {
+                                    super.onBecomeFullyVisible();
+                                    if (!shownToast) {
+                                        shownToast = true;
+                                        BulletinFactory.of(this).createSimpleBulletin(
+                                                R.raw.contact_check,
+                                                formatString(R.string.CreateManagedBotCreatedTitle, UserObject.getUserName(newBot)),
+                                                AndroidUtilities.replaceSingleTag(
+                                                    formatString(R.string.CreateManagedBotCreatedText, UserObject.getUserName(bot)),
+                                                    () -> presentFragment(ChatActivity.of(managerId))
+                                                )
+                                        ).show();
+                                    }
+                                }
+                            };
+                            if (parentFragment != null)
+                                parentFragment.presentFragment(chatActivity);
+                        }
+                    }, resourcesProvider, null, false);
+                    return false;
+                }
                 if (btn.peer_type instanceof TLRPC.TL_requestPeerTypeUser && btn.max_quantity > 1) {
                     TLRPC.TL_requestPeerTypeUser peer_type = (TLRPC.TL_requestPeerTypeUser) btn.peer_type;
                     MultiContactsSelectorBottomSheet.open(peer_type.bot, peer_type.premium, btn.max_quantity, ids -> {
                         if (ids != null && !ids.isEmpty()) {
                             TLRPC.TL_messages_sendBotRequestedPeer req = new TLRPC.TL_messages_sendBotRequestedPeer();
                             req.peer = MessagesController.getInstance(currentAccount).getInputPeer(messageObject.messageOwner.peer_id);
+                            req.flags |= TLObject.FLAG_0;
                             req.msg_id = messageObject.getId();
                             req.button_id = btn.button_id;
                             for (Long id : ids) {
@@ -12044,6 +12236,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                     if (dids != null && !dids.isEmpty()) {
                         TLRPC.TL_messages_sendBotRequestedPeer req = new TLRPC.TL_messages_sendBotRequestedPeer();
                         req.peer = MessagesController.getInstance(currentAccount).getInputPeer(messageObject.messageOwner.peer_id);
+                        req.flags |= TLObject.FLAG_0;
                         req.msg_id = messageObject.getId();
                         req.button_id = btn.button_id;
                         HashSet<Long> dialogIds = new HashSet<>();
@@ -12086,6 +12279,12 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
         return sizeNotifierLayout;
     }
 
+    private EditTextBoldCursor mOverrideEditTextView;
+
+    public void overrideEditTextView(EditTextBoldCursor editText) {
+        mOverrideEditTextView = editText;
+    }
+
     protected void createEmojiView() {
         if (emojiView != null && emojiView.currentAccount != UserConfig.selectedAccount) {
             viewParentForEmojiView.removeView(emojiView);
@@ -12124,6 +12323,9 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
 
             @Override
             public boolean onBackspace() {
+                final EditTextBoldCursor messageEditText = mOverrideEditTextView != null ?
+                    mOverrideEditTextView : ChatActivityEnterView.this.messageEditText;
+
                 if (messageEditText == null || messageEditText.length() == 0) {
                     return false;
                 }
@@ -12133,6 +12335,9 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
 
             @Override
             public void onEmojiSelected(String symbol) {
+                final EditTextBoldCursor messageEditText = mOverrideEditTextView != null ?
+                    mOverrideEditTextView : ChatActivityEnterView.this.messageEditText;
+
                 if (messageEditText == null) {
                     return;
                 }
@@ -12154,6 +12359,8 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             }
 
             public void onCustomEmojiSelected(long documentId, TLRPC.Document document, String emoticon, boolean isRecent) {
+                final EditTextBoldCursor messageEditText = mOverrideEditTextView != null ?
+                    mOverrideEditTextView : ChatActivityEnterView.this.messageEditText;
                 AndroidUtilities.runOnUIThread(() -> {
                     if (messageEditText == null) {
                         return;
@@ -12242,13 +12449,266 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             }
 
             @Override
+            public boolean canAddCaptionToGif(TLRPC.Document document) {
+                return true;
+            }
+
+            @Override
+            public void onGifSelectedForAddCaption(View view, Object gif, String query, Object parent, boolean notify, int scheduleDate, int scheduleRepeatPeriod) {
+                if (parentFragment == null) {
+                    return;
+                }
+
+                PhotoViewer.getInstance().setParentActivity(parentFragment, parentFragment.themeDelegate);
+                File file = null;
+                if (gif instanceof TLRPC.Document) {
+                    file = FileLoader.getInstance(currentAccount).getPathToAttach((TLRPC.Document) gif);
+                }
+                if (file == null) {
+                    return;
+                }
+                File file2 = new File(FileLoader.getDirectory(FileLoader.MEDIA_DIR_CACHE), file.getName());
+                if (!file.exists()) {
+                    if (file2.exists()) {
+                        file = file2;
+                    } else {
+                        //TODO photo not downloaded yet
+                        return;
+                    }
+                }
+
+                final ArrayList<Object> photos = new ArrayList<>();
+                final MediaController.PhotoEntry entry = new MediaController.PhotoEntry(
+                    0, 0, 0,
+                    file.getAbsolutePath(),
+                    0, false,
+                    0, 0, 0
+                );
+                entry.caption = null;
+                entry.isVideo = true;
+                photos.add(entry);
+
+                PhotoViewer.getInstance().openPhotoForSelect(photos, 0, PhotoViewer.SELECT_TYPE_GIF, false, new PhotoViewer.PhotoViewerProvider() {
+                    @Override
+                    public PhotoViewer.PlaceProviderObject getPlaceForPhoto(MessageObject messageObject, TLRPC.FileLocation fileLocation, int index, boolean needPreview, boolean closing) {
+                        return null;
+                    }
+
+                    @Override
+                    public ImageReceiver.BitmapHolder getThumbForPhoto(MessageObject messageObject, TLRPC.FileLocation fileLocation, int index) {
+                        return null;
+                    }
+
+                    @Override
+                    public void willSwitchFromPhoto(MessageObject messageObject, TLRPC.FileLocation fileLocation, int index) {
+
+                    }
+
+                    @Override
+                    public void willHidePhotoViewer() {
+
+                    }
+
+                    @Override
+                    public boolean isPhotoChecked(int index) {
+                        return false;
+                    }
+
+                    @Override
+                    public int setPhotoChecked(int index, VideoEditedInfo videoEditedInfo) {
+                        return 0;
+                    }
+
+                    @Override
+                    public int setPhotoUnchecked(Object photoEntry) {
+                        return 0;
+                    }
+
+                    @Override
+                    public boolean cancelButtonPressed() {
+                        return false;
+                    }
+
+                    @Override
+                    public void needAddMorePhotos() {
+
+                    }
+
+                    @Override
+                    public void sendButtonPressed(int index, VideoEditedInfo videoEditedInfo, boolean notify, int scheduleDate, int scheduleRepeatPeriod, boolean forceDocument) {
+                        onGifSelected(view, gif, query, parent, notify, scheduleDate, scheduleRepeatPeriod, entry, isCaptionAbove);
+                    }
+
+                    @Override
+                    public void replaceButtonPressed(int index, VideoEditedInfo videoEditedInfo) {
+
+                    }
+
+                    @Override
+                    public boolean canEdit(int index) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean canReplace(int index) {
+                        return false;
+                    }
+
+                    @Override
+                    public int getSelectedCount() {
+                        return 0;
+                    }
+
+                    @Override
+                    public void updatePhotoAtIndex(int index) {
+
+                    }
+
+                    @Override
+                    public boolean allowSendingSubmenu() {
+                        return true;
+                    }
+
+
+
+                    @Override
+                    public boolean scaleToFill() {
+                        return false;
+                    }
+
+                    @Override
+                    public ArrayList<Object> getSelectedPhotosOrder() {
+                        return null;
+                    }
+
+                    @Override
+                    public HashMap<Object, Object> getSelectedPhotos() {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean canScrollAway() {
+                        return false;
+                    }
+
+                    @Override
+                    public int getPhotoIndex(int index) {
+                        return 0;
+                    }
+
+                    @Override
+                    public void deleteImageAtIndex(int index) {
+
+                    }
+
+                    @Override
+                    public String getDeleteMessageString() {
+                        return "";
+                    }
+
+                    @Override
+                    public boolean canCaptureMorePhotos() {
+                        return false;
+                    }
+
+                    @Override
+                    public void openPhotoForEdit(String file, String thumb, boolean isVideo) {
+
+                    }
+
+                    @Override
+                    public int getTotalImageCount() {
+                        return 0;
+                    }
+
+                    @Override
+                    public boolean loadMore() {
+                        return false;
+                    }
+
+                    @Override
+                    public CharSequence getTitleFor(int index) {
+                        return null;
+                    }
+
+                    @Override
+                    public CharSequence getSubtitleFor(int index) {
+                        return null;
+                    }
+
+                    @Override
+                    public MessageObject getEditingMessageObject() {
+                        return null;
+                    }
+
+                    @Override
+                    public void onCaptionChanged(CharSequence caption) {
+
+                    }
+
+                    @Override
+                    public boolean closeKeyboard() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean validateGroupId(long groupId) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onApplyCaption(CharSequence caption) {
+
+                    }
+
+                    @Override
+                    public void onOpen() {
+                        PhotoViewer.getInstance().openKeyboard();
+                    }
+
+                    @Override
+                    public void onClose() {
+
+                    }
+
+
+
+                    private boolean isCaptionAbove;
+
+                    @Override
+                    public boolean allowCaption() {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean canMoveCaptionAbove() {
+                        return true;
+                    }
+
+                    @Override
+                    public void moveCaptionAbove(boolean above) {
+                        isCaptionAbove = above;
+                    }
+
+                    @Override
+                    public boolean isCaptionAbove() {
+                        return isCaptionAbove;
+                    }
+                }, parentFragment);
+            }
+
+            @Override
             public void onGifSelected(View view, Object gif, String query, Object parent, boolean notify, int scheduleDate, int scheduleRepeatPeriod) {
+                onGifSelected(view, gif, query, parent, notify, scheduleDate, scheduleRepeatPeriod, null, false);
+            }
+
+            public void onGifSelected(View view, Object gif, String query, Object parent, boolean notify, int scheduleDate, int scheduleRepeatPeriod, MediaController.PhotoEntry entry, boolean invertMedia) {
                 if (replyingQuote != null && parentFragment != null && replyingQuote.outdated) {
                     parentFragment.showQuoteMessageUpdate();
                     return;
                 }
                 if (isInScheduleMode() && scheduleDate == 0) {
-                    AlertsCreator.createScheduleDatePickerDialog(parentActivity, parentFragment.getDialogId(), (n, s, r) -> onGifSelected(view, gif, query, parent, n, s, r), resourcesProvider);
+                    AlertsCreator.createScheduleDatePickerDialog(parentActivity, parentFragment.getDialogId(), (n, s, r) -> onGifSelected(view, gif, query, parent, n, s, r, entry, invertMedia), resourcesProvider);
                 } else {
                     if (slowModeTimer > 0 && !isInScheduleMode()) {
                         if (delegate != null) {
@@ -12270,20 +12730,54 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                             TL_stories.StoryItem storyItem = delegate != null ? delegate.getReplyToStory() : null;
                             if (gif instanceof TLRPC.Document) {
                                 TLRPC.Document document = (TLRPC.Document) gif;
-                                if (NaConfig.INSTANCE.getAutoInsertGIFCaption().Bool()) {
-                                    ArrayList<TLRPC.MessageEntity> entities = MediaDataController.getInstance(currentAccount).getEntities(new CharSequence[]{AndroidUtilities.getTrimmedString(messageEditText.getText())}, supportsSendingNewEntities());
-                                    String caption = messageEditText.getText().toString();
-                                    if (caption.startsWith("@gif")) {
-                                        caption = "";
-                                    }
-                                    SendMessagesHelper.getInstance(currentAccount).sendSticker(document, query, dialog_id, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams(), caption, entities);
-                                    messageEditText.setText("");
-                                } else {
-                                    SendMessagesHelper.getInstance(currentAccount).sendSticker(document, query, dialog_id, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams());
+                                boolean applyEdit = false;
+
+                                final VideoEditedInfo videoEditedInfo = entry != null ? entry.editedInfo : null;
+                                if (videoEditedInfo != null && entry != null) {
+                                    videoEditedInfo.roundVideo = true;
+                                    applyEdit = videoEditedInfo.needConvert();
+                                    videoEditedInfo.roundVideo = false;
+                                    videoEditedInfo.muted = true;
                                 }
-                                MediaDataController.getInstance(currentAccount).addRecentGif(document, (int) (System.currentTimeMillis() / 1000), true);
-                                if (DialogObject.isEncryptedDialog(dialog_id)) {
-                                    accountInstance.getMessagesController().saveGif(parent, document);
+                                if (applyEdit) {
+                                    ArrayList<SendMessagesHelper.SendingMediaInfo> photos = new ArrayList<>();
+                                    SendMessagesHelper.SendingMediaInfo info = new SendMessagesHelper.SendingMediaInfo();
+                                    if (!entry.isVideo && entry.imagePath != null) {
+                                        info.path = entry.imagePath;
+                                        if (entry.isHighQuality()) {
+                                            info.originalPhotoEntry = entry.clone();
+                                        }
+                                    } else if (entry.path != null) {
+                                        info.path = entry.path;
+                                    }
+                                    info.thumbPath = entry.thumbPath;
+                                    info.coverPath = entry.coverPath;
+                                    info.coverPhoto = entry.coverPhoto;
+                                    info.isVideo = entry.isVideo;
+                                    info.isLivePhoto = entry.isLivePhoto;
+                                    info.discardLivePhoto = entry.discardLivePhoto;
+                                    info.livePhotoVideoOffset = entry.livePhotoVideoOffset;
+                                    info.livePhotoTimestampUs = entry.livePhotoTimestampUs;
+                                    info.caption = entry.caption != null ? entry.caption.toString() : null;
+                                    info.entities = entry.entities;
+                                    info.masks = entry.stickers;
+                                    info.ttl = entry.ttl;
+                                    info.videoEditedInfo = entry.editedInfo;
+                                    info.canDeleteAfter = entry.canDeleteAfter;
+                                    info.updateStickersOrder = SendMessagesHelper.checkUpdateStickersOrder(entry.caption);
+                                    info.hasMediaSpoilers = entry.hasSpoiler;
+                                    info.stars = entry.starsAmount;
+                                    info.highQuality = entry.isHighQuality();
+                                    photos.add(info);
+                                    entry.reset();
+
+                                    SendMessagesHelper.prepareSendingMedia(AccountInstance.getInstance(currentAccount), photos, dialog_id, replyingMessageObject, getThreadMessage(), null, replyingQuote, false, false, editingMessageObject, notify, scheduleDate, scheduleRepeatPeriod, 0, false, null, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, effectId, invertMedia, stars, getSendMonoForumPeerId(),  getSendMessageSuggestionParams());
+                                } else {
+                                    SendMessagesHelper.getInstance(currentAccount).sendSticker(document, query, dialog_id, entry != null ? entry.caption : null, videoEditedInfo, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams(), invertMedia);
+                                    MediaDataController.getInstance(currentAccount).addRecentGif(document, (int) (System.currentTimeMillis() / 1000), true);
+                                    if (DialogObject.isEncryptedDialog(dialog_id)) {
+                                        accountInstance.getMessagesController().saveGif(parent, document);
+                                    }
                                 }
                             } else if (gif instanceof TLRPC.BotInlineResult) {
                                 TLRPC.BotInlineResult result = (TLRPC.BotInlineResult) gif;
@@ -12295,37 +12789,17 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                                     }
                                 }
 
-                                String botCaption = null;
-                                ArrayList<TLRPC.MessageEntity> botCaptionEntities = null;
-                                if (NaConfig.INSTANCE.getAutoInsertGIFCaption().Bool()) {
-                                    CharSequence[] cs = new CharSequence[]{AndroidUtilities.getTrimmedString(messageEditText.getText())};
-                                    botCaptionEntities = MediaDataController.getInstance(currentAccount).getEntities(cs, supportsSendingNewEntities());
-                                    botCaption = cs[0].toString();
-                                    if (botCaption.startsWith("@gif")) {
-                                        botCaption = null;
-                                        botCaptionEntities = null;
-                                    }
-                                }
-
                                 TLRPC.User bot = (TLRPC.User) parent;
 
                                 HashMap<String, String> params = new HashMap<>();
                                 params.put("id", result.id);
                                 params.put("query_id", "" + result.query_id);
                                 params.put("force_gif", "1");
-                                boolean hasBotCaption = botCaption != null && !botCaption.isEmpty();
 
                                 if (storyItem == null) {
-                                    SendMessagesHelper.prepareSendingBotContextResult(parentFragment, accountInstance, result, params, dialog_id, replyingMessageObject, getThreadMessage(), null, replyingQuote, notify, scheduleDate, 0, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), hasBotCaption ? botCaption : null, hasBotCaption ? botCaptionEntities : null);
+                                    SendMessagesHelper.prepareSendingBotContextResult(parentFragment, accountInstance, result, params, dialog_id, replyingMessageObject, getThreadMessage(), null, replyingQuote, notify, scheduleDate, 0, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId());
                                 } else {
-                                    if (hasBotCaption) {
-                                        SendMessagesHelper.getInstance(currentAccount).sendSticker(result.document, query, dialog_id, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams(), botCaption, botCaptionEntities);
-                                    } else {
-                                        SendMessagesHelper.getInstance(currentAccount).sendSticker(result.document, query, dialog_id, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams());
-                                    }
-                                }
-                                if (hasBotCaption) {
-                                    messageEditText.setText("");
+                                    SendMessagesHelper.getInstance(currentAccount).sendSticker(result.document, query, dialog_id, replyingMessageObject, getThreadMessage(), storyItem, replyingQuote, null, notify, scheduleDate, scheduleRepeatPeriod, false, parent, parentFragment != null ? parentFragment.quickReplyShortcut : null, parentFragment != null ? parentFragment.getQuickReplyId() : 0, stars, getSendMonoForumPeerId(), getSendMessageSuggestionParams());
                                 }
                                 if (searchingType != 0) {
                                     setSearchingTypeInternal(0, true);
@@ -14454,6 +14928,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int wasHeight = textFieldContainer.getMeasuredHeight();
         if (botCommandsMenuButton != null && botCommandsMenuButton.getTag() != null) {
             botCommandsMenuButton.measure(widthMeasureSpec, heightMeasureSpec);
             ((MarginLayoutParams) emojiButton.getLayoutParams()).leftMargin = dp(10) + (botCommandsMenuButton == null ? 0 : botCommandsMenuButton.getMeasuredWidth());
@@ -14491,6 +14966,21 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
 
         checkUi_IslandTotalHeight();
         checkUi_TopViewVisibility();
+
+        if (wasHeight > 0 && textFieldContainer.getMeasuredHeight() != wasHeight) {
+            aiButton.setTranslationY(aiButton.getTranslationY() + textFieldContainer.getMeasuredHeight() - wasHeight);
+            aiButton.animate()
+                .translationY(0)
+                .setInterpolator(CubicBezierInterpolator.EASE_OUT_QUINT).setDuration(420)
+                .start();
+            if (aiHint != null) {
+                aiHint.setTranslationY(aiHint.getTranslationY() + textFieldContainer.getMeasuredHeight() - wasHeight);
+                aiHint.animate()
+                    .translationY(0)
+                    .setInterpolator(CubicBezierInterpolator.EASE_OUT_QUINT).setDuration(420)
+                    .start();
+            }
+        }
     }
 
     @Override
@@ -15040,6 +15530,14 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                 final float r = Math.min(w, h) / 2.0f;
                 AndroidUtilities.rectTmp.set(right - w, cy - h / 2.0f, right, cy + h / 2.0f);
                 path.addRoundRect(AndroidUtilities.rectTmp, r, r, Path.Direction.CW);
+
+                if (blurredBackgroundDrawable != null) {
+                    AndroidUtilities.rectTmp.round(AndroidUtilities.rectTmp2);
+                    AndroidUtilities.rectTmp2.inset(-dp(7), -dp(7));
+                    blurredBackgroundDrawable.setBounds(AndroidUtilities.rectTmp2);
+                    blurredBackgroundDrawable.draw(canvas);
+                }
+
                 if (!isNewDesignSendButton) {
                     canvas.drawPath(path, backgroundPaint);
                 }
@@ -15133,6 +15631,14 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
 
             canvas.restoreToCount(saved);
             super.onDraw(canvas);
+        }
+
+        private BlurredBackgroundDrawable blurredBackgroundDrawable;
+
+        public void setBlurredBackgroundDrawable(BlurredBackgroundDrawable blurredBackgroundDrawable) {
+            this.blurredBackgroundDrawable = blurredBackgroundDrawable;
+            this.blurredBackgroundDrawable.setRadius(dp(22));
+            this.blurredBackgroundDrawable.setPadding(dp(4));
         }
 
         public boolean newCounterPos;

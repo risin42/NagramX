@@ -32,6 +32,7 @@ import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.ImageReceiver;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
+import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.UserObject;
 import org.telegram.messenger.Utilities;
@@ -489,24 +490,28 @@ public class ProfileGalleryView extends CircularViewPager implements Notificatio
             isDownReleased = false;
         } else if (action == MotionEvent.ACTION_UP) {
             if (!isDownReleased) {
-                int itemsCount = getRealCount();
-                int currentItem = getCurrentItem();
-                if (itemsCount > 1) {
-                    if (ev.getX() > getWidth() / 3f) {
-                        final int extraCount = adapter.getExtraCount();
-                        if (++currentItem >= itemsCount + extraCount) {
-                            currentItem = extraCount;
+                if (!SharedConfig.nextMediaTap && callback != null) {
+                    callback.onRelease();
+                } else {
+                    int itemsCount = getRealCount();
+                    int currentItem = getCurrentItem();
+                    if (itemsCount > 1) {
+                        if (ev.getX() > getWidth() / 3f) {
+                            final int extraCount = adapter.getExtraCount();
+                            if (++currentItem >= itemsCount + extraCount) {
+                                currentItem = extraCount;
+                            }
+                        } else {
+                            final int extraCount = adapter.getExtraCount();
+                            if (--currentItem < extraCount) {
+                                currentItem = itemsCount + extraCount - 1;
+                            }
                         }
-                    } else {
-                        final int extraCount = adapter.getExtraCount();
-                        if (--currentItem < extraCount) {
-                            currentItem = itemsCount + extraCount - 1;
+                        if (callback != null) {
+                            callback.onRelease();
                         }
+                        setCurrentItem(currentItem, false);
                     }
-                    if (callback != null) {
-                        callback.onRelease();
-                    }
-                    setCurrentItem(currentItem, false);
                 }
             }
         } else if (action == MotionEvent.ACTION_MOVE) {

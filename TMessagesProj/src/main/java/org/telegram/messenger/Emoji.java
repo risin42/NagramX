@@ -714,9 +714,10 @@ public class Emoji {
         } else {
             s = Spannable.Factory.getInstance().newSpannable(cs.toString());
         }
+        boolean replacedAppleLogo = EmojiHelper.replaceAppleLogo(s, fontMetrics);
         ArrayList<EmojiSpanRange> emojis = parseEmojis(s, emojiOnly);
         if (emojis.isEmpty()) {
-            return cs;
+            return replacedAppleLogo ? s : cs;
         }
 
         AnimatedEmojiSpan[] animatedEmojiSpans = s.getSpans(0, s.length(), AnimatedEmojiSpan.class);
@@ -775,14 +776,12 @@ public class Emoji {
     }
 
     public static CharSequence replaceWithRestrictedEmoji(CharSequence cs, Paint.FontMetricsInt fontMetrics, Runnable update) {
-        if (NekoConfig.useSystemEmoji.Bool() || cs == null || cs.length() == 0) {
+        if (cs == null || cs.length() == 0) {
             return cs;
         }
-
-        final int currentAccount = UserConfig.selectedAccount;
-        TLRPC.InputStickerSet inputStickerSet = new TLRPC.TL_inputStickerSetShortName();
-        inputStickerSet.short_name = "RestrictedEmoji";
-        TLRPC.TL_messages_stickerSet set = MediaDataController.getInstance(currentAccount).getStickerSet(inputStickerSet, 0, false, true, update == null ? null : s -> update.run());
+        if (NekoConfig.useSystemEmoji.Bool() && !EmojiHelper.containsAppleLogo(cs)) {
+            return cs;
+        }
 
         Spannable s;
         if (cs instanceof Spannable) {
@@ -790,9 +789,17 @@ public class Emoji {
         } else {
             s = Spannable.Factory.getInstance().newSpannable(cs.toString());
         }
+        boolean replacedAppleLogo = EmojiHelper.replaceAppleLogo(s, fontMetrics);
+        if (NekoConfig.useSystemEmoji.Bool()) {
+            return replacedAppleLogo ? s : cs;
+        }
+        final int currentAccount = UserConfig.selectedAccount;
+        TLRPC.InputStickerSet inputStickerSet = new TLRPC.TL_inputStickerSetShortName();
+        inputStickerSet.short_name = "RestrictedEmoji";
+        TLRPC.TL_messages_stickerSet set = MediaDataController.getInstance(currentAccount).getStickerSet(inputStickerSet, 0, false, true, update == null ? null : s1 -> update.run());
         ArrayList<EmojiSpanRange> emojis = parseEmojis(s, null);
         if (emojis.isEmpty()) {
-            return cs;
+            return replacedAppleLogo ? s : cs;
         }
 
         AnimatedEmojiSpan[] animatedEmojiSpans = s.getSpans(0, s.length(), AnimatedEmojiSpan.class);

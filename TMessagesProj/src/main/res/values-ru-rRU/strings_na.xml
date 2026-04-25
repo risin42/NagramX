@@ -93,7 +93,7 @@
     <string name="SearchHashtagDefaultPageChannel">Страница поиска по хэштегам в каналах по умолчанию</string>
     <string name="SearchHashtagDefaultPageChat">Страница поиска по хэштегам в чатах по умолчанию</string>
     <string name="EnablePanguOnSending">Включить Pangu при отправке</string>
-    <string name="PanguInfo">Для удобства чтения текстового интервала, автоматически вставляйте пробелы между CJK (китайский, японский, корейский), английским языком, цифрами и символами.</string>
+    <string name="PanguInfo">Автоматическая расстановка пробелов для удобочитаемости: добавление пробелов между символами CJK (китайскими, японскими, корейскими), латинскими буквами, цифрами и специальными знаками.</string>
     <string name="SendWithPangu">Отправить с Pangu</string>
     <string name="SendWithoutPangu">Отправить без Pangu</string>
     <string name="DefaultHlsVideoQuality">Качество видео HLS по умолчанию</string>

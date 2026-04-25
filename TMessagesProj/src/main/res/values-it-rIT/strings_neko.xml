@@ -2,7 +2,7 @@
 <resources>
     <string name="NekoSettings">N-Impostazioni</string>
     <string name="IPv6">Preferisci IPv6</string>
-    <string name="MessageMenu">Menu dei messaggi</string>
+    <string name="MessageMenu">Menu Messaggi</string>
     <string name="HidePhone">Nascondi numero di telefono</string>
     <string name="DeleteAllFromSelf">Elimina i miei messaggi</string>
     <string name="DeleteAllFromSelfAlert">Attenzione! Questo **eliminerà tutti i tuoi messaggi prima di %s** in questa chat per **tutti** i partecipanti.</string>
@@ -80,7 +80,7 @@
     <string name="AutoPauseVideo">Pausa automatica del video</string>
     <string name="AutoPauseVideoAbout">Quando si blocca lo schermo/si passa allo sfondo.</string>
     <string name="DisableProximityEvents">Disabilita eventi di prossimità</string>
-    <string name="SelectBetween">Seleziona intervallo</string>
+    <string name="SelectBetween">Seleziona messaggi</string>
     <string name="ProviderDeepLTranslate">Traduttore DeepL</string>
     <string name="ProviderMicrosoftTranslator">Traduttore Bing</string>
     <string name="DontSendGreetingSticker">Non inviare adesivi di saluto</string>

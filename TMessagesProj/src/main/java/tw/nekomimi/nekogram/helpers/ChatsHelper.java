@@ -3,9 +3,11 @@ package tw.nekomimi.nekogram.helpers;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.collection.LongSparseArray;
 
 import org.telegram.messenger.AndroidUtilities;
@@ -40,6 +42,8 @@ public class ChatsHelper extends BaseController {
     public static final int LEFT_BUTTON_REPLY = 1;
     public static final int LEFT_BUTTON_SAVE_MESSAGE = 2;
     public static final int LEFT_BUTTON_DIRECT_SHARE = 3;
+    public static final int LEFT_BUTTON_SELECT_BETWEEN = 4;
+    public static final int LEFT_BUTTON_NOCAPTION = 5;
     private static final ChatsHelper[] Instance = new ChatsHelper[UserConfig.MAX_ACCOUNT_COUNT];
     public ChatActivity.ThemeDelegate themeDelegate;
 
@@ -60,25 +64,49 @@ public class ChatsHelper extends BaseController {
         return localInstance;
     }
 
-    public static String getLeftButtonText(boolean noForwards) {
-        if (noForwards) {
-            return getString(R.string.Reply);
+    public static int getLeftButtonAction(int action, boolean noForwards, boolean canSelectBetweenMessages) {
+        if (action == LEFT_BUTTON_SELECT_BETWEEN) {
+            return canSelectBetweenMessages ? LEFT_BUTTON_SELECT_BETWEEN : LEFT_BUTTON_REPLY;
         }
-        return switch (NaConfig.INSTANCE.getLeftBottomButton().Int()) {
+        if (noForwards) {
+            return LEFT_BUTTON_REPLY;
+        }
+        return switch (action) {
+            case LEFT_BUTTON_REPLY, LEFT_BUTTON_SAVE_MESSAGE, LEFT_BUTTON_DIRECT_SHARE, LEFT_BUTTON_NOCAPTION -> action;
+            default -> LEFT_BUTTON_NOQUOTE;
+        };
+    }
+
+    public static int getLeftButtonAction(ChatActivity chatActivity, boolean noForwards) {
+        int action = NaConfig.INSTANCE.getLeftBottomButton().Int();
+        boolean canSelectBetweenMessages = action == LEFT_BUTTON_SELECT_BETWEEN && chatActivity.canSelectBetweenMessages();
+        return getLeftButtonAction(action, noForwards, canSelectBetweenMessages);
+    }
+
+    public static String getLeftButtonText(ChatActivity chatActivity, boolean noForwards) {
+        return getLeftButtonText(getLeftButtonAction(chatActivity, noForwards));
+    }
+
+    public static String getLeftButtonText(int action) {
+        return switch (action) {
             case LEFT_BUTTON_REPLY -> getString(R.string.Reply);
             case LEFT_BUTTON_SAVE_MESSAGE -> getString(R.string.AddToSavedMessages);
             case LEFT_BUTTON_DIRECT_SHARE -> getString(R.string.ShareMessages);
+            case LEFT_BUTTON_SELECT_BETWEEN -> getString(R.string.Select);
+            case LEFT_BUTTON_NOCAPTION -> getString(R.string.NoCaptionForwardShort);
             default -> getString(R.string.NoQuoteForwardShort);
         };
     }
 
-    public static int getLeftButtonDrawable(boolean noForwards) {
-        if (noForwards) {
-            return R.drawable.input_reply;
-        }
-        return switch (NaConfig.INSTANCE.getLeftBottomButton().Int()) {
+    public static int getLeftButtonDrawable(ChatActivity chatActivity, boolean noForwards) {
+        return getLeftButtonDrawable(getLeftButtonAction(chatActivity, noForwards));
+    }
+
+    public static int getLeftButtonDrawable(int action) {
+        return switch (action) {
             case LEFT_BUTTON_SAVE_MESSAGE -> R.drawable.msg_saved;
             case LEFT_BUTTON_DIRECT_SHARE -> R.drawable.msg_share;
+            case LEFT_BUTTON_SELECT_BETWEEN -> R.drawable.ic_select_between;
             default -> R.drawable.input_reply;
         };
     }
@@ -103,11 +131,7 @@ public class ChatsHelper extends BaseController {
     }
 
     public void makeReplyButtonClick(ChatActivity chatActivity, boolean noForwards) {
-        if (noForwards) {
-            createReplyAction(chatActivity);
-            return;
-        }
-        switch (NaConfig.INSTANCE.getLeftBottomButton().Int()) {
+        switch (getLeftButtonAction(chatActivity, noForwards)) {
             case LEFT_BUTTON_REPLY:
                 createReplyAction(chatActivity);
                 break;
@@ -117,11 +141,25 @@ public class ChatsHelper extends BaseController {
             case LEFT_BUTTON_DIRECT_SHARE:
                 createShareAlertSelected(chatActivity);
                 break;
+            case LEFT_BUTTON_SELECT_BETWEEN:
+                chatActivity.performSelectBetweenMessages();
+                break;
+            case LEFT_BUTTON_NOCAPTION:
+                ChatActivity.noForwardQuote = true;
+                ChatActivity.noForwardCaption = true;
+                if (chatActivity.messagePreviewParams != null) {
+                    chatActivity.messagePreviewParams.setHideForwardSendersName(true);
+                    chatActivity.messagePreviewParams.hideCaption = true;
+                }
+                chatActivity.openForward(false);
+                break;
             case LEFT_BUTTON_NOQUOTE:
             default:
                 ChatActivity.noForwardQuote = true;
+                ChatActivity.noForwardCaption = false;
                 if (chatActivity.messagePreviewParams != null) {
                     chatActivity.messagePreviewParams.setHideForwardSendersName(true);
+                    chatActivity.messagePreviewParams.hideCaption = false;
                 }
                 chatActivity.openForward(false);
                 break;
@@ -132,9 +170,6 @@ public class ChatsHelper extends BaseController {
         ArrayList<String> configStringKeys = new ArrayList<>();
         ArrayList<Integer> configValues = new ArrayList<>();
 
-        configStringKeys.add(getString(R.string.NoQuoteForward));
-        configValues.add(LEFT_BUTTON_NOQUOTE);
-
         configStringKeys.add(getString(R.string.Reply));
         configValues.add(LEFT_BUTTON_REPLY);
 
@@ -143,6 +178,15 @@ public class ChatsHelper extends BaseController {
 
         configStringKeys.add(getString(R.string.DirectShare));
         configValues.add(LEFT_BUTTON_DIRECT_SHARE);
+
+        configStringKeys.add(getString(R.string.SelectBetween));
+        configValues.add(LEFT_BUTTON_SELECT_BETWEEN);
+
+        configStringKeys.add(getString(R.string.NoCaptionForward));
+        configValues.add(LEFT_BUTTON_NOCAPTION);
+
+        configStringKeys.add(getString(R.string.NoQuoteForward));
+        configValues.add(LEFT_BUTTON_NOQUOTE);
 
         PopupHelper.show(configStringKeys, getString(R.string.LeftBottomButtonAction), configValues.indexOf(NaConfig.INSTANCE.getLeftBottomButton().Int()), chatActivity.getContext(), i -> {
             NaConfig.INSTANCE.getLeftBottomButton().setConfigInt(configValues.get(i));
@@ -402,5 +446,31 @@ public class ChatsHelper extends BaseController {
             getConnectionsManager().bindRequestToGuid(reqId, classGuid);
         }
         return reqId;
+    }
+
+    @Nullable
+    public static int[] getSelectBetweenBounds(SparseArray<MessageObject>[] selectedMessagesIds) {
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        int count = 0;
+
+        for (int a = 1; a >= 0; a--) {
+            int size = selectedMessagesIds[a].size();
+            if (size > 0) {
+                int first = selectedMessagesIds[a].keyAt(0);
+                int last = selectedMessagesIds[a].keyAt(size - 1);
+                if (first < min) min = first;
+                if (last > max) max = last;
+                count += size;
+            }
+        }
+
+        if (count < 2) {
+            return null;
+        }
+        if (min == max || (long) max - min <= 1) {
+            return null;
+        }
+        return new int[]{min, max};
     }
 }

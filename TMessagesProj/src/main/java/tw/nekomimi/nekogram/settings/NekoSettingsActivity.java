@@ -114,8 +114,8 @@ public class NekoSettingsActivity extends BaseNekoSettingsActivity {
         View view = super.createView(context);
 
         ActionBarMenu menu = actionBar.createMenu();
-        menu.addItem(MENU_SEARCH, R.drawable.ic_ab_search);
-        menu.addItem(MENU_SYNC, R.drawable.cloud_sync);
+        menu.addItem(MENU_SEARCH, R.drawable.outline_header_search, resourcesProvider);
+        menu.addItem(MENU_SYNC, R.drawable.cloud_sync, resourcesProvider);
 
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
@@ -189,7 +189,7 @@ public class NekoSettingsActivity extends BaseNekoSettingsActivity {
             ImageView clearButton = new ImageView(parent);
             clearButton.setScaleType(ImageView.ScaleType.CENTER);
             clearButton.setImageResource(R.drawable.ic_close_white);
-            clearButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarWhiteSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
+            clearButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_listSelector), Theme.RIPPLE_MASK_CIRCLE_20DP));
             clearButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_windowBackgroundWhiteGrayIcon), PorterDuff.Mode.MULTIPLY));
             clearButton.setLayoutParams(new FrameLayout.LayoutParams(clearSize, clearSize, Gravity.END | Gravity.CENTER_VERTICAL));
             searchFrame.addView(clearButton);

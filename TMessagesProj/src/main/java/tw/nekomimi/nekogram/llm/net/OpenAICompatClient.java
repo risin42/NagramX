@@ -106,7 +106,16 @@ public final class OpenAICompatClient {
             return new LlmResponse<>(null, e.toString(), 0, 0);
         }
 
-        return chatCompletions(baseUrl, apiKey, requestJson.toString(), testHttpClient);
+        LlmResponse<String> response = chatCompletions(baseUrl, apiKey, requestJson.toString(), testHttpClient);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return new LlmResponse<>(
+                LlmModelUtil.sanitizeResponse(modelName, response.data()),
+                null,
+                response.durationMs(),
+                response.httpCode()
+        );
     }
 
     public static LlmResponse<String> chatCompletions(String baseUrl, String apiKey, String requestJson) {

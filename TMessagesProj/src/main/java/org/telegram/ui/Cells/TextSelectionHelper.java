@@ -70,6 +70,7 @@ import org.telegram.ui.RestrictedLanguagesSelectActivity;
 import java.util.ArrayList;
 
 import tw.nekomimi.nekogram.NekoConfig;
+import tw.nekomimi.nekogram.helpers.EntitiesHelper;
 import tw.nekomimi.nekogram.llm.LlmConfig;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.translate.TranslatorKt;
@@ -238,7 +239,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                     offset = text.length() - 1;
                 }
             }
-            if (offset >= 0 && offset < text.length() && text.charAt(offset) != '\n') {
+            if (offset >= 0 && offset < text.length() && (text.charAt(offset) != '\n' || EntitiesHelper.isInsideTableSelectionSpan(text, offset))) {
                 int maybeTextX = TextSelectionHelper.this.maybeTextX;
                 int maybeTextY = TextSelectionHelper.this.maybeTextY;
                 clear();
@@ -247,7 +248,13 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                 selectionStart = offset;
                 selectionEnd = selectionStart;
 
-                if (text instanceof Spanned) {
+                int[] tableRange = EntitiesHelper.getTableSelectionRange(text, selectionStart);
+                if (tableRange != null) {
+                    selectionStart = tableRange[0];
+                    selectionEnd = tableRange[1];
+                }
+
+                if (selectionStart == selectionEnd && text instanceof Spanned) {
                     boolean found = false;
                     Emoji.EmojiSpan[] spans = ((Spanned) text).getSpans(0, text.length(), Emoji.EmojiSpan.class);
                     for (Emoji.EmojiSpan emojiSpan : spans) {
@@ -389,7 +396,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                             offset = text.length() - 1;
                         }
                     }
-                    if (offset >= 0 && offset < text.length() && text.charAt(offset) != '\n') {
+                    if (offset >= 0 && offset < text.length() && (text.charAt(offset) != '\n' || EntitiesHelper.isInsideTableSelectionSpan(text, offset))) {
                         AndroidUtilities.cancelRunOnUIThread(startSelectionRunnable);
                         AndroidUtilities.runOnUIThread(startSelectionRunnable, longpressDelay);
                         tryCapture = true;

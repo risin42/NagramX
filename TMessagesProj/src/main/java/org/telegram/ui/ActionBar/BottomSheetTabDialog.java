@@ -180,4 +180,13 @@ public class BottomSheetTabDialog extends Dialog {
         sheet.dismiss(false);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (sheet instanceof BaseFragment.AttachedSheet attachedSheet) {
+            if (attachedSheet.onAttachedBackPressed()) {
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
 }

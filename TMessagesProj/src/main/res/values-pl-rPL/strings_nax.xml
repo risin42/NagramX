@@ -66,6 +66,7 @@
     <string name="RegexFiltersUserHeader">Filtry użytkownika</string>
     <string name="RegexFiltersUserFilterHint">Wprowadź identyfikator użytkownika</string>
     <string name="RegexFiltersGlobalHeader">Filtry globalne</string>
+    <string name="RegexFiltersTextSelectionAddtoShared">Dodaj do udostępnionych filtrów</string>
     <string name="ShadowBan">Zakaz cieni</string>
     <string name="UnshadowBan">Zakaz usuwania cienia</string>
     <string name="ShadowBanAdded">Dodano do **filtrów użytkownika**.</string>
@@ -80,10 +81,6 @@
     <string name="MessageSavingSaveMediaInPublicGroups">… w grupach publicznych</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">… w grupach prywatnych</string>
     <string name="TelegramUIAutoTranslate">Przetłumacz całe czaty</string>
-    <string name="TranslatorMode">Zachowanie tłumaczenia ręcznego</string>
-    <string name="TranslatorModeAppend">Dodać</string>
-    <string name="TranslatorModeInline">Zastąp</string>
-    <string name="TranslatorModePopup">Wyskakujące okno</string>
     <string name="Translated">przetłumaczone</string>
     <string name="ProviderRealMicrosoftTranslator">Tłumacz Microsoft</string>
     <string name="TranslatorSettings">Tłumacz</string>
@@ -207,7 +204,6 @@
     <string name="NoCaptionForward">Brak napisów do przodu</string>
     <string name="PreferCommonGroupsTab">Karta Preferuj grupy</string>
     <string name="PreferCommonGroupsTabNotice">Automatycznie-wybieraj zakładkę „Grupy” zamiast „Prezenty”</string>
-    <string name="SendHighQualityPhoto">Wyślij zdjęcie wysokiej jakości</string>
     <string name="GroupedMessageMenu">Menu wiadomości grupowych</string>
     <string name="GroupedMessageMenuNotice">Grupowanie przenosi główne akcje na dół menu wiadomości.</string>
     <string name="CopySticker">Kopiuj naklejkę</string>
@@ -216,8 +212,6 @@
     <string name="AutoCheckUpdateSwitch">Aktualizuj kanał</string>
     <string name="AutoCheckUpdateRelease">Upublikowane</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
-    <string name="AutoInsertGIFCaption">GIF-y z automatycznymi podpisami</string>
-    <string name="AutoInsertGIFCaptionNotice">Automatycznie używa tekstu z bieżącego pola wprowadzania jako podpisu pliku GIF.</string>
     <string name="YourVersionIsLatestNax">Twoja wersja jest aktualna.</string>
     <string name="PremiumElements">Elementy premium</string>
     <string name="PremiumItemBoosts">Licznik wzmocnienia</string>
@@ -296,8 +290,6 @@
     <string name="CameraInVideoMessagesRear">Kamera tylnia</string>
     <string name="CameraInVideoMessagesAsk">Zapytaj</string>
     <string name="CameraSettings">Kamera</string>
-    <string name="SyncContactToPhone">Synchronizuj kontakt z telefonem</string>
-    <string name="AddViaQRCode">Dodaj za pomocą kodu QR</string>
     <string name="ContactNotes">Notatki</string>
     <string name="PhoneNotOnTelegramInvite">Tego numeru telefonu nie ma na Telegramie. **Zaproś &gt;**</string>
     <string name="PhoneAlreadyInContacts">Ten numer telefonu jest już w Twoich kontaktach. **Wyświetl &gt;**</string>

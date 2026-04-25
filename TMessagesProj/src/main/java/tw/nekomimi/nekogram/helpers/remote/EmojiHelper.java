@@ -13,6 +13,8 @@ import android.graphics.fonts.Font;
 import android.graphics.fonts.SystemFonts;
 import android.os.Build;
 import android.os.SystemClock;
+import android.text.Spannable;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -42,6 +44,7 @@ import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.Bulletin;
+import org.telegram.ui.Components.ColoredImageSpan;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -77,6 +80,11 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
             "\uD83D\uDE14",
             "\uD83D\uDE28"
     };
+
+    private static final char APPLE_LOGO_CHAR = '\uF8FF';
+    private static final float APPLE_LOGO_SCALE_X = 0.69f;
+    private static final float APPLE_LOGO_SCALE_Y = 0.92f;
+
     private static volatile EmojiHelper Instance;
     private static int currentAccount = UserConfig.selectedAccount;
     private static TextPaint textPaint;
@@ -1102,5 +1110,37 @@ public class EmojiHelper extends BaseRemoteHelper implements NotificationCenter.
             subtitleTextView.setText(description);
             imageView.setImage(data.getPreview(), null, null);
         }
+    }
+
+    public static boolean containsAppleLogo(CharSequence s) {
+        return s != null && TextUtils.indexOf(s, APPLE_LOGO_CHAR) >= 0;
+    }
+
+    public static boolean replaceAppleLogo(Spannable s, Paint.FontMetricsInt fontMetrics) {
+        boolean replaced = false;
+        ColoredImageSpan[] imageSpans = s.getSpans(0, s.length(), ColoredImageSpan.class);
+        for (int i = 0, length = s.length(); i < length; i++) {
+            if (s.charAt(i) != APPLE_LOGO_CHAR) {
+                continue;
+            }
+            boolean hasImage = false;
+            if (imageSpans != null) {
+                for (ColoredImageSpan imageSpan : imageSpans) {
+                    if (imageSpan != null && s.getSpanStart(imageSpan) == i && s.getSpanEnd(imageSpan) == i + 1) {
+                        hasImage = true;
+                        break;
+                    }
+                }
+            }
+            if (hasImage) {
+                continue;
+            }
+            ColoredImageSpan imageSpan = new ColoredImageSpan(R.drawable.ic_apple_logo);
+            imageSpan.setRelativeSize(fontMetrics);
+            imageSpan.setScale(APPLE_LOGO_SCALE_X, APPLE_LOGO_SCALE_Y);
+            s.setSpan(imageSpan, i, i + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            replaced = true;
+        }
+        return replaced;
     }
 }

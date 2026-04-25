@@ -459,6 +459,7 @@ public class ViewPagerFixed extends FrameLayout {
                 parent.removeView(v);
             }
             addView(v);
+            v.setTranslationX(getMeasuredWidth());
             viewPages[index] = v;
             adapter.bindView(viewPages[index], adapterPosition, viewTypes[index]);
             viewPages[index].setVisibility(View.VISIBLE);
@@ -1523,6 +1524,21 @@ public class ViewPagerFixed extends FrameLayout {
         private int selectorColorKey = Theme.key_profile_tabSelector;
         private int backgroundColorKey = Theme.key_actionBarDefault;
 
+        public void setColors(
+            int tabLineColorKey,
+            int activeTextColorKey,
+            int unactiveTextColorKey,
+            int selectorColorKey,
+            int backgroundColorKey
+        ) {
+            this.tabLineColorKey = tabLineColorKey;
+            this.activeTextColorKey = activeTextColorKey;
+            this.unactiveTextColorKey = unactiveTextColorKey;
+            this.selectorColorKey = selectorColorKey;
+            this.backgroundColorKey = backgroundColorKey;
+            selectorDrawable.setColor(Theme.getColor(tabLineColorKey, resourcesProvider));
+        }
+
         private int prevLayoutWidth;
 
         private boolean invalidated;
@@ -1530,6 +1546,8 @@ public class ViewPagerFixed extends FrameLayout {
         private boolean isInHiddenMode;
         private float hideProgress;
 
+        private long indicatorAnimationDuration = 250;
+        private Interpolator indicatorAnimationInterpolator = CubicBezierInterpolator.DEFAULT;
         private CubicBezierInterpolator interpolator = CubicBezierInterpolator.EASE_OUT_QUINT;
 
         private SparseIntArray positionToId = new SparseIntArray(5);
@@ -1582,7 +1600,7 @@ public class ViewPagerFixed extends FrameLayout {
             this.selectorType = tabsSelectorType;
             textCounterPaint.setTextSize(dp(13));
             textCounterPaint.setTypeface(AndroidUtilities.bold());
-            textPaint.setTextSize(dp(tabsSelectorType == 9 || tabsSelectorType == SELECTOR_TYPE_BUBBLE_STYLE ? 14 : 15));
+            textPaint.setTextSize(dp(tabsSelectorType == 9 || tabsSelectorType == 10 || tabsSelectorType == SELECTOR_TYPE_BUBBLE_STYLE ? 14 : 15));
             textPaint.setTypeface(AndroidUtilities.bold());
             deletePaint.setStyle(Paint.Style.STROKE);
             deletePaint.setStrokeCap(Paint.Cap.ROUND);
@@ -1644,7 +1662,7 @@ public class ViewPagerFixed extends FrameLayout {
                 listView.setSelectorType(9);
                 listView.setSelectorRadius(6);
             } else {
-                listView.setSelectorType(tabsSelectorType);
+                listView.setSelectorType(tabsSelectorType == 10 ? 9 : tabsSelectorType);
                 if (tabsSelectorType == 3) {
                     listView.setSelectorRadius(0);
                 } else {
@@ -1718,7 +1736,7 @@ public class ViewPagerFixed extends FrameLayout {
                     invalidate();
                 }
             });
-            if (tabsSelectorType == 9) {
+            if (tabsSelectorType == 9 || tabsSelectorType == 10) {
                 addView(listView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.CENTER_HORIZONTAL));
             } else {
                 addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
@@ -1727,6 +1745,11 @@ public class ViewPagerFixed extends FrameLayout {
 
         public void setDelegate(TabsViewDelegate filterTabsViewDelegate) {
             delegate = filterTabsViewDelegate;
+        }
+
+        public void setIndicatorAnimation(long duration, Interpolator interpolator) {
+            indicatorAnimationDuration = Math.max(1, duration);
+            indicatorAnimationInterpolator = interpolator != null ? interpolator : CubicBezierInterpolator.DEFAULT;
         }
 
         private Utilities.Callback2Return<Integer, Integer, Boolean> preTabClick;
@@ -1786,8 +1809,8 @@ public class ViewPagerFixed extends FrameLayout {
                     delegate.onPageScrolled(progress);
                 }
             });
-            tabsAnimator.setDuration(250);
-            tabsAnimator.setInterpolator(CubicBezierInterpolator.DEFAULT);
+            tabsAnimator.setDuration(indicatorAnimationDuration);
+            tabsAnimator.setInterpolator(indicatorAnimationInterpolator);
             tabsAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -1933,10 +1956,18 @@ public class ViewPagerFixed extends FrameLayout {
             return positionToId.get(0, 0);
         }
 
+        private int getTabsListPaddingLeft() {
+            return listView != null ? listView.getPaddingLeft() : dp(7);
+        }
+
+        private int getTabsListPaddingRight() {
+            return listView != null ? listView.getPaddingRight() : dp(7);
+        }
+
         private void updateTabsWidths() {
             positionToX.clear();
             positionToWidth.clear();
-            int xOffset = dp(7);
+            int xOffset = getTabsListPaddingLeft();
             for (int a = 0, N = tabs.size(); a < N; a++) {
                 int tabWidth = tabs.get(a).getWidth(false, textPaint);
                 positionToWidth.put(a, tabWidth);
@@ -2013,7 +2044,7 @@ public class ViewPagerFixed extends FrameLayout {
                 }
                 indicatorX += listView.getX();
                 if (indicatorWidth != 0) {
-                    if (selectorType == 9) {
+                    if (selectorType == 9 || selectorType == 10) {
                         selectorPaint.setColor(Theme.multAlpha(textPaint.getColor(), .15f));
                         final float cy = height / 2f, h = dp(26);
                         AndroidUtilities.rectTmp.set(indicatorX - dp(12), cy - h / 2f, indicatorX + indicatorWidth + dp(12), cy + h / 2f);
@@ -2049,9 +2080,9 @@ public class ViewPagerFixed extends FrameLayout {
         @Override
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             if (!tabs.isEmpty()) {
-                int width = MeasureSpec.getSize(widthMeasureSpec) - dp(7) - dp(7);
+                int width = MeasureSpec.getSize(widthMeasureSpec) - getTabsListPaddingLeft() - getTabsListPaddingRight();
                 int prevWidth = additionalTabWidth;
-                if (tabs.size() == 1 || selectorType == 9) {
+                if (tabs.size() == 1 || selectorType == 9 || selectorType == 10) {
                     additionalTabWidth = 0;
                 } else {
                     additionalTabWidth = allTabsWidth < width ? (width - allTabsWidth) / tabs.size() : 0;

@@ -162,13 +162,13 @@ public class TranscribeHelper {
         if (button != null) {
             button.setOnClickListener(v -> {
                 var accountId = editTextAccountId.getText();
-                if (!TextUtils.isEmpty(accountId) && accountId.length() != 32) {
+                if (!TextUtils.isEmpty(accountId) && accountId.length() < 32) {
                     AndroidUtilities.shakeViewSpring(editTextAccountId, -6);
                     BotWebViewVibrationEffect.APP_ERROR.vibrate();
                     return;
                 }
                 var apiToken = editTextApiToken.getText();
-                if (!TextUtils.isEmpty(apiToken) && apiToken.length() != 40) {
+                if (!TextUtils.isEmpty(apiToken) && apiToken.length() < 40) {
                     AndroidUtilities.shakeViewSpring(editTextApiToken, -6);
                     BotWebViewVibrationEffect.APP_ERROR.vibrate();
                     return;

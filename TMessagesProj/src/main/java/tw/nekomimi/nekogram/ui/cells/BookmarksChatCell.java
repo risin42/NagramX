@@ -23,6 +23,7 @@ import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.CombinedDrawable;
 import org.telegram.ui.Components.LayoutHelper;
+import org.telegram.messenger.Emoji;
 
 import tw.nekomimi.nekogram.ui.icons.IconsResources;
 import xyz.nextalone.nagram.NaConfig;
@@ -111,7 +112,8 @@ public class BookmarksChatCell extends FrameLayout {
             imageView.setRoundRadius(dp(20));
         }
 
-        titleView.setText(!TextUtils.isEmpty(title) ? title : LocaleController.getString(R.string.HiddenName));
+        CharSequence name = !TextUtils.isEmpty(title) ? title : LocaleController.getString(R.string.HiddenName);
+        titleView.setText(Emoji.replaceEmoji(name, titleView.getPaint().getFontMetricsInt(), false));
         subtitleView.setText(subtitle);
         countView.setText(String.valueOf(Math.max(0, bookmarkCount)));
 

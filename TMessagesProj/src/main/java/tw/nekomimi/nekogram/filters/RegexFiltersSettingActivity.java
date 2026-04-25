@@ -36,6 +36,7 @@ import org.telegram.ui.DialogsActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.settings.BaseNekoSettingsActivity;
@@ -147,6 +148,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                         ArrayList<AyuFilter.FilterModel> sharedIncoming = null;
                         ArrayList<AyuFilter.ChatFilterEntry> chatsIncoming = null;
                         ArrayList<AyuFilter.CustomFilteredUser> customFilteredUsersIncoming = null;
+                        ArrayList<Long> blockedChannelsIncoming = null;
                         if (json.startsWith("[")) {
                             AyuFilter.FilterModel[] arr = new Gson().fromJson(json, AyuFilter.FilterModel[].class);
                             if (arr != null) {
@@ -212,11 +214,21 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                                         customFilteredUsersIncoming.add(normalized);
                                     }
                                 }
+                                if (data.blockedChannels != null) {
+                                    blockedChannelsIncoming = new ArrayList<>();
+                                    for (Long dialogId : data.blockedChannels) {
+                                        if (dialogId == null || dialogId >= 0L) {
+                                            continue;
+                                        }
+                                        blockedChannelsIncoming.add(dialogId);
+                                    }
+                                }
                             }
                         }
                         if ((sharedIncoming == null || sharedIncoming.isEmpty())
                             && (chatsIncoming == null || chatsIncoming.isEmpty())
                             && (customFilteredUsersIncoming == null || customFilteredUsersIncoming.isEmpty())
+                            && (blockedChannelsIncoming == null || blockedChannelsIncoming.isEmpty())
                         ) {
                             BulletinFactory.of(RegexFiltersSettingActivity.this).createSimpleBulletin(R.raw.error, getString(R.string.RegexFiltersImportError)).show();
                             return;
@@ -312,6 +324,15 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                             }
                             AyuFilter.setCustomFilteredUsersData(new ArrayList<>(merged.values()));
                         }
+                        if (blockedChannelsIncoming != null && !blockedChannelsIncoming.isEmpty()) {
+                            HashSet<Long> merged = new HashSet<>(AyuFilter.getAllBlockedChannelsList());
+                            for (Long dialogId : blockedChannelsIncoming) {
+                                if (dialogId != null && dialogId < 0L) {
+                                    merged.add(dialogId);
+                                }
+                            }
+                            AyuFilter.setBlockedChannels(new ArrayList<>(merged));
+                        }
                         refreshRows();
                         BulletinFactory.of(RegexFiltersSettingActivity.this).createSimpleBulletin(R.raw.done, getString(R.string.RegexFiltersImportSuccess)).show();
                     } catch (Exception e) {
@@ -324,6 +345,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                         data.shared = AyuFilter.getRegexFilters();
                         data.chats = checkChatFilters(AyuFilter.getChatFilterEntries());
                         data.customFilteredUsersData = AyuFilter.getCustomFilteredUsersDataList();
+                        data.blockedChannels = AyuFilter.getAllBlockedChannelsList();
                         String json = new Gson().toJson(data);
                         AndroidUtilities.addToClipboard(json);
                         BulletinFactory.of(RegexFiltersSettingActivity.this).createCopyLinkBulletin().show();
@@ -444,6 +466,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
         public ArrayList<AyuFilter.ChatFilterEntry> chats;
         public ArrayList<AyuFilter.CustomFilteredUser> customFilteredUsersData;
         public ArrayList<Long> customFilteredUsers;
+        public ArrayList<Long> blockedChannels;
     }
 
     private class ListAdapter extends BaseListAdapter {
@@ -488,7 +511,8 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                     if (position == sharedFiltersPageRow) {
                         settingsCell.setTextAndValue(getString(R.string.RegexFiltersSharedHeader), String.valueOf(AyuFilter.getRegexFilters().size()), true);
                     } else if (position == userFiltersPageRow) {
-                        settingsCell.setTextAndValue(getString(R.string.ShadowBan), String.valueOf(AyuFilter.getCustomFilteredUsersList().size()), false);
+                        int count = AyuFilter.getCustomFilteredUsersList().size() + AyuFilter.getBlockedChannelsCount();
+                        settingsCell.setTextAndValue(getString(R.string.ShadowBan), String.valueOf(count), false);
                     }
                     break;
                 case TYPE_ACCOUNT:

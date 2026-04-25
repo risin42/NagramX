@@ -24,10 +24,10 @@
     <string name="LlmProviderOpenAIModel" translatable="false">gpt-5-nano</string>
     <string name="LlmProviderGeminiModel" translatable="false">gemini-flash-lite-latest</string>
     <string name="LlmProviderGroqModel" translatable="false">openai/gpt-oss-120b</string>
-    <string name="LlmProviderDeepSeekModel" translatable="false">deepseek-chat</string>
+    <string name="LlmProviderDeepSeekModel" translatable="false">deepseek-v4-flash</string>
     <string name="LlmProviderXAIModel" translatable="false">grok-4-1-fast-non-reasoning</string>
-    <string name="LlmProviderCerebrasModel" translatable="false">gpt-oss-120b</string>
-    <string name="LlmProviderOllamaCloudModel" translatable="false">gemma3:27b</string>
+    <string name="LlmProviderCerebrasModel" translatable="false">qwen-3-235b-a22b-instruct-2507</string>
+    <string name="LlmProviderOllamaCloudModel" translatable="false">gemma4:31b</string>
     <string name="LlmProviderOpenRouterModel" translatable="false">openrouter/free</string>
     <string name="LlmProviderVercelAIGatewayModel" translatable="false">xai/grok-4-1-fast-non-reasoning</string>
     <string name="LlmProviderPreset">Model Provider</string>
@@ -84,6 +84,8 @@
     <string name="UnshadowBan">Unshadow Ban</string>
     <string name="ShadowBanAdded">Added to **user filters**.</string>
     <string name="ShadowBanRemoved">Removed from **user filters**.</string>
+    <string name="ShadowBanChannelAdded">Added to **channel filters**.</string>
+    <string name="ShadowBanChannelRemoved">Removed from **channel filters**.</string>
     <string name="botCommandConfirmTitle">Send Command</string>
     <string name="botCommandConfirmText">Do you want to send this command?\n\n%s</string>
     <string name="MessageSavingSaveMedia">Save Media</string>
@@ -94,10 +96,6 @@
     <string name="MessageSavingSaveMediaInPublicGroups">… in Public Groups</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">… in Private Groups</string>
     <string name="TelegramUIAutoTranslate">Translate Entire Chats</string>
-    <string name="TranslatorMode">Manual Translation Behavior</string>
-    <string name="TranslatorModeAppend">Append</string>
-    <string name="TranslatorModeInline">Replace</string>
-    <string name="TranslatorModePopup">Pop-up</string>
     <string name="Translated">translated</string>
     <string name="ProviderRealMicrosoftTranslator">Microsoft Translator</string>
     <string name="TranslatorSettings">Translator</string>
@@ -146,7 +144,7 @@
     <string name="DisableGhostMode">Disable Ghost</string>
     <string name="GhostModeEnabled">Ghost mode turned on</string>
     <string name="GhostModeDisabled">Ghost mode turned off</string>
-    <string name="GhostModeInDrawer">Main Tab Shortcut</string>
+    <string name="GhostModeInDrawer">Shortcuts</string>
     <string name="GhostModeStatusIndicator">Ghost Mode Indicator</string>
     <string name="DontSendReadMessagePackets">Don\'t Read Messages</string>
     <string name="DontReadStoriesPackets">Don\'t Read Stories</string>
@@ -219,9 +217,9 @@
     <string name="CreateCode">Create Code</string>
     <string name="CreateCodeLanguage">Language</string>
     <string name="NoCaptionForward">NoCaption forward</string>
+    <string name="NoCaptionForwardShort">NoCaption</string>
     <string name="PreferCommonGroupsTab">Prefer Groups Tab</string>
     <string name="PreferCommonGroupsTabNotice">Auto-select \"Groups\" tab instead of \"Gifts\" when possible.</string>
-    <string name="SendHighQualityPhoto">Send High Quality Photo</string>
     <string name="GroupedMessageMenu">Group Message Menu</string>
     <string name="GroupedMessageMenuNotice">Grouping moves the main actions to the bottom of the message menu.</string>
     <string name="CopySticker">Copy Sticker</string>
@@ -230,8 +228,6 @@
     <string name="AutoCheckUpdateSwitch">Update Channel</string>
     <string name="AutoCheckUpdateRelease">Release</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
-    <string name="AutoInsertGIFCaption">Auto-Caption GIFs</string>
-    <string name="AutoInsertGIFCaptionNotice">Automatically uses the text in the current input field as the GIF\'s caption.</string>
     <string name="YourVersionIsLatestNax">Your version is up to date.</string>
     <string name="PremiumElements">Premium Elements</string>
     <string name="PremiumItemBoosts">Boost Counter</string>
@@ -311,8 +307,6 @@
     <string name="CameraInVideoMessagesRear">Rear Camera</string>
     <string name="CameraInVideoMessagesAsk">Ask</string>
     <string name="CameraSettings">Camera</string>
-    <string name="SyncContactToPhone">Sync Contact to Phone</string>
-    <string name="AddViaQRCode">Add via QR Code</string>
     <string name="ContactNotes">Notes</string>
     <string name="PhoneNotOnTelegramInvite">This phone number is not on Telegram. **Invite >**</string>
     <string name="PhoneAlreadyInContacts">This phone number is already in your contacts. **View >**</string>
@@ -337,4 +331,19 @@
     <string name="MainTabsSettingsHeader">Main Tabs</string>
     <string name="MainTabsHideTitles">Hide Titles</string>
     <string name="MainTabsHideContacts">Hide Contacts Tab</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">Show Message Previews</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">Shows notification content even when passcode lock is active.</string>
+    <string name="StickerSavedHint">Sticker saved to gallery.</string>
+    <string name="StickerCopied">Sticker copied to clipboard.</string>
+    <string name="StrokeOnViews">Glare effects</string>
+    <string name="HideBottomNavigationBar">Hide Bottom Navigation Bar</string>
+    <string name="TranslatorMode">With Original Text</string>
+    <string name="TranslatorWithOriginalTextOff">Off</string>
+    <string name="TranslatorWithOriginalTextManualOnly">Manual Only</string>
+    <string name="TranslatorWithOriginalTextOn">On</string>
+    <string name="CenterActionBarTitleOn">On</string>
+    <string name="CenterActionBarTitleOff">Off</string>
+    <string name="TabletModeOn">On</string>
+    <string name="TabletModeOff">Off</string>
+    <string name="HideDialogsSearchField">Hide Search Box</string>
 </resources>

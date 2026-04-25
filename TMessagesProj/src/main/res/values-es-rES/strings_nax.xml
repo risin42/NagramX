@@ -15,6 +15,7 @@
     <string name="LlmApiUrl">URL de la API</string>
     <string name="LlmApiKey">Clave de API</string>
     <string name="LlmModelName">Modelo</string>
+    <string name="LlmApiUrlNotice">URL base de la API. Si se deja en blanco, utiliza por defecto el endpoint compatible con OpenAI de Gemini.</string>
     <string name="LlmApiKeyNotice">Introduzca una o varias claves API, separadas por comas (por ejemplo, key1,key2). Se utilizarán varias claves de forma rotativa.</string>
     <string name="LlmProviderPreset">Proveedores de modelos</string>
     <string name="LlmProviderCustom">Personalizado</string>
@@ -64,6 +65,8 @@
     <string name="RegexFiltersExportError">Error al exportar los filtros.</string>
     <string name="RegexFiltersUserHeader">Filtros de usuario</string>
     <string name="RegexFiltersUserFilterHint">Introducir ID de usuario</string>
+    <string name="RegexFiltersGlobalHeader">Filtros globales</string>
+    <string name="RegexFiltersTextSelectionAddtoShared">Añadir a filtros compartidos</string>
     <string name="ShadowBan">Shadow Ban</string>
     <string name="UnshadowBan">Unshadow Ban</string>
     <string name="ShadowBanAdded">Añadido a **filtros de usuario**.</string>
@@ -78,10 +81,6 @@
     <string name="MessageSavingSaveMediaInPublicGroups">… en Grupos Públicos</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">… en grupos privados</string>
     <string name="TelegramUIAutoTranslate">Traducir Chats completos</string>
-    <string name="TranslatorMode">Comportamiento de traducción manual</string>
-    <string name="TranslatorModeAppend">Adjuntar</string>
-    <string name="TranslatorModeInline">Reemplazar</string>
-    <string name="TranslatorModePopup">Ventana emergente</string>
     <string name="Translated">traducido</string>
     <string name="ProviderRealMicrosoftTranslator">Traductor de Microsoft</string>
     <string name="TranslatorSettings">Traductor</string>
@@ -130,7 +129,7 @@
     <string name="DisableGhostMode">Deshabilitar Fantasma</string>
     <string name="GhostModeEnabled">Modo fantasma activado</string>
     <string name="GhostModeDisabled">Modo fantasma desactivado</string>
-    <string name="GhostModeInDrawer">Mostrar en el cajón</string>
+    <string name="GhostModeInDrawer">Atajos</string>
     <string name="GhostModeStatusIndicator">Indicador del Modo Fantasma</string>
     <string name="DontSendReadMessagePackets">No leer mensajes</string>
     <string name="DontReadStoriesPackets">No leer historias</string>
@@ -183,7 +182,10 @@
     <string name="DebugMenuDoNotForceForumTabs">No forzar pestañas del foro</string>
     <string name="DebugMenuCleanAppUpdate">Limpieza de la actualización de la aplicación</string>
     <string name="DebugMenuMakeMemoryDump">Realizar volcado de memoria</string>
+    <string name="DebugMenuShowFrameMetrics">Mostrar métricas de fotogramas</string>
+    <string name="DebugMenuHideFrameMetrics">Ocultar métricas de marco</string>
     <string name="TranslateMessageLLM">Traducir con IA</string>
+    <string name="EditLocalNameOverride">Editando anulación de nombre local.</string>
     <string name="ResetChatNameOverrides">Restablecer anulaciones de nombres de chat</string>
     <string name="ResetChatNameNotification">Se borraron las modificaciones del nombre del chat.</string>
     <string name="LeftBottomButtonAction">Acción del botón izquierdo</string>
@@ -202,7 +204,6 @@
     <string name="NoCaptionForward">Reenviar sin descripción</string>
     <string name="PreferCommonGroupsTab">Pestaña Grupos preferidos</string>
     <string name="PreferCommonGroupsTabNotice">Seleccionar automáticamente la pestaña \"Grupos\" en lugar de \"Regalos\" cuando sea posible.</string>
-    <string name="SendHighQualityPhoto">Enviar foto de alta calidad</string>
     <string name="GroupedMessageMenu">Menú de mensaje de grupo</string>
     <string name="GroupedMessageMenuNotice">La agrupación mueve las acciones principales a la parte inferior del menú de mensajes.</string>
     <string name="CopySticker">Copiar sticker</string>
@@ -211,8 +212,6 @@
     <string name="AutoCheckUpdateSwitch">Canal de actualización</string>
     <string name="AutoCheckUpdateRelease">Versión</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
-    <string name="AutoInsertGIFCaption">GIF con subtítulos automáticos</string>
-    <string name="AutoInsertGIFCaptionNotice">Usa automáticamente el texto del campo de entrada actual como pie de foto del GIF.</string>
     <string name="YourVersionIsLatestNax">Su versión está actualizada.</string>
     <string name="PremiumElements">Elementos prémium</string>
     <string name="PremiumItemBoosts">Contador de impulso</string>
@@ -291,8 +290,6 @@
     <string name="CameraInVideoMessagesRear">Cámara trasera</string>
     <string name="CameraInVideoMessagesAsk">Preguntar</string>
     <string name="CameraSettings">Cámara</string>
-    <string name="SyncContactToPhone">Sincronizar contacto con el teléfono</string>
-    <string name="AddViaQRCode">Agregar mediante código QR</string>
     <string name="ContactNotes">Notas</string>
     <string name="PhoneNotOnTelegramInvite">Este número de teléfono no está en Telegram. **Invitar &gt;**</string>
     <string name="PhoneAlreadyInContacts">Este número de teléfono ya está en tus contactos. **Ver &gt;**</string>
@@ -312,5 +309,19 @@
     <string name="UnifiedPushNeverReceivedNotifications">Nunca recibiste notificaciones con UnifiedPush desde que se inició Nagram X.</string>
     <string name="UnifiedPushLastReceivedNotification">La última notificación recibida con UnifiedPush fue hace %1$d segundos.\n\nHas recibido %2$d notificaciones desde que Nagram X se inició.</string>
     <string name="UnifiedPushCurrentEndpoint">El endpoint UnifiedPush actual es: %1$s</string>
-    <string name="RegexFiltersGlobalHeader">Filtros globales</string>
+    <string name="PlayOnce">Reproducir una vez</string>
+    <string name="StorageSettings">Almacenamiento</string>
+    <string name="MainTabsSettingsHeader">Pestañas principales</string>
+    <string name="MainTabsHideTitles">Ocultar títulos</string>
+    <string name="MainTabsHideContacts">Ocultar pestaña de contactos</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">Mostrar vista previa de mensajes</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">Muestra el contenido de las notificaciones incluso cuando el bloqueo con código está activo.</string>
+    <string name="StickerSavedHint">Sticker guardado en la galería.</string>
+    <string name="StickerCopied">Sticker copiado al portapapeles.</string>
+    <string name="StrokeOnViews">Efectos de destello</string>
+    <string name="HideBottomNavigationBar">Ocultar barra de navegación inferior</string>
+    <string name="TranslatorMode">Con texto original</string>
+    <string name="TranslatorWithOriginalTextOff">Desactivado</string>
+    <string name="TranslatorWithOriginalTextManualOnly">Manual Only</string>
+    <string name="TranslatorWithOriginalTextOn">Activado</string>
 </resources>

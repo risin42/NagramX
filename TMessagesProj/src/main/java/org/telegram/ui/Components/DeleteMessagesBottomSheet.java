@@ -13,6 +13,7 @@ import static org.telegram.ui.Components.UniversalAdapter.VIEW_TYPE_USER_GROUP_C
 import static org.telegram.ui.Components.UniversalAdapter.VIEW_TYPE_USER_CHECKBOX;
 
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -41,7 +42,9 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.BottomSheet;
+import org.telegram.ui.ActionBar.SimpleTextView;
 import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.BadWayToMakeButtonRound;
 import org.telegram.ui.Cells.CollapseTextCell;
 import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Components.Premium.boosts.cells.selector.SelectorBtnCell;
@@ -50,6 +53,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import xyz.nextalone.nagram.NaConfig;
 
 public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
     private UniversalAdapter adapter;
@@ -334,6 +339,8 @@ public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
         actionButton.setText(getString(R.string.DeleteProceedBtn));
         actionButton.setBackground(Theme.AdaptiveRipple.filledRect(Theme.getColor(Theme.key_featuredStickers_addButton), 6));
         actionButton.setOnClickListener(e -> proceed());
+        BadWayToMakeButtonRound.round(actionButton);
+        ScaleStateListAnimator.apply(actionButton, .02f, 1.2f);
         buttonContainer.addView(actionButton, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, Gravity.BOTTOM | Gravity.FILL_HORIZONTAL));
         containerView.addView(buttonContainer, LayoutHelper.createFrameMarginPx(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, backgroundPaddingLeft, 0, backgroundPaddingLeft, 0));
 
@@ -1209,6 +1216,19 @@ public class DeleteMessagesBottomSheet extends BottomSheetWithRecyclerListView {
     public void dismiss() {
         savePreferences();
         super.dismiss();
+    }
+
+    @Override
+    protected void onPreDraw(Canvas canvas, int top, float progressToFullView) {
+        super.onPreDraw(canvas, top, progressToFullView);
+        if (!NaConfig.INSTANCE.getCenterActionBarTitle().Bool() || NaConfig.INSTANCE.getCenterActionBarTitleType().Int() == 3) {
+            return;
+        }
+        final SimpleTextView titleTextView = actionBar.getTitleTextView();
+        if (titleTextView == null) {
+            return;
+        }
+        titleTextView.setTranslationX((actionBar.getMeasuredWidth() - titleTextView.getMeasuredWidth()) / 2f - titleTextView.getLeft());
     }
 
     private void proceed() {

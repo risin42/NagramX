@@ -1,7 +1,6 @@
 package tw.nekomimi.nekogram.ui;
 
 import static org.telegram.messenger.LocaleController.getString;
-import static tw.nekomimi.nekogram.parts.MessageTransKt.TRANSLATION_SEPARATOR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -506,17 +505,17 @@ public abstract class NekoDelegateFragment extends BaseFragment implements Notif
                 prepareMessageCellForSnapshot(messageCell);
                 final Bitmap snapshotBefore = shouldCaptureSnapshot(messageCell) ? captureCellSnapshot(messageCell) : null;
 
+                boolean keepOriginal = MessageHelper.shouldKeepOriginalForManualTranslation(mode);
                 messageObject.messageOwner.translated = true;
                 messageObject.messageOwner.translatedToLanguage = TranslatorKt.getLocale2code(resolvedTargetLocale).toLowerCase(Locale.getDefault());
-                if (mode == 0) {
-                    String finalMessageText = originalText + TRANSLATION_SEPARATOR + translatedText;
+                messageObject.messageOwner.translatedText = finalText;
+                if (keepOriginal) {
+                    String finalMessageText = MessageHelper.buildTranslatedDisplayText(originalText, finalText, true);
                     messageObject.messageOwner.translatedMessage = finalMessageText;
-                    messageObject.messageOwner.translatedText = finalText;
                     messageObject.translated = false;
                     messageObject.applyNewText(finalMessageText);
                 } else {
                     messageObject.messageOwner.translatedMessage = translatedText;
-                    messageObject.messageOwner.translatedText = finalText;
                     messageObject.translated = true;
                     messageObject.applyNewText(translatedText);
                 }

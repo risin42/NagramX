@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.Emoji;
 import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
@@ -156,7 +157,7 @@ public class BackButtonMenuRecent {
                     thumb = chat.photo.strippedBitmap;
                 }
                 imageView.setImage(ImageLocation.getForChat(chat, ImageLocation.TYPE_SMALL), "50_50", thumb, chat);
-                titleView.setText(chat.title);
+                titleView.setText(Emoji.replaceEmoji(chat.title, titleView.getPaint().getFontMetricsInt(), false));
             } else {
                 String name;
                 if (user.photo != null && user.photo.strippedBitmap != null) {
@@ -175,7 +176,7 @@ public class BackButtonMenuRecent {
                     avatarDrawable.setInfo(user);
                     imageView.setImage(ImageLocation.getForUser(user, ImageLocation.TYPE_SMALL), "50_50", thumb, user);
                 }
-                titleView.setText(name);
+                titleView.setText(Emoji.replaceEmoji(name, titleView.getPaint().getFontMetricsInt(), false));
             }
 
             cell.setBackground(Theme.getSelectorDrawable(Theme.getColor(Theme.key_listSelector), false));

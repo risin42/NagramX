@@ -75,7 +75,7 @@
     <string name="IgnoreBlockedAbout">Você não verá mais mensagens de usuários bloqueados em grupos.</string>
     <string name="SourceCode">Código-fonte</string>
     <string name="ResetStickerSize">Redefinir tamanho do sticker</string>
-    <string name="RestartAppToTakeEffect">Reinicie o app para aplicar as alterações.</string>
+    <string name="RestartAppToTakeEffect">Reinicie o app para aplicar.</string>
     <string name="MediaPreview">Prévia de mídia na lista de chats</string>
     <string name="AutoPauseVideo">Pausar vídeo automaticamente</string>
     <string name="AutoPauseVideoAbout">Quando bloquear a tela ou alternar para segundo plano.</string>
@@ -113,7 +113,7 @@
     <string name="mapDriftingFixForGoogleMaps">Corrigir desvio do Google Maps na China</string>
     <string name="useOSMDroidMap">Usar mapa OSMDroid</string>
     <string name="UnknownNekoSettingsOption">Não existe esta opção nas N-Configurações.</string>
-    <string name="PasscodeNeeded">​Você precisa ativar a Senha de Bloqueio primeiro</string>
+    <string name="PasscodeNeeded">​Você precisa ativar a senha de bloqueio primeiro</string>
     <string name="PasscodeNeko">Senha de acesso</string>
     <string name="PasscodeShowInSettings">Mostrar nas N-Configurações</string>
     <string name="PasscodeShowInSettingsAbout">Após ocultar, você poderá abrir esta página **APENAS** por este link:</string>
@@ -245,7 +245,7 @@
     <string name="nekoXPaymentRemovedToast">Os recursos de pagamento foram removidos.</string>
     <string name="unreadBadgeOnBackButton">Ícone de não lido no botão de voltar</string>
     <string name="DeleteDownloadedFileConfirm">Excluir este arquivo do cache local?</string>
-    <string name="DeleteDownloadedFileSucceed">Excluído</string>
+    <string name="DeleteDownloadedFileSucceed">Apagado</string>
     <string name="DeleteDownloadedFileExternal">O arquivo externo foi ignorado.</string>
     <string name="useCustomEmoji">Usar emoji personalizado</string>
     <string name="useCustomEmojiInvalid">Não é um pacote de emojis válido.</string>
@@ -265,7 +265,7 @@
     <string name="ConvertGroupAlertWarning">Aviso</string>
     <string name="ConvertGroupAlert">Esta ação é irreversível. Não é possível voltar um supergrupo para um grupo normal.</string>
     <string name="SharedPhotosAndVideos">Fotos e vídeos</string>
-    <string name="UnofficialApp">Aplicativo não oficial</string>
+    <string name="UnofficialApp">aplicativo não oficial</string>
     <string name="FileUploadLimit">O tamanho do arquivo não deve ser maior que %1$s</string>
     <string name="NoFilesInfo">Esta pasta está vazia.</string>
     <string name="SearchRecentFiles">Pesquisar arquivos recentes</string>

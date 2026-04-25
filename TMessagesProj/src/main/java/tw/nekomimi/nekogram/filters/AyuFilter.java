@@ -408,6 +408,23 @@ public class AyuFilter {
         return blockedChannels;
     }
 
+    private static void saveBlockedChannels(HashSet<Long> ids) {
+        ArrayList<Long> sorted = new ArrayList<>();
+        if (ids != null) {
+            for (Long id : ids) {
+                if (id != null && id < 0L) {
+                    sorted.add(id);
+                }
+            }
+        }
+        Collections.sort(sorted);
+        String str = new Gson().toJson(sorted.toArray(new Long[0]));
+        NaConfig.INSTANCE.getBlockedChannelsData().setConfigString(str);
+        synchronized (cacheLock) {
+            blockedChannels = new HashSet<>(sorted);
+        }
+    }
+
     public static boolean isBlockedChannel(long dialogId) {
         return NekoConfig.ignoreBlocked.Bool() && getBlockedChannels().contains(dialogId);
     }
@@ -419,24 +436,14 @@ public class AyuFilter {
     public static void blockPeer(long dialogId) {
         HashSet<Long> set = new HashSet<>(getBlockedChannels());
         if (set.add(dialogId)) {
-            Long[] arr = set.toArray(new Long[0]);
-            String str = new Gson().toJson(arr);
-            NaConfig.INSTANCE.getBlockedChannelsData().setConfigString(str);
-            synchronized (cacheLock) {
-                blockedChannels = set;
-            }
+            saveBlockedChannels(set);
         }
     }
 
     public static void unblockPeer(long dialogId) {
         HashSet<Long> set = new HashSet<>(getBlockedChannels());
         if (set.remove(dialogId)) {
-            Long[] arr = set.toArray(new Long[0]);
-            String str = new Gson().toJson(arr);
-            NaConfig.INSTANCE.getBlockedChannelsData().setConfigString(str);
-            synchronized (cacheLock) {
-                blockedChannels = set;
-            }
+            saveBlockedChannels(set);
         }
     }
 
@@ -444,15 +451,30 @@ public class AyuFilter {
         return checkBlockedChannels(getBlockedChannels());
     }
 
+    public static ArrayList<Long> getAllBlockedChannelsList() {
+        ArrayList<Long> list = new ArrayList<>(getBlockedChannels());
+        Collections.sort(list);
+        return list;
+    }
+
     public static int getBlockedChannelsCount() {
         return getBlockedChannels().size();
     }
 
     public static void clearBlockedChannels() {
-        NaConfig.INSTANCE.getBlockedChannelsData().setConfigString("[]");
-        synchronized (cacheLock) {
-            blockedChannels = new HashSet<>();
+        saveBlockedChannels(new HashSet<>());
+    }
+
+    public static void setBlockedChannels(ArrayList<Long> dialogIds) {
+        HashSet<Long> set = new HashSet<>();
+        if (dialogIds != null) {
+            for (Long dialogId : dialogIds) {
+                if (dialogId != null && dialogId < 0L) {
+                    set.add(dialogId);
+                }
+            }
         }
+        saveBlockedChannels(set);
     }
 
     public static ArrayList<Long> checkBlockedChannels(HashSet<Long> blockedChannels) {

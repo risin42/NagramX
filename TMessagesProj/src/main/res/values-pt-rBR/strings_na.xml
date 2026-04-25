@@ -51,7 +51,7 @@
     <string name="ChatDecoration">Decoração do chat</string>
     <string name="NeedChangeNekoSettings">Você precisa alterar as N-Configurações</string>
     <string name="DoNotUnarchiveBySwipe">Desativar deslizar para desarquivar</string>
-    <string name="DefaultDeleteMenu">Menu de exclusão padrão</string>
+    <string name="DefaultDeleteMenu">Menu de apagar padrão</string>
     <string name="DisableStories">Desativar stories</string>
     <string name="CopyPhotoAsSticker">Copiar como sticker</string>
     <string name="ProviderTranSmartTranslate">Tradutor TranSmart</string>

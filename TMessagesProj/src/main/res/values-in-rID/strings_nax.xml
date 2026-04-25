@@ -71,6 +71,8 @@
     <string name="UnshadowBan">Batalkan Penangguhan Diam-diam</string>
     <string name="ShadowBanAdded">Ditambahkan ke **penyaring pengguna**.</string>
     <string name="ShadowBanRemoved">Dihapus dari **penyaring pengguna**.</string>
+    <string name="ShadowBanChannelAdded">Ditambahkan ke **penyaring saluran**.</string>
+    <string name="ShadowBanChannelRemoved">Dihapus dari **penyaring saluran**.</string>
     <string name="botCommandConfirmTitle">Kirim Perintah</string>
     <string name="botCommandConfirmText">Apakah Anda ingin mengirim perintah ini?\n\n%s</string>
     <string name="MessageSavingSaveMedia">Simpan Media</string>
@@ -81,10 +83,6 @@
     <string name="MessageSavingSaveMediaInPublicGroups">… di Grup Publik</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">… di Grup Pribadi</string>
     <string name="TelegramUIAutoTranslate">Terjemahkan Seluruh Obrolan</string>
-    <string name="TranslatorMode">Perilaku Terjemahan Manual</string>
-    <string name="TranslatorModeAppend">Tambah</string>
-    <string name="TranslatorModeInline">Ganti</string>
-    <string name="TranslatorModePopup">Pop-up</string>
     <string name="Translated">diterjemahkan</string>
     <string name="ProviderRealMicrosoftTranslator">Microsoft Terjemahan</string>
     <string name="TranslatorSettings">Penerjemah</string>
@@ -133,7 +131,7 @@
     <string name="DisableGhostMode">Nonaktifkan Hantu</string>
     <string name="GhostModeEnabled">Mode hantu diaktifkan</string>
     <string name="GhostModeDisabled">Mode hantu dinonaktifkan</string>
-    <string name="GhostModeInDrawer">Pintasan Tab Utama</string>
+    <string name="GhostModeInDrawer">Pintasan</string>
     <string name="GhostModeStatusIndicator">Indikator Mode Hantu</string>
     <string name="DontSendReadMessagePackets">Jangan Baca Pesan</string>
     <string name="DontReadStoriesPackets">Jangan Baca Cerita</string>
@@ -208,7 +206,6 @@
     <string name="NoCaptionForward">Teruskan Tanpa Teks</string>
     <string name="PreferCommonGroupsTab">Lebih suka Tab Grup</string>
     <string name="PreferCommonGroupsTabNotice">Pilih otomatis tab \"Grup\" alih-alih \"Hadiah\" bila memungkinkan.</string>
-    <string name="SendHighQualityPhoto">Kirim Foto Berkualitas Tinggi</string>
     <string name="GroupedMessageMenu">Menu Pesan Grup</string>
     <string name="GroupedMessageMenuNotice">Pengelompokan memindahkan tindakan utama ke bagian bawah menu pesan.</string>
     <string name="CopySticker">Salin Stiker</string>
@@ -217,8 +214,6 @@
     <string name="AutoCheckUpdateSwitch">Saluran Pembaruan</string>
     <string name="AutoCheckUpdateRelease">Rilis</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
-    <string name="AutoInsertGIFCaption">Teks Otomatis GIF</string>
-    <string name="AutoInsertGIFCaptionNotice">Secara otomatis menggunakan teks di bidang input saat ini sebagai teks GIF.</string>
     <string name="YourVersionIsLatestNax">Versi Anda sudah terbaru.</string>
     <string name="PremiumElements">Elemen Premium</string>
     <string name="PremiumItemBoosts">Penghitung Peningkatan</string>
@@ -297,8 +292,6 @@
     <string name="CameraInVideoMessagesRear">Kamera Belakang</string>
     <string name="CameraInVideoMessagesAsk">Tanya</string>
     <string name="CameraSettings">Kamera</string>
-    <string name="SyncContactToPhone">Sinkronkan Kontak ke Telepon</string>
-    <string name="AddViaQRCode">Tambahkan melalui Kode QR</string>
     <string name="ContactNotes">Catatan</string>
     <string name="PhoneNotOnTelegramInvite">Nomor telepon ini tidak ada di Telegram. **Undang &gt;**</string>
     <string name="PhoneAlreadyInContacts">Nomor telepon ini sudah ada di kontak Anda. **Lihat &gt;**</string>
@@ -323,4 +316,19 @@
     <string name="MainTabsSettingsHeader">Tab Utama</string>
     <string name="MainTabsHideTitles">Sembunyikan Judul</string>
     <string name="MainTabsHideContacts">Sembunyikan Tab Kontak</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">Tampilkan Pratinjau Pesan</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">Menampilkan isi pemberitahuan meskipun kunci sandi aktif.</string>
+    <string name="StickerSavedHint">Stiker disimpan ke galeri.</string>
+    <string name="StickerCopied">Stiker disalin ke papan klip.</string>
+    <string name="StrokeOnViews">Efek silau</string>
+    <string name="HideBottomNavigationBar">Sembunyikan Bilah Navigasi Bawah</string>
+    <string name="TranslatorMode">Dengan Teks Asli</string>
+    <string name="TranslatorWithOriginalTextOff">Mati</string>
+    <string name="TranslatorWithOriginalTextManualOnly">Hanya Manual</string>
+    <string name="TranslatorWithOriginalTextOn">Nyala</string>
+    <string name="CenterActionBarTitleOn">Nyala</string>
+    <string name="CenterActionBarTitleOff">Mati</string>
+    <string name="TabletModeOn">Nyala</string>
+    <string name="TabletModeOff">Mati</string>
+    <string name="HideDialogsSearchField">Sembunyikan Kotak Pencarian</string>
 </resources>

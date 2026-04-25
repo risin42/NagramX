@@ -106,6 +106,7 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.DialogsActivityTopPanelLayout;
 import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.FlickerLoadingView;
+import org.telegram.ui.Components.Forum.ForumBubbleDrawable;
 import org.telegram.ui.Components.Forum.ForumUtilities;
 import org.telegram.ui.Components.FragmentContextView;
 import org.telegram.ui.Components.FragmentFloatingButton;
@@ -147,6 +148,7 @@ import java.util.concurrent.CountDownLatch;
 import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.helpers.MainTabsHelper;
+import xyz.nextalone.nagram.NaConfig;
 
 public class TopicsFragment extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, ChatActivityInterface, RightSlidingDialogContainer.BaseFragmentWithFullscreen, MainTabsActivity.TabFragmentDelegate {
 
@@ -187,6 +189,7 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
     private final static int VIEW_TYPE_TOPIC = 0;
     private final static int VIEW_TYPE_LOADING_CELL = 1;
     private final static int VIEW_TYPE_EMPTY = 2;
+    private final static int VIEW_TYPE_TOPIC_CREATE = 3;
 
     private static final int toggle_id = 1;
     private static final int add_member_id = 2;
@@ -402,8 +405,8 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
 
     @Override
     public View createView(Context context) {
-        additionNavigationBarHeight = parentDialogsActivity != null && parentDialogsActivity.hasMainTabs ? dp(MainTabsHelper.getMainTabsHeightWithMargins()) : 0;
-        additionFloatingButtonOffset = parentDialogsActivity != null && parentDialogsActivity.hasMainTabs ? dp(MainTabsHelper.getMainTabsHeight() + MainTabsHelper.getMainTabsMargin()) : 0;
+        additionNavigationBarHeight = parentDialogsActivity != null && parentDialogsActivity.hasMainTabs && !NaConfig.INSTANCE.getHideBottomNavigationBar().Bool() ? dp(MainTabsHelper.getMainTabsHeightWithMargins()) : 0;
+        additionFloatingButtonOffset = parentDialogsActivity != null && parentDialogsActivity.hasMainTabs && !NaConfig.INSTANCE.getHideBottomNavigationBar().Bool() ? dp(MainTabsHelper.getMainTabsHeight() + MainTabsHelper.getMainTabsMargin()) : 0;
 
         fragmentView = contentView = new SizeNotifierFrameLayout(context) {
             {
@@ -439,10 +442,19 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
                 return super.drawChild(canvas, child, drawingTime);
             }
 
+            private boolean ignoreLayout;
+
             @Override
             protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
                 int width = MeasureSpec.getSize(widthMeasureSpec);
                 int height = MeasureSpec.getSize(heightMeasureSpec);
+
+                if (bottomOverlayContainer != null) {
+                    ignoreLayout = true;
+                    bottomOverlayContainer.getLayoutParams().height = dp(51) + navigationBarHeight;
+                    bottomOverlayContainer.setPadding(0, 0, 0, navigationBarHeight);
+                    ignoreLayout = false;
+                }
 
                 int actionBarHeight = 0;
                 for (int i = 0; i < getChildCount(); i++) {
@@ -463,6 +475,14 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
                     }
                 }
                 setMeasuredDimension(width, height);
+            }
+
+            @Override
+            public void requestLayout() {
+                if (ignoreLayout) {
+                    return;
+                }
+                super.requestLayout();
             }
 
             @Override
@@ -1002,7 +1022,7 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
             }
 
             final boolean mono = getMessagesController().isMonoForum(-chatId);
-            final long topicId = mono ? DialogObject.getPeerDialogId(topic.from_id) : topic.id;
+            final long topicId = topic == null ? 0 : mono ? DialogObject.getPeerDialogId(topic.from_id) : topic.id;
 
             if (openedForSelect) {
                 if (onTopicSelectedListener != null) {
@@ -2744,6 +2764,9 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
             int oldCount = forumTopics.size();
             ArrayList<Item> oldItems = new ArrayList<>(forumTopics);
             forumTopics.clear();
+            if (UserObject.isBotForumWithEditableTopics(currentAccount, -chatId) && openedForForward) {
+                forumTopics.add(new Item(VIEW_TYPE_TOPIC_CREATE, null));
+            }
             for (int i = 0; i < topics.size(); i++) {
                 if (excludeTopics != null && excludeTopics.contains(topics.get(i).id)) {
                     continue;
@@ -2919,8 +2942,13 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            if (viewType == VIEW_TYPE_TOPIC) {
+            if (viewType == VIEW_TYPE_TOPIC || viewType == VIEW_TYPE_TOPIC_CREATE) {
                 TopicDialogCell dialogCell = new TopicDialogCell(null, parent.getContext(), true, false);
+                if (viewType == VIEW_TYPE_TOPIC_CREATE) {
+                    dialogCell.setForumIcon(ForumUtilities.createTopicDrawable("", ForumBubbleDrawable.serverSupportedColor[0], false));
+                    dialogCell.setTitleOverride(LocaleController.getString(R.string.BotForumAskForStartNewChatTitle));
+                    dialogCell.setCustomMessage(LocaleController.getString(R.string.BotForumAskForStartNewChatForward));
+                }
                 dialogCell.inPreviewMode = inPreviewMode;
                 dialogCell.setArchivedPullAnimation(pullForegroundDrawable);
                 return new RecyclerListView.Holder(dialogCell);
@@ -3008,15 +3036,18 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
                     }
                 }
 
-                if (getMessagesController().isMonoForum(-chatId)) {
-
-                } else {
+                if (!getMessagesController().isMonoForum(-chatId)) {
                     dialogCell.setTopicIcon(topic);
                 }
 
                 dialogCell.setChecked(selectedTopics.contains(newId), animated);
                 dialogCell.setDialogSelected(selectedTopicForTablet == newId);
                 dialogCell.onReorderStateChanged(reordering, true);
+            } else if (holder.getItemViewType() == VIEW_TYPE_TOPIC_CREATE) {
+                TopicDialogCell dialogCell = (TopicDialogCell) holder.itemView;
+                dialogCell.setCurrentDialogId(-chatId);
+                dialogCell.drawDivider = position != forumTopics.size() - 1 || recyclerListView.emptyViewIsVisible();
+                dialogCell.position = position;
             }
         }
 
@@ -3027,7 +3058,7 @@ public class TopicsFragment extends BaseFragment implements NotificationCenter.N
 
         @Override
         public boolean isEnabled(RecyclerView.ViewHolder holder) {
-            return holder.getItemViewType() == VIEW_TYPE_TOPIC;
+            return holder.getItemViewType() == VIEW_TYPE_TOPIC || holder.getItemViewType() == VIEW_TYPE_TOPIC_CREATE;
         }
 
         public void swapElements(int from, int to) {

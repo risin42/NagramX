@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="XChannel">Canale Nagram X</string>
-    <string name="EnableSaveDeletedMessages">Salva i Messaggi Eliminati</string>
+    <string name="EnableSaveDeletedMessages">Salva i messaggi eliminati</string>
     <string name="DeletedMessage">eliminato</string>
     <string name="EnableSaveEditsHistory">Salva cronologia modifiche</string>
     <string name="EditsHistoryMenuText">Cronologia delle modifiche</string>
     <string name="DeleteKeepLocally">Conserva localmente</string>
-    <string name="ClearMessageDatabase">Cancella database dei messaggi</string>
-    <string name="ClearMessageDatabaseNotification">Database dei messaggi cancellato.</string>
-    <string name="CustomDeletedMark">Contrassegno di eliminazione personalizzato</string>
+    <string name="ClearMessageDatabase">Cancella database messaggi</string>
+    <string name="ClearMessageDatabaseNotification">Database messaggi svuotato.</string>
+    <string name="CustomDeletedMark">Icona Eliminato Personalizzata</string>
     <string name="HidePremiumSection">Nascondi \"Premium\" nelle Impostazioni</string>
     <string name="HideHelpSection">Nascondi \"Aiuto\" nelle Impostazioni</string>
     <string name="ProviderLLMTranslator">Traduttore AI</string>
@@ -24,7 +24,7 @@
     <string name="LlmSystemPrompt">Prompt di sistema</string>
     <string name="LlmSystemPromptHint">Sei un traduttore professionista.</string>
     <string name="LlmSystemPromptNotice">Definisci il ruolo e il comportamento dell\'IA.\n\nQuesto prompt imposta il tono, la personalità e i limiti dell\'IA. Considera descrivere che tipo di assistente dovrebbe essere l\'IA.</string>
-    <string name="LlmUserPrompt">Richiesta utente</string>
+    <string name="LlmUserPrompt">Prompt Utente</string>
     <string name="LlmUserPromptHint">Traduci @text in @toLang.</string>
     <string name="LlmUserPromptNotice">Utilizza @text come placeholder per il messaggio originale e @toLang per la lingua di destinazione (facoltativo).\n\nLasciando questo campo vuoto verrà utilizzato il prompt predefinito.</string>
     <string name="LlmUseContext">Usa contesto</string>
@@ -40,22 +40,22 @@
     <string name="LlmTestResultResponse">Risposta</string>
     <string name="AITranslatorSettings">Traduttore AI</string>
     <string name="TranslucentDeletedMessages">Messaggi cancellati traslucidi</string>
-    <string name="ArticleTranslationProvider">Provider di traduzioni di articoli</string>
-    <string name="EnableSeparateArticleTranslator">Utilizza un provider diverso per l\'articolo</string>
+    <string name="ArticleTranslationProvider">Provider di traduzioni articoli</string>
+    <string name="EnableSeparateArticleTranslator">Usa un provider diverso per l\'articolo</string>
     <string name="DisableCrashlyticsCollection">Disabilita Firebase Crashlytics</string>
     <string name="ShowStickersRowToplevel">Mostra gli stickers nelle impostazioni principali</string>
     <string name="HideShareButtonInChannel">Nascondi il pulsante laterale \"Condividi\"</string>
-    <string name="DeleteCloudBackup">Cancella i dati del cloud</string>
-    <string name="DeleteCloudBackupFailed">Impossibile cancellare i dati del cloud</string>
-    <string name="DeleteCloudBackupSuccess">Dati cloud cancellati</string>
-    <string name="CloudConfigNoBackupToDelete">Nessun dato da cancellare</string>
+    <string name="DeleteCloudBackup">Cancella dati cloud</string>
+    <string name="DeleteCloudBackupFailed">Impossibile eliminare i dati cloud</string>
+    <string name="DeleteCloudBackupSuccess">Dati cloud eliminati</string>
+    <string name="CloudConfigNoBackupToDelete">Nessun dato da eliminare</string>
     <string name="ClearRegexFilters">Cancella</string>
     <string name="ClearRegexFiltersAlertMessage">Sei sicuro di voler cancellare tutti i filtri salvati? Questa operazione rimuoverà i filtri condivisi, i filtri utente e i filtri specifici della chat.</string>
-    <string name="PreferredTranslateTargetLang">Elenco personalizzato delle lingue preferite</string>
+    <string name="PreferredTranslateTargetLang">Elenco lingue preferite personalizzato</string>
     <string name="PreferredTranslateTargetLangExample">ad es. ja, zh_cn, zh_tw</string>
     <string name="PreferredTranslateTargetLangName">Lingue preferite</string>
     <string name="ClearDeleted">Cancella eliminati</string>
-    <string name="ClearDeletedAlertMessage">Sei sicuro di voler cancellare tutti i messaggi eliminati in questa chat?</string>
+    <string name="ClearDeletedAlertMessage">Sei sicuro di voler eliminare tutti i messaggi cancellati in questa chat?</string>
     <string name="ForwardsRestrictedInfoAyuDeleted">L\'inoltro non è consentito.</string>
     <string name="RegexFiltersNotice">Tocca per modificare.</string>
     <string name="RegexFiltersImport">Importa</string>
@@ -71,6 +71,8 @@
     <string name="UnshadowBan">Unshadow Ban</string>
     <string name="ShadowBanAdded">Aggiunto a **filtri utente**.</string>
     <string name="ShadowBanRemoved">Rimosso da **filtri utente**.</string>
+    <string name="ShadowBanChannelAdded">Aggiunto ai **filtri del canale**.</string>
+    <string name="ShadowBanChannelRemoved">Rimosso dai **filtri canale**.</string>
     <string name="botCommandConfirmTitle">Invia comando</string>
     <string name="botCommandConfirmText">Vuoi inviare questo comando?\n\n%s</string>
     <string name="MessageSavingSaveMedia">Salva media</string>
@@ -81,10 +83,6 @@
     <string name="MessageSavingSaveMediaInPublicGroups">… nei gruppi pubblici</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">… nei gruppi privati</string>
     <string name="TelegramUIAutoTranslate">Traduci intere chat</string>
-    <string name="TranslatorMode">Comportamento della traduzione manuale</string>
-    <string name="TranslatorModeAppend">Appendi</string>
-    <string name="TranslatorModeInline">Sostituisci</string>
-    <string name="TranslatorModePopup">Pop-up</string>
     <string name="Translated">Tradotto</string>
     <string name="ProviderRealMicrosoftTranslator">Microsoft Translator</string>
     <string name="TranslatorSettings">Traduttore</string>
@@ -133,7 +131,7 @@
     <string name="DisableGhostMode">Disabilita Ghost</string>
     <string name="GhostModeEnabled">Modalità Ghost attivata</string>
     <string name="GhostModeDisabled">Modalità Ghost disattivata</string>
-    <string name="GhostModeInDrawer">Scorciatoia scheda principale</string>
+    <string name="GhostModeInDrawer">Scorciatoia</string>
     <string name="GhostModeStatusIndicator">Indicatore Modalità Fantasma</string>
     <string name="DontSendReadMessagePackets">Non Leggere Messaggi</string>
     <string name="DontReadStoriesPackets">Non Leggere Storie</string>
@@ -208,7 +206,6 @@
     <string name="NoCaptionForward">NoCaption avanti</string>
     <string name="PreferCommonGroupsTab">Preferisci Scheda Gruppi</string>
     <string name="PreferCommonGroupsTabNotice">Se possibile, seleziona automaticamente la scheda \"Gruppi\" anziché \"Regali\".</string>
-    <string name="SendHighQualityPhoto">Invia foto in alta qualità</string>
     <string name="GroupedMessageMenu">Menu Messaggio Di Gruppo</string>
     <string name="GroupedMessageMenuNotice">Il raggruppamento sposta le azioni principali in fondo al menu dei messaggi.</string>
     <string name="CopySticker">Copia sticker</string>
@@ -217,8 +214,6 @@
     <string name="AutoCheckUpdateSwitch">Canale degli aggiornamenti</string>
     <string name="AutoCheckUpdateRelease">Release</string>
     <string name="AutoCheckUpdateBeta">Beta</string>
-    <string name="AutoInsertGIFCaption">Didascalie automatiche GIF</string>
-    <string name="AutoInsertGIFCaptionNotice">Utilizza automaticamente il testo nel campo d\'input corrente come didascalia della GIF.</string>
     <string name="YourVersionIsLatestNax">La tua versione è aggiornata.</string>
     <string name="PremiumElements">Elementi Premium</string>
     <string name="PremiumItemBoosts">Contatore potenziamenti</string>
@@ -301,8 +296,6 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="CameraInVideoMessagesRear">Camera posteriore</string>
     <string name="CameraInVideoMessagesAsk">Chiedi</string>
     <string name="CameraSettings">Camera</string>
-    <string name="SyncContactToPhone">Sincronizza contatto sul telefono</string>
-    <string name="AddViaQRCode">Aggiungi tramite QR Code</string>
     <string name="ContactNotes">Note</string>
     <string name="PhoneNotOnTelegramInvite">Questo numero di telefono non è su Telegram. **Invita &gt;**</string>
     <string name="PhoneAlreadyInContacts">Questo numero di telefono è già nei tuoi contatti. **Visualizza &gt;**</string>
@@ -327,4 +320,19 @@ Non possiamo aiutarti in questo caso; se hai problemi di accesso, contatta il Su
     <string name="MainTabsSettingsHeader">Tab Principali</string>
     <string name="MainTabsHideTitles">Nascondi titoli</string>
     <string name="MainTabsHideContacts">Nascondi scheda Contatti</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">Mostra anteprime messaggi</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">Mostra il contenuto delle notifiche anche quando il blocco con codice è attivo.</string>
+    <string name="StickerSavedHint">Sticker salvato nella galleria.</string>
+    <string name="StickerCopied">Sticker copiato negli appunti.</string>
+    <string name="StrokeOnViews">Effetti di riflesso</string>
+    <string name="HideBottomNavigationBar">Nascondi barra di navigazione inferiore</string>
+    <string name="TranslatorMode">Con il testo originale</string>
+    <string name="TranslatorWithOriginalTextOff">Disattivato</string>
+    <string name="TranslatorWithOriginalTextManualOnly">Solo manuale</string>
+    <string name="TranslatorWithOriginalTextOn">Attivo</string>
+    <string name="CenterActionBarTitleOn">Attivo</string>
+    <string name="CenterActionBarTitleOff">Disattivato</string>
+    <string name="TabletModeOn">Attiva</string>
+    <string name="TabletModeOff">Disattivata</string>
+    <string name="HideDialogsSearchField">Nascondi casella di ricerca</string>
 </resources>

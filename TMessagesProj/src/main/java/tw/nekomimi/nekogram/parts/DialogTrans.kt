@@ -8,6 +8,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tw.nekomimi.nekogram.NekoConfig
+import tw.nekomimi.nekogram.helpers.MessageHelper
 import tw.nekomimi.nekogram.translate.Translator
 import tw.nekomimi.nekogram.translate.code2Locale
 import tw.nekomimi.nekogram.utils.AlertUtil
@@ -27,7 +28,7 @@ fun startTrans(
     val canceled = AtomicBoolean(false)
     val finalToLang = toLang.code2Locale
     val finalProvider = provider.takeIf { it != 0 } ?: NekoConfig.translationProvider.Int()
-    val appendOriginal = NaConfig.translatorMode.Int() == TRANSLATE_MODE_APPEND
+    val appendOriginal = MessageHelper.shouldKeepOriginalForManualTranslation(NaConfig.translatorMode.Int())
     val job = Job()
 
     dialog.show()
@@ -43,11 +44,7 @@ fun startTrans(
             if (!canceled.get()) {
                 withContext(Dispatchers.Main) {
                     dialog.uDismiss()
-                    val finalText = if (appendOriginal) {
-                        "$text$TRANSLATION_SEPARATOR$result"
-                    } else {
-                        result
-                    }
+                    val finalText = MessageHelper.buildTranslatedDisplayText(text, result, appendOriginal)
                     AlertUtil.showCopyAlert(ctx, finalText)
                 }
             }

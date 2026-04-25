@@ -77,15 +77,18 @@
     <string name="PreviewSendFile">ارسال فایل</string>
     <string name="UnblockDeleted">رفع انسداد کاربران حذف شده</string>
     <string name="UnblockDeletedWarn">آیا مطمئن هستید که می‌خواهید **تمام کاربران حذف شده** را از مسدودی خارج کنید؟</string>
-    <string name="RegexFilters">فیلترهای پیام با استفاده از Regex</string>
+    <string name="RegexFilters">فیلتر پیام</string>
     <string name="RegexFiltersHeader">فیلتر ها</string>
+    <string name="RegexFiltersSharedHeader">فیلترهای اشتراکی</string>
+    <string name="RegexFiltersSubMenuDescription">می‌توانید انتخاب کنید که فیلترهای مشترک را برای این گفتگو مستثنی کنید.</string>
+    <string name="RegexFiltersChatHeader">فیلترهای گفتگو</string>
     <string name="RegexFiltersEnableInChats">فعال‌کردن فیلترها در چت‌های خصوصی</string>
     <string name="RegexFiltersCaseInsensitive">عدم توجه به بزرگ یا کوچک بودن حروف</string>
     <string name="RegexFiltersAdd">افزودن فیلتر</string>
     <string name="RegexFiltersEdit">ویرایش فیلتر</string>
     <string name="RegexFiltersAddDescription">شما می‌توانید از سایت <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> برای تست کامل عبارت منظم (regular expression) خود استفاده کنید. همچنین می‌توانید از متن ساده (plain text) استفاده کنید، اما مواظب بازگردانی پرانتز ها باشید.</string>
     <string name="RegexFiltersAddError">خطای نحوی سینتکس عبارت منظم</string>
-    <string name="ShowTimeHint">برای نمایش جزئیات روی زمان پیام کلیک کنید</string>
+    <string name="ShowTimeHint">برای جزئیات، روی زمان ضربه بزنید</string>
     <string name="SearchHashtagDefaultPageChannel">صفحه جستجوی پیش‌فرض هشتگ‌ها در کانال‌ها</string>
     <string name="SearchHashtagDefaultPageChat">صفحه جستجوی پیش‌فرض هشتگ‌ها در چت‌ها</string>
     <string name="EnablePanguOnSending">فعالسازی Pangu هنگام ارسال</string>

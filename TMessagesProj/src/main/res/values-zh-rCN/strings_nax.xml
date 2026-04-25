@@ -71,6 +71,8 @@
     <string name="UnshadowBan">解除静默屏蔽</string>
     <string name="ShadowBanAdded">已添加到**用户过滤器**。</string>
     <string name="ShadowBanRemoved">已从**用户过滤器**中移除。</string>
+    <string name="ShadowBanChannelAdded">已添加到**频道过滤器**。</string>
+    <string name="ShadowBanChannelRemoved">已从**频道过滤器**中移除。</string>
     <string name="botCommandConfirmTitle">确认发送</string>
     <string name="botCommandConfirmText">您确定要发送此指令吗？\n\n%s</string>
     <string name="MessageSavingSaveMedia">保存媒体</string>
@@ -81,10 +83,6 @@
     <string name="MessageSavingSaveMediaInPublicGroups">公开群组</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">私有群组</string>
     <string name="TelegramUIAutoTranslate">自动翻译</string>
-    <string name="TranslatorMode">手动翻译显示类型</string>
-    <string name="TranslatorModeAppend">追加</string>
-    <string name="TranslatorModeInline">替换</string>
-    <string name="TranslatorModePopup">弹窗</string>
     <string name="Translated">已翻译</string>
     <string name="ProviderRealMicrosoftTranslator">微软翻译</string>
     <string name="TranslatorSettings">翻译</string>
@@ -113,7 +111,7 @@
     <string name="ResetSettings">重置设置</string>
     <string name="ResetSettingsAlert">您确定要重置所有 N-设置 吗？</string>
     <string name="DontAutoPlayNextVoice">禁用自动播放下一条语音消息</string>
-    <string name="SaveToChatSubfolder">按聊天名称保存附件</string>
+    <string name="SaveToChatSubfolder">按对话名称保存附件</string>
     <string name="MessageColoredBackground">多彩消息背景</string>
     <string name="ColoredBackgroundNotice">回复，引用，链接预览的背景色和 Emoji。</string>
     <string name="ChatMenu">聊天菜单</string>
@@ -125,7 +123,7 @@
     <string name="DoubleTapIncoming">收到的消息</string>
     <string name="DoubleTapOutgoing">发送的消息</string>
     <string name="TgBrowserOpenFail">应用内浏览器不可用</string>
-    <string name="TgBrowserOpenFail_Desc">由于应用内浏览器已被禁用，所选操作不可用。</string>
+    <string name="TgBrowserOpenFail_Desc">因为应用内浏览器已被禁用，此操作不可用。</string>
     <string name="MapPreviewProviderYandexNax">Yandex</string>
     <string name="GhostMode">幽灵模式</string>
     <string name="GhostEssentialsHeader">幽灵选项</string>
@@ -133,7 +131,7 @@
     <string name="DisableGhostMode">禁用幽灵模式</string>
     <string name="GhostModeEnabled">幽灵模式已启用</string>
     <string name="GhostModeDisabled">幽灵模式已禁用</string>
-    <string name="GhostModeInDrawer">主页快捷方式</string>
+    <string name="GhostModeInDrawer">快捷方式</string>
     <string name="GhostModeStatusIndicator">幽灵模式指示器</string>
     <string name="DontSendReadMessagePackets">不显示消息已读</string>
     <string name="DontReadStoriesPackets">不显示动态已读</string>
@@ -208,7 +206,6 @@
     <string name="NoCaptionForward">无说明转发</string>
     <string name="PreferCommonGroupsTab">首选群组标签</string>
     <string name="PreferCommonGroupsTabNotice">在个人资料页面自动选择“群组”标签而不是“礼物”。</string>
-    <string name="SendHighQualityPhoto">发送高质量图片</string>
     <string name="GroupedMessageMenu">分组消息菜单</string>
     <string name="GroupedMessageMenuNotice">将主要操作选项移至消息菜单的底部。</string>
     <string name="CopySticker">复制贴纸</string>
@@ -217,8 +214,6 @@
     <string name="AutoCheckUpdateSwitch">更新通道</string>
     <string name="AutoCheckUpdateRelease">稳定版</string>
     <string name="AutoCheckUpdateBeta">测试版</string>
-    <string name="AutoInsertGIFCaption">发送 GIF 时自动插入草稿</string>
-    <string name="AutoInsertGIFCaptionNotice">自动将当前输入框中的内容作为 GIF 的附带文字发送。</string>
     <string name="YourVersionIsLatestNax">已是最新版本。</string>
     <string name="PremiumElements">Premium 元素</string>
     <string name="PremiumItemBoosts">助推者标识</string>
@@ -297,8 +292,6 @@
     <string name="CameraInVideoMessagesRear">后置摄像头</string>
     <string name="CameraInVideoMessagesAsk">询问</string>
     <string name="CameraSettings">相机</string>
-    <string name="SyncContactToPhone">同步联系人到手机</string>
-    <string name="AddViaQRCode">通过二维码添加</string>
     <string name="ContactNotes">备注</string>
     <string name="PhoneNotOnTelegramInvite">该号码未在Telegram注册。**邀请 &gt;**</string>
     <string name="PhoneAlreadyInContacts">此电话号码已在您的联系人中。**查看 &gt;**</string>
@@ -323,4 +316,19 @@
     <string name="MainTabsSettingsHeader">主标签页</string>
     <string name="MainTabsHideTitles">隐藏标题</string>
     <string name="MainTabsHideContacts">隐藏联系人标签页</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">显示消息预览</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">在密码锁启用时不再隐藏通知内容。</string>
+    <string name="StickerSavedHint">贴纸已保存到相册。</string>
+    <string name="StickerCopied">贴纸已复制到剪贴板。</string>
+    <string name="StrokeOnViews">眩光效果</string>
+    <string name="HideBottomNavigationBar">隐藏底部导航栏</string>
+    <string name="TranslatorMode">追加原文</string>
+    <string name="TranslatorWithOriginalTextOff">关闭</string>
+    <string name="TranslatorWithOriginalTextManualOnly">手动</string>
+    <string name="TranslatorWithOriginalTextOn">启用</string>
+    <string name="CenterActionBarTitleOn">打开</string>
+    <string name="CenterActionBarTitleOff">关闭</string>
+    <string name="TabletModeOn">启用</string>
+    <string name="TabletModeOff">禁用</string>
+    <string name="HideDialogsSearchField">隐藏搜索框</string>
 </resources>

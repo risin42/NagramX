@@ -517,6 +517,7 @@ public class EmojiTabsStrip extends ScrollableHorizontalScrollView {
         }
         final boolean isPremium = UserConfig.getInstance(UserConfig.selectedAccount).isPremium() || allowEmojisForNonPremium();
         if (NekoConfig.disableTrending.Bool() && !isPremium) {
+            showSettingsTab();
             return;
         }
         int childCount = contentView.getChildCount() - packsIndexStart - (settingsTab != null ? 1 : 0);
@@ -596,17 +597,21 @@ public class EmojiTabsStrip extends ScrollableHorizontalScrollView {
                 }
             }
         }
+        showSettingsTab();
+        for (int i = 0; i < attachedEmojiPacks.size(); i++) {
+            attachedEmojiPacks.get(i).keepAttached = false;
+            attachedEmojiPacks.get(i).updateAttachState();
+        }
+        updateClickListeners();
+    }
+
+    private void showSettingsTab() {
         if (settingsTab != null) {
             settingsTab.bringToFront();
             if (settingsTab.getAlpha() < 1) {
                 settingsTab.animate().alpha(1f).setDuration(HwEmojis.isHwEnabledOrPreparing() ? 0 : 200).setInterpolator(CubicBezierInterpolator.DEFAULT).start();
             }
         }
-        for (int i = 0; i < attachedEmojiPacks.size(); i++) {
-            attachedEmojiPacks.get(i).keepAttached = false;
-            attachedEmojiPacks.get(i).updateAttachState();
-        }
-        updateClickListeners();
     }
 
     private boolean isUnindexableTab(View view) {

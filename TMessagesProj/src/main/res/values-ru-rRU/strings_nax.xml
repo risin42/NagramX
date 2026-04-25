@@ -71,6 +71,8 @@
     <string name="UnshadowBan">Снять теневой бан</string>
     <string name="ShadowBanAdded">Добавлено в **пользовательские фильтры**.</string>
     <string name="ShadowBanRemoved">Удалено из **пользовательских фильтров**.</string>
+    <string name="ShadowBanChannelAdded">Добавлено в **фильтры каналов**.</string>
+    <string name="ShadowBanChannelRemoved">Удалено из **фильтров каналов**.</string>
     <string name="botCommandConfirmTitle">Отправить команду</string>
     <string name="botCommandConfirmText">Вы хотите отправить эту команду?\n\n%s</string>
     <string name="MessageSavingSaveMedia">Сохранять медиа</string>
@@ -81,10 +83,6 @@
     <string name="MessageSavingSaveMediaInPublicGroups">… в публичных группах</string>
     <string name="MessageSavingSaveMediaInPrivateGroups">… в частных группах</string>
     <string name="TelegramUIAutoTranslate">Переводить чаты целиком</string>
-    <string name="TranslatorMode">Поведение при ручном переводе</string>
-    <string name="TranslatorModeAppend">Добавлять</string>
-    <string name="TranslatorModeInline">Заменять</string>
-    <string name="TranslatorModePopup">Всплывающее окно</string>
     <string name="Translated">переведено</string>
     <string name="ProviderRealMicrosoftTranslator">Microsoft</string>
     <string name="TranslatorSettings">Переводчик</string>
@@ -133,7 +131,7 @@
     <string name="DisableGhostMode">Отключить «Призрака»</string>
     <string name="GhostModeEnabled">Режим «Призрака» включён</string>
     <string name="GhostModeDisabled">Режим «Призрака» выключен</string>
-    <string name="GhostModeInDrawer">Ярлык на вкладке «Настройки»</string>
+    <string name="GhostModeInDrawer">Быстрый доступ</string>
     <string name="GhostModeStatusIndicator">Индикатор режима «Призрака»</string>
     <string name="DontSendReadMessagePackets">Не читать сообщения</string>
     <string name="DontReadStoriesPackets">Не читать истории</string>
@@ -208,17 +206,14 @@
     <string name="NoCaptionForward">Переслать без подписи</string>
     <string name="PreferCommonGroupsTab">Предпочитать вкладку «Группы»</string>
     <string name="PreferCommonGroupsTabNotice">Автоматически выбирать вкладку «Группы» вместо «Подарки», когда это возможно.</string>
-    <string name="SendHighQualityPhoto">Отправлять фото высокого качества</string>
     <string name="GroupedMessageMenu">Группировать меню сообщений</string>
     <string name="GroupedMessageMenuNotice">Группировка перемещает основные действия в нижнюю часть меню сообщений.</string>
     <string name="CopySticker">Копировать стикер</string>
     <string name="CheckUpdate">Проверить обновления</string>
-    <string name="AutoCheckUpdateOFF">ВЫКЛ</string>
+    <string name="AutoCheckUpdateOFF">ВЫКЛ.</string>
     <string name="AutoCheckUpdateSwitch">Канал обновлений</string>
     <string name="AutoCheckUpdateRelease">Релиз</string>
     <string name="AutoCheckUpdateBeta">Бета</string>
-    <string name="AutoInsertGIFCaption">Автоматическая подпись к GIF</string>
-    <string name="AutoInsertGIFCaptionNotice">Автоматически использует текст в текущем поле ввода в качестве подписи к GIF.</string>
     <string name="YourVersionIsLatestNax">Ваша версия актуальна.</string>
     <string name="PremiumElements">Premium-элементы</string>
     <string name="PremiumItemBoosts">Счётчик голосов</string>
@@ -297,8 +292,6 @@
     <string name="CameraInVideoMessagesRear">Основная</string>
     <string name="CameraInVideoMessagesAsk">Спрашивать</string>
     <string name="CameraSettings">Камера</string>
-    <string name="SyncContactToPhone">Синхронизировать контакт с телефоном</string>
-    <string name="AddViaQRCode">Добавить по QR-коду</string>
     <string name="ContactNotes">Заметки</string>
     <string name="PhoneNotOnTelegramInvite">Этого номера телефона нет в Telegram. **Пригласить &gt;**</string>
     <string name="PhoneAlreadyInContacts">Этот номер телефона уже есть в ваших контактах. **Просмотреть &gt;**</string>
@@ -323,4 +316,19 @@
     <string name="MainTabsSettingsHeader">Основные вкладки</string>
     <string name="MainTabsHideTitles">Скрыть заголовки</string>
     <string name="MainTabsHideContacts">Скрыть вкладку «Контакты»</string>
+    <string name="PasscodeShowMessagePreviewWhenLocked">Предпросмотр сообщений</string>
+    <string name="PasscodeShowMessagePreviewWhenLockedAbout">Отображает содержимое уведомлений даже при включённой блокировке паролем.</string>
+    <string name="StickerSavedHint">Стикер сохранён в галерею.</string>
+    <string name="StickerCopied">Стикер скопирован в буфер обмена.</string>
+    <string name="StrokeOnViews">Эффекты бликов</string>
+    <string name="HideBottomNavigationBar">Скрыть нижнюю панель навигации</string>
+    <string name="TranslatorMode">С исходным текстом</string>
+    <string name="TranslatorWithOriginalTextOff">Выкл.</string>
+    <string name="TranslatorWithOriginalTextManualOnly">Только вручную</string>
+    <string name="TranslatorWithOriginalTextOn">Вкл.</string>
+    <string name="CenterActionBarTitleOn">Вкл.</string>
+    <string name="CenterActionBarTitleOff">Выкл.</string>
+    <string name="TabletModeOn">Вкл.</string>
+    <string name="TabletModeOff">Выкл.</string>
+    <string name="HideDialogsSearchField">Скрыть поле поиска</string>
 </resources>

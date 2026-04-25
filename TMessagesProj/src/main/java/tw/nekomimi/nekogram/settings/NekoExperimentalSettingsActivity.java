@@ -232,7 +232,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
 
         listView.setAdapter(listAdapter);
 
-        setupDefaultListeners(context);
+        setupDefaultListeners();
 
         // Cells: Set OnSettingChanged Callbacks
         cellGroup.callBackSettingsChanged = (key, newValue) -> {

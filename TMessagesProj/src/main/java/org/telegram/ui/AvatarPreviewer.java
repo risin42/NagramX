@@ -8,8 +8,10 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -27,8 +29,11 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
 import androidx.core.math.MathUtils;
 import androidx.core.util.Consumer;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLoader;
@@ -39,6 +44,7 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.utils.ViewOutlineProviderImpl;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
 import org.telegram.ui.ActionBar.ActionBarMenuSubItem;
@@ -50,9 +56,13 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.MediaActionDrawable;
 import org.telegram.ui.Components.RadialProgress2;
-import org.telegram.ui.Stories.RoundRectOutlineProvider;
+import org.telegram.ui.Components.ScrimOptions;
+import org.telegram.ui.Components.blur3.BlurredBackgroundDrawableViewFactory;
+import org.telegram.ui.Components.blur3.drawable.color.impl.BlurredBackgroundProviderImpl;
+import org.telegram.ui.Components.blur3.source.BlurredBackgroundSourceBitmap;
+import org.telegram.ui.Components.blur3.utils.Blur3Utils;
+import org.telegram.ui.Components.chat.ViewPositionWatcher;
 
-import java.util.Collections;
 import java.util.Objects;
 
 import kotlin.Unit;
@@ -60,6 +70,8 @@ import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.NekoConfig;
 
 public class AvatarPreviewer {
+
+    private static final int PREVIEW_CORNER_RADIUS_DP = 12;
 
     @SuppressLint("StaticFieldLeak")
     private static AvatarPreviewer INSTANCE;
@@ -111,6 +123,13 @@ public class AvatarPreviewer {
                     }
                 }
             };
+            ViewCompat.setOnApplyWindowInsetsListener(this.layout, (v, insets) -> {
+                final Insets r = insets.getInsets(WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.systemBars());
+                if (layout == v && layout.container != null) {
+                    layout.container.setPadding(r.left, r.top, r.right, r.bottom);
+                }
+                return WindowInsetsCompat.CONSUMED;
+            });
         }
 
         layout.setData(data);
@@ -119,18 +138,25 @@ public class AvatarPreviewer {
             if (layout.getParent() != null) {
                 windowManager.removeView(layout);
             }
-            final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
+            final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,
                     WindowManager.LayoutParams.TYPE_APPLICATION_PANEL,
                     0, PixelFormat.TRANSLUCENT
             );
-            if (Build.VERSION.SDK_INT >= 21) {
-                layoutParams.flags = WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR |
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
-            }
-            AndroidUtilities.setPreferredMaxRefreshRate(windowManager, layout, layoutParams);
-            windowManager.addView(layout, layoutParams);
+
+            params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
+            params.flags |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
+                    | WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_FULLSCREEN
+                    | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+
+
+            AndroidUtilities.setPreferredMaxRefreshRate(windowManager, layout, params);
+            windowManager.addView(layout, params);
             parentContainer.requestDisallowInterceptTouchEvent(true);
             visible = true;
         }
@@ -186,16 +212,18 @@ public class AvatarPreviewer {
         }
 
         public static Data of(TLRPC.User user, TLRPC.UserFull userFull, MenuItem... menuItems) {
-            ImageLocation imageLocation = ImageLocation.getForUserOrChat(userFull.user, ImageLocation.TYPE_BIG);
-            if (imageLocation == null && userFull.profile_photo != null) {
+            final TLRPC.User peerUser = user != null ? user : userFull.user;
+
+            ImageLocation imageLocation = ImageLocation.getForUserOrChat(peerUser, ImageLocation.TYPE_BIG);
+            if (imageLocation == null && userFull != null && userFull.profile_photo != null) {
                 imageLocation = ImageLocation.getForPhoto(FileLoader.getClosestPhotoSizeWithSize(userFull.profile_photo.sizes, 500), userFull.profile_photo);
             }
-            final ImageLocation thumbImageLocation = ImageLocation.getForUserOrChat(userFull.user, ImageLocation.TYPE_SMALL);
+            final ImageLocation thumbImageLocation = ImageLocation.getForUserOrChat(peerUser, ImageLocation.TYPE_SMALL);
             final String thumbFilter = thumbImageLocation != null && thumbImageLocation.photoSize instanceof TLRPC.TL_photoStrippedSize ? "b" : null;
             final ImageLocation videoLocation;
             final String videoFileName;
-            final BitmapDrawable thumb = user != null && user.photo != null ? user.photo.strippedBitmap : null;
-            if (userFull.profile_photo != null && !userFull.profile_photo.video_sizes.isEmpty()) {
+            final BitmapDrawable thumb = peerUser != null && peerUser.photo != null ? peerUser.photo.strippedBitmap : null;
+            if (userFull != null && userFull.profile_photo != null && !userFull.profile_photo.video_sizes.isEmpty()) {
                 final TLRPC.VideoSize videoSize = FileLoader.getClosestVideoSizeWithSize(userFull.profile_photo.video_sizes, 1000);
                 videoLocation = ImageLocation.getForPhoto(videoSize, userFull.profile_photo);
                 videoFileName = FileLoader.getAttachFileName(videoSize);
@@ -204,7 +232,7 @@ public class AvatarPreviewer {
                 videoFileName = null;
             }
             final String videoFilter = videoLocation != null && videoLocation.imageType == FileLoader.IMAGE_TYPE_ANIMATION ? ImageLoader.AUTOPLAY_FILTER : null;
-            return new Data(imageLocation, thumbImageLocation, videoLocation, null, thumbFilter, videoFilter, videoFileName, thumb, userFull.user, menuItems, null);
+            return new Data(imageLocation, thumbImageLocation, videoLocation, null, thumbFilter, videoFilter, videoFileName, thumb, peerUser, menuItems, null);
         }
 
         public static Data of(TLRPC.Chat chat, int classGuid, MenuItem... menuItems) {
@@ -364,11 +392,15 @@ public class AvatarPreviewer {
         private final ActionBarPopupWindow.ActionBarPopupWindowLayout menu;
         private final Callback callback;
         private final Theme.ResourcesProvider resourcesProvider;
+        private final BlurredBackgroundSourceBitmap iBlur3SourceBitmap = new BlurredBackgroundSourceBitmap();
+        private final BlurredBackgroundDrawableViewFactory iBlur3Factory = new BlurredBackgroundDrawableViewFactory(iBlur3SourceBitmap);
 
         private AnimatorSet openAnimator;
         private boolean showing;
         private MenuItem[] menuItems;
         private View blurView;
+        private Bitmap blurBitmap;
+        private final Matrix blurMatrix = new Matrix();
         private boolean preparingBlur;
 
         private String videoFileName;
@@ -379,7 +411,8 @@ public class AvatarPreviewer {
             super(context);
             this.callback = callback;
             this.resourcesProvider = resourcesProvider;
-            setWillNotDraw(false);
+
+            iBlur3Factory.setSourceRootView(new ViewPositionWatcher(this), this);
 
             blurView = new View(context);
             blurView.setOnClickListener(v -> setShowing(false));
@@ -396,37 +429,47 @@ public class AvatarPreviewer {
                     int width = right - left - getPaddingLeft() - getPaddingRight();
                     int height = bottom - top - getPaddingTop() - getPaddingBottom();
 
-                    int maxAvatarSize = Math.min(width, height) - dp(16);
+                    int maxAvatarSize = Math.min(width, height) - dp(24);
                     int minAvatarSize = Math.min(dp(60), maxAvatarSize);
 
-                    int maxMenuHeight = height - minAvatarSize - dp(16 + 24);
+                    int maxMenuHeight = height - minAvatarSize - dp(24 + 24);
                     menu.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(maxMenuHeight, MeasureSpec.AT_MOST));
 
-                    int avatarSize = MathUtils.clamp(height - menu.getMeasuredHeight() - dp(16 + 24), minAvatarSize, maxAvatarSize);
+                    int avatarSize = MathUtils.clamp(height - menu.getMeasuredHeight() - dp(24 + 24), minAvatarSize, maxAvatarSize);
                     avatarView.measure(MeasureSpec.makeMeasureSpec(avatarSize, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(avatarSize, MeasureSpec.EXACTLY));
 
-                    int verticalOffset = (height - avatarSize - menu.getMeasuredHeight() - dp(16 + 24)) / 2;
+                    int verticalOffset = (height - avatarSize - menu.getMeasuredHeight() - dp(24 + 24)) / 2;
 
                     FrameLayout.LayoutParams avatarLayoutParams = (LayoutParams) avatarView.getLayoutParams();
                     FrameLayout.LayoutParams menuLayoutParams = (LayoutParams) menu.getLayoutParams();
 
                     avatarLayoutParams.topMargin = verticalOffset + dp(8);
-                    menuLayoutParams.topMargin = verticalOffset + dp(8) + avatarSize;
+                    menuLayoutParams.topMargin = verticalOffset + dp(8) + avatarSize + dp(4);
+                    menuLayoutParams.leftMargin = dp(4);
+                    menuLayoutParams.rightMargin = dp(4);
 
                     super.onLayout(changed, left, top, right, bottom);
                 }
             };
-            container.setFitsSystemWindows(true);
             addView(container, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
             avatarView = new AvatarView(context, resourcesProvider);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                avatarView.setElevation(dp(4));
-                avatarView.setClipToOutline(true);
-            }
+            avatarView.setOutlineProvider(ViewOutlineProviderImpl.boundsWithPaddingRoundRect(0, dp(12)));
+            avatarView.setElevation(dp(4));
+            avatarView.setClipToOutline(true);
             container.addView(avatarView, LayoutHelper.createFrame(0, 0, Gravity.CENTER_HORIZONTAL));
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                avatarView.setOutlineSpotShadowColor(0x80000000);
+                avatarView.setOutlineAmbientShadowColor(0x80000000);
+            }
+
             menu = new ActionBarPopupWindow.ActionBarPopupWindowLayout(context, R.drawable.popup_fixed_alert4, resourcesProvider, 0);
+            menu.setBackground(iBlur3Factory.create(menu)
+                .setColorProvider(BlurredBackgroundProviderImpl.scrimMenuBackground(resourcesProvider))
+                .setPadding(dp(8))
+                .setHasPadding(true)
+                .setRadius(dp(12)));
             container.addView(menu, LayoutHelper.createFrameRelatively(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.START));
         }
 
@@ -497,6 +540,7 @@ public class AvatarPreviewer {
                 blurView.setBackground(null);
                 AndroidUtilities.runOnUIThread(this::prepareBlurBitmap);
             }
+            checkBitmapMatrix();
         }
 
         private void prepareBlurBitmap() {
@@ -504,11 +548,21 @@ public class AvatarPreviewer {
                 return;
             }
             preparingBlur = true;
-            AndroidUtilities.makeGlobalBlurBitmap(bitmap -> {
+            ScrimOptions.makeGlobalBlurBitmaps((bitmapBg, bitmapOptions) -> {
                 //noinspection deprecation
-                blurView.setBackground(new BitmapDrawable(bitmap));
+                blurBitmap = bitmapBg;
+                blurView.setBackground(new BitmapDrawable(bitmapBg));
                 preparingBlur = false;
-            }, 6f, 7, this, Collections.singletonList(this));
+                iBlur3SourceBitmap.setBitmap(bitmapOptions);
+                checkBitmapMatrix();
+            });
+        }
+
+        private void checkBitmapMatrix() {
+            Blur3Utils.checkBitmapSourceMatrixScale(iBlur3SourceBitmap, this);
+            if (menu != null) {
+                menu.invalidate();
+            }
         }
 
         public void setData(Data data) {
@@ -626,14 +680,10 @@ public class AvatarPreviewer {
 
         public AvatarView(Context context, Theme.ResourcesProvider resourcesProvider) {
             super(context);
-            setWillNotDraw(false);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setOutlineProvider(new RoundRectOutlineProvider(6));
-            }
 
             backupImageView = new BackupImageView(context);
             backupImageView.setAspectFit(true);
-            backupImageView.setRoundRadius(dp(6));
+            backupImageView.setRoundRadius(dp(12));
             addView(backupImageView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
             radialProgress = new RadialProgress2(this, resourcesProvider);
@@ -670,7 +720,7 @@ public class AvatarPreviewer {
         }
 
         @Override
-        protected void dispatchDraw(Canvas canvas) {
+        protected void dispatchDraw(@NonNull Canvas canvas) {
             super.dispatchDraw(canvas);
 
             if (showProgress) {

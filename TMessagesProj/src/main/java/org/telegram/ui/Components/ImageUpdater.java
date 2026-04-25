@@ -40,8 +40,6 @@ import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
-import org.telegram.messenger.MessagesController;
-import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SendMessagesHelper;
 import org.telegram.messenger.SharedConfig;
@@ -55,6 +53,7 @@ import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.BasePermissionsActivity;
+import org.telegram.ui.ChatEditActivity;
 import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.PhotoAlbumPickerActivity;
 import org.telegram.ui.PhotoCropActivity;
@@ -65,9 +64,6 @@ import org.telegram.ui.ProfileActivity;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import kotlin.Unit;
-import tw.nekomimi.nekogram.ui.BottomBuilder;
 
 public class ImageUpdater implements NotificationCenter.NotificationCenterDelegate, PhotoCropActivity.PhotoEditActivityDelegate {
     private final static int ID_TAKE_PHOTO = 0,
@@ -138,7 +134,7 @@ public class ImageUpdater implements NotificationCenter.NotificationCenterDelega
         }
         MessageObject avatarObject = null;
         Bitmap bitmap;
-        if (photoEntry.isVideo || photoEntry.editedInfo != null) {
+        if ((photoEntry.isVideo || photoEntry.editedInfo != null) && !photoEntry.isLivePhoto) {
             TLRPC.TL_message message = new TLRPC.TL_message();
             message.id = 0;
             message.message = "";
@@ -261,7 +257,6 @@ public class ImageUpdater implements NotificationCenter.NotificationCenterDelega
         if (parentFragment == null || parentFragment.getParentActivity() == null) {
             return;
         }
-
         canceled = false;
         this.type = type;
         if (useAttachMenu) {
@@ -274,6 +269,8 @@ public class ImageUpdater implements NotificationCenter.NotificationCenterDelega
             builder.setTitle(LocaleController.formatString("SetPhotoFor", R.string.SetPhotoFor, user.first_name), true);
         } else if (type == TYPE_SUGGEST_PHOTO_FOR_USER) {
             builder.setTitle(LocaleController.formatString("SuggestPhotoFor", R.string.SuggestPhotoFor, user.first_name), true);
+        } else if (parentFragment instanceof ProfileActivity || parentFragment instanceof ChatEditActivity) {
+            builder.setTitle(LocaleController.getString(R.string.ProfileActionsEditPhoto2), true);
         } else {
             builder.setTitle(LocaleController.getString(R.string.ChoosePhoto), true);
         }
@@ -290,10 +287,6 @@ public class ImageUpdater implements NotificationCenter.NotificationCenterDelega
 
         items.add(LocaleController.getString(R.string.ChooseFromGallery));
         icons.add(R.drawable.msg_photos);
-        ids.add(ID_UPLOAD_FROM_GALLERY);
-
-        items.add(LocaleController.getString(R.string.ChooseFromGallery));
-        icons.add(R.drawable.msg_photos);
         ids.add(ID_OPEN_ATTACH);
 
         items.add(LocaleController.getString(R.string.ChooseTakePhoto));
@@ -302,8 +295,14 @@ public class ImageUpdater implements NotificationCenter.NotificationCenterDelega
 
         if (canSelectVideo) {
             items.add(LocaleController.getString(R.string.ChooseRecordVideo));
-            icons.add(R.drawable.msg_videocall);
+            icons.add(R.drawable.msg_video);
             ids.add(ID_RECORD_VIDEO);
+        }
+
+        if (!(parentFragment instanceof ProfileActivity || parentFragment instanceof ChatEditActivity)) {
+            items.add(LocaleController.getString(R.string.ChooseFromGallery));
+            icons.add(R.drawable.msg_photos);
+            ids.add(ID_UPLOAD_FROM_GALLERY);
         }
 
         if (searchAvailable) {
@@ -532,6 +531,9 @@ public class ImageUpdater implements NotificationCenter.NotificationCenterDelega
                                 info.coverPath = photoEntry.coverPath;
                                 info.videoEditedInfo = photoEntry.editedInfo;
                                 info.isVideo = photoEntry.isVideo;
+                                info.isLivePhoto = photoEntry.isLivePhoto;
+                                info.livePhotoVideoOffset = photoEntry.livePhotoVideoOffset;
+                                info.discardLivePhoto = true;
                                 info.caption = photoEntry.caption != null ? photoEntry.caption.toString() : null;
                                 info.entities = photoEntry.entities;
                                 info.masks = photoEntry.stickers;
@@ -622,7 +624,7 @@ public class ImageUpdater implements NotificationCenter.NotificationCenterDelega
             SendMessagesHelper.SendingMediaInfo info = photos.get(0);
             Bitmap bitmap = null;
             MessageObject avatarObject = null;
-            if (info.isVideo || info.videoEditedInfo != null) {
+            if ((info.isVideo || info.videoEditedInfo != null) && !info.isLivePhoto) {
                 TLRPC.TL_message message = new TLRPC.TL_message();
                 message.id = 0;
                 message.message = "";

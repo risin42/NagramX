@@ -76,6 +76,7 @@ import org.telegram.ui.Components.FlickerLoadingView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.LinkSpanDrawable;
 import org.telegram.ui.Components.RecyclerListView;
+import org.telegram.ui.Components.ScaleStateListAnimator;
 import org.telegram.ui.Components.URLSpanNoUnderline;
 import org.telegram.ui.Components.UndoView;
 import org.telegram.ui.Components.voip.CellFlickerDrawable;
@@ -1039,6 +1040,7 @@ public class SessionsActivity extends BaseFragment implements NotificationCenter
 
             buttonTextView.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText));
             buttonTextView.setBackground(Theme.createSimpleSelectorRoundRectDrawable(dp(24), Theme.getColor(Theme.key_featuredStickers_addButton), Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
+            ScaleStateListAnimator.apply(buttonTextView, .02f, 1.2f);
 
             buttonTextView.setOnClickListener(view -> {
                 if (getParentActivity() == null) {

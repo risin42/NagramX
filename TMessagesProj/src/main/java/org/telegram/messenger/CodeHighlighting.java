@@ -90,10 +90,6 @@ public class CodeHighlighting {
             }
             if (currentType == 2) {
                 p.setColor(0xffffffff);
-            } else if (currentType == 1) {
-                p.setColor(Theme.getColor(Theme.key_chat_messageTextOut));
-            } else {
-                p.setColor(Theme.getColor(Theme.key_chat_messageTextIn));
             }
             if (style != null) {
                 style.applyStyle(p);

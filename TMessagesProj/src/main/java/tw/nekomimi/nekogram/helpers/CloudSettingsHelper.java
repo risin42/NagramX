@@ -108,7 +108,7 @@ public class CloudSettingsHelper {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, resourcesProvider);
         builder.setTitle(getString(R.string.CloudConfig));
         builder.setMessage(AndroidUtilities.replaceTags(getString(R.string.CloudConfigDesc)));
-        builder.setTopImage(R.drawable.cloud, Theme.getColor(Theme.key_dialogTopBackground, resourcesProvider));
+        builder.setTopImage(R.drawable.cloud, Theme.getColor(Theme.key_featuredStickers_addButton, resourcesProvider));
 
         TextViewSwitcher syncedDate = new TextViewSwitcher(context);
         syncedDate.setFactory(() -> {

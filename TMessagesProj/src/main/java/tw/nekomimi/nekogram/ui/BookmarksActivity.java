@@ -78,6 +78,7 @@ import tw.nekomimi.nekogram.helpers.MessageHelper;
 import tw.nekomimi.nekogram.llm.LlmConfig;
 import tw.nekomimi.nekogram.translate.Translator;
 import tw.nekomimi.nekogram.ui.cells.NekoMessageCell;
+import xyz.nextalone.nagram.NaConfig;
 import xyz.nextalone.nagram.helper.BookmarksHelper;
 
 public class BookmarksActivity extends NekoDelegateFragment {
@@ -216,7 +217,7 @@ public class BookmarksActivity extends NekoDelegateFragment {
                     if (messageObject.messageOwner.media != null) {
                         messageObject.messageOwner.media.ttl_seconds = 0;
                     }
-                } else {
+                } else if (NaConfig.INSTANCE.getEnableSaveDeletedMessages().Bool()) {
                     DeletedMessageFull deleted = AyuMessagesController.getInstance().getMessage(userId, dialogId, messageId);
                     if (hasAyuDeletedContent(deleted)) {
                         var base = deleted.message;

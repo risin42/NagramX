@@ -221,7 +221,7 @@
     <string name="DeveloperSettings">تنظیمات توسعه‌دهنده</string>
     <string name="TransSite">کمک به ترجمه</string>
     <string name="ShareMessages">اشتراک‌گذاری</string>
-    <string name="DisableVibration">لرزش را غیرفعال کنيد</string>
+    <string name="DisableVibration">غیرفعال کردن لرزش</string>
     <string name="SendCommentAfterForward">ارسال نظر پس از ارسال</string>
     <string name="ImportLogin">ورود با QR</string>
     <string name="UserRestrictionsSendGames">ارسال بازی</string>
@@ -229,7 +229,7 @@
     <string name="TabletMode">حالت تبلت</string>
     <string name="TabletModeDefault">خودکار</string>
     <string name="ReplaceText">جایگزینی متن</string>
-    <string name="TextOrigin">متن اصلی</string>
+    <string name="TextOrigin">اصلی</string>
     <string name="TextReplace">متن جایگزین</string>
     <string name="ReplaceRegex">استفاده از Regex</string>
     <string name="DisableTrending">غیرفعال کردن موارد پرطرفدار</string>
