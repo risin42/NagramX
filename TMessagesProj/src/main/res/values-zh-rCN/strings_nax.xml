@@ -145,8 +145,9 @@
     <string name="GhostReadMessage">标记已读</string>
     <string name="GhostModeExcludeRead">排除已读</string>
     <string name="GhostModeExcludeTyping">排除输入</string>
-    <string name="OnlyShowCountedDialogs">仅显示未读</string>
     <string name="ShowAllDialogs">显示所有</string>
+    <string name="ShowUnreadDialogs">显示未读</string>
+    <string name="ShowRelatedDialogs">显示与我有关</string>
     <string name="SendWithSound">有声发送</string>
     <string name="PerformanceClass">设备性能等级</string>
     <string name="PerformanceClassHigh">高</string>
