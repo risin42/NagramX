@@ -1241,6 +1241,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             getIgnoreMutedCountLegacy()
         )
+    val onlyShowCountedDialogs =
+        addConfig(
+            "OnlyShowCountedDialogs",
+            ConfigItem.configTypeBool,
+            false
+        )
     val markdownParser =
         addConfig(
             "MarkdownParser",

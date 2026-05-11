@@ -10500,6 +10500,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             if (filterTabsView != null && filterTabsView.getVisibility() == View.VISIBLE) {
                 filterTabsView.notifyTabCounterChanged(filterTabsView.getDefaultTabId());
             }
+            refreshDialogsForOnlyShowCountedMode();
         } else if (id == NotificationCenter.dialogsUnreadPollVotesCounterChanged) {
             updateVisibleRows(0);
         } else if (id == NotificationCenter.dialogsUnreadReactionsCounterChanged) {
@@ -10532,6 +10533,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             updateVisibleRows(mask);
             if (filterTabsView != null && filterTabsView.getVisibility() == View.VISIBLE && (mask & MessagesController.UPDATE_MASK_READ_DIALOG_MESSAGE) != 0) {
                 filterTabsView.checkTabsCounter();
+            }
+            if ((mask & MessagesController.UPDATE_MASK_READ_DIALOG_MESSAGE) != 0) {
+                refreshDialogsForOnlyShowCountedMode();
             }
             if (viewPages != null) {
                 for (int a = 0; a < viewPages.length; a++) {
@@ -10912,6 +10916,82 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
     private ArrayList<TLRPC.Dialog> botShareDialogs;
 
+    private boolean canUseOnlyShowCountedDialogs() {
+        return !onlySelect && initialDialogsType == DIALOGS_TYPE_DEFAULT;
+    }
+
+    private boolean shouldOnlyShowCountedDialogs(int dialogsType, int folderId) {
+        return canUseOnlyShowCountedDialogs()
+                && NaConfig.INSTANCE.getOnlyShowCountedDialogs().Bool()
+                && (dialogsType == DIALOGS_TYPE_DEFAULT || dialogsType == DIALOGS_TYPE_FOLDER1 || dialogsType == DIALOGS_TYPE_FOLDER2);
+    }
+
+    private void refreshDialogsForOnlyShowCountedMode() {
+        refreshDialogsForOnlyShowCountedMode(false);
+    }
+
+    private void refreshDialogsForOnlyShowCountedMode(boolean force) {
+        if (!canUseOnlyShowCountedDialogs() || (!force && !NaConfig.INSTANCE.getOnlyShowCountedDialogs().Bool()) || viewPages == null || dialogsListFrozen) {
+            return;
+        }
+        for (int a = 0; a < viewPages.length; a++) {
+            if (viewPages[a] != null && viewPages[a].dialogsAdapter != null) {
+                viewPages[a].dialogsAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    @NonNull
+    private ArrayList<TLRPC.Dialog> filterOnlyCountedDialogs(@NonNull ArrayList<TLRPC.Dialog> dialogs, int currentAccount, int dialogsType, int folderId) {
+        if (!shouldOnlyShowCountedDialogs(dialogsType, folderId)) {
+            return dialogs;
+        }
+        MessagesController messagesController = AccountInstance.getInstance(currentAccount).getMessagesController();
+        MessagesController.DialogFilter dialogFilter = null;
+        if (dialogsType == DIALOGS_TYPE_FOLDER1 || dialogsType == DIALOGS_TYPE_FOLDER2) {
+            dialogFilter = messagesController.selectedDialogFilter[dialogsType == DIALOGS_TYPE_FOLDER2 ? 1 : 0];
+        }
+        ArrayList<TLRPC.Dialog> filteredDialogs = new ArrayList<>(dialogs.size());
+        for (int a = 0, n = dialogs.size(); a < n; a++) {
+            TLRPC.Dialog dialog = dialogs.get(a);
+            if (isDialogCountedForCurrentTab(messagesController, dialogFilter, dialog, dialogsType, folderId)) {
+                filteredDialogs.add(dialog);
+            }
+        }
+        return filteredDialogs;
+    }
+
+    private boolean isDialogCountedForCurrentTab(MessagesController messagesController, @Nullable MessagesController.DialogFilter dialogFilter, TLRPC.Dialog dialog, int dialogsType, int folderId) {
+        if (dialog == null) {
+            return false;
+        }
+        if (DialogObject.isFolderDialogId(dialog.id)) {
+            return dialogsType == DIALOGS_TYPE_DEFAULT && folderId == 0;
+        }
+        if (NaConfig.INSTANCE.getIgnoreUnreadCount().Int() == NekoConfig.DIALOG_FILTER_EXCLUDE_ALL) {
+            return false;
+        }
+        boolean hasUnreadCounter = messagesController.getDialogUnreadCount(dialog) > 0 || dialog.unread_mark || dialog.unread_mentions_count > 0;
+        if (!hasUnreadCounter) {
+            return false;
+        }
+        if (dialogsType == DIALOGS_TYPE_DEFAULT) {
+            if (dialog.folder_id != folderId) {
+                return false;
+            }
+            return getNotificationsController().showBadgeMuted || !messagesController.isDialogMuted(dialog.id, 0) || dialog.unread_mentions_count > 0;
+        }
+        if (dialogFilter != null) {
+            if (((dialogFilter.flags & MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_MUTED) != 0
+                    || NaConfig.INSTANCE.getIgnoreUnreadCount().Int() == NekoConfig.DIALOG_FILTER_EXCLUDE_MUTED)
+                    && messagesController.isDialogMuted(dialog.id, 0)
+                    && dialog.unread_mentions_count == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @NonNull
     public ArrayList<TLRPC.Dialog> getDialogsArray(int currentAccount, int dialogsType, int folderId, boolean frozen) {
         if (frozen && frozenDialogsList != null) {
@@ -10919,7 +10999,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         }
         MessagesController messagesController = AccountInstance.getInstance(currentAccount).getMessagesController();
         if (dialogsType == DIALOGS_TYPE_DEFAULT) {
-            return messagesController.getDialogs(folderId);
+            return filterOnlyCountedDialogs(messagesController.getDialogs(folderId), currentAccount, dialogsType, folderId);
         } else if (dialogsType == DIALOGS_TYPE_WIDGET || dialogsType == DIALOGS_TYPE_IMPORT_HISTORY) {
             return messagesController.dialogsServerOnly;
         } else if (dialogsType == DIALOGS_TYPE_ADD_USERS_TO) {
@@ -10959,12 +11039,12 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         } else if (dialogsType == 7 || dialogsType == 8) {
             MessagesController.DialogFilter dialogFilter = messagesController.selectedDialogFilter[dialogsType == 7 ? 0 : 1];
             if (dialogFilter == null) {
-                return messagesController.getDialogs(folderId);
+                return filterOnlyCountedDialogs(messagesController.getDialogs(folderId), currentAccount, dialogsType, folderId);
             } else {
                 if (initialDialogsType == DIALOGS_TYPE_FORWARD) {
                     return dialogFilter.dialogsForward;
                 }
-                return dialogFilter.dialogs;
+                return filterOnlyCountedDialogs(dialogFilter.dialogs, currentAccount, dialogsType, folderId);
             }
         } else if (dialogsType == DIALOGS_TYPE_BLOCK) {
             return messagesController.dialogsForBlock;
@@ -13475,6 +13555,19 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     NekoConfig.toggleGhostMode();
                     BulletinFactory.of(this).createSuccessBulletin(toggleMsg).show();
                     NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.mainUserInfoChanged);
+                });
+            }
+            if (canUseOnlyShowCountedDialogs()) {
+                final boolean onlyShowCountedDialogs = NaConfig.INSTANCE.getOnlyShowCountedDialogs().Bool();
+                final String onlyShowCountedDialogsText = onlyShowCountedDialogs
+                        ? getString(R.string.ShowAllDialogs)
+                        : getString(R.string.OnlyShowCountedDialogs);
+                final int onlyShowCountedDialogsIcon = onlyShowCountedDialogs
+                        ? R.drawable.outline_profile_message_24
+                        : R.drawable.outline_unread_24;
+                io.add(onlyShowCountedDialogsIcon, onlyShowCountedDialogsText, () -> {
+                    NaConfig.INSTANCE.getOnlyShowCountedDialogs().setConfigBool(!onlyShowCountedDialogs);
+                    refreshDialogsForOnlyShowCountedMode(true);
                 });
             }
             io.addGapIf(hideBottomNavigationBar);
