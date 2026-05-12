@@ -144,14 +144,14 @@ public class ReactedHeaderView extends FrameLayout {
                         for (Object obj : v.objects) {
                             if (obj instanceof Long) {
                                 long l = (long) obj;
-                                if (fromId != l) {
+                                if (fromId != l && !shouldFilterBlockedPeer(l)) {
                                     usersToRequest.add(l);
                                     dates.add(0);
                                 }
                             } else if (obj instanceof TLRPC.TL_readParticipantDate) {
                                 long userId = ((TLRPC.TL_readParticipantDate) obj).user_id;
                                 int date = ((TLRPC.TL_readParticipantDate) obj).date;
-                                if (fromId != userId) {
+                                if (fromId != userId && !shouldFilterBlockedPeer(userId)) {
                                     usersToRequest.add(userId);
                                     dates.add(date);
                                 }

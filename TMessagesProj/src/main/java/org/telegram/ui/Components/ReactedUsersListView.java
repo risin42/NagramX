@@ -200,6 +200,9 @@ public class ReactedUsersListView extends FrameLayout {
     public ReactedUsersListView setSeenUsers(List<ReactedHeaderView.UserSeen> users) {
         if (userReactions != null && !userReactions.isEmpty()) {
             for (ReactedHeaderView.UserSeen p : users) {
+                if (shouldFilterBlockedPeer(p.dialogId)) {
+                    continue;
+                }
                 TLObject user = p.user;
                 if (user != null && p.date > 0) {
                     for (int i = 0; i < userReactions.size(); ++i) {
@@ -215,6 +218,9 @@ public class ReactedUsersListView extends FrameLayout {
         }
         List<TLRPC.TL_messagePeerReaction> nr = new ArrayList<>(users.size());
         for (ReactedHeaderView.UserSeen p : users) {
+            if (shouldFilterBlockedPeer(p.dialogId)) {
+                continue;
+            }
             ArrayList<TLRPC.MessagePeerReaction> userReactions = peerReactionMap.get(p.dialogId);
             if (userReactions != null) {
                continue;
@@ -244,6 +250,11 @@ public class ReactedUsersListView extends FrameLayout {
         adapter.notifyDataSetChanged();
         updateHeight();
         return this;
+    }
+
+    private boolean shouldFilterBlockedPeer(long peerId) {
+        return peerId != 0 && message != null && message.isSupergroup() &&
+                MessageHelper.getInstance(currentAccount).isBlockedOrFilteredPeer(peerId);
     }
 
     @Override
