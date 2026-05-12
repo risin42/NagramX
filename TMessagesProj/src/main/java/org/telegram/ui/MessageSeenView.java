@@ -48,6 +48,8 @@ import org.telegram.ui.Components.MessageSeenCheckDrawable;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.StatusBadgeComponent;
 
+import tw.nekomimi.nekogram.helpers.MessageHelper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -117,7 +119,7 @@ public class MessageSeenView extends FrameLayout {
                     if (object instanceof TLRPC.TL_readParticipantDate) {
                         int date = ((TLRPC.TL_readParticipantDate) object).date;
                         Long peerId = ((TLRPC.TL_readParticipantDate) object).user_id;
-                        if (finalFromId == peerId) {
+                        if (finalFromId == peerId || shouldFilterBlockedPeer(chat, peerId)) {
                             continue;
                         }
                         TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(peerId);
@@ -129,7 +131,7 @@ public class MessageSeenView extends FrameLayout {
                         }
                     } else if (object instanceof Long) {
                         Long peerId = (Long) object;
-                        if (finalFromId == peerId) {
+                        if (finalFromId == peerId || shouldFilterBlockedPeer(chat, peerId)) {
                             continue;
                         }
                         if (peerId > 0) {
@@ -212,6 +214,11 @@ public class MessageSeenView extends FrameLayout {
         }));
         setBackground(Theme.createRadSelectorDrawable(Theme.getColor(Theme.key_dialogButtonSelector), 6, 0));
         setEnabled(false);
+    }
+
+    private boolean shouldFilterBlockedPeer(TLRPC.Chat chat, long peerId) {
+        return peerId != 0 && ChatObject.isMegagroup(chat) &&
+                MessageHelper.getInstance(currentAccount).isBlockedOrFilteredPeer(peerId);
     }
 
     boolean ignoreLayout;
