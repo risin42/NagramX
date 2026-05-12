@@ -33,6 +33,8 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.Vector;
 import org.telegram.ui.ActionBar.Theme;
 
+import tw.nekomimi.nekogram.helpers.MessageHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -235,7 +237,7 @@ public class ReactedHeaderView extends FrameLayout {
         ConnectionsManager.getInstance(currentAccount).sendRequest(getList, (response, error) -> {
             if (response instanceof TLRPC.TL_messages_messageReactionsList) {
                 TLRPC.TL_messages_messageReactionsList list = (TLRPC.TL_messages_messageReactionsList) response;
-                int c = list.count;
+                int c = Math.max(0, list.count - filterBlockedReactionPeers(list.reactions));
                 int ic = list.users.size();
                 LastSeenHelper.saveLastSeenFromPeerReactions(list.reactions, UserConfig.getInstance(currentAccount).getClientUserId());
                 post(() -> {
@@ -277,6 +279,9 @@ public class ReactedHeaderView extends FrameLayout {
                         iconView.animate().alpha(1f).start();
                     }
                     for (TLRPC.User u : list.users) {
+                        if (shouldFilterBlockedPeer(u.id)) {
+                            continue;
+                        }
                         if (message.messageOwner.from_id != null && u.id != message.messageOwner.from_id.user_id) {
                             boolean hasSame = false;
                             for (int i = 0; i < users.size(); i++) {
@@ -291,6 +296,9 @@ public class ReactedHeaderView extends FrameLayout {
                         }
                     }
                     for (TLRPC.Chat u : list.chats) {
+                        if (shouldFilterBlockedPeer(-u.id)) {
+                            continue;
+                        }
                         if (message.messageOwner.from_id != null && u.id != message.messageOwner.from_id.user_id) {
                             boolean hasSame = false;
                             for (int i = 0; i < users.size(); i++) {
@@ -309,6 +317,30 @@ public class ReactedHeaderView extends FrameLayout {
                 });
             }
         }, ConnectionsManager.RequestFlagInvokeAfter);
+    }
+
+    private int filterBlockedReactionPeers(List<TLRPC.MessagePeerReaction> reactions) {
+        if (reactions == null || reactions.isEmpty()) {
+            return 0;
+        }
+        int removed = 0;
+        for (int i = reactions.size() - 1; i >= 0; i--) {
+            TLRPC.MessagePeerReaction reaction = reactions.get(i);
+            if (reaction == null || reaction.peer_id == null) {
+                continue;
+            }
+            long peerId = MessageObject.getPeerId(reaction.peer_id);
+            if (shouldFilterBlockedPeer(peerId)) {
+                reactions.remove(i);
+                removed++;
+            }
+        }
+        return removed;
+    }
+
+    private boolean shouldFilterBlockedPeer(long peerId) {
+        return peerId != 0 && message != null && message.isSupergroup() &&
+                MessageHelper.getInstance(currentAccount).isBlockedOrFilteredPeer(peerId);
     }
 
     public List<UserSeen> getSeenUsers() {

@@ -11005,6 +11005,17 @@ public class MessagesController extends BaseController implements NotificationCe
         return "";
     }
 
+    private void filterBlockedMessageReactions(long dialogId, TLRPC.TL_messageReactions reactions) {
+        if (!NekoConfig.ignoreBlocked.Bool() || reactions == null || dialogId >= 0) {
+            return;
+        }
+        TLRPC.Chat chat = getChat(-dialogId);
+        if (!ChatObject.isMegagroup(chat)) {
+            return;
+        }
+        MessageHelper.getInstance(currentAccount).filterBlockedMessageReactions(reactions);
+    }
+
     private void updatePrintingStrings() {
         LongSparseArray<LongSparseArray<CharSequence>> newStrings = new LongSparseArray<>();
         LongSparseArray<LongSparseArray<Integer>> newTypes = new LongSparseArray<>();
@@ -18989,6 +19000,7 @@ public class MessagesController extends BaseController implements NotificationCe
             } else if (baseUpdate instanceof TLRPC.TL_updateMessageReactions) {
                 TLRPC.TL_updateMessageReactions update = (TLRPC.TL_updateMessageReactions) baseUpdate;
                 long dialogId = MessageObject.getPeerId(update.peer);
+                filterBlockedMessageReactions(dialogId, update.reactions);
 
                 getMessagesStorage().updateMessageReactions(dialogId, update.msg_id, update.reactions);
                 if (NaConfig.INSTANCE.getSaveLocalLastSeen().Bool()) {
@@ -19948,6 +19960,7 @@ public class MessagesController extends BaseController implements NotificationCe
                     } else if (baseUpdate instanceof TLRPC.TL_updateMessageReactions) {
                         TLRPC.TL_updateMessageReactions update = (TLRPC.TL_updateMessageReactions) baseUpdate;
                         long dialogId = MessageObject.getPeerId(update.peer);
+                        filterBlockedMessageReactions(dialogId, update.reactions);
                         long pendingPaid = StarsController.getInstance(currentAccount).getPendingPaidReactions(dialogId, update.msg_id);
                         if (pendingPaid != 0) {
                             final StarsController starsController = StarsController.getInstance(currentAccount);

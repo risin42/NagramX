@@ -1042,13 +1042,76 @@ public class MessageHelper extends BaseController {
         return getMessagesController().blockePeers.indexOfKey(senderId) >= 0 || AyuFilter.isCustomFilteredPeer(senderId);
     }
 
+    public boolean isBlockedOrFilteredPeer(long peerId) {
+        return isBlockedUser(peerId) || AyuFilter.isBlockedChannel(peerId);
+    }
+
     public boolean isBlockedOrFiltered(TLRPC.Message message) {
         if (message == null) {
             return false;
         }
         long fromId = MessageObject.getFromChatId(message);
-        boolean blocked =  isBlockedUser(fromId) || AyuFilter.isBlockedChannel(fromId);
+        boolean blocked = isBlockedOrFilteredPeer(fromId);
         return blocked || AyuFilter.isFiltered(new MessageObject(currentAccount, message, false, false), null);
+    }
+
+    public boolean filterBlockedMessageReactions(TLRPC.TL_messageReactions reactions) {
+        if (reactions == null || !NekoConfig.ignoreBlocked.Bool()) {
+            return false;
+        }
+        boolean changed = false;
+        if (reactions.recent_reactions != null) {
+            for (int i = reactions.recent_reactions.size() - 1; i >= 0; i--) {
+                TLRPC.MessagePeerReaction reaction = reactions.recent_reactions.get(i);
+                if (reaction == null || reaction.peer_id == null) {
+                    continue;
+                }
+                long peerId = MessageObject.getPeerId(reaction.peer_id);
+                if (peerId != 0 && isBlockedOrFilteredPeer(peerId)) {
+                    reactions.recent_reactions.remove(i);
+                    decrementReactionCount(reactions, reaction.reaction);
+                    changed = true;
+                }
+            }
+        }
+        if (reactions.top_reactors != null) {
+            for (int i = reactions.top_reactors.size() - 1; i >= 0; i--) {
+                TLRPC.MessageReactor reactor = reactions.top_reactors.get(i);
+                if (reactor == null || reactor.peer_id == null) {
+                    continue;
+                }
+                long peerId = MessageObject.getPeerId(reactor.peer_id);
+                if (peerId != 0 && isBlockedOrFilteredPeer(peerId)) {
+                    reactions.top_reactors.remove(i);
+                    changed = true;
+                }
+            }
+        }
+        return changed;
+    }
+
+    private static void decrementReactionCount(TLRPC.TL_messageReactions reactions, TLRPC.Reaction removedReaction) {
+        if (removedReaction == null || reactions.results == null) {
+            return;
+        }
+        for (int i = reactions.results.size() - 1; i >= 0; i--) {
+            TLRPC.ReactionCount count = reactions.results.get(i);
+            if (count == null || !sameReaction(count.reaction, removedReaction)) {
+                continue;
+            }
+            count.count--;
+            if (count.count <= 0) {
+                reactions.results.remove(i);
+            }
+            return;
+        }
+    }
+
+    private static boolean sameReaction(TLRPC.Reaction first, TLRPC.Reaction second) {
+        if (first == null || second == null) {
+            return false;
+        }
+        return first.equals(second) || first instanceof TLRPC.TL_reactionPaid && second instanceof TLRPC.TL_reactionPaid;
     }
 
     public static void copyVideoFrameToClipboard(File videoFile, long positionMs, View bulletinContainer, Theme.ResourcesProvider resourcesProvider, Runnable fallbackAction) {
