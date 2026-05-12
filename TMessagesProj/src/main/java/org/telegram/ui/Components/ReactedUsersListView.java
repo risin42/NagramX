@@ -31,6 +31,8 @@ import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.ReactedUserHolderView;
 import org.telegram.ui.Components.Reactions.ReactionsLayoutInBubble;
 
+import tw.nekomimi.nekogram.helpers.MessageHelper;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -273,6 +275,7 @@ public class ReactedUsersListView extends FrameLayout {
                     TLRPC.TL_messages_messageReactionsList res = (TLRPC.TL_messages_messageReactionsList) response;
                     MessagesController.getInstance(currentAccount).putUsers(res.users, false);
                     MessagesController.getInstance(currentAccount).putChats(res.chats, false);
+                    filterBlockedReactionPeers(res.reactions);
                     LastSeenHelper.saveLastSeenFromPeerReactions(res.reactions, UserConfig.getInstance(currentAccount).getClientUserId());
 
                     HashSet<ReactionsLayoutInBubble.VisibleReaction> visibleCustomEmojiReactions = new HashSet<>();
@@ -338,6 +341,26 @@ public class ReactedUsersListView extends FrameLayout {
                 }
             }));
         }, ConnectionsManager.RequestFlagInvokeAfter);
+    }
+
+    private int filterBlockedReactionPeers(List<TLRPC.MessagePeerReaction> reactions) {
+        if (reactions == null || reactions.isEmpty() || message == null || !message.isSupergroup()) {
+            return 0;
+        }
+        MessageHelper messageHelper = MessageHelper.getInstance(currentAccount);
+        int removed = 0;
+        for (int i = reactions.size() - 1; i >= 0; i--) {
+            TLRPC.MessagePeerReaction reaction = reactions.get(i);
+            if (reaction == null || reaction.peer_id == null) {
+                continue;
+            }
+            long peerId = MessageObject.getPeerId(reaction.peer_id);
+            if (peerId != 0 && messageHelper.isBlockedOrFilteredPeer(peerId)) {
+                reactions.remove(i);
+                removed++;
+            }
+        }
+        return removed;
     }
 
     private void updateCustomReactionsButton() {
