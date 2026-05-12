@@ -31982,6 +31982,15 @@ public class ChatActivity extends BaseFragment implements
                                     v.setPredictiveCount(finalCount);
                                     reactedView.setSeenCallback(v::setSeenUsers);
                                 }
+                                final int tabIndex = index;
+                                final ReactionTabHolderView tabHolder = (ReactionTabHolderView) tabsView.getChildAt(position);
+                                v.setOnCountChangedListener((view, filteredCount) -> {
+                                    if (tabIndex < 0) {
+                                        tabHolder.setCounter(filteredCount);
+                                    } else {
+                                        tabHolder.setCounter(currentAccount, counters.get(tabIndex), filteredCount);
+                                    }
+                                });
 
                                 container.addView(v);
                                 cachedViews.put(position, v);

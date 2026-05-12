@@ -66,6 +66,7 @@ public class ReactedUsersListView extends FrameLayout {
     private OnHeightChangedListener onHeightChangedListener;
     private OnProfileSelectedListener onProfileSelectedListener;
     private OnCustomEmojiSelectedListener onCustomEmojiSelectedListener;
+    private OnCountChangedListener onCountChangedListener;
     ArrayList<ReactionsLayoutInBubble.VisibleReaction> customReactionsEmoji = new ArrayList<>();
     ArrayList<TLRPC.InputStickerSet> customEmojiStickerSets = new ArrayList<>();
     MessageContainsEmojiButton messageContainsEmojiButton;
@@ -286,7 +287,10 @@ public class ReactedUsersListView extends FrameLayout {
                     TLRPC.TL_messages_messageReactionsList res = (TLRPC.TL_messages_messageReactionsList) response;
                     MessagesController.getInstance(currentAccount).putUsers(res.users, false);
                     MessagesController.getInstance(currentAccount).putChats(res.chats, false);
-                    filterBlockedReactionPeers(res.reactions);
+                    int filteredCount = Math.max(0, res.count - filterBlockedReactionPeers(res.reactions));
+                    if (onCountChangedListener != null) {
+                        onCountChangedListener.onCountChanged(this, filteredCount);
+                    }
                     LastSeenHelper.saveLastSeenFromPeerReactions(res.reactions, UserConfig.getInstance(currentAccount).getClientUserId());
 
                     HashSet<ReactionsLayoutInBubble.VisibleReaction> visibleCustomEmojiReactions = new HashSet<>();
@@ -427,8 +431,17 @@ public class ReactedUsersListView extends FrameLayout {
         return this;
     }
 
+    public ReactedUsersListView setOnCountChangedListener(OnCountChangedListener onCountChangedListener) {
+        this.onCountChangedListener = onCountChangedListener;
+        return this;
+    }
+
     public interface OnHeightChangedListener {
         void onHeightChanged(ReactedUsersListView view, int newHeight);
+    }
+
+    public interface OnCountChangedListener {
+        void onCountChanged(ReactedUsersListView view, int count);
     }
 
     public interface OnProfileSelectedListener {

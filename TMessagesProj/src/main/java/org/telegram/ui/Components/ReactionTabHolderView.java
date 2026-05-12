@@ -105,8 +105,12 @@ public class ReactionTabHolderView extends FrameLayout {
     }
 
     public void setCounter(int currentAccount, TLRPC.ReactionCount counter) {
-        this.count = counter.count;
-        counterView.setText(String.format("%s", LocaleController.formatShortNumber(counter.count, null)));
+        setCounter(currentAccount, counter, counter.count);
+    }
+
+    public void setCounter(int currentAccount, TLRPC.ReactionCount counter, int count) {
+        this.count = count;
+        counterView.setText(String.format("%s", LocaleController.formatShortNumber(count, null)));
         ReactionsLayoutInBubble.VisibleReaction counterReaction = ReactionsLayoutInBubble.VisibleReaction.fromTL(counter.reaction);
         reaction = counterReaction;
         if (reaction.emojicon != null) {
