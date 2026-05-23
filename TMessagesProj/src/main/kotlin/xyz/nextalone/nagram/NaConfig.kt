@@ -1247,6 +1247,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             NekoConfig.MARKDOWN_PARSER_NEKO
         )
+    val defaultScheduledTime =
+        addConfig(
+            "DefaultScheduledTime",
+            ConfigItem.configTypeInt,
+            ScheduleTimeShift.MINUTES_10.minutes
+        )
     val keepTranslatorPreferences =
         addConfig(
             "KeepTranslatorPreferences",

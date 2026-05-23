@@ -348,4 +348,5 @@
     <string name="HideDialogsSearchField">Hide Search Box</string>
     <string name="DeepLTranslateKey">DeepL API Key</string>
     <string name="DeepLTranslateKeyNotice">Configure DeepL API Key, leave blank to use built-in credentials.</string>
+    <string name="DefaultScheduledTime">Default Scheduled Time</string>
 </resources>
