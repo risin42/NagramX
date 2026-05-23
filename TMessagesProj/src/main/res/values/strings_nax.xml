@@ -349,4 +349,6 @@
     <string name="DeepLTranslateKey">DeepL API Key</string>
     <string name="DeepLTranslateKeyNotice">Configure DeepL API Key, leave blank to use built-in credentials.</string>
     <string name="DefaultScheduleDelay">Default delay</string>
+    <string name="QuickScheduleButton">Quick Schedule Button</string>
+    <string name="QuickScheduleButtonNotice">Keep calendar button visible when typing to quickly schedule more messages</string>
 </resources>

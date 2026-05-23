@@ -3689,7 +3689,13 @@ public class ChatActivityEnterView extends FrameLayout implements
         scheduledButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_listSelector)));
         messageEditTextContainer.addView(scheduledButton, 2, LayoutHelper.createFrame(DEFAULT_HEIGHT, DEFAULT_HEIGHT, Gravity.BOTTOM | Gravity.RIGHT));
         scheduledButton.setOnClickListener(v -> {
-            if (delegate != null) {
+            if (delegate == null) return;
+            boolean hasText = messageEditText != null && !TextUtils.isEmpty(messageEditText.getText());
+            if (NaConfig.INSTANCE.getQuickScheduleButton().Bool() && hasText && delegate.hasScheduledMessages()) {
+                AlertsCreator.createScheduleDatePickerDialog(parentActivity, dialog_id, (notify, scheduleDate, scheduleRepeatPeriod) -> {
+                    sendMessageInternal(notify, scheduleDate, scheduleRepeatPeriod, 0, true);
+                }, resourcesProvider);
+            } else {
                 delegate.openScheduledMessages();
             }
         });
@@ -8902,14 +8908,27 @@ public class ChatActivityEnterView extends FrameLayout implements
                                 animators.add(ObjectAnimator.ofFloat(attachButton, View.SCALE_Y, 0.5f));
                             }
                             boolean hasScheduled = delegate != null && delegate.hasScheduledMessages();
-                            scheduleButtonHidden = true;
+                            boolean keepScheduleVisible = NaConfig.INSTANCE.getQuickScheduleButton().Bool() && hasScheduled;
+                            if (keepScheduleVisible) {
+                                createScheduledButton();
+                            }
+                            scheduleButtonHidden = !keepScheduleVisible;
                             if (scheduledButton != null) {
                                 scheduledButton.setScaleY(1.0f);
                                 if (hasScheduled) {
-                                    scheduledButton.setTag(null);
-                                    animators.add(ObjectAnimator.ofFloat(scheduledButton, View.ALPHA, 0.0f));
-                                    animators.add(ObjectAnimator.ofFloat(scheduledButton, View.SCALE_X, 0.0f));
-                                    animators.add(animateScheduledTranslationX(0));
+                                    if (keepScheduleVisible) {
+                                        scheduledButton.setVisibility(VISIBLE);
+                                        scheduledButton.setTag(1);
+                                        scheduledButton.setPivotX(dp(DEFAULT_HEIGHT));
+                                        animators.add(ObjectAnimator.ofFloat(scheduledButton, View.ALPHA, 1.0f));
+                                        animators.add(ObjectAnimator.ofFloat(scheduledButton, View.SCALE_X, 1.0f));
+                                        animators.add(animateScheduledTranslationX(dp(DEFAULT_HEIGHT)));
+                                    } else {
+                                        scheduledButton.setTag(null);
+                                        animators.add(ObjectAnimator.ofFloat(scheduledButton, View.ALPHA, 0.0f));
+                                        animators.add(ObjectAnimator.ofFloat(scheduledButton, View.SCALE_X, 0.0f));
+                                        animators.add(animateScheduledTranslationX(0));
+                                    }
                                 } else {
                                     scheduledButton.setAlpha(0.0f);
                                     scheduledButton.setScaleX(0.0f);
@@ -8923,7 +8942,7 @@ public class ChatActivityEnterView extends FrameLayout implements
                                 public void onAnimationEnd(Animator animation) {
                                     if (animation.equals(runningAnimation2)) {
                                         attachLayout.setVisibility(GONE);
-                                        if (hasScheduled && scheduledButton != null) {
+                                        if (hasScheduled && scheduledButton != null && !keepScheduleVisible) {
                                             scheduledButton.setVisibility(GONE);
                                         }
                                         runningAnimation2 = null;
@@ -9086,16 +9105,30 @@ public class ChatActivityEnterView extends FrameLayout implements
                             updateFieldRight(1);
                         }
                     }
-                    scheduleButtonHidden = true;
+                    boolean hasScheduledInstant = delegate != null && delegate.hasScheduledMessages();
+                    boolean keepScheduleVisibleInstant = NaConfig.INSTANCE.getQuickScheduleButton().Bool() && hasScheduledInstant;
+                    if (keepScheduleVisibleInstant) {
+                        createScheduledButton();
+                    }
+                    scheduleButtonHidden = !keepScheduleVisibleInstant;
                     if (scheduledButton != null) {
-                        if (delegate != null && delegate.hasScheduledMessages()) {
-                            scheduledButton.setVisibility(GONE);
-                            scheduledButton.setTag(null);
+                        if (keepScheduleVisibleInstant) {
+                            scheduledButton.setVisibility(VISIBLE);
+                            scheduledButton.setTag(1);
+                            scheduledButton.setAlpha(1.0f);
+                            scheduledButton.setScaleX(1.0f);
+                            scheduledButton.setScaleY(1.0f);
+                            scheduledButton.setTranslationX(dp(DEFAULT_HEIGHT));
+                        } else {
+                            if (hasScheduledInstant) {
+                                scheduledButton.setVisibility(GONE);
+                                scheduledButton.setTag(null);
+                            }
+                            scheduledButton.setAlpha(0.0f);
+                            scheduledButton.setScaleX(0.0f);
+                            scheduledButton.setScaleY(1.0f);
+                            scheduledButton.setTranslationX(0);
                         }
-                        scheduledButton.setAlpha(0.0f);
-                        scheduledButton.setScaleX(0.0f);
-                        scheduledButton.setScaleY(1.0f);
-                        scheduledButton.setTranslationX(0);
                     }
                 }
             } else {

@@ -1247,6 +1247,12 @@ object NaConfig {
             ConfigItem.configTypeInt,
             NekoConfig.MARKDOWN_PARSER_NEKO
         )
+    val quickScheduleButton =
+        addConfig(
+            "QuickScheduleButton",
+            ConfigItem.configTypeBool,
+            false
+        )
     val defaultScheduledTime =
         addConfig(
             "DefaultScheduledTime",
