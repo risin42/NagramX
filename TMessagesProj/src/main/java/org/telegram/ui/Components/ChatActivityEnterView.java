@@ -3690,14 +3690,27 @@ public class ChatActivityEnterView extends FrameLayout implements
         messageEditTextContainer.addView(scheduledButton, 2, LayoutHelper.createFrame(DEFAULT_HEIGHT, DEFAULT_HEIGHT, Gravity.BOTTOM | Gravity.RIGHT));
         scheduledButton.setOnClickListener(v -> {
             if (delegate == null) return;
-            boolean hasText = messageEditText != null && !TextUtils.isEmpty(messageEditText.getText());
-            if (NaConfig.INSTANCE.getQuickScheduleButton().Bool() && hasText && delegate.hasScheduledMessages()) {
-                AlertsCreator.createScheduleDatePickerDialog(parentActivity, dialog_id, (notify, scheduleDate, scheduleRepeatPeriod) -> {
+            CharSequence text = messageEditText != null ? messageEditText.getText() : null;
+            boolean hasText = text != null && AndroidUtilities.getTrimmedString(text).length() > 0;
+            if (NaConfig.INSTANCE.getQuickScheduleButton().Bool()
+                    && hasText
+                    && editingMessageObject == null
+                    && parentActivity != null
+                    && delegate.hasScheduledMessages()) {
+                long quickScheduleDialogId = parentFragment != null ? parentFragment.getDialogId() : dialog_id;
+                AlertsCreator.createScheduleDatePickerDialog(parentActivity, quickScheduleDialogId, (notify, scheduleDate, scheduleRepeatPeriod) -> {
                     sendMessageInternal(notify, scheduleDate, scheduleRepeatPeriod, 0, true);
                 }, resourcesProvider);
             } else {
                 delegate.openScheduledMessages();
             }
+        });
+        scheduledButton.setOnLongClickListener(v -> {
+            if (delegate != null) {
+                delegate.openScheduledMessages();
+                return true;
+            }
+            return false;
         });
         scheduledButton.setTranslationX(0);
     }
