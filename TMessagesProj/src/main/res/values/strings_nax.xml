@@ -349,4 +349,16 @@
     <string name="DeepLTranslateKey">DeepL API Key</string>
     <string name="DeepLTranslateKeyNotice">Configure DeepL API Key, leave blank to use built-in credentials.</string>
     <string name="DefaultScheduledTime">Default Scheduled Time</string>
+    <string name="ScheduleTime5Min">5 min</string>
+    <string name="ScheduleTime10Min">10 min</string>
+    <string name="ScheduleTime15Min">15 min</string>
+    <string name="ScheduleTime30Min">30 min</string>
+    <string name="ScheduleTime1Hour">1 hour</string>
+    <string name="ScheduleTime2Hours">2 hours</string>
+    <string name="ScheduleTime4Hours">4 hours</string>
+    <string name="ScheduleTime8Hours">8 hours</string>
+    <string name="ScheduleTime1Day">1 day</string>
+    <string name="ScheduleTime2Days">2 days</string>
+    <string name="ScheduleTime3Days">3 days</string>
+    <string name="ScheduleTime7Days">7 days</string>
 </resources>

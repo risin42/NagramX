@@ -1,20 +1,25 @@
 package xyz.nextalone.nagram
 
-enum class ScheduleTimeShift(val minutes: Int, val label: String) {
-    MINUTES_5(5, "5 min"),
-    MINUTES_10(10, "10 min"),
-    MINUTES_15(15, "15 min"),
-    MINUTES_30(30, "30 min"),
-    HOURS_1(60, "1 hour"),
-    HOURS_2(120, "2 hours"),
-    HOURS_4(240, "4 hours"),
-    HOURS_8(480, "8 hours"),
-    DAYS_1(1440, "1 day"),
-    DAYS_2(2880, "2 days"),
-    DAYS_3(4320, "3 days"),
-    DAYS_7(10080, "7 days");
+import org.telegram.messenger.LocaleController
+import org.telegram.messenger.R
+
+enum class ScheduleTimeShift(val minutes: Int, val labelResId: Int) {
+    MINUTES_5(5, R.string.ScheduleTime5Min),
+    MINUTES_10(10, R.string.ScheduleTime10Min),
+    MINUTES_15(15, R.string.ScheduleTime15Min),
+    MINUTES_30(30, R.string.ScheduleTime30Min),
+    HOURS_1(60, R.string.ScheduleTime1Hour),
+    HOURS_2(120, R.string.ScheduleTime2Hours),
+    HOURS_4(240, R.string.ScheduleTime4Hours),
+    HOURS_8(480, R.string.ScheduleTime8Hours),
+    DAYS_1(1440, R.string.ScheduleTime1Day),
+    DAYS_2(2880, R.string.ScheduleTime2Days),
+    DAYS_3(4320, R.string.ScheduleTime3Days),
+    DAYS_7(10080, R.string.ScheduleTime7Days);
 
     val seconds: Int get() = minutes * 60
+
+    val label: String get() = LocaleController.getString(labelResId)
 
     companion object {
         @JvmStatic
