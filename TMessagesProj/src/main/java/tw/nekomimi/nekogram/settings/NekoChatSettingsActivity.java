@@ -67,7 +67,6 @@ import tw.nekomimi.nekogram.ui.PopupBuilder;
 import tw.nekomimi.nekogram.ui.cells.EmojiSetCell;
 import tw.nekomimi.nekogram.ui.cells.StickerSizePreviewMessagesCell;
 import xyz.nextalone.nagram.NaConfig;
-import xyz.nextalone.nagram.ScheduleTimeShift;
 import xyz.nextalone.nagram.helper.DoubleTap;
 
 @SuppressLint("RtlHardcoded")
@@ -147,7 +146,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             getString(R.string.Official),
             "Nekogram",
     }, null));
-    private final AbstractConfigCell defaultScheduledTimeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getDefaultScheduledTime(), ScheduleTimeShift.labels(), ScheduleTimeShift.minuteValues(), null));
     private final AbstractConfigCell dividerChats = cellGroup.appendCell(new ConfigCellDivider());
 
     // Double Tap

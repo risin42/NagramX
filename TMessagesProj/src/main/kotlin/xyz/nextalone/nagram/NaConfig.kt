@@ -1251,7 +1251,7 @@ object NaConfig {
         addConfig(
             "DefaultScheduledTime",
             ConfigItem.configTypeInt,
-            ScheduleTimeShift.MINUTES_10.minutes
+            10
         )
     val keepTranslatorPreferences =
         addConfig(
