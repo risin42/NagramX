@@ -6,6 +6,10 @@ import static org.telegram.messenger.LocaleController.getString;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -13,6 +17,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,6 +34,7 @@ import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.LayoutHelper;
+import org.telegram.ui.Components.Paint.ColorPickerBottomSheet;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -49,6 +55,8 @@ public class RegexFilterEditActivity extends BaseFragment {
     private final boolean canSelectSharedTarget;
     private boolean caseInsensitive;
     private boolean addToSharedFilters;
+    private int filterAction; // hide, spoiler all, spoiler match
+    private int spoilerColor = 0xFFFFFFFF; // default spoiler color, white
 
     private EditTextBoldCursor editField;
     private View doneButton;
@@ -57,11 +65,15 @@ public class RegexFilterEditActivity extends BaseFragment {
 
     private TextCheckCell caseInsensitiveButtonView;
     private TextCheckCell addToSharedFiltersButtonView;
+    private TextCheckCell spoilerInsteadOfHideButtonView;
+    private TextCheckCell spoilerMatchOnlyButtonView;
+    private View spoilerColorRow;
 
     public RegexFilterEditActivity() {
         filterIdx = -1;
         filterModel = null;
         caseInsensitive = true;
+        filterAction = AyuFilter.FilterModel.ACTION_HIDE;
         targetDialogId = 0L;
         chatFilterIdx = -1;
         prefillText = null;
@@ -73,6 +85,7 @@ public class RegexFilterEditActivity extends BaseFragment {
         filterIdx = -1;
         filterModel = null;
         caseInsensitive = true;
+        filterAction = AyuFilter.FilterModel.ACTION_HIDE;
         targetDialogId = dialogId;
         chatFilterIdx = -1;
         prefillText = null;
@@ -84,6 +97,7 @@ public class RegexFilterEditActivity extends BaseFragment {
         filterIdx = -1;
         filterModel = null;
         caseInsensitive = true;
+        filterAction = AyuFilter.FilterModel.ACTION_HIDE;
         targetDialogId = dialogId;
         chatFilterIdx = -1;
         this.prefillText = prefillText;
@@ -97,6 +111,8 @@ public class RegexFilterEditActivity extends BaseFragment {
         this.chatFilterIdx = chatFilterIdx;
         this.filterModel = AyuFilter.getChatFiltersForDialog(dialogId).size() > chatFilterIdx && chatFilterIdx >= 0 ? AyuFilter.getChatFiltersForDialog(dialogId).get(chatFilterIdx) : null;
         this.caseInsensitive = this.filterModel == null || this.filterModel.caseInsensitive;
+        this.filterAction = this.filterModel != null ? this.filterModel.filterAction : AyuFilter.FilterModel.ACTION_HIDE;
+        this.spoilerColor = this.filterModel != null ? this.filterModel.spoilerColor : 0xFFFFFFFF;
         this.prefillText = null;
         this.canSelectSharedTarget = false;
         this.addToSharedFilters = false;
@@ -106,6 +122,8 @@ public class RegexFilterEditActivity extends BaseFragment {
         this.filterIdx = filterIdx; // use -1 to CREATE, not EDIT
         this.filterModel = AyuFilter.getRegexFilters().get(filterIdx);
         this.caseInsensitive = filterModel.caseInsensitive;
+        this.filterAction = filterModel.filterAction;
+        this.spoilerColor = filterModel.spoilerColor;
         this.targetDialogId = 0L;
         this.chatFilterIdx = -1;
         this.prefillText = null;
@@ -147,21 +165,23 @@ public class RegexFilterEditActivity extends BaseFragment {
                     }
 
                     // If editing a chat-specific filter, update that entry and return.
+                    int savedColor = filterAction != AyuFilter.FilterModel.ACTION_HIDE ? spoilerColor : 0xFFFFFFFF;
+
                     if (chatFilterIdx != -1 && targetDialogId != 0L) {
-                        AyuFilter.editChatFilter(targetDialogId, chatFilterIdx, text, caseInsensitive);
+                        AyuFilter.editChatFilter(targetDialogId, chatFilterIdx, text, caseInsensitive, filterAction, savedColor);
                     } else if (filterIdx != -1) {
                         // editing shared filter
-                        AyuFilter.editFilter(filterIdx, text, caseInsensitive);
+                        AyuFilter.editFilter(filterIdx, text, caseInsensitive, filterAction, savedColor);
                     } else {
                         // creating a new filter (shared or chat-scoped)
                         if (targetDialogId != 0L) {
                             if (canSelectSharedTarget && addToSharedFilters) {
-                                AyuFilter.addFilter(text, caseInsensitive);
+                                AyuFilter.addFilter(text, caseInsensitive, filterAction, savedColor);
                             } else {
-                                AyuFilter.addChatFilter(targetDialogId, text, caseInsensitive);
+                                AyuFilter.addChatFilter(targetDialogId, text, caseInsensitive, filterAction, savedColor);
                             }
                         } else {
-                            AyuFilter.addFilter(text, caseInsensitive);
+                            AyuFilter.addFilter(text, caseInsensitive, filterAction, savedColor);
                         }
                     }
 
@@ -260,6 +280,93 @@ public class RegexFilterEditActivity extends BaseFragment {
             caseInsensitive = checked;
         });
         linearLayout.addView(caseInsensitiveButtonView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 24, 10, 24, 0));
+
+        // Toggle to mask message instead of hiding
+        spoilerInsteadOfHideButtonView = new TextCheckCell(context);
+        spoilerInsteadOfHideButtonView.setFocusable(true);
+        spoilerInsteadOfHideButtonView.setTextAndCheck(getString(R.string.RegexFiltersSpoilerInsteadOfHide), filterAction != AyuFilter.FilterModel.ACTION_HIDE, true);
+        spoilerInsteadOfHideButtonView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
+        spoilerInsteadOfHideButtonView.setOnClickListener((v) -> {
+            boolean checked = !spoilerInsteadOfHideButtonView.isChecked();
+            spoilerInsteadOfHideButtonView.setChecked(checked);
+            if (!checked) {
+                filterAction = AyuFilter.FilterModel.ACTION_HIDE;
+                spoilerMatchOnlyButtonView.setVisibility(View.GONE);
+                spoilerColorRow.setVisibility(View.GONE);
+            } else {
+                filterAction = spoilerMatchOnlyButtonView.isChecked()
+                        ? AyuFilter.FilterModel.ACTION_SPOILER_MATCH
+                        : AyuFilter.FilterModel.ACTION_SPOILER_ALL;
+                spoilerMatchOnlyButtonView.setVisibility(View.VISIBLE);
+                spoilerColorRow.setVisibility(View.VISIBLE);
+            }
+        });
+        linearLayout.addView(spoilerInsteadOfHideButtonView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 24, 10, 24, 0));
+
+        // when mask message is enabled, show a sub option to only mask matched word
+        spoilerMatchOnlyButtonView = new TextCheckCell(context);
+        spoilerMatchOnlyButtonView.setFocusable(true);
+        spoilerMatchOnlyButtonView.setTextAndCheck(getString(R.string.RegexFiltersSpoilerMatchOnly), filterAction == AyuFilter.FilterModel.ACTION_SPOILER_MATCH, true);
+        spoilerMatchOnlyButtonView.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
+        spoilerMatchOnlyButtonView.setVisibility(filterAction == AyuFilter.FilterModel.ACTION_HIDE ? View.GONE : View.VISIBLE);
+        spoilerMatchOnlyButtonView.setOnClickListener((v) -> {
+            boolean checked = !spoilerMatchOnlyButtonView.isChecked();
+            spoilerMatchOnlyButtonView.setChecked(checked);
+            filterAction = checked ? AyuFilter.FilterModel.ACTION_SPOILER_MATCH : AyuFilter.FilterModel.ACTION_SPOILER_ALL;
+        });
+        linearLayout.addView(spoilerMatchOnlyButtonView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 24, 10, 24, 0));
+
+        // color picker when mask message is enabled
+        FrameLayout colorRowFrame = new FrameLayout(context);
+        colorRowFrame.setBackgroundColor(getThemedColor(Theme.key_windowBackgroundWhite));
+        colorRowFrame.setVisibility(filterAction == AyuFilter.FilterModel.ACTION_HIDE ? View.GONE : View.VISIBLE);
+
+        TextView colorLabel = new TextView(context);
+        colorLabel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        colorLabel.setTextColor(getThemedColor(Theme.key_windowBackgroundWhiteBlackText));
+        colorLabel.setText(getString(R.string.RegexFiltersSpoilerColor));
+        colorLabel.setGravity(Gravity.CENTER_VERTICAL);
+        colorRowFrame.addView(colorLabel, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 48, Gravity.LEFT | Gravity.CENTER_VERTICAL, 0, 0, 56, 0));
+
+        View colorSwatch = new View(context) {
+            private final Paint swatchPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            private final Paint borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            {
+                borderPaint.setStyle(Paint.Style.STROKE);
+                borderPaint.setStrokeWidth(dp(1));
+                borderPaint.setColor(0x33000000);
+            }
+            @Override
+            protected void onDraw(Canvas canvas) {
+                float r = Math.min(getWidth(), getHeight()) / 2f;
+                swatchPaint.setColor(spoilerColor);
+                canvas.drawCircle(getWidth() / 2f, getHeight() / 2f, r - dp(1), swatchPaint);
+                canvas.drawCircle(getWidth() / 2f, getHeight() / 2f, r - dp(1), borderPaint);
+            }
+        };
+        colorSwatch.setOnClickListener(swatchView -> {
+            ColorPickerBottomSheet picker = new ColorPickerBottomSheet(context, getResourceProvider());
+            picker.setPipetteDelegate(new ColorPickerBottomSheet.PipetteDelegate() {
+                public void onStartColorPipette() {}
+                public void onStopColorPipette() {}
+                public android.view.ViewGroup getContainerView() { return null; }
+                public android.view.View getSnapshotDrawingView() { return null; }
+                public void onDrawImageOverCanvas(android.graphics.Bitmap b, Canvas c) {}
+                public boolean isPipetteVisible() { return false; }
+                public boolean isPipetteAvailable() { return false; }
+                public void onColorSelected(int color) {}
+            });
+            picker.setColor(spoilerColor);
+            picker.setColorListener(color -> {
+                spoilerColor = color;
+                colorSwatch.invalidate();
+            });
+            picker.show();
+        });
+        colorRowFrame.addView(colorSwatch, LayoutHelper.createFrame(32, 32, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 12, 0));
+
+        spoilerColorRow = colorRowFrame;
+        linearLayout.addView(colorRowFrame, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 48, LocaleController.isRTL ? Gravity.RIGHT : Gravity.LEFT, 24, 0, 24, 0));
 
         return fragmentView;
     }

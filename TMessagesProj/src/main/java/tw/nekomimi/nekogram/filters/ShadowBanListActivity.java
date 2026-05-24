@@ -14,6 +14,10 @@ import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
+import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -51,6 +55,7 @@ import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.EmptyTextProgressView;
 import org.telegram.ui.Components.ItemOptions;
 import org.telegram.ui.Components.LayoutHelper;
+import org.telegram.ui.Components.Paint.ColorPickerBottomSheet;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Components.ScrollSlidingTextTabStrip;
 import org.telegram.ui.ProfileActivity;
@@ -734,8 +739,22 @@ public class ShadowBanListActivity extends BaseFragment {
         return String.valueOf(userId);
     }
 
-    private String getCustomFilteredUserRowSubtitle(long userId) {
-        return String.valueOf(userId);
+    private CharSequence getCustomFilteredUserRowSubtitle(long userId) {
+        AyuFilter.CustomFilteredUser cfu = AyuFilter.getCustomFilteredUser(userId);
+        boolean isSpoiler = cfu != null && cfu.filterAction == AyuFilter.FilterModel.ACTION_SPOILER_ALL;
+        String actionLabel = isSpoiler ? getString(R.string.RegexFiltersSpoilerInsteadOfHide) : getString(R.string.Hide);
+        String text = userId + " · " + actionLabel;
+        if (!isSpoiler) return text;
+        int color = cfu.spoilerColor;
+        int size = AndroidUtilities.dp(10);
+        ShapeDrawable circle = new ShapeDrawable(new OvalShape());
+        circle.getPaint().setColor(color);
+        circle.setBounds(0, 0, size, size);
+        SpannableStringBuilder sb = new SpannableStringBuilder("● ");
+        // show mask spoiler color as bulelt
+        sb.setSpan(new ImageSpan(circle, ImageSpan.ALIGN_BOTTOM), 0, 1, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sb.append(text);
+        return sb;
     }
 
     private boolean cacheResolvedCustomFilteredUser(long userId, TLRPC.User user, boolean notifyRow) {
@@ -1041,7 +1060,51 @@ public class ShadowBanListActivity extends BaseFragment {
         if (getParentActivity() == null) {
             return;
         }
-        ItemOptions.makeOptions(this, view).setScrimViewBackground(new ColorDrawable(Theme.getColor(Theme.key_windowBackgroundWhite, getResourceProvider()))).add(R.drawable.msg_delete, getString(R.string.UnshadowBan), true, () -> deleteCustomFilteredUser(userId)).setMinWidth(190).show();
+        AyuFilter.CustomFilteredUser cfu = AyuFilter.getCustomFilteredUser(userId);
+        int currentAction = cfu != null ? cfu.filterAction : AyuFilter.FilterModel.ACTION_HIDE;
+        int currentColor = cfu != null ? cfu.spoilerColor : 0xFFFFFFFF;
+
+        ItemOptions.makeOptions(this, view)
+                .setScrimViewBackground(new ColorDrawable(Theme.getColor(Theme.key_windowBackgroundWhite, getResourceProvider())))
+                .add(currentAction == AyuFilter.FilterModel.ACTION_HIDE ? R.drawable.msg_check : R.drawable.msg_archive_hide,
+                        getString(R.string.Hide), false, () -> {
+                            AyuFilter.setCustomFilteredUserAction(userId, AyuFilter.FilterModel.ACTION_HIDE, currentColor);
+                            notifyCustomFilteredUserRowChanged(userId);
+                        })
+                .add(currentAction == AyuFilter.FilterModel.ACTION_SPOILER_ALL ? R.drawable.msg_check : R.drawable.msg_spoiler,
+                        getString(R.string.RegexFiltersSpoilerInsteadOfHide), false, () -> {
+                            AyuFilter.setCustomFilteredUserAction(userId, AyuFilter.FilterModel.ACTION_SPOILER_ALL, currentColor);
+                            notifyCustomFilteredUserRowChanged(userId);
+                        })
+                .add(R.drawable.msg_colors, getString(R.string.RegexFiltersSpoilerColor), false, () -> showUserColorPicker(userId))
+                .addGap()
+                .add(R.drawable.msg_delete, getString(R.string.UnshadowBan), true, () -> deleteCustomFilteredUser(userId))
+                .setMinWidth(220)
+                .show();
+    }
+
+    private void showUserColorPicker(long userId) {
+        if (getParentActivity() == null) return;
+        AyuFilter.CustomFilteredUser cfu = AyuFilter.getCustomFilteredUser(userId);
+        int currentColor = cfu != null ? cfu.spoilerColor : 0xFFFFFFFF;
+        int currentAction = cfu != null ? cfu.filterAction : AyuFilter.FilterModel.ACTION_HIDE;
+        ColorPickerBottomSheet picker = new ColorPickerBottomSheet(getParentActivity(), getResourceProvider());
+        picker.setColor(currentColor);
+        picker.setPipetteDelegate(new ColorPickerBottomSheet.PipetteDelegate() {
+            @Override public void onStartColorPipette() {}
+            @Override public void onStopColorPipette() {}
+            @Override public android.view.ViewGroup getContainerView() { return null; }
+            @Override public android.view.View getSnapshotDrawingView() { return null; }
+            @Override public void onDrawImageOverCanvas(android.graphics.Bitmap bitmap, android.graphics.Canvas canvas) {}
+            @Override public boolean isPipetteVisible() { return false; }
+            @Override public boolean isPipetteAvailable() { return false; }
+            @Override public void onColorSelected(int color) {}
+        });
+        picker.setColorListener(color -> {
+            AyuFilter.setCustomFilteredUserAction(userId, currentAction, color);
+            notifyCustomFilteredUserRowChanged(userId);
+        });
+        picker.show();
     }
 
     private void showChannelOptions(long dialogId, View view) {

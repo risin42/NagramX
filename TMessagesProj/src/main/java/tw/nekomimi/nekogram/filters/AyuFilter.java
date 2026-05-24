@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -31,7 +32,7 @@ import xyz.nextalone.nagram.NaConfig;
 public class AyuFilter {
     private static final Object cacheLock = new Object();
     private static final int PER_DIALOG_CACHE_LIMIT = 1000;
-    private static final ConcurrentHashMap<Long, LruCache<Integer, Boolean>> filteredCache = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, LruCache<Integer, Integer>> filteredCache = new ConcurrentHashMap<>();
     private static volatile ArrayList<FilterModel> filterModels;
     private static volatile ArrayList<ChatFilterEntry> chatFilterEntries;
     private static volatile HashSet<Long> excludedDialogs;
@@ -66,17 +67,27 @@ public class AyuFilter {
         return filterModels;
     }
 
-    public static void addFilter(String text, boolean caseInsensitive) {
+    public static void addFilter(String text, boolean caseInsensitive, int filterAction) {
+        addFilter(text, caseInsensitive, filterAction, 0xFFFFFFFF);
+    }
+
+    public static void addFilter(String text, boolean caseInsensitive, int filterAction, int spoilerColor) {
         var list = new ArrayList<>(getRegexFilters());
         FilterModel filterModel = new FilterModel();
         filterModel.regex = text;
         filterModel.caseInsensitive = caseInsensitive;
+        filterModel.filterAction = filterAction;
+        filterModel.spoilerColor = spoilerColor;
         filterModel.enabled = true;
         list.add(0, filterModel);
         saveFilter(list);
     }
 
-    public static void editFilter(int filterIdx, String text, boolean caseInsensitive) {
+    public static void editFilter(int filterIdx, String text, boolean caseInsensitive, int filterAction) {
+        editFilter(filterIdx, text, caseInsensitive, filterAction, 0xFFFFFFFF);
+    }
+
+    public static void editFilter(int filterIdx, String text, boolean caseInsensitive, int filterAction, int spoilerColor) {
         var list = new ArrayList<>(getRegexFilters());
         if (filterIdx < 0 || filterIdx >= list.size()) {
             return;
@@ -84,6 +95,8 @@ public class AyuFilter {
         FilterModel filterModel = list.get(filterIdx);
         filterModel.regex = text;
         filterModel.caseInsensitive = caseInsensitive;
+        filterModel.filterAction = filterAction;
+        filterModel.spoilerColor = spoilerColor;
         saveFilter(list);
     }
 
@@ -134,17 +147,19 @@ public class AyuFilter {
         }
     }
 
-    private static boolean isFilteredInternal(CharSequence text, long dialogId) {
+    private static int getFilterActionInternal(CharSequence text, long dialogId) {
+        int bestAction = -1; // -1 means no match
+
         if (chatFilterEntries != null) {
             for (var entry : chatFilterEntries) {
                 if (entry.dialogId == dialogId) {
                     if (entry.filters != null) {
-                        for (var pattern : entry.filters) {
-                            if (!pattern.enabled) {
-                                continue;
-                            }
-                            if (pattern.pattern != null && pattern.pattern.matcher(text).find()) {
-                                return true;
+                        for (var fm : entry.filters) {
+                            if (!fm.enabled) continue;
+                            if (fm.pattern != null && fm.pattern.matcher(text).find()) {
+                                if (bestAction == -1 || fm.filterAction < bestAction) {
+                                    bestAction = fm.filterAction;
+                                }
                             }
                         }
                     }
@@ -155,61 +170,86 @@ public class AyuFilter {
 
         boolean isPrivateDialog = dialogId > 0;
         if (isPrivateDialog && !NaConfig.INSTANCE.getRegexFiltersEnableInChats().Bool()) {
-            return false;
+            return bestAction;
         }
 
         if (filterModels != null) {
-            for (var pattern : filterModels) {
-                if (!pattern.enabled) {
-                    continue;
-                }
-                if (pattern.pattern != null && pattern.pattern.matcher(text).find()) {
-                    return true;
+            for (var fm : filterModels) {
+                if (!fm.enabled) continue;
+                if (fm.pattern != null && fm.pattern.matcher(text).find()) {
+                    if (bestAction == -1 || fm.filterAction < bestAction) {
+                        bestAction = fm.filterAction;
+                    }
                 }
             }
         }
 
-        return false;
+        return bestAction;
     }
 
     public static boolean isFiltered(MessageObject msg, MessageObject.GroupedMessages group) {
-        if (!NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) {
-            return false;
+        return getFilterAction(msg, group) == FilterModel.ACTION_HIDE;
+    }
+
+    public static int getFilterAction(MessageObject msg, MessageObject.GroupedMessages group) {
+        if (msg == null || msg.isOutOwner()) {
+            return -1;
         }
 
-        if (msg == null || msg.isOutOwner()) {
-            return false;
+        int customResult = -1;
+        long senderId = msg.getFromChatId();
+
+        if (senderId > 0L) {
+            // mask shadow ban user messages
+            if (NekoConfig.ignoreBlocked.Bool() && getCustomFilteredUsers().contains(senderId)) {
+                CustomFilteredUser cfu = getCustomFilteredUser(senderId);
+                if (cfu != null && cfu.filterAction != FilterModel.ACTION_HIDE) { // action hide is handled already
+                    customResult = cfu.filterAction;
+                }
+            }
+            // Mask messages of telegram blocked users
+            if (customResult == -1 && NaConfig.INSTANCE.getMaskBlockedUserMessages().Bool()) {
+                if (MessagesController.getInstance(msg.currentAccount).blockePeers.indexOfKey(senderId) >= 0) {
+                    customResult = FilterModel.ACTION_SPOILER_ALL;
+                }
+            }
+        }
+
+        if (!NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) {
+            return customResult;
         }
 
         var text = getMessageText(msg, group);
         if (TextUtils.isEmpty(text)) {
-            return false;
+            return customResult;
         }
-
         if (filterModels == null) {
             getRegexFilters();
         }
         if (chatFilterEntries == null) {
             getChatFilterEntries();
         }
-
         long dialogId = msg.getDialogId();
         if (isDialogExcluded(dialogId)) {
-            return false;
+            return customResult;
         }
 
-        LruCache<Integer, Boolean> dialogCache = filteredCache.computeIfAbsent(dialogId, k -> new LruCache<>(PER_DIALOG_CACHE_LIMIT));
-        Boolean result;
+        LruCache<Integer, Integer> dialogCache = filteredCache.computeIfAbsent(dialogId, k -> new LruCache<>(PER_DIALOG_CACHE_LIMIT));
+        Integer cached;
 
         synchronized (dialogCache) {
-            result = dialogCache.get(msg.getId());
+            cached = dialogCache.get(msg.getId());
         }
 
-        if (result != null) {
-            return result;
+        if (cached != null) {
+            return cached;
         }
 
-        result = isFilteredInternal(text, dialogId);
+        int result = getFilterActionInternal(text, dialogId);
+
+        if (customResult != -1 && (result == -1 || customResult < result)) {
+            result = customResult;
+        }
 
         synchronized (dialogCache) {
             dialogCache.put(msg.getId(), result);
@@ -221,6 +261,49 @@ public class AyuFilter {
         }
 
         return result;
+    }
+
+    public static List<FilterModel> getMatchingFilterModels(MessageObject msg, MessageObject.GroupedMessages group) {
+        List<FilterModel> matches = new ArrayList<>();
+        if (!NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) return matches;
+        if (msg == null || msg.isOutOwner()) return matches;
+
+        var text = getMessageText(msg, group);
+        if (TextUtils.isEmpty(text)) return matches;
+
+        if (filterModels == null) getRegexFilters();
+        if (chatFilterEntries == null) getChatFilterEntries();
+
+        long dialogId = msg.getDialogId();
+        if (isDialogExcluded(dialogId)) return matches;
+
+        if (chatFilterEntries != null) {
+            for (var entry : chatFilterEntries) {
+                if (entry.dialogId == dialogId) {
+                    if (entry.filters != null) {
+                        for (var fm : entry.filters) {
+                            if (fm.enabled && fm.pattern != null && fm.pattern.matcher(text).find()) {
+                                matches.add(fm);
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        boolean isPrivate = dialogId > 0;
+        if (isPrivate && !NaConfig.INSTANCE.getRegexFiltersEnableInChats().Bool()) return matches;
+
+        if (filterModels != null) {
+            for (var fm : filterModels) {
+                if (fm.enabled && fm.pattern != null && fm.pattern.matcher(text).find()) {
+                    matches.add(fm);
+                }
+            }
+        }
+
+        return matches;
     }
 
     public static ArrayList<ChatFilterEntry> getChatFilterEntries() {
@@ -274,7 +357,11 @@ public class AyuFilter {
         return new ArrayList<>();
     }
 
-    public static void addChatFilter(long dialogId, String text, boolean caseInsensitive) {
+    public static void addChatFilter(long dialogId, String text, boolean caseInsensitive, int filterAction) {
+        addChatFilter(dialogId, text, caseInsensitive, filterAction, 0xFFFFFFFF);
+    }
+
+    public static void addChatFilter(long dialogId, String text, boolean caseInsensitive, int filterAction, int spoilerColor) {
         var entries = new ArrayList<>(getChatFilterEntries());
         ChatFilterEntry target = null;
         for (var e : entries) {
@@ -292,6 +379,8 @@ public class AyuFilter {
         FilterModel filterModel = new FilterModel();
         filterModel.regex = text;
         filterModel.caseInsensitive = caseInsensitive;
+        filterModel.filterAction = filterAction;
+        filterModel.spoilerColor = spoilerColor;
         filterModel.enabled = true;
         if (target.filters == null) {
             target.filters = new ArrayList<>();
@@ -301,7 +390,11 @@ public class AyuFilter {
         saveChatFilterEntries(entries);
     }
 
-    public static void editChatFilter(long dialogId, int filterIdx, String text, boolean caseInsensitive) {
+    public static void editChatFilter(long dialogId, int filterIdx, String text, boolean caseInsensitive, int filterAction) {
+        editChatFilter(dialogId, filterIdx, text, caseInsensitive, filterAction, 0xFFFFFFFF);
+    }
+
+    public static void editChatFilter(long dialogId, int filterIdx, String text, boolean caseInsensitive, int filterAction, int spoilerColor) {
         var entries = new ArrayList<>(getChatFilterEntries());
         for (var e : entries) {
             if (e.dialogId == dialogId) {
@@ -309,11 +402,36 @@ public class AyuFilter {
                     var fm = e.filters.get(filterIdx);
                     fm.regex = text;
                     fm.caseInsensitive = caseInsensitive;
+                    fm.filterAction = filterAction;
+                    fm.spoilerColor = spoilerColor;
                     saveChatFilterEntries(entries);
                 }
                 return;
             }
         }
+    }
+
+    // Get the mask color for spoiler particle
+    public static int getMaskColor(MessageObject msg, MessageObject.GroupedMessages group) {
+        int winningAction = getFilterAction(msg, group);
+        if (winningAction == FilterModel.ACTION_HIDE) return 0xFFFFFFFF;
+        for (FilterModel fm : getMatchingFilterModels(msg, group)) {
+            if (fm.filterAction == winningAction) return fm.spoilerColor;
+        }
+        long senderId = msg.getFromChatId();
+        if (senderId > 0L) {
+            CustomFilteredUser cfu = getCustomFilteredUser(senderId);
+            if (cfu != null && cfu.filterAction == winningAction) {
+                return cfu.spoilerColor;
+            }
+
+            if (NaConfig.INSTANCE.getMaskBlockedUserMessages().Bool()) {
+                if (MessagesController.getInstance(msg.currentAccount).blockePeers.indexOfKey(senderId) >= 0) {
+                    return NaConfig.INSTANCE.getBlockedUserMaskColor().Int();
+                }
+            }
+        }
+        return 0xFFFFFFFF;
     }
 
     public static void removeChatFilter(long dialogId, int filterIdx) {
@@ -431,6 +549,32 @@ public class AyuFilter {
 
     public static boolean isCustomFilteredPeer(long peerId) {
         return NekoConfig.ignoreBlocked.Bool() && peerId > 0L && getCustomFilteredUsers().contains(peerId);
+    }
+
+    // If shadow ban is on hide message, return true (mask is not handled here)
+    public static boolean isCustomFilteredPeerHidden(long peerId) {
+        if (!NekoConfig.ignoreBlocked.Bool() || peerId <= 0L) return false;
+        if (!getCustomFilteredUsers().contains(peerId)) return false;
+        CustomFilteredUser cfu = getCustomFilteredUser(peerId);
+        return cfu == null || cfu.filterAction == FilterModel.ACTION_HIDE;
+    }
+
+    public static void setCustomFilteredUserAction(long userId, int filterAction, int spoilerColor) {
+        if (userId <= 0L) return;
+        ensureCustomFilteredUsersLoaded();
+        HashSet<Long> ids = new HashSet<>(getCustomFilteredUsers());
+        if (!ids.contains(userId)) return;
+        HashMap<Long, CustomFilteredUser> map = new HashMap<>(getCustomFilteredUsersDataMap());
+        CustomFilteredUser cfu = map.get(userId);
+        if (cfu == null) {
+            cfu = new CustomFilteredUser();
+            cfu.id = userId;
+        }
+        cfu.filterAction = filterAction;
+        cfu.spoilerColor = spoilerColor;
+        map.put(userId, cfu);
+        saveCustomFilteredUsers(ids, map);
+        invalidateFilteredCache();
     }
 
     public static void blockPeer(long dialogId) {
@@ -672,6 +816,14 @@ public class AyuFilter {
     }
 
     public static class FilterModel {
+        public static final int ACTION_HIDE = 0;
+        public static final int ACTION_SPOILER_ALL = 1;
+        public static final int ACTION_SPOILER_MATCH = 2;
+
+        @Expose
+        public int filterAction = ACTION_HIDE;
+        @Expose
+        public int spoilerColor = 0xFFFFFFFF;
         @Expose
         public String regex;
         @Expose
@@ -729,5 +881,9 @@ public class AyuFilter {
         public String username;
         @Expose
         public String displayName;
+        @Expose
+        public int filterAction = FilterModel.ACTION_HIDE;
+        @Expose
+        public int spoilerColor = 0xFFFFFFFF;
     }
 }

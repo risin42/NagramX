@@ -90,6 +90,11 @@
     <string name="RegexFiltersChatHeader">Chat Filters</string>
     <string name="RegexFiltersEnableInChats">Enable Filters in Private Chats</string>
     <string name="RegexFiltersCaseInsensitive">Case insensitive expressions</string>
+    <string name="RegexFiltersSpoilerInsteadOfHide">Use mask(spoiler tag) instead of hiding message</string>
+    <string name="MaskBlockedUserMessages">Mask Messages from Blocked Users</string>
+    <string name="MaskBlockedUserMessagesAbout">Show messages from blocked/shadow-banned users behind a spoiler mask instead of hiding them.</string>
+    <string name="RegexFiltersSpoilerMatchOnly">Only mask matched regex</string>
+    <string name="RegexFiltersSpoilerColor">Mask particle color</string>
     <string name="RegexFiltersAdd">Add filter</string>
     <string name="RegexFiltersEdit">Edit filter</string>
     <string name="RegexFiltersAddDescription">You can use site <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> to fully test your regular expression. You can also use plain text, but don\'t forget to escape brackets.</string>

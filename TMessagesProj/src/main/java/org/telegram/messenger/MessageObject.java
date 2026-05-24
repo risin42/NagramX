@@ -19,6 +19,7 @@ import static org.telegram.messenger.LocaleController.formatString;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -39,6 +40,8 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ReplacementSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.URLSpan;
@@ -46,6 +49,7 @@ import android.text.util.Linkify;
 import android.util.Base64;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.collection.LongSparseArray;
 import androidx.core.graphics.ColorUtils;
 
@@ -264,6 +268,9 @@ public class MessageObject {
     public boolean isMediaSpoilersRevealed;
     public boolean isMediaSpoilersRevealedInSharedMedia;
     public boolean revealingMediaSpoilers;
+    public transient boolean ayuMediaSpoiler;
+    public transient CharSequence ayuSpoilerText;
+    public transient boolean ayuSpoilerRevealed;
     public byte[] sponsoredId;
     public String sponsoredTitle, sponsoredUrl;
     public boolean sponsoredRecommended;
@@ -641,7 +648,7 @@ public class MessageObject {
 
     public boolean hasMediaSpoilers() {
         if (NekoConfig.showSpoilersDirectly.Bool()) return false;
-        return !isRepostPreview && (messageOwner.media != null && messageOwner.media.spoiler || needDrawBluredPreview()) || isHiddenSensitive();
+        return !isRepostPreview && (messageOwner.media != null && (messageOwner.media.spoiler || ayuMediaSpoiler) || needDrawBluredPreview()) || isHiddenSensitive();
     }
 
     public Boolean isSensitiveCached;
@@ -975,6 +982,7 @@ public class MessageObject {
         public int start;
 
         public AtomicReference<Layout> spoilersPatchedTextLayout = new AtomicReference<>();
+        public AtomicReference<Layout> ayuSpoilersPatchedTextLayout = new AtomicReference<>();
         public StaticLayout textLayout;
         public int padTop, padBottom;
         public int charactersOffset;
@@ -984,6 +992,8 @@ public class MessageObject {
         public int heightByOffset;
         public byte directionFlags;
         public List<SpoilerEffect> spoilers = new ArrayList<>();
+        // group of spoilers with their color
+        public List<android.util.Pair<Integer, List<SpoilerEffect>>> ayuSpoilerGroups;
         public float maxRight;
 
         public MessageObject messageObject;
@@ -8300,6 +8310,115 @@ public class MessageObject {
         }
     }
 
+    public static class AyuSpoilerSpan extends TextStyleSpan {
+        public final int color;
+        public AyuSpoilerSpan(int color) {
+            super(makeRun());
+            this.color = color;
+        }
+        private static TextStyleSpan.TextStyleRun makeRun() {
+            TextStyleSpan.TextStyleRun r = new TextStyleSpan.TextStyleRun();
+            r.flags = TextStyleSpan.FLAG_STYLE_SPOILER;
+            return r;
+        }
+    }
+
+    public static Spanned ayuSpoilerBlockSpannable(CharSequence ayuSpoilerText, TextLayoutBlock block) {
+        if (!(ayuSpoilerText instanceof Spanned)) return null;
+        Spanned full = (Spanned) ayuSpoilerText;
+        int bStart = block.charactersOffset;
+        int bEnd = block.charactersEnd;
+        AyuSpoilerSpan[] ayuSpans = full.getSpans(bStart, bEnd, AyuSpoilerSpan.class);
+        SpannableStringBuilder bs = null;
+        for (AyuSpoilerSpan span : ayuSpans) {
+            if (bs == null) bs = new SpannableStringBuilder(block.textLayout.getText());
+            int ss = full.getSpanStart(span);
+            int se = full.getSpanEnd(span);
+            int as = Math.max(0, ss - bStart);
+            int ae = Math.min(bEnd - bStart, se - bStart);
+            if (as < ae) {
+                bs.setSpan(new AyuSpoilerSpan(span.color), as, ae, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return bs;
+    }
+
+    public static void ayuBuildSpoilerGroups(TextLayoutBlock block, Spanned ayuBlock, int right) {
+        AyuSpoilerSpan[] spans = ayuBlock.getSpans(0, ayuBlock.length(), AyuSpoilerSpan.class);
+        java.util.LinkedHashMap<Integer, List<SpoilerEffect>> byColor = new java.util.LinkedHashMap<>();
+        for (AyuSpoilerSpan span : spans) {
+            int start = ayuBlock.getSpanStart(span);
+            int end = ayuBlock.getSpanEnd(span);
+            if (start < 0 || end <= start || end > block.textLayout.getText().length()) continue;
+            SpannableString ss = new SpannableString(block.textLayout.getText());
+            ss.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            List<SpoilerEffect> group = byColor.computeIfAbsent(span.color, k -> new ArrayList<>());
+            SpoilerEffect.addSpoilers(null, block.textLayout, -1, right, ss, null, group, null);
+        }
+        block.ayuSpoilerGroups = new ArrayList<>();
+        for (java.util.Map.Entry<Integer, List<SpoilerEffect>> e : byColor.entrySet()) {
+            if (!e.getValue().isEmpty()) {
+                block.ayuSpoilerGroups.add(new android.util.Pair<>(e.getKey(), e.getValue()));
+            }
+        }
+    }
+
+    public static void ayuPreBuildPatchedLayout(TextLayoutBlock block, Spanned ayuBlock) {
+        if (block.ayuSpoilerGroups == null || block.ayuSpoilerGroups.isEmpty()) return;
+        SpannableStringBuilder sb = new SpannableStringBuilder(block.textLayout.getText());
+
+        // make all emoji span into proper span that can be hide properly
+        // then make filter spoiler mask transparent
+        AyuSpoilerSpan[] ayuSpans = ayuBlock.getSpans(0, ayuBlock.length(), AyuSpoilerSpan.class);
+        for (AyuSpoilerSpan span : ayuSpans) {
+            int start = ayuBlock.getSpanStart(span);
+            int end = ayuBlock.getSpanEnd(span);
+            if (start >= 0 && end > start && end <= sb.length()) {
+                for (Emoji.EmojiSpan e : sb.getSpans(start, end, Emoji.EmojiSpan.class)) {
+                    final Emoji.EmojiSpan captured = e;
+                    sb.setSpan(new ReplacementSpan() {
+                        @Override
+                        public int getSize(@NonNull Paint paint, CharSequence text, int s, int e2, @Nullable Paint.FontMetricsInt fm) {
+                            return captured.getSize(paint, text, s, e2, fm);
+                        }
+                        @Override
+                        public void draw(@NonNull Canvas canvas, CharSequence text, int s, int e2, float x, int top, int y, int bottom, @NonNull Paint paint) {
+                        }
+                    }, sb.getSpanStart(e), sb.getSpanEnd(e), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    sb.removeSpan(e);
+                }
+                sb.setSpan(new ForegroundColorSpan(Color.TRANSPARENT), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        // Also make real Telegram spoiler ranges transparent so it can coexist with ayu masks without interference
+        if (block.textLayout.getText() instanceof Spanned) {
+            Spanned sp = (Spanned) block.textLayout.getText();
+            TextStyleSpan[] tgSpans = sp.getSpans(0, sp.length(), TextStyleSpan.class);
+            for (TextStyleSpan span : tgSpans) {
+                if (span.isSpoiler()) {
+                    int start = sp.getSpanStart(span);
+                    int end = sp.getSpanEnd(span);
+                    if (start >= 0 && end > start && end <= sb.length()) {
+                        sb.setSpan(new ForegroundColorSpan(Color.TRANSPARENT), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                }
+            }
+        }
+        Layout patchedLayout;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            patchedLayout = StaticLayout.Builder.obtain(sb, 0, sb.length(), block.textLayout.getPaint(), block.textLayout.getWidth())
+                    .setBreakStrategy(StaticLayout.BREAK_STRATEGY_HIGH_QUALITY)
+                    .setHyphenationFrequency(StaticLayout.HYPHENATION_FREQUENCY_NONE)
+                    .setAlignment(block.textLayout.getAlignment())
+                    .setLineSpacing(block.textLayout.getSpacingAdd(), block.textLayout.getSpacingMultiplier())
+                    .build();
+        } else {
+            patchedLayout = new StaticLayout(sb, block.textLayout.getPaint(), block.textLayout.getWidth(), block.textLayout.getAlignment(), block.textLayout.getSpacingMultiplier(), block.textLayout.getSpacingAdd(), false);
+        }
+
+        block.spoilersPatchedTextLayout.set(patchedLayout);
+    }
+
     public void generateLayout(TLRPC.User fromUser) {
         if (type != TYPE_TEXT && type != TYPE_EMOJIS && type != TYPE_STORY_MENTION || messageOwner.peer_id == null || TextUtils.isEmpty(messageText) && !isBotPendingDraft) {
             return;
@@ -8719,12 +8838,21 @@ public class MessageObject {
             linesOffset += currentBlockLinesCount;
 
             block.spoilers.clear();
+
+            block.ayuSpoilerGroups = null;
+            block.spoilersPatchedTextLayout.set(null);
             if (!isSpoilersRevealed && !spoiledLoginCode) {
                 int right = linesMaxWidthWithLeft;
                 if (block.quote) {
                     right -= AndroidUtilities.dp(32);
                 } else if (block.code) {
                     right -= AndroidUtilities.dp(15);
+                }
+
+                Spanned ayuBlock = ayuSpoilerBlockSpannable(ayuSpoilerText, block);
+                if (ayuBlock != null) {
+                    ayuBuildSpoilerGroups(block, ayuBlock, right);
+                    ayuPreBuildPatchedLayout(block, ayuBlock);
                 }
                 SpoilerEffect.addSpoilers(null, block.textLayout, -1, right, null, block.spoilers);
             }
@@ -9166,12 +9294,22 @@ public class MessageObject {
                 }
 
                 linesOffset += currentBlockLinesCount;
+                block.spoilers.clear();
+
+                block.ayuSpoilerGroups = null;
+                block.spoilersPatchedTextLayout.set(null);
                 if (messageObject != null && !messageObject.isSpoilersRevealed && !messageObject.spoiledLoginCode) {
                     int right = linesMaxWidthWithLeft;
                     if (block.quote) {
                         right -= AndroidUtilities.dp(32);
                     } else if (block.code) {
                         right -= AndroidUtilities.dp(15);
+                    }
+
+                    Spanned ayuBlock = MessageObject.ayuSpoilerBlockSpannable(messageObject.ayuSpoilerText, block);
+                    if (ayuBlock != null) {
+                        MessageObject.ayuBuildSpoilerGroups(block, ayuBlock, right);
+                        MessageObject.ayuPreBuildPatchedLayout(block, ayuBlock);
                     }
                     SpoilerEffect.addSpoilers(null, block.textLayout, -1, right, null, block.spoilers);
                 }

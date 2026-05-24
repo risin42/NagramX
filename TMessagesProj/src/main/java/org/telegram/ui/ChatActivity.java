@@ -48580,7 +48580,12 @@ public class ChatActivity extends BaseFragment implements
         if (!NekoConfig.ignoreBlocked.Bool()) {
             return false;
         }
-        return getMessagesController().blockePeers.indexOfKey(senderId) >= 0 || AyuFilter.isCustomFilteredPeer(senderId);
+        boolean inBlockedPeers = getMessagesController().blockePeers.indexOfKey(senderId) >= 0;
+        // return false if we are to mask blocked user messages
+        if (inBlockedPeers && xyz.nextalone.nagram.NaConfig.INSTANCE.getMaskBlockedUserMessages().Bool()) {
+            return false;
+        }
+        return inBlockedPeers || AyuFilter.isCustomFilteredPeerHidden(senderId);
     }
 
     private void updateBotforumTabsBottomMargin() {

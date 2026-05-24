@@ -5,10 +5,13 @@ import static org.telegram.messenger.LocaleController.getString;
 import android.annotation.SuppressLint;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +34,7 @@ import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.BulletinFactory;
+import org.telegram.ui.Components.Paint.ColorPickerBottomSheet;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.DialogsActivity;
 
@@ -50,6 +54,8 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
     private int filtersOptionHeaderRow;
     private int regexFiltersEnableInChatsRow;
     private int ignoreBlockedRow;
+    private int maskBlockedUserMessagesRow;
+    private int blockedUserMaskColorRow;
     private int filtersOptionDividerRow;
     private int filtersHeaderRow;
     private int sharedFiltersPageRow;
@@ -70,6 +76,8 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
         filtersOptionHeaderRow = -1;
         regexFiltersEnableInChatsRow = -1;
         ignoreBlockedRow = -1;
+        maskBlockedUserMessagesRow = -1;
+        blockedUserMaskColorRow = -1;
         filtersOptionDividerRow = -1;
         filtersHeaderRow = -1;
         sharedFiltersPageRow = -1;
@@ -83,6 +91,10 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
         filtersOptionHeaderRow = rowCount++;
         regexFiltersEnableInChatsRow = rowCount++;
         ignoreBlockedRow = rowCount++;
+        maskBlockedUserMessagesRow = rowCount++;
+        if (NaConfig.INSTANCE.getMaskBlockedUserMessages().Bool()) {
+            blockedUserMaskColorRow = rowCount++;
+        }
         filtersOptionDividerRow = rowCount++;
 
         filtersHeaderRow = rowCount++;
@@ -383,6 +395,19 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
             boolean enabled = !cell.isChecked();
             cell.setChecked(enabled);
             NekoConfig.ignoreBlocked.setConfigBool(enabled);
+            NaConfig.INSTANCE.getMaskBlockedUserMessages().setConfigBool(false);
+            AyuFilter.invalidateFilteredCache();
+            refreshRows();
+        } else if (position == maskBlockedUserMessagesRow) {
+            TextCheckCell cell = (TextCheckCell) view;
+            boolean enabled = !cell.isChecked();
+            cell.setChecked(enabled);
+            NaConfig.INSTANCE.getMaskBlockedUserMessages().setConfigBool(enabled);
+            NekoConfig.ignoreBlocked.setConfigBool(enabled);
+            AyuFilter.invalidateFilteredCache();
+            refreshRows();
+        } else if (position == blockedUserMaskColorRow) {
+            showBlockedUserColorPicker();
         } else if (position == sharedFiltersPageRow) {
             presentFragment(new RegexSharedFiltersListActivity());
         } else if (position == userFiltersPageRow) {
@@ -446,6 +471,29 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
         }
     }
 
+    private void showBlockedUserColorPicker() {
+        if (getParentActivity() == null) return;
+        int currentColor = NaConfig.INSTANCE.getBlockedUserMaskColor().Int();
+        ColorPickerBottomSheet picker = new ColorPickerBottomSheet(getParentActivity(), getResourceProvider());
+        picker.setColor(currentColor);
+        picker.setPipetteDelegate(new ColorPickerBottomSheet.PipetteDelegate() {
+            @Override public void onStartColorPipette() {}
+            @Override public void onStopColorPipette() {}
+            @Override public android.view.ViewGroup getContainerView() { return null; }
+            @Override public android.view.View getSnapshotDrawingView() { return null; }
+            @Override public void onDrawImageOverCanvas(android.graphics.Bitmap bitmap, android.graphics.Canvas canvas) {}
+            @Override public boolean isPipetteVisible() { return false; }
+            @Override public boolean isPipetteAvailable() { return false; }
+            @Override public void onColorSelected(int color) {}
+        });
+        picker.setColorListener(color -> {
+            NaConfig.INSTANCE.getBlockedUserMaskColor().setConfigInt(color);
+            AyuFilter.invalidateFilteredCache();
+            refreshRows();
+        });
+        picker.show();
+    }
+
     @Override
     protected boolean onItemLongClick(View view, int position, float x, float y) {
         return super.onItemLongClick(view, position, x, y);
@@ -498,7 +546,10 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                     if (position == regexFiltersEnableInChatsRow) {
                         textCheckCell.setTextAndCheck(getString(R.string.RegexFiltersEnableInChats), NaConfig.INSTANCE.getRegexFiltersEnableInChats().Bool(), true);
                     } else if (position == ignoreBlockedRow) {
-                        textCheckCell.setTextAndCheck(getString(R.string.IgnoreBlocked), NekoConfig.ignoreBlocked.Bool(), true);
+                        boolean hideActive = NekoConfig.ignoreBlocked.Bool() && !NaConfig.INSTANCE.getMaskBlockedUserMessages().Bool();
+                        textCheckCell.setTextAndCheck(getString(R.string.IgnoreBlocked), hideActive, true);
+                    } else if (position == maskBlockedUserMessagesRow) {
+                        textCheckCell.setTextAndCheck(getString(R.string.MaskBlockedUserMessages), NaConfig.INSTANCE.getMaskBlockedUserMessages().Bool(), NaConfig.INSTANCE.getMaskBlockedUserMessages().Bool());
                     }
                     break;
                 case TYPE_TEXT:
@@ -513,6 +564,20 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                     } else if (position == userFiltersPageRow) {
                         int count = AyuFilter.getCustomFilteredUsersList().size() + AyuFilter.getBlockedChannelsCount();
                         settingsCell.setTextAndValue(getString(R.string.ShadowBan), String.valueOf(count), false);
+                    } else if (position == blockedUserMaskColorRow) {
+                        int maskColor = NaConfig.INSTANCE.getBlockedUserMaskColor().Int();
+                        settingsCell.setTextAndValue(getString(R.string.RegexFiltersSpoilerColor), null, false);
+                        final int circleSize = AndroidUtilities.dp(20);
+                        ShapeDrawable circle = new ShapeDrawable(new OvalShape()) {
+                            @Override public int getIntrinsicWidth() { return circleSize; }
+                            @Override public int getIntrinsicHeight() { return circleSize; }
+                        };
+                        circle.getPaint().setColor(maskColor);
+                        circle.setBounds(0, 0, circleSize, circleSize);
+                        ImageView valueImg = settingsCell.getValueImageView();
+                        valueImg.clearColorFilter();
+                        valueImg.setImageDrawable(circle);
+                        valueImg.setVisibility(View.VISIBLE);
                     }
                     break;
                 case TYPE_ACCOUNT:
@@ -547,7 +612,7 @@ public class RegexFiltersSettingActivity extends BaseNekoSettingsActivity {
                 return TYPE_SHADOW;
             } else if (position == filtersHeaderRow || position == filtersOptionHeaderRow || position == chatFiltersHeaderRow) {
                 return TYPE_HEADER;
-            } else if (position == sharedFiltersPageRow || position == userFiltersPageRow) {
+            } else if (position == sharedFiltersPageRow || position == userFiltersPageRow || position == blockedUserMaskColorRow) {
                 return TYPE_SETTINGS;
             } else if (position == addChatFilterBtnRow) {
                 return TYPE_TEXT;
