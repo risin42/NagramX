@@ -8350,7 +8350,7 @@ public class MessageObject {
             int start = ayuBlock.getSpanStart(span);
             int end = ayuBlock.getSpanEnd(span);
             if (start < 0 || end <= start || end > block.textLayout.getText().length()) continue;
-            SpannableString ss = new SpannableString(block.textLayout.getText());
+            SpannableString ss = new SpannableString(block.textLayout.getText().toString());
             ss.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             List<SpoilerEffect> group = byColor.computeIfAbsent(span.color, k -> new ArrayList<>());
             SpoilerEffect.addSpoilers(null, block.textLayout, -1, right, ss, null, group, null);
