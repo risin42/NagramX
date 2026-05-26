@@ -1890,6 +1890,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     public List<SpoilerEffect> replySpoilers = new ArrayList<>();
     private final Stack<SpoilerEffect> replySpoilersPool = new Stack<>();
     private final Path sPath = new Path();
+    private final Path ayuClipPath = new Path();
     public boolean isBlurred;
     public BotForumHelper.BotDraftAnimationsPool draftAnimationsPool;
 
@@ -21676,7 +21677,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             // clip out before drawing emoji so they are not drawn over spoiler and break masking of message filter
             int ayuClipSave = -1;
             if (block.ayuSpoilerGroups != null && !block.ayuSpoilerGroups.isEmpty()) {
-                Path ayuClipPath = new Path();
+                ayuClipPath.rewind();
                 for (android.util.Pair<Integer, java.util.List<SpoilerEffect>> grp : block.ayuSpoilerGroups) {
                     for (SpoilerEffect eff : grp.second) {
                         Rect b = eff.getBounds();

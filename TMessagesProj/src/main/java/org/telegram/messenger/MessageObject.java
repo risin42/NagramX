@@ -647,8 +647,9 @@ public class MessageObject {
     }
 
     public boolean hasMediaSpoilers() {
+        if (!isRepostPreview && ayuMediaSpoiler && !ayuSpoilerRevealed) return true;
         if (NekoConfig.showSpoilersDirectly.Bool()) return false;
-        return !isRepostPreview && (messageOwner.media != null && (messageOwner.media.spoiler || ayuMediaSpoiler) || needDrawBluredPreview()) || isHiddenSensitive();
+        return !isRepostPreview && (messageOwner.media != null && messageOwner.media.spoiler || needDrawBluredPreview()) || isHiddenSensitive();
     }
 
     public Boolean isSensitiveCached;
@@ -8387,6 +8388,19 @@ public class MessageObject {
                     }, sb.getSpanStart(e), sb.getSpanEnd(e), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     sb.removeSpan(e);
                 }
+                for (AnimatedEmojiSpan e : sb.getSpans(start, end, AnimatedEmojiSpan.class)) {
+                    final AnimatedEmojiSpan captured = e;
+                    sb.setSpan(new ReplacementSpan() {
+                        @Override
+                        public int getSize(@NonNull Paint paint, CharSequence text, int s, int e2, @Nullable Paint.FontMetricsInt fm) {
+                            return captured.getSize(paint, text, s, e2, fm);
+                        }
+                        @Override
+                        public void draw(@NonNull Canvas canvas, CharSequence text, int s, int e2, float x, int top, int y, int bottom, @NonNull Paint paint) {
+                        }
+                    }, sb.getSpanStart(e), sb.getSpanEnd(e), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    sb.removeSpan(e);
+                }
                 sb.setSpan(new ForegroundColorSpan(Color.TRANSPARENT), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
@@ -8841,7 +8855,8 @@ public class MessageObject {
 
             block.ayuSpoilerGroups = null;
             block.spoilersPatchedTextLayout.set(null);
-            if (!isSpoilersRevealed && !spoiledLoginCode) {
+            boolean hasUnrevealedAyu = ayuSpoilerText != null && !ayuSpoilerRevealed;
+            if ((!isSpoilersRevealed && !spoiledLoginCode) || hasUnrevealedAyu) {
                 int right = linesMaxWidthWithLeft;
                 if (block.quote) {
                     right -= AndroidUtilities.dp(32);
@@ -8849,12 +8864,16 @@ public class MessageObject {
                     right -= AndroidUtilities.dp(15);
                 }
 
-                Spanned ayuBlock = ayuSpoilerBlockSpannable(ayuSpoilerText, block);
-                if (ayuBlock != null) {
-                    ayuBuildSpoilerGroups(block, ayuBlock, right);
-                    ayuPreBuildPatchedLayout(block, ayuBlock);
+                if (hasUnrevealedAyu) {
+                    Spanned ayuBlock = ayuSpoilerBlockSpannable(ayuSpoilerText, block);
+                    if (ayuBlock != null) {
+                        ayuBuildSpoilerGroups(block, ayuBlock, right);
+                        ayuPreBuildPatchedLayout(block, ayuBlock);
+                    }
                 }
-                SpoilerEffect.addSpoilers(null, block.textLayout, -1, right, null, block.spoilers);
+                if (!isSpoilersRevealed && !spoiledLoginCode) {
+                    SpoilerEffect.addSpoilers(null, block.textLayout, -1, right, null, block.spoilers);
+                }
             }
         }
 
@@ -9298,7 +9317,8 @@ public class MessageObject {
 
                 block.ayuSpoilerGroups = null;
                 block.spoilersPatchedTextLayout.set(null);
-                if (messageObject != null && !messageObject.isSpoilersRevealed && !messageObject.spoiledLoginCode) {
+                boolean hasUnrevealedAyu = messageObject != null && messageObject.ayuSpoilerText != null && !messageObject.ayuSpoilerRevealed;
+                if ((messageObject != null && !messageObject.isSpoilersRevealed && !messageObject.spoiledLoginCode) || hasUnrevealedAyu) {
                     int right = linesMaxWidthWithLeft;
                     if (block.quote) {
                         right -= AndroidUtilities.dp(32);
@@ -9306,12 +9326,16 @@ public class MessageObject {
                         right -= AndroidUtilities.dp(15);
                     }
 
-                    Spanned ayuBlock = MessageObject.ayuSpoilerBlockSpannable(messageObject.ayuSpoilerText, block);
-                    if (ayuBlock != null) {
-                        MessageObject.ayuBuildSpoilerGroups(block, ayuBlock, right);
-                        MessageObject.ayuPreBuildPatchedLayout(block, ayuBlock);
+                    if (hasUnrevealedAyu) {
+                        Spanned ayuBlock = MessageObject.ayuSpoilerBlockSpannable(messageObject.ayuSpoilerText, block);
+                        if (ayuBlock != null) {
+                            MessageObject.ayuBuildSpoilerGroups(block, ayuBlock, right);
+                            MessageObject.ayuPreBuildPatchedLayout(block, ayuBlock);
+                        }
                     }
-                    SpoilerEffect.addSpoilers(null, block.textLayout, -1, right, null, block.spoilers);
+                    if (messageObject != null && !messageObject.isSpoilersRevealed && !messageObject.spoiledLoginCode) {
+                        SpoilerEffect.addSpoilers(null, block.textLayout, -1, right, null, block.spoilers);
+                    }
                 }
             }
         }

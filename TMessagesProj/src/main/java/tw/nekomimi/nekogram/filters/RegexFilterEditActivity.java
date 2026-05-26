@@ -344,7 +344,7 @@ public class RegexFilterEditActivity extends BaseFragment {
                 canvas.drawCircle(getWidth() / 2f, getHeight() / 2f, r - dp(1), borderPaint);
             }
         };
-        colorSwatch.setOnClickListener(swatchView -> {
+        View.OnClickListener openColorPicker = swatchView -> {
             ColorPickerBottomSheet picker = new ColorPickerBottomSheet(context, getResourceProvider());
             picker.setPipetteDelegate(new ColorPickerBottomSheet.PipetteDelegate() {
                 public void onStartColorPipette() {}
@@ -362,7 +362,10 @@ public class RegexFilterEditActivity extends BaseFragment {
                 colorSwatch.invalidate();
             });
             picker.show();
-        });
+        };
+        colorSwatch.setOnClickListener(openColorPicker);
+        colorRowFrame.setOnClickListener(openColorPicker);
+        colorSwatch.setContentDescription(getString(R.string.RegexFiltersSpoilerColor));
         colorRowFrame.addView(colorSwatch, LayoutHelper.createFrame(32, 32, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 12, 0));
 
         spoilerColorRow = colorRowFrame;

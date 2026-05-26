@@ -191,37 +191,37 @@ public class AyuFilter {
         return getFilterAction(msg, group) == FilterModel.ACTION_HIDE;
     }
 
-    public static int getFilterAction(MessageObject msg, MessageObject.GroupedMessages group) {
-        if (msg == null || msg.isOutOwner()) {
-            return -1;
-        }
-
+    private static int computeCustomResult(MessageObject msg) {
         int customResult = -1;
         long senderId = msg.getFromChatId();
-
         if (senderId > 0L) {
-            // mask shadow ban user messages
             if (NekoConfig.ignoreBlocked.Bool() && getCustomFilteredUsers().contains(senderId)) {
                 CustomFilteredUser cfu = getCustomFilteredUser(senderId);
-                if (cfu != null && cfu.filterAction != FilterModel.ACTION_HIDE) { // action hide is handled already
+                if (cfu != null && cfu.filterAction != FilterModel.ACTION_HIDE) {
                     customResult = cfu.filterAction;
                 }
             }
-            // Mask messages of telegram blocked users
             if (customResult == -1 && NaConfig.INSTANCE.getMaskBlockedUserMessages().Bool()) {
                 if (MessagesController.getInstance(msg.currentAccount).blockePeers.indexOfKey(senderId) >= 0) {
                     customResult = FilterModel.ACTION_SPOILER_ALL;
                 }
             }
         }
+        return customResult;
+    }
+
+    public static int getFilterAction(MessageObject msg, MessageObject.GroupedMessages group) {
+        if (msg == null || msg.isOutOwner()) {
+            return -1;
+        }
 
         if (!NaConfig.INSTANCE.getRegexFiltersEnabled().Bool()) {
-            return customResult;
+            return computeCustomResult(msg);
         }
 
         var text = getMessageText(msg, group);
         if (TextUtils.isEmpty(text)) {
-            return customResult;
+            return computeCustomResult(msg);
         }
         if (filterModels == null) {
             getRegexFilters();
@@ -231,7 +231,7 @@ public class AyuFilter {
         }
         long dialogId = msg.getDialogId();
         if (isDialogExcluded(dialogId)) {
-            return customResult;
+            return computeCustomResult(msg);
         }
 
         LruCache<Integer, Integer> dialogCache = filteredCache.computeIfAbsent(dialogId, k -> new LruCache<>(PER_DIALOG_CACHE_LIMIT));
@@ -241,26 +241,26 @@ public class AyuFilter {
             cached = dialogCache.get(msg.getId());
         }
 
+        int regexResult;
         if (cached != null) {
-            return cached;
-        }
-
-        int result = getFilterActionInternal(text, dialogId);
-
-        if (customResult != -1 && (result == -1 || customResult < result)) {
-            result = customResult;
-        }
-
-        synchronized (dialogCache) {
-            dialogCache.put(msg.getId(), result);
-            if (group != null && group.messages != null && !group.messages.isEmpty()) {
-                for (var m : group.messages) {
-                    dialogCache.put(m.getId(), result);
+            regexResult = cached;
+        } else {
+            regexResult = getFilterActionInternal(text, dialogId);
+            synchronized (dialogCache) {
+                dialogCache.put(msg.getId(), regexResult);
+                if (group != null && group.messages != null && !group.messages.isEmpty()) {
+                    for (var m : group.messages) {
+                        dialogCache.put(m.getId(), regexResult);
+                    }
                 }
             }
         }
 
-        return result;
+        int customResult = computeCustomResult(msg);
+        if (customResult != -1 && (regexResult == -1 || customResult < regexResult)) {
+            return customResult;
+        }
+        return regexResult;
     }
 
     public static List<FilterModel> getMatchingFilterModels(MessageObject msg, MessageObject.GroupedMessages group) {

@@ -451,7 +451,7 @@ object NaConfig {
         addConfig(
             "BlockedUserMaskColor",
             ConfigItem.configTypeInt,
-            0xFFFFFFFF.toInt()
+            0xFF888888.toInt()
         )
     val showTimeHint =
         addConfig(
