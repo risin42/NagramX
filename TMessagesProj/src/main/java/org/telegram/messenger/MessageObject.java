@@ -8413,6 +8413,32 @@ public class MessageObject {
                     int start = sp.getSpanStart(span);
                     int end = sp.getSpanEnd(span);
                     if (start >= 0 && end > start && end <= sb.length()) {
+                        for (Emoji.EmojiSpan e : sb.getSpans(start, end, Emoji.EmojiSpan.class)) {
+                            final Emoji.EmojiSpan captured = e;
+                            sb.setSpan(new ReplacementSpan() {
+                                @Override
+                                public int getSize(@NonNull Paint paint, CharSequence text, int s, int e2, @Nullable Paint.FontMetricsInt fm) {
+                                    return captured.getSize(paint, text, s, e2, fm);
+                                }
+                                @Override
+                                public void draw(@NonNull Canvas canvas, CharSequence text, int s, int e2, float x, int top, int y, int bottom, @NonNull Paint paint) {
+                                }
+                            }, sb.getSpanStart(e), sb.getSpanEnd(e), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            sb.removeSpan(e);
+                        }
+                        for (AnimatedEmojiSpan e : sb.getSpans(start, end, AnimatedEmojiSpan.class)) {
+                            final AnimatedEmojiSpan captured = e;
+                            sb.setSpan(new ReplacementSpan() {
+                                @Override
+                                public int getSize(@NonNull Paint paint, CharSequence text, int s, int e2, @Nullable Paint.FontMetricsInt fm) {
+                                    return captured.getSize(paint, text, s, e2, fm);
+                                }
+                                @Override
+                                public void draw(@NonNull Canvas canvas, CharSequence text, int s, int e2, float x, int top, int y, int bottom, @NonNull Paint paint) {
+                                }
+                            }, sb.getSpanStart(e), sb.getSpanEnd(e), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            sb.removeSpan(e);
+                        }
                         sb.setSpan(new ForegroundColorSpan(Color.TRANSPARENT), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                 }
