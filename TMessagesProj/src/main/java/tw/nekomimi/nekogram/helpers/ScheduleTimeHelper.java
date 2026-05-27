@@ -100,10 +100,11 @@ public final class ScheduleTimeHelper {
         quickScheduleValue.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
         quickScheduleHeader.addView(quickScheduleValue, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT));
 
+        final float initialProgress = getDefaultScheduleProgress(step);
+
         final SeekBarView quickScheduleSeekBar = new SeekBarView(context, resourcesProvider);
         quickScheduleSeekBar.setReportChanges(true);
         quickScheduleSeekBar.setSeparatorsCount(DEFAULT_SCHEDULE_STEP_COUNT);
-        quickScheduleSeekBar.setProgress(getDefaultScheduleProgress(step));
         quickScheduleSeekBar.setDelegate(new SeekBarView.SeekBarViewDelegate() {
             @Override
             public void onSeekBarDrag(boolean stop, float progress) {
@@ -131,6 +132,7 @@ public final class ScheduleTimeHelper {
             }
         });
         quickScheduleLayout.addView(quickScheduleSeekBar, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 38, 13, 0, 13, 0));
+        quickScheduleSeekBar.post(() -> quickScheduleSeekBar.setProgress(initialProgress));
     }
 
     private static int getDefaultScheduleMinutes(int step) {
