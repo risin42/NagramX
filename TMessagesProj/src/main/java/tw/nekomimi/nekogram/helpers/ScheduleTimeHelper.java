@@ -170,10 +170,10 @@ public final class ScheduleTimeHelper {
     }
 
     private static long getTargetTimeFromNow(int minutes) {
-        return roundUpToScheduleMinute(System.currentTimeMillis() + (long) minutes * 60 * 1000L);
-    }
-
-    private static long roundUpToScheduleMinute(long time) {
-        return ((time + 59999L) / 60000L) * 60000L;
+        // Intentionally not rounded to the minute boundary so that two messages scheduled
+        // at the same displayed minute (e.g. both showing "10:10") retain distinct timestamps
+        // and are delivered in the order they were created. This matches official Telegram's
+        // default behavior.
+        return System.currentTimeMillis() + (long) minutes * 60 * 1000L;
     }
 }
