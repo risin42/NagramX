@@ -448,29 +448,4 @@ public class ChatsHelper extends BaseController {
         return reqId;
     }
 
-    @Nullable
-    public static int[] getSelectBetweenBounds(SparseArray<MessageObject>[] selectedMessagesIds) {
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-        int count = 0;
-
-        for (int a = 1; a >= 0; a--) {
-            int size = selectedMessagesIds[a].size();
-            if (size > 0) {
-                int first = selectedMessagesIds[a].keyAt(0);
-                int last = selectedMessagesIds[a].keyAt(size - 1);
-                if (first < min) min = first;
-                if (last > max) max = last;
-                count += size;
-            }
-        }
-
-        if (count < 2) {
-            return null;
-        }
-        if (min == max || (long) max - min <= 1) {
-            return null;
-        }
-        return new int[]{min, max};
-    }
 }

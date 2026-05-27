@@ -9996,14 +9996,22 @@ public class ChatActivity extends BaseFragment implements
         return type >= MESSAGE_TYPE_MEDIA && type != MESSAGE_TYPE_SEND_ERROR_TEXT;
     }
 
+    private boolean hasSelectedMessagesRange() {
+        return selectedMessagesIds[0].size() + selectedMessagesIds[1].size() >= 2;
+    }
+
+    private boolean isMessageSelectedForBetween(MessageObject message) {
+        int index = message.getDialogId() == dialog_id ? 0 : 1;
+        return selectedMessagesIds[index].indexOfKey(message.getId()) >= 0;
+    }
+
     public boolean canSelectBetweenMessages() {
-        if (ChatsHelper.getSelectBetweenBounds(selectedMessagesIds) == null) {
+        if (!hasSelectedMessagesRange()) {
             return false;
         }
         int minPos = Integer.MAX_VALUE, maxPos = Integer.MIN_VALUE;
         for (int i = 0; i < messages.size(); i++) {
-            int id = messages.get(i).getId();
-            if (selectedMessagesIds[0].indexOfKey(id) >= 0 || selectedMessagesIds[1].indexOfKey(id) >= 0) {
+            if (isMessageSelectedForBetween(messages.get(i))) {
                 if (i < minPos) minPos = i;
                 if (i > maxPos) maxPos = i;
             }
@@ -10020,13 +10028,12 @@ public class ChatActivity extends BaseFragment implements
     }
 
     public void performSelectBetweenMessages() {
-        if (ChatsHelper.getSelectBetweenBounds(selectedMessagesIds) == null) {
+        if (!hasSelectedMessagesRange()) {
             return;
         }
         int minPos = Integer.MAX_VALUE, maxPos = Integer.MIN_VALUE;
         for (int i = 0; i < messages.size(); i++) {
-            int id = messages.get(i).getId();
-            if (selectedMessagesIds[0].indexOfKey(id) >= 0 || selectedMessagesIds[1].indexOfKey(id) >= 0) {
+            if (isMessageSelectedForBetween(messages.get(i))) {
                 if (i < minPos) minPos = i;
                 if (i > maxPos) maxPos = i;
             }
