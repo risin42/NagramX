@@ -9979,11 +9979,8 @@ public class ChatActivity extends BaseFragment implements
         updateLeftBottomButton(ChatsHelper.getLeftButtonAction(this, noForwards));
     }
 
-    private boolean isSelectableBetweenMessage(MessageObject message, int begin, int end) {
+    private boolean isSelectableBetweenMessage(MessageObject message) {
         int msgId = message.getId();
-        if (msgId <= begin || msgId >= end) {
-            return false;
-        }
         int index = message.getDialogId() == dialog_id ? 0 : 1;
         if (selectedMessagesIds[index].indexOfKey(msgId) >= 0) {
             return false;
@@ -10000,14 +9997,22 @@ public class ChatActivity extends BaseFragment implements
     }
 
     public boolean canSelectBetweenMessages() {
-        int[] bounds = ChatsHelper.getSelectBetweenBounds(selectedMessagesIds);
-        if (bounds == null) {
+        if (ChatsHelper.getSelectBetweenBounds(selectedMessagesIds) == null) {
             return false;
         }
-        int begin = bounds[0];
-        int end = bounds[1];
+        int minPos = Integer.MAX_VALUE, maxPos = Integer.MIN_VALUE;
         for (int i = 0; i < messages.size(); i++) {
-            if (isSelectableBetweenMessage(messages.get(i), begin, end)) {
+            int id = messages.get(i).getId();
+            if (selectedMessagesIds[0].indexOfKey(id) >= 0 || selectedMessagesIds[1].indexOfKey(id) >= 0) {
+                if (i < minPos) minPos = i;
+                if (i > maxPos) maxPos = i;
+            }
+        }
+        if (minPos == Integer.MAX_VALUE || maxPos - minPos <= 1) {
+            return false;
+        }
+        for (int i = minPos + 1; i < maxPos; i++) {
+            if (isSelectableBetweenMessage(messages.get(i))) {
                 return true;
             }
         }
@@ -10015,28 +10020,29 @@ public class ChatActivity extends BaseFragment implements
     }
 
     public void performSelectBetweenMessages() {
-        int[] bounds = ChatsHelper.getSelectBetweenBounds(selectedMessagesIds);
-        if (bounds == null) {
+        if (ChatsHelper.getSelectBetweenBounds(selectedMessagesIds) == null) {
             return;
         }
-        int begin = bounds[0];
-        int end = bounds[1];
+        int minPos = Integer.MAX_VALUE, maxPos = Integer.MIN_VALUE;
         for (int i = 0; i < messages.size(); i++) {
+            int id = messages.get(i).getId();
+            if (selectedMessagesIds[0].indexOfKey(id) >= 0 || selectedMessagesIds[1].indexOfKey(id) >= 0) {
+                if (i < minPos) minPos = i;
+                if (i > maxPos) maxPos = i;
+            }
+        }
+        if (minPos == Integer.MAX_VALUE || maxPos - minPos <= 1) {
+            return;
+        }
+        for (int i = minPos + 1; i < maxPos; i++) {
             MessageObject message = messages.get(i);
-            if (!isSelectableBetweenMessage(message, begin, end)) {
+            if (!isSelectableBetweenMessage(message)) {
                 continue;
             }
             if (selectedMessagesIds[0].size() + selectedMessagesIds[1].size() >= 100) {
-                if (message.getId() != begin) {
-                    for (int x = 0; x < messages.size(); x++) {
-                        MessageObject msg = messages.get(x);
-                        if (msg.getId() == begin) {
-                            addToSelectedMessages(msg, false, false);
-                            addToSelectedMessages(message, true);
-                            break;
-                        }
-                    }
-                }
+                MessageObject beginMsg = messages.get(minPos);
+                addToSelectedMessages(beginMsg, false, false);
+                addToSelectedMessages(message, true);
                 break;
             }
             addToSelectedMessages(message, true);
