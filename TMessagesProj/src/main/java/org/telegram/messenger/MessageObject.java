@@ -791,6 +791,7 @@ public class MessageObject {
             }
         }
         isSpoilersRevealed = old.isSpoilersRevealed;
+        ayuSpoilerRevealed = old.ayuSpoilerRevealed;
         messageOwner.replyStory = old.messageOwner.replyStory;
         if (messageOwner.media != null && old.messageOwner.media != null) {
             messageOwner.media.storyItem = old.messageOwner.media.storyItem;
@@ -798,6 +799,12 @@ public class MessageObject {
         if (isSpoilersRevealed && textLayoutBlocks != null) {
             for (TextLayoutBlock block : textLayoutBlocks) {
                 block.spoilers.clear();
+            }
+        }
+        if (ayuSpoilerRevealed && textLayoutBlocks != null) {
+            for (TextLayoutBlock block : textLayoutBlocks) {
+                block.ayuSpoilerGroups = null;
+                block.ayuSpoilersPatchedTextLayout.set(null);
             }
         }
     }
@@ -8364,47 +8371,50 @@ public class MessageObject {
         }
     }
 
+    private static void suppressSelfDrawingSpans(SpannableStringBuilder sb, int start, int end) {
+        for (Emoji.EmojiSpan e : sb.getSpans(start, end, Emoji.EmojiSpan.class)) {
+            final Emoji.EmojiSpan captured = e;
+            sb.setSpan(new ReplacementSpan() {
+                @Override
+                public int getSize(@NonNull Paint paint, CharSequence text, int s, int e2, @Nullable Paint.FontMetricsInt fm) {
+                    return captured.getSize(paint, text, s, e2, fm);
+                }
+                @Override
+                public void draw(@NonNull Canvas canvas, CharSequence text, int s, int e2, float x, int top, int y, int bottom, @NonNull Paint paint) {
+                }
+            }, sb.getSpanStart(e), sb.getSpanEnd(e), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sb.removeSpan(e);
+        }
+        for (AnimatedEmojiSpan e : sb.getSpans(start, end, AnimatedEmojiSpan.class)) {
+            final AnimatedEmojiSpan captured = e;
+            sb.setSpan(new ReplacementSpan() {
+                @Override
+                public int getSize(@NonNull Paint paint, CharSequence text, int s, int e2, @Nullable Paint.FontMetricsInt fm) {
+                    return captured.getSize(paint, text, s, e2, fm);
+                }
+                @Override
+                public void draw(@NonNull Canvas canvas, CharSequence text, int s, int e2, float x, int top, int y, int bottom, @NonNull Paint paint) {
+                }
+            }, sb.getSpanStart(e), sb.getSpanEnd(e), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sb.removeSpan(e);
+        }
+    }
+
     public static void ayuPreBuildPatchedLayout(TextLayoutBlock block, Spanned ayuBlock) {
         if (block.ayuSpoilerGroups == null || block.ayuSpoilerGroups.isEmpty()) return;
         SpannableStringBuilder sb = new SpannableStringBuilder(block.textLayout.getText());
 
-        // make all emoji span into proper span that can be hide properly
-        // then make filter spoiler mask transparent
+        // suppress self-drawing emoji spans and make filter spoiler mask transparent
         AyuSpoilerSpan[] ayuSpans = ayuBlock.getSpans(0, ayuBlock.length(), AyuSpoilerSpan.class);
         for (AyuSpoilerSpan span : ayuSpans) {
             int start = ayuBlock.getSpanStart(span);
             int end = ayuBlock.getSpanEnd(span);
             if (start >= 0 && end > start && end <= sb.length()) {
-                for (Emoji.EmojiSpan e : sb.getSpans(start, end, Emoji.EmojiSpan.class)) {
-                    final Emoji.EmojiSpan captured = e;
-                    sb.setSpan(new ReplacementSpan() {
-                        @Override
-                        public int getSize(@NonNull Paint paint, CharSequence text, int s, int e2, @Nullable Paint.FontMetricsInt fm) {
-                            return captured.getSize(paint, text, s, e2, fm);
-                        }
-                        @Override
-                        public void draw(@NonNull Canvas canvas, CharSequence text, int s, int e2, float x, int top, int y, int bottom, @NonNull Paint paint) {
-                        }
-                    }, sb.getSpanStart(e), sb.getSpanEnd(e), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    sb.removeSpan(e);
-                }
-                for (AnimatedEmojiSpan e : sb.getSpans(start, end, AnimatedEmojiSpan.class)) {
-                    final AnimatedEmojiSpan captured = e;
-                    sb.setSpan(new ReplacementSpan() {
-                        @Override
-                        public int getSize(@NonNull Paint paint, CharSequence text, int s, int e2, @Nullable Paint.FontMetricsInt fm) {
-                            return captured.getSize(paint, text, s, e2, fm);
-                        }
-                        @Override
-                        public void draw(@NonNull Canvas canvas, CharSequence text, int s, int e2, float x, int top, int y, int bottom, @NonNull Paint paint) {
-                        }
-                    }, sb.getSpanStart(e), sb.getSpanEnd(e), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    sb.removeSpan(e);
-                }
+                suppressSelfDrawingSpans(sb, start, end);
                 sb.setSpan(new ForegroundColorSpan(Color.TRANSPARENT), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
-        // Also make real Telegram spoiler ranges transparent so it can coexist with ayu masks without interference
+        // Also suppress self-drawing emoji inside native Telegram spoiler ranges
         if (block.textLayout.getText() instanceof Spanned) {
             Spanned sp = (Spanned) block.textLayout.getText();
             TextStyleSpan[] tgSpans = sp.getSpans(0, sp.length(), TextStyleSpan.class);
@@ -8431,7 +8441,7 @@ public class MessageObject {
             patchedLayout = new StaticLayout(sb, block.textLayout.getPaint(), block.textLayout.getWidth(), block.textLayout.getAlignment(), block.textLayout.getSpacingMultiplier(), block.textLayout.getSpacingAdd(), false);
         }
 
-        block.spoilersPatchedTextLayout.set(patchedLayout);
+        block.ayuSpoilersPatchedTextLayout.set(patchedLayout);
     }
 
     public void generateLayout(TLRPC.User fromUser) {
@@ -8856,6 +8866,7 @@ public class MessageObject {
 
             block.ayuSpoilerGroups = null;
             block.spoilersPatchedTextLayout.set(null);
+            block.ayuSpoilersPatchedTextLayout.set(null);
             boolean hasUnrevealedAyu = ayuSpoilerText != null && !ayuSpoilerRevealed;
             if ((!isSpoilersRevealed && !spoiledLoginCode) || hasUnrevealedAyu) {
                 int right = linesMaxWidthWithLeft;
@@ -9318,6 +9329,7 @@ public class MessageObject {
 
                 block.ayuSpoilerGroups = null;
                 block.spoilersPatchedTextLayout.set(null);
+                block.ayuSpoilersPatchedTextLayout.set(null);
                 boolean hasUnrevealedAyu = messageObject != null && messageObject.ayuSpoilerText != null && !messageObject.ayuSpoilerRevealed;
                 if ((messageObject != null && !messageObject.isSpoilersRevealed && !messageObject.spoiledLoginCode) || hasUnrevealedAyu) {
                     int right = linesMaxWidthWithLeft;

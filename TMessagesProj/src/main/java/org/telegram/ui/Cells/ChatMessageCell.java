@@ -17227,7 +17227,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                         if (hasAyuSpoilers) {
                             for (android.util.Pair<Integer, java.util.List<SpoilerEffect>> grp : block.ayuSpoilerGroups) {
                                 if (!grp.second.isEmpty()) {
-                                    SpoilerEffect.renderWithRipple(this, invalidateSpoilersParent, grp.first, 0, block.spoilersPatchedTextLayout, 0, block.textLayout, grp.second, canvas, currentPosition != null);
+                                    SpoilerEffect.renderWithRipple(this, invalidateSpoilersParent, grp.first, 0, block.ayuSpoilersPatchedTextLayout, 0, block.textLayout, grp.second, canvas, currentPosition != null);
                                 }
                             }
                             if (!block.spoilers.isEmpty()) {
