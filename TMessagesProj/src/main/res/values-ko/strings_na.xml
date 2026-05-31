@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="N_Config">N-Config</string>
+    <string name="CombineMessage">메시지 합치기</string>
+    <string name="TextStyle">텍스트 스타일</string>
+    <string name="NoiseSuppressAndVoiceEnhance">음성 향상</string>
+    <string name="RepeatAsCopy">복사본으로 다시 게시</string>
+    <string name="DoubleTapAction">두 번 탭 동작</string>
+    <string name="SendReactions">반응 보내기</string>
+    <string name="ShowReactions">반응 표시</string>
+    <string name="CustomTitle">사용자 지정 제목</string>
+    <string name="CustomTitleHint">비워 두면 Nagram X를 사용합니다</string>
+    <string name="CreateMono">고정폭 만들기</string>
+    <string name="CreateMonoLanguage">코드 언어</string>
+    <string name="CopyPhoto">사진 복사</string>
+    <string name="PhotoCopied">사진을 클립보드에 복사했습니다</string>
+    <string name="ToTheBeginning">처음으로</string>
+    <string name="DateOfForwardedMsg">전달된 메시지에 날짜 표시</string>
+    <string name="ShowMessageID">메시지 ID 표시</string>
+    <string name="ShowRPCError">RPC 오류 토스트 표시</string>
+    <string name="ShowPremiumStickersAnimation">Premium 스티커 애니메이션 표시</string>
+    <string name="AppIconGoogle" translatable="false">Google</string>
+    <string name="AppIconColorful">컬러풀</string>
+    <string name="AppIconDarkGreen">다크 그린</string>
+    <string name="AppIconNeon">네온</string>
+    <string name="AppIconNiello">니엘로</string>
+    <string name="AppIconBlue">블루</string>
+    <string name="AppIconDarkBlue">다크 블루</string>
+    <string name="AppIconBlurBlue">블러 블루</string>
+    <string name="InputMessageId">메시지 ID 입력</string>
+    <string name="ToTheMessage">이동</string>
+    <string name="ZalgoFilter">\"Zalgo\" 기호 필터링</string>
+    <string name="ZalgoFilterNotice">닉네임이나 메시지의 모든 \"Z̷͍͌ā̸̜l̸̞̂g̷̝͘o̶̩̓\" 기호가 제거됩니다.</string>
+    <string name="AlwaysShowDownloadIcon">다운로드 아이콘 항상 표시</string>
+    <string name="HideTitle">제목 숨기기</string>
+    <string name="IgnoreUnreadCount">읽지 않음 카운터 숨기기</string>
+    <string name="SendWithoutMarkdown">Markdown 없이 보내기</string>
+    <string name="SendAsEmoji">이모지로 보내기</string>
+    <string name="CustomEditedMessage">편집 표시 사용자 지정</string>
+    <string name="NotificationIcon">알림 아이콘</string>
+    <string name="Official">공식</string>
+    <string name="Nagram" translatable="false">Nagram</string>
+    <string name="HalloWeen">할로윈</string>
+    <string name="ShowOnlineStatus">온라인 상태 표시</string>
+    <string name="ShowOnlineStatusNotice">그룹에서 다른 사람의 온라인 상태를 프로필 사진 옆에 표시합니다.</string>
+    <string name="DoActionsInCommonGroups">공통 그룹에 적용</string>
+    <string name="ShowFullAbout">채팅 설명 항상 펼치기</string>
+    <string name="TypeMessageHintUseGroupName">그룹 이름을 힌트 텍스트로 사용</string>
+    <string name="HideBotButtonInInputField">입력 필드의 봇 버튼 숨기기</string>
+    <string name="ShowSendAsUnderMessageHint">메시지 힌트 아래에 발신자 표시</string>
+    <string name="CheckAllForum">포럼 추가</string>
+    <string name="DecorationNone">없음</string>
+    <string name="ChatDecoration">채팅 꾸미기</string>
+    <string name="NeedChangeNekoSettings">N-Settings를 변경해야 합니다</string>
+    <string name="DoNotUnarchiveBySwipe">스와이프로 보관 해제 비활성화</string>
+    <string name="DefaultDeleteMenu">기본 삭제 메뉴</string>
+    <string name="DisableStories">스토리 비활성화</string>
+    <string name="CopyPhotoAsSticker">스티커로 복사</string>
+    <string name="ProviderTranSmartTranslate">TranSmart 번역기</string>
+    <string name="DisableMarkdown">Markdown 비활성화</string>
+    <string name="SendWithMarkdown">Markdown으로 보내기</string>
+    <string name="TipsChannel">기능 팁 채널</string>
+    <string name="ShowSmallGIF">작은 GIF 표시</string>
+    <string name="DisableClickCommandToSend">봇 명령 전송 전 확인</string>
+    <string name="DisableDialogsFloatingButton">플로팅 버튼 숨기기</string>
+    <string name="CenterActionBarTitleType">가운데 제목 사용</string>
+    <string name="ShowQuickReplyInBotCommands">봇 명령에 빠른 답장 표시</string>
+    <string name="PushServiceType">푸시 서비스 유형</string>
+    <string name="PushServiceTypeInApp">앱 내</string>
+    <string name="PushServiceTypeFCM" translatable="false">Google FCM</string>
+    <string name="PushServiceTypeUnified" translatable="false">UnifiedPush</string>
+    <string name="PushServiceTypeMicroG" translatable="false">microG</string>
+    <string name="PushServiceTypeInAppDialog">상주 알림 표시</string>
+    <string name="PushServiceTypeUnifiedGateway">Unified Push 게이트웨이</string>
+    <string name="SendMp4DocumentAsVideo">MP4 문서를 동영상으로 보내기</string>
+    <string name="StickersChooseShortNameForStickerPack">팩의 짧은 이름을 선택하세요.</string>
+    <string name="StickersCopyStickerSet">스티커 세트 복사</string>
+    <string name="DisableChannelMuteButton">채널에서 하단 바 숨기기</string>
+    <string name="DisablePreviewVideoSoundShortcut">볼륨 버튼으로 동영상 음소거 해제 비활성화</string>
+    <string name="DisablePreviewVideoSoundShortcutNotice">볼륨 키가 미리보기 동영상 소리를 켜지 못하게 합니다.</string>
+    <string name="PreviewSendPhoto">사진 보내기</string>
+    <string name="PreviewSendVideo">동영상 보내기</string>
+    <string name="PreviewSendFile">파일 보내기</string>
+    <string name="UnblockDeleted">삭제된 사용자 차단 해제</string>
+    <string name="UnblockDeletedWarn">**삭제된 모든 사용자**의 차단을 해제하시겠습니까?</string>
+    <string name="RegexFilters">메시지 필터</string>
+    <string name="RegexFiltersHeader">필터</string>
+    <string name="RegexFiltersSharedHeader">공유 필터</string>
+    <string name="RegexFiltersSubMenuDescription">이 채팅에서 공유 필터를 제외하도록 선택할 수 있습니다.</string>
+    <string name="RegexFiltersChatHeader">채팅 필터</string>
+    <string name="RegexFiltersEnableInChats">개인 채팅에서 필터 활성화</string>
+    <string name="RegexFiltersCaseInsensitive">대소문자 구분 없는 표현식</string>
+    <string name="RegexFiltersAdd">필터 추가</string>
+    <string name="RegexFiltersEdit">필터 편집</string>
+    <string name="RegexFiltersAddDescription">정규 표현식을 완전히 테스트하려면 <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> 사이트를 사용할 수 있습니다. 일반 텍스트도 사용할 수 있지만 괄호는 반드시 이스케이프하세요.</string>
+    <string name="RegexFiltersAddError">Regex 구문 오류</string>
+    <string name="ShowTimeHint">자세히 보려면 시간을 탭</string>
+    <string name="SearchHashtagDefaultPageChannel">채널의 기본 해시태그 검색 페이지</string>
+    <string name="SearchHashtagDefaultPageChat">채팅의 기본 해시태그 검색 페이지</string>
+    <string name="Pangu" translatable="false">Pangu</string>
+    <string name="EnablePanguOnSending">보낼 때 Pangu 활성화</string>
+    <string name="PanguInfo">가독성을 높이기 위한 세심한 텍스트 간격 조정으로, CJK(중국어, 일본어, 한국어), 반각 영어, 숫자, 기호 문자 사이에 공백을 자동으로 삽입합니다.</string>
+    <string name="SendWithPangu">Pangu로 보내기</string>
+    <string name="SendWithoutPangu">Pangu 없이 보내기</string>
+    <string name="DefaultHlsVideoQuality">기본 HLS 동영상 화질</string>
+    <string name="DisableBotOpenButton">봇 열기 버튼 비활성화</string>
+    <string name="CustomTitleUserName">사용자 닉네임을 제목으로 사용</string>
+    <string name="EnhancedVideoBitrate">공유 동영상 비트레이트 향상</string>
+    <string name="ActionBarButtons">액션 바 버튼</string>
+    <string name="VideoPlayerDecoder">동영상 디코더</string>
+    <string name="VideoPlayerDecoderPreferSW">SW 우선</string>
+    <string name="VideoPlayerDecoderHardware">HW 전용</string>
+    <string name="VideoPlayerDecoderPreferHW">HW 우선</string>
+</resources>
