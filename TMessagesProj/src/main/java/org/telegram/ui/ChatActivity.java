@@ -9251,6 +9251,18 @@ public class ChatActivity extends BaseFragment implements
         checkInstantSearch();
         if (replyingMessageObject != null) {
             chatActivityEnterView.setReplyingMessageObject(replyingMessageObject, replyingQuote);
+            // When the view is rebuilt while a reply is pending (e.g. after the passcode lock
+            // screen calls rebuildFragments()), the fragment instance is kept but its views are
+            // recreated. setReplyingMessageObject() only restores the enter view's internal state,
+            // not the visible reply preview panel, and applyDraftMaybe() skips restoring it because
+            // replyingMessageObject is still non-null. Re-show the reply panel here.
+            if (replyingMessageObject != threadMessageObject) {
+                if (replyingQuote != null) {
+                    showFieldPanelForReplyQuote(replyingMessageObject, replyingQuote);
+                } else {
+                    showFieldPanelForReply(replyingMessageObject);
+                }
+            }
         }
 
         ViewGroup decorView = (ViewGroup) getParentActivity().getWindow().getDecorView();
