@@ -580,9 +580,19 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
     private float overScrollCoef = 1f;
     private float collapsedSpringCoef = 0.95f;
     private float expandedSpringCoef = 0.9f;
+    private float rightSlidingProgress;
 
     public float getOverScrollCoef() {
         return overScrollCoef;
+    }
+
+    public void setRightSlidingProgress(float progress) {
+        progress = MathUtils.clamp(progress, 0f, 1f);
+        if (rightSlidingProgress == progress) {
+            return;
+        }
+        rightSlidingProgress = progress;
+        checkUi_titleVisibility();
     }
 
     public void updateItems(boolean animated, boolean force) {
@@ -2214,10 +2224,11 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
 
     private void checkUi_titleVisibility() {
         final float progress = MathUtils.clamp(Math.min(collapsedProgress, collapsedProgress2), 0, 1);
+        final float rightSlidingFactor = 1f - rightSlidingProgress;
         final float titleVisibility = animatorHasTitleText.getFloatValue();
         final float logoVisibility = 1f - titleVisibility;
-        final float titleAlpha = titleVisibility * progress;
-        final float logoAlpha = logoVisibility * progress;
+        final float titleAlpha = titleVisibility * progress * rightSlidingFactor;
+        final float logoAlpha = logoVisibility * progress * rightSlidingFactor;
 
         if (titleView != null) {
             titleView.setAlpha(titleAlpha);
@@ -2232,8 +2243,9 @@ public class DialogStoriesCell extends FrameLayout implements NotificationCenter
             emojiStatusView.setVisibility(logoAlpha > 0 ? VISIBLE : GONE);
         }
         if (subtitleOverlayContainer != null) {
-            subtitleOverlayContainer.setAlpha(progress);
-            subtitleOverlayContainer.setVisibility(progress > 0 ? VISIBLE : GONE);
+            final float subtitleAlpha = progress * rightSlidingFactor;
+            subtitleOverlayContainer.setAlpha(subtitleAlpha);
+            subtitleOverlayContainer.setVisibility(subtitleAlpha > 0 ? VISIBLE : GONE);
         }
     }
 }

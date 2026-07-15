@@ -1651,10 +1651,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             actionBar.getAdditionalSubTitleOverlayContainer().setScaleX(s);
 
             final float titleAlpha = containersAlpha * (1f - progressToActionMode);
-            actionBar.getTitlesContainer().setAlpha(titleAlpha);
-            actionBar.getTitlesContainer().setVisibility(titleAlpha > 0 ? View.VISIBLE : View.INVISIBLE);
-            actionBar.getAdditionalSubTitleOverlayContainer().setAlpha(titleAlpha);
-            actionBar.getAdditionalSubTitleOverlayContainer().setVisibility(titleAlpha > 0 ? View.VISIBLE : View.INVISIBLE);
+            updateActionBarTitleAlpha(titleAlpha);
         } else {
             actionBar.getTitlesContainer().setScaleY(1f);
             actionBar.getTitlesContainer().setScaleX(1f);
@@ -1664,11 +1661,19 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             actionBar.getAdditionalSubTitleOverlayContainer().setScaleX(1f);
 
             final float titleAlpha = 1f - progressToActionMode;
-            actionBar.getTitlesContainer().setAlpha(titleAlpha);
-            actionBar.getTitlesContainer().setVisibility(titleAlpha > 0 ? View.VISIBLE : View.INVISIBLE);
-            actionBar.getAdditionalSubTitleOverlayContainer().setAlpha(titleAlpha);
-            actionBar.getAdditionalSubTitleOverlayContainer().setVisibility(titleAlpha > 0 ? View.VISIBLE : View.INVISIBLE);
+            updateActionBarTitleAlpha(titleAlpha);
         }
+    }
+
+    private float lastActionBarTitleAlpha = 1f;
+
+    private void updateActionBarTitleAlpha(float titleAlpha) {
+        lastActionBarTitleAlpha = titleAlpha;
+        titleAlpha *= 1f - getRightSlidingProgress();
+        actionBar.getTitlesContainer().setAlpha(titleAlpha);
+        actionBar.getTitlesContainer().setVisibility(titleAlpha > 0 ? View.VISIBLE : View.INVISIBLE);
+        actionBar.getAdditionalSubTitleOverlayContainer().setAlpha(titleAlpha);
+        actionBar.getAdditionalSubTitleOverlayContainer().setVisibility(titleAlpha > 0 ? View.VISIBLE : View.INVISIBLE);
     }
 
     public static float viewOffset = 0.0f;
@@ -5614,6 +5619,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
                 if (fragmentView != null) {
                     fragmentView.invalidate();
+                }
+
+                updateActionBarTitleAlpha(lastActionBarTitleAlpha);
+                if (dialogStoriesCell != null) {
+                    dialogStoriesCell.setRightSlidingProgress(progress);
                 }
 
                 if (actionBar.getTitleTextView() != null) {
