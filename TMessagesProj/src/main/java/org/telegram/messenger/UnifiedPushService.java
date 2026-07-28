@@ -1,31 +1,78 @@
 package org.telegram.messenger;
 
+import android.os.PowerManager;
 import android.os.SystemClock;
-
-import androidx.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Base64;
 
 import org.telegram.tgnet.ConnectionsManager;
 import org.unifiedpush.android.connector.FailedReason;
 import org.unifiedpush.android.connector.PushService;
-import org.unifiedpush.android.connector.UnifiedPush;
 import org.unifiedpush.android.connector.data.PushEndpoint;
 import org.unifiedpush.android.connector.data.PushMessage;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.CountDownLatch;
 
+import it.belloworld.mercurygram.WebPushDecryptor;
 import xyz.nextalone.nagram.NaConfig;
 
+/**
+ * UnifiedPush service for NagramX.
+ *
+ * Ported from Nagram (NextAlone/Nagram), which ported it from Mercurygram.
+ * Uses Telegram's WebPush (token_type=10) with aes128gcm encryption through
+ * a PUT-to-POST gateway, plus a secondary Simple Push (token_type=4) channel
+ * for events that carry no payload (secret chats).
+ *
+ * The flow:
+ *   1. ntfy/distributor gives us an endpoint URL
+ *   2. We register it with Telegram via a WebPush gateway as token_type=10
+ *      (gateway serializes WebPush headers into the body because UP distributors
+ *      strip HTTP headers)
+ *   3. Telegram sends encrypted push -> gateway -> distributor -> this service
+ *   4. onMessage() decrypts locally with WebPushDecryptor and feeds the
+ *      MTProto payload into the same notification pipeline that FCM uses
+ *   5. If decryption fails, falls back to wake-up + resumeNetworkMaybe
+ */
 public class UnifiedPushService extends PushService {
 
-    public static final String UP_GATEWAY_DEFAULT = "https://p2p.belloworld.it/"; // https://github.com/Mercurygram/Mercurygram?tab=readme-ov-file#unifiedpush-put-to-post-gateway
-
-    private static final String DISTRIBUTOR_NTFY = "io.heckel.ntfy";
+    public static final String UP_GATEWAY_DEFAULT = "https://p2p.belloworld.it/";
     private static final String UP_FAILED = "__UNIFIEDPUSH_FAILED__";
+
+    // 30 seconds — enough for cold start + decrypt + MTProto, short enough to not
+    // drain battery if something hangs
+    private static final int WAKELOCK_TIMEOUT_MS = 30_000;
 
     private static long lastReceivedNotification = 0;
     private static long numOfReceivedNotifications = 0;
+    private static long numDecryptSuccess = 0;
+    private static long numDecryptFailed = 0;
+
+    // WebPush ECDH keypair + auth secret (generated on first use, persisted in NaConfig)
+    public static volatile byte[] webPushPrivateKey;    // PKCS#8
+    public static volatile byte[] webPushPublicKey;     // Raw 65-byte uncompressed point (04||X||Y)
+    public static volatile byte[] webPushAuthSecret;    // 16-byte random
+
+    // Reference-counted: concurrent pushes each acquire/release without interfering
+    private static PowerManager.WakeLock sWakeLock;
+
+    private static synchronized void acquireWakeLock(PowerManager pm) {
+        if (sWakeLock == null) {
+            sWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "nagramx:wp");
+            sWakeLock.setReferenceCounted(true);
+        }
+        sWakeLock.acquire(WAKELOCK_TIMEOUT_MS);
+    }
+
+    private static synchronized void releaseWakeLock() {
+        if (sWakeLock != null && sWakeLock.isHeld()) {
+            try {
+                sWakeLock.release();
+            } catch (RuntimeException ignored) {
+            }
+        }
+    }
 
     public static long getLastReceivedNotification() {
         return lastReceivedNotification;
@@ -35,86 +82,181 @@ public class UnifiedPushService extends PushService {
         return numOfReceivedNotifications;
     }
 
+    public static long getNumDecryptSuccess() {
+        return numDecryptSuccess;
+    }
+
+    public static long getNumDecryptFailed() {
+        return numDecryptFailed;
+    }
+
+    // ── WebPush key management ──────────────────────────────────────────────
+
+    public static synchronized void loadWebPushKeys() {
+        if (webPushPrivateKey != null && webPushPublicKey != null && webPushAuthSecret != null) {
+            return;
+        }
+        String priv = NaConfig.INSTANCE.getPushServiceTypeUnifiedWebPushPrivateKey().String();
+        if (!TextUtils.isEmpty(priv)) webPushPrivateKey = Base64.decode(priv, Base64.DEFAULT);
+        String pub = NaConfig.INSTANCE.getPushServiceTypeUnifiedWebPushPublicKey().String();
+        if (!TextUtils.isEmpty(pub)) webPushPublicKey = Base64.decode(pub, Base64.DEFAULT);
+        String auth = NaConfig.INSTANCE.getPushServiceTypeUnifiedWebPushAuthSecret().String();
+        if (!TextUtils.isEmpty(auth)) webPushAuthSecret = Base64.decode(auth, Base64.DEFAULT);
+    }
+
+    public static synchronized void saveWebPushKeys() {
+        if (webPushPrivateKey == null || webPushPublicKey == null || webPushAuthSecret == null) {
+            return;
+        }
+        NaConfig.INSTANCE.getPushServiceTypeUnifiedWebPushPrivateKey().setConfigString(
+                Base64.encodeToString(webPushPrivateKey, Base64.DEFAULT));
+        NaConfig.INSTANCE.getPushServiceTypeUnifiedWebPushPublicKey().setConfigString(
+                Base64.encodeToString(webPushPublicKey, Base64.DEFAULT));
+        NaConfig.INSTANCE.getPushServiceTypeUnifiedWebPushAuthSecret().setConfigString(
+                Base64.encodeToString(webPushAuthSecret, Base64.DEFAULT));
+    }
+
+    public static synchronized void ensureWebPushKeys() {
+        loadWebPushKeys();
+        if (webPushPrivateKey != null && webPushPublicKey != null && webPushAuthSecret != null) {
+            return;
+        }
+        try {
+            java.security.KeyPairGenerator kpg = java.security.KeyPairGenerator.getInstance("EC");
+            kpg.initialize(new java.security.spec.ECGenParameterSpec("secp256r1"));
+            java.security.KeyPair keyPair = kpg.generateKeyPair();
+            java.security.interfaces.ECPublicKey ecPub = (java.security.interfaces.ECPublicKey) keyPair.getPublic();
+
+            // Convert Java's ECPublicKey to raw 65-byte uncompressed format (04||X||Y)
+            webPushPublicKey = WebPushDecryptor.extractRawPublicKey(ecPub);
+            webPushPrivateKey = keyPair.getPrivate().getEncoded(); // PKCS#8
+
+            byte[] secret = new byte[16];
+            new java.security.SecureRandom().nextBytes(secret);
+            webPushAuthSecret = secret;
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+        saveWebPushKeys();
+    }
+
+    // ── UnifiedPush callbacks ───────────────────────────────────────────────
+
     @Override
-    public void onNewEndpoint(@NonNull PushEndpoint endpoint, @NonNull String instance) {
+    public void onNewEndpoint(PushEndpoint endpoint, String instance) {
         Utilities.globalQueue.postRunnable(() -> {
             SharedConfig.pushStringGetTimeEnd = SystemClock.elapsedRealtime();
-
-            String savedDistributor = UnifiedPush.getSavedDistributor(this);
-
-            if (DISTRIBUTOR_NTFY.equals(savedDistributor)) {
-                PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_SIMPLE, endpoint.getUrl());
-                return;
-            }
+            ensureWebPushKeys();
 
             String gateway = NaConfig.INSTANCE.getPushServiceTypeUnifiedGateway().String();
             if (gateway.isEmpty()) {
                 gateway = UP_GATEWAY_DEFAULT;
-            } else if (!gateway.endsWith("/")) {
-                gateway += "/";
             }
+            if (!gateway.endsWith("/")) gateway += "/";
 
-            PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_SIMPLE, gateway + URLEncoder.encode(endpoint.getUrl(), StandardCharsets.UTF_8));
+            try {
+                // Register WebPush (token_type=10): encrypted notification payloads
+                String gatewayUrl = gateway + "aesgcm?e="
+                        + URLEncoder.encode(endpoint.getUrl(), StandardCharsets.UTF_8.name());
+                String p256dh = Base64.encodeToString(webPushPublicKey,
+                        Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
+                String auth = Base64.encodeToString(webPushAuthSecret,
+                        Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
+
+                org.json.JSONObject tokenObj = new org.json.JSONObject();
+                tokenObj.put("endpoint", gatewayUrl);
+                org.json.JSONObject keys = new org.json.JSONObject();
+                keys.put("p256dh", p256dh);
+                keys.put("auth", auth);
+                tokenObj.put("keys", keys);
+                PushListenerController.sendRegistrationToServer(
+                        PushListenerController.PUSH_TYPE_WEB, tokenObj.toString());
+
+                // Register Simple Push (token_type=4): wake-up for secret chats and
+                // other events that carry no payload. The gateway correlates PUT
+                // requests with POST /aesgcm to suppress duplicates.
+                String simplePushUrl = gateway
+                        + URLEncoder.encode(endpoint.getUrl(), StandardCharsets.UTF_8.name());
+                PushListenerController.sendSimplePushRegistration(simplePushUrl);
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
         });
     }
 
     @Override
-    public void onMessage(@NonNull PushMessage message, @NonNull String instance) {
-        final long receiveTime = SystemClock.elapsedRealtime();
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-
+    public void onMessage(PushMessage message, String instance) {
         lastReceivedNotification = SystemClock.elapsedRealtime();
         numOfReceivedNotifications++;
 
-        AndroidUtilities.runOnUIThread(() -> {
+        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+        acquireWakeLock(pm);
 
-            FileLog.d("UP PRE INIT APP");
+        // Try WebPush decryption first
+        if (webPushPrivateKey != null && webPushPublicKey != null && webPushAuthSecret != null) {
+            try {
+                byte[] plaintext = WebPushDecryptor.decrypt(
+                        message.getContent(), webPushPrivateKey, webPushPublicKey, webPushAuthSecret);
+                String encoded = new org.json.JSONObject(new String(plaintext, StandardCharsets.UTF_8))
+                        .getString("p");
+                numDecryptSuccess++;
+                if (BuildVars.LOGS_ENABLED) FileLog.d("WP START PROCESSING (decrypted)");
 
-            ApplicationLoader.postInitApplication();
-
-            FileLog.d("UP POST INIT APP");
-
-            Utilities.stageQueue.postRunnable(() -> {
-                FileLog.d("UP START PROCESSING");
-
-                for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
-                    if (UserConfig.getInstance(a).isClientActivated()) {
-                        ConnectionsManager.onInternalPushReceived(a);
-                        ConnectionsManager.getInstance(a).resumeNetworkMaybe();
+                // processRemoteMessage() blocks via countDownLatch.await() — must
+                // run on a background thread, not the UI thread
+                Utilities.globalQueue.postRunnable(() -> {
+                    try {
+                        PushListenerController.processRemoteMessage(
+                                PushListenerController.PUSH_TYPE_WEB, encoded, System.currentTimeMillis());
+                    } finally {
+                        releaseWakeLock();
                     }
+                });
+                return;
+            } catch (Exception e) {
+                numDecryptFailed++;
+                if (BuildVars.LOGS_ENABLED)
+                    FileLog.d("WP DECRYPT ERROR, falling back to wake-up: " + e.getMessage());
+            }
+        }
+
+        // Fallback: wake up the app to fetch updates via MTProto
+        AndroidUtilities.runOnUIThread(() -> {
+            ApplicationLoader.postInitApplication();
+            Utilities.stageQueue.postRunnable(() -> {
+                try {
+                    if (BuildVars.LOGS_ENABLED) FileLog.d("UP START PROCESSING (wake-up fallback)");
+                    for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
+                        if (UserConfig.getInstance(a).isClientActivated()) {
+                            ConnectionsManager.onInternalPushReceived(a);
+                            ConnectionsManager.getInstance(a).resumeNetworkMaybe();
+                        }
+                    }
+                } finally {
+                    releaseWakeLock();
                 }
-                countDownLatch.countDown();
             });
         });
-        Utilities.globalQueue.postRunnable(() -> {
-            try {
-                countDownLatch.await();
-            } catch (Throwable ignore) {
-            }
-
-            FileLog.d("finished UP service, time = " + (SystemClock.elapsedRealtime() - receiveTime));
-        });
     }
 
     @Override
-    public void onRegistrationFailed(@NonNull FailedReason reason, @NonNull String instance) {
+    public void onRegistrationFailed(FailedReason reason, String instance) {
         FileLog.e("Failed to get endpoint: " + reason);
-
         SharedConfig.pushStringStatus = UP_FAILED;
-
         Utilities.globalQueue.postRunnable(() -> {
             SharedConfig.pushStringGetTimeEnd = SystemClock.elapsedRealtime();
-            PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_SIMPLE, null);
+            PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_WEB, null);
+            PushListenerController.unregisterSimplePush();
         });
     }
 
     @Override
-    public void onUnregistered(@NonNull String instance) {
+    public void onUnregistered(String instance) {
         SharedConfig.pushStringStatus = UP_FAILED;
-
         Utilities.globalQueue.postRunnable(() -> {
             SharedConfig.pushStringGetTimeEnd = SystemClock.elapsedRealtime();
-            PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_SIMPLE, null);
+            PushListenerController.sendRegistrationToServer(PushListenerController.PUSH_TYPE_WEB, null);
+            PushListenerController.unregisterSimplePush();
         });
     }
 }

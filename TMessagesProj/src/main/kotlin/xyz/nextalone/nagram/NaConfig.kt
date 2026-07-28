@@ -382,6 +382,30 @@ object NaConfig {
             ConfigItem.configTypeString,
             ""
         )
+    val pushServiceTypeUnifiedSimple =
+        addConfig(
+            "PushServiceTypeUnifiedSimple",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val pushServiceTypeUnifiedWebPushPrivateKey =
+        addConfig(
+            "PushServiceTypeUnifiedWebPushPrivateKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val pushServiceTypeUnifiedWebPushPublicKey =
+        addConfig(
+            "PushServiceTypeUnifiedWebPushPublicKey",
+            ConfigItem.configTypeString,
+            ""
+        )
+    val pushServiceTypeUnifiedWebPushAuthSecret =
+        addConfig(
+            "PushServiceTypeUnifiedWebPushAuthSecret",
+            ConfigItem.configTypeString,
+            ""
+        )
     val sendMp4DocumentAsVideo =
         addConfig(
             "SendMp4DocumentAsVideo",

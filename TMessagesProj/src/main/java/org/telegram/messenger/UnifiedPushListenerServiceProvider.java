@@ -53,6 +53,6 @@ public class UnifiedPushListenerServiceProvider implements PushListenerControlle
 
     @Override
     public int getPushType() {
-        return PushListenerController.PUSH_TYPE_SIMPLE;
+        return PushListenerController.PUSH_TYPE_WEB;
     }
 }
