@@ -192,6 +192,11 @@ public class UnifiedPushService extends PushService {
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
         acquireWakeLock(pm);
 
+        // Load persisted keys — on a cold start (process killed by Android) all
+        // static fields are null even though keys exist on disk. Without this,
+        // decryption is skipped and every cold push falls back to wake-up only.
+        loadWebPushKeys();
+
         // Try WebPush decryption first
         if (webPushPrivateKey != null && webPushPublicKey != null && webPushAuthSecret != null) {
             try {
@@ -202,14 +207,18 @@ public class UnifiedPushService extends PushService {
                 numDecryptSuccess++;
                 if (BuildVars.LOGS_ENABLED) FileLog.d("WP START PROCESSING (decrypted)");
 
-                // processRemoteMessage() blocks via countDownLatch.await() — must
-                // run on a background thread, not the UI thread
+                // processRemoteMessage() runs notification logic asynchronously on
+                // stageQueue/UI thread. The static CountDownLatch it uses internally
+                // never blocks after the first push in a process lifetime, so it may
+                // return before the notification is actually shown. Post the wake lock
+                // release to stageQueue after processRemoteMessage to give the
+                // notification pipeline time to finish.
                 Utilities.globalQueue.postRunnable(() -> {
                     try {
                         PushListenerController.processRemoteMessage(
                                 PushListenerController.PUSH_TYPE_WEB, encoded, System.currentTimeMillis());
                     } finally {
-                        releaseWakeLock();
+                        Utilities.stageQueue.postRunnable(UnifiedPushService::releaseWakeLock);
                     }
                 });
                 return;
