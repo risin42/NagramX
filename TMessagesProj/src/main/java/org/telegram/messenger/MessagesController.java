@@ -16357,6 +16357,10 @@ public class MessagesController extends BaseController implements NotificationCe
         if (TextUtils.isEmpty(regid) || registeringForPush || getUserConfig().getClientUserId() == 0) {
             return;
         }
+        if (pushType == PushListenerController.PUSH_TYPE_WEB) {
+            // Keep the secondary wake-up channel in sync for newly added accounts.
+            registerSimplePush(NaConfig.INSTANCE.getPushServiceTypeUnifiedSimple().String());
+        }
         if (getUserConfig().registeredForPush && regid.equals(SharedConfig.pushString)) {
             return;
         }

@@ -54,21 +54,10 @@ public class UnifiedPushService extends PushService {
     public static volatile byte[] webPushPublicKey;     // Raw 65-byte uncompressed point (04||X||Y)
     public static volatile byte[] webPushAuthSecret;    // 16-byte random
 
-    // Reference-counted: concurrent pushes each acquire/release without interfering
-    private static PowerManager.WakeLock sWakeLock;
-
-    private static synchronized void acquireWakeLock(PowerManager pm) {
-        if (sWakeLock == null) {
-            sWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "nagramx:wp");
-            sWakeLock.setReferenceCounted(true);
-        }
-        sWakeLock.acquire(WAKELOCK_TIMEOUT_MS);
-    }
-
-    private static synchronized void releaseWakeLock() {
-        if (sWakeLock != null && sWakeLock.isHeld()) {
+    private static void releaseWakeLock(PowerManager.WakeLock wakeLock) {
+        if (wakeLock.isHeld()) {
             try {
-                sWakeLock.release();
+                wakeLock.release();
             } catch (RuntimeException ignored) {
             }
         }
@@ -169,15 +158,15 @@ public class UnifiedPushService extends PushService {
                 keys.put("p256dh", p256dh);
                 keys.put("auth", auth);
                 tokenObj.put("keys", keys);
-                PushListenerController.sendRegistrationToServer(
-                        PushListenerController.PUSH_TYPE_WEB, tokenObj.toString());
-
                 // Register Simple Push (token_type=4): wake-up for secret chats and
                 // other events that carry no payload. The gateway correlates PUT
                 // requests with POST /aesgcm to suppress duplicates.
                 String simplePushUrl = gateway
                         + URLEncoder.encode(endpoint.getUrl(), StandardCharsets.UTF_8.name());
-                PushListenerController.sendSimplePushRegistration(simplePushUrl);
+                NaConfig.INSTANCE.getPushServiceTypeUnifiedSimple().setConfigString(simplePushUrl);
+
+                PushListenerController.sendRegistrationToServer(
+                        PushListenerController.PUSH_TYPE_WEB, tokenObj.toString());
             } catch (Exception e) {
                 FileLog.e(e);
             }
@@ -190,7 +179,8 @@ public class UnifiedPushService extends PushService {
         numOfReceivedNotifications++;
 
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        acquireWakeLock(pm);
+        PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "nagramx:wp");
+        wakeLock.acquire(WAKELOCK_TIMEOUT_MS);
 
         // Load persisted keys — on a cold start (process killed by Android) all
         // static fields are null even though keys exist on disk. Without this,
@@ -207,18 +197,12 @@ public class UnifiedPushService extends PushService {
                 numDecryptSuccess++;
                 if (BuildVars.LOGS_ENABLED) FileLog.d("WP START PROCESSING (decrypted)");
 
-                // processRemoteMessage() runs notification logic asynchronously on
-                // stageQueue/UI thread. The static CountDownLatch it uses internally
-                // never blocks after the first push in a process lifetime, so it may
-                // return before the notification is actually shown. Post the wake lock
-                // release to stageQueue after processRemoteMessage to give the
-                // notification pipeline time to finish.
                 Utilities.globalQueue.postRunnable(() -> {
                     try {
                         PushListenerController.processRemoteMessage(
                                 PushListenerController.PUSH_TYPE_WEB, encoded, System.currentTimeMillis());
                     } finally {
-                        Utilities.stageQueue.postRunnable(UnifiedPushService::releaseWakeLock);
+                        releaseWakeLock(wakeLock);
                     }
                 });
                 return;
@@ -242,7 +226,7 @@ public class UnifiedPushService extends PushService {
                         }
                     }
                 } finally {
-                    releaseWakeLock();
+                    releaseWakeLock(wakeLock);
                 }
             });
         });
