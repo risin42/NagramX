@@ -16,6 +16,7 @@ import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.LocaleController;
+import org.telegram.messenger.PushListenerController;
 import org.telegram.messenger.R;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -165,6 +166,7 @@ public class NekoXConfig {
 
                 if (isAppIdEmpty && isAppHashEmpty) {
                     AndroidUtil.setPushService(true);
+                    PushListenerController.reconcilePushRegistration();
                     resetCustomApi();
                     saveCustomApiAndRestart(context);
                     return Unit.INSTANCE;
@@ -200,6 +202,7 @@ public class NekoXConfig {
                 resetCustomApi();
             }
 
+            PushListenerController.reconcilePushRegistration();
             saveCustomApiAndRestart(context);
             return Unit.INSTANCE;
         });

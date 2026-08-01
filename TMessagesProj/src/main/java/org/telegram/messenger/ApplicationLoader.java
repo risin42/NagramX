@@ -292,11 +292,11 @@ public class ApplicationLoader extends Application {
             }
         }
 
+        PushListenerController.reconcilePushRegistration();
+
         // init fcm
         initPushServices();
-        if (BuildVars.LOGS_ENABLED) {
-            FileLog.d("app initied");
-        }
+        FileLog.d("app initied");
 
         MediaController.getInstance();
         for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) { //TODO improve account
