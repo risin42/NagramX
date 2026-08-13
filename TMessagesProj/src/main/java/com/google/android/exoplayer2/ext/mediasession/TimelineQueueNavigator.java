@@ -22,9 +22,9 @@ import static java.lang.Math.min;
 
 import android.os.Bundle;
 import android.os.ResultReceiver;
-import android.support.v4.media.MediaDescriptionCompat;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
+import androidx.media.MediaDescriptionCompat;
+import androidx.media.session.MediaSessionCompat;
+import androidx.media.session.PlaybackStateCompat;
 import androidx.annotation.Nullable;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Player;

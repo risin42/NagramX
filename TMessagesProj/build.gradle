@@ -209,6 +209,8 @@ dependencies {
     implementation 'androidx.sharetarget:sharetarget:1.2.0'
     implementation 'androidx.interpolator:interpolator:1.0.0'
     implementation 'androidx.biometric:biometric:1.1.0'
+    implementation "androidx.media:media:1.7.0"
+    implementation "androidx.lifecycle:lifecycle-runtime:2.7.0"
     implementation 'androidx.car.app:app:1.7.0'
     implementation 'androidx.car.app:app-projected:1.7.0'
     implementation 'org.nanohttpd:nanohttpd:2.3.1'

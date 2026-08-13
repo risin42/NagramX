@@ -1,7 +1,7 @@
 package org.telegram.messenger.pip;
 
 import android.app.Activity;
-import android.support.v4.media.session.MediaSessionCompat;
+import androidx.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
